@@ -50,6 +50,10 @@
   </script>
 
   <style>
+    html {
+      scroll-padding-top: 5rem;
+      scroll-padding-bottom: 6rem;
+    }
     *, *::before, *::after {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
@@ -296,7 +300,7 @@
   </div>
 
   <!-- Main App Shell -->
-  <main class="flex-1 max-w-6xl w-full mx-auto p-3 sm:p-5 flex flex-col gap-4 pb-24">
+  <main class="flex-1 max-w-6xl w-full mx-auto p-3 sm:p-5 flex flex-col gap-4 pb-36 sm:pb-40">
 
     <!-- ========================================================================= -->
     <!-- PENDING VERIFICATION LOCK VIEW (When status is pending_approval)           -->
@@ -1897,6 +1901,7 @@
 
     // --- 9.11 TAB SWITCHING ---
     function switchMainTab(tabName) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
       VendorStore.activeTab = tabName;
       ['orders', 'inventory', 'ledger', 'settings'].forEach(t => {
         const sec = document.getElementById(`tab-${t}`);

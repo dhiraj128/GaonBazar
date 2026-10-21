@@ -19,10 +19,31 @@ import os
 import sys
 import json
 import time
+import atexit
+import threading
 import subprocess
 import urllib.request
 from pathlib import Path
 from datetime import datetime
+
+def start_global_timeout_watchdog(timeout_seconds=240):
+    """
+    Strict Global Watchdog Timeout:
+    Guarantees the entire test suite process exits hard after timeout_seconds,
+    preventing any hang from blocking CI/CD or local test runners.
+    """
+    def watchdog_target():
+        time.sleep(timeout_seconds)
+        print(f"\n💥 [GLOBAL TIMEOUT FATAL]: Test suite exceeded maximum allowed time of {timeout_seconds}s! Forcing immediate termination.", file=sys.stderr, flush=True)
+        try:
+            kill_port_processes([8001])
+        except Exception:
+            pass
+        os._exit(124)
+
+    watchdog = threading.Thread(target=watchdog_target, daemon=True, name="GlobalTimeoutWatchdog")
+    watchdog.start()
+    return watchdog
 
 # UTF-8 encoding for Windows console
 try:
@@ -129,23 +150,38 @@ def kill_port_processes(ports=[8001]):
     for port in ports:
         try:
             if sys.platform == "win32":
-                res = subprocess.run(f"netstat -ano | findstr :{port}", shell=True, capture_output=True, text=True)
-                pids = set()
-                for line in res.stdout.strip().splitlines():
-                    parts = line.split()
-                    if len(parts) >= 5 and f":{port}" in parts[1]:
-                        pid = parts[-1]
-                        if pid.isdigit() and int(pid) > 0:
-                            pids.add(pid)
-                for pid in pids:
-                    try:
-                        subprocess.run(f"taskkill /F /PID {pid}", shell=True, capture_output=True)
-                    except Exception:
-                        pass
+                try:
+                    res = subprocess.run(
+                        f"netstat -ano | findstr :{port}",
+                        shell=True,
+                        capture_output=True,
+                        text=True,
+                        timeout=3
+                    )
+                    pids = set()
+                    for line in res.stdout.strip().splitlines():
+                        parts = line.split()
+                        if len(parts) >= 5 and f":{port}" in parts[1]:
+                            pid = parts[-1]
+                            if pid.isdigit() and int(pid) > 0 and int(pid) != os.getpid():
+                                pids.add(pid)
+                    for pid in pids:
+                        try:
+                            subprocess.run(f"taskkill /F /T /PID {pid}", shell=True, capture_output=True, timeout=3)
+                        except Exception:
+                            pass
+                except Exception:
+                    pass
             else:
-                subprocess.run(f"fuser -k {port}/tcp 2>/dev/null || true", shell=True, capture_output=True)
+                try:
+                    subprocess.run(f"fuser -k {port}/tcp 2>/dev/null || true", shell=True, capture_output=True, timeout=3)
+                except Exception:
+                    pass
         except Exception:
             pass
+
+# Guarantee port cleanup on any script exit
+atexit.register(lambda: kill_port_processes([8001]))
 
 
 def ensure_backend_running(logger):
@@ -161,17 +197,22 @@ def ensure_backend_running(logger):
     kill_port_processes([8001])
     time.sleep(0.5)
 
-    logger.log("  🚀 Starting GaonBazaar FastAPI backend server in background on port 8001...")
+    logger.log("  🚀 Starting GaonBazaar FastAPI backend server in background on port 8001 (no-reload)...")
+    server_env = os.environ.copy()
+    server_env["TEST_MODE"] = "1"
+    server_env["CI"] = "1"
+
     server_proc = subprocess.Popen(
-        [sys.executable, "run_server.py", "8001"],
+        [sys.executable, "run_server.py", "8001", "--no-reload"],
         cwd=str(BASE_DIR),
+        env=server_env,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL
     )
 
     start_time = time.time()
     server_ready = False
-    while time.time() - start_time < 5.0:
+    while time.time() - start_time < 8.0:
         if server_proc.poll() is not None:
             logger.log(f"  ✗ Background server exited unexpectedly with code {server_proc.poll()}")
             break
@@ -184,8 +225,14 @@ def ensure_backend_running(logger):
         except Exception:
             time.sleep(0.3)
 
-    if not server_ready and server_proc.poll() is None:
-        logger.log("  ⚠️ Warning: Backend server health check timed out on http://127.0.0.1:8001/docs after 5s.")
+    if not server_ready:
+        logger.log("  ✗ Failed to verify server is alive on port 8001 within 8s timeout.")
+        try:
+            server_proc.kill()
+        except Exception:
+            pass
+        kill_port_processes([8001])
+        raise RuntimeError("FastAPI backend failed to start or respond on http://127.0.0.1:8001")
     else:
         logger.log("  ✓ Backend server healthy and responding on http://127.0.0.1:8001")
 
@@ -197,6 +244,18 @@ def run_admin_e2e_suite(browser, logger):
     logger.log("STARTING FULL SUPER ADMIN & ONBOARDING END-TO-END FLOW")
     logger.log("=" * 80)
 
+    contexts = []
+    try:
+        _run_admin_e2e_steps(browser, logger, contexts)
+    finally:
+        for ctx in contexts:
+            try:
+                ctx.close()
+            except Exception:
+                pass
+
+
+def _run_admin_e2e_steps(browser, logger, contexts):
     unique_suffix = int(time.time()) % 10000
 
     # -------------------------------------------------------------------------
@@ -209,6 +268,7 @@ def run_admin_e2e_suite(browser, logger):
         is_mobile=True,
         has_touch=True
     )
+    contexts.append(vendor_context)
     vendor_page = vendor_context.new_page()
     vendor_page.set_default_timeout(15000)
     vendor_page.set_default_navigation_timeout(15000)
@@ -278,6 +338,7 @@ def run_admin_e2e_suite(browser, logger):
         is_mobile=True,
         has_touch=True
     )
+    contexts.append(runner_context)
     runner_page = runner_context.new_page()
     runner_page.set_default_timeout(15000)
     runner_page.set_default_navigation_timeout(15000)
@@ -344,6 +405,7 @@ def run_admin_e2e_suite(browser, logger):
         viewport={"width": 1440, "height": 900},
         device_scale_factor=1.0
     )
+    contexts.append(admin_context)
     admin_page = admin_context.new_page()
     admin_page.set_default_timeout(15000)
     admin_page.set_default_navigation_timeout(15000)
@@ -445,6 +507,29 @@ def run_admin_e2e_suite(browser, logger):
     )
     capture_screenshot(admin_page, "13_admin_commission_ledger", logger)
 
+    # Tab 5: Tablet View Responsiveness (800x1280)
+    logger.log("\n[STEP 3.5]: Inspecting Super Admin on Tablet Viewport (800x1280)...")
+    tablet_context = browser.new_context(
+        viewport={"width": 800, "height": 1280},
+        device_scale_factor=2.0,
+        is_mobile=True,
+        has_touch=True
+    )
+    contexts.append(tablet_context)
+    tablet_page = tablet_context.new_page()
+    tablet_page.goto("http://127.0.0.1:8001/admin", wait_until="domcontentloaded", timeout=15000)
+    tablet_page.wait_for_timeout(1000)
+    tab_gmv = tablet_page.locator("#metric-gmv").text_content()
+    tab_godview_btn = tablet_page.is_visible("#admin-tab-btn-orders")
+    tab_ledger_btn = tablet_page.is_visible("#admin-tab-btn-ledger")
+    logger.record_test(
+        "Super Admin Tablet Viewport Responsive Layout (800x1280)",
+        bool(tab_gmv and tab_godview_btn and tab_ledger_btn),
+        f"Tablet GMV: {tab_gmv} | Responsive tabs & controls intact"
+    )
+    capture_screenshot(tablet_page, "13b_admin_tablet_viewport_800x1280", logger)
+    tablet_context.close()
+
     # -------------------------------------------------------------------------
     # STEP 4: VERIFY VENDOR & RUNNER DASHBOARDS DYNAMICALLY UNLOCKED
     # -------------------------------------------------------------------------
@@ -494,13 +579,9 @@ def run_admin_e2e_suite(browser, logger):
     )
     capture_screenshot(runner_page, "15_runner_dashboard_unlocked", logger)
 
-    # Cleanup contexts
-    vendor_context.close()
-    runner_context.close()
-    admin_context.close()
-
 
 def main():
+    start_global_timeout_watchdog(timeout_seconds=240)
     logger = AdminTestLogger()
     logger.log("================================================================================")
     logger.log("Starting GaonBazaar Super Admin & Rural Onboarding E2E Verification Suite...")
@@ -510,25 +591,32 @@ def main():
         print(f"Error: Cannot find admin_dashboard.html at {ADMIN_HTML_PATH}")
         sys.exit(1)
 
-    server_proc = ensure_backend_running(logger)
-
+    server_proc = None
+    browser = None
     try:
+        server_proc = ensure_backend_running(logger)
+
         with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
             try:
+                browser = p.chromium.launch(headless=True)
                 run_admin_e2e_suite(browser, logger)
             finally:
-                browser.close()
+                if browser:
+                    try:
+                        browser.close()
+                        logger.log("  ✓ Playwright browser closed cleanly.")
+                    except Exception as b_err:
+                        logger.log(f"  ⚠️ Warning closing browser: {b_err}")
     finally:
         logger.save_report()
         if server_proc:
+            logger.log("  🛑 Terminating background FastAPI server...")
             try:
-                server_proc.terminate()
-                server_proc.wait(timeout=2)
+                server_proc.kill()
+                server_proc.wait(timeout=3)
             except Exception:
                 pass
-            kill_port_processes([8001])
-            logger.log("  🛑 Background FastAPI server terminated.")
+        kill_port_processes([8001])
 
     if logger.failed_tests > 0:
         logger.log(f"\n❌ E2E SUITE FINISHED WITH {logger.failed_tests} FAILURES")

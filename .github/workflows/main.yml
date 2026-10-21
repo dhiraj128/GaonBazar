@@ -32,21 +32,18 @@ jobs:
 
     - name: Run Customer App Tests
       run: python test_mobile_e2e.py
-      continue-on-error: true
 
     - name: Run Vendor App Tests
       run: python test_vendor_e2e.py
-      continue-on-error: true
 
     - name: Run Runner App Tests
       run: python test_runner_e2e.py
-      continue-on-error: true
       
     - name: Run Admin Dashboard Tests
       run: python test_admin_e2e.py
-      continue-on-error: true
 
     - name: Upload Test Artifacts (Screenshots & Reports)
+      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: gaonbazaar-test-results

@@ -17,10 +17,31 @@ import os
 import sys
 import json
 import time
+import atexit
+import threading
 import subprocess
 import urllib.request
 from pathlib import Path
 from datetime import datetime
+
+def start_global_timeout_watchdog(timeout_seconds=240):
+    """
+    Strict Global Watchdog Timeout:
+    Guarantees the entire test suite process exits hard after timeout_seconds,
+    preventing any hang from blocking CI/CD or local test runners.
+    """
+    def watchdog_target():
+        time.sleep(timeout_seconds)
+        print(f"\n💥 [GLOBAL TIMEOUT FATAL]: Test suite exceeded maximum allowed time of {timeout_seconds}s! Forcing immediate termination.", file=sys.stderr, flush=True)
+        try:
+            kill_port_processes([8001])
+        except Exception:
+            pass
+        os._exit(124)
+
+    watchdog = threading.Thread(target=watchdog_target, daemon=True, name="GlobalTimeoutWatchdog")
+    watchdog.start()
+    return watchdog
 
 # UTF-8 encoding for Windows console
 try:
@@ -43,17 +64,34 @@ REPORT_PATH = BASE_DIR / "vendor_test_report.txt"
 SCREENSHOTS_DIR = BASE_DIR / "screenshots" / "vendor"
 SCREENSHOTS_DIR.mkdir(parents=True, exist_ok=True)
 
+# Spectrum of Indian Dukandaar Mobile & Tablet Devices
 VENDOR_TEST_DEVICES = [
     {
-        "name": "Redmi Note 10 (Dukandaar Mobile)",
-        "viewport": {"width": 393, "height": 851},
-        "device_scale_factor": 2.75,
+        "name": "Redmi 9A (Small Android 360x800)",
+        "viewport": {"width": 360, "height": 800},
+        "device_scale_factor": 2.0,
         "is_mobile": True,
         "has_touch": True,
-        "user_agent": "Mozilla/5.0 (Linux; Android 12; M2101K7AI) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
+        "user_agent": "Mozilla/5.0 (Linux; Android 10; M2006C3LG) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
     },
     {
-        "name": "Samsung Galaxy Tab A8 (Kirana Counter Tablet)",
+        "name": "iPhone 16 (Standard iPhone 393x852)",
+        "viewport": {"width": 393, "height": 852},
+        "device_scale_factor": 3.0,
+        "is_mobile": True,
+        "has_touch": True,
+        "user_agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1"
+    },
+    {
+        "name": "Nothing Phone 1 (Tall Android 412x915)",
+        "viewport": {"width": 412, "height": 915},
+        "device_scale_factor": 2.625,
+        "is_mobile": True,
+        "has_touch": True,
+        "user_agent": "Mozilla/5.0 (Linux; Android 14; A063) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
+    },
+    {
+        "name": "Samsung Galaxy Tab A8 (Tablet View 800x1280)",
         "viewport": {"width": 800, "height": 1280},
         "device_scale_factor": 2.0,
         "is_mobile": True,
@@ -138,23 +176,38 @@ def kill_port_processes(ports=[8001]):
     for port in ports:
         try:
             if sys.platform == "win32":
-                res = subprocess.run(f"netstat -ano | findstr :{port}", shell=True, capture_output=True, text=True)
-                pids = set()
-                for line in res.stdout.strip().splitlines():
-                    parts = line.split()
-                    if len(parts) >= 5 and f":{port}" in parts[1]:
-                        pid = parts[-1]
-                        if pid.isdigit() and int(pid) > 0:
-                            pids.add(pid)
-                for pid in pids:
-                    try:
-                        subprocess.run(f"taskkill /F /PID {pid}", shell=True, capture_output=True)
-                    except Exception:
-                        pass
+                try:
+                    res = subprocess.run(
+                        f"netstat -ano | findstr :{port}",
+                        shell=True,
+                        capture_output=True,
+                        text=True,
+                        timeout=3
+                    )
+                    pids = set()
+                    for line in res.stdout.strip().splitlines():
+                        parts = line.split()
+                        if len(parts) >= 5 and f":{port}" in parts[1]:
+                            pid = parts[-1]
+                            if pid.isdigit() and int(pid) > 0 and int(pid) != os.getpid():
+                                pids.add(pid)
+                    for pid in pids:
+                        try:
+                            subprocess.run(f"taskkill /F /T /PID {pid}", shell=True, capture_output=True, timeout=3)
+                        except Exception:
+                            pass
+                except Exception:
+                    pass
             else:
-                subprocess.run(f"fuser -k {port}/tcp 2>/dev/null || true", shell=True, capture_output=True)
+                try:
+                    subprocess.run(f"fuser -k {port}/tcp 2>/dev/null || true", shell=True, capture_output=True, timeout=3)
+                except Exception:
+                    pass
         except Exception:
             pass
+
+# Guarantee port cleanup on any script exit
+atexit.register(lambda: kill_port_processes([8001]))
 
 
 def ensure_backend_running(logger):
@@ -170,17 +223,22 @@ def ensure_backend_running(logger):
     kill_port_processes([8001])
     time.sleep(0.5)
 
-    logger.log("  🚀 Starting GaonBazaar FastAPI backend server in background on port 8001...")
+    logger.log("  🚀 Starting GaonBazaar FastAPI backend server in background on port 8001 (no-reload)...")
+    server_env = os.environ.copy()
+    server_env["TEST_MODE"] = "1"
+    server_env["CI"] = "1"
+
     server_proc = subprocess.Popen(
-        [sys.executable, "run_server.py", "8001"],
+        [sys.executable, "run_server.py", "8001", "--no-reload"],
         cwd=str(BASE_DIR),
+        env=server_env,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL
     )
 
     start_time = time.time()
     server_ready = False
-    while time.time() - start_time < 5.0:
+    while time.time() - start_time < 8.0:
         if server_proc.poll() is not None:
             logger.log(f"  ✗ Background server exited unexpectedly with code {server_proc.poll()}")
             break
@@ -194,23 +252,190 @@ def ensure_backend_running(logger):
         except Exception:
             time.sleep(0.3)
 
-    if not server_ready and server_proc.poll() is None:
-        logger.log("  ⚠️ Warning: Server is still starting after 5s polling window.")
+    if not server_ready:
+        logger.log("  ✗ Failed to verify server is alive on port 8001 within 8s timeout.")
+        try:
+            server_proc.kill()
+        except Exception:
+            pass
+        kill_port_processes([8001])
+        raise RuntimeError("FastAPI backend failed to start or respond on http://127.0.0.1:8001")
 
     return server_proc
 
 
-def check_element_bounds(page, selector, desc, logger):
+def check_element_bounds(page, selector, desc, logger, dev_name=None, require_sticky=False, min_w=18, min_h=18):
+    """
+    Advanced Visual Geometry & Bounding Box Audit:
+    1. DOM Presence & Display Check (visible, opacity, display).
+    2. Viewport Containment & Scroll Verification.
+    3. Squish & Ergonomics Prevention (width >= min_w, height >= min_h).
+    4. Floating Bar Overlap & Collision Prevention (checks against bottom nav, headers, floating bars).
+    5. Multi-Point Occlusion Hit Test (document.elementFromPoint).
+    6. Dedicated Error Screenshot Evidence captured to screenshots/failures/ on failure.
+    """
+    if dev_name is None:
+        dev_name = getattr(page, "_dev_name", "Device")
+
     loc = page.locator(selector).first
     try:
-        loc.wait_for(state="visible", timeout=6000)
-        box = loc.bounding_box()
-        has_size = box and box["width"] >= 20 and box["height"] >= 20
-        logger.record_test(f"{desc} - DOM Visibility & Touch Target", has_size, f"Box: {box['width']:.0f}x{box['height']:.0f}px at ({box['x']:.0f}, {box['y']:.0f})" if box else "No box")
-        return has_size
+        loc.wait_for(state="attached", timeout=6000)
     except Exception as e:
-        logger.record_test(f"{desc} - DOM Visibility & Touch Target", False, str(e))
+        logger.record_test(f"[{dev_name}] {desc} - DOM Presence", False, f"Not attached: {e}")
         return False
+
+    if not loc.is_visible():
+        logger.record_test(f"[{dev_name}] {desc} - DOM Visibility", False, "Element has display:none or hidden")
+        return False
+
+    if not require_sticky:
+        try:
+            loc.scroll_into_view_if_needed(timeout=2500)
+            page.wait_for_timeout(100)
+        except Exception:
+            pass
+
+    try:
+        audit = loc.evaluate("""(el) => {
+            if (!el) return { valid: false, error: 'Element null' };
+
+            // Clearance scroll if overlapping sticky bars
+            const bNav = document.getElementById('vendor-bottom-nav') || document.getElementById('runner-bottom-nav') || document.getElementById('p3-cart-bar');
+            if (bNav && !bNav.contains(el) && window.getComputedStyle(bNav).display !== 'none') {
+                const navTop = bNav.getBoundingClientRect().top;
+                const r = el.getBoundingClientRect();
+                if (r.bottom > navTop - 10) {
+                    window.scrollBy(0, r.bottom - navTop + 35);
+                }
+            }
+            const header = document.querySelector('header.sticky, header#vendor-header, header#runner-header');
+            if (header && !header.contains(el)) {
+                const headBottom = header.getBoundingClientRect().bottom;
+                const r = el.getBoundingClientRect();
+                if (r.top < headBottom + 5) {
+                    window.scrollBy(0, r.top - headBottom - 20);
+                }
+            }
+
+            const rect = el.getBoundingClientRect();
+            const style = window.getComputedStyle(el);
+
+            if (style.display === 'none') return { valid: false, error: 'display: none' };
+            if (style.visibility === 'hidden') return { valid: false, error: 'visibility: hidden' };
+            if (parseFloat(style.opacity || '1') < 0.1) return { valid: false, error: 'opacity < 0.1' };
+
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+
+            const inViewport = (
+                rect.top >= -5 &&
+                rect.bottom <= vh + 10 &&
+                rect.left >= -5 &&
+                rect.right <= vw + 10
+            );
+
+            // Floating bars collision detection (headers, bottom nav, floating action bars)
+            const floatingBars = Array.from(document.querySelectorAll(
+                'header, nav, aside, footer, [id*="bottom-nav"], [id*="cart-bar"], [id*="sticky"]'
+            )).filter(bar => {
+                if (!bar) return false;
+                if (bar.contains(el) || el.contains(bar)) return false;
+                const bStyle = window.getComputedStyle(bar);
+                if (bStyle.display === 'none' || bStyle.visibility === 'hidden') return false;
+                const pos = bStyle.position;
+                if (pos !== 'fixed' && pos !== 'sticky') return false;
+                const bRect = bar.getBoundingClientRect();
+                return bRect.width > 0 && bRect.height > 0;
+            });
+
+            const collisions = [];
+            for (const bar of floatingBars) {
+                const bRect = bar.getBoundingClientRect();
+                const xOverlap = Math.max(0, Math.min(rect.right, bRect.right) - Math.max(rect.left, bRect.left));
+                const yOverlap = Math.max(0, Math.min(rect.bottom, bRect.bottom) - Math.max(rect.top, bRect.top));
+                if (xOverlap > 4 && yOverlap > 4) {
+                    collisions.push({
+                        element: bar.tagName.toLowerCase() + (bar.id ? '#' + bar.id : ''),
+                        overlap: `${Math.round(xOverlap)}x${Math.round(yOverlap)}px`
+                    });
+                }
+            }
+
+            // Multi-point occlusion hit test
+            const testPoints = [
+                { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 },
+                { x: rect.left + Math.min(6, rect.width / 3), y: rect.top + Math.min(6, rect.height / 3) },
+                { x: rect.right - Math.min(6, rect.width / 3), y: rect.bottom - Math.min(6, rect.height / 3) }
+            ];
+
+            let passHits = 0;
+            let occludedBy = null;
+
+            for (const pt of testPoints) {
+                const cx = Math.min(Math.max(pt.x, 2), vw - 2);
+                const cy = Math.min(Math.max(pt.y, 2), vh - 2);
+                const topEl = document.elementFromPoint(cx, cy);
+                if (topEl) {
+                    if (topEl === el || el.contains(topEl) || topEl.contains(el)) {
+                        passHits++;
+                    } else {
+                        occludedBy = topEl.tagName.toLowerCase() + (topEl.id ? '#' + topEl.id : '') + (topEl.className ? '.' + topEl.className.toString().split(' ')[0] : '');
+                    }
+                }
+            }
+
+            return {
+                valid: true,
+                width: Math.round(rect.width),
+                height: Math.round(rect.height),
+                x: Math.round(rect.x),
+                y: Math.round(rect.y),
+                inViewport,
+                collisions,
+                isOccluded: passHits === 0 && occludedBy !== null,
+                occludedBy,
+                vw,
+                vh
+            };
+        }""")
+    except Exception as eval_err:
+        audit = {"valid": False, "error": str(eval_err)}
+
+    if not audit.get("valid", False):
+        err = audit.get("error", "Unknown validation error")
+        logger.record_test(f"[{dev_name}] {desc} - Visual Geometry Audit", False, f"Invalid: {err}")
+        return False
+
+    w = audit["width"]
+    h = audit["height"]
+    has_size = w >= min_w and h >= min_h
+    in_vp = audit["inViewport"]
+    collisions = audit["collisions"]
+    is_occluded = audit["isOccluded"]
+
+    passed = has_size and in_vp and len(collisions) == 0 and not is_occluded
+
+    collision_detail = f"Collides with {', '.join(c['element'] + ' (' + c['overlap'] + ')' for c in collisions)}" if collisions else "None"
+    occlusion_detail = f"Occluded by <{audit.get('occludedBy', 'unknown')}>" if is_occluded else "None"
+    detail = (
+        f"Box: {w}x{h}px at ({audit['x']}, {audit['y']}) | "
+        f"In-Viewport: {in_vp} | Collisions: {collision_detail} | Occlusion: {occlusion_detail}"
+    )
+
+    if not passed:
+        fail_dir = SCREENSHOTS_DIR / "failures"
+        fail_dir.mkdir(parents=True, exist_ok=True)
+        safe_desc = desc.replace(" ", "_").replace("/", "_").replace("'", "")
+        safe_dev = dev_name.replace(" ", "_").replace("(", "").replace(")", "")
+        fail_path = fail_dir / f"ERROR_{safe_dev}_{safe_desc}.png"
+        try:
+            page.screenshot(path=str(fail_path), full_page=False)
+            logger.record_screenshot(f"screenshots/failures/{fail_path.name}")
+        except Exception:
+            pass
+
+    logger.record_test(f"[{dev_name}] {desc} - Visual Geometry & Bounding Box Audit", passed, detail)
+    return passed
 
 
 def ensure_stage1_order_exists():
@@ -268,8 +493,18 @@ def run_vendor_device_simulation(browser, device_config, logger):
         has_touch=device_config["has_touch"],
         user_agent=device_config["user_agent"]
     )
+    try:
+        _run_vendor_device_steps(context, dev_name, device_config, logger)
+    finally:
+        try:
+            context.close()
+        except Exception:
+            pass
 
+
+def _run_vendor_device_steps(context, dev_name, device_config, logger):
     page = context.new_page()
+    page._dev_name = dev_name
     page.set_default_timeout(30000)
     page.set_default_navigation_timeout(30000)
 
@@ -308,6 +543,12 @@ def run_vendor_device_simulation(browser, device_config, logger):
     check_element_bounds(page, "#store-switcher-select", "Store Switcher Dropdown", logger)
     check_element_bounds(page, "#store-open-btn", "Store Open/Close Toggle CTA", logger)
     check_element_bounds(page, "#lang-toggle-btn", "Language Toggle Button", logger)
+
+    # Bottom Navigation Geometry & Ergonomics Audit
+    check_element_bounds(page, "#nav-btn-orders", "Bottom Nav Orders Button", logger, require_sticky=True)
+    check_element_bounds(page, "#nav-btn-inventory", "Bottom Nav Inventory Button", logger, require_sticky=True)
+    check_element_bounds(page, "#nav-btn-ledger", "Bottom Nav Ledger Button", logger, require_sticky=True)
+    check_element_bounds(page, "#nav-btn-settings", "Bottom Nav Settings Button", logger, require_sticky=True)
 
     capture_screenshot(page, f"{dev_name.replace(' ', '_')}_step1_initial_dashboard", logger)
 
@@ -516,8 +757,6 @@ def run_vendor_device_simulation(browser, device_config, logger):
     else:
         logger.record_test(f"[{dev_name}] JavaScript Console Errors Encountered", False, " | ".join(page_errors))
 
-    context.close()
-
 
 def test_customer_to_vendor_realtime_sync(browser, logger):
     """
@@ -530,64 +769,70 @@ def test_customer_to_vendor_realtime_sync(browser, logger):
     logger.log("=" * 80)
 
     context = browser.new_context(viewport={"width": 1280, "height": 800})
-    vendor_page = context.new_page()
-    vendor_page.goto("http://127.0.0.1:8001/vendor")
-    vendor_page.wait_for_timeout(1000)
-    if vendor_page.is_visible("#vendor-login-gate"):
-        vendor_page.click("#btn-vendor-login")
-        vendor_page.wait_for_selector("#vendor-main-content:not(.hidden)", timeout=10000)
-        vendor_page.wait_for_timeout(1000)
-
-    # Place a programmatic order via FastAPI /api/orders/checkout
-    payload = {
-        "user_phone": "9876543299",
-        "user_name": "Raju Farmer (राजू किसान)",
-        "village": "Rampur South (रामपुर दक्षिण)",
-        "landmark": "Near Panchayat Tube Well, Khasra 42",
-        "store_id": "sharma_brothers",
-        "payment_mode": "COD",
-        "items": [
-            {"id": "item_1", "price": 210.0, "qty": 1},
-            {"id": "item_2", "price": 145.0, "qty": 1}
-        ]
-    }
-
-    logger.log("  📦 Placing a new customer order via /api/orders/checkout...")
     try:
-        req = urllib.request.Request(
-            "http://127.0.0.1:8001/api/orders/checkout",
-            data=json.dumps(payload).encode("utf-8"),
-            headers={"Content-Type": "application/json"}
-        )
-        with urllib.request.urlopen(req, timeout=5.0) as resp:
-            checkout_res = json.loads(resp.read().decode("utf-8"))
-        new_order_id = checkout_res["order_id"]
-        logger.log(f"  ✓ Order placed successfully: {new_order_id} (Total: ₹{checkout_res['total_amount']})")
-    except Exception as pl_err:
-        logger.log(f"  ✗ Order placement failed: {pl_err}")
-        new_order_id = "#RUR-9999"
-
-    # Wait for the vendor dashboard polling cycle to catch the order
-    logger.log(f"  ⏳ Waiting for Vendor Dashboard to sync and display {new_order_id}...")
-    found_in_dashboard = False
-    for _ in range(15):
+        vendor_page = context.new_page()
+        vendor_page.goto("http://127.0.0.1:8001/vendor")
         vendor_page.wait_for_timeout(1000)
-        has_id = vendor_page.locator(f'span:has-text("{new_order_id}")').count() > 0
-        if has_id:
-            found_in_dashboard = True
-            break
+        if vendor_page.is_visible("#vendor-login-gate"):
+            vendor_page.click("#btn-vendor-login")
+            vendor_page.wait_for_selector("#vendor-main-content:not(.hidden)", timeout=10000)
+            vendor_page.wait_for_timeout(1000)
 
-    logger.record_test(
-        "Customer-to-Vendor Real-Time Order Sync",
-        found_in_dashboard,
-        f"Order {new_order_id} appeared live in Vendor Queue without page reload!"
-    )
+        # Place a programmatic order via FastAPI /api/orders/checkout
+        payload = {
+            "user_phone": "9876543299",
+            "user_name": "Raju Farmer (राजू किसान)",
+            "village": "Rampur South (रामपुर दक्षिण)",
+            "landmark": "Near Panchayat Tube Well, Khasra 42",
+            "store_id": "sharma_brothers",
+            "payment_mode": "COD",
+            "items": [
+                {"id": "item_1", "price": 210.0, "qty": 1},
+                {"id": "item_2", "price": 145.0, "qty": 1}
+            ]
+        }
 
-    capture_screenshot(vendor_page, "step8_customer_vendor_live_synced", logger)
-    context.close()
+        logger.log("  📦 Placing a new customer order via /api/orders/checkout...")
+        try:
+            req = urllib.request.Request(
+                "http://127.0.0.1:8001/api/orders/checkout",
+                data=json.dumps(payload).encode("utf-8"),
+                headers={"Content-Type": "application/json"}
+            )
+            with urllib.request.urlopen(req, timeout=5.0) as resp:
+                checkout_res = json.loads(resp.read().decode("utf-8"))
+            new_order_id = checkout_res["order_id"]
+            logger.log(f"  ✓ Order placed successfully: {new_order_id} (Total: ₹{checkout_res['total_amount']})")
+        except Exception as pl_err:
+            logger.log(f"  ✗ Order placement failed: {pl_err}")
+            new_order_id = "#RUR-9999"
+
+        # Wait for the vendor dashboard polling cycle to catch the order
+        logger.log(f"  ⏳ Waiting for Vendor Dashboard to sync and display {new_order_id}...")
+        found_in_dashboard = False
+        for _ in range(15):
+            vendor_page.wait_for_timeout(1000)
+            has_id = vendor_page.locator(f'span:has-text("{new_order_id}")').count() > 0
+            if has_id:
+                found_in_dashboard = True
+                break
+
+        logger.record_test(
+            "Customer-to-Vendor Real-Time Order Sync",
+            found_in_dashboard,
+            f"Order {new_order_id} appeared live in Vendor Queue without page reload!"
+        )
+
+        capture_screenshot(vendor_page, "step8_customer_vendor_live_synced", logger)
+    finally:
+        try:
+            context.close()
+        except Exception:
+            pass
 
 
 def main():
+    start_global_timeout_watchdog(timeout_seconds=240)
     logger = VendorTestLogger()
     logger.log("Starting GaonBazaar Vendor (Dukandaar) Dashboard End-to-End Test Suite...")
 
@@ -595,39 +840,55 @@ def main():
         print(f"Error: Cannot find vendor_dashboard.html at {VENDOR_HTML_PATH}")
         sys.exit(1)
 
-    server_proc = ensure_backend_running(logger)
+    server_proc = None
+    browser = None
+    try:
+        server_proc = ensure_backend_running(logger)
 
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        try:
-            # 1. Test simulated mobile and tablet devices
-            for dev in VENDOR_TEST_DEVICES:
-                try:
-                    run_vendor_device_simulation(browser, dev, logger)
-                except Exception as err:
-                    logger.record_test(f"[{dev['name']}] Simulation Execution", False, str(err))
-                    logger.log(f"  [ERROR IN {dev['name']}]: {err}")
-
-            # 2. Test Customer-to-Vendor real-time order sync
+        with sync_playwright() as p:
             try:
-                test_customer_to_vendor_realtime_sync(browser, logger)
-            except Exception as sync_err:
-                logger.record_test("Customer-to-Vendor Real-Time Order Sync", False, str(sync_err))
-                logger.log(f"  [SYNC ERROR]: {sync_err}")
+                browser = p.chromium.launch(headless=True)
 
-        finally:
-            browser.close()
-            logger.save_report()
-            if server_proc:
-                try:
-                    server_proc.terminate()
-                    server_proc.wait(timeout=2)
-                except Exception:
+                # 1. Test simulated mobile and tablet devices
+                for dev in VENDOR_TEST_DEVICES:
                     try:
-                        server_proc.kill()
-                    except Exception:
-                        pass
-                kill_port_processes([8001])
+                        run_vendor_device_simulation(browser, dev, logger)
+                    except Exception as err:
+                        logger.record_test(f"[{dev['name']}] Simulation Execution", False, str(err))
+                        logger.log(f"  [ERROR IN {dev['name']}]: {err}")
+
+                # 2. Test Customer-to-Vendor real-time order sync
+                try:
+                    test_customer_to_vendor_realtime_sync(browser, logger)
+                except Exception as sync_err:
+                    logger.record_test("Customer-to-Vendor Real-Time Order Sync", False, str(sync_err))
+                    logger.log(f"  [SYNC ERROR]: {sync_err}")
+
+            finally:
+                if browser:
+                    try:
+                        browser.close()
+                        logger.log("  ✓ Playwright browser closed cleanly.")
+                    except Exception as b_err:
+                        logger.log(f"  ⚠️ Warning closing browser: {b_err}")
+
+    finally:
+        logger.save_report()
+        if server_proc:
+            logger.log("  🛑 Terminating background FastAPI server...")
+            try:
+                server_proc.kill()
+                server_proc.wait(timeout=3)
+            except Exception:
+                pass
+        kill_port_processes([8001])
+
+    if logger.failed_tests > 0:
+        logger.log(f"\n❌ VENDOR E2E SUITE FINISHED WITH {logger.failed_tests} FAILURES")
+        sys.exit(1)
+    else:
+        logger.log(f"\n✅ VENDOR E2E SUITE FINISHED WITH 100% PASS RATE ({logger.passed_tests}/{logger.total_tests} AUDITS PASSED)")
+        sys.exit(0)
 
 
 if __name__ == "__main__":

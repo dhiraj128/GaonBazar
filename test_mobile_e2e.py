@@ -24,10 +24,31 @@ import os
 import sys
 import json
 import time
+import atexit
+import threading
 import subprocess
 import urllib.request
 from pathlib import Path
 from datetime import datetime
+
+def start_global_timeout_watchdog(timeout_seconds=240):
+    """
+    Strict Global Watchdog Timeout:
+    Guarantees the entire test suite process exits hard after timeout_seconds,
+    preventing any hang from blocking CI/CD or local test runners.
+    """
+    def watchdog_target():
+        time.sleep(timeout_seconds)
+        print(f"\n💥 [GLOBAL TIMEOUT FATAL]: Test suite exceeded maximum allowed time of {timeout_seconds}s! Forcing immediate termination.", file=sys.stderr, flush=True)
+        try:
+            kill_port_processes([8001])
+        except Exception:
+            pass
+        os._exit(124)
+
+    watchdog = threading.Thread(target=watchdog_target, daemon=True, name="GlobalTimeoutWatchdog")
+    watchdog.start()
+    return watchdog
 
 # Configure UTF-8 encoding for Windows consoles to support Hindi & Unicode characters cleanly
 try:
@@ -105,7 +126,7 @@ class TestLogger:
     def log(self, msg):
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         line = f"[{timestamp}] {msg}"
-        print(line)
+        print(line, flush=True)
         self.logs.append(line)
 
     def record_test(self, name, passed, detail=""):
@@ -170,8 +191,9 @@ def check_human_ux_bounds(page, selector, element_desc, dev_name, logger, requir
     1. Verifies physical client bounding box (x, y, width, height).
     2. Asserts element is in the visible mobile viewport (not pushed off-screen).
     3. Checks touch target dimensions (WCAG touch targets >= 28px).
-    4. Evaluates elementFromPoint directly on the DOM element using locator.evaluate()
-       to avoid querySelector syntax errors with custom pseudo-selectors.
+    4. Floating bar collision prevention (detects unpadded overlap with bottom nav, floating cart bars, sticky footers).
+    5. Multi-point occlusion hit test (document.elementFromPoint).
+    6. Dedicated error screenshot capture on failure to screenshots/failures/.
     """
     locator = page.locator(selector).first
     try:
@@ -184,61 +206,152 @@ def check_human_ux_bounds(page, selector, element_desc, dev_name, logger, requir
         logger.record_test(f"[{dev_name}] {element_desc} - DOM Visibility", False, "Element has display:none or hidden")
         return False
 
-    box = locator.bounding_box()
-    if not box:
-        logger.record_test(f"[{dev_name}] {element_desc} - Bounding Box", False, "No client bounding box rendered")
-        return False
-
-    viewport = page.viewport_size
-    vp_w = viewport["width"]
-    vp_h = viewport["height"]
-
-    # Check if element is inside visible viewport
-    is_in_viewport = (
-        box["y"] >= -5 and (box["y"] + min(box["height"], 20)) <= (vp_h + 10) and
-        box["x"] >= -5 and (box["x"] + min(box["width"], 20)) <= (vp_w + 10)
-    )
-
     if not require_sticky:
         try:
             locator.scroll_into_view_if_needed(timeout=2500)
-            page.wait_for_timeout(200)
-            box = locator.bounding_box() or box
+            page.wait_for_timeout(100)
         except Exception:
             pass
 
-    is_in_viewport = (
-        box["y"] >= -5 and (box["y"] + min(box["height"], 20)) <= (vp_h + 10) and
-        box["x"] >= -5 and (box["x"] + min(box["width"], 20)) <= (vp_w + 10)
-    )
-
-    # Touch Target Ergonomics (WCAG standard)
-    has_ergonomic_target = box["width"] >= 28 and box["height"] >= 28
-
-    # Occlusion check: directly evaluate center point hit test on resolved element
     try:
-        occlusion = locator.evaluate("""(el) => {
-            if (!el) return { accessible: false, tag: 'none' };
+        audit = locator.evaluate("""(el) => {
+            if (!el) return { valid: false, error: 'Element null' };
+
+            // Clearance scroll if overlapping sticky bars
+            const bNav = document.getElementById('p3-cart-bar') || document.querySelector('div.fixed.bottom-0');
+            if (bNav && !bNav.contains(el) && window.getComputedStyle(bNav).display !== 'none') {
+                const navTop = bNav.getBoundingClientRect().top;
+                const r = el.getBoundingClientRect();
+                if (r.bottom > navTop - 10) {
+                    window.scrollBy(0, r.bottom - navTop + 35);
+                }
+            }
+            const header = document.querySelector('header, .sticky.top-0');
+            if (header && !header.contains(el)) {
+                const headBottom = header.getBoundingClientRect().bottom;
+                const r = el.getBoundingClientRect();
+                if (r.top < headBottom + 5) {
+                    window.scrollBy(0, r.top - headBottom - 20);
+                }
+            }
+
             const rect = el.getBoundingClientRect();
-            const cx = Math.min(Math.max(rect.left + rect.width / 2, 5), window.innerWidth - 5);
-            const cy = Math.min(Math.max(rect.top + rect.height / 2, 5), window.innerHeight - 5);
-            const topEl = document.elementFromPoint(cx, cy);
-            const isAccessible = topEl && (el.contains(topEl) || topEl.contains(el));
+            const style = window.getComputedStyle(el);
+
+            if (style.display === 'none') return { valid: false, error: 'display: none' };
+            if (style.visibility === 'hidden') return { valid: false, error: 'visibility: hidden' };
+            if (parseFloat(style.opacity || '1') < 0.1) return { valid: false, error: 'opacity < 0.1' };
+
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+
+            const inViewport = (
+                rect.top >= -5 &&
+                rect.bottom <= vh + 10 &&
+                rect.left >= -5 &&
+                rect.right <= vw + 10
+            );
+
+            // Floating bars collision detection (headers, floating cart bars, sticky action bars)
+            const floatingBars = Array.from(document.querySelectorAll(
+                'header, nav, aside, footer, [id*="cart-bar"], [id*="sticky"], [id*="bottom-nav"]'
+            )).filter(bar => {
+                if (!bar) return false;
+                if (bar.contains(el) || el.contains(bar)) return false;
+                const bStyle = window.getComputedStyle(bar);
+                if (bStyle.display === 'none' || bStyle.visibility === 'hidden') return false;
+                const pos = bStyle.position;
+                if (pos !== 'fixed' && pos !== 'sticky') return false;
+                const bRect = bar.getBoundingClientRect();
+                return bRect.width > 0 && bRect.height > 0;
+            });
+
+            const collisions = [];
+            for (const bar of floatingBars) {
+                const bRect = bar.getBoundingClientRect();
+                const xOverlap = Math.max(0, Math.min(rect.right, bRect.right) - Math.max(rect.left, bRect.left));
+                const yOverlap = Math.max(0, Math.min(rect.bottom, bRect.bottom) - Math.max(rect.top, bRect.top));
+                if (xOverlap > 4 && yOverlap > 4) {
+                    collisions.push({
+                        element: bar.tagName.toLowerCase() + (bar.id ? '#' + bar.id : ''),
+                        overlap: `${Math.round(xOverlap)}x${Math.round(yOverlap)}px`
+                    });
+                }
+            }
+
+            // Multi-point occlusion hit test
+            const testPoints = [
+                { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 },
+                { x: rect.left + Math.min(6, rect.width / 3), y: rect.top + Math.min(6, rect.height / 3) },
+                { x: rect.right - Math.min(6, rect.width / 3), y: rect.bottom - Math.min(6, rect.height / 3) }
+            ];
+
+            let passHits = 0;
+            let occludedBy = null;
+
+            for (const pt of testPoints) {
+                const cx = Math.min(Math.max(pt.x, 2), vw - 2);
+                const cy = Math.min(Math.max(pt.y, 2), vh - 2);
+                const topEl = document.elementFromPoint(cx, cy);
+                if (topEl) {
+                    if (topEl === el || el.contains(topEl) || topEl.contains(el)) {
+                        passHits++;
+                    } else {
+                        occludedBy = topEl.tagName.toLowerCase() + (topEl.id ? '#' + topEl.id : '') + (topEl.className ? '.' + topEl.className.toString().split(' ')[0] : '');
+                    }
+                }
+            }
+
             return {
-                accessible: !!isAccessible,
-                topTag: topEl ? topEl.tagName.toLowerCase() : 'none',
-                topClass: topEl ? (topEl.className || '').toString().slice(0, 30) : ''
+                valid: true,
+                width: Math.round(rect.width),
+                height: Math.round(rect.height),
+                x: Math.round(rect.x),
+                y: Math.round(rect.y),
+                inViewport,
+                collisions,
+                isOccluded: passHits === 0 && occludedBy !== null,
+                occludedBy,
+                vw,
+                vh
             };
         }""")
     except Exception as eval_err:
-        occlusion = {"accessible": False, "topTag": f"eval_error: {eval_err}"}
+        audit = {"valid": False, "error": str(eval_err)}
 
+    if not audit.get("valid", False):
+        err = audit.get("error", "Unknown validation error")
+        logger.record_test(f"[{dev_name}] {element_desc} - Human Viewport & Touch Target Audit", False, f"Invalid: {err}")
+        return False
+
+    w = audit["width"]
+    h = audit["height"]
+    has_ergonomic_target = w >= 28 and h >= 28
+    in_vp = audit["inViewport"]
+    collisions = audit["collisions"]
+    is_occluded = audit["isOccluded"]
+
+    passed = has_ergonomic_target and in_vp and len(collisions) == 0 and not is_occluded
+
+    collision_detail = f"Collides with {', '.join(c['element'] + ' (' + c['overlap'] + ')' for c in collisions)}" if collisions else "None"
+    occlusion_detail = f"Occluded by <{audit.get('occludedBy', 'unknown')}>" if is_occluded else "None"
     detail = (
-        f"Bounds: {box['width']:.0f}x{box['height']:.0f}px at (x:{box['x']:.0f}, y:{box['y']:.0f}) | "
-        f"Viewport: {vp_w}x{vp_h}px | Occluded: {'No' if occlusion['accessible'] else 'Yes (by <' + occlusion['topTag'] + '>)'}"
+        f"Bounds: {w}x{h}px at (x:{audit['x']}, y:{audit['y']}) | "
+        f"Viewport: {audit['vw']}x{audit['vh']}px | Collisions: {collision_detail} | Occlusion: {occlusion_detail}"
     )
 
-    passed = is_in_viewport and has_ergonomic_target and occlusion["accessible"]
+    if not passed:
+        fail_dir = SCREENSHOTS_DIR / "failures"
+        fail_dir.mkdir(parents=True, exist_ok=True)
+        safe_desc = element_desc.replace(" ", "_").replace("/", "_").replace("'", "")
+        safe_dev = dev_name.replace(" ", "_").replace("(", "").replace(")", "")
+        fail_path = fail_dir / f"ERROR_{safe_dev}_{safe_desc}.png"
+        try:
+            page.screenshot(path=str(fail_path), full_page=False)
+            logger.record_screenshot(f"screenshots/failures/{fail_path.name}")
+        except Exception:
+            pass
+
     logger.record_test(f"[{dev_name}] {element_desc} - Human Viewport & Touch Target Audit", passed, detail)
     return passed
 
@@ -344,7 +457,16 @@ def run_device_simulation(browser, device_config, logger):
         has_touch=device_config["has_touch"],
         user_agent=device_config["user_agent"]
     )
+    try:
+        _run_device_simulation_steps(context, dev_name, device_config, logger)
+    finally:
+        try:
+            context.close()
+        except Exception:
+            pass
 
+
+def _run_device_simulation_steps(context, dev_name, device_config, logger):
     page = context.new_page()
     page.set_default_timeout(30000)  # Enforce strict 30s timeout per requirement
     page.set_default_navigation_timeout(30000)
@@ -670,8 +792,6 @@ def run_device_simulation(browser, device_config, logger):
     else:
         logger.record_test(f"[{dev_name}] JavaScript Console Errors Encountered", False, " | ".join(page_errors))
 
-    context.close()
-
 
 def kill_port_processes(ports=[8001]):
     """
@@ -681,34 +801,44 @@ def kill_port_processes(ports=[8001]):
     for port in ports:
         try:
             if sys.platform == "win32":
-                res = subprocess.run(
-                    f"netstat -ano | findstr :{port}",
-                    shell=True,
-                    capture_output=True,
-                    text=True
-                )
-                pids = set()
-                for line in res.stdout.strip().splitlines():
-                    parts = line.split()
-                    if len(parts) >= 5 and f":{port}" in parts[1]:
-                        pid = parts[-1]
-                        if pid.isdigit() and int(pid) > 0:
-                            pids.add(pid)
-                for pid in pids:
-                    try:
-                        subprocess.run(f"taskkill /F /PID {pid}", shell=True, capture_output=True)
-                    except Exception:
-                        pass
+                try:
+                    res = subprocess.run(
+                        f"netstat -ano | findstr :{port}",
+                        shell=True,
+                        capture_output=True,
+                        text=True,
+                        timeout=3
+                    )
+                    pids = set()
+                    for line in res.stdout.strip().splitlines():
+                        parts = line.split()
+                        if len(parts) >= 5 and f":{port}" in parts[1]:
+                            pid = parts[-1]
+                            if pid.isdigit() and int(pid) > 0 and int(pid) != os.getpid():
+                                pids.add(pid)
+                    for pid in pids:
+                        try:
+                            subprocess.run(f"taskkill /F /T /PID {pid}", shell=True, capture_output=True, timeout=3)
+                        except Exception:
+                            pass
+                except Exception:
+                    pass
             else:
-                subprocess.run(f"fuser -k {port}/tcp 2>/dev/null || true", shell=True, capture_output=True)
+                try:
+                    subprocess.run(f"fuser -k {port}/tcp 2>/dev/null || true", shell=True, capture_output=True, timeout=3)
+                except Exception:
+                    pass
         except Exception:
             pass
+
+# Guarantee port cleanup on any script exit
+atexit.register(lambda: kill_port_processes([8001]))
 
 
 def ensure_backend_running(logger):
     """
     Boots the FastAPI backend server as a detached background process (subprocess.Popen without wait).
-    Polls http://127.0.0.1:8001/docs for up to 10 seconds before proceeding to Playwright tests.
+    Polls http://127.0.0.1:8001/docs for up to 8 seconds before proceeding to Playwright tests.
     Reuses existing healthy server if already active (e.g. CI workflow background server).
     """
     try:
@@ -723,17 +853,22 @@ def ensure_backend_running(logger):
     kill_port_processes([8001])
     time.sleep(0.3)
 
-    logger.log("  🚀 Starting GaonBazaar FastAPI backend server in background on port 8001...")
+    logger.log("  🚀 Starting GaonBazaar FastAPI backend server in background on port 8001 (no-reload)...")
+    server_env = os.environ.copy()
+    server_env["TEST_MODE"] = "1"
+    server_env["CI"] = "1"
+
     server_proc = subprocess.Popen(
-        [sys.executable, "run_server.py", "8001"],
+        [sys.executable, "run_server.py", "8001", "--no-reload"],
         cwd=str(BASE_DIR),
+        env=server_env,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL
     )
 
     start_time = time.time()
     server_ready = False
-    while time.time() - start_time < 5.0:
+    while time.time() - start_time < 8.0:
         if server_proc.poll() is not None:
             logger.log(f"  ✗ Background server exited unexpectedly with code {server_proc.poll()}")
             break
@@ -747,13 +882,20 @@ def ensure_backend_running(logger):
         except Exception:
             time.sleep(0.3)
 
-    if not server_ready and server_proc.poll() is None:
-        logger.log("  ⚠️ Warning: Server is still starting after 5s polling window.")
+    if not server_ready:
+        logger.log("  ✗ Failed to verify server is alive on port 8001 within 8s timeout.")
+        try:
+            server_proc.kill()
+        except Exception:
+            pass
+        kill_port_processes([8001])
+        raise RuntimeError("FastAPI backend failed to start or respond on http://127.0.0.1:8001")
 
     return server_proc
 
 
 def main():
+    start_global_timeout_watchdog(timeout_seconds=240)
     logger = TestLogger()
     logger.log("Starting Playwright Human-Like Visual & UX Mobile Test Suite for GaonBazaar...")
 
@@ -761,30 +903,44 @@ def main():
         print(f"Error: Cannot find index.html at {HTML_FILE_PATH}")
         sys.exit(1)
 
-    server_process = ensure_backend_running(logger)
+    server_process = None
+    browser = None
+    try:
+        server_process = ensure_backend_running(logger)
 
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        try:
-            for device in TEST_DEVICES:
-                try:
-                    run_device_simulation(browser, device, logger)
-                except Exception as err:
-                    logger.record_test(f"[{device['name']}] Simulation Execution", False, str(err))
-                    logger.log(f"  [ERROR IN {device['name']}]: {err}")
-        finally:
-            browser.close()
-            logger.save_report()
-            if server_process:
-                try:
-                    server_process.terminate()
-                    server_process.wait(timeout=2)
-                except Exception:
+        with sync_playwright() as p:
+            try:
+                browser = p.chromium.launch(headless=True)
+                for device in TEST_DEVICES:
                     try:
-                        server_process.kill()
-                    except Exception:
-                        pass
-                kill_port_processes([8001])
+                        run_device_simulation(browser, device, logger)
+                    except Exception as err:
+                        logger.record_test(f"[{device['name']}] Simulation Execution", False, str(err))
+                        logger.log(f"  [ERROR IN {device['name']}]: {err}")
+            finally:
+                if browser:
+                    try:
+                        browser.close()
+                        logger.log("  ✓ Playwright browser closed cleanly.")
+                    except Exception as b_err:
+                        logger.log(f"  ⚠️ Warning closing browser: {b_err}")
+    finally:
+        logger.save_report()
+        if server_process:
+            logger.log("  🛑 Terminating background FastAPI server...")
+            try:
+                server_process.kill()
+                server_process.wait(timeout=3)
+            except Exception:
+                pass
+        kill_port_processes([8001])
+
+    if logger.failed_tests > 0:
+        logger.log(f"\n❌ CUSTOMER MOBILE E2E SUITE FINISHED WITH {logger.failed_tests} FAILURES")
+        sys.exit(1)
+    else:
+        logger.log(f"\n✅ CUSTOMER MOBILE E2E SUITE FINISHED WITH 100% PASS RATE ({logger.passed_tests}/{logger.total_tests} AUDITS PASSED)")
+        sys.exit(0)
 
 if __name__ == "__main__":
     main()

@@ -39,6 +39,10 @@
   </script>
 
   <style>
+    html {
+      scroll-padding-top: 5rem;
+      scroll-padding-bottom: 6rem;
+    }
     body {
       font-family: 'Plus Jakarta Sans', 'Noto Sans Devanagari', sans-serif;
       -webkit-tap-highlight-color: transparent;
@@ -245,7 +249,7 @@
   </header>
 
   <!-- Global Audio / Notification Banner -->
-  <div id="runner-toast" class="hidden fixed top-16 left-1/2 transform -translate-x-1/2 z-50 bg-slate-950 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-amber-500/50 max-w-sm w-11/12 animate-bounce">
+  <div id="runner-toast" class="hidden fixed top-28 sm:top-24 left-1/2 transform -translate-x-1/2 z-50 bg-slate-950 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-amber-500/50 max-w-sm w-11/12 animate-bounce">
     <span class="material-symbols-outlined text-amber-400 text-[24px]" id="toast-icon">notifications_active</span>
     <div class="flex flex-col min-w-0 flex-1">
       <span id="toast-title" class="text-xs font-black text-amber-300">नया डिलीवरी मिशन!</span>
@@ -257,7 +261,7 @@
   </div>
 
   <!-- Main Viewport Scroll Container -->
-  <main class="flex-1 max-w-4xl w-full mx-auto p-3 sm:p-4 flex flex-col gap-3.5 pb-28 overflow-y-auto no-scrollbar">
+  <main class="flex-1 max-w-4xl w-full mx-auto p-3 sm:p-4 flex flex-col gap-3.5 pb-36 sm:pb-40 overflow-y-auto no-scrollbar">
 
     <!-- ========================================================================= -->
     <!-- PENDING RUNNER VERIFICATION LOCK VIEW (When status is pending_approval)   -->
@@ -1851,6 +1855,9 @@
 
     // --- 9.14 TAB SWITCHING ---
     function switchTab(tabId) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      const mainScroll = document.querySelector('main');
+      if (mainScroll) mainScroll.scrollTop = 0;
       RunnerStore.activeTab = tabId;
       ['missions', 'detail', 'ledger'].forEach(t => {
         const sec = document.getElementById(`tab-${t}`);
