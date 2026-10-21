@@ -1,0 +1,96 @@
+name: GaonBazaar Automated QA & E2E Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e-tests:
+    name: Run Automated E2E & Visual Regression Suite
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install System & Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          playwright install --with-deps chromium
+
+      - name: Boot GaonBazaar Backend Server (Background)
+        run: |
+          python run_server.py 8001 &
+          echo "SERVER_PID=$!" >> $GITHUB_ENV
+          echo "GaonBazaar FastAPI backend booted in background (PID: $!)."
+
+      - name: Verify Backend Server Health Check
+        run: |
+          echo "Polling http://127.0.0.1:8001/health for up to 30 seconds..."
+          for i in {1..30}; do
+            if curl -s http://127.0.0.1:8001/health | grep -q "healthy"; then
+              echo "✓ GaonBazaar Backend is online, healthy, and ready!"
+              curl -s http://127.0.0.1:8001/health
+              echo ""
+              exit 0
+            fi
+            echo "Waiting for backend server to start ($i/30)..."
+            sleep 1
+          done
+          echo "✗ Backend server health check timed out."
+          exit 1
+
+      - name: Run Customer Mobile App E2E Test Suite (5 Mobile Devices)
+        run: |
+          python test_mobile_e2e.py
+
+      - name: Run Vendor (Dukandaar) Dashboard E2E Test Suite
+        run: |
+          python test_vendor_e2e.py
+
+      - name: Run Delivery Partner (Gaon Mitra) Dashboard E2E Test Suite
+        run: |
+          python test_runner_e2e.py
+
+      - name: Run Super Admin Dashboard E2E Test Suite
+        run: |
+          python test_admin_e2e.py
+
+      - name: Upload Visual QA Screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-visual-screenshots
+          path: screenshots/
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Upload QA Test Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-test-reports
+          path: |
+            test_report.txt
+            vendor_test_report.txt
+            runner_test_report.txt
+            admin_test_report.txt
+          retention-days: 14
+          if-no-files-found: ignore

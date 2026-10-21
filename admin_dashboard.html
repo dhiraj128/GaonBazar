@@ -586,7 +586,8 @@
         showToast('Vendor Approved', res.message);
         await refreshAdminData(false);
       } catch (err) {
-        alert('Approval failed: ' + err.message);
+        showToast('Approval Failed', err.message);
+        console.error('Approval failed:', err);
       }
     }
 
@@ -596,7 +597,8 @@
         showToast('Vendor Rejected', res.message);
         await refreshAdminData(false);
       } catch (err) {
-        alert('Rejection failed: ' + err.message);
+        showToast('Rejection Failed', err.message);
+        console.error('Rejection failed:', err);
       }
     }
 
@@ -677,7 +679,8 @@
         showToast('Runner Approved', res.message);
         await refreshAdminData(false);
       } catch (err) {
-        alert('Approval failed: ' + err.message);
+        showToast('Approval Failed', err.message);
+        console.error('Approval failed:', err);
       }
     }
 
@@ -687,7 +690,8 @@
         showToast('Runner Rejected', res.message);
         await refreshAdminData(false);
       } catch (err) {
-        alert('Rejection failed: ' + err.message);
+        showToast('Rejection Failed', err.message);
+        console.error('Rejection failed:', err);
       }
     }
 

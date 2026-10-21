@@ -432,6 +432,19 @@ def run_device_simulation(browser, device_config, logger):
     check_human_ux_bounds(page, "#p1-name-input", "Full Name Input", dev_name, logger)
     page.fill("#p1-name-input", "Ramesh Patel")
 
+    # Smart Search & Autocomplete: Gram Panchayat / Village Setup
+    check_human_ux_bounds(page, "#p1-village-search-input", "Village Autocomplete Search Field", dev_name, logger)
+    page.fill("#p1-village-search-input", "Ram")
+    page.wait_for_timeout(300)
+    suggestions_count = page.locator("#p1-village-suggestions .village-suggest-item").count()
+    logger.record_test(f"[{dev_name}] Village Autocomplete Suggestions Active", suggestions_count > 0, f"{suggestions_count} suggestions for 'Ram'")
+    if suggestions_count > 0:
+        first_suggestion = page.locator("#p1-village-suggestions .village-suggest-item").first
+        first_suggestion.click()
+        page.wait_for_timeout(300)
+    selected_village_val = page.input_value("#p1-village-search-input")
+    logger.record_test(f"[{dev_name}] Village Autocomplete Selected Value", "रामपुर" in selected_village_val or "Rampur" in selected_village_val, selected_village_val)
+
     # Check GPS Locate Button
     check_human_ux_bounds(page, "#p1-locate-btn", "Locate Me GPS Button", dev_name, logger)
     page.click("#p1-locate-btn")
@@ -466,6 +479,25 @@ def run_device_simulation(browser, device_config, logger):
 
     village = page.inner_text("#p2-loc-village")
     logger.record_test(f"[{dev_name}] Sticky Village Header Rendered", len(village) > 0, village)
+
+    # Smart Search & Product Discovery in Main Search Bar
+    check_human_ux_bounds(page, "#p2-search-input", "Main Dashboard Search Bar", dev_name, logger)
+    # 1. Search for a store name ('Sharma')
+    page.fill("#p2-search-input", "Sharma")
+    page.wait_for_timeout(300)
+    is_sharma_visible = page.is_visible('div[onclick*="sharma_brothers"]')
+    logger.record_test(f"[{dev_name}] Store Discovery Search ('Sharma')", is_sharma_visible, "Sharma Brothers Kirana matched")
+
+    # 2. Search for a product ('Sugar')
+    page.fill("#p2-search-input", "Sugar")
+    page.wait_for_timeout(300)
+    sugar_results_visible = page.is_visible("#p2-search-results")
+    sugar_text = page.inner_text("#p2-search-results") if sugar_results_visible else ""
+    logger.record_test(f"[{dev_name}] Product Discovery Search ('Sugar')", "Sugar" in sugar_text or "चीनी" in sugar_text, "Found Sugar product in instant discovery overlay")
+
+    # Clear search to restore default dashboard view
+    page.fill("#p2-search-input", "")
+    page.wait_for_timeout(300)
 
     check_human_ux_bounds(page, 'div[onclick*="sharma_brothers"]', "Sharma Brothers Store Card", dev_name, logger)
     capture_human_ux_screenshot(page, dev_name, "step4_01_main_dashboard", logger)
@@ -644,27 +676,31 @@ def run_device_simulation(browser, device_config, logger):
 def kill_port_processes(ports=[8001]):
     """
     Ensures any stuck Python/Uvicorn processes on specified ports are killed before/after tests.
+    Cross-platform support for Windows, Linux, and macOS.
     """
     for port in ports:
         try:
-            res = subprocess.run(
-                f"netstat -ano | findstr :{port}",
-                shell=True,
-                capture_output=True,
-                text=True
-            )
-            pids = set()
-            for line in res.stdout.strip().splitlines():
-                parts = line.split()
-                if len(parts) >= 5 and f":{port}" in parts[1]:
-                    pid = parts[-1]
-                    if pid.isdigit() and int(pid) > 0:
-                        pids.add(pid)
-            for pid in pids:
-                try:
-                    subprocess.run(f"taskkill /F /PID {pid}", shell=True, capture_output=True)
-                except Exception:
-                    pass
+            if sys.platform == "win32":
+                res = subprocess.run(
+                    f"netstat -ano | findstr :{port}",
+                    shell=True,
+                    capture_output=True,
+                    text=True
+                )
+                pids = set()
+                for line in res.stdout.strip().splitlines():
+                    parts = line.split()
+                    if len(parts) >= 5 and f":{port}" in parts[1]:
+                        pid = parts[-1]
+                        if pid.isdigit() and int(pid) > 0:
+                            pids.add(pid)
+                for pid in pids:
+                    try:
+                        subprocess.run(f"taskkill /F /PID {pid}", shell=True, capture_output=True)
+                    except Exception:
+                        pass
+            else:
+                subprocess.run(f"fuser -k {port}/tcp 2>/dev/null || true", shell=True, capture_output=True)
         except Exception:
             pass
 
@@ -673,23 +709,37 @@ def ensure_backend_running(logger):
     """
     Boots the FastAPI backend server as a detached background process (subprocess.Popen without wait).
     Polls http://127.0.0.1:8001/docs for up to 10 seconds before proceeding to Playwright tests.
+    Reuses existing healthy server if already active (e.g. CI workflow background server).
     """
+    try:
+        req = urllib.request.Request("http://127.0.0.1:8001/docs", headers={"User-Agent": "Playwright-QA"})
+        with urllib.request.urlopen(req, timeout=1.0) as res:
+            if res.status == 200:
+                logger.log("  ✓ GaonBazaar Backend is already active and healthy on http://127.0.0.1:8001")
+                return None
+    except Exception:
+        pass
+
     kill_port_processes([8001])
     time.sleep(0.3)
 
     logger.log("  🚀 Starting GaonBazaar FastAPI backend server in background on port 8001...")
     server_proc = subprocess.Popen(
-        [sys.executable, "-m", "uvicorn", "backend.main:app", "--host", "127.0.0.1", "--port", "8001"],
+        [sys.executable, "run_server.py", "8001"],
+        cwd=str(BASE_DIR),
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL
     )
 
     start_time = time.time()
     server_ready = False
-    while time.time() - start_time < 10.0:
+    while time.time() - start_time < 5.0:
+        if server_proc.poll() is not None:
+            logger.log(f"  ✗ Background server exited unexpectedly with code {server_proc.poll()}")
+            break
         try:
             req = urllib.request.Request("http://127.0.0.1:8001/docs", headers={"User-Agent": "Playwright-QA"})
-            with urllib.request.urlopen(req, timeout=1.0) as res:
+            with urllib.request.urlopen(req, timeout=0.8) as res:
                 if res.status == 200:
                     server_ready = True
                     logger.log(f"  ✓ GaonBazaar Backend verified ready on http://127.0.0.1:8001/docs ({time.time() - start_time:.2f}s)")
@@ -697,11 +747,8 @@ def ensure_backend_running(logger):
         except Exception:
             time.sleep(0.3)
 
-    if not server_ready:
-        if server_proc.poll() is None:
-            logger.log("  ✓ Background server process is actively running on port 8001.")
-        else:
-            logger.log(f"  ✗ Background server exited unexpectedly with code {server_proc.poll()}")
+    if not server_ready and server_proc.poll() is None:
+        logger.log("  ⚠️ Warning: Server is still starting after 5s polling window.")
 
     return server_proc
 
@@ -737,7 +784,7 @@ def main():
                         server_process.kill()
                     except Exception:
                         pass
-            kill_port_processes([8001])
+                kill_port_processes([8001])
 
 if __name__ == "__main__":
     main()

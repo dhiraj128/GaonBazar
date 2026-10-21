@@ -129,6 +129,18 @@ DEFAULT_PRODUCTS = [
         "icon": "local_fire_department",
         "in_stock": True
     },
+    {
+        "id": "item_7",
+        "store_id": "sharma_brothers",
+        "name_en": "Madhur Pure Sugar",
+        "name_hi": "मधुर शुद्ध चीनी",
+        "category": "kirana",
+        "weight": "1 kg • सल्फर-मुक्त शुद्ध चीनी",
+        "price": 48.0,
+        "mrp": 55.0,
+        "icon": "cookie",
+        "in_stock": True
+    },
     # Kisan Seva Kendra Products
     {
         "id": "item_k1",

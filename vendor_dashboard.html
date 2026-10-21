@@ -184,7 +184,7 @@
       <!-- Login CTA (min-h-[48px] large touch target) -->
       <button type="button" id="btn-vendor-login" onclick="handleVendorLogin()" class="w-full min-h-[48px] py-3 rounded-2xl bg-primary hover:bg-primary-dark text-white text-sm font-black shadow-md flex items-center justify-center gap-2 active:scale-98 transition-all">
         <span class="material-symbols-outlined text-[20px]">login</span>
-        <span>लॉगिन करें • Verify & Login</span>
+        <span id="btn-vendor-login-text" data-i18n="btn_login_submit">लॉगिन करें</span>
       </button>
 
       <!-- Register Link & Onboarding trigger -->
@@ -306,8 +306,8 @@
         <span class="material-symbols-outlined text-[36px] animate-pulse">hourglass_top</span>
       </div>
 
-      <span class="px-3 py-1 rounded-full text-xs font-black bg-amber-100 text-amber-800 border border-amber-300 mb-2">
-        सत्यापन प्रक्रियाधीन • Under Verification (सत्यापन विचाराधीन)
+      <span class="px-3 py-1 rounded-full text-xs font-black bg-amber-100 text-amber-800 border border-amber-300 mb-2" id="pending-vendor-status-badge">
+        सत्यापन प्रक्रियाधीन
       </span>
 
       <h2 class="text-xl font-black text-slate-900 mb-1" id="pending-vendor-shop-name">वर्मा किराना स्टोर</h2>
@@ -316,7 +316,7 @@
       <div class="w-full bg-amber-50 rounded-2xl p-4 border border-amber-200 text-left text-xs text-amber-950 mb-5 flex flex-col gap-2">
         <div class="flex items-center gap-2 font-bold text-amber-900">
           <span class="material-symbols-outlined text-[18px]">verified_user</span>
-          <span>सुरक्षा एवं प्रामाणिकता सूचना (Security Gate)</span>
+          <span>सुरक्षा एवं प्रामाणिकता सूचना</span>
         </div>
         <p class="text-[11px] leading-relaxed text-amber-900/90">
           गाँव बाज़ार सहकारी नेटवर्क में ग्रामीण उपभोक्ताओं की सुरक्षा हेतु सभी नई दुकानों का भौतिक व दस्तावेज़ी सत्यापन अनिवार्य है। आपकी दुकान की जानकारी सुपर एडमिन द्वारा सत्यापन हेतु विचाराधीन है।
@@ -849,24 +849,25 @@
     // Translations Dictionary
     const I18N = {
       hi: {
-        kpi_new_orders: "नए ऑर्डर (New Orders)",
+        kpi_new_orders: "नए ऑर्डर",
         kpi_action_needed: "तुरंत स्वीकार करें",
-        kpi_packing: "पैकिंग चालू (In Packing)",
+        kpi_packing: "पैकिंग चालू",
         kpi_gathering: "सामान तैयार करें",
-        kpi_today_sales: "कुल बिक्री (Total Sales)",
-        kpi_net_payout: "आपकी कमाई (Net Earnings)",
+        kpi_today_sales: "कुल बिक्री",
+        kpi_net_payout: "आपकी कमाई",
         kpi_after_fee: "कमीशन कटने के बाद",
-        tab_live_orders: "नए ऑर्डर (New Orders)",
-        tab_inventory: "दुकान का सामान (Stock)",
-        tab_ledger: "बहीखाता / कमाई (Ledger)",
-        tab_store_profile: "दुकान प्रोफ़ाइल (Profile)",
+        tab_live_orders: "नए ऑर्डर",
+        tab_inventory: "दुकान का सामान",
+        tab_ledger: "बहीखाता",
+        tab_store_profile: "दुकान प्रोफ़ाइल",
         empty_orders_title: "फिलहाल कोई नया ऑर्डर नहीं है",
         empty_orders_sub: "जैसे ही ग्राहक नया ऑर्डर देंगे, वह आवाज़ की घंटी के साथ यहाँ दिखाई देगा।",
         btn_add_item: "+ नया सामान जोड़ें",
-        ledger_title: "दैनिक बिक्री व आय बहीखाता (Daily Settlement)",
+        ledger_title: "दैनिक बिक्री व आय बहीखाता",
         ledger_sub: "गाँव बाज़ार से आपकी सीधी कमाई एवं नकद वसूली का हिसाब",
-        order_history_title: "हाल की बिक्री का हिसाब (Recent Orders)",
-        settings_title: "दुकान की जानकारी व क्लस्टर सेटिंग"
+        order_history_title: "हाल की बिक्री का हिसाब",
+        settings_title: "दुकान की जानकारी व क्लस्टर सेटिंग",
+        btn_login_submit: "लॉगिन करें"
       },
       en: {
         kpi_new_orders: "New Orders",
@@ -886,7 +887,8 @@
         ledger_title: "Daily Sales & Settlement Ledger",
         ledger_sub: "Direct sales tracking, cash collected, and net shopkeeper payout",
         order_history_title: "Recent Orders History",
-        settings_title: "Store Profile & Cluster Details"
+        settings_title: "Store Profile & Cluster Details",
+        btn_login_submit: "Verify & Login"
       }
     };
 
@@ -1131,6 +1133,7 @@
       if (modal) {
         modal.classList.add('hidden');
         modal.style.display = 'none';
+        modal.style.pointerEvents = 'none';
       }
     }
 
@@ -1197,12 +1200,18 @@
         }));
         localStorage.setItem('gaonbazar_vendor_store', res.store_id);
 
-        document.getElementById('vendor-login-gate')?.classList.add('hidden');
+        const loginGate = document.getElementById('vendor-login-gate');
+        if (loginGate) {
+          loginGate.classList.add('hidden');
+          loginGate.style.display = 'none';
+          loginGate.style.pointerEvents = 'none';
+        }
         document.getElementById('vendor-header')?.classList.remove('hidden');
 
         await loadStoreProfile();
       } catch (err) {
-        alert('Registration failed: ' + err.message);
+        showToast('Registration Error', err.message);
+        console.error('Registration failed:', err);
       }
     }
 
@@ -1223,8 +1232,8 @@
 
     // --- 9.4 BOOTSTRAP & STORE INITIALIZATION ---
     async function initVendorApp() {
-      const savedLang = localStorage.getItem('gaonbazar_vendor_lang');
-      if (savedLang) {
+      const savedLang = localStorage.getItem('gaonbazar_lang') || localStorage.getItem('gaonbazar_vendor_lang');
+      if (savedLang === 'hi' || savedLang === 'en') {
         VendorStore.lang = savedLang;
         updateLanguageUI();
       }
@@ -1246,7 +1255,10 @@
             pendingView.classList.remove('hidden');
             pendingView.style.display = 'flex';
           }
-          if (mainContent) mainContent.classList.add('hidden');
+          if (mainContent) {
+            mainContent.classList.add('hidden');
+            mainContent.style.display = 'none';
+          }
           document.getElementById('vendor-bottom-nav')?.classList.add('hidden');
 
           const pName = document.getElementById('pending-vendor-shop-name');
@@ -1263,7 +1275,10 @@
             pendingView.classList.add('hidden');
             pendingView.style.display = 'none';
           }
-          if (mainContent) mainContent.classList.remove('hidden');
+          if (mainContent) {
+            mainContent.classList.remove('hidden');
+            mainContent.style.display = 'flex';
+          }
           document.getElementById('vendor-bottom-nav')?.classList.remove('hidden');
           return true;
         }
@@ -1336,7 +1351,7 @@
           targetState ? 'ग्राहक अब ऑर्डर कर सकते हैं' : 'नए ऑर्डर अस्थायी रूप से रोके गए हैं'
         );
       } catch (e) {
-        alert('Status update failed: ' + e.message);
+        showToast('त्रुटि', 'Status update failed: ' + e.message);
       }
     }
 
@@ -1436,18 +1451,19 @@
       const isPacked = order.timeline_stage === 3;
       const isTransit = order.timeline_stage === 4;
       const isDelivered = order.timeline_stage === 5;
+      const isHi = VendorStore.lang === 'hi';
 
       let stageBadge = '';
       if (isNew) {
-        stageBadge = `<span class="bg-amber-100 text-amber-900 border border-amber-300 text-[11px] font-black px-2.5 py-1 rounded-full flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>नया ऑर्डर • Action Needed</span>`;
+        stageBadge = `<span class="bg-amber-100 text-amber-900 border border-amber-300 text-[11px] font-black px-2.5 py-1 rounded-full flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>${isHi ? 'नया ऑर्डर' : 'Action Needed'}</span>`;
       } else if (isAccepted) {
-        stageBadge = `<span class="bg-blue-100 text-blue-900 border border-blue-300 text-[11px] font-black px-2.5 py-1 rounded-full flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-blue-500"></span>पैकिंग चालू • In Packing</span>`;
+        stageBadge = `<span class="bg-blue-100 text-blue-900 border border-blue-300 text-[11px] font-black px-2.5 py-1 rounded-full flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-blue-500"></span>${isHi ? 'पैकिंग चालू' : 'In Packing'}</span>`;
       } else if (isPacked) {
-        stageBadge = `<span class="bg-purple-100 text-purple-900 border border-purple-300 text-[11px] font-black px-2.5 py-1 rounded-full flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-purple-500"></span>तैयार • Waiting for Runner</span>`;
+        stageBadge = `<span class="bg-purple-100 text-purple-900 border border-purple-300 text-[11px] font-black px-2.5 py-1 rounded-full flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-purple-500"></span>${isHi ? 'रनर की प्रतीक्षा' : 'Waiting for Runner'}</span>`;
       } else if (isTransit) {
-        stageBadge = `<span class="bg-emerald-100 text-emerald-900 border border-emerald-300 text-[11px] font-black px-2.5 py-1 rounded-full flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-primary"></span>रास्ते में • With Runner</span>`;
+        stageBadge = `<span class="bg-emerald-100 text-emerald-900 border border-emerald-300 text-[11px] font-black px-2.5 py-1 rounded-full flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-primary"></span>${isHi ? 'रास्ते में' : 'With Runner'}</span>`;
       } else if (isDelivered) {
-        stageBadge = `<span class="bg-slate-100 text-slate-700 border border-slate-300 text-[11px] font-black px-2.5 py-1 rounded-full">✓ डिलीवर हुआ • Completed</span>`;
+        stageBadge = `<span class="bg-slate-100 text-slate-700 border border-slate-300 text-[11px] font-black px-2.5 py-1 rounded-full">✓ ${isHi ? 'डिलीवर हुआ' : 'Completed'}</span>`;
       }
 
       // Item checklist items
@@ -1468,11 +1484,11 @@
         actionButtons = `
           <div class="grid grid-cols-3 gap-2 mt-3 pt-2 border-t border-slate-100">
             <button onclick="handleOrderAction('${order.id}', 'cancel')" class="col-span-1 py-2.5 rounded-xl border border-red-300 text-red-700 hover:bg-red-50 text-xs font-bold transition-colors">
-              अस्वीकार (Decline)
+              ${isHi ? 'अस्वीकार' : 'Decline'}
             </button>
             <button onclick="handleOrderAction('${order.id}', 'accept')" class="col-span-2 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-black shadow-md active:scale-98 transition-transform flex items-center justify-center gap-1.5">
               <span class="material-symbols-outlined text-[18px]">check_circle</span>
-              <span>स्वीकार करें • Accept Order</span>
+              <span>${isHi ? 'स्वीकार करें' : 'Accept Order'}</span>
             </button>
           </div>
         `;
@@ -1481,7 +1497,7 @@
           <div class="mt-3 pt-2 border-t border-slate-100">
             <button onclick="handleOrderAction('${order.id}', 'pack')" class="w-full min-h-[48px] py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-black shadow-md active:scale-98 transition-transform flex items-center justify-center gap-2">
               <span class="material-symbols-outlined text-[20px]">inventory_2</span>
-              <span>सामान पैक हो गया • Mark Packed</span>
+              <span>${isHi ? 'सामान पैक हो गया' : 'Mark Packed'}</span>
             </button>
           </div>
         `;
@@ -1491,13 +1507,13 @@
             <div class="p-2.5 bg-purple-50 rounded-xl border border-purple-200 flex items-center justify-between text-xs">
               <div class="flex items-center gap-2">
                 <span class="material-symbols-outlined text-purple-700 text-[18px]">sports_motorsports</span>
-                <span class="font-bold text-purple-900">रनर: Mohan Lal (Gaon Mitra #102)</span>
+                <span class="font-bold text-purple-900">${isHi ? 'रनर: Mohan Lal (Gaon Mitra #102)' : 'Runner: Mohan Lal (Gaon Mitra #102)'}</span>
               </div>
               <span class="text-[11px] font-bold text-purple-700">+91 9876543220</span>
             </div>
             <button onclick="handleOrderAction('${order.id}', 'dispatch')" class="w-full min-h-[48px] py-3 rounded-2xl bg-purple-700 hover:bg-purple-800 text-white text-xs sm:text-sm font-black shadow-md active:scale-98 transition-transform flex items-center justify-center gap-2">
               <span class="material-symbols-outlined text-[20px]">local_shipping</span>
-              <span>गाँव मित्र को सामान दें • रनर को सौंपें (Handover)</span>
+              <span>${isHi ? 'रनर को सौंपें' : 'Handover to Gaon Mitra'}</span>
             </button>
           </div>
         `;
@@ -1506,10 +1522,10 @@
           <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between">
             <div class="flex items-center gap-2 text-xs text-primary font-bold">
               <span class="material-symbols-outlined text-[18px]">two_wheeler</span>
-              <span>डिलीवरी रनर रास्ते में है • Delivering to Doorstep</span>
+              <span>${isHi ? 'डिलीवरी रनर रास्ते में है' : 'Delivering to Doorstep'}</span>
             </div>
             <button onclick="handleOrderAction('${order.id}', 'deliver')" class="px-3 py-1.5 rounded-xl bg-emerald-600 text-white text-xs font-bold">
-              डिलीवर मार्क करें
+              ${isHi ? 'डिलीवर मार्क करें' : 'Mark Delivered'}
             </button>
           </div>
         `;
@@ -1620,7 +1636,7 @@
         fetchAllVendorData(false);
 
       } catch (err) {
-        alert('Action failed: ' + err.message);
+        showToast('त्रुटि', 'Action failed: ' + err.message);
       }
     }
 
@@ -1655,6 +1671,19 @@
         );
       }
 
+      const isHi = VendorStore.lang === 'hi';
+
+      if (prods.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full py-12 text-center text-xs text-slate-500 font-medium bg-slate-50 rounded-3xl border border-slate-200 p-6">
+            <span class="material-symbols-outlined text-[32px] text-slate-400 block mb-2">search_off</span>
+            <p class="font-bold text-slate-700">${isHi ? `"${searchTerm}" के लिए कोई सामान नहीं मिला` : `No products found for "${searchTerm}"`}</p>
+            <p class="text-[11px] text-slate-400 mt-1">${isHi ? 'कृपया अन्य नाम टाइप करें या फ़िल्टर साफ़ करें' : 'Try another search term or clear the filter'}</p>
+          </div>
+        `;
+        return;
+      }
+
       container.innerHTML = prods.map(prod => `
         <div class="bg-white rounded-3xl p-4 border border-slate-200 shadow-xs flex flex-col justify-between">
           <div class="flex items-start justify-between gap-3 mb-2">
@@ -1663,8 +1692,8 @@
                 <span class="material-symbols-outlined text-[22px]">${prod.icon || 'inventory_2'}</span>
               </div>
               <div>
-                <h4 class="text-xs font-black text-slate-900 leading-snug">${prod.name_hi || prod.name_en}</h4>
-                <span class="text-[11px] text-slate-400 block">${prod.name_en}</span>
+                <h4 class="text-xs font-black text-slate-900 leading-snug">${isHi ? (prod.name_hi || prod.name_en) : (prod.name_en || prod.name_hi)}</h4>
+                <span class="text-[11px] text-slate-400 block">${isHi ? prod.name_en : (prod.name_hi || '')}</span>
                 <span class="text-[10px] text-slate-500 font-medium">${prod.weight}</span>
               </div>
             </div>
@@ -1677,12 +1706,12 @@
           <!-- Stock Toggle Switch (Large Touch Target) -->
           <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between">
             <span class="text-xs font-bold ${prod.in_stock ? 'text-primary' : 'text-red-600'}">
-              ${prod.in_stock ? '● स्टॉक में उपलब्ध (In Stock)' : '○ समाप्त (Out of Stock)'}
+              ${prod.in_stock ? (isHi ? '● स्टॉक में उपलब्ध' : '● In Stock') : (isHi ? '○ समाप्त' : '○ Out of Stock')}
             </span>
 
             <button onclick="toggleProductStock('${prod.id}', ${!prod.in_stock})" class="px-3.5 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition-colors ${prod.in_stock ? 'bg-emerald-100 text-primary hover:bg-emerald-200' : 'bg-red-100 text-red-700 hover:bg-red-200'}">
               <span class="material-symbols-outlined text-[16px]">${prod.in_stock ? 'toggle_on' : 'toggle_off'}</span>
-              <span>${prod.in_stock ? 'उपलब्ध' : 'अनुपलब्ध'}</span>
+              <span>${prod.in_stock ? (isHi ? 'उपलब्ध' : 'In Stock') : (isHi ? 'अनुपलब्ध' : 'Out of Stock')}</span>
             </button>
           </div>
         </div>
@@ -1702,12 +1731,13 @@
           VendorStore.products[idx] = updated;
         }
         renderInventoryGrid();
+        const isHi = VendorStore.lang === 'hi';
         showToast(
-          'इन्वेंट्री अपडेट',
-          `${updated.name_en}: ${updated.in_stock ? 'स्टॉक में चालू (In Stock)' : 'स्टॉक समाप्त (Out of Stock)'}`
+          isHi ? 'इन्वेंट्री अपडेट' : 'Inventory Update',
+          `${isHi ? (updated.name_hi || updated.name_en) : updated.name_en}: ${updated.in_stock ? (isHi ? 'स्टॉक में चालू' : 'In Stock') : (isHi ? 'स्टॉक समाप्त' : 'Out of Stock')}`
         );
       } catch (e) {
-        alert('Stock update failed: ' + e.message);
+        showToast('त्रुटि', 'Stock update failed: ' + e.message);
       }
     }
 
@@ -1936,13 +1966,15 @@
     // --- 9.13 BILINGUAL TOGGLE ---
     function toggleLanguage() {
       VendorStore.lang = VendorStore.lang === 'hi' ? 'en' : 'hi';
+      localStorage.setItem('gaonbazar_lang', VendorStore.lang);
       localStorage.setItem('gaonbazar_vendor_lang', VendorStore.lang);
       updateLanguageUI();
     }
 
     function updateLanguageUI() {
+      const isHi = VendorStore.lang === 'hi';
       const langText = document.getElementById('current-lang-text');
-      if (langText) langText.innerText = VendorStore.lang === 'hi' ? 'English' : 'हिंदी';
+      if (langText) langText.innerText = isHi ? 'English' : 'हिंदी';
 
       const dict = I18N[VendorStore.lang] || I18N.hi;
       document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -1950,9 +1982,24 @@
         if (dict[key]) el.innerText = dict[key];
       });
 
+      const invSearch = document.getElementById('inventory-search-input');
+      if (invSearch) {
+        invSearch.placeholder = isHi ? 'सामान का नाम खोजें...' : 'Search products by name or category...';
+      }
+
       if (VendorStore.storeData) updateStoreHeaderUI(VendorStore.storeData);
       renderOrdersQueue();
+      if (VendorStore.activeTab === 'inventory') renderInventoryGrid();
     }
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'gaonbazar_lang' && (e.newValue === 'hi' || e.newValue === 'en')) {
+        if (VendorStore.lang !== e.newValue) {
+          VendorStore.lang = e.newValue;
+          updateLanguageUI();
+        }
+      }
+    });
 
     // --- 9.14 STARTUP BOOTSTRAP ---
     window.addEventListener('DOMContentLoaded', () => {

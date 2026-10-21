@@ -128,48 +128,64 @@ def capture_screenshot(page, name, logger):
 def kill_port_processes(ports=[8001]):
     for port in ports:
         try:
-            res = subprocess.run(f"netstat -ano | findstr :{port}", shell=True, capture_output=True, text=True)
-            pids = set()
-            for line in res.stdout.strip().splitlines():
-                parts = line.split()
-                if len(parts) >= 5 and f":{port}" in parts[1]:
-                    pid = parts[-1]
-                    if pid.isdigit() and int(pid) > 0:
-                        pids.add(pid)
-            for pid in pids:
-                try:
-                    subprocess.run(f"taskkill /F /PID {pid}", shell=True, capture_output=True)
-                except Exception:
-                    pass
+            if sys.platform == "win32":
+                res = subprocess.run(f"netstat -ano | findstr :{port}", shell=True, capture_output=True, text=True)
+                pids = set()
+                for line in res.stdout.strip().splitlines():
+                    parts = line.split()
+                    if len(parts) >= 5 and f":{port}" in parts[1]:
+                        pid = parts[-1]
+                        if pid.isdigit() and int(pid) > 0:
+                            pids.add(pid)
+                for pid in pids:
+                    try:
+                        subprocess.run(f"taskkill /F /PID {pid}", shell=True, capture_output=True)
+                    except Exception:
+                        pass
+            else:
+                subprocess.run(f"fuser -k {port}/tcp 2>/dev/null || true", shell=True, capture_output=True)
         except Exception:
             pass
 
 
 def ensure_backend_running(logger):
+    try:
+        req = urllib.request.Request("http://127.0.0.1:8001/docs", headers={"User-Agent": "Playwright-Admin-QA"})
+        with urllib.request.urlopen(req, timeout=1.0) as resp:
+            if resp.status == 200:
+                logger.log("  ✓ Backend server healthy and responding on http://127.0.0.1:8001")
+                return None
+    except Exception:
+        pass
+
     kill_port_processes([8001])
-    time.sleep(1.0)
+    time.sleep(0.5)
 
     logger.log("  🚀 Starting GaonBazaar FastAPI backend server in background on port 8001...")
     server_proc = subprocess.Popen(
-        [sys.executable, "-m", "uvicorn", "backend.main:app", "--host", "127.0.0.1", "--port", "8001"],
+        [sys.executable, "run_server.py", "8001"],
+        cwd=str(BASE_DIR),
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL
     )
 
     start_time = time.time()
     server_ready = False
-    while time.time() - start_time < 12.0:
+    while time.time() - start_time < 5.0:
+        if server_proc.poll() is not None:
+            logger.log(f"  ✗ Background server exited unexpectedly with code {server_proc.poll()}")
+            break
         try:
             req = urllib.request.Request("http://127.0.0.1:8001/docs", headers={"User-Agent": "Playwright-Admin-QA"})
-            with urllib.request.urlopen(req, timeout=1.0) as resp:
+            with urllib.request.urlopen(req, timeout=0.8) as resp:
                 if resp.status == 200:
                     server_ready = True
                     break
         except Exception:
-            time.sleep(0.5)
+            time.sleep(0.3)
 
-    if not server_ready:
-        logger.log("  ⚠️ Backend server health check timed out on http://127.0.0.1:8001/docs")
+    if not server_ready and server_proc.poll() is None:
+        logger.log("  ⚠️ Warning: Backend server health check timed out on http://127.0.0.1:8001/docs after 5s.")
     else:
         logger.log("  ✓ Backend server healthy and responding on http://127.0.0.1:8001")
 
@@ -360,13 +376,13 @@ def run_admin_e2e_suite(browser, logger):
     )
     capture_screenshot(admin_page, "08_admin_vendor_kyc_queue", logger)
 
-    # Click Approve on this vendor card
-    approve_vendor_btn = admin_page.locator(f'div:has-text("{v_shop}") button:has-text("स्वीकारें (Approve)")').first
+    # Click Approve on this specific vendor card
+    approve_vendor_btn = admin_page.locator(f'#vendors-approval-container > div:has-text("{v_shop}") button:has-text("स्वीकारें (Approve)")').first
     if approve_vendor_btn.count() > 0:
         approve_vendor_btn.click()
     else:
-        # Fallback to any pending vendor approve button
-        admin_page.locator('button:has-text("स्वीकारें (Approve)")').first.click()
+        # Fallback to any pending vendor approve button within approval container
+        admin_page.locator('#vendors-approval-container button:has-text("स्वीकारें (Approve)")').first.click()
 
     admin_page.wait_for_timeout(1000)
     capture_screenshot(admin_page, "09_admin_vendor_approved", logger)
@@ -377,7 +393,7 @@ def run_admin_e2e_suite(browser, logger):
     admin_page.click("#admin-tab-btn-runners")
     admin_page.wait_for_timeout(800)
 
-    runner_card_found = admin_page.locator(f'text="{r_name}"').count() > 0 or admin_page.locator(f'text="{r_vehicle}"').count() > 0
+    runner_card_found = admin_page.locator(f'#runners-approval-container > div:has-text("{r_name}")').count() > 0 or admin_page.locator(f'text="{r_name}"').count() > 0 or admin_page.locator(f'text="{r_vehicle}"').count() > 0
     logger.record_test(
         "Pending Runner Appears in Admin KYC Queue",
         runner_card_found,
@@ -385,13 +401,13 @@ def run_admin_e2e_suite(browser, logger):
     )
     capture_screenshot(admin_page, "10_admin_runner_kyc_queue", logger)
 
-    # Click Approve on this runner card
-    approve_runner_btn = admin_page.locator(f'div:has-text("{r_name}") button:has-text("स्वीकारें (Approve)")').first
+    # Click Approve on this specific runner card
+    approve_runner_btn = admin_page.locator(f'#runners-approval-container > div:has-text("{r_name}") button:has-text("स्वीकारें (Approve)")').first
     if approve_runner_btn.count() > 0:
         approve_runner_btn.click()
     else:
-        # Fallback to any pending runner approve button
-        admin_page.locator('button:has-text("स्वीकारें (Approve)")').first.click()
+        # Fallback to any pending runner approve button within approval container
+        admin_page.locator('#runners-approval-container button:has-text("स्वीकारें (Approve)")').first.click()
 
     admin_page.wait_for_timeout(1000)
     capture_screenshot(admin_page, "11_admin_runner_approved", logger)
@@ -438,7 +454,11 @@ def run_admin_e2e_suite(browser, logger):
     vendor_page.bring_to_front()
     if vendor_page.is_visible("#btn-check-vendor-status"):
         vendor_page.click("#btn-check-vendor-status")
-        vendor_page.wait_for_timeout(1500)
+        try:
+            vendor_page.wait_for_selector("#vendor-main-content:not(.hidden)", timeout=5000)
+        except Exception:
+            pass
+        vendor_page.wait_for_timeout(1000)
     else:
         vendor_page.wait_for_timeout(500)
 
@@ -456,7 +476,11 @@ def run_admin_e2e_suite(browser, logger):
     runner_page.bring_to_front()
     if runner_page.is_visible("#btn-check-runner-status"):
         runner_page.click("#btn-check-runner-status")
-        runner_page.wait_for_timeout(1500)
+        try:
+            runner_page.wait_for_selector("#runner-main-content:not(.hidden)", timeout=5000)
+        except Exception:
+            pass
+        runner_page.wait_for_timeout(1000)
     else:
         runner_page.wait_for_timeout(500)
 

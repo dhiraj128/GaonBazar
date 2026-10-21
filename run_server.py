@@ -6,15 +6,17 @@ Usage:
 Default port is 8001 (to prevent collision with other local services on 8000).
 """
 
+import os
 import sys
 import uvicorn
 
 if __name__ == "__main__":
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 8001
+    is_ci = os.getenv("CI") is not None
     print(f"===========================================================")
     print(f"  GaonBazaar Hyperlocal Rural Delivery - Backend API       ")
     print(f"  Host: http://127.0.0.1:{port}                            ")
     print(f"  Interactive Docs: http://127.0.0.1:{port}/docs           ")
     print(f"  Database: backend/gaonbazar.db (SQLite)                  ")
     print(f"===========================================================")
-    uvicorn.run("backend.main:app", host="127.0.0.1", port=port, reload=True)
+    uvicorn.run("backend.main:app", host="127.0.0.1", port=port, reload=not is_ci)

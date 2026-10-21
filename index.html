@@ -451,17 +451,40 @@
           </button>
         </div>
 
-        <!-- 3. Admin Village Dropdown -->
-        <div class="bg-white rounded-2xl p-4 shadow-mobile-card border border-surface-container-high flex flex-col gap-2">
+        <!-- 3. Smart Village Search & Autocomplete -->
+        <div class="bg-white rounded-2xl p-4 shadow-mobile-card border border-surface-container-high flex flex-col gap-2 relative">
           <label class="text-[11px] font-bold text-on-surface-variant" data-i18n="p1_village_label">ग्राम पंचायत या गाँव *</label>
-          <select id="p1-village-select" class="w-full h-11 px-3 rounded-xl bg-surface-container-low border border-surface-container-high text-xs font-bold text-on-surface focus:outline-none appearance-none">
+          <div class="relative">
+            <div class="flex items-center gap-2 w-full h-11 px-3 rounded-xl bg-surface-container-low border border-surface-container-high text-xs font-bold text-on-surface focus-within:border-primary focus-within:ring-1 focus-within:ring-primary">
+              <span class="material-symbols-outlined text-[18px] text-on-surface-variant">search</span>
+              <input 
+                id="p1-village-search-input" 
+                type="text" 
+                placeholder="गाँव या ग्राम पंचायत का नाम खोजें..." 
+                data-i18n-ph="p1_village_search_placeholder" 
+                class="w-full h-full py-2 bg-transparent text-xs font-bold text-on-surface focus:outline-none"
+                onfocus="showVillageSuggestions()"
+                oninput="filterVillageSuggestions(this.value)"
+                autocomplete="off"
+                value="रामपुर गाँव (क्लस्टर ०१)"
+              />
+              <button type="button" onclick="clearVillageSearch()" id="p1-village-clear-btn" class="text-on-surface-variant hover:text-on-surface text-[16px] hidden">
+                <span class="material-symbols-outlined text-[18px]">close</span>
+              </button>
+            </div>
+            <!-- Dynamic Autocomplete Dropdown List -->
+            <div id="p1-village-suggestions" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-white rounded-xl shadow-xl border border-surface-container-high py-1 z-30 max-h-52 overflow-y-auto divide-y divide-surface-container">
+            </div>
+          </div>
+          <!-- Hidden fallback select kept strictly in sync for existing tests / form submissions -->
+          <select id="p1-village-select" class="hidden" aria-hidden="true">
             <option value="रामपुर गाँव (क्लस्टर ०१)">रामपुर गाँव (क्लस्टर ०१)</option>
             <option value="भाटगाँव (क्लस्टर ०२)">भाटगाँव (क्लस्टर ०२)</option>
             <option value="पुरखास (क्लस्टर ०३)">पुरखास (क्लस्टर ०३)</option>
           </select>
           <div class="p-2 rounded-lg bg-surface-container text-[11px] flex items-center gap-1.5">
             <span class="material-symbols-outlined text-secondary text-[16px]">local_shipping</span>
-            <span>निर्धारित डिलीवरी हब: <strong>गनौर मंडी पॉइंट (क्लस्टर ०४)</strong></span>
+            <span id="p1-village-hub-badge">निर्धारित डिलीवरी हब: <strong>गनौर मंडी पॉइंट (क्लस्टर ०४)</strong></span>
           </div>
         </div>
 
@@ -537,14 +560,22 @@
           </button>
         </div>
 
-        <!-- Search Bar with Voice Assist -->
-        <div class="flex items-center gap-2 p-2 rounded-2xl bg-white shadow-mobile-card border border-surface-container-high">
-          <span class="material-symbols-outlined text-outline text-[20px] ml-1">search</span>
-          <input id="p2-search-input" onkeyup="filterStoreCatalog(this.value)" type="text" placeholder="किराना, दवाई, बीज खोजें..." class="w-full bg-transparent text-xs font-semibold focus:outline-none"/>
-          <button onclick="triggerVoiceSearch()" type="button" class="h-9 px-3 rounded-xl bg-secondary text-white text-[10px] font-bold flex items-center gap-1 active:scale-95 shrink-0">
-            <span class="material-symbols-outlined text-[16px] animate-pulse">mic</span>
-            <span data-i18n="p2_voice_search">बोल कर खोजें</span>
-          </button>
+        <!-- Search Bar with Voice Assist & Instant Discovery -->
+        <div class="relative">
+          <div class="flex items-center gap-2 p-2 rounded-2xl bg-white shadow-mobile-card border border-surface-container-high relative z-20">
+            <span class="material-symbols-outlined text-outline text-[20px] ml-1">search</span>
+            <input id="p2-search-input" oninput="filterStoreCatalog(this.value)" onfocus="if(this.value) filterStoreCatalog(this.value)" type="text" placeholder="किराना, दवाई, बीज खोजें..." data-i18n-ph="p2_search_placeholder" class="w-full h-9 py-2 bg-transparent text-xs font-semibold focus:outline-none"/>
+            <button type="button" id="p2-search-clear-btn" onclick="clearStoreSearch()" class="hidden text-outline hover:text-on-surface text-[16px] p-1">
+              <span class="material-symbols-outlined text-[18px]">close</span>
+            </button>
+            <button onclick="triggerVoiceSearch()" type="button" class="h-9 px-3 rounded-xl bg-secondary text-white text-[10px] font-bold flex items-center gap-1 active:scale-95 shrink-0">
+              <span class="material-symbols-outlined text-[16px] animate-pulse">mic</span>
+              <span data-i18n="p2_voice_search">बोल कर खोजें</span>
+            </button>
+          </div>
+          <!-- Smart Product & Store Discovery Overlay -->
+          <div id="p2-search-results" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-white rounded-2xl shadow-2xl border border-surface-container-high p-3 z-30 max-h-80 overflow-y-auto">
+          </div>
         </div>
 
         <!-- Mandi Specials Banner -->
@@ -1243,6 +1274,7 @@
         p1_name_err: "कृपया अपना नाम दर्ज करें",
         p1_gps_title: "वर्तमान GPS लोकेशन इस्तेमाल करें",
         p1_village_label: "ग्राम पंचायत या गाँव *",
+        p1_village_search_placeholder: "गाँव या ग्राम पंचायत का नाम खोजें...",
         p1_lm_critical: "पहचान चिन्ह अति आवश्यक है!",
         p1_lm_critical_sub: "ग्रामीण डिलीवरी के लिए रनर मुख्य पहचान चिन्ह पर निर्भर रहते हैं।",
         p1_lm_field_label: "गाँव का मुख्य पहचान चिन्ह *",
@@ -1251,6 +1283,7 @@
         // Phase 2
         p2_change_loc: "बदलें",
         p2_voice_search: "बोल कर खोजें",
+        p2_search_placeholder: "किराना, दवाई, बीज खोजें...",
         p2_guarantee: "गांवबाज़ार गारंटी",
         p2_mandi_headline: "हर गाँव, पक्की डिलीवरी",
         p2_mandi_sub: "ताज़ा आटा, सरसों तेल, डेयरी एवं घरेलू सामान घर तक",
@@ -1334,6 +1367,7 @@
         p1_name_err: "Please enter your name",
         p1_gps_title: "Use Current GPS Location",
         p1_village_label: "Gram Panchayat / Village *",
+        p1_village_search_placeholder: "Search village or Gram Panchayat...",
         p1_lm_critical: "Landmark is critical!",
         p1_lm_critical_sub: "Delivery runners rely on prominent landmarks for doorstep drops.",
         p1_lm_field_label: "Prominent Village Landmark *",
@@ -1342,6 +1376,7 @@
         // Phase 2
         p2_change_loc: "Change",
         p2_voice_search: "Voice Search",
+        p2_search_placeholder: "Search Kirana, medicine, seeds...",
         p2_guarantee: "GaonBazaar Guarantee",
         p2_mandi_headline: "Fast Village Delivery",
         p2_mandi_sub: "Fresh Flour, Mustard Oil, Dairy & Household supplies",
@@ -1414,7 +1449,8 @@
         { id: 'item_3', name_hi: 'टाटा आयोडाइज्ड नमक', name_en: 'Tata Salt Iodized', cat: 'spices', weight: '1 kg', weight_hi: '१ किग्रा', weight_en: '1 kg', price: 24, mrp: 28, qty: 0, icon: 'science' },
         { id: 'item_4', name_hi: 'रेड लेबल कड़क चाय', name_en: 'Brooke Bond Red Label Tea', cat: 'tea', weight: '250 g', weight_hi: '२५० ग्राम', weight_en: '250 g', price: 95, mrp: 110, qty: 0, icon: 'emoji_food_beverage' },
         { id: 'item_5', name_hi: 'अमूल शुद्ध गाय का घी', name_en: 'Amul Pure Cow Ghee', cat: 'oil', weight: '1 L', weight_hi: '१ लीटर', weight_en: '1 L', price: 580, mrp: 640, qty: 0, icon: 'local_drink' },
-        { id: 'item_6', name_hi: 'एमडीएच देगी मिर्च', name_en: 'MDH Deggi Mirch', cat: 'spices', weight: '100 g', weight_hi: '१०० ग्राम', weight_en: '100 g', price: 62, mrp: 75, qty: 0, icon: 'local_fire_department' }
+        { id: 'item_6', name_hi: 'एमडीएच देगी मिर्च', name_en: 'MDH Deggi Mirch', cat: 'spices', weight: '100 g', weight_hi: '१०० ग्राम', weight_en: '100 g', price: 62, mrp: 75, qty: 0, icon: 'local_fire_department' },
+        { id: 'item_7', name_hi: 'मधुर शुद्ध चीनी', name_en: 'Madhur Pure Sugar', cat: 'kirana', weight: '1 kg', weight_hi: '१ किग्रा', weight_en: '1 kg', price: 48, mrp: 55, qty: 0, icon: 'cookie' }
       ],
       orderTimelineStage: 4, // 1 to 5
       orderId: '#RUR-9482',
@@ -1572,6 +1608,24 @@
           el.innerText = dict[key];
         }
       });
+
+      // Update all data-i18n-ph placeholder elements
+      document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+        const key = el.getAttribute('data-i18n-ph');
+        if (dict && dict[key]) {
+          el.setAttribute('placeholder', dict[key]);
+        }
+      });
+
+      // Update Village Autocomplete Input Default if not custom edited
+      const vInput = document.getElementById('p1-village-search-input');
+      if (vInput) {
+        if (lang === 'hi' && (vInput.value.includes('Rampur') || vInput.value.includes('रामपुर'))) {
+          vInput.value = 'रामपुर गाँव (क्लस्टर ०१)';
+        } else if (lang === 'en' && (vInput.value.includes('रामपुर') || vInput.value.includes('Rampur'))) {
+          vInput.value = 'Rampur Village (Cluster 01)';
+        }
+      }
 
       // Update Auth Mode UI & Tabs
       updateAuthModeUI();
@@ -1938,6 +1992,124 @@
       }, 1000);
     }
 
+    // --- 7.1 VILLAGE AUTOCOMPLETE & SEARCH ENGINE ---
+    const VILLAGE_OPTIONS = [
+      { id: 'v1', hi: 'रामपुर गाँव (क्लस्टर ०१)', en: 'Rampur Village (Cluster 01)', hub_hi: 'गनौर मंडी पॉइंट (क्लस्टर ०४)', hub_en: 'Ganaur Mandi Point (Cluster 04)' },
+      { id: 'v2', hi: 'भाटगाँव (क्लस्टर ०२)', en: 'Bhatgaon (Cluster 02)', hub_hi: 'सोनीपत सेंट्रल हब (क्लस्टर ०२)', hub_en: 'Sonipat Central Hub (Cluster 02)' },
+      { id: 'v3', hi: 'पुरखास (क्लस्टर ०३)', en: 'Purkhas (Cluster 03)', hub_hi: 'राई डिलीवरी हब (क्लस्टर ०३)', hub_en: 'Rai Delivery Hub (Cluster 03)' },
+      { id: 'v4', hi: 'मुरथल देहात (क्लस्टर ०५)', en: 'Murthal Dehat (Cluster 05)', hub_hi: 'मुरथल मंडी हब', hub_en: 'Murthal Mandi Hub' },
+      { id: 'v5', hi: 'कुंडली ग्रामीण (क्लस्टर ०६)', en: 'Kundli Rural (Cluster 06)', hub_hi: 'कुंडली बॉर्डर डिपो', hub_en: 'Kundli Border Depot' }
+    ];
+
+    function showVillageSuggestions() {
+      const container = document.getElementById('p1-village-suggestions');
+      const input = document.getElementById('p1-village-search-input');
+      if (!container) return;
+      filterVillageSuggestions(input ? input.value : '');
+    }
+
+    function filterVillageSuggestions(query) {
+      const q = (query || '').toLowerCase().trim();
+      const container = document.getElementById('p1-village-suggestions');
+      const clearBtn = document.getElementById('p1-village-clear-btn');
+      if (clearBtn) {
+        if (q) clearBtn.classList.remove('hidden');
+        else clearBtn.classList.add('hidden');
+      }
+      if (!container) return;
+      
+      const isHi = AppStore.lang === 'hi';
+      const matches = VILLAGE_OPTIONS.filter(v => {
+        if (!q) return true;
+        return v.hi.toLowerCase().includes(q) || 
+               v.en.toLowerCase().includes(q) || 
+               v.hub_hi.toLowerCase().includes(q) || 
+               v.hub_en.toLowerCase().includes(q);
+      });
+
+      if (matches.length === 0) {
+        container.innerHTML = `
+          <div class="p-3 text-xs text-on-surface-variant text-center">
+            ${isHi ? 'कोई गाँव नहीं मिला। आप सीधे नाम रख सकते हैं।' : 'No village found. You can keep typed name.'}
+          </div>
+        `;
+        container.classList.remove('hidden');
+        return;
+      }
+
+      container.innerHTML = matches.map(v => {
+        const displayName = isHi ? v.hi : v.en;
+        const displayHub = isHi ? v.hub_hi : v.hub_en;
+        return `
+          <div 
+            onclick="selectVillageOption('${displayName.replace(/'/g, "\\'")}', '${displayHub.replace(/'/g, "\\'")}')" 
+            class="village-suggest-item p-3 hover:bg-surface-container cursor-pointer flex items-center justify-between text-xs transition-colors"
+          >
+            <div class="flex flex-col">
+              <span class="font-bold text-on-surface">${displayName}</span>
+              <span class="text-[10px] text-on-surface-variant">${isHi ? 'हब' : 'Hub'}: ${displayHub}</span>
+            </div>
+            <span class="material-symbols-outlined text-[16px] text-primary">arrow_forward_ios</span>
+          </div>
+        `;
+      }).join('');
+      container.classList.remove('hidden');
+    }
+
+    function selectVillageOption(villageName, hubName) {
+      const input = document.getElementById('p1-village-search-input');
+      const select = document.getElementById('p1-village-select');
+      const container = document.getElementById('p1-village-suggestions');
+      const hubBadge = document.getElementById('p1-village-hub-badge');
+
+      if (input) input.value = villageName;
+      if (select) {
+        let found = false;
+        for (let i = 0; i < select.options.length; i++) {
+          if (select.options[i].value === villageName) {
+            select.selectedIndex = i;
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          const opt = document.createElement('option');
+          opt.value = villageName;
+          opt.innerText = villageName;
+          select.appendChild(opt);
+          select.value = villageName;
+        }
+      }
+      AppStore.user.village = villageName;
+      if (hubBadge && hubName) {
+        const isHi = AppStore.lang === 'hi';
+        hubBadge.innerHTML = `${isHi ? 'निर्धारित डिलीवरी हब:' : 'Assigned Delivery Hub:'} <strong>${hubName}</strong>`;
+      }
+      if (container) container.classList.add('hidden');
+    }
+
+    function clearVillageSearch() {
+      const input = document.getElementById('p1-village-search-input');
+      if (input) {
+        input.value = '';
+        input.focus();
+        filterVillageSuggestions('');
+      }
+    }
+
+    document.addEventListener('click', (e) => {
+      const container = document.getElementById('p1-village-suggestions');
+      const input = document.getElementById('p1-village-search-input');
+      if (container && !container.contains(e.target) && e.target !== input) {
+        container.classList.add('hidden');
+      }
+    });
+
+    window.showVillageSuggestions = showVillageSuggestions;
+    window.filterVillageSuggestions = filterVillageSuggestions;
+    window.selectVillageOption = selectVillageOption;
+    window.clearVillageSearch = clearVillageSearch;
+
     function detectGpsLocation() {
       const btnText = document.getElementById('p1-locate-text');
       const badge = document.getElementById('p1-gps-badge');
@@ -1949,19 +2121,20 @@
           badge.innerText = humanReadableAddress;
           badge.classList.add('text-primary', 'font-bold');
         }
-        AppStore.user.village = 'Rampur Village Center, Sonipat';
+        const detectedVillage = (AppStore.lang === 'hi') ? 'रामपुर गाँव (क्लस्टर ०१)' : 'Rampur Village (Cluster 01)';
+        AppStore.user.village = detectedVillage;
         AppStore.user.gps = {
           lat: 29.1324,
           lng: 77.0125,
           accuracy: 6,
           address: humanReadableAddress
         };
+        const vInput = document.getElementById('p1-village-search-input');
+        if (vInput) vInput.value = detectedVillage;
         const villageSelect = document.getElementById('p1-village-select');
         if (villageSelect) {
           villageSelect.selectedIndex = 0;
-          AppStore.user.village = villageSelect.options[0]?.value || 'रामपुर गाँव (क्लस्टर ०१)';
-        } else {
-          AppStore.user.village = 'रामपुर गाँव (क्लस्टर ०१)';
+          if (villageSelect.options[0]) villageSelect.options[0].value = detectedVillage;
         }
         showAudioToast("GPS Location Verified", humanReadableAddress);
       }, 600);
@@ -2037,8 +2210,11 @@
 
       if (hasErr) return;
 
+      const vInput = document.getElementById('p1-village-search-input');
       const vSelect = document.getElementById('p1-village-select');
-      const selectedVillage = (vSelect && vSelect.value && vSelect.value.trim().length > 0) ? vSelect.value : 'रामपुर गाँव (क्लस्टर ०१)';
+      const selectedVillage = (vInput && vInput.value && vInput.value.trim().length > 0)
+        ? vInput.value.trim()
+        : ((vSelect && vSelect.value && vSelect.value.trim().length > 0) ? vSelect.value : 'रामपुर गाँव (क्लस्टर ०१)');
       AppStore.user.name = nameVal;
       AppStore.user.landmark = lmVal;
       AppStore.user.village = selectedVillage;
@@ -2137,17 +2313,176 @@
       }, 1500);
     }
 
+    function clearStoreSearch() {
+      const input = document.getElementById('p2-search-input');
+      const clearBtn = document.getElementById('p2-search-clear-btn');
+      const resultsPanel = document.getElementById('p2-search-results');
+      if (input) input.value = '';
+      if (clearBtn) clearBtn.classList.add('hidden');
+      if (resultsPanel) {
+        resultsPanel.innerHTML = '';
+        resultsPanel.classList.add('hidden');
+      }
+      filterStoreCatalog('');
+    }
+
     function filterStoreCatalog(query) {
       const q = (query || '').toLowerCase().trim();
-      document.querySelectorAll('#view-p2-dashboard .btn-tactile').forEach(card => {
-        if (!q) {
-          card.style.display = 'flex';
-        } else {
-          const text = card.innerText.toLowerCase();
-          card.style.display = text.includes(q) ? 'flex' : 'none';
+      const clearBtn = document.getElementById('p2-search-clear-btn');
+      const resultsPanel = document.getElementById('p2-search-results');
+      const isHi = AppStore.lang === 'hi';
+
+      if (clearBtn) {
+        if (q) clearBtn.classList.remove('hidden');
+        else clearBtn.classList.add('hidden');
+      }
+
+      if (!q) {
+        if (resultsPanel) {
+          resultsPanel.innerHTML = '';
+          resultsPanel.classList.add('hidden');
         }
+        document.querySelectorAll('#view-p2-dashboard .btn-tactile').forEach(card => {
+          card.style.display = 'flex';
+        });
+        return;
+      }
+
+      // 1. Find matching products in AppStore.catalog
+      const matchingProducts = AppStore.catalog.filter(item => {
+        const nameHi = (item.name_hi || '').toLowerCase();
+        const nameEn = (item.name_en || '').toLowerCase();
+        const cat = (item.cat || '').toLowerCase();
+        return nameHi.includes(q) || nameEn.includes(q) || cat.includes(q) ||
+               (q.includes('sugar') && (nameEn.includes('sugar') || nameHi.includes('चीनी'))) ||
+               (q.includes('चीनी') && (nameEn.includes('sugar') || nameHi.includes('चीनी'))) ||
+               (q.includes('atta') && (nameEn.includes('atta') || nameHi.includes('आटा'))) ||
+               (q.includes('आटा') && (nameEn.includes('atta') || nameHi.includes('आटा')));
       });
+
+      // 2. Identify stores that sell these products or match the query directly
+      const matchingStoreIds = new Set();
+      if (matchingProducts.some(p => ['atta', 'oil', 'spices', 'tea', 'kirana'].includes(p.cat) || p.id.startsWith('item_'))) {
+        matchingStoreIds.add('sharma_brothers');
+      }
+      if (q.includes('sharma') || q.includes('शर्मा') || q.includes('kirana') || q.includes('किराना')) {
+        matchingStoreIds.add('sharma_brothers');
+      }
+      if (q.includes('kisan') || q.includes('किसान') || q.includes('खाद') || q.includes('fertilizer') || q.includes('seed') || q.includes('बीज')) {
+        matchingStoreIds.add('kisan_seva');
+      }
+      if (q.includes('dawa') || q.includes('दवा') || q.includes('medicine') || q.includes('pharma') || q.includes('aushadhi')) {
+        matchingStoreIds.add('rampur_dawa');
+      }
+      if (q.includes('dairy') || q.includes('डेयरी') || q.includes('दूध') || q.includes('milk') || q.includes('paneer') || q.includes('पनीर')) {
+        matchingStoreIds.add('apna_dairy');
+      }
+
+      // Filter store cards on the dashboard
+      let visibleStoreCount = 0;
+      document.querySelectorAll('#view-p2-dashboard .btn-tactile').forEach(card => {
+        const text = card.innerText.toLowerCase();
+        const onclickAttr = card.getAttribute('onclick') || '';
+        let shouldShow = false;
+
+        let storeKey = '';
+        if (onclickAttr.includes('sharma_brothers')) storeKey = 'sharma_brothers';
+        else if (onclickAttr.includes('kisan_seva')) storeKey = 'kisan_seva';
+        else if (onclickAttr.includes('rampur_dawa')) storeKey = 'rampur_dawa';
+        else if (onclickAttr.includes('apna_dairy')) storeKey = 'apna_dairy';
+
+        if (storeKey) {
+          shouldShow = matchingStoreIds.has(storeKey) || text.includes(q);
+          if (shouldShow) visibleStoreCount++;
+        } else {
+          // Category tile
+          shouldShow = text.includes(q);
+        }
+        card.style.display = shouldShow ? 'flex' : 'none';
+      });
+
+      // 3. Render Instant Discovery Panel
+      if (resultsPanel) {
+        if (matchingProducts.length === 0 && visibleStoreCount === 0) {
+          resultsPanel.innerHTML = `
+            <div class="py-4 text-center text-xs text-on-surface-variant font-medium">
+              <span class="material-symbols-outlined text-outline text-[24px] block mb-1">search_off</span>
+              <span>${isHi ? `"${query}" के लिए कोई सामान या दुकान नहीं मिली` : `No products or stores found for "${query}"`}</span>
+            </div>
+          `;
+        } else {
+          let html = '';
+          if (matchingProducts.length > 0) {
+            html += `
+              <div class="mb-2 pb-1 border-b border-surface-container flex items-center justify-between">
+                <span class="text-[11px] font-extrabold text-primary uppercase tracking-wide">
+                  ${isHi ? `मिले सामान (${matchingProducts.length})` : `Products Found (${matchingProducts.length})`}
+                </span>
+                <span class="text-[10px] text-on-surface-variant">${isHi ? 'सीधे दुकान में खोलें' : 'Instant Store Jump'}</span>
+              </div>
+              <div class="space-y-2 mb-3">
+            `;
+            matchingProducts.forEach(prod => {
+              const pName = isHi ? prod.name_hi : prod.name_en;
+              const pWeight = isHi ? (prod.weight_hi || prod.weight) : (prod.weight_en || prod.weight);
+              html += `
+                <div class="flex items-center justify-between p-2 rounded-xl bg-surface-container-lowest border border-surface-container hover:border-primary transition-all">
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                      <span class="material-symbols-outlined text-[20px]">${prod.icon || 'inventory_2'}</span>
+                    </div>
+                    <div class="flex flex-col min-w-0">
+                      <span class="text-xs font-bold text-on-surface truncate">${pName}</span>
+                      <span class="text-[10px] text-on-surface-variant">${pWeight} • <strong class="text-primary font-bold">₹${prod.price}</strong> <span class="line-through text-outline">₹${prod.mrp}</span></span>
+                    </div>
+                  </div>
+                  <button onclick="openStoreWithProduct('sharma_brothers', '${prod.id}')" class="px-2.5 py-1.5 rounded-lg bg-primary text-white text-[10px] font-bold shrink-0 active:scale-95 flex items-center gap-1 shadow-xs">
+                    <span>${isHi ? 'दुकान देखें' : 'View'}</span>
+                    <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+                  </button>
+                </div>
+              `;
+            });
+            html += `</div>`;
+          }
+
+          if (visibleStoreCount > 0) {
+            html += `
+              <div class="pt-1 border-t border-surface-container text-[11px] text-on-surface-variant flex items-center gap-1">
+                <span class="material-symbols-outlined text-primary text-[14px]">storefront</span>
+                <span>${isHi ? `${visibleStoreCount} दुकानें नीचे सूची में उपलब्ध हैं` : `${visibleStoreCount} stores matching below`}</span>
+              </div>
+            `;
+          }
+          resultsPanel.innerHTML = html;
+        }
+        resultsPanel.classList.remove('hidden');
+      }
     }
+
+    function openStoreWithProduct(storeId, productId) {
+      const resultsPanel = document.getElementById('p2-search-results');
+      if (resultsPanel) resultsPanel.classList.add('hidden');
+      openStoreView(storeId);
+      setTimeout(() => {
+        const itemEl = document.getElementById(`prod-card-${productId}`);
+        if (itemEl) {
+          itemEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          itemEl.classList.add('ring-2', 'ring-primary');
+          setTimeout(() => itemEl.classList.remove('ring-2', 'ring-primary'), 2000);
+        }
+      }, 400);
+    }
+    window.openStoreWithProduct = openStoreWithProduct;
+    window.clearStoreSearch = clearStoreSearch;
+
+    document.addEventListener('click', (e) => {
+      const resultsPanel = document.getElementById('p2-search-results');
+      const input = document.getElementById('p2-search-input');
+      if (resultsPanel && !resultsPanel.contains(e.target) && e.target !== input) {
+        resultsPanel.classList.add('hidden');
+      }
+    });
 
     // --- 8. PHASE 3: STORE & PRODUCT VIEW LOGIC ---
     function filterCatalogCategory(cat, btnElement) {
@@ -2186,6 +2521,7 @@
         const discountPercent = Math.round(((item.mrp - item.price) / item.mrp) * 100);
 
         const card = document.createElement('div');
+        card.id = `prod-card-${item.id}`;
         card.className = 'bg-white rounded-2xl p-4 shadow-mobile-card border border-surface-container-high flex items-center justify-between gap-3';
         card.innerHTML = `
           <div class="flex items-center gap-3 min-w-0">
@@ -2540,6 +2876,14 @@
         }));
       } catch(e) {}
     }
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'gaonbazar_lang' && (e.newValue === 'hi' || e.newValue === 'en')) {
+        if (AppStore.lang !== e.newValue) {
+          window.toggleGlobalLanguage(e.newValue);
+        }
+      }
+    });
 
     // --- 12. AUTOMATED QA TEST SUITE & SECURITY AUDIT RUNNER ---
     function openQaModal() {

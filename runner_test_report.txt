@@ -1,185 +1,187 @@
 ================================================================================
           GAONBAZAAR GAON MITRA (RUNNER) DASHBOARD AUTOMATED TEST REPORT
 ================================================================================
-Generated: 2026-10-21 19:54:21
-Total Audits Executed: 87
-Passed Audits:         87
+Generated: 2026-10-21 22:07:15
+Total Audits Executed: 89
+Passed Audits:         89
 Failed Audits:         0
 Success Rate:          100.0%
 Total Screenshots:     15
 ================================================================================
 
 DETAILED AUDIT LOGS:
-[2026-10-21 19:53:38] Starting GaonBazaar Gaon Mitra (Runner) Dashboard Automated Test Suite...
-[2026-10-21 19:53:39]   🚀 Starting GaonBazaar FastAPI backend server in background on port 8001...
-[2026-10-21 19:53:42]   ✓ GaonBazaar Backend verified ready on http://127.0.0.1:8001/docs (3.04s)
-[2026-10-21 19:53:42] 
+[2026-10-21 22:06:31] Starting GaonBazaar Gaon Mitra (Runner) Dashboard Automated Test Suite...
+[2026-10-21 22:06:33]   🚀 Starting GaonBazaar FastAPI backend server in background on port 8001...
+[2026-10-21 22:06:36]   ✓ GaonBazaar Backend verified ready on http://127.0.0.1:8001/docs (3.33s)
+[2026-10-21 22:06:37] 
 ================================================================================
-[2026-10-21 19:53:42] STARTING GAON MITRA DASHBOARD E2E SIMULATION: Redmi 9A (Rural Budget Smartphone)
-[2026-10-21 19:53:42] Dimensions: 360x800 | DPR: 2.0
-[2026-10-21 19:53:42] ================================================================================
-[2026-10-21 19:53:43] Loading Gaon Mitra Portal: http://127.0.0.1:8001/runner
-[2026-10-21 19:53:46] 
+[2026-10-21 22:06:37] STARTING GAON MITRA DASHBOARD E2E SIMULATION: Redmi 9A (Rural Budget Smartphone)
+[2026-10-21 22:06:37] Dimensions: 360x800 | DPR: 2.0
+[2026-10-21 22:06:37] ================================================================================
+[2026-10-21 22:06:37] Loading Gaon Mitra Portal: http://127.0.0.1:8001/runner
+[2026-10-21 22:06:41] 
 --- [Redmi 9A (Rural Budget Smartphone)] Step 0: Runner Login Gate Security Enforcement ---
-[2026-10-21 19:53:46]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Gaon Mitra Login Gate Enforced - Full-screen high-contrast login gate shown; mission queue hidden before auth
-[2026-10-21 19:53:46]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Redmi_9A_(Rural_Budget_Smartphone)_step0_login_gate.png
-[2026-10-21 19:53:47] 
+[2026-10-21 22:06:42]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Gaon Mitra Login Gate Enforced - Full-screen high-contrast login gate shown; mission queue hidden before auth
+[2026-10-21 22:06:42]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Redmi_9A_(Rural_Budget_Smartphone)_step0_login_gate.png
+[2026-10-21 22:06:43] 
 --- [Redmi 9A (Rural Budget Smartphone)] Step 1: Header, Shift Toggle & Runner Identity ---
-[2026-10-21 19:53:47]   ✓ PASS: Runner Name Display - DOM Visibility & Touch Target - Box: 99x15px at (56, 18)
-[2026-10-21 19:53:47]   ✓ PASS: Runner Badge Code - DOM Visibility & Touch Target - Box: 82x24px at (161, 14)
-[2026-10-21 19:53:47]   ✓ PASS: Shift Online/Offline Toggle CTA - DOM Visibility & Touch Target - Box: 56x30px at (178, 11)
-[2026-10-21 19:53:47]   ✓ PASS: Audio Alert Chime Button - DOM Visibility & Touch Target - Box: 28x28px at (218, 55)
-[2026-10-21 19:53:47]   ✓ PASS: Language Switcher Button - DOM Visibility & Touch Target - Box: 74x36px at (238, 8)
-[2026-10-21 19:53:47]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Redmi_9A_(Rural_Budget_Smartphone)_step1_initial_dashboard.png
-[2026-10-21 19:53:48]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Shift Operational State Toggle - ड्यूटी चालू (Online) -> ड्यूटी बंद (Offline)
-[2026-10-21 19:53:48] 
+[2026-10-21 22:06:43]   ✓ PASS: Runner Name Display - DOM Visibility & Touch Target - Box: 99x15px at (56, 18)
+[2026-10-21 22:06:43]   ✓ PASS: Runner Badge Code - DOM Visibility & Touch Target - Box: 82x24px at (161, 14)
+[2026-10-21 22:06:43]   ✓ PASS: Shift Online/Offline Toggle CTA - DOM Visibility & Touch Target - Box: 56x30px at (178, 11)
+[2026-10-21 22:06:43]   ✓ PASS: Audio Alert Chime Button - DOM Visibility & Touch Target - Box: 28x28px at (218, 55)
+[2026-10-21 22:06:43]   ✓ PASS: Language Switcher Button - DOM Visibility & Touch Target - Box: 74x36px at (238, 8)
+[2026-10-21 22:06:43]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Redmi_9A_(Rural_Budget_Smartphone)_step1_initial_dashboard.png
+[2026-10-21 22:06:44]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Shift Operational State Toggle - ड्यूटी चालू (Online) -> ड्यूटी बंद (Offline)
+[2026-10-21 22:06:44] 
 --- [Redmi 9A (Rural Budget Smartphone)] Step 2: High-Level KPI Summary Tiles ---
-[2026-10-21 19:53:48]   ✓ PASS: Active Missions KPI Card - DOM Visibility & Touch Target - Box: 100x32px at (27, 168)
-[2026-10-21 19:53:48]   ✓ PASS: Completed Today KPI Card - DOM Visibility & Touch Target - Box: 100x32px at (201, 168)
-[2026-10-21 19:53:48]   ✓ PASS: Today's Earnings KPI Card - DOM Visibility & Touch Target - Box: 100x32px at (27, 308)
-[2026-10-21 19:53:48]   ✓ PASS: COD Cash in Hand KPI Card - DOM Visibility & Touch Target - Box: 100x32px at (201, 300)
-[2026-10-21 19:53:48]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Active Missions Live Counter Populated - Active Missions: 48
-[2026-10-21 19:53:48] 
+[2026-10-21 22:06:44]   ✓ PASS: Active Missions KPI Card - DOM Visibility & Touch Target - Box: 69x32px at (27, 138)
+[2026-10-21 22:06:44]   ✓ PASS: Completed Today KPI Card - DOM Visibility & Touch Target - Box: 63x32px at (201, 138)
+[2026-10-21 22:06:44]   ✓ PASS: Today's Earnings KPI Card - DOM Visibility & Touch Target - Box: 90x32px at (27, 248)
+[2026-10-21 22:06:44]   ✓ PASS: COD Cash in Hand KPI Card - DOM Visibility & Touch Target - Box: 76x32px at (201, 248)
+[2026-10-21 22:06:44]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Active Missions Live Counter Populated - Active Missions: 50
+[2026-10-21 22:06:44] 
 --- [Redmi 9A (Rural Budget Smartphone)] Step 3: Active Missions Queue & Navigation ---
-[2026-10-21 19:53:48]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Mission Cards Rendered in Queue - 48 cards loaded
-[2026-10-21 19:53:49]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Transition to Mission Detail Workspace Tab
-[2026-10-21 19:53:49]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Redmi_9A_(Rural_Budget_Smartphone)_step2_mission_detail.png
-[2026-10-21 19:53:49] 
+[2026-10-21 22:06:44]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Mission Cards Rendered in Queue - 50 cards loaded
+[2026-10-21 22:06:45]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Transition to Mission Detail Workspace Tab
+[2026-10-21 22:06:45]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Redmi_9A_(Rural_Budget_Smartphone)_step2_mission_detail.png
+[2026-10-21 22:06:45] 
 --- [Redmi 9A (Rural Budget Smartphone)] Step 4: Kirana Store Pickup Workflow ---
-[2026-10-21 19:53:49]   ✓ PASS: Kirana Store Name - DOM Visibility & Touch Target - Box: 90x52px at (79, 522)
-[2026-10-21 19:53:49]   ✓ PASS: 1-Tap Call Dukandaar CTA - DOM Visibility & Touch Target - Box: 154x34px at (177, 492)
-[2026-10-21 19:53:49]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Dukandaar Call tel: URL Integration - tel:9876543210
-[2026-10-21 19:53:49]   ✓ PASS: Confirm Store Pickup CTA Button - DOM Visibility & Touch Target - Box: 302x48px at (29, 743)
-[2026-10-21 19:53:50]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Confirm Store Pickup Action (Stage 3 -> Stage 4) - दुकान से सामान लिया • Confirm Pickup -> ✓ सामान दुकान से उठाया जा चुका है (Picked Up)
-[2026-10-21 19:53:50]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Redmi_9A_(Rural_Budget_Smartphone)_step3_pickup_confirmed.png
-[2026-10-21 19:53:50] 
+[2026-10-21 22:06:45]   ✓ PASS: Kirana Store Name - DOM Visibility & Touch Target - Box: 90x52px at (79, 438)
+[2026-10-21 22:06:45]   ✓ PASS: 1-Tap Call Dukandaar CTA - DOM Visibility & Touch Target - Box: 154x34px at (177, 408)
+[2026-10-21 22:06:45]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Dukandaar Call tel: URL Integration - tel:9876543210
+[2026-10-21 22:06:45]   ✓ PASS: Confirm Store Pickup CTA Button - DOM Visibility & Touch Target - Box: 302x48px at (29, 659)
+[2026-10-21 22:06:46]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Confirm Store Pickup Action (Stage 3 -> Stage 4) - दुकान से सामान लिया -> ✓ सामान उठाया जा चुका है
+[2026-10-21 22:06:46]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Redmi_9A_(Rural_Budget_Smartphone)_step3_pickup_confirmed.png
+[2026-10-21 22:06:46] 
 --- [Redmi 9A (Rural Budget Smartphone)] Step 5: Rural Landmark Spotlight Box & Customer Navigation ---
-[2026-10-21 19:53:50]   ✓ PASS: Customer Name Header - DOM Visibility & Touch Target - Box: 107x35px at (79, 544)
-[2026-10-21 19:53:50]   ✓ PASS: 1-Tap Call Customer CTA - DOM Visibility & Touch Target - Box: 137x34px at (194, 514)
-[2026-10-21 19:53:50]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Customer Call tel: URL Integration - tel:9876543230
-[2026-10-21 19:53:50]   ✓ PASS: Rural Landmark Spotlight Box - DOM Visibility & Touch Target - Box: 302x148px at (29, 654)
-[2026-10-21 19:53:50]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Human-Readable Rural Landmark Audit - Landmark: 'Near Old Neem Tree, Tubewell #3, Khasra 19'
-[2026-10-21 19:53:50]   ✓ PASS: Payment Mode & Cash Collect Badge - DOM Visibility & Touch Target - Box: 302x89px at (29, 816)
-[2026-10-21 19:53:50]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Redmi_9A_(Rural_Budget_Smartphone)_step4_landmark_spotlight.png
-[2026-10-21 19:53:50] 
+[2026-10-21 22:06:46]   ✓ PASS: Customer Name Header - DOM Visibility & Touch Target - Box: 107x35px at (79, 773)
+[2026-10-21 22:06:46]   ✓ PASS: 1-Tap Call Customer CTA - DOM Visibility & Touch Target - Box: 137x34px at (194, 743)
+[2026-10-21 22:06:46]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Customer Call tel: URL Integration - tel:9876543230
+[2026-10-21 22:06:46]   ✓ PASS: Rural Landmark Spotlight Box - DOM Visibility & Touch Target - Box: 302x132px at (29, 883)
+[2026-10-21 22:06:46]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Human-Readable Rural Landmark Audit - Landmark: 'Near Old Neem Tree, Tubewell #3, Khasra 19'
+[2026-10-21 22:06:46]   ✓ PASS: Payment Mode & Cash Collect Badge - DOM Visibility & Touch Target - Box: 302x69px at (29, 1028)
+[2026-10-21 22:06:46]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Redmi_9A_(Rural_Budget_Smartphone)_step4_landmark_spotlight.png
+[2026-10-21 22:06:46] 
 --- [Redmi 9A (Rural Budget Smartphone)] Step 6: Doorstep 4-Digit OTP Handover Verification ---
-[2026-10-21 19:53:50]   ✓ PASS: OTP Box Digit 1 - DOM Visibility & Touch Target - Box: 48x56px at (69, 986)
-[2026-10-21 19:53:50]   ✓ PASS: OTP Box Digit 2 - DOM Visibility & Touch Target - Box: 48x56px at (127, 986)
-[2026-10-21 19:53:50]   ✓ PASS: OTP Box Digit 3 - DOM Visibility & Touch Target - Box: 48x56px at (185, 986)
-[2026-10-21 19:53:50]   ✓ PASS: OTP Box Digit 4 - DOM Visibility & Touch Target - Box: 48x56px at (243, 986)
-[2026-10-21 19:53:50]   ✓ PASS: Verify & Complete Handover CTA - DOM Visibility & Touch Target - Box: 268x68px at (46, 1124)
-[2026-10-21 19:53:51]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Doorstep 4-Digit OTP Verified & Success Modal Opened
-[2026-10-21 19:53:52]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Redmi_9A_(Rural_Budget_Smartphone)_step5_delivery_success_modal.png
-[2026-10-21 19:53:52]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Delivery Success Modal Dismissed cleanly
-[2026-10-21 19:53:52] 
+[2026-10-21 22:06:46]   ✓ PASS: OTP Box Digit 1 - DOM Visibility & Touch Target - Box: 48x56px at (69, 1164)
+[2026-10-21 22:06:46]   ✓ PASS: OTP Box Digit 2 - DOM Visibility & Touch Target - Box: 48x56px at (127, 1164)
+[2026-10-21 22:06:46]   ✓ PASS: OTP Box Digit 3 - DOM Visibility & Touch Target - Box: 48x56px at (185, 1164)
+[2026-10-21 22:06:46]   ✓ PASS: OTP Box Digit 4 - DOM Visibility & Touch Target - Box: 48x56px at (243, 1164)
+[2026-10-21 22:06:46]   ✓ PASS: Verify & Complete Handover CTA - DOM Visibility & Touch Target - Box: 268x68px at (46, 1302)
+[2026-10-21 22:06:48]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Doorstep 4-Digit OTP Verified & Success Modal Opened
+[2026-10-21 22:06:48]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Redmi_9A_(Rural_Budget_Smartphone)_step5_delivery_success_modal.png
+[2026-10-21 22:06:49]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Delivery Success Modal Dismissed cleanly
+[2026-10-21 22:06:49] 
 --- [Redmi 9A (Rural Budget Smartphone)] Step 7: Shift Earnings & Hub Settlement Ledger ---
-[2026-10-21 19:53:53]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Transition to Shift Ledger Workspace Tab
-[2026-10-21 19:53:53]   ✓ PASS: Completed Deliveries Count Box - DOM Visibility & Touch Target - Box: 120x28px at (42, -287)
-[2026-10-21 19:53:53]   ✓ PASS: Runner Total Payout Box - DOM Visibility & Touch Target - Box: 120x28px at (198, -287)
-[2026-10-21 19:53:53]   ✓ PASS: COD Cash in Hand Box - DOM Visibility & Touch Target - Box: 120x28px at (42, -180)
-[2026-10-21 19:53:53]   ✓ PASS: Distance Covered Box - DOM Visibility & Touch Target - Box: 120x28px at (198, -180)
-[2026-10-21 19:53:53]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Ledger Financial Breakdown Verified - Earnings: ₹380 | COD in Hand: ₹5229
-[2026-10-21 19:53:53]   ✓ PASS: Hub Deposit Slip CTA Button - DOM Visibility & Touch Target - Box: 110x44px at (221, -393)
-[2026-10-21 19:53:53]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Hub Cash Deposit Slip Modal Opened
-[2026-10-21 19:53:54]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Redmi_9A_(Rural_Budget_Smartphone)_step6_deposit_slip_modal.png
-[2026-10-21 19:53:54] 
+[2026-10-21 22:06:49]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Transition to Shift Ledger Workspace Tab
+[2026-10-21 22:06:49]   ✓ PASS: Completed Deliveries Count Box - DOM Visibility & Touch Target - Box: 120x28px at (42, -279)
+[2026-10-21 22:06:49]   ✓ PASS: Runner Total Payout Box - DOM Visibility & Touch Target - Box: 120x28px at (198, -279)
+[2026-10-21 22:06:49]   ✓ PASS: COD Cash in Hand Box - DOM Visibility & Touch Target - Box: 120x28px at (42, -172)
+[2026-10-21 22:06:49]   ✓ PASS: Distance Covered Box - DOM Visibility & Touch Target - Box: 120x28px at (198, -172)
+[2026-10-21 22:06:49]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Ledger Financial Breakdown Verified - Earnings: ₹440 | COD in Hand: ₹6061
+[2026-10-21 22:06:49]   ✓ PASS: Hub Deposit Slip CTA Button - DOM Visibility & Touch Target - Box: 111x28px at (220, -370)
+[2026-10-21 22:06:50]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Hub Cash Deposit Slip Modal Opened
+[2026-10-21 22:06:50]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Redmi_9A_(Rural_Budget_Smartphone)_step6_deposit_slip_modal.png
+[2026-10-21 22:06:50] 
 --- [Redmi 9A (Rural Budget Smartphone)] Step 8: Bilingual State Switch (Hindi / English) ---
-[2026-10-21 19:53:54]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Bilingual Toggle to English - Label: translate
+[2026-10-21 22:06:51]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Bilingual Toggle to English - Label: translate
 हिंदी
-[2026-10-21 19:53:55] 
+[2026-10-21 22:06:51]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Bilingual Storage State Persisted ('gaonbazar_lang') - Value: en
+[2026-10-21 22:06:51] 
 --- [Redmi 9A (Rural Budget Smartphone)] Step 9: Zero Console Errors Audit ---
-[2026-10-21 19:53:55]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Zero JavaScript Console Errors - Clean runtime execution
-[2026-10-21 19:53:55] 
+[2026-10-21 22:06:51]   ✓ PASS: [Redmi 9A (Rural Budget Smartphone)] Zero JavaScript Console Errors - Clean runtime execution
+[2026-10-21 22:06:51] 
 ================================================================================
-[2026-10-21 19:53:55] STARTING GAON MITRA DASHBOARD E2E SIMULATION: Realme C35 (Standard Rural Android)
-[2026-10-21 19:53:55] Dimensions: 393x851 | DPR: 2.75
-[2026-10-21 19:53:55] ================================================================================
-[2026-10-21 19:53:55] Loading Gaon Mitra Portal: http://127.0.0.1:8001/runner
-[2026-10-21 19:53:59] 
+[2026-10-21 22:06:51] STARTING GAON MITRA DASHBOARD E2E SIMULATION: Realme C35 (Standard Rural Android)
+[2026-10-21 22:06:51] Dimensions: 393x851 | DPR: 2.75
+[2026-10-21 22:06:51] ================================================================================
+[2026-10-21 22:06:51] Loading Gaon Mitra Portal: http://127.0.0.1:8001/runner
+[2026-10-21 22:06:54] 
 --- [Realme C35 (Standard Rural Android)] Step 0: Runner Login Gate Security Enforcement ---
-[2026-10-21 19:53:59]   ✓ PASS: [Realme C35 (Standard Rural Android)] Gaon Mitra Login Gate Enforced - Full-screen high-contrast login gate shown; mission queue hidden before auth
-[2026-10-21 19:53:59]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Realme_C35_(Standard_Rural_Android)_step0_login_gate.png
-[2026-10-21 19:54:01] 
+[2026-10-21 22:06:54]   ✓ PASS: [Realme C35 (Standard Rural Android)] Gaon Mitra Login Gate Enforced - Full-screen high-contrast login gate shown; mission queue hidden before auth
+[2026-10-21 22:06:54]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Realme_C35_(Standard_Rural_Android)_step0_login_gate.png
+[2026-10-21 22:06:56] 
 --- [Realme C35 (Standard Rural Android)] Step 1: Header, Shift Toggle & Runner Identity ---
-[2026-10-21 19:54:01]   ✓ PASS: Runner Name Display - DOM Visibility & Touch Target - Box: 99x15px at (56, 18)
-[2026-10-21 19:54:01]   ✓ PASS: Runner Badge Code - DOM Visibility & Touch Target - Box: 82x24px at (161, 14)
-[2026-10-21 19:54:01]   ✓ PASS: Shift Online/Offline Toggle CTA - DOM Visibility & Touch Target - Box: 56x30px at (211, 11)
-[2026-10-21 19:54:01]   ✓ PASS: Audio Alert Chime Button - DOM Visibility & Touch Target - Box: 28x28px at (251, 55)
-[2026-10-21 19:54:01]   ✓ PASS: Language Switcher Button - DOM Visibility & Touch Target - Box: 74x36px at (271, 8)
-[2026-10-21 19:54:01]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Realme_C35_(Standard_Rural_Android)_step1_initial_dashboard.png
-[2026-10-21 19:54:01]   ✓ PASS: [Realme C35 (Standard Rural Android)] Shift Operational State Toggle - ड्यूटी चालू (Online) -> ड्यूटी बंद (Offline)
-[2026-10-21 19:54:02] 
+[2026-10-21 22:06:56]   ✓ PASS: Runner Name Display - DOM Visibility & Touch Target - Box: 99x15px at (56, 18)
+[2026-10-21 22:06:56]   ✓ PASS: Runner Badge Code - DOM Visibility & Touch Target - Box: 82x24px at (161, 14)
+[2026-10-21 22:06:56]   ✓ PASS: Shift Online/Offline Toggle CTA - DOM Visibility & Touch Target - Box: 56x30px at (211, 11)
+[2026-10-21 22:06:56]   ✓ PASS: Audio Alert Chime Button - DOM Visibility & Touch Target - Box: 28x28px at (251, 55)
+[2026-10-21 22:06:56]   ✓ PASS: Language Switcher Button - DOM Visibility & Touch Target - Box: 74x36px at (271, 8)
+[2026-10-21 22:06:56]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Realme_C35_(Standard_Rural_Android)_step1_initial_dashboard.png
+[2026-10-21 22:06:57]   ✓ PASS: [Realme C35 (Standard Rural Android)] Shift Operational State Toggle - ड्यूटी चालू (Online) -> ड्यूटी बंद (Offline)
+[2026-10-21 22:06:57] 
 --- [Realme C35 (Standard Rural Android)] Step 2: High-Level KPI Summary Tiles ---
-[2026-10-21 19:54:02]   ✓ PASS: Active Missions KPI Card - DOM Visibility & Touch Target - Box: 116x32px at (27, 153)
-[2026-10-21 19:54:02]   ✓ PASS: Completed Today KPI Card - DOM Visibility & Touch Target - Box: 116x32px at (218, 153)
-[2026-10-21 19:54:02]   ✓ PASS: Today's Earnings KPI Card - DOM Visibility & Touch Target - Box: 116x32px at (27, 278)
-[2026-10-21 19:54:02]   ✓ PASS: COD Cash in Hand KPI Card - DOM Visibility & Touch Target - Box: 116x32px at (218, 278)
-[2026-10-21 19:54:02]   ✓ PASS: [Realme C35 (Standard Rural Android)] Active Missions Live Counter Populated - Active Missions: 48
-[2026-10-21 19:54:02] 
+[2026-10-21 22:06:57]   ✓ PASS: Active Missions KPI Card - DOM Visibility & Touch Target - Box: 69x32px at (27, 138)
+[2026-10-21 22:06:57]   ✓ PASS: Completed Today KPI Card - DOM Visibility & Touch Target - Box: 63x32px at (218, 138)
+[2026-10-21 22:06:57]   ✓ PASS: Today's Earnings KPI Card - DOM Visibility & Touch Target - Box: 90x32px at (27, 248)
+[2026-10-21 22:06:57]   ✓ PASS: COD Cash in Hand KPI Card - DOM Visibility & Touch Target - Box: 72x32px at (218, 248)
+[2026-10-21 22:06:57]   ✓ PASS: [Realme C35 (Standard Rural Android)] Active Missions Live Counter Populated - Active Missions: 50
+[2026-10-21 22:06:57] 
 --- [Realme C35 (Standard Rural Android)] Step 3: Active Missions Queue & Navigation ---
-[2026-10-21 19:54:02]   ✓ PASS: [Realme C35 (Standard Rural Android)] Mission Cards Rendered in Queue - 48 cards loaded
-[2026-10-21 19:54:03]   ✓ PASS: [Realme C35 (Standard Rural Android)] Transition to Mission Detail Workspace Tab
-[2026-10-21 19:54:03]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Realme_C35_(Standard_Rural_Android)_step2_mission_detail.png
-[2026-10-21 19:54:03] 
+[2026-10-21 22:06:57]   ✓ PASS: [Realme C35 (Standard Rural Android)] Mission Cards Rendered in Queue - 50 cards loaded
+[2026-10-21 22:06:58]   ✓ PASS: [Realme C35 (Standard Rural Android)] Transition to Mission Detail Workspace Tab
+[2026-10-21 22:06:58]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Realme_C35_(Standard_Rural_Android)_step2_mission_detail.png
+[2026-10-21 22:06:58] 
 --- [Realme C35 (Standard Rural Android)] Step 4: Kirana Store Pickup Workflow ---
-[2026-10-21 19:54:03]   ✓ PASS: Kirana Store Name - DOM Visibility & Touch Target - Box: 123x35px at (79, 477)
-[2026-10-21 19:54:03]   ✓ PASS: 1-Tap Call Dukandaar CTA - DOM Visibility & Touch Target - Box: 154x34px at (210, 462)
-[2026-10-21 19:54:03]   ✓ PASS: [Realme C35 (Standard Rural Android)] Dukandaar Call tel: URL Integration - tel:9876543210
-[2026-10-21 19:54:03]   ✓ PASS: Confirm Store Pickup CTA Button - DOM Visibility & Touch Target - Box: 335x48px at (29, 680)
-[2026-10-21 19:54:04]   ✓ PASS: [Realme C35 (Standard Rural Android)] Confirm Store Pickup Action (Stage 3 -> Stage 4) - दुकान से सामान लिया • Confirm Pickup -> ✓ सामान दुकान से उठाया जा चुका है (Picked Up)
-[2026-10-21 19:54:04]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Realme_C35_(Standard_Rural_Android)_step3_pickup_confirmed.png
-[2026-10-21 19:54:04] 
+[2026-10-21 22:06:58]   ✓ PASS: Kirana Store Name - DOM Visibility & Touch Target - Box: 123x35px at (79, 423)
+[2026-10-21 22:06:58]   ✓ PASS: 1-Tap Call Dukandaar CTA - DOM Visibility & Touch Target - Box: 154x34px at (210, 408)
+[2026-10-21 22:06:58]   ✓ PASS: [Realme C35 (Standard Rural Android)] Dukandaar Call tel: URL Integration - tel:9876543210
+[2026-10-21 22:06:58]   ✓ PASS: Confirm Store Pickup CTA Button - DOM Visibility & Touch Target - Box: 335x48px at (29, 626)
+[2026-10-21 22:06:59]   ✓ PASS: [Realme C35 (Standard Rural Android)] Confirm Store Pickup Action (Stage 3 -> Stage 4) - दुकान से सामान लिया -> ✓ सामान उठाया जा चुका है
+[2026-10-21 22:06:59]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Realme_C35_(Standard_Rural_Android)_step3_pickup_confirmed.png
+[2026-10-21 22:06:59] 
 --- [Realme C35 (Standard Rural Android)] Step 5: Rural Landmark Spotlight Box & Customer Navigation ---
-[2026-10-21 19:54:04]   ✓ PASS: Customer Name Header - DOM Visibility & Touch Target - Box: 140x35px at (79, 756)
-[2026-10-21 19:54:04]   ✓ PASS: 1-Tap Call Customer CTA - DOM Visibility & Touch Target - Box: 137x34px at (227, 740)
-[2026-10-21 19:54:04]   ✓ PASS: [Realme C35 (Standard Rural Android)] Customer Call tel: URL Integration - tel:9876543230
-[2026-10-21 19:54:04]   ✓ PASS: Rural Landmark Spotlight Box - DOM Visibility & Touch Target - Box: 335x132px at (29, 866)
-[2026-10-21 19:54:04]   ✓ PASS: [Realme C35 (Standard Rural Android)] Human-Readable Rural Landmark Audit - Landmark: 'Near Old Neem Tree, Tubewell #3, Khasra 19'
-[2026-10-21 19:54:04]   ✓ PASS: Payment Mode & Cash Collect Badge - DOM Visibility & Touch Target - Box: 335x69px at (29, 1011)
-[2026-10-21 19:54:04]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Realme_C35_(Standard_Rural_Android)_step4_landmark_spotlight.png
-[2026-10-21 19:54:04] 
+[2026-10-21 22:06:59]   ✓ PASS: Customer Name Header - DOM Visibility & Touch Target - Box: 140x35px at (79, 726)
+[2026-10-21 22:06:59]   ✓ PASS: 1-Tap Call Customer CTA - DOM Visibility & Touch Target - Box: 137x34px at (227, 710)
+[2026-10-21 22:06:59]   ✓ PASS: [Realme C35 (Standard Rural Android)] Customer Call tel: URL Integration - tel:9876543230
+[2026-10-21 22:06:59]   ✓ PASS: Rural Landmark Spotlight Box - DOM Visibility & Touch Target - Box: 335x132px at (29, 836)
+[2026-10-21 22:06:59]   ✓ PASS: [Realme C35 (Standard Rural Android)] Human-Readable Rural Landmark Audit - Landmark: 'Near Old Neem Tree, Tubewell #3, Khasra 19'
+[2026-10-21 22:06:59]   ✓ PASS: Payment Mode & Cash Collect Badge - DOM Visibility & Touch Target - Box: 335x69px at (29, 981)
+[2026-10-21 22:06:59]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Realme_C35_(Standard_Rural_Android)_step4_landmark_spotlight.png
+[2026-10-21 22:06:59] 
 --- [Realme C35 (Standard Rural Android)] Step 6: Doorstep 4-Digit OTP Handover Verification ---
-[2026-10-21 19:54:04]   ✓ PASS: OTP Box Digit 1 - DOM Visibility & Touch Target - Box: 48x56px at (86, 1161)
-[2026-10-21 19:54:04]   ✓ PASS: OTP Box Digit 2 - DOM Visibility & Touch Target - Box: 48x56px at (144, 1161)
-[2026-10-21 19:54:04]   ✓ PASS: OTP Box Digit 3 - DOM Visibility & Touch Target - Box: 48x56px at (202, 1161)
-[2026-10-21 19:54:04]   ✓ PASS: OTP Box Digit 4 - DOM Visibility & Touch Target - Box: 48x56px at (260, 1161)
-[2026-10-21 19:54:04]   ✓ PASS: Verify & Complete Handover CTA - DOM Visibility & Touch Target - Box: 301x48px at (46, 1299)
-[2026-10-21 19:54:05]   ✓ PASS: [Realme C35 (Standard Rural Android)] Doorstep 4-Digit OTP Verified & Success Modal Opened
-[2026-10-21 19:54:06]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Realme_C35_(Standard_Rural_Android)_step5_delivery_success_modal.png
-[2026-10-21 19:54:06]   ✓ PASS: [Realme C35 (Standard Rural Android)] Delivery Success Modal Dismissed cleanly
-[2026-10-21 19:54:06] 
+[2026-10-21 22:06:59]   ✓ PASS: OTP Box Digit 1 - DOM Visibility & Touch Target - Box: 48x56px at (86, 1116)
+[2026-10-21 22:06:59]   ✓ PASS: OTP Box Digit 2 - DOM Visibility & Touch Target - Box: 48x56px at (144, 1116)
+[2026-10-21 22:06:59]   ✓ PASS: OTP Box Digit 3 - DOM Visibility & Touch Target - Box: 48x56px at (202, 1116)
+[2026-10-21 22:06:59]   ✓ PASS: OTP Box Digit 4 - DOM Visibility & Touch Target - Box: 48x56px at (260, 1116)
+[2026-10-21 22:06:59]   ✓ PASS: Verify & Complete Handover CTA - DOM Visibility & Touch Target - Box: 301x48px at (46, 1254)
+[2026-10-21 22:07:01]   ✓ PASS: [Realme C35 (Standard Rural Android)] Doorstep 4-Digit OTP Verified & Success Modal Opened
+[2026-10-21 22:07:01]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Realme_C35_(Standard_Rural_Android)_step5_delivery_success_modal.png
+[2026-10-21 22:07:02]   ✓ PASS: [Realme C35 (Standard Rural Android)] Delivery Success Modal Dismissed cleanly
+[2026-10-21 22:07:02] 
 --- [Realme C35 (Standard Rural Android)] Step 7: Shift Earnings & Hub Settlement Ledger ---
-[2026-10-21 19:54:07]   ✓ PASS: [Realme C35 (Standard Rural Android)] Transition to Shift Ledger Workspace Tab
-[2026-10-21 19:54:07]   ✓ PASS: Completed Deliveries Count Box - DOM Visibility & Touch Target - Box: 136x28px at (42, -127)
-[2026-10-21 19:54:07]   ✓ PASS: Runner Total Payout Box - DOM Visibility & Touch Target - Box: 136x28px at (214, -127)
-[2026-10-21 19:54:07]   ✓ PASS: COD Cash in Hand Box - DOM Visibility & Touch Target - Box: 136x28px at (42, -20)
-[2026-10-21 19:54:07]   ✓ PASS: Distance Covered Box - DOM Visibility & Touch Target - Box: 136x28px at (214, -20)
-[2026-10-21 19:54:07]   ✓ PASS: [Realme C35 (Standard Rural Android)] Ledger Financial Breakdown Verified - Earnings: ₹400 | COD in Hand: ₹5466
-[2026-10-21 19:54:07]   ✓ PASS: Hub Deposit Slip CTA Button - DOM Visibility & Touch Target - Box: 111x28px at (253, -218)
-[2026-10-21 19:54:08]   ✓ PASS: [Realme C35 (Standard Rural Android)] Hub Cash Deposit Slip Modal Opened
-[2026-10-21 19:54:08]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Realme_C35_(Standard_Rural_Android)_step6_deposit_slip_modal.png
-[2026-10-21 19:54:08] 
+[2026-10-21 22:07:02]   ✓ PASS: [Realme C35 (Standard Rural Android)] Transition to Shift Ledger Workspace Tab
+[2026-10-21 22:07:02]   ✓ PASS: Completed Deliveries Count Box - DOM Visibility & Touch Target - Box: 136x28px at (42, -160)
+[2026-10-21 22:07:02]   ✓ PASS: Runner Total Payout Box - DOM Visibility & Touch Target - Box: 136x28px at (214, -160)
+[2026-10-21 22:07:02]   ✓ PASS: COD Cash in Hand Box - DOM Visibility & Touch Target - Box: 136x28px at (42, -53)
+[2026-10-21 22:07:02]   ✓ PASS: Distance Covered Box - DOM Visibility & Touch Target - Box: 136x28px at (214, -53)
+[2026-10-21 22:07:02]   ✓ PASS: [Realme C35 (Standard Rural Android)] Ledger Financial Breakdown Verified - Earnings: ₹460 | COD in Hand: ₹6298
+[2026-10-21 22:07:02]   ✓ PASS: Hub Deposit Slip CTA Button - DOM Visibility & Touch Target - Box: 111x28px at (253, -250)
+[2026-10-21 22:07:03]   ✓ PASS: [Realme C35 (Standard Rural Android)] Hub Cash Deposit Slip Modal Opened
+[2026-10-21 22:07:03]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Realme_C35_(Standard_Rural_Android)_step6_deposit_slip_modal.png
+[2026-10-21 22:07:03] 
 --- [Realme C35 (Standard Rural Android)] Step 8: Bilingual State Switch (Hindi / English) ---
-[2026-10-21 19:54:09]   ✓ PASS: [Realme C35 (Standard Rural Android)] Bilingual Toggle to English - Label: translate
+[2026-10-21 22:07:04]   ✓ PASS: [Realme C35 (Standard Rural Android)] Bilingual Toggle to English - Label: translate
 हिंदी
-[2026-10-21 19:54:09] 
+[2026-10-21 22:07:04]   ✓ PASS: [Realme C35 (Standard Rural Android)] Bilingual Storage State Persisted ('gaonbazar_lang') - Value: en
+[2026-10-21 22:07:04] 
 --- [Realme C35 (Standard Rural Android)] Step 9: Zero Console Errors Audit ---
-[2026-10-21 19:54:09]   ✓ PASS: [Realme C35 (Standard Rural Android)] Zero JavaScript Console Errors - Clean runtime execution
-[2026-10-21 19:54:09] 
+[2026-10-21 22:07:04]   ✓ PASS: [Realme C35 (Standard Rural Android)] Zero JavaScript Console Errors - Clean runtime execution
+[2026-10-21 22:07:04] 
 ================================================================================
-[2026-10-21 19:54:09] STARTING FULL END-TO-END MULTI-PARTY ORDER LIFECYCLE SYNC TEST
-[2026-10-21 19:54:09] ================================================================================
-[2026-10-21 19:54:15]   📦 1. Customer places order via /api/orders/checkout...
-[2026-10-21 19:54:15]   ✓ Order placed: #RUR-3872 | Delivery OTP: 4821
-[2026-10-21 19:54:15]   🏬 2. Vendor accepts and packs #RUR-3872...
-[2026-10-21 19:54:15]   ✓ Order advanced to Stage 3 (Packed & Ready for Runner)
-[2026-10-21 19:54:15]   ⏳ 3. Waiting for Gaon Mitra live polling to detect #RUR-3872...
-[2026-10-21 19:54:18]   ✓ PASS: Real-Time Gaon Mitra Mission Reception (Vendor Pack -> Runner Sync) - Order #RUR-3872 appeared live in Runner Missions Queue without page reload!
-[2026-10-21 19:54:18]   🛵 4. Runner confirms store pickup...
-[2026-10-21 19:54:19]   🏡 5. Runner arrives at customer landmark and verifies doorstep OTP...
-[2026-10-21 19:54:21]   ✓ PASS: Doorstep Handover OTP Validation & Celebration Modal - Mission completed successfully!
-[2026-10-21 19:54:21]   ✓ PASS: Full Lifecycle SQLite DB State Integrity (Stage 5 Delivered) - Order #RUR-3872: Stage 5 (Delivered)
-[2026-10-21 19:54:21]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/step7_full_lifecycle_sync.png
+[2026-10-21 22:07:04] STARTING FULL END-TO-END MULTI-PARTY ORDER LIFECYCLE SYNC TEST
+[2026-10-21 22:07:04] ================================================================================
+[2026-10-21 22:07:09]   📦 1. Customer places order via /api/orders/checkout...
+[2026-10-21 22:07:09]   ✓ Order placed: #RUR-7743 | Delivery OTP: 4821
+[2026-10-21 22:07:09]   🏬 2. Vendor accepts and packs #RUR-7743...
+[2026-10-21 22:07:09]   ✓ Order advanced to Stage 3 (Packed & Ready for Runner)
+[2026-10-21 22:07:09]   ⏳ 3. Waiting for Gaon Mitra live polling to detect #RUR-7743...
+[2026-10-21 22:07:12]   ✓ PASS: Real-Time Gaon Mitra Mission Reception (Vendor Pack -> Runner Sync) - Order #RUR-7743 appeared live in Runner Missions Queue without page reload!
+[2026-10-21 22:07:12]   🛵 4. Runner confirms store pickup...
+[2026-10-21 22:07:13]   🏡 5. Runner arrives at customer landmark and verifies doorstep OTP...
+[2026-10-21 22:07:15]   ✓ PASS: Doorstep Handover OTP Validation & Celebration Modal - Mission completed successfully!
+[2026-10-21 22:07:15]   ✓ PASS: Full Lifecycle SQLite DB State Integrity (Stage 5 Delivered) - Order #RUR-7743: Stage 5 (Delivered)
+[2026-10-21 22:07:15]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/step7_full_lifecycle_sync.png
 
 ================================================================================
 END OF RUNNER TEST REPORT - 100% HEALTHY

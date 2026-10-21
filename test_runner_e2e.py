@@ -142,52 +142,65 @@ def capture_screenshot(page, name, logger):
 def kill_port_processes(ports=[8001]):
     for port in ports:
         try:
-            res = subprocess.run(f"netstat -ano | findstr :{port}", shell=True, capture_output=True, text=True)
-            pids = set()
-            for line in res.stdout.strip().splitlines():
-                parts = line.split()
-                if len(parts) >= 5 and f":{port}" in parts[1]:
-                    pid = parts[-1]
-                    if pid.isdigit() and int(pid) > 0:
-                        pids.add(pid)
-            for pid in pids:
-                try:
-                    subprocess.run(f"taskkill /F /PID {pid}", shell=True, capture_output=True)
-                except Exception:
-                    pass
+            if sys.platform == "win32":
+                res = subprocess.run(f"netstat -ano | findstr :{port}", shell=True, capture_output=True, text=True)
+                pids = set()
+                for line in res.stdout.strip().splitlines():
+                    parts = line.split()
+                    if len(parts) >= 5 and f":{port}" in parts[1]:
+                        pid = parts[-1]
+                        if pid.isdigit() and int(pid) > 0:
+                            pids.add(pid)
+                for pid in pids:
+                    try:
+                        subprocess.run(f"taskkill /F /PID {pid}", shell=True, capture_output=True)
+                    except Exception:
+                        pass
+            else:
+                subprocess.run(f"fuser -k {port}/tcp 2>/dev/null || true", shell=True, capture_output=True)
         except Exception:
             pass
 
 
 def ensure_backend_running(logger):
+    try:
+        req = urllib.request.Request("http://127.0.0.1:8001/docs", headers={"User-Agent": "Playwright-QA"})
+        with urllib.request.urlopen(req, timeout=1.0) as res:
+            if res.status == 200:
+                logger.log("  ✓ GaonBazaar Backend is already active and healthy on http://127.0.0.1:8001")
+                return None
+    except Exception:
+        pass
+
     kill_port_processes([8001])
-    time.sleep(1.0)
+    time.sleep(0.5)
 
     logger.log("  🚀 Starting GaonBazaar FastAPI backend server in background on port 8001...")
     server_proc = subprocess.Popen(
-        [sys.executable, "-m", "uvicorn", "backend.main:app", "--host", "127.0.0.1", "--port", "8001"],
+        [sys.executable, "run_server.py", "8001"],
+        cwd=str(BASE_DIR),
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL
     )
 
     start_time = time.time()
     server_ready = False
-    while time.time() - start_time < 12.0:
+    while time.time() - start_time < 5.0:
         if server_proc.poll() is not None:
             logger.log(f"  ✗ Background server exited unexpectedly with code {server_proc.poll()}")
             break
         try:
             req = urllib.request.Request("http://127.0.0.1:8001/docs", headers={"User-Agent": "Playwright-QA"})
-            with urllib.request.urlopen(req, timeout=1.0) as res:
+            with urllib.request.urlopen(req, timeout=0.8) as res:
                 if res.status == 200:
                     server_ready = True
                     logger.log(f"  ✓ GaonBazaar Backend verified ready on http://127.0.0.1:8001/docs ({time.time() - start_time:.2f}s)")
                     break
         except Exception:
-            time.sleep(0.5)
+            time.sleep(0.3)
 
     if not server_ready and server_proc.poll() is None:
-        logger.log("  ⚠️ Warning: Server is still starting after 12s.")
+        logger.log("  ⚠️ Warning: Server is still starting after 5s polling window.")
 
     return server_proc
 
@@ -488,6 +501,8 @@ def run_runner_device_simulation(browser, device_config, logger):
     page.wait_for_timeout(400)
     en_label = page.inner_text("#lang-toggle-btn").strip()
     logger.record_test(f"[{dev_name}] Bilingual Toggle to English", "हिंदी" in en_label or "English" in en_label, f"Label: {en_label}")
+    stored_lang = page.evaluate("localStorage.getItem('gaonbazar_lang')")
+    logger.record_test(f"[{dev_name}] Bilingual Storage State Persisted ('gaonbazar_lang')", stored_lang in ['hi', 'en'], f"Value: {stored_lang}")
 
     page.click("#lang-toggle-btn")
     page.wait_for_timeout(400)
@@ -663,7 +678,7 @@ def main():
                         server_proc.kill()
                     except Exception:
                         pass
-            kill_port_processes([8001])
+                kill_port_processes([8001])
 
 
 if __name__ == "__main__":
