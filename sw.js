@@ -1,0 +1,171 @@
+/**
+ * GaonBazaar (गांव बाज़ार) - Service Worker (sw.js)
+ * Production Rural Offline-First Caching & Resilience Strategy:
+ * 
+ * 1. Cache-First Strategy:
+ *    - Applied to static assets (HTML, JS, CSS, images, fonts, icons).
+ *    - Serves instantly from local cache without waiting for slow 2G/3G rural cell towers.
+ * 
+ * 2. Network-First Strategy:
+ *    - Applied to dynamic REST API calls (/api/*).
+ *    - Always attempts to fetch live data first; falls back to cached responses or offline JSON on network drop.
+ * 
+ * 3. Total Network Dropout Interception:
+ *    - Intercepts failed navigation/page fetch requests and delivers the bilingual /offline.html fallback page.
+ *    - Eliminates the browser's "No Internet" dinosaur screen.
+ */
+
+const CACHE_NAME = 'gaonbazar-v1';
+const PRECACHE_ASSETS = [
+  '/',
+  '/index.html',
+  '/offline.html',
+  '/sw.js'
+];
+
+// --- 1. SERVICE WORKER INSTALLATION ---
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(async (cache) => {
+      // Precache critical offline pages and shell
+      try {
+        await cache.addAll(PRECACHE_ASSETS);
+      } catch (err) {
+        console.warn('[SW Install]: Precache addAll partial failure, caching individually:', err);
+        for (const asset of PRECACHE_ASSETS) {
+          try {
+            await cache.add(asset);
+          } catch (e) {
+            console.warn('[SW Install]: Could not precache:', asset, e);
+          }
+        }
+      }
+    }).then(() => self.skipWaiting())
+  );
+});
+
+// --- 2. SERVICE WORKER ACTIVATION ---
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((name) => {
+          if (name !== CACHE_NAME) {
+            return caches.delete(name);
+          }
+        })
+      );
+    }).then(() => self.clients.claim())
+  );
+});
+
+// --- 3. INTELLIGENT FETCH INTERCEPTION ---
+self.addEventListener('fetch', (event) => {
+  const request = event.request;
+  const url = new URL(request.url);
+
+  // Ignore non-HTTP(S) schemes (e.g. chrome-extension, data:)
+  if (!url.protocol.startsWith('http')) return;
+
+  // ---------------------------------------------------------------------------
+  // STRATEGY A: Network-First for API Calls (/api/*)
+  // ---------------------------------------------------------------------------
+  if (url.pathname.startsWith('/api/')) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          // If valid GET response, save to cache
+          if (request.method === 'GET' && response && response.status === 200) {
+            const responseClone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, responseClone));
+          }
+          return response;
+        })
+        .catch(async () => {
+          // Network dropped entirely! Check cache first for GET queries
+          if (request.method === 'GET') {
+            const cachedResponse = await caches.match(request);
+            if (cachedResponse) {
+              return cachedResponse;
+            }
+          }
+
+          // Return structured bilingual offline JSON fallback
+          return new Response(
+            JSON.stringify({
+              offline: true,
+              error: 'Network offline',
+              detail: 'गांव बाज़ार ऑफ़लाइन मोड: नेटवर्क कनेक्शन उपलब्ध नहीं है / GaonBazaar Offline: Connection unavailable'
+            }),
+            {
+              status: 503,
+              statusText: 'Service Unavailable (Offline)',
+              headers: { 'Content-Type': 'application/json' }
+            }
+          );
+        })
+    );
+    return;
+  }
+
+  // ---------------------------------------------------------------------------
+  // STRATEGY B: Navigation / HTML Requests (Total Dropout Fallback to offline.html)
+  // ---------------------------------------------------------------------------
+  const isNavigate = request.mode === 'navigate';
+  const acceptsHtml = request.headers.get('accept') && request.headers.get('accept').includes('text/html');
+
+  if (isNavigate || acceptsHtml) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (response && response.status === 200) {
+            const responseClone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, responseClone));
+          }
+          return response;
+        })
+        .catch(async () => {
+          // Network failed! Try matching cached version of requested URL
+          const cached = await caches.match(request);
+          if (cached) {
+            return cached;
+          }
+
+          // Return bilingual offline.html fallback page
+          const offlinePage = await caches.match('/offline.html');
+          if (offlinePage) {
+            return offlinePage;
+          }
+
+          // Relative fallback
+          return (await caches.match('offline.html')) || Response.error();
+        })
+    );
+    return;
+  }
+
+  // ---------------------------------------------------------------------------
+  // STRATEGY C: Cache-First for Static Assets (JS, CSS, Images, Fonts, Icons)
+  // ---------------------------------------------------------------------------
+  event.respondWith(
+    caches.match(request).then((cachedResponse) => {
+      if (cachedResponse) {
+        return cachedResponse;
+      }
+
+      // Not in cache: fetch from network and dynamically cache
+      return fetch(request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200 && request.method === 'GET') {
+            const responseClone = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, responseClone));
+          }
+          return networkResponse;
+        })
+        .catch(async () => {
+          // If a static asset fails, fallback gracefully
+          return new Response('', { status: 408, statusText: 'Request Timeout / Offline' });
+        });
+    })
+  );
+});

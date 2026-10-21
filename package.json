@@ -1,0 +1,22 @@
+{
+  "name": "gaonbazar-customer-app",
+  "version": "1.0.0",
+  "description": "Hyperlocal Rural Delivery Customer App - Automated Playwright E2E Test Suite",
+  "main": "test_mobile_e2e.js",
+  "scripts": {
+    "test": "node test_mobile_e2e.js",
+    "test:python": "python test_mobile_e2e.py"
+  },
+  "keywords": [
+    "hyperlocal",
+    "delivery",
+    "playwright",
+    "mobile-testing",
+    "rural-india"
+  ],
+  "author": "GaonBazaar QA Team",
+  "license": "ISC",
+  "devDependencies": {
+    "playwright": "^1.49.0"
+  }
+}

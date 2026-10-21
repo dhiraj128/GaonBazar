@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950 text-slate-100">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GaonBazaar - Super Admin Control Center</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans & Noto Sans Devanagari -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet"/>
+
+  <!-- Material Symbols Outlined -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#16a34a', // Emerald 600
+            'primary-dark': '#15803d',
+            'primary-light': '#22c55e',
+            accent: '#d97706', // Amber 600
+            'accent-light': '#f59e0b',
+            surface: '#0f172a',
+            'surface-card': '#1e293b',
+            'surface-elevated': '#334155'
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '"Noto Sans Devanagari"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', 'Noto Sans Devanagari', sans-serif;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+      line-height: 1;
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+
+<body class="h-full flex flex-col bg-slate-950 text-slate-100 antialiased overflow-x-hidden selection:bg-primary selection:text-white">
+
+  <!-- ========================================================================= -->
+  <!-- 0. SERVER DISCONNECTION / OFFLINE BANNER                                  -->
+  <!-- ========================================================================= -->
+  <div id="admin-server-offline-banner" class="hidden sticky top-0 z-50 bg-red-600 text-white px-4 py-2 text-xs font-bold flex items-center justify-between shadow-md">
+    <div class="flex items-center gap-2">
+      <span class="material-symbols-outlined text-[18px]">wifi_off</span>
+      <span>सर्वर से संपर्क नहीं हो पा रहा है • Backend Server Offline (Port 8001)</span>
+    </div>
+    <button onclick="refreshAdminData()" class="px-2.5 py-1 bg-white text-red-700 rounded-lg text-[11px] font-black active:scale-95 transition-all">
+      पुनः प्रयास (Retry)
+    </button>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 1. TOP SUPER ADMIN HEADER                                                 -->
+  <!-- ========================================================================= -->
+  <header class="sticky top-0 z-40 bg-slate-900 border-b border-slate-800 shadow-md px-3 py-2.5 sm:px-6">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2.5">
+      
+      <!-- Brand & Title -->
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-br from-primary to-emerald-700 text-white flex items-center justify-center shadow-md shrink-0">
+          <span class="material-symbols-outlined text-[20px] sm:text-[24px]">admin_panel_settings</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <h1 class="text-sm sm:text-base font-black text-white tracking-tight">गांव बाज़ार • Super Admin</h1>
+            <span class="text-[9px] sm:text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded-full border border-emerald-500/30">
+              v2.0
+            </span>
+          </div>
+          <span class="text-[10px] sm:text-xs text-slate-400">Hyperlocal Rural Delivery Network</span>
+        </div>
+      </div>
+
+      <!-- Quick Ecosystem Switchers & Status -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <div class="hidden md:flex items-center gap-1.5 bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-800 text-xs text-slate-300">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>System Healthy • Port 8001</span>
+        </div>
+
+        <button onclick="refreshAdminData()" title="Refresh All Data" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center justify-center transition-all active:scale-95">
+          <span class="material-symbols-outlined text-[18px]">sync</span>
+        </button>
+
+        <a href="index.html" target="_blank" class="px-2 sm:px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center gap-1 transition-all">
+          <span class="material-symbols-outlined text-[15px] text-blue-400">smartphone</span>
+          <span class="hidden sm:inline">Customer App</span>
+        </a>
+
+        <a href="vendor_dashboard.html" target="_blank" class="px-2 sm:px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center gap-1 transition-all">
+          <span class="material-symbols-outlined text-[15px] text-emerald-400">storefront</span>
+          <span class="hidden sm:inline">Vendor</span>
+        </a>
+
+        <a href="runner_dashboard.html" target="_blank" class="px-2 sm:px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center gap-1 transition-all">
+          <span class="material-symbols-outlined text-[15px] text-amber-400">two_wheeler</span>
+          <span class="hidden sm:inline">Runner</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Global Action Toast -->
+  <div id="admin-toast" class="hidden fixed top-16 left-1/2 transform -translate-x-1/2 z-50 bg-slate-900 text-white px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-3 border border-emerald-500/50 max-w-sm w-11/12">
+    <span class="material-symbols-outlined text-primary text-[22px]" id="toast-icon">verified</span>
+    <div class="flex flex-col min-w-0 flex-1">
+      <span id="toast-title" class="text-xs font-black text-white">Action Completed</span>
+      <span id="toast-subtitle" class="text-[11px] text-slate-300 truncate">Application status updated</span>
+    </div>
+    <button onclick="dismissToast()" class="text-slate-400 hover:text-white p-1">
+      <span class="material-symbols-outlined text-[16px]">close</span>
+    </button>
+  </div>
+
+  <!-- Main Dashboard Viewport -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 flex flex-col gap-5 pb-16 overflow-y-auto">
+
+    <!-- ======================================================================= -->
+    <!-- 2. GLOBAL ECOSYSTEM METRICS RIBBON                                      -->
+    <!-- ======================================================================= -->
+    <section class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+      
+      <!-- Metric 1: Total GMV -->
+      <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 flex flex-col justify-between">
+        <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+          <span class="material-symbols-outlined text-[16px] text-emerald-400">currency_rupee</span>
+          <span>Gross Volume</span>
+        </span>
+        <div id="metric-gmv" class="text-2xl font-black text-white mt-1">₹0.00</div>
+        <span class="text-[10px] text-emerald-400 font-semibold mt-0.5">Total Orders GMV</span>
+      </div>
+
+      <!-- Metric 2: Platform Profits -->
+      <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 flex flex-col justify-between">
+        <span class="text-[11px] font-bold text-purple-400 uppercase tracking-wider flex items-center gap-1">
+          <span class="material-symbols-outlined text-[16px] text-purple-400">savings</span>
+          <span>Platform Profit</span>
+        </span>
+        <div id="metric-profits" class="text-2xl font-black text-purple-300 mt-1">₹0.00</div>
+        <span class="text-[10px] text-purple-400 font-semibold mt-0.5">₹3 / Fulfilled Order</span>
+      </div>
+
+      <!-- Metric 3: Total Orders -->
+      <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 flex flex-col justify-between">
+        <span class="text-[11px] font-bold text-blue-400 uppercase tracking-wider flex items-center gap-1">
+          <span class="material-symbols-outlined text-[16px] text-blue-400">shopping_bag</span>
+          <span>Total Orders</span>
+        </span>
+        <div id="metric-orders" class="text-2xl font-black text-blue-300 mt-1">0</div>
+        <span id="metric-active-orders" class="text-[10px] text-blue-400 font-semibold mt-0.5">0 Active In-Flight</span>
+      </div>
+
+      <!-- Metric 4: Customers -->
+      <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 flex flex-col justify-between">
+        <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+          <span class="material-symbols-outlined text-[16px] text-slate-400">groups</span>
+          <span>Customers</span>
+        </span>
+        <div id="metric-customers" class="text-2xl font-black text-white mt-1">0</div>
+        <span class="text-[10px] text-slate-400 font-semibold mt-0.5">Rural Households</span>
+      </div>
+
+      <!-- Metric 5: Vendors (Shops) -->
+      <div onclick="switchTab('vendors')" class="bg-slate-900 rounded-2xl p-4 border border-amber-500/30 flex flex-col justify-between cursor-pointer hover:border-amber-400 transition-colors">
+        <span class="text-[11px] font-bold text-amber-400 uppercase tracking-wider flex items-center justify-between">
+          <span>Dukandaars</span>
+          <span id="badge-pending-vendors-count" class="text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded-md font-black border border-amber-500/30">0 Pending</span>
+        </span>
+        <div id="metric-vendors" class="text-2xl font-black text-white mt-1">0</div>
+        <span class="text-[10px] text-amber-400 font-semibold mt-0.5">KYC Approval Queue</span>
+      </div>
+
+      <!-- Metric 6: Runners (Gaon Mitras) -->
+      <div onclick="switchTab('runners')" class="bg-slate-900 rounded-2xl p-4 border border-emerald-500/30 flex flex-col justify-between cursor-pointer hover:border-emerald-400 transition-colors">
+        <span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider flex items-center justify-between">
+          <span>Gaon Mitras</span>
+          <span id="badge-pending-runners-count" class="text-[10px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded-md font-black border border-emerald-500/30">0 Pending</span>
+        </span>
+        <div id="metric-runners" class="text-2xl font-black text-white mt-1">0</div>
+        <span class="text-[10px] text-emerald-400 font-semibold mt-0.5">KYC Approval Queue</span>
+      </div>
+
+    </section>
+
+    <!-- ======================================================================= -->
+    <!-- 3. MAIN NAVIGATION TABS (Super Admin Controls - Mobile-First Scrollable) -->
+    <!-- ======================================================================= -->
+    <div class="flex items-center gap-2 border-b border-slate-800 pb-2 overflow-x-auto no-scrollbar">
+      
+      <!-- Tab 1: Vendor KYC Queue -->
+      <button id="admin-tab-btn-vendors" onclick="switchTab('vendors')" class="px-3.5 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 bg-primary text-white shadow-sm transition-all whitespace-nowrap shrink-0 min-h-[38px]">
+        <span class="material-symbols-outlined text-[18px]">storefront</span>
+        <span>Vendor KYC (दुकानदार)</span>
+        <span id="tab-vendor-badge" class="ml-1 text-[10px] bg-white text-emerald-800 px-2 py-0.5 rounded-full font-black">0</span>
+      </button>
+
+      <!-- Tab 2: Runner KYC Queue -->
+      <button id="admin-tab-btn-runners" onclick="switchTab('runners')" class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-slate-900 text-slate-300 hover:text-white border border-slate-800 transition-all whitespace-nowrap shrink-0 min-h-[38px]">
+        <span class="material-symbols-outlined text-[18px]">two_wheeler</span>
+        <span>Gaon Mitra KYC (रनर)</span>
+        <span id="tab-runner-badge" class="ml-1 text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full font-bold">0</span>
+      </button>
+
+      <!-- Tab 3: Live Order God-View -->
+      <button id="admin-tab-btn-orders" onclick="switchTab('orders')" class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-slate-900 text-slate-300 hover:text-white border border-slate-800 transition-all whitespace-nowrap shrink-0 min-h-[38px]">
+        <span class="material-symbols-outlined text-[18px]">visibility</span>
+        <span>Live God-View (ऑर्डर)</span>
+      </button>
+
+      <!-- Tab 4: Commission & Payout Ledger -->
+      <button id="admin-tab-btn-ledger" onclick="switchTab('ledger')" class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-slate-900 text-slate-300 hover:text-white border border-slate-800 transition-all whitespace-nowrap shrink-0 min-h-[38px]">
+        <span class="material-symbols-outlined text-[18px]">account_balance</span>
+        <span>Ledger & Dues (बहीखाता)</span>
+      </button>
+
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- 4. TAB 1: VENDOR KYC APPROVAL QUEUE                                     -->
+    <!-- ======================================================================= -->
+    <section id="tab-vendors" class="flex flex-col gap-4">
+      
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-sm font-black text-white flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">verified_user</span>
+            <span>दुकानदार सत्यापन कतार (Pending Vendor KYC Queue)</span>
+          </h2>
+          <p class="text-xs text-slate-400">Review rural shop applications before granting active catalog access.</p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="fetchPendingVendors('pending_approval')" class="px-3 py-1 rounded-xl text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+            Pending Only
+          </button>
+          <button onclick="fetchPendingVendors('all')" class="px-3 py-1 rounded-xl text-xs font-bold bg-slate-800 text-slate-400 hover:text-slate-200">
+            All Vendors
+          </button>
+        </div>
+      </div>
+
+      <!-- Pending Vendors Cards / Grid Container -->
+      <div id="vendors-approval-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+        <!-- Rendered dynamically -->
+        <div class="col-span-full bg-slate-900 rounded-3xl p-8 border border-slate-800 text-center text-slate-400 text-xs">
+          Loading vendor applications...
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ======================================================================= -->
+    <!-- 5. TAB 2: RUNNER KYC APPROVAL QUEUE                                     -->
+    <!-- ======================================================================= -->
+    <section id="tab-runners" class="hidden flex-col gap-4">
+      
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-sm font-black text-white flex items-center gap-2">
+            <span class="material-symbols-outlined text-amber-400">two_wheeler</span>
+            <span>गाँव मित्र सत्यापन कतार (Pending Runner KYC Queue)</span>
+          </h2>
+          <p class="text-xs text-slate-400">Review village delivery partner applications, driving permits, and vehicle photos.</p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="fetchPendingRunners('pending_approval')" class="px-3 py-1 rounded-xl text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+            Pending Only
+          </button>
+          <button onclick="fetchPendingRunners('all')" class="px-3 py-1 rounded-xl text-xs font-bold bg-slate-800 text-slate-400 hover:text-slate-200">
+            All Runners
+          </button>
+        </div>
+      </div>
+
+      <!-- Pending Runners Cards / Grid Container -->
+      <div id="runners-approval-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+        <!-- Rendered dynamically -->
+        <div class="col-span-full bg-slate-900 rounded-3xl p-8 border border-slate-800 text-center text-slate-400 text-xs">
+          Loading runner applications...
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ======================================================================= -->
+    <!-- 6. TAB 3: LIVE ORDER GOD-VIEW                                           -->
+    <!-- ======================================================================= -->
+    <section id="tab-orders" class="hidden flex-col gap-4">
+      
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-sm font-black text-white flex items-center gap-2">
+            <span class="material-symbols-outlined text-blue-400">visibility</span>
+            <span>लाइव ऑर्डर समग्र दृश्य (Live Order God-View Table)</span>
+          </h2>
+          <p class="text-xs text-slate-400">Real-time surveillance of orders across all rural lifecycle stages.</p>
+        </div>
+        <span id="godview-count-badge" class="text-xs bg-slate-800 text-slate-300 px-2.5 py-1 rounded-full font-bold">
+          0 Orders In-Flight
+        </span>
+      </div>
+
+      <div class="bg-slate-900 rounded-3xl p-4 border border-slate-800 shadow-md overflow-x-auto no-scrollbar">
+        <table class="w-full text-left text-xs">
+          <thead>
+            <tr class="border-b border-slate-800 text-slate-400 font-bold">
+              <th class="py-2.5 px-3">Order ID</th>
+              <th class="py-2.5 px-3">Date/Time</th>
+              <th class="py-2.5 px-3">Customer</th>
+              <th class="py-2.5 px-3">Village & Landmark</th>
+              <th class="py-2.5 px-3">Store</th>
+              <th class="py-2.5 px-3">Items</th>
+              <th class="py-2.5 px-3">Total Amount</th>
+              <th class="py-2.5 px-3">Payment</th>
+              <th class="py-2.5 px-3">Stage & Status</th>
+              <th class="py-2.5 px-3">Delivery OTP</th>
+            </tr>
+          </thead>
+          <tbody id="godview-orders-table-body" class="divide-y divide-slate-800 text-slate-300">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+    <!-- ======================================================================= -->
+    <!-- 7. TAB 4: COMMISSION & PAYOUT LEDGER                                    -->
+    <!-- ======================================================================= -->
+    <section id="tab-ledger" class="hidden flex-col gap-4">
+      
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-sm font-black text-white flex items-center gap-2">
+            <span class="material-symbols-outlined text-purple-400">account_balance</span>
+            <span>प्लेटफ़ॉर्म आय व भुगतान बहीखाता (Platform Payout Ledger)</span>
+          </h2>
+          <p class="text-xs text-slate-400">Complete audit trail of ₹3 platform fees, vendor dues, and runner commissions.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+        <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800">
+          <span class="text-xs text-slate-400 font-bold block">Gross Revenue Volume</span>
+          <span id="ledger-total-rev" class="text-xl font-black text-white mt-1 block">₹0.00</span>
+          <span class="text-[10px] text-slate-500">All customer payments</span>
+        </div>
+
+        <div class="bg-slate-900 rounded-2xl p-4 border border-purple-500/30">
+          <span class="text-xs text-purple-400 font-bold block">Platform Net Profit</span>
+          <span id="ledger-net-profit" class="text-xl font-black text-purple-300 mt-1 block">₹0.00</span>
+          <span class="text-[10px] text-purple-400">₹3/order handling fee</span>
+        </div>
+
+        <div class="bg-slate-900 rounded-2xl p-4 border border-emerald-500/30">
+          <span class="text-xs text-emerald-400 font-bold block">Vendor Payouts Due</span>
+          <span id="ledger-vendor-due" class="text-xl font-black text-emerald-300 mt-1 block">₹0.00</span>
+          <span class="text-[10px] text-emerald-400">Subtotal - platform cut</span>
+        </div>
+
+        <div class="bg-slate-900 rounded-2xl p-4 border border-blue-500/30">
+          <span class="text-xs text-blue-400 font-bold block">Runner Fees Due</span>
+          <span id="ledger-runner-due" class="text-xl font-black text-blue-300 mt-1 block">₹0.00</span>
+          <span class="text-[10px] text-blue-400">₹20/fulfilled delivery</span>
+        </div>
+      </div>
+
+      <!-- Transaction Log -->
+      <div class="bg-slate-900 rounded-3xl p-4 border border-slate-800 shadow-md overflow-x-auto no-scrollbar">
+        <h3 class="text-xs font-black text-white mb-2">Recent Settlement Transactions</h3>
+        <table class="w-full text-left text-xs">
+          <thead>
+            <tr class="border-b border-slate-800 text-slate-400 font-bold">
+              <th class="py-2 px-3">Order ID</th>
+              <th class="py-2 px-3">Date</th>
+              <th class="py-2 px-3">Customer</th>
+              <th class="py-2 px-3">Store</th>
+              <th class="py-2 px-3">Order Amount</th>
+              <th class="py-2 px-3">Platform Cut (₹3)</th>
+              <th class="py-2 px-3">Vendor Net</th>
+              <th class="py-2 px-3">Runner Fee</th>
+              <th class="py-2 px-3">Status</th>
+            </tr>
+          </thead>
+          <tbody id="ledger-txns-table-body" class="divide-y divide-slate-800 text-slate-300">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- 8. JAVASCRIPT SUPER ADMIN ENGINE                                          -->
+  <!-- ========================================================================= -->
+  <script>
+    const API_BASE = window.GAONBAZAAR_API_BASE || 'http://127.0.0.1:8001/api';
+
+    const AdminStore = {
+      activeTab: 'vendors',
+      metrics: null,
+      vendors: [],
+      runners: [],
+      orders: [],
+      ledger: null,
+      pollTimer: null
+    };
+
+    async function adminFetch(endpoint, options = {}) {
+      const url = `${API_BASE}${endpoint}`;
+      const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+      try {
+        const res = await fetch(url, { ...options, headers });
+        hideAdminOfflineBanner();
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({ detail: res.statusText }));
+          throw new Error(err.detail || `Server error: ${res.status}`);
+        }
+        return await res.json();
+      } catch (err) {
+        if (err.message && (err.message.includes('fetch') || err.message.includes('Network') || err.message.includes('Failed') || err.name === 'TypeError')) {
+          showAdminOfflineBanner();
+        }
+        throw err;
+      }
+    }
+
+    function showAdminOfflineBanner() {
+      const b = document.getElementById('admin-server-offline-banner');
+      if (b) b.classList.remove('hidden');
+    }
+
+    function hideAdminOfflineBanner() {
+      const b = document.getElementById('admin-server-offline-banner');
+      if (b) b.classList.add('hidden');
+    }
+
+    async function initAdminApp() {
+      await refreshAdminData();
+      if (AdminStore.pollTimer) clearInterval(AdminStore.pollTimer);
+      AdminStore.pollTimer = setInterval(() => {
+        refreshAdminData(false);
+      }, 5000);
+    }
+
+    async function refreshAdminData(showToastFeedback = true) {
+      try {
+        const [metrics, pendingVendors, pendingRunners, godviewOrders, ledgerData] = await Promise.all([
+          adminFetch('/admin/metrics').catch(() => null),
+          adminFetch('/admin/pending-vendors?status=all').catch(() => []),
+          adminFetch('/admin/pending-runners?status=all').catch(() => []),
+          adminFetch('/admin/orders/god-view').catch(() => []),
+          adminFetch('/admin/commission-ledger').catch(() => null)
+        ]);
+
+        AdminStore.metrics = metrics;
+        AdminStore.vendors = pendingVendors;
+        AdminStore.runners = pendingRunners;
+        AdminStore.orders = godviewOrders;
+        AdminStore.ledger = ledgerData;
+
+        renderMetricsRibbon();
+        renderVendorsQueue();
+        renderRunnersQueue();
+        renderGodViewOrders();
+        renderCommissionLedger();
+
+        if (showToastFeedback) {
+          showToast('Data Synced', 'Super Admin Control Center updated');
+        }
+      } catch (err) {
+        console.warn('Admin refresh notice:', err);
+      }
+    }
+
+    // --- RENDER METRICS RIBBON ---
+    function renderMetricsRibbon() {
+      const m = AdminStore.metrics;
+      if (!m) return;
+
+      document.getElementById('metric-gmv').innerText = `₹${m.total_gmv}`;
+      document.getElementById('metric-profits').innerText = `₹${m.platform_profits}`;
+      document.getElementById('metric-orders').innerText = m.total_orders;
+      document.getElementById('metric-active-orders').innerText = `${m.active_orders} Active In-Flight`;
+      document.getElementById('metric-customers').innerText = m.total_customers;
+      document.getElementById('metric-vendors').innerText = m.total_vendors;
+      document.getElementById('metric-runners').innerText = m.total_runners;
+
+      document.getElementById('badge-pending-vendors-count').innerText = `${m.pending_vendors} Pending`;
+      document.getElementById('badge-pending-runners-count').innerText = `${m.pending_runners} Pending`;
+
+      document.getElementById('tab-vendor-badge').innerText = m.pending_vendors;
+      document.getElementById('tab-runner-badge').innerText = m.pending_runners;
+      document.getElementById('godview-count-badge').innerText = `${m.active_orders} Orders In-Flight`;
+    }
+
+    // --- RENDER VENDORS QUEUE ---
+    function renderVendorsQueue() {
+      const container = document.getElementById('vendors-approval-container');
+      if (!container) return;
+
+      const vendors = AdminStore.vendors;
+      if (vendors.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full bg-slate-900 rounded-3xl p-8 border border-slate-800 text-center text-slate-400 text-xs">
+            कोई लंबित दुकानदार आवेदन नहीं है (No Pending Vendor Applications)
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = vendors.map(v => {
+        const isPending = v.status === 'pending_approval';
+        const isApproved = v.status === 'approved';
+
+        return `
+          <div class="bg-slate-900 rounded-3xl p-4 sm:p-5 border ${isPending ? 'border-amber-500/50 shadow-amber-500/5' : 'border-slate-800'} shadow-md flex flex-col justify-between gap-3">
+            
+            <!-- Header: Shop & Category -->
+            <div class="flex items-start justify-between gap-2 border-b border-slate-800 pb-3">
+              <div>
+                <span class="text-[10px] font-mono text-slate-400 block">${v.store_id}</span>
+                <h3 class="text-sm font-black text-white">${v.name}</h3>
+                <span class="text-xs text-slate-400">${v.owner_name} • ${v.phone}</span>
+              </div>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isApproved ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : isPending ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-red-500/20 text-red-300 border border-red-500/30'}">
+                ${v.status}
+              </span>
+            </div>
+
+            <!-- Photo & KYC Details -->
+            <div class="flex gap-3 text-xs bg-slate-950 p-3 rounded-2xl border border-slate-800">
+              <img src="${v.photo_url || 'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=120'}" alt="Shop" class="w-16 h-16 rounded-xl object-cover bg-slate-800 border border-slate-700 shrink-0"/>
+              <div class="flex flex-col justify-center min-w-0">
+                <span class="text-slate-400 font-medium">KYC ID: <span class="text-white font-mono font-bold">${v.id_type} ${v.id_number}</span></span>
+                <span class="text-slate-400 font-medium truncate">Payout UPI: <span class="text-primary font-mono font-bold">${v.payout_upi}</span></span>
+                <span class="text-[10px] text-slate-500 mt-1">Applied: ${v.created_at}</span>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-2 pt-1">
+              ${isPending ? `
+                <button id="btn-approve-vendor-${v.store_id}" onclick="handleApproveVendor('${v.store_id}')" class="flex-1 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-black flex items-center justify-center gap-1 shadow-md active:scale-95 transition-all">
+                  <span class="material-symbols-outlined text-[16px]">check</span>
+                  <span>स्वीकारें (Approve)</span>
+                </button>
+                <button id="btn-reject-vendor-${v.store_id}" onclick="handleRejectVendor('${v.store_id}')" class="flex-1 py-2.5 rounded-xl bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30 text-xs font-black flex items-center justify-center gap-1 active:scale-95 transition-all">
+                  <span class="material-symbols-outlined text-[16px]">close</span>
+                  <span>अस्वीकार (Reject)</span>
+                </button>
+              ` : `
+                <span class="text-xs font-bold text-slate-400 italic">Status: ${v.status}</span>
+              `}
+            </div>
+
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function handleApproveVendor(storeId) {
+      try {
+        const res = await adminFetch(`/admin/vendors/${encodeURIComponent(storeId)}/approve`, { method: 'POST' });
+        showToast('Vendor Approved', res.message);
+        await refreshAdminData(false);
+      } catch (err) {
+        alert('Approval failed: ' + err.message);
+      }
+    }
+
+    async function handleRejectVendor(storeId) {
+      try {
+        const res = await adminFetch(`/admin/vendors/${encodeURIComponent(storeId)}/reject`, { method: 'POST' });
+        showToast('Vendor Rejected', res.message);
+        await refreshAdminData(false);
+      } catch (err) {
+        alert('Rejection failed: ' + err.message);
+      }
+    }
+
+    async function fetchPendingVendors(filter) {
+      const url = filter === 'all' ? '/admin/pending-vendors?status=all' : '/admin/pending-vendors?status=pending_approval';
+      AdminStore.vendors = await adminFetch(url);
+      renderVendorsQueue();
+    }
+
+    // --- RENDER RUNNERS QUEUE ---
+    function renderRunnersQueue() {
+      const container = document.getElementById('runners-approval-container');
+      if (!container) return;
+
+      const runners = AdminStore.runners;
+      if (runners.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full bg-slate-900 rounded-3xl p-8 border border-slate-800 text-center text-slate-400 text-xs">
+            कोई लंबित गाँव मित्र आवेदन नहीं है (No Pending Runner Applications)
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = runners.map(r => {
+        const isPending = r.status === 'pending_approval';
+        const isApproved = r.status === 'approved';
+
+        return `
+          <div class="bg-slate-900 rounded-3xl p-4 sm:p-5 border ${isPending ? 'border-amber-500/50 shadow-amber-500/5' : 'border-slate-800'} shadow-md flex flex-col justify-between gap-3">
+            
+            <!-- Header: Runner & Code -->
+            <div class="flex items-start justify-between gap-2 border-b border-slate-800 pb-3">
+              <div>
+                <span class="text-[10px] font-mono text-amber-300 block font-bold">${r.runner_code}</span>
+                <h3 class="text-sm font-black text-white">${r.name}</h3>
+                <span class="text-xs text-slate-400">${r.phone} • ${r.hub_name}</span>
+              </div>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isApproved ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : isPending ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-red-500/20 text-red-300 border border-red-500/30'}">
+                ${r.status}
+              </span>
+            </div>
+
+            <!-- Vehicle & KYC Details -->
+            <div class="flex gap-3 text-xs bg-slate-950 p-3 rounded-2xl border border-slate-800">
+              <img src="${r.photo_url || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120'}" alt="Runner" class="w-16 h-16 rounded-xl object-cover bg-slate-800 border border-slate-700 shrink-0"/>
+              <div class="flex flex-col justify-center min-w-0">
+                <span class="text-slate-400 font-medium">Vehicle: <span class="text-white font-bold">${r.vehicle_type} (${r.vehicle_number})</span></span>
+                <span class="text-slate-400 font-medium">KYC ID: <span class="text-white font-mono font-bold">${r.id_type} ${r.id_number}</span></span>
+                <span class="text-slate-400 font-medium truncate">Payout UPI: <span class="text-primary font-mono font-bold">${r.payout_upi}</span></span>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-2 pt-1">
+              ${isPending ? `
+                <button id="btn-approve-runner-${r.runner_id}" onclick="handleApproveRunner('${r.runner_id}')" class="flex-1 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-black flex items-center justify-center gap-1 shadow-md active:scale-95 transition-all">
+                  <span class="material-symbols-outlined text-[16px]">check</span>
+                  <span>स्वीकारें (Approve)</span>
+                </button>
+                <button id="btn-reject-runner-${r.runner_id}" onclick="handleRejectRunner('${r.runner_id}')" class="flex-1 py-2.5 rounded-xl bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30 text-xs font-black flex items-center justify-center gap-1 active:scale-95 transition-all">
+                  <span class="material-symbols-outlined text-[16px]">close</span>
+                  <span>अस्वीकार (Reject)</span>
+                </button>
+              ` : `
+                <span class="text-xs font-bold text-slate-400 italic">Status: ${r.status}</span>
+              `}
+            </div>
+
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function handleApproveRunner(runnerId) {
+      try {
+        const res = await adminFetch(`/admin/runners/${encodeURIComponent(runnerId)}/approve`, { method: 'POST' });
+        showToast('Runner Approved', res.message);
+        await refreshAdminData(false);
+      } catch (err) {
+        alert('Approval failed: ' + err.message);
+      }
+    }
+
+    async function handleRejectRunner(runnerId) {
+      try {
+        const res = await adminFetch(`/admin/runners/${encodeURIComponent(runnerId)}/reject`, { method: 'POST' });
+        showToast('Runner Rejected', res.message);
+        await refreshAdminData(false);
+      } catch (err) {
+        alert('Rejection failed: ' + err.message);
+      }
+    }
+
+    async function fetchPendingRunners(filter) {
+      const url = filter === 'all' ? '/admin/pending-runners?status=all' : '/admin/pending-runners?status=pending_approval';
+      AdminStore.runners = await adminFetch(url);
+      renderRunnersQueue();
+    }
+
+    // --- RENDER GOD-VIEW ORDERS ---
+    function renderGodViewOrders() {
+      const body = document.getElementById('godview-orders-table-body');
+      if (!body) return;
+
+      const orders = AdminStore.orders;
+      if (orders.length === 0) {
+        body.innerHTML = `<tr><td colspan="10" class="text-center py-6 text-slate-500">No active orders in database</td></tr>`;
+        return;
+      }
+
+      body.innerHTML = orders.map(o => `
+        <tr class="hover:bg-slate-800/60 transition-colors">
+          <td class="py-2.5 px-3 font-mono font-bold text-white">${o.order_id}</td>
+          <td class="py-2.5 px-3 text-slate-400">${o.created_at}</td>
+          <td class="py-2.5 px-3 font-medium text-slate-200">${o.customer_name} <span class="text-[10px] text-slate-500 block">${o.customer_phone}</span></td>
+          <td class="py-2.5 px-3 text-amber-200">${o.village} <span class="text-[10px] text-slate-400 block">${o.landmark}</span></td>
+          <td class="py-2.5 px-3 font-bold text-slate-300">${o.store_name}</td>
+          <td class="py-2.5 px-3 text-slate-300 max-w-xs truncate">${o.items_summary}</td>
+          <td class="py-2.5 px-3 font-black text-white">₹${o.total_amount}</td>
+          <td class="py-2.5 px-3 font-bold ${o.payment_mode === 'COD' ? 'text-amber-400' : 'text-emerald-400'}">${o.payment_mode}</td>
+          <td class="py-2.5 px-3">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${o.timeline_stage === 5 ? 'bg-emerald-500/20 text-emerald-300' : 'bg-blue-500/20 text-blue-300'}">
+              Stage ${o.timeline_stage}: ${o.status}
+            </span>
+          </td>
+          <td class="py-2.5 px-3 font-mono font-bold text-primary">${o.delivery_otp}</td>
+        </tr>
+      `).join('');
+    }
+
+    // --- RENDER COMMISSION LEDGER ---
+    function renderCommissionLedger() {
+      const l = AdminStore.ledger;
+      if (!l) return;
+
+      document.getElementById('ledger-total-rev').innerText = `₹${l.total_platform_revenue}`;
+      document.getElementById('ledger-net-profit').innerText = `₹${l.net_platform_profit}`;
+      document.getElementById('ledger-vendor-due').innerText = `₹${l.vendor_payouts_due}`;
+      document.getElementById('ledger-runner-due').innerText = `₹${l.runner_payouts_due}`;
+
+      const tbody = document.getElementById('ledger-txns-table-body');
+      if (tbody) {
+        tbody.innerHTML = (l.recent_transactions || []).map(t => `
+          <tr class="hover:bg-slate-800/60 transition-colors">
+            <td class="py-2.5 px-3 font-mono font-bold text-white">${t.order_id}</td>
+            <td class="py-2.5 px-3 text-slate-400">${t.date}</td>
+            <td class="py-2.5 px-3 font-medium text-slate-200">${t.customer}</td>
+            <td class="py-2.5 px-3 text-slate-300">${t.store}</td>
+            <td class="py-2.5 px-3 font-black text-white">₹${t.amount}</td>
+            <td class="py-2.5 px-3 font-black text-purple-300">+₹${t.platform_cut}</td>
+            <td class="py-2.5 px-3 font-bold text-emerald-300">₹${t.vendor_net}</td>
+            <td class="py-2.5 px-3 font-bold text-blue-300">₹${t.runner_fee}</td>
+            <td class="py-2.5 px-3">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-300">
+                ${t.status}
+              </span>
+            </td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    // --- TAB SWITCHER ---
+    function switchTab(tabId) {
+      AdminStore.activeTab = tabId;
+      ['vendors', 'runners', 'orders', 'ledger'].forEach(t => {
+        const sec = document.getElementById(`tab-${t}`);
+        const btn = document.getElementById(`admin-tab-btn-${t}`);
+        if (sec) sec.classList.add('hidden');
+        if (btn) {
+          btn.className = "px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 bg-slate-900 text-slate-300 hover:text-white border border-slate-800 transition-all";
+        }
+      });
+
+      const activeSec = document.getElementById(`tab-${tabId}`);
+      const activeBtn = document.getElementById(`admin-tab-btn-${tabId}`);
+      if (activeSec) activeSec.classList.remove('hidden');
+      if (activeBtn) {
+        activeBtn.className = "px-4 py-2 rounded-xl text-xs font-black flex items-center gap-2 bg-primary text-white shadow-sm transition-all";
+      }
+    }
+
+    // --- TOAST UTILITY ---
+    let toastTimeout = null;
+    function showToast(title, subtitle) {
+      const toast = document.getElementById('admin-toast');
+      const elTitle = document.getElementById('toast-title');
+      const elSub = document.getElementById('toast-subtitle');
+      if (!toast || !elTitle) return;
+
+      elTitle.innerText = title;
+      if (elSub) elSub.innerText = subtitle;
+
+      toast.classList.remove('hidden');
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 4000);
+    }
+
+    function dismissToast() {
+      document.getElementById('admin-toast')?.classList.add('hidden');
+    }
+
+    window.addEventListener('DOMContentLoaded', initAdminApp);
+  </script>
+
+</body>
+</html>

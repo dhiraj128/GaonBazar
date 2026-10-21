@@ -1,0 +1,148 @@
+from datetime import datetime
+from sqlalchemy import Column, Integer, String, Float, Boolean, DateTime, ForeignKey, Text
+from sqlalchemy.orm import relationship
+from .database import Base
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    phone = Column(String(15), unique=True, index=True, nullable=False)
+    name = Column(String(100), nullable=True)
+    lang = Column(String(10), default="hi")
+    session_token = Column(String(100), unique=True, index=True, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    landmarks = relationship("Landmark", back_populates="user", cascade="all, delete-orphan")
+    orders = relationship("Order", back_populates="user")
+
+
+class OTPRecord(Base):
+    __tablename__ = "otp_records"
+
+    id = Column(Integer, primary_key=True, index=True)
+    phone = Column(String(15), index=True, nullable=False)
+    otp_code = Column(String(10), nullable=False)
+    is_verified = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    expires_at = Column(DateTime, nullable=True)
+
+
+class Landmark(Base):
+    __tablename__ = "landmarks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    phone = Column(String(15), index=True, nullable=False)
+    lat = Column(Float, nullable=True)
+    lng = Column(Float, nullable=True)
+    accuracy = Column(Float, nullable=True)
+    village = Column(String(150), nullable=False)
+    landmark_text = Column(Text, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="landmarks")
+
+
+class Store(Base):
+    __tablename__ = "stores"
+
+    id = Column(String(50), primary_key=True, index=True)  # e.g. "sharma_brothers"
+    name = Column(String(100), nullable=False)
+    hindi_name = Column(String(100), nullable=True)
+    category = Column(String(50), default="kirana")
+    rating = Column(Float, default=4.8)
+    total_orders = Column(Integer, default=210)
+    distance_km = Column(Float, default=1.2)
+    eta_mins = Column(String(50), default="20-30 mins")
+    is_open = Column(Boolean, default=True)
+    trust_badge = Column(String(100), default="सत्यापित दुकान • 18 Years Village Trust")
+    phone = Column(String(15), default="9876543210")
+    owner_name = Column(String(100), default="Ramesh Sharma")
+    id_type = Column(String(20), default="Aadhar")
+    id_number = Column(String(50), default="XXXX-XXXX-8921")
+    photo_url = Column(Text, nullable=True)
+    payout_upi = Column(String(100), default="sharma.kirana@okaxis")
+    status = Column(String(30), default="approved")  # "approved", "pending_approval", "rejected"
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    products = relationship("Product", back_populates="store", cascade="all, delete-orphan")
+
+
+class Product(Base):
+    __tablename__ = "products"
+
+    id = Column(String(50), primary_key=True, index=True)  # e.g. "item_1"
+    store_id = Column(String(50), ForeignKey("stores.id"), nullable=False)
+    name_en = Column(String(150), nullable=False)
+    name_hi = Column(String(150), nullable=False)
+    category = Column(String(50), nullable=False)  # "atta", "oil", "spices", "tea", etc.
+    weight = Column(String(50), nullable=False)
+    price = Column(Float, nullable=False)
+    mrp = Column(Float, nullable=False)
+    icon = Column(String(50), default="inventory_2")
+    in_stock = Column(Boolean, default=True)
+
+    store = relationship("Store", back_populates="products")
+
+
+class Order(Base):
+    __tablename__ = "orders"
+
+    id = Column(String(50), primary_key=True, index=True)  # e.g. "#RUR-9482"
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    user_phone = Column(String(15), nullable=False)
+    user_name = Column(String(100), nullable=False)
+    village = Column(String(150), nullable=False)
+    landmark = Column(Text, nullable=False)
+    store_id = Column(String(50), ForeignKey("stores.id"), nullable=False)
+    store_name = Column(String(100), nullable=False)
+    subtotal = Column(Float, nullable=False)
+    delivery_fee = Column(Float, default=0.0)
+    platform_fee = Column(Float, default=3.0)
+    savings = Column(Float, default=0.0)
+    total_amount = Column(Float, nullable=False)
+    payment_mode = Column(String(20), default="COD")
+    status = Column(String(50), default="Order Placed")
+    timeline_stage = Column(Integer, default=1)  # 1 to 5
+    delivery_otp = Column(String(10), nullable=False)  # 4-digit code e.g. "4821"
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="orders")
+    items = relationship("OrderItem", back_populates="order", cascade="all, delete-orphan")
+
+
+class OrderItem(Base):
+    __tablename__ = "order_items"
+
+    id = Column(Integer, primary_key=True, index=True)
+    order_id = Column(String(50), ForeignKey("orders.id"), nullable=False)
+    product_id = Column(String(50), nullable=False)
+    product_name = Column(String(150), nullable=False)
+    price = Column(Float, nullable=False)
+    quantity = Column(Integer, nullable=False)
+
+    order = relationship("Order", back_populates="items")
+
+
+class Runner(Base):
+    __tablename__ = "runners"
+
+    id = Column(String(50), primary_key=True, index=True)  # e.g. "gm_1"
+    name = Column(String(100), nullable=False)
+    phone = Column(String(15), unique=True, index=True, nullable=False)
+    runner_code = Column(String(50), unique=True, nullable=False)
+    hub_id = Column(String(50), default="hub_rampur_mandi")
+    hub_name = Column(String(100), default="Rampur Mandi Cluster Hub #RMP-04")
+    id_type = Column(String(20), default="Aadhar")
+    id_number = Column(String(50), default="XXXX-XXXX-4821")
+    photo_url = Column(Text, nullable=True)
+    vehicle_type = Column(String(50), default="Motorcycle")
+    vehicle_number = Column(String(50), default="UP-14-EA-4921")
+    payout_upi = Column(String(100), default="kamal.singh@ybl")
+    status = Column(String(30), default="approved")  # "approved", "pending_approval", "rejected"
+    is_online = Column(Boolean, default=True)
+    rating = Column(Float, default=4.9)
+    total_completed_missions = Column(Integer, default=142)
+    created_at = Column(DateTime, default=datetime.utcnow)
+

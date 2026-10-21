@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="hi" class="h-full w-full">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+  <meta name="HandheldFriendly" content="true"/>
+  <meta name="MobileOptimized" content="width"/>
+  <meta name="theme-color" content="#006b2c"/>
+  <title>गांव बाज़ार • ऑफ़लाइन मोड | GaonBazaar Offline</title>
+  <style>
+    /* 100% self-contained CSS - zero CDN dependencies required for offline resilience */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    html, body {
+      height: 100%;
+      width: 100%;
+      background-color: #f7faf7;
+      color: #111c2d;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Devanagari", sans-serif;
+    }
+    .offline-wrapper {
+      min-height: 100vh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 20px 32px 20px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .header-brand {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding-top: 12px;
+    }
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #e6f4ea;
+      color: #006b2c;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1px solid #b7e1cd;
+    }
+    .card-content {
+      width: 100%;
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 28px 24px;
+      box-shadow: 0 4px 20px rgba(0, 107, 44, 0.08);
+      border: 1px solid #e2ece3;
+      text-align: center;
+      margin: 20px 0;
+    }
+    .icon-container {
+      width: 80px;
+      height: 80px;
+      background: #fee8e7;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      border: 2px solid #fad2cf;
+    }
+    .icon-svg {
+      width: 44px;
+      height: 44px;
+      stroke: #c5221f;
+      stroke-width: 2.2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .offline-heading-hi {
+      font-size: 22px;
+      font-weight: 800;
+      color: #1b1b1b;
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .offline-heading-en {
+      font-size: 15px;
+      font-weight: 600;
+      color: #5f6368;
+      margin-bottom: 16px;
+    }
+    .offline-desc-hi {
+      font-size: 14px;
+      color: #3c4043;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+    .offline-desc-en {
+      font-size: 13px;
+      color: #70757a;
+      line-height: 1.4;
+      margin-bottom: 24px;
+    }
+    .status-panel {
+      background: #f1f8f3;
+      border: 1px dashed #34a853;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 24px;
+      text-align: left;
+      font-size: 12px;
+    }
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+    }
+    .status-label {
+      color: #495057;
+      font-weight: 500;
+    }
+    .status-pill {
+      font-weight: 700;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+    .status-pill-offline {
+      background: #fce8e6;
+      color: #c5221f;
+    }
+    .status-pill-cached {
+      background: #e6f4ea;
+      color: #137333;
+    }
+    .button-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+    .btn-primary {
+      width: 100%;
+      height: 52px;
+      background: #006b2c;
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 107, 44, 0.25);
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn-primary:active {
+      transform: scale(0.98);
+      background: #005222;
+    }
+    .btn-secondary {
+      width: 100%;
+      height: 48px;
+      background: #ffffff;
+      color: #006b2c;
+      border: 1.5px solid #006b2c;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-secondary:active {
+      background: #f0f7f1;
+    }
+    .footer-note {
+      font-size: 12px;
+      color: #5f6368;
+      text-align: center;
+      line-height: 1.4;
+    }
+    .online-toast {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #137333;
+      color: #ffffff;
+      padding: 10px 20px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      display: none;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <div id="online-toast" class="online-toast">
+    ✓ कनेक्शन वापस आ गया! / Back Online!
+  </div>
+
+  <main class="offline-wrapper" id="offline-fallback-container" data-status="offline">
+    <!-- Brand Header -->
+    <header class="header-brand">
+      <div class="brand-badge">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+        <span>गांव बाज़ार • GaonBazaar</span>
+      </div>
+    </header>
+
+    <!-- Main Offline Card -->
+    <section class="card-content" role="alert" aria-live="assertive">
+      <div class="icon-container" aria-hidden="true">
+        <!-- Wi-Fi Off / Offline Icon -->
+        <svg class="icon-svg" viewBox="0 0 24 24">
+          <line x1="1" y1="1" x2="23" y2="23"/>
+          <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/>
+          <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/>
+          <path d="M10.71 5.05A16 16 0 0 1 22.58 9"/>
+          <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/>
+          <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+          <line x1="12" y1="20" x2="12.01" y2="20"/>
+        </svg>
+      </div>
+
+      <h1 class="offline-heading-hi" id="offline-title-hi">इंटरनेट कनेक्शन उपलब्ध नहीं है</h1>
+      <h2 class="offline-heading-en" id="offline-title-en">No Internet Connection</h2>
+
+      <p class="offline-desc-hi">
+        लगता है आपका ग्रामीण नेटवर्क अस्थायी रूप से बंद है। चिंता न करें, आपकी कार्ट और स्थानीय डिलीवरी डेटा सुरक्षित है।
+      </p>
+      <p class="offline-desc-en">
+        Your network connection appears to be offline. Your cart and village delivery details are safely preserved on your phone.
+      </p>
+
+      <!-- Rural Resilience Status Panel -->
+      <div class="status-panel">
+        <div class="status-row">
+          <span class="status-label">नेटवर्क स्थिति / Network</span>
+          <span class="status-pill status-pill-offline" id="network-status-val">डिस्कनेक्टेड (Offline)</span>
+        </div>
+        <div class="status-row">
+          <span class="status-label">ऑफ़लाइन कैश / Service Worker</span>
+          <span class="status-pill status-pill-cached">सक्रिय (Active v1)</span>
+        </div>
+        <div class="status-row">
+          <span class="status-label">स्थानीय डेटा / Local Storage</span>
+          <span class="status-pill status-pill-cached">सुरक्षित (Preserved)</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="button-stack">
+        <button type="button" class="btn-primary" id="offline-retry-btn" onclick="retryConnection()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"/>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+          </svg>
+          <span>पुनः प्रयास करें / Retry Connection</span>
+        </button>
+
+        <button type="button" class="btn-secondary" id="offline-home-btn" onclick="goToCachedHome()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+          <span>कैश्ड होम पेज / View Saved App</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Footer Note -->
+    <footer class="footer-note">
+      <p>GaonBazaar Rural Offline-First Delivery Architecture</p>
+      <p>इंटरनेट वापस आते ही ऑर्डर स्वतः सिंक हो जाएगा।</p>
+    </footer>
+  </main>
+
+  <script>
+    function retryConnection() {
+      const btn = document.getElementById('offline-retry-btn');
+      if (btn) {
+        btn.innerHTML = '<span>जांच हो रही है... / Checking...</span>';
+      }
+      setTimeout(() => {
+        window.location.reload();
+      }, 300);
+    }
+
+    function goToCachedHome() {
+      window.location.href = '/';
+    }
+
+    // Auto-detect when network comes back online
+    window.addEventListener('online', () => {
+      const toast = document.getElementById('online-toast');
+      if (toast) toast.style.display = 'block';
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 1200);
+    });
+
+    window.addEventListener('offline', () => {
+      const pill = document.getElementById('network-status-val');
+      if (pill) pill.textContent = 'डिस्कनेक्टेड (Offline)';
+    });
+  </script>
+</body>
+</html>

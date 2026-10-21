@@ -1,0 +1,170 @@
+================================================================================
+          GAONBAZAAR VENDOR (DUKANDAAR) DASHBOARD AUTOMATED TEST REPORT
+================================================================================
+Generated: 2026-10-21 19:53:30
+Total Audits Executed: 69
+Passed Audits:         69
+Failed Audits:         0
+Success Rate:          100.0%
+Total Screenshots:     17
+================================================================================
+
+DETAILED AUDIT LOGS:
+[2026-10-21 19:52:45] Starting GaonBazaar Vendor (Dukandaar) Dashboard End-to-End Test Suite...
+[2026-10-21 19:52:46]   🚀 Starting GaonBazaar FastAPI backend server in background on port 8001...
+[2026-10-21 19:52:49]   ✓ GaonBazaar Backend verified ready on http://127.0.0.1:8001/docs (3.07s)
+[2026-10-21 19:52:49] 
+================================================================================
+[2026-10-21 19:52:49] STARTING VENDOR DASHBOARD E2E SIMULATION: Redmi Note 10 (Dukandaar Mobile)
+[2026-10-21 19:52:49] Dimensions: 393x851 | DPR: 2.75
+[2026-10-21 19:52:49] ================================================================================
+[2026-10-21 19:52:50] Loading Vendor Portal: http://127.0.0.1:8001/vendor
+[2026-10-21 19:52:53] 
+--- [Redmi Note 10 (Dukandaar Mobile)] Step 0: Login Gate Security Enforcement ---
+[2026-10-21 19:52:53]   ✓ PASS: [Redmi Note 10 (Dukandaar Mobile)] Vendor Security Login Gate Enforced - Login gate displayed first; main dashboard unmounted before auth
+[2026-10-21 19:52:53]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Redmi_Note_10_(Dukandaar_Mobile)_step0_login_gate.png
+[2026-10-21 19:52:54] 
+--- [Redmi Note 10 (Dukandaar Mobile)] Step 1: Header, Store Switcher & Operational Controls ---
+[2026-10-21 19:52:54]   ✓ PASS: Store Badge Code - DOM Visibility & Touch Target - Box: 68x24px at (56, 14)
+[2026-10-21 19:52:54]   ✓ PASS: Store Switcher Dropdown - DOM Visibility & Touch Target - Box: 130x34px at (130, 9)
+[2026-10-21 19:52:54]   ✓ PASS: Store Open/Close Toggle CTA - DOM Visibility & Touch Target - Box: 55x30px at (213, 11)
+[2026-10-21 19:52:54]   ✓ PASS: Language Toggle Button - DOM Visibility & Touch Target - Box: 73x36px at (272, 8)
+[2026-10-21 19:52:54]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Redmi_Note_10_(Dukandaar_Mobile)_step1_initial_dashboard.png
+[2026-10-21 19:52:55]   ✓ PASS: [Redmi Note 10 (Dukandaar Mobile)] Store Operational Status Toggle - दुकान चालू (Open) -> दुकान बंद (Closed)
+[2026-10-21 19:52:55] 
+--- [Redmi Note 10 (Dukandaar Mobile)] Step 2: High-Level KPI Summary Tiles ---
+[2026-10-21 19:52:55]   ✓ PASS: New Orders KPI Card - DOM Visibility & Touch Target - Box: 100x32px at (29, 158)
+[2026-10-21 19:52:55]   ✓ PASS: Packing in Progress KPI Card - DOM Visibility & Touch Target - Box: 100x32px at (220, 158)
+[2026-10-21 19:52:55]   ✓ PASS: Gross Sales KPI Card - DOM Visibility & Touch Target - Box: 100x32px at (29, 292)
+[2026-10-21 19:52:55]   ✓ PASS: Net Payout KPI Card - DOM Visibility & Touch Target - Box: 100x32px at (220, 292)
+[2026-10-21 19:52:55]   ✓ PASS: [Redmi Note 10 (Dukandaar Mobile)] KPI Live Counters Populated - New Orders: 19 | Sales: ₹20669
+[2026-10-21 19:52:55] 
+--- [Redmi Note 10 (Dukandaar Mobile)] Step 3: Order Lifecycle Progression Workflow ---
+[2026-10-21 19:52:55]   ✓ PASS: [Redmi Note 10 (Dukandaar Mobile)] Live Order Cards Rendered in Queue - 82 orders visible
+[2026-10-21 19:52:55]   ✓ PASS: Order Accept CTA Button - DOM Visibility & Touch Target - Box: 221x38px at (143, 805)
+[2026-10-21 19:52:57]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Redmi_Note_10_(Dukandaar_Mobile)_step2_order_accepted.png
+[2026-10-21 19:52:57]   ✓ PASS: [Redmi Note 10 (Dukandaar Mobile)] Order Action: Accepted by Vendor - Advanced to Stage 2 (Packing चालू)
+[2026-10-21 19:52:57]   ✓ PASS: Mark Packed CTA Button - DOM Visibility & Touch Target - Box: 335x48px at (29, 407)
+[2026-10-21 19:52:58]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Redmi_Note_10_(Dukandaar_Mobile)_step3_order_packed.png
+[2026-10-21 19:52:58]   ✓ PASS: [Redmi Note 10 (Dukandaar Mobile)] Order Action: Packed by Vendor - Advanced to Stage 3 (Waiting for Runner)
+[2026-10-21 19:52:58]   ✓ PASS: Handover to Runner CTA Button - DOM Visibility & Touch Target - Box: 335x48px at (29, 455)
+[2026-10-21 19:52:59]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Redmi_Note_10_(Dukandaar_Mobile)_step4_order_dispatched.png
+[2026-10-21 19:52:59]   ✓ PASS: [Redmi Note 10 (Dukandaar Mobile)] Order Action: Handed Over to Gaon Mitra - Advanced to Stage 4 (Out for Delivery)
+[2026-10-21 19:52:59] 
+--- [Redmi Note 10 (Dukandaar Mobile)] Step 4: Inventory Management & Tactile Stock Toggles ---
+[2026-10-21 19:52:59]   ✓ PASS: [Redmi Note 10 (Dukandaar Mobile)] Transition to Inventory Workspace Tab
+[2026-10-21 19:52:59]   ✓ PASS: Inventory Search Bar - DOM Visibility & Touch Target - Box: 339x34px at (27, 42)
+[2026-10-21 19:52:59]   ✓ PASS: [Redmi Note 10 (Dukandaar Mobile)] Inventory Products Rendered - 23 products loaded
+[2026-10-21 19:53:00]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Redmi_Note_10_(Dukandaar_Mobile)_step5_stock_toggled.png
+[2026-10-21 19:53:00]   ✓ PASS: [Redmi Note 10 (Dukandaar Mobile)] Product In-Stock / Out-of-Stock Toggle - toggle_on
+उपलब्ध -> toggle_off
+अनुपलब्ध
+[2026-10-21 19:53:01] 
+--- [Redmi Note 10 (Dukandaar Mobile)] Step 5: Add New Inventory Item Modal ---
+[2026-10-21 19:53:01]   ✓ PASS: [Redmi Note 10 (Dukandaar Mobile)] Add Product Modal Opened
+[2026-10-21 19:53:02]   ✓ PASS: [Redmi Note 10 (Dukandaar Mobile)] Add Product Modal Submitted & Closed
+[2026-10-21 19:53:02] 
+--- [Redmi Note 10 (Dukandaar Mobile)] Step 6: Daily Sales & Earnings Ledger ---
+[2026-10-21 19:53:03]   ✓ PASS: [Redmi Note 10 (Dukandaar Mobile)] Transition to Daily Ledger Workspace Tab
+[2026-10-21 19:53:03]   ✓ PASS: Gross Sales Summary Box - DOM Visibility & Touch Target - Box: 132x28px at (46, 644)
+[2026-10-21 19:53:03]   ✓ PASS: COD Cash in Hand Box - DOM Visibility & Touch Target - Box: 132x28px at (216, 644)
+[2026-10-21 19:53:03]   ✓ PASS: Platform Commission Fee Box - DOM Visibility & Touch Target - Box: 132x28px at (46, 786)
+[2026-10-21 19:53:03]   ✓ PASS: Net Dukandaar Payout Box - DOM Visibility & Touch Target - Box: 132x28px at (216, 786)
+[2026-10-21 19:53:03]   ✓ PASS: [Redmi Note 10 (Dukandaar Mobile)] Ledger Financial Breakdown Verified - Gross: ₹20669 | COD: ₹20915 | Net Payout: ₹20423
+[2026-10-21 19:53:03]   ✓ PASS: [Redmi Note 10 (Dukandaar Mobile)] Ledger Transaction Table Rows Rendered - 82 orders in ledger table
+[2026-10-21 19:53:03]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Redmi_Note_10_(Dukandaar_Mobile)_step6_daily_ledger.png
+[2026-10-21 19:53:03] 
+--- [Redmi Note 10 (Dukandaar Mobile)] Step 7: Store Profile & Cluster Settings ---
+[2026-10-21 19:53:04]   ✓ PASS: [Redmi Note 10 (Dukandaar Mobile)] Store Profile Details Loaded - Store: Sharma Brothers Kirana
+[2026-10-21 19:53:04]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Redmi_Note_10_(Dukandaar_Mobile)_step7_store_profile.png
+[2026-10-21 19:53:04] 
+--- [Redmi Note 10 (Dukandaar Mobile)] Step 8: Bilingual State Switch (Hindi / English) ---
+[2026-10-21 19:53:04]   ✓ PASS: [Redmi Note 10 (Dukandaar Mobile)] Bilingual Toggle to English - Label: translate
+हिंदी
+[2026-10-21 19:53:05] 
+--- [Redmi Note 10 (Dukandaar Mobile)] Step 9: Zero Console Errors Audit ---
+[2026-10-21 19:53:05]   ✓ PASS: [Redmi Note 10 (Dukandaar Mobile)] Zero JavaScript Console Errors - Clean runtime execution
+[2026-10-21 19:53:05] 
+================================================================================
+[2026-10-21 19:53:05] STARTING VENDOR DASHBOARD E2E SIMULATION: Samsung Galaxy Tab A8 (Kirana Counter Tablet)
+[2026-10-21 19:53:05] Dimensions: 800x1280 | DPR: 2.0
+[2026-10-21 19:53:05] ================================================================================
+[2026-10-21 19:53:05] Loading Vendor Portal: http://127.0.0.1:8001/vendor
+[2026-10-21 19:53:08] 
+--- [Samsung Galaxy Tab A8 (Kirana Counter Tablet)] Step 0: Login Gate Security Enforcement ---
+[2026-10-21 19:53:08]   ✓ PASS: [Samsung Galaxy Tab A8 (Kirana Counter Tablet)] Vendor Security Login Gate Enforced - Login gate displayed first; main dashboard unmounted before auth
+[2026-10-21 19:53:08]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Samsung_Galaxy_Tab_A8_(Kirana_Counter_Tablet)_step0_login_gate.png
+[2026-10-21 19:53:10] 
+--- [Samsung Galaxy Tab A8 (Kirana Counter Tablet)] Step 1: Header, Store Switcher & Operational Controls ---
+[2026-10-21 19:53:10]   ✓ PASS: Store Badge Code - DOM Visibility & Touch Target - Box: 73x24px at (76, 18)
+[2026-10-21 19:53:10]   ✓ PASS: Store Switcher Dropdown - DOM Visibility & Touch Target - Box: 220x34px at (155, 13)
+[2026-10-21 19:53:10]   ✓ PASS: Store Open/Close Toggle CTA - DOM Visibility & Touch Target - Box: 135x30px at (509, 15)
+[2026-10-21 19:53:10]   ✓ PASS: Language Toggle Button - DOM Visibility & Touch Target - Box: 80x36px at (652, 12)
+[2026-10-21 19:53:10]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Samsung_Galaxy_Tab_A8_(Kirana_Counter_Tablet)_step1_initial_dashboard.png
+[2026-10-21 19:53:11]   ✓ PASS: [Samsung Galaxy Tab A8 (Kirana Counter Tablet)] Store Operational Status Toggle - दुकान चालू (Open) -> दुकान बंद (Closed)
+[2026-10-21 19:53:11] 
+--- [Samsung Galaxy Tab A8 (Kirana Counter Tablet)] Step 2: High-Level KPI Summary Tiles ---
+[2026-10-21 19:53:11]   ✓ PASS: New Orders KPI Card - DOM Visibility & Touch Target - Box: 150x36px at (37, 162)
+[2026-10-21 19:53:11]   ✓ PASS: Packing in Progress KPI Card - DOM Visibility & Touch Target - Box: 133x36px at (425, 162)
+[2026-10-21 19:53:11]   ✓ PASS: Gross Sales KPI Card - DOM Visibility & Touch Target - Box: 135x36px at (37, 286)
+[2026-10-21 19:53:11]   ✓ PASS: Net Payout KPI Card - DOM Visibility & Touch Target - Box: 163x36px at (425, 286)
+[2026-10-21 19:53:11]   ✓ PASS: [Samsung Galaxy Tab A8 (Kirana Counter Tablet)] KPI Live Counters Populated - New Orders: 18 | Sales: ₹20669
+[2026-10-21 19:53:11] 
+--- [Samsung Galaxy Tab A8 (Kirana Counter Tablet)] Step 3: Order Lifecycle Progression Workflow ---
+[2026-10-21 19:53:11]   ✓ PASS: [Samsung Galaxy Tab A8 (Kirana Counter Tablet)] Live Order Cards Rendered in Queue - 82 orders visible
+[2026-10-21 19:53:11]   ✓ PASS: Order Accept CTA Button - DOM Visibility & Touch Target - Box: 218x38px at (541, 782)
+[2026-10-21 19:53:12]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Samsung_Galaxy_Tab_A8_(Kirana_Counter_Tablet)_step2_order_accepted.png
+[2026-10-21 19:53:12]   ✓ PASS: [Samsung Galaxy Tab A8 (Kirana Counter Tablet)] Order Action: Accepted by Vendor - Advanced to Stage 2 (Packing चालू)
+[2026-10-21 19:53:12]   ✓ PASS: Mark Packed CTA Button - DOM Visibility & Touch Target - Box: 331x48px at (428, 776)
+[2026-10-21 19:53:13]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Samsung_Galaxy_Tab_A8_(Kirana_Counter_Tablet)_step3_order_packed.png
+[2026-10-21 19:53:13]   ✓ PASS: [Samsung Galaxy Tab A8 (Kirana Counter Tablet)] Order Action: Packed by Vendor - Advanced to Stage 3 (Waiting for Runner)
+[2026-10-21 19:53:13]   ✓ PASS: Handover to Runner CTA Button - DOM Visibility & Touch Target - Box: 331x48px at (428, 824)
+[2026-10-21 19:53:15]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Samsung_Galaxy_Tab_A8_(Kirana_Counter_Tablet)_step4_order_dispatched.png
+[2026-10-21 19:53:15]   ✓ PASS: [Samsung Galaxy Tab A8 (Kirana Counter Tablet)] Order Action: Handed Over to Gaon Mitra - Advanced to Stage 4 (Out for Delivery)
+[2026-10-21 19:53:15] 
+--- [Samsung Galaxy Tab A8 (Kirana Counter Tablet)] Step 4: Inventory Management & Tactile Stock Toggles ---
+[2026-10-21 19:53:15]   ✓ PASS: [Samsung Galaxy Tab A8 (Kirana Counter Tablet)] Transition to Inventory Workspace Tab
+[2026-10-21 19:53:15]   ✓ PASS: Inventory Search Bar - DOM Visibility & Touch Target - Box: 562x38px at (35, 440)
+[2026-10-21 19:53:15]   ✓ PASS: [Samsung Galaxy Tab A8 (Kirana Counter Tablet)] Inventory Products Rendered - 24 products loaded
+[2026-10-21 19:53:16]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Samsung_Galaxy_Tab_A8_(Kirana_Counter_Tablet)_step5_stock_toggled.png
+[2026-10-21 19:53:16]   ✓ PASS: [Samsung Galaxy Tab A8 (Kirana Counter Tablet)] Product In-Stock / Out-of-Stock Toggle - toggle_on
+उपलब्ध -> toggle_off
+अनुपलब्ध
+[2026-10-21 19:53:17] 
+--- [Samsung Galaxy Tab A8 (Kirana Counter Tablet)] Step 5: Add New Inventory Item Modal ---
+[2026-10-21 19:53:17]   ✓ PASS: [Samsung Galaxy Tab A8 (Kirana Counter Tablet)] Add Product Modal Opened
+[2026-10-21 19:53:18]   ✓ PASS: [Samsung Galaxy Tab A8 (Kirana Counter Tablet)] Add Product Modal Submitted & Closed
+[2026-10-21 19:53:18] 
+--- [Samsung Galaxy Tab A8 (Kirana Counter Tablet)] Step 6: Daily Sales & Earnings Ledger ---
+[2026-10-21 19:53:19]   ✓ PASS: [Samsung Galaxy Tab A8 (Kirana Counter Tablet)] Transition to Daily Ledger Workspace Tab
+[2026-10-21 19:53:19]   ✓ PASS: Gross Sales Summary Box - DOM Visibility & Touch Target - Box: 144x32px at (54, 559)
+[2026-10-21 19:53:19]   ✓ PASS: COD Cash in Hand Box - DOM Visibility & Touch Target - Box: 144x32px at (236, 559)
+[2026-10-21 19:53:19]   ✓ PASS: Platform Commission Fee Box - DOM Visibility & Touch Target - Box: 144x32px at (419, 583)
+[2026-10-21 19:53:19]   ✓ PASS: Net Dukandaar Payout Box - DOM Visibility & Touch Target - Box: 144x32px at (602, 583)
+[2026-10-21 19:53:19]   ✓ PASS: [Samsung Galaxy Tab A8 (Kirana Counter Tablet)] Ledger Financial Breakdown Verified - Gross: ₹20669 | COD: ₹20915 | Net Payout: ₹20423
+[2026-10-21 19:53:19]   ✓ PASS: [Samsung Galaxy Tab A8 (Kirana Counter Tablet)] Ledger Transaction Table Rows Rendered - 82 orders in ledger table
+[2026-10-21 19:53:19]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Samsung_Galaxy_Tab_A8_(Kirana_Counter_Tablet)_step6_daily_ledger.png
+[2026-10-21 19:53:19] 
+--- [Samsung Galaxy Tab A8 (Kirana Counter Tablet)] Step 7: Store Profile & Cluster Settings ---
+[2026-10-21 19:53:20]   ✓ PASS: [Samsung Galaxy Tab A8 (Kirana Counter Tablet)] Store Profile Details Loaded - Store: Sharma Brothers Kirana
+[2026-10-21 19:53:20]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Samsung_Galaxy_Tab_A8_(Kirana_Counter_Tablet)_step7_store_profile.png
+[2026-10-21 19:53:20] 
+--- [Samsung Galaxy Tab A8 (Kirana Counter Tablet)] Step 8: Bilingual State Switch (Hindi / English) ---
+[2026-10-21 19:53:20]   ✓ PASS: [Samsung Galaxy Tab A8 (Kirana Counter Tablet)] Bilingual Toggle to English - Label: translate
+हिंदी
+[2026-10-21 19:53:21] 
+--- [Samsung Galaxy Tab A8 (Kirana Counter Tablet)] Step 9: Zero Console Errors Audit ---
+[2026-10-21 19:53:21]   ✓ PASS: [Samsung Galaxy Tab A8 (Kirana Counter Tablet)] Zero JavaScript Console Errors - Clean runtime execution
+[2026-10-21 19:53:21] 
+================================================================================
+[2026-10-21 19:53:21] REAL-TIME CUSTOMER -> VENDOR SYNC END-TO-END TEST
+[2026-10-21 19:53:21] ================================================================================
+[2026-10-21 19:53:25]   📦 Placing a new customer order via /api/orders/checkout...
+[2026-10-21 19:53:25]   ✓ Order placed successfully: #RUR-1791 (Total: ₹358.0)
+[2026-10-21 19:53:25]   ⏳ Waiting for Vendor Dashboard to sync and display #RUR-1791...
+[2026-10-21 19:53:30]   ✓ PASS: Customer-to-Vendor Real-Time Order Sync - Order #RUR-1791 appeared live in Vendor Queue without page reload!
+[2026-10-21 19:53:30]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/step8_customer_vendor_live_synced.png
+
+================================================================================
+END OF VENDOR TEST REPORT - 100% HEALTHY
+================================================================================
