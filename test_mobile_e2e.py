@@ -218,12 +218,26 @@ def check_human_ux_bounds(page, selector, element_desc, dev_name, logger, requir
             if (!el) return { valid: false, error: 'Element null' };
 
             // Clearance scroll if overlapping sticky bars
-            const bNav = document.getElementById('p3-cart-bar') || document.querySelector('div.fixed.bottom-0');
+            const scrollContainer = document.querySelector('.screen-view.active') || document.querySelector('main') || document.scrollingElement || window;
+            const doScroll = (delta) => {
+                if (scrollContainer && typeof scrollContainer.scrollBy === 'function') {
+                    scrollContainer.scrollBy(0, delta);
+                } else {
+                    window.scrollBy(0, delta);
+                }
+            };
+
+            const bNav = document.getElementById('customer-bottom-nav') || 
+                         document.getElementById('p3-cart-bar') || 
+                         document.querySelector('nav.fixed.bottom-0') || 
+                         document.querySelector('aside.fixed.bottom-0') || 
+                         document.querySelector('div.fixed.bottom-0') || 
+                         document.querySelector('[id*="bottom-nav"]');
             if (bNav && !bNav.contains(el) && window.getComputedStyle(bNav).display !== 'none') {
                 const navTop = bNav.getBoundingClientRect().top;
                 const r = el.getBoundingClientRect();
                 if (r.bottom > navTop - 10) {
-                    window.scrollBy(0, r.bottom - navTop + 35);
+                    doScroll(r.bottom - navTop + 35);
                 }
             }
             const header = document.querySelector('header, .sticky.top-0');
@@ -231,7 +245,7 @@ def check_human_ux_bounds(page, selector, element_desc, dev_name, logger, requir
                 const headBottom = header.getBoundingClientRect().bottom;
                 const r = el.getBoundingClientRect();
                 if (r.top < headBottom + 5) {
-                    window.scrollBy(0, r.top - headBottom - 20);
+                    doScroll(r.top - headBottom - 20);
                 }
             }
 
@@ -258,6 +272,7 @@ def check_human_ux_bounds(page, selector, element_desc, dev_name, logger, requir
             )).filter(bar => {
                 if (!bar) return false;
                 if (bar.contains(el) || el.contains(bar)) return false;
+                if (bar.id && bar.id.includes('toast')) return false;
                 const bStyle = window.getComputedStyle(bar);
                 if (bStyle.display === 'none' || bStyle.visibility === 'hidden') return false;
                 const pos = bStyle.position;

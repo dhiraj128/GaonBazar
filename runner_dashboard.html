@@ -1246,6 +1246,7 @@
         }));
         localStorage.setItem('gaonbazar_runner_id', res.runner_id);
 
+        // Immediate DOM transition: hide gates & modals, show header & pending view
         const loginGate = document.getElementById('runner-login-gate');
         if (loginGate) {
           loginGate.classList.add('hidden');
@@ -1258,8 +1259,29 @@
           authGate.style.display = 'none';
           authGate.style.pointerEvents = 'none';
         }
+
+        const pendingView = document.getElementById('runner-pending-view');
+        if (pendingView) {
+          pendingView.classList.remove('hidden');
+          pendingView.style.display = 'flex';
+        }
+        const mainContent = document.getElementById('runner-main-content');
+        if (mainContent) {
+          mainContent.classList.add('hidden');
+          mainContent.style.display = 'none';
+        }
+        document.getElementById('runner-bottom-nav')?.classList.add('hidden');
         document.getElementById('runner-header')?.classList.remove('hidden');
-        document.getElementById('runner-bottom-nav')?.classList.remove('hidden');
+
+        // Immediately populate pending verification lock view badges
+        const pName = document.getElementById('pending-runner-name');
+        const pCode = document.getElementById('pending-runner-code');
+        const pId = document.getElementById('pending-runner-id-badge');
+        const pUpi = document.getElementById('pending-runner-upi-badge');
+        if (pName) pName.innerText = name;
+        if (pCode) pCode.innerText = `गाँव मित्र कोड: ${res.runner_code || res.runner_id}`;
+        if (pId) pId.innerText = `${idType} ${idNumber}`;
+        if (pUpi) pUpi.innerText = payoutUpi;
 
         await fetchAllRunnerData(true);
       } catch (err) {
@@ -1272,6 +1294,21 @@
         const res = await runnerApiFetch(`/runner/status/${encodeURIComponent(RunnerStore.runnerId)}`);
         if (res.can_access || res.status === 'approved') {
           showToast('गाँव मित्र स्वीकृत!', 'सुपर एडमिन द्वारा सत्यापन पूर्ण। मिशन कतार अनलॉक हो गई है।');
+          const pendingView = document.getElementById('runner-pending-view');
+          if (pendingView) {
+            pendingView.classList.add('hidden');
+            pendingView.style.display = 'none';
+          }
+          const mainContent = document.getElementById('runner-main-content');
+          if (mainContent) {
+            mainContent.classList.remove('hidden');
+            mainContent.style.display = 'flex';
+          }
+          const bNav = document.getElementById('runner-bottom-nav');
+          if (bNav) {
+            bNav.classList.remove('hidden');
+            bNav.style.display = '';
+          }
           await fetchAllRunnerData(true);
         } else {
           showToast('सत्यापन विचाराधीन', res.message || 'आवेदन अभी सत्यापन हेतु विचाराधीन है।');

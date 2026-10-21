@@ -392,6 +392,7 @@ def _run_admin_e2e_steps(browser, logger, contexts):
     capture_screenshot(runner_page, "06_runner_pending_lock", logger)
 
     # Test Check Status button while still pending
+    runner_page.wait_for_selector("#btn-check-runner-status", state="visible", timeout=10000)
     runner_page.click("#btn-check-runner-status")
     runner_page.wait_for_timeout(600)
     assert runner_page.is_visible("#runner-pending-view"), "Should stay locked while pending"
