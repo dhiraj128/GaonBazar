@@ -316,7 +316,7 @@
   </div>
 
   <!-- Main App Shell -->
-  <main class="flex-1 min-h-0 max-w-6xl w-full mx-auto p-3 sm:p-5 flex flex-col gap-4 pb-28 sm:pb-36 overflow-y-auto">
+  <main class="flex-1 min-h-0 max-w-6xl w-full mx-auto p-3 sm:p-5 flex flex-col gap-4 pb-28 sm:pb-36 overflow-y-auto scroll-pt-28">
 
     <!-- ========================================================================= -->
     <!-- PENDING VERIFICATION LOCK VIEW (When status is pending_approval)           -->
@@ -638,33 +638,33 @@
   <!-- ========================================================================= -->
   <!-- 7.5 BOTTOM NAVIGATION BAR (Sticky Mobile-First Swiggy/Flipkart Standard)   -->
   <!-- ========================================================================= -->
-  <nav id="vendor-bottom-nav" class="hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 sm:px-4 py-1.5 flex items-center justify-around max-w-6xl mx-auto shadow-2xl">
+  <nav id="vendor-bottom-nav" class="hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-1 sm:px-4 py-1.5 flex items-center justify-around max-w-6xl mx-auto shadow-2xl">
     
     <!-- Tab 1: Orders -->
-    <button id="nav-btn-orders" onclick="switchMainTab('orders')" class="flex flex-col items-center justify-center py-1 px-3 rounded-2xl bg-emerald-50 text-primary font-black shadow-xs transition-all min-h-[44px]">
+    <button id="nav-btn-orders" onclick="switchMainTab('orders')" class="flex-1 min-w-0 max-w-[100px] flex flex-col items-center justify-center py-1 px-1 rounded-2xl bg-emerald-50 text-primary font-black shadow-xs transition-all min-h-[44px]">
       <div class="relative flex items-center justify-center">
         <span class="material-symbols-outlined text-[22px]">list_alt</span>
         <span id="orders-badge-pill" class="absolute -top-1 -right-2 bg-primary text-white text-[9px] px-1.5 py-0.2 rounded-full font-black">0</span>
       </div>
-      <span class="text-[10px] sm:text-[11px] tracking-wide mt-0.5" data-i18n="tab_live_orders">नए ऑर्डर (Orders)</span>
+      <span class="text-[10px] sm:text-[11px] tracking-tight mt-0.5 truncate max-w-full" data-i18n="tab_live_orders">नए ऑर्डर (Orders)</span>
     </button>
 
     <!-- Tab 2: Inventory / Stock -->
-    <button id="nav-btn-inventory" onclick="switchMainTab('inventory')" class="flex flex-col items-center justify-center py-1 px-3 rounded-2xl text-slate-500 hover:text-slate-800 font-bold transition-all min-h-[44px]">
+    <button id="nav-btn-inventory" onclick="switchMainTab('inventory')" class="flex-1 min-w-0 max-w-[100px] flex flex-col items-center justify-center py-1 px-1 rounded-2xl text-slate-500 hover:text-slate-800 font-bold transition-all min-h-[44px]">
       <span class="material-symbols-outlined text-[22px]">inventory_2</span>
-      <span class="text-[10px] sm:text-[11px] tracking-wide mt-0.5" data-i18n="tab_inventory">दुकान का सामान (Stock)</span>
+      <span class="text-[10px] sm:text-[11px] tracking-tight mt-0.5 truncate max-w-full" data-i18n="tab_inventory">दुकान का सामान (Stock)</span>
     </button>
 
     <!-- Tab 3: Ledger -->
-    <button id="nav-btn-ledger" onclick="switchMainTab('ledger')" class="flex flex-col items-center justify-center py-1 px-3 rounded-2xl text-slate-500 hover:text-slate-800 font-bold transition-all min-h-[44px]">
+    <button id="nav-btn-ledger" onclick="switchMainTab('ledger')" class="flex-1 min-w-0 max-w-[100px] flex flex-col items-center justify-center py-1 px-1 rounded-2xl text-slate-500 hover:text-slate-800 font-bold transition-all min-h-[44px]">
       <span class="material-symbols-outlined text-[22px]">receipt_long</span>
-      <span class="text-[10px] sm:text-[11px] tracking-wide mt-0.5" data-i18n="tab_ledger">बहीखाता (Ledger)</span>
+      <span class="text-[10px] sm:text-[11px] tracking-tight mt-0.5 truncate max-w-full" data-i18n="tab_ledger">बहीखाता (Ledger)</span>
     </button>
 
     <!-- Tab 4: Profile -->
-    <button id="nav-btn-settings" onclick="switchMainTab('settings')" class="flex flex-col items-center justify-center py-1 px-3 rounded-2xl text-slate-500 hover:text-slate-800 font-bold transition-all min-h-[44px]">
+    <button id="nav-btn-settings" onclick="switchMainTab('settings')" class="flex-1 min-w-0 max-w-[100px] flex flex-col items-center justify-center py-1 px-1 rounded-2xl text-slate-500 hover:text-slate-800 font-bold transition-all min-h-[44px]">
       <span class="material-symbols-outlined text-[22px]">store</span>
-      <span class="text-[10px] sm:text-[11px] tracking-wide mt-0.5" data-i18n="tab_store_profile">दुकान प्रोफ़ाइल (Profile)</span>
+      <span class="text-[10px] sm:text-[11px] tracking-tight mt-0.5 truncate max-w-full" data-i18n="tab_store_profile">दुकान प्रोफ़ाइल (Profile)</span>
     </button>
 
   </nav>
@@ -1053,15 +1053,22 @@
         });
 
         const store = res.store;
+        localStorage.setItem('authToken', res.token || 'vendor_token');
+        localStorage.setItem('gaonbazar_vendor_token', res.token || 'vendor_token');
         localStorage.setItem('gaonbazar_vendor_session', JSON.stringify({
           store_id: store.id,
           phone: store.phone,
           token: res.token
         }));
         localStorage.setItem('gaonbazar_vendor_store', store.id);
+        VendorStore.token = res.token;
         VendorStore.currentStoreId = store.id;
 
-        document.getElementById('vendor-login-gate')?.classList.add('hidden');
+        const loginGate = document.getElementById('vendor-login-gate');
+        if (loginGate) {
+          loginGate.classList.add('hidden');
+          loginGate.style.display = 'none';
+        }
         document.getElementById('vendor-header')?.classList.remove('hidden');
 
         const sel = document.getElementById('store-switcher-select');
@@ -1086,9 +1093,18 @@
     }
 
     function handleVendorLogout() {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('gaonbazar_vendor_token');
       localStorage.removeItem('gaonbazar_vendor_session');
+      localStorage.removeItem('gaonbazar_vendor_store');
+      VendorStore.token = null;
       if (VendorStore.pollTimer) clearInterval(VendorStore.pollTimer);
-      document.getElementById('vendor-login-gate')?.classList.remove('hidden');
+      const loginGate = document.getElementById('vendor-login-gate');
+      if (loginGate) {
+        loginGate.classList.remove('hidden');
+        loginGate.style.display = 'flex';
+        loginGate.style.pointerEvents = 'auto';
+      }
       document.getElementById('vendor-header')?.classList.add('hidden');
       document.getElementById('vendor-main-content')?.classList.add('hidden');
       document.getElementById('vendor-pending-view')?.classList.add('hidden');
@@ -1098,14 +1114,24 @@
 
     async function checkVendorSession() {
       const sessionStr = localStorage.getItem('gaonbazar_vendor_session');
+      const authToken = localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_vendor_token');
       const loginGate = document.getElementById('vendor-login-gate');
+      const authGate = document.getElementById('vendor-auth-gate');
       const mainHeader = document.getElementById('vendor-header');
       const pendingView = document.getElementById('vendor-pending-view');
       const mainContent = document.getElementById('vendor-main-content');
       const bottomNav = document.getElementById('vendor-bottom-nav');
 
-      if (!sessionStr) {
-        if (loginGate) loginGate.classList.remove('hidden');
+      if (!sessionStr && !authToken) {
+        if (loginGate) {
+          loginGate.classList.remove('hidden');
+          loginGate.style.display = 'flex';
+          loginGate.style.pointerEvents = 'auto';
+        }
+        if (authGate) {
+          authGate.classList.add('hidden');
+          authGate.style.display = 'none';
+        }
         if (mainHeader) mainHeader.classList.add('hidden');
         if (pendingView) pendingView.classList.add('hidden');
         if (mainContent) mainContent.classList.add('hidden');
@@ -1114,17 +1140,46 @@
       }
 
       try {
-        const sess = JSON.parse(sessionStr);
-        if (sess.store_id) {
-          VendorStore.currentStoreId = sess.store_id;
-          const sel = document.getElementById('store-switcher-select');
-          if (sel) sel.value = sess.store_id;
+        if (authToken) {
+          VendorStore.token = authToken;
         }
-        if (loginGate) loginGate.classList.add('hidden');
+        if (sessionStr) {
+          try {
+            const sess = JSON.parse(sessionStr);
+            if (sess.store_id) {
+              VendorStore.currentStoreId = sess.store_id;
+              const sel = document.getElementById('store-switcher-select');
+              if (sel) sel.value = sess.store_id;
+            }
+            if (sess.token) {
+              VendorStore.token = sess.token;
+            }
+          } catch(e) {}
+        } else {
+          const savedStore = localStorage.getItem('gaonbazar_vendor_store');
+          if (savedStore) VendorStore.currentStoreId = savedStore;
+        }
+
+        // Automatically bypass login & KYC auth gates
+        if (loginGate) {
+          loginGate.classList.add('hidden');
+          loginGate.style.display = 'none';
+          loginGate.style.pointerEvents = 'none';
+        }
+        if (authGate) {
+          authGate.classList.add('hidden');
+          authGate.style.display = 'none';
+          authGate.style.pointerEvents = 'none';
+        }
         if (mainHeader) mainHeader.classList.remove('hidden');
 
         const isApproved = await loadStoreProfile();
         if (isApproved !== false) {
+          if (mainContent) {
+            mainContent.classList.remove('hidden');
+            mainContent.style.display = 'flex';
+          }
+          if (bottomNav) bottomNav.classList.remove('hidden');
           await fetchAllVendorData(true);
           if (VendorStore.pollTimer) clearInterval(VendorStore.pollTimer);
           VendorStore.pollTimer = setInterval(() => {
@@ -1134,8 +1189,10 @@
         return true;
       } catch (e) {
         console.error('Session error:', e);
-        localStorage.removeItem('gaonbazar_vendor_session');
-        if (loginGate) loginGate.classList.remove('hidden');
+        if (loginGate) {
+          loginGate.classList.remove('hidden');
+          loginGate.style.display = 'flex';
+        }
         if (mainHeader) mainHeader.classList.add('hidden');
         if (pendingView) pendingView.classList.add('hidden');
         if (mainContent) mainContent.classList.add('hidden');
@@ -1401,6 +1458,11 @@
             `${latest.id} • ${latest.user_name} (${latest.village}) • ₹${latest.total_amount}`
           );
         }
+        const prevOrders = VendorStore.orders || [];
+        const ordersChanged = forceFullRender || 
+          prevOrders.length !== orders.length ||
+          prevOrders.some((prev, i) => !orders[i] || prev.id !== orders[i].id || prev.timeline_stage !== orders[i].timeline_stage || prev.status !== orders[i].status);
+
         VendorStore.lastSeenOrderCount = orders.length;
 
         VendorStore.orders = orders;
@@ -1408,7 +1470,9 @@
         VendorStore.ledger = ledger;
 
         updateKPIWidgets(orders, ledger);
-        renderOrdersQueue();
+        if (ordersChanged) {
+          renderOrdersQueue();
+        }
         if (VendorStore.activeTab === 'inventory') renderInventoryGrid();
         if (VendorStore.activeTab === 'ledger') renderLedgerView();
 
@@ -1512,7 +1576,7 @@
             <button onclick="handleOrderAction('${order.id}', 'cancel')" class="col-span-1 py-2.5 rounded-xl border border-red-300 text-red-700 hover:bg-red-50 text-xs font-bold transition-colors">
               ${isHi ? 'अस्वीकार' : 'Decline'}
             </button>
-            <button onclick="handleOrderAction('${order.id}', 'accept')" class="col-span-2 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-black shadow-md active:scale-98 transition-transform flex items-center justify-center gap-1.5">
+            <button onclick="handleOrderAction('${order.id}', 'accept')" class="scroll-mt-28 col-span-2 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-black shadow-md active:scale-98 transition-transform flex items-center justify-center gap-1.5">
               <span class="material-symbols-outlined text-[18px]">check_circle</span>
               <span>${isHi ? 'स्वीकार करें' : 'Accept Order'}</span>
             </button>
@@ -1521,7 +1585,7 @@
       } else if (isAccepted) {
         actionButtons = `
           <div class="mt-3 pt-2 border-t border-slate-100">
-            <button onclick="handleOrderAction('${order.id}', 'pack')" class="w-full min-h-[48px] py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-black shadow-md active:scale-98 transition-transform flex items-center justify-center gap-2">
+            <button onclick="handleOrderAction('${order.id}', 'pack')" class="scroll-mt-28 w-full min-h-[48px] py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-black shadow-md active:scale-98 transition-transform flex items-center justify-center gap-2">
               <span class="material-symbols-outlined text-[20px]">inventory_2</span>
               <span>${isHi ? 'सामान पैक हो गया' : 'Mark Packed'}</span>
             </button>
@@ -1537,7 +1601,7 @@
               </div>
               <span class="text-[11px] font-bold text-purple-700">+91 9876543220</span>
             </div>
-            <button onclick="handleOrderAction('${order.id}', 'dispatch')" class="w-full min-h-[48px] py-3 rounded-2xl bg-purple-700 hover:bg-purple-800 text-white text-xs sm:text-sm font-black shadow-md active:scale-98 transition-transform flex items-center justify-center gap-2">
+            <button onclick="handleOrderAction('${order.id}', 'dispatch')" class="scroll-mt-28 w-full min-h-[48px] py-3 rounded-2xl bg-purple-700 hover:bg-purple-800 text-white text-xs sm:text-sm font-black shadow-md active:scale-98 transition-transform flex items-center justify-center gap-2">
               <span class="material-symbols-outlined text-[20px]">local_shipping</span>
               <span>${isHi ? 'रनर को सौंपें' : 'Handover to Gaon Mitra'}</span>
             </button>
@@ -1558,7 +1622,7 @@
       }
 
       return `
-        <div class="bg-white rounded-3xl p-4 sm:p-5 border ${isNew ? 'new-order-urgent border-amber-300' : 'border-slate-200'} shadow-xs flex flex-col justify-between transition-all">
+        <div id="order-card-${order.id}" class="scroll-mt-28 bg-white rounded-3xl p-4 sm:p-5 border ${isNew ? 'new-order-urgent border-amber-300' : 'border-slate-200'} shadow-xs flex flex-col justify-between transition-all">
           
           <!-- Top Row: ID, Time, Badge -->
           <div>
@@ -1665,8 +1729,11 @@
         showToast('ऑर्डर अपडेट', actionMessages[action] || 'स्थिति अपडेट हुई');
         if (action === 'accept' || action === 'pack') playOrderChime();
 
-        // Refresh all data in background
-        fetchAllVendorData(false);
+        // Refresh ledger & KPIs in background without wiping the active orders DOM
+        vendorApiFetch(`/vendor/stores/${VendorStore.currentStoreId}/ledger`).then(ledger => {
+          VendorStore.ledger = ledger;
+          updateKPIWidgets(VendorStore.orders, ledger);
+        }).catch(() => {});
 
       } catch (err) {
         showToast('त्रुटि', 'Action failed: ' + err.message);
@@ -1738,20 +1805,56 @@
 
           <!-- Stock Toggle Switch (Large Touch Target) -->
           <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between">
-            <span class="text-xs font-bold ${prod.in_stock ? 'text-primary' : 'text-red-600'}">
+            <span id="stock-label-${prod.id}" class="text-xs font-bold ${prod.in_stock ? 'text-primary' : 'text-slate-500'}">
               ${prod.in_stock ? (isHi ? '● स्टॉक में उपलब्ध' : '● In Stock') : (isHi ? '○ समाप्त' : '○ Out of Stock')}
             </span>
 
-            <button onclick="toggleProductStock('${prod.id}', ${!prod.in_stock})" class="px-3.5 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition-colors ${prod.in_stock ? 'bg-emerald-100 text-primary hover:bg-emerald-200' : 'bg-red-100 text-red-700 hover:bg-red-200'}">
-              <span class="material-symbols-outlined text-[16px]">${prod.in_stock ? 'toggle_on' : 'toggle_off'}</span>
-              <span>${prod.in_stock ? (isHi ? 'उपलब्ध' : 'In Stock') : (isHi ? 'अनुपलब्ध' : 'Out of Stock')}</span>
+            <button 
+              id="stock-btn-${prod.id}"
+              type="button"
+              onclick="toggleStockStatus('${prod.id}', ${!prod.in_stock}, event)" 
+              class="touch-manipulation px-3.5 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all select-none active:scale-95 cursor-pointer ${prod.in_stock ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}"
+            >
+              <span class="material-symbols-outlined text-[18px] pointer-events-none">${prod.in_stock ? 'toggle_on' : 'toggle_off'}</span>
+              <span class="pointer-events-none">${prod.in_stock ? (isHi ? 'उपलब्ध' : 'In Stock') : (isHi ? 'अनुपलब्ध' : 'Out of Stock')}</span>
             </button>
           </div>
         </div>
       `).join('');
     }
 
-    async function toggleProductStock(productId, newStockStatus) {
+    async function toggleStockStatus(productId, newStockStatus, event) {
+      if (event) {
+        if (event.stopPropagation) event.stopPropagation();
+        if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+        if (event.preventDefault) event.preventDefault();
+      }
+
+      // 1. OPTIMISTIC DOM & STATE UPDATE (Instant 0ms visual change!)
+      const prod = VendorStore.products.find(p => p.id === productId);
+      const prevStockStatus = prod ? prod.in_stock : !newStockStatus;
+      if (prod) {
+        prod.in_stock = newStockStatus;
+      }
+
+      const isHi = (VendorStore.lang === 'hi');
+      const btn = document.getElementById(`stock-btn-${productId}`);
+      const lbl = document.getElementById(`stock-label-${productId}`);
+
+      if (btn) {
+        btn.setAttribute('onclick', `toggleStockStatus('${productId}', ${!newStockStatus}, event)`);
+        btn.className = `touch-manipulation px-3.5 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all select-none active:scale-95 cursor-pointer ${newStockStatus ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}`;
+        btn.innerHTML = `
+          <span class="material-symbols-outlined text-[18px] pointer-events-none">${newStockStatus ? 'toggle_on' : 'toggle_off'}</span>
+          <span class="pointer-events-none">${newStockStatus ? (isHi ? 'उपलब्ध' : 'In Stock') : (isHi ? 'अनुपलब्ध' : 'Out of Stock')}</span>
+        `;
+      }
+      if (lbl) {
+        lbl.className = `text-xs font-bold ${newStockStatus ? 'text-primary' : 'text-slate-500'}`;
+        lbl.innerText = newStockStatus ? (isHi ? '● स्टॉक में उपलब्ध' : '● In Stock') : (isHi ? '○ समाप्त' : '○ Out of Stock');
+      }
+
+      // 2. DISPATCH TO BACKEND API IN BACKGROUND
       try {
         const encId = encodeURIComponent(productId);
         const updated = await vendorApiFetch(`/vendor/products/${encId}/stock`, {
@@ -1759,20 +1862,33 @@
           body: JSON.stringify({ in_stock: newStockStatus })
         });
 
-        const idx = VendorStore.products.findIndex(p => p.id === productId);
-        if (idx !== -1) {
-          VendorStore.products[idx] = updated;
+        if (prod && updated) {
+          Object.assign(prod, updated);
         }
-        renderInventoryGrid();
-        const isHi = VendorStore.lang === 'hi';
         showToast(
           isHi ? 'इन्वेंट्री अपडेट' : 'Inventory Update',
-          `${isHi ? (updated.name_hi || updated.name_en) : updated.name_en}: ${updated.in_stock ? (isHi ? 'स्टॉक में चालू' : 'In Stock') : (isHi ? 'स्टॉक समाप्त' : 'Out of Stock')}`
+          `${isHi ? (prod.name_hi || prod.name_en) : prod.name_en}: ${newStockStatus ? (isHi ? 'स्टॉक में चालू' : 'In Stock') : (isHi ? 'स्टॉक समाप्त' : 'Out of Stock')}`
         );
       } catch (e) {
+        console.warn('Stock update network failure, reverting:', e);
+        if (prod) prod.in_stock = prevStockStatus;
+        if (btn) {
+          btn.setAttribute('onclick', `toggleStockStatus('${productId}', ${!prevStockStatus}, event)`);
+          btn.className = `touch-manipulation px-3.5 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all select-none active:scale-95 cursor-pointer ${prevStockStatus ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}`;
+          btn.innerHTML = `
+            <span class="material-symbols-outlined text-[18px] pointer-events-none">${prevStockStatus ? 'toggle_on' : 'toggle_off'}</span>
+            <span class="pointer-events-none">${prevStockStatus ? (isHi ? 'उपलब्ध' : 'In Stock') : (isHi ? 'अनुपलब्ध' : 'Out of Stock')}</span>
+          `;
+        }
+        if (lbl) {
+          lbl.className = `text-xs font-bold ${prevStockStatus ? 'text-primary' : 'text-slate-500'}`;
+          lbl.innerText = prevStockStatus ? (isHi ? '● स्टॉक में उपलब्ध' : '● In Stock') : (isHi ? '○ समाप्त' : '○ Out of Stock');
+        }
         showToast('त्रुटि', 'Stock update failed: ' + e.message);
       }
     }
+    window.toggleStockStatus = toggleStockStatus;
+    window.toggleProductStock = toggleStockStatus;
 
     function filterInventoryCategory(cat) {
       VendorStore.inventoryFilter = cat;
@@ -1937,7 +2053,7 @@
         const btn = document.getElementById(`nav-btn-${t}`);
         if (sec) sec.classList.add('hidden');
         if (btn) {
-          btn.className = "flex flex-col items-center justify-center py-1 px-3 rounded-2xl text-slate-500 hover:text-slate-800 font-bold transition-all min-h-[44px]";
+          btn.className = "flex-1 min-w-0 max-w-[100px] flex flex-col items-center justify-center py-1 px-1 rounded-2xl text-slate-500 hover:text-slate-800 font-bold transition-all min-h-[44px]";
         }
       });
 
@@ -1945,7 +2061,7 @@
       const activeBtn = document.getElementById(`nav-btn-${tabName}`);
       if (activeSec) activeSec.classList.remove('hidden');
       if (activeBtn) {
-        activeBtn.className = "flex flex-col items-center justify-center py-1 px-3 rounded-2xl bg-emerald-50 text-primary font-black shadow-xs transition-all min-h-[44px]";
+        activeBtn.className = "flex-1 min-w-0 max-w-[100px] flex flex-col items-center justify-center py-1 px-1 rounded-2xl bg-emerald-50 text-primary font-black shadow-xs transition-all min-h-[44px]";
       }
 
       // Update workspace title

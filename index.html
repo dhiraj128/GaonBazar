@@ -2432,6 +2432,14 @@
           const vText = (i18nDictionary[AppStore.lang] || i18nDictionary['hi']).p1_otp_verify_btn;
           verifyBtn.innerHTML = '<span data-i18n="p1_otp_verify_btn">' + vText + '</span><span class="material-symbols-outlined text-[18px]">arrow_forward</span>';
         }
+        if (!AppStore.sessionToken) {
+          AppStore.sessionToken = 'cust_jwt_' + Date.now();
+        }
+        localStorage.setItem('authToken', AppStore.sessionToken);
+        localStorage.setItem('gaonbazar_authToken', AppStore.sessionToken);
+        localStorage.setItem('gaonbazar_user', JSON.stringify(AppStore.user));
+        savePersistentState();
+
         // Immediate transition to Main Dashboard (Phase 2) - No early friction
         navigateToPhase('dashboard');
         loadStoresFromBackend();
@@ -3817,9 +3825,15 @@
     function savePersistentState() {
       try {
         localStorage.setItem('gaonbazar_lang', AppStore.lang);
+        if (AppStore.sessionToken) {
+          localStorage.setItem('authToken', AppStore.sessionToken);
+          localStorage.setItem('gaonbazar_authToken', AppStore.sessionToken);
+        }
+        localStorage.setItem('gaonbazar_user', JSON.stringify(AppStore.user));
         localStorage.setItem('gaonbazar_master_state', JSON.stringify({
           lang: AppStore.lang,
-          user: AppStore.user
+          user: AppStore.user,
+          sessionToken: AppStore.sessionToken
         }));
       } catch(e) {}
     }
@@ -4160,6 +4174,10 @@
 
     function logoutCustomer() {
       AppStore.sessionToken = null;
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('gaonbazar_authToken');
+      localStorage.removeItem('gaonbazar_user');
+      localStorage.removeItem('gaonbazar_master_state');
       if (typeof showAudioToast === 'function') {
         showAudioToast(
           AppStore.lang === 'hi' ? 'लॉगआउट सफल' : 'Logged Out',
@@ -4321,6 +4339,22 @@
       renderProductCatalog();
       window.applyBilingualState();
       loadStoresFromBackend();
+
+      // Check persistent login / Remember Me
+      const savedToken = localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_authToken');
+      if (savedToken) {
+        AppStore.sessionToken = savedToken;
+        try {
+          const savedUser = localStorage.getItem('gaonbazar_user');
+          if (savedUser) {
+            const parsed = JSON.parse(savedUser);
+            AppStore.user = { ...AppStore.user, ...parsed };
+          }
+        } catch (e) {
+          console.warn('Could not restore user from localStorage', e);
+        }
+        navigateToPhase('dashboard');
+      }
 
       // Check auto-test query
       const urlParams = new URLSearchParams(window.location.search);

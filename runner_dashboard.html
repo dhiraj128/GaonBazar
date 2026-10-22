@@ -996,7 +996,7 @@
         'Content-Type': 'application/json',
         ...(options.headers || {})
       };
-      const token = RunnerStore.token || localStorage.getItem('gaonbazar_runner_token');
+      const token = RunnerStore.token || localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_runner_token');
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
@@ -1079,6 +1079,9 @@
 
         const runner = res.runner;
         RunnerStore.runnerId = runner.runner_id;
+        RunnerStore.token = res.token;
+        localStorage.setItem('authToken', res.token);
+        localStorage.setItem('gaonbazar_runner_token', res.token);
         localStorage.setItem('gaonbazar_runner_session', JSON.stringify({
           runner_id: runner.runner_id,
           phone: runner.phone,
@@ -1118,6 +1121,9 @@
     }
 
     function handleRunnerLogout() {
+      RunnerStore.token = null;
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('gaonbazar_runner_token');
       localStorage.removeItem('gaonbazar_runner_session');
       if (RunnerStore.pollTimer) clearInterval(RunnerStore.pollTimer);
       const loginGate = document.getElementById('runner-login-gate');
@@ -1134,6 +1140,7 @@
     }
 
     async function checkRunnerSession() {
+      const savedAuthToken = localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_runner_token');
       const sessionStr = localStorage.getItem('gaonbazar_runner_session');
       const loginGate = document.getElementById('runner-login-gate');
       const authGate = document.getElementById('runner-auth-gate');
@@ -1142,7 +1149,7 @@
       const pendingView = document.getElementById('runner-pending-view');
       const mainContent = document.getElementById('runner-main-content');
 
-      if (!sessionStr) {
+      if (!sessionStr && !savedAuthToken) {
         if (loginGate) {
           loginGate.classList.remove('hidden');
           loginGate.style.display = 'flex';
@@ -1161,10 +1168,27 @@
       }
 
       try {
-        const sess = JSON.parse(sessionStr);
-        if (sess.runner_id) {
-          RunnerStore.runnerId = sess.runner_id;
+        if (sessionStr) {
+          try {
+            const sess = JSON.parse(sessionStr);
+            if (sess.runner_id) {
+              RunnerStore.runnerId = sess.runner_id;
+            }
+            if (sess.token) {
+              RunnerStore.token = sess.token;
+            }
+          } catch (e) {
+            console.warn('Could not parse gaonbazar_runner_session JSON', e);
+          }
         }
+        if (savedAuthToken && !RunnerStore.token) {
+          RunnerStore.token = savedAuthToken;
+        }
+        const savedRunnerId = localStorage.getItem('gaonbazar_runner_id');
+        if (savedRunnerId) {
+          RunnerStore.runnerId = savedRunnerId;
+        }
+
         if (loginGate) {
           loginGate.classList.add('hidden');
           loginGate.style.display = 'none';
@@ -1186,6 +1210,8 @@
         return true;
       } catch (e) {
         console.error('Runner session error:', e);
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('gaonbazar_runner_token');
         localStorage.removeItem('gaonbazar_runner_session');
         if (loginGate) {
           loginGate.classList.remove('hidden');
@@ -1268,6 +1294,7 @@
         RunnerStore.runnerId = res.runner_id;
         if (res.token) {
           RunnerStore.token = res.token;
+          localStorage.setItem('authToken', res.token);
           localStorage.setItem('gaonbazar_runner_token', res.token);
         }
         localStorage.setItem('gaonbazar_runner_session', JSON.stringify({

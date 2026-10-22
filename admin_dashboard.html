@@ -443,7 +443,7 @@
     async function adminFetch(endpoint, options = {}) {
       const url = `${API_BASE}${endpoint}`;
       const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
-      const token = AdminStore.token || localStorage.getItem('gaonbazar_admin_token');
+      const token = AdminStore.token || localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_admin_token');
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
@@ -474,6 +474,10 @@
     }
 
     async function initAdminApp() {
+      const savedToken = localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_admin_token');
+      if (savedToken) {
+        AdminStore.token = savedToken;
+      }
       await refreshAdminData();
       if (AdminStore.pollTimer) clearInterval(AdminStore.pollTimer);
       AdminStore.pollTimer = setInterval(() => {

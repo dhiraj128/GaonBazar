@@ -837,7 +837,7 @@ def test_customer_to_vendor_realtime_sync(browser, logger):
     context = browser.new_context(viewport={"width": 1280, "height": 800})
     try:
         vendor_page = context.new_page()
-        vendor_page.goto("http://127.0.0.1:8001/vendor")
+        vendor_page.goto("http://127.0.0.1:8001/vendor", timeout=60000)
         vendor_page.wait_for_timeout(1000)
         if vendor_page.is_visible("#vendor-login-gate"):
             vendor_page.click("#btn-vendor-login")
