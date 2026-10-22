@@ -104,13 +104,7 @@ ALLOWED_ORIGINS_ENV = os.getenv("ALLOWED_ORIGINS", "")
 allowed_origins = [
     "http://localhost:8001",
     "http://127.0.0.1:8001",
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
-    "http://localhost:3000",
     "null",  # Required for local file:// testing (Chrome/Playwright)
-    "https://gaonbazar.in",
-    "https://www.gaonbazar.in",
-    "https://app.gaonbazar.in"
 ]
 if ALLOWED_ORIGINS_ENV:
     for o in ALLOWED_ORIGINS_ENV.split(","):
@@ -120,8 +114,7 @@ if ALLOWED_ORIGINS_ENV:
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*", "null", "file://"],
-    allow_origin_regex=r".*",
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
