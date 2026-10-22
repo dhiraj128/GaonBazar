@@ -34,6 +34,7 @@ from .schemas import (
     RunnerRegisterRequest, RunnerRegisterResponse, RunnerStatusCheckResponse,
     AdminMetricsResponse, AdminPendingVendorDTO, AdminPendingRunnerDTO,
     AdminApprovalActionRequest, AdminGodViewOrderDTO, AdminCommissionLedgerResponse,
+    AdminUserRiskProfileDTO,
     SupportChatRequest, SupportChatResponse, SupportTicketRequest, SupportTicketResponse,
     UserOrderSummaryDTO
 )
@@ -320,7 +321,8 @@ def verify_otp(payload: VerifyOTPRequest, db: Session = Depends(get_db)):
             district=latest_lm.district if (latest_lm and hasattr(latest_lm, 'district')) else None,
             village=latest_lm.village if latest_lm else None,
             landmark=latest_lm.landmark_text if latest_lm else None,
-            cancelled_orders=user.cancelled_orders or 0,
+            consecutive_cancellations=getattr(user, 'consecutive_cancellations', 0) or 0,
+            cancelled_orders=getattr(user, 'consecutive_cancellations', 0) or getattr(user, 'cancelled_orders', 0) or 0,
             is_cod_blocked=bool(user.is_cod_blocked),
             is_blacklisted=bool(user.is_blacklisted),
             warning_alert=user.warning_alert,
@@ -385,7 +387,8 @@ def save_user_landmark(payload: SaveLandmarkRequest, db: Session = Depends(get_d
             district=payload.district.strip() if payload.district else None,
             village=payload.village,
             landmark=landmark_text,
-            cancelled_orders=user.cancelled_orders or 0,
+            consecutive_cancellations=getattr(user, 'consecutive_cancellations', 0) or 0,
+            cancelled_orders=getattr(user, 'consecutive_cancellations', 0) or getattr(user, 'cancelled_orders', 0) or 0,
             is_cod_blocked=bool(user.is_cod_blocked),
             is_blacklisted=bool(user.is_blacklisted),
             warning_alert=user.warning_alert,
@@ -589,6 +592,7 @@ def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
         user = User(
             phone=payload.user_phone,
             name=payload.user_name,
+            consecutive_cancellations=0,
             cancelled_orders=0,
             is_cod_blocked=False,
             is_blacklisted=False,
@@ -597,15 +601,19 @@ def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
         db.add(user)
         db.flush()
 
+    consecutive = getattr(user, 'consecutive_cancellations', None)
+    if consecutive is None:
+        consecutive = getattr(user, 'cancelled_orders', 0) or 0
+
     # STRIKE 3: Permanent Blacklist Enforcement
-    if user.is_blacklisted or (getattr(user, 'cancelled_orders', 0) or 0) >= 3:
+    if user.is_blacklisted or consecutive >= 3:
         raise HTTPException(
             status_code=403,
             detail="Account is permanently blacklisted from placing orders due to multiple cancellations (3 strikes reached) / एकाउंट ब्लैकलिस्ट कर दिया गया है।"
         )
 
     # STRIKE 2: Cash on Delivery (COD) Block Enforcement
-    if (user.is_cod_blocked or (getattr(user, 'cancelled_orders', 0) or 0) >= 2) and payload.payment_mode and payload.payment_mode.upper() == "COD":
+    if (user.is_cod_blocked or consecutive >= 2) and payload.payment_mode and payload.payment_mode.upper() == "COD":
         raise HTTPException(
             status_code=400,
             detail="Cash on Delivery (COD) is blocked for this user due to frequent cancellations. Please pay online via UPI. / कैश ऑन डिलीवरी (COD) प्रतिबंधित है। कृपया UPI द्वारा भुगतान करें।"
@@ -838,6 +846,23 @@ def get_order_status(order_id: str, db: Session = Depends(get_db)):
     )
 
 
+def reset_user_trust_on_delivery(user_phone: str, db: Session):
+    """
+    The Reset Logic: If a user's order successfully reaches Stage 5 ('Delivered'),
+    reset consecutive_cancellations to 0 and unblock Cash on Delivery (COD).
+    """
+    if not user_phone:
+        return
+    user = db.query(User).filter(User.phone == user_phone).first()
+    if user:
+        user.consecutive_cancellations = 0
+        user.cancelled_orders = 0
+        user.is_cod_blocked = False
+        user.warning_alert = None
+        user.trust_score = 100
+        db.commit()
+
+
 @app.post("/api/orders/{order_id}/advance-timeline")
 def advance_timeline(order_id: str, db: Session = Depends(get_db)):
     """
@@ -858,6 +883,8 @@ def advance_timeline(order_id: str, db: Session = Depends(get_db)):
     }
     order.timeline_stage = new_stage
     order.status = stage_names.get(new_stage, "Processing")
+    if new_stage == 5:
+        reset_user_trust_on_delivery(order.user_phone, db)
     db.commit()
 
     return {
@@ -865,6 +892,23 @@ def advance_timeline(order_id: str, db: Session = Depends(get_db)):
         "timeline_stage": order.timeline_stage,
         "status": order.status
     }
+
+
+@app.post("/api/orders/{order_id}/deliver")
+def mark_order_delivered(order_id: str, db: Session = Depends(get_db)):
+    """
+    Marks an order as Delivered (Stage 5) and resets consecutive cancellations.
+    """
+    candidate_ids = [order_id, f"#{order_id}", order_id.lstrip("#")]
+    order = db.query(Order).filter(Order.id.in_(candidate_ids)).first()
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    order.timeline_stage = 5
+    order.status = "Delivered"
+    reset_user_trust_on_delivery(order.user_phone, db)
+    db.commit()
+    db.refresh(order)
+    return {"order_id": order.id, "timeline_stage": 5, "status": "Delivered"}
 
 
 # =============================================================================
@@ -927,17 +971,18 @@ def process_order_cancellation(order: Order, db: Session, reason: str = "Custome
         db.add(user)
         db.flush()
 
-    user.cancelled_orders = (getattr(user, 'cancelled_orders', 0) or 0) + 1
-    current_strikes = user.cancelled_orders
+    user.consecutive_cancellations = (getattr(user, 'consecutive_cancellations', 0) or 0) + 1
+    user.cancelled_orders = user.consecutive_cancellations
+    current_strikes = user.consecutive_cancellations
     is_prepaid = (order.payment_mode.upper() != "COD")
     warning_notification = None
 
     if current_strikes == 1:
-        # STRIKE 1: The Warning
+        # STRIKE 1: Vague Warning (Rule details hidden from customer)
         user.is_cod_blocked = False
         user.is_blacklisted = False
         user.trust_score = 70
-        warning_notification = "Warning: Frequent cancellations may lead to COD restrictions."
+        warning_notification = "We noticed unusual cancellation activity on your account. Continued cancellations may result in COD or account restrictions."
         user.warning_alert = warning_notification
         
         refund_penalty = 0.0
@@ -993,7 +1038,8 @@ def process_order_cancellation(order: Order, db: Session, reason: str = "Custome
         "total_amount": order.total_amount,
         "refund_penalty": refund_penalty,
         "refund_amount": refund_amount,
-        "cancelled_orders_count": user.cancelled_orders,
+        "consecutive_cancellations": user.consecutive_cancellations,
+        "cancelled_orders_count": user.consecutive_cancellations,
         "is_cod_blocked": user.is_cod_blocked,
         "is_blacklisted": user.is_blacklisted,
         "warning_alert": user.warning_alert,
@@ -1032,6 +1078,7 @@ def cancel_order_endpoint(
         total_amount=res["total_amount"],
         refund_penalty=res["refund_penalty"],
         refund_amount=res["refund_amount"],
+        consecutive_cancellations=res["consecutive_cancellations"],
         cancelled_orders_count=res["cancelled_orders_count"],
         is_cod_blocked=res["is_cod_blocked"],
         is_blacklisted=res["is_blacklisted"],
@@ -1050,6 +1097,7 @@ def get_user_trust_status(phone: str, db: Session = Depends(get_db)):
         return CustomerTrustStatusDTO(
             phone=phone,
             name="Customer",
+            consecutive_cancellations=0,
             cancelled_orders=0,
             is_cod_blocked=False,
             is_blacklisted=False,
@@ -1059,19 +1107,24 @@ def get_user_trust_status(phone: str, db: Session = Depends(get_db)):
             can_order=True
         )
 
+    consecutive = getattr(user, 'consecutive_cancellations', None)
+    if consecutive is None:
+        consecutive = getattr(user, 'cancelled_orders', 0) or 0
+
     allowed = []
-    can_order = not (user.is_blacklisted or (getattr(user, 'cancelled_orders', 0) or 0) >= 3)
+    can_order = not (user.is_blacklisted or consecutive >= 3)
     if can_order:
         allowed.append("UPI")
-        if not (user.is_cod_blocked or (getattr(user, 'cancelled_orders', 0) or 0) >= 2):
+        if not (user.is_cod_blocked or consecutive >= 2):
             allowed.append("COD")
 
     return CustomerTrustStatusDTO(
         phone=user.phone,
         name=user.name or "Customer",
-        cancelled_orders=getattr(user, 'cancelled_orders', 0) or 0,
-        is_cod_blocked=bool(user.is_cod_blocked or (getattr(user, 'cancelled_orders', 0) or 0) >= 2),
-        is_blacklisted=bool(user.is_blacklisted or (getattr(user, 'cancelled_orders', 0) or 0) >= 3),
+        consecutive_cancellations=consecutive,
+        cancelled_orders=consecutive,
+        is_cod_blocked=bool(user.is_cod_blocked or consecutive >= 2),
+        is_blacklisted=bool(user.is_blacklisted or consecutive >= 3),
         warning_alert=user.warning_alert,
         trust_score=user.trust_score if user.trust_score is not None else 100,
         allowed_payment_modes=allowed,
@@ -1398,6 +1451,8 @@ def update_vendor_order_status(
 
     order.timeline_stage = payload.stage
     order.status = stage_names.get(payload.stage, "Processing")
+    if payload.stage == 5:
+        reset_user_trust_on_delivery(order.user_phone, db)
     db.commit()
     db.refresh(order)
 
@@ -1862,6 +1917,7 @@ def verify_doorstep_otp(
 
     order.timeline_stage = 5
     order.status = "Delivered"
+    reset_user_trust_on_delivery(order.user_phone, db)
     db.commit()
     db.refresh(order)
 
@@ -2265,6 +2321,10 @@ def get_admin_orders_god_view(db: Session = Depends(get_db)):
     results = []
     for o in orders:
         items_str = ", ".join([f"{it.product_name} x{it.quantity}" for it in o.items])
+        user_obj = db.query(User).filter(User.phone == o.user_phone).first() if o.user_phone else None
+        u_consecutive = (getattr(user_obj, 'consecutive_cancellations', 0) or 0) if user_obj else 0
+        u_cod_blocked = bool(user_obj and (user_obj.is_cod_blocked or u_consecutive >= 2))
+        u_blacklisted = bool(user_obj and (user_obj.is_blacklisted or u_consecutive >= 3))
         results.append(
             AdminGodViewOrderDTO(
                 order_id=o.id,
@@ -2285,7 +2345,36 @@ def get_admin_orders_god_view(db: Session = Depends(get_db)):
                 eta_mins=getattr(o, 'eta_mins', None) or ("45-60 Mins" if (getattr(o, 'distance_km', None) or 1.2) > 5.0 else "30 Mins"),
                 vendor_payout=float(getattr(o, 'vendor_payout', None) or o.subtotal),
                 runner_payout=float(getattr(o, 'runner_payout', None) or 15.0),
-                admin_profit=float(getattr(o, 'admin_profit', None) or 13.0)
+                admin_profit=float(getattr(o, 'admin_profit', None) or 13.0),
+                customer_consecutive_cancellations=u_consecutive,
+                customer_is_cod_blocked=u_cod_blocked,
+                customer_is_blacklisted=u_blacklisted
+            )
+        )
+    return results
+
+
+@app.get("/api/admin/users/risk-profile", response_model=List[AdminUserRiskProfileDTO])
+def get_admin_user_risk_profiles(db: Session = Depends(get_db)):
+    """
+    Super Admin God-View: Inspect customer risk profiles, consecutive cancellations,
+    COD restrictions, and blacklist statuses.
+    """
+    users = db.query(User).order_by(User.consecutive_cancellations.desc(), User.id.desc()).all()
+    results = []
+    for u in users:
+        consecutive = getattr(u, 'consecutive_cancellations', None)
+        if consecutive is None:
+            consecutive = getattr(u, 'cancelled_orders', 0) or 0
+        results.append(
+            AdminUserRiskProfileDTO(
+                phone=u.phone,
+                name=u.name or "Customer",
+                consecutive_cancellations=consecutive,
+                is_cod_blocked=bool(u.is_cod_blocked or consecutive >= 2),
+                is_blacklisted=bool(u.is_blacklisted or consecutive >= 3),
+                warning_alert=u.warning_alert,
+                created_at=u.created_at.strftime("%Y-%m-%d %H:%M") if u.created_at else None
             )
         )
     return results

@@ -527,6 +527,19 @@ def _run_admin_e2e_steps(browser, logger, contexts):
         logger.record_test("Distance-Based Ledger Balance Sheet Invariance", False, str(e_ledg))
     capture_screenshot(admin_page, "13_admin_commission_ledger", logger)
 
+    # Tab 5: Account Risk Profile Inspection (Internal Super Admin Risk Management)
+    logger.log("\n[STEP 3.4.5]: Inspecting Account Risk Profile & Cancellation Controls...")
+    admin_page.click("#admin-tab-btn-risk")
+    admin_page.wait_for_timeout(800)
+    risk_tab_visible = admin_page.is_visible("#tab-risk")
+    risk_table_present = admin_page.locator("#risk-profiles-table-body").count() > 0
+    logger.record_test(
+        "Super Admin Account Risk Profile Inspection",
+        risk_tab_visible and risk_table_present,
+        "Account Risk Profile tab loaded; consecutive cancellations and COD restrictions visible to Admin only"
+    )
+    capture_screenshot(admin_page, "13_02_admin_risk_profiles", logger)
+
     # Tab 5: Tablet View Responsiveness (800x1280)
     logger.log("\n[STEP 3.5]: Inspecting Super Admin on Tablet Viewport (800x1280)...")
     tablet_context = browser.new_context(

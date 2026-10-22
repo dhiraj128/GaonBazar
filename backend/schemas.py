@@ -51,6 +51,7 @@ class UserProfileDTO(BaseModel):
     district: Optional[str] = None
     village: Optional[str] = None
     landmark: Optional[str] = None
+    consecutive_cancellations: Optional[int] = 0
     cancelled_orders: Optional[int] = 0
     is_cod_blocked: Optional[bool] = False
     is_blacklisted: Optional[bool] = False
@@ -60,6 +61,7 @@ class UserProfileDTO(BaseModel):
 class CustomerTrustStatusDTO(BaseModel):
     phone: str
     name: Optional[str] = "Customer"
+    consecutive_cancellations: Optional[int] = 0
     cancelled_orders: int
     is_cod_blocked: bool
     is_blacklisted: bool
@@ -83,6 +85,7 @@ class OrderCancelResponse(BaseModel):
     total_amount: float
     refund_penalty: float
     refund_amount: float
+    consecutive_cancellations: Optional[int] = 0
     cancelled_orders_count: int
     is_cod_blocked: bool
     is_blacklisted: bool
@@ -549,6 +552,19 @@ class AdminGodViewOrderDTO(BaseModel):
     vendor_payout: Optional[float] = None
     runner_payout: Optional[float] = None
     admin_profit: Optional[float] = None
+    customer_consecutive_cancellations: Optional[int] = 0
+    customer_is_cod_blocked: Optional[bool] = False
+    customer_is_blacklisted: Optional[bool] = False
+
+
+class AdminUserRiskProfileDTO(BaseModel):
+    phone: str
+    name: Optional[str] = "Customer"
+    consecutive_cancellations: int = 0
+    is_cod_blocked: bool = False
+    is_blacklisted: bool = False
+    warning_alert: Optional[str] = None
+    created_at: Optional[str] = None
 
 
 class AdminCommissionLedgerResponse(BaseModel):

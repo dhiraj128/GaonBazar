@@ -107,6 +107,7 @@ def ensure_schema_migrations():
         res_users = conn.execute(text("PRAGMA table_info(users)")).fetchall()
         existing_user_cols = {r[1] for r in res_users}
         user_cols = [
+            ("consecutive_cancellations", "INTEGER DEFAULT 0"),
             ("cancelled_orders", "INTEGER DEFAULT 0"),
             ("is_cod_blocked", "BOOLEAN DEFAULT 0"),
             ("is_blacklisted", "BOOLEAN DEFAULT 0"),

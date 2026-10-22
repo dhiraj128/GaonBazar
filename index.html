@@ -1305,7 +1305,6 @@
                 <span class="material-symbols-outlined text-[12px]">verified</span>
                 <span data-i18n="profile_verified_badge">सत्यापित ग्राहक</span>
               </span>
-              <span class="text-[10px] text-slate-400 font-bold mt-1">Trust: <span id="profile-trust-score" class="text-emerald-600 font-black">100/100</span></span>
             </div>
           </div>
 
@@ -4109,7 +4108,6 @@
       const villageEl = document.getElementById('profile-user-village');
       const landmarkEl = document.getElementById('profile-user-landmark');
       const avatarEl = document.getElementById('profile-user-avatar-initial');
-      const trustScoreEl = document.getElementById('profile-trust-score');
 
       const uName = (AppStore.user && AppStore.user.name) ? AppStore.user.name : (AppStore.lang === 'hi' ? 'उपयोगकर्ता' : 'User');
       const uPhone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '9876543210';
@@ -4121,7 +4119,6 @@
       if (villageEl) villageEl.innerText = uVillage;
       if (landmarkEl) landmarkEl.innerText = uLandmark;
       if (avatarEl) avatarEl.innerText = uName.trim().charAt(0) || 'U';
-      if (trustScoreEl) trustScoreEl.innerText = '100/100';
 
       // 2. Language buttons state
       const isHi = (AppStore.lang === 'hi');

@@ -244,6 +244,12 @@
         <span>Ledger & Dues (बहीखाता)</span>
       </button>
 
+      <!-- Tab 5: Account Risk Profile & Cancellation Controls -->
+      <button id="admin-tab-btn-risk" onclick="switchTab('risk')" class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-slate-900 text-slate-300 hover:text-white border border-slate-800 transition-all whitespace-nowrap shrink-0 min-h-[38px]">
+        <span class="material-symbols-outlined text-[18px]">security</span>
+        <span>Account Risk Profile (खाता जोखिम)</span>
+      </button>
+
     </div>
 
     <!-- ======================================================================= -->
@@ -415,6 +421,47 @@
             </tr>
           </thead>
           <tbody id="ledger-txns-table-body" class="divide-y divide-slate-800 text-slate-300">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+    <!-- ======================================================================= -->
+    <!-- 7.5 TAB 5: ACCOUNT RISK PROFILE & CONSECUTIVE CANCELLATIONS             -->
+    <!-- ======================================================================= -->
+    <section id="tab-risk" class="hidden flex-col gap-4">
+      
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-sm font-black text-white flex items-center gap-2">
+            <span class="material-symbols-outlined text-amber-400">shield</span>
+            <span>Account Risk Profile (आंतरिक खाता जोखिम प्रबंधन)</span>
+          </h2>
+          <p class="text-xs text-slate-400">Monitor consecutive cancellations, COD restriction status, and blacklisted accounts (Invisible to Customers).</p>
+        </div>
+
+        <button onclick="fetchRiskProfiles()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:text-white flex items-center gap-1 border border-slate-700">
+          <span class="material-symbols-outlined text-[16px]">refresh</span>
+          <span>Refresh Risk Profiles</span>
+        </button>
+      </div>
+
+      <!-- Risk Profile Table -->
+      <div class="bg-slate-900 rounded-3xl p-4 border border-slate-800 shadow-md overflow-x-auto no-scrollbar">
+        <table class="w-full text-left text-xs">
+          <thead>
+            <tr class="border-b border-slate-800 text-slate-400 font-bold">
+              <th class="py-2.5 px-3">Customer Name</th>
+              <th class="py-2.5 px-3">Phone</th>
+              <th class="py-2.5 px-3">Consecutive Cancellations</th>
+              <th class="py-2.5 px-3">COD Permission</th>
+              <th class="py-2.5 px-3">Account Status</th>
+              <th class="py-2.5 px-3">Risk Assessment / Warning Alert</th>
+            </tr>
+          </thead>
+          <tbody id="risk-profiles-table-body" class="divide-y divide-slate-800 text-slate-300">
             <!-- Rendered dynamically -->
           </tbody>
         </table>
@@ -788,12 +835,12 @@
     // --- TAB SWITCHER ---
     function switchTab(tabId) {
       AdminStore.activeTab = tabId;
-      ['vendors', 'runners', 'orders', 'ledger'].forEach(t => {
+      ['vendors', 'runners', 'orders', 'ledger', 'risk'].forEach(t => {
         const sec = document.getElementById(`tab-${t}`);
         const btn = document.getElementById(`admin-tab-btn-${t}`);
         if (sec) sec.classList.add('hidden');
         if (btn) {
-          btn.className = "px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 bg-slate-900 text-slate-300 hover:text-white border border-slate-800 transition-all";
+          btn.className = "px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-slate-900 text-slate-300 hover:text-white border border-slate-800 transition-all whitespace-nowrap shrink-0 min-h-[38px]";
         }
       });
 
@@ -801,9 +848,61 @@
       const activeBtn = document.getElementById(`admin-tab-btn-${tabId}`);
       if (activeSec) activeSec.classList.remove('hidden');
       if (activeBtn) {
-        activeBtn.className = "px-4 py-2 rounded-xl text-xs font-black flex items-center gap-2 bg-primary text-white shadow-sm transition-all";
+        activeBtn.className = "px-3.5 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 bg-primary text-white shadow-sm transition-all whitespace-nowrap shrink-0 min-h-[38px]";
+      }
+      if (tabId === 'risk') {
+        fetchRiskProfiles();
       }
     }
+
+    async function fetchRiskProfiles() {
+      const tbody = document.getElementById('risk-profiles-table-body');
+      if (!tbody) return;
+      try {
+        const users = await adminFetch('/admin/users/risk-profile');
+        if (!users || users.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-slate-500 font-bold">No registered customer risk profiles found.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = users.map(u => {
+          const strikes = u.consecutive_cancellations || 0;
+          let strikeBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-black bg-emerald-500/20 text-emerald-400">0 Strikes (Clean)</span>`;
+          if (strikes === 1) {
+            strikeBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-black bg-amber-500/20 text-amber-300">1 Strike (Warning Sent)</span>`;
+          } else if (strikes === 2) {
+            strikeBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-black bg-orange-500/20 text-orange-400">2 Strikes (COD Blocked)</span>`;
+          } else if (strikes >= 3) {
+            strikeBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-black bg-red-500/20 text-red-400">${strikes} Strikes (Penalty & Blacklist)</span>`;
+          }
+
+          const codPill = u.is_cod_blocked 
+            ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-red-500/20 text-red-400">Blocked</span>` 
+            : `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-400">Allowed</span>`;
+
+          const accountPill = u.is_blacklisted 
+            ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-red-500/30 text-red-300 border border-red-500/40">Blacklisted</span>` 
+            : `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-400">Active</span>`;
+
+          const alertText = u.warning_alert || 'Normal account activity';
+
+          return `
+            <tr class="hover:bg-slate-800/40 transition-colors">
+              <td class="py-2.5 px-3 font-bold text-white">${u.name}</td>
+              <td class="py-2.5 px-3 font-mono text-slate-300">${u.phone}</td>
+              <td class="py-2.5 px-3">${strikeBadge}</td>
+              <td class="py-2.5 px-3">${codPill}</td>
+              <td class="py-2.5 px-3">${accountPill}</td>
+              <td class="py-2.5 px-3 text-slate-400 truncate max-w-xs" title="${alertText}">${alertText}</td>
+            </tr>
+          `;
+        }).join('');
+      } catch (err) {
+        console.error('Failed to load risk profiles:', err);
+        tbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-red-400">Error loading risk profiles: ${err.message}</td></tr>`;
+      }
+    }
+    window.fetchRiskProfiles = fetchRiskProfiles;
 
     // --- TOAST UTILITY ---
     let toastTimeout = null;

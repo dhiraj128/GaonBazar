@@ -1111,6 +1111,16 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     is_history_present = page.is_visible("#profile-order-history-list")
     logger.record_test(f"[{dev_name}] Order History List Rendered", is_history_present)
 
+    # 5.1 Strict Invisible Risk Metrics & Trust Score Purge Verification
+    profile_text = page.inner_text("#view-profile").lower()
+    has_hostile_terms = any(term in profile_text for term in ["trust score", "strike", "cancellation count", "cancellations:"])
+    has_trust_score_el = page.locator("#profile-trust-score").count() > 0
+    logger.record_test(
+        f"[{dev_name}] Invisible Risk Metrics (No Trust Score or Strike Counter in Customer DOM)",
+        not has_hostile_terms and not has_trust_score_el,
+        "Customer profile is 100% clean of internal risk & cancellation counters"
+    )
+
     # 6. Verify Language Preference Toggle Ergonomics
     check_human_ux_bounds(page, "#btn-profile-lang-hi", "Profile Language Hindi Button", dev_name, logger)
     check_human_ux_bounds(page, "#btn-profile-lang-en", "Profile Language English Button", dev_name, logger)
