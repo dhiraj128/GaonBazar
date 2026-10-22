@@ -82,9 +82,24 @@
       touch-action: manipulation;
       box-sizing: border-box;
     }
+    html, body {
+      height: 100%;
+      height: 100dvh;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      background-color: #f9f9ff;
+    }
     body {
       overscroll-behavior-y: none;
       font-family: 'Plus Jakarta Sans', 'Noto Sans Devanagari', sans-serif;
+    }
+    #app-root {
+      height: 100vh;
+      height: 100dvh;
+      max-height: 100dvh;
+      min-height: 100dvh;
     }
     .pb-safe {
       padding-bottom: max(env(safe-area-inset-bottom, 16px), 16px);
@@ -112,6 +127,12 @@
     .screen-view.active {
       display: flex !important;
       opacity: 1;
+      flex-direction: column;
+      flex: 1 1 0%;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
     }
     /* Stepper and active button tactile feedback */
     .btn-tactile:active {
@@ -132,12 +153,12 @@
   </style>
 </head>
 
-<body class="w-full min-h-screen bg-surface text-on-surface antialiased flex flex-col m-0 p-0 overflow-x-hidden select-none">
+<body class="w-full h-full min-h-[100dvh] bg-surface text-on-surface antialiased flex flex-col m-0 p-0 overflow-x-hidden select-none">
 
   <!-- ========================================================================= -->
   <!-- ROOT FULL-WIDTH MOBILE APP CONTAINER (100% of mobile emulator/device)    -->
   <!-- ========================================================================= -->
-  <div id="app-root" class="w-full min-h-screen flex-1 flex flex-col bg-surface relative overflow-x-hidden">
+  <div id="app-root" class="w-full h-[100dvh] max-h-[100dvh] flex flex-col bg-surface relative overflow-hidden">
 
     <!-- Top Hardware Status Bar -->
     <div class="w-full bg-surface/95 backdrop-blur pt-1.5 px-4 flex items-center justify-between text-xs font-semibold text-on-surface-variant z-50 select-none border-b border-surface-container/50">
@@ -191,12 +212,12 @@
     <!-- ========================================================================= -->
     <!-- MAIN SCREEN ROUTER VIEWPORT CONTAINER                                     -->
     <!-- ========================================================================= -->
-    <main class="flex-1 w-full overflow-y-auto relative bg-surface flex flex-col pb-safe">
+    <main class="flex-1 w-full min-h-0 relative bg-surface flex flex-col overflow-hidden pb-safe">
 
       <!-- ===================================================================== -->
       <!-- PHASE 1.1: PHONE LOGIN & SEPARATE AUTH INTENTIONS (SIGN IN / SIGN UP) -->
       <!-- ===================================================================== -->
-      <section id="view-p1-login" class="screen-view active flex-col w-full px-4 pt-4 pb-28 flex-1 overflow-y-auto space-y-4">
+      <section id="view-p1-login" class="screen-view active flex-col w-full px-4 pt-4 pb-28 flex-1 min-h-0 overflow-y-auto space-y-4">
         <!-- Hero Banner -->
         <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-surface-container to-surface-container-low p-5 shadow-sm border border-surface-container-high">
           <div class="inline-flex items-center gap-1.5 bg-primary-fixed text-on-primary-fixed px-3 py-1 rounded-full text-xs font-bold mb-2">
@@ -337,7 +358,7 @@
       <!-- ===================================================================== -->
       <!-- PHASE 1.2: OTP VERIFICATION                                           -->
       <!-- ===================================================================== -->
-      <section id="view-p1-otp" class="screen-view hidden flex-col w-full px-4 pt-4 pb-28 flex-1 overflow-y-auto space-y-4">
+      <section id="view-p1-otp" class="screen-view hidden flex-col w-full px-4 pt-4 pb-28 flex-1 min-h-0 overflow-y-auto space-y-4">
         <div>
           <div class="flex items-center justify-between mb-1.5">
             <span class="text-xs font-bold text-primary uppercase" data-i18n="p1_otp_step">चरण २ • सत्यापन</span>
@@ -406,7 +427,7 @@
       <!-- ===================================================================== -->
       <!-- DELIVERY LOCATION SETUP (Gated at Checkout Phase)                     -->
       <!-- ===================================================================== -->
-      <section id="view-p1-landmark" class="screen-view hidden flex-col w-full px-4 pt-4 pb-32 flex-1 overflow-y-auto space-y-4">
+      <section id="view-p1-landmark" class="screen-view hidden flex-col w-full px-4 pt-4 pb-28 flex-1 min-h-0 overflow-y-auto space-y-4">
         <div>
           <div class="flex items-center justify-between mb-1.5">
             <span class="text-xs font-bold text-primary uppercase" data-i18n="p1_lm_step">डिलीवरी पता • Address Setup</span>
@@ -529,7 +550,7 @@
       <!-- ===================================================================== -->
       <!-- PHASE 2: MAIN DASHBOARD & STORE DISCOVERY                             -->
       <!-- ===================================================================== -->
-      <section id="view-p2-dashboard" class="screen-view hidden flex-col w-full px-4 pt-3 pb-48 flex-1 overflow-y-auto space-y-4">
+      <section id="view-p2-dashboard" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 overflow-y-auto space-y-4">
         <!-- Sticky Location Header Bar -->
         <div class="bg-surface-container rounded-2xl p-3.5 flex items-center justify-between shadow-xs border border-surface-container-high">
           <div class="flex items-center gap-2.5 min-w-0 cursor-pointer" onclick="navigateToPhase('landmark')">
@@ -627,109 +648,182 @@
         <div class="space-y-3">
           <div class="flex items-center justify-between">
             <h3 class="text-xs font-extrabold text-on-surface uppercase tracking-wide" data-i18n="p2_stores_title">आपके पास की दुकानें</h3>
-            <span class="text-[10px] text-primary font-bold bg-primary/10 px-2.5 py-0.5 rounded-full">4 Open Now</span>
+            <span id="p2-open-stores-count" class="text-[10px] text-primary font-bold bg-primary/10 px-2.5 py-0.5 rounded-full">4 Open Now</span>
           </div>
 
-          <!-- Store Card 1: Sharma Brothers -->
-          <div onclick="openStoreView('sharma_brothers')" class="btn-tactile p-4 rounded-2xl bg-white shadow-mobile-card border border-surface-container-high flex flex-col gap-3 cursor-pointer hover:border-primary">
-            <div class="flex items-start justify-between gap-2">
-              <div class="flex gap-3 min-w-0">
-                <div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center text-primary shrink-0 shadow-inner">
-                  <span class="material-symbols-outlined text-[26px]">storefront</span>
-                </div>
-                <div class="flex flex-col min-w-0">
-                  <div class="flex items-center gap-1">
-                    <h4 class="text-sm font-extrabold text-on-surface truncate">Sharma Brothers Kirana</h4>
-                    <span class="material-symbols-outlined text-primary text-[14px]">verified</span>
+          <div id="p2-stores-list" class="space-y-3">
+            <!-- Store Card 1: Sharma Brothers -->
+            <div onclick="openStoreView('sharma_brothers')" class="btn-tactile p-4 rounded-2xl bg-white shadow-mobile-card border border-surface-container-high flex flex-col gap-3 cursor-pointer hover:border-primary">
+              <div class="flex items-start justify-between gap-2">
+                <div class="flex gap-3 min-w-0">
+                  <div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center text-primary shrink-0 shadow-inner">
+                    <span class="material-symbols-outlined text-[26px]">storefront</span>
                   </div>
-                  <span id="store-1-sub" class="text-[11px] text-on-surface-variant truncate">दैनिक राशन, मसाले एवं तेल</span>
-                  <div class="flex items-center gap-2 mt-1 text-[11px] text-on-surface-variant font-semibold">
-                    <span class="text-tertiary font-bold flex items-center gap-0.5">★ 4.8</span>
-                    <span>•</span>
-                    <span id="store-1-dist">1.2 km</span>
-                    <span>•</span>
-                    <span id="store-1-eta">30 Mins</span>
+                  <div class="flex flex-col min-w-0">
+                    <div class="flex items-center gap-1">
+                      <h4 class="text-sm font-extrabold text-on-surface truncate">Sharma Brothers Kirana</h4>
+                      <span class="material-symbols-outlined text-primary text-[14px]">verified</span>
+                    </div>
+                    <span id="store-1-sub" class="text-[11px] text-on-surface-variant truncate">दैनिक राशन, मसाले एवं तेल</span>
+                    <div class="flex items-center gap-2 mt-1 text-[11px] text-on-surface-variant font-semibold">
+                      <span class="text-tertiary font-bold flex items-center gap-0.5">★ 4.8</span>
+                      <span>•</span>
+                      <span id="store-1-dist">1.2 km</span>
+                      <span>•</span>
+                      <span id="store-1-eta">30 Mins</span>
+                    </div>
                   </div>
                 </div>
+                <span class="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full shrink-0">खुली है</span>
               </div>
-              <span class="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full shrink-0">खुली है</span>
+              <div class="flex items-center justify-between pt-2 border-t border-surface-container text-[11px]">
+                <span class="text-secondary font-bold">स्थानीय डिलीवरी (30 Mins)</span>
+                <span class="text-primary font-bold flex items-center gap-1">
+                  <span data-i18n="p2_view_shop">दुकान देखें</span>
+                  <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                </span>
+              </div>
             </div>
-            <div class="flex items-center justify-between pt-2 border-t border-surface-container text-[11px]">
-              <span class="text-secondary font-bold">स्थानीय डिलीवरी (30 Mins)</span>
-              <span class="text-primary font-bold flex items-center gap-1">
-                <span data-i18n="p2_view_shop">दुकान देखें</span>
-                <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
-              </span>
-            </div>
-          </div>
 
-          <!-- Store Card 2: Kisan Seva Kendra -->
-          <div onclick="openStoreView('kisan_seva')" class="btn-tactile p-4 rounded-2xl bg-white shadow-mobile-card border border-surface-container-high flex flex-col gap-3 cursor-pointer hover:border-primary">
-            <div class="flex items-start justify-between gap-2">
-              <div class="flex gap-3 min-w-0">
-                <div class="w-12 h-12 rounded-xl bg-primary-fixed/20 flex items-center justify-center text-primary shrink-0">
-                  <span class="material-symbols-outlined text-[26px]">agriculture</span>
-                </div>
-                <div class="flex flex-col min-w-0">
-                  <div class="flex items-center gap-1">
-                    <h4 class="text-sm font-extrabold text-on-surface truncate">Kisan Seva Kendra & Agri</h4>
-                    <span class="material-symbols-outlined text-primary text-[14px]">verified</span>
+            <!-- Store Card 2: Kisan Seva Kendra -->
+            <div onclick="openStoreView('kisan_seva')" class="btn-tactile p-4 rounded-2xl bg-white shadow-mobile-card border border-surface-container-high flex flex-col gap-3 cursor-pointer hover:border-primary">
+              <div class="flex items-start justify-between gap-2">
+                <div class="flex gap-3 min-w-0">
+                  <div class="w-12 h-12 rounded-xl bg-primary-fixed/20 flex items-center justify-center text-primary shrink-0">
+                    <span class="material-symbols-outlined text-[26px]">agriculture</span>
                   </div>
-                  <span id="store-2-sub" class="text-[11px] text-on-surface-variant truncate">प्रमाणित बीज एवं कीटनाशक</span>
-                  <div class="flex items-center gap-2 mt-1 text-[11px] text-on-surface-variant font-semibold">
-                    <span class="text-tertiary font-bold flex items-center gap-0.5">★ 4.9</span>
-                    <span>•</span>
-                    <span id="store-2-dist">2.4 km</span>
-                    <span>•</span>
-                    <span id="store-2-eta">30 Mins</span>
+                  <div class="flex flex-col min-w-0">
+                    <div class="flex items-center gap-1">
+                      <h4 class="text-sm font-extrabold text-on-surface truncate">Kisan Seva Kendra & Agri</h4>
+                      <span class="material-symbols-outlined text-primary text-[14px]">verified</span>
+                    </div>
+                    <span id="store-2-sub" class="text-[11px] text-on-surface-variant truncate">प्रमाणित बीज, खाद एवं स्प्रेयर</span>
+                    <div class="flex items-center gap-2 mt-1 text-[11px] text-on-surface-variant font-semibold">
+                      <span class="text-tertiary font-bold flex items-center gap-0.5">★ 4.9</span>
+                      <span>•</span>
+                      <span id="store-2-dist">2.4 km</span>
+                      <span>•</span>
+                      <span id="store-2-eta">30 Mins</span>
+                    </div>
                   </div>
                 </div>
+                <span class="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full shrink-0">खुली है</span>
               </div>
-              <span class="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full shrink-0">खुली है</span>
+              <div class="flex items-center justify-between pt-2 border-t border-surface-container text-[11px]">
+                <span class="text-secondary font-bold">स्थानीय डिलीवरी (30 Mins)</span>
+                <span class="text-primary font-bold flex items-center gap-1">
+                  <span data-i18n="p2_view_shop">दुकान देखें</span>
+                  <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Store Card 3: Rampur Jan Aushadhi Kendra (Pharmacy) -->
+            <div onclick="openStoreView('rampur_dawa')" class="btn-tactile p-4 rounded-2xl bg-white shadow-mobile-card border border-surface-container-high flex flex-col gap-3 cursor-pointer hover:border-primary">
+              <div class="flex items-start justify-between gap-2">
+                <div class="flex gap-3 min-w-0">
+                  <div class="w-12 h-12 rounded-xl bg-error-container/40 flex items-center justify-center text-error shrink-0">
+                    <span class="material-symbols-outlined text-[26px]">medication</span>
+                  </div>
+                  <div class="flex flex-col min-w-0">
+                    <div class="flex items-center gap-1">
+                      <h4 class="text-sm font-extrabold text-on-surface truncate">Rampur Jan Aushadhi Kendra</h4>
+                      <span class="material-symbols-outlined text-primary text-[14px]">verified</span>
+                    </div>
+                    <span id="store-3-sub" class="text-[11px] text-on-surface-variant truncate">जेनेरिक दवाइयां, दर्द निवारक व ओआरएस</span>
+                    <div class="flex items-center gap-2 mt-1 text-[11px] text-on-surface-variant font-semibold">
+                      <span class="text-tertiary font-bold flex items-center gap-0.5">★ 4.7</span>
+                      <span>•</span>
+                      <span id="store-3-dist">0.8 km</span>
+                      <span>•</span>
+                      <span id="store-3-eta">30 Mins</span>
+                    </div>
+                  </div>
+                </div>
+                <span class="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full shrink-0">खुली है</span>
+              </div>
+              <div class="flex items-center justify-between pt-2 border-t border-surface-container text-[11px]">
+                <span class="text-secondary font-bold">स्थानीय डिलीवरी (30 Mins)</span>
+                <span class="text-primary font-bold flex items-center gap-1">
+                  <span data-i18n="p2_view_shop">दुकान देखें</span>
+                  <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Store Card 4: Apna Dugdh Dairy Point -->
+            <div onclick="openStoreView('apna_dairy')" class="btn-tactile p-4 rounded-2xl bg-white shadow-mobile-card border border-surface-container-high flex flex-col gap-3 cursor-pointer hover:border-primary">
+              <div class="flex items-start justify-between gap-2">
+                <div class="flex gap-3 min-w-0">
+                  <div class="w-12 h-12 rounded-xl bg-tertiary-fixed flex items-center justify-center text-tertiary shrink-0">
+                    <span class="material-symbols-outlined text-[26px]">water_drop</span>
+                  </div>
+                  <div class="flex flex-col min-w-0">
+                    <div class="flex items-center gap-1">
+                      <h4 class="text-sm font-extrabold text-on-surface truncate">Apna Dugdh Dairy Point</h4>
+                      <span class="material-symbols-outlined text-primary text-[14px]">verified</span>
+                    </div>
+                    <span id="store-4-sub" class="text-[11px] text-on-surface-variant truncate">शुद्ध भैंस का दूध, पनीर व मटका छाछ</span>
+                    <div class="flex items-center gap-2 mt-1 text-[11px] text-on-surface-variant font-semibold">
+                      <span class="text-tertiary font-bold flex items-center gap-0.5">★ 4.9</span>
+                      <span>•</span>
+                      <span id="store-4-dist">1.5 km</span>
+                      <span>•</span>
+                      <span id="store-4-eta">30 Mins</span>
+                    </div>
+                  </div>
+                </div>
+                <span class="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full shrink-0">खुली है</span>
+              </div>
+              <div class="flex items-center justify-between pt-2 border-t border-surface-container text-[11px]">
+                <span class="text-secondary font-bold">स्थानीय डिलीवरी (30 Mins)</span>
+                <span class="text-primary font-bold flex items-center gap-1">
+                  <span data-i18n="p2_view_shop">दुकान देखें</span>
+                  <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                </span>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       <!-- ===================================================================== -->
-      <!-- PHASE 3: STORE & PRODUCT VIEW (Sharma Brothers Kirana)                -->
+      <!-- PHASE 3: STORE & PRODUCT VIEW (Dynamic Rural Storefront)               -->
       <!-- ===================================================================== -->
-      <section id="view-p3-store" class="screen-view hidden flex-col w-full px-4 pt-3 pb-36 flex-1 overflow-y-auto overflow-x-hidden max-w-full space-y-4">
-        <!-- Store Overview Header Card -->
-        <div class="bg-white rounded-2xl p-4 shadow-mobile-card border border-surface-container-high">
+      <section id="view-p3-store" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 overflow-y-auto overflow-x-hidden max-w-full">
+        <!-- Store Overview Header Card (Fully Dynamic) -->
+        <div id="p3-store-header-card" class="bg-white rounded-2xl p-4 shadow-mobile-card border border-surface-container-high mb-3">
           <div class="flex items-center justify-between gap-2">
-            <div>
-              <h2 class="text-base font-extrabold text-on-surface leading-tight">Sharma Brothers Kirana</h2>
-              <span class="text-xs text-primary font-bold flex items-center gap-1 mt-0.5">
-                <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                <span id="p3-trust-lbl">सत्यापित दुकान • १८ वर्षों का भरोसा</span>
-              </span>
+            <div class="min-w-0 flex-1">
+              <h2 id="p3-store-name" class="text-base font-extrabold text-on-surface leading-tight truncate">Sharma Brothers Kirana</h2>
+              <div id="p3-trust-badge-container" class="hidden flex items-center gap-1 mt-0.5 min-w-0">
+                <span class="w-1.5 h-1.5 rounded-full bg-primary shrink-0"></span>
+                <span id="p3-trust-lbl" class="text-xs text-primary font-bold truncate"></span>
+              </div>
             </div>
-            <a href="tel:9876543210" class="h-9 px-3.5 rounded-xl bg-primary text-white text-xs font-bold flex items-center gap-1 shadow-xs shrink-0 active:scale-95">
+            <a id="p3-store-call-btn" href="#" class="hidden h-9 px-3.5 rounded-xl bg-primary text-white text-xs font-bold flex items-center gap-1 shadow-xs shrink-0 active:scale-95">
               <span class="material-symbols-outlined text-[15px]">call</span>
               <span data-i18n="p3_call_shop">दुकानदार को कॉल करें</span>
             </a>
           </div>
           <div class="flex items-center gap-3 mt-3 pt-2.5 border-t border-surface-container text-xs text-on-surface-variant font-semibold">
-            <span class="text-tertiary font-bold">★ 4.8 (210+ orders)</span>
+            <span id="p3-store-rating-badge" class="text-tertiary font-bold flex items-center gap-0.5"></span>
             <span>•</span>
-            <span id="p3-store-dist">1.2 km</span>
+            <span id="p3-store-dist">-- km</span>
             <span>•</span>
-            <span id="p3-store-eta">30 Mins</span>
+            <span id="p3-store-eta">-- Mins</span>
           </div>
         </div>
 
-        <!-- Category Horizontal Filter Tabs -->
-        <div class="flex items-center gap-2 overflow-x-auto pb-1 -mx-4 px-4">
-          <button onclick="filterCatalogCategory('all', this)" class="cat-pill active h-8 px-4 rounded-full bg-primary text-white font-bold text-xs shrink-0">सभी</button>
-          <button onclick="filterCatalogCategory('atta', this)" class="cat-pill h-8 px-4 rounded-full bg-surface-container-low text-on-surface font-semibold text-xs shrink-0">आटा व दालें</button>
-          <button onclick="filterCatalogCategory('oil', this)" class="cat-pill h-8 px-4 rounded-full bg-surface-container-low text-on-surface font-semibold text-xs shrink-0">तेल व घी</button>
-          <button onclick="filterCatalogCategory('spices', this)" class="cat-pill h-8 px-4 rounded-full bg-surface-container-low text-on-surface font-semibold text-xs shrink-0">मसाले</button>
-          <button onclick="filterCatalogCategory('tea', this)" class="cat-pill h-8 px-4 rounded-full bg-surface-container-low text-on-surface font-semibold text-xs shrink-0">चाय व चीनी</button>
+        <!-- Category Horizontal Filter Tabs (Sticky & Dynamic) -->
+        <div id="p3-category-tabs-sticky-wrapper" class="sticky top-0 z-30 bg-surface/95 backdrop-blur-md -mx-4 px-4 py-2 border-b border-surface-container/60 shadow-xs mb-3">
+          <div id="p3-category-tabs-container" class="flex items-center gap-2 overflow-x-auto no-scrollbar touch-pan-x">
+            <button onclick="filterCatalogCategory('all', this)" class="cat-pill active h-8 px-4 rounded-full bg-primary text-white font-bold text-xs shrink-0">सभी</button>
+          </div>
         </div>
 
         <!-- Product Cards Container -->
-        <div id="p3-product-list" class="flex flex-col gap-3.5">
+        <div id="p3-product-list" class="flex flex-col gap-3.5 min-h-[160px] pb-4">
           <!-- Dynamically populated products with [-] 1 [+] stepper adjusters -->
         </div>
 
@@ -752,7 +846,7 @@
       <!-- ===================================================================== -->
       <!-- PHASE 4.1: CART REVIEW                                                -->
       <!-- ===================================================================== -->
-      <section id="view-p4-cart" class="screen-view hidden flex-col w-full px-4 pt-3 pb-36 flex-1 overflow-y-auto space-y-4">
+      <section id="view-p4-cart" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 overflow-y-auto space-y-4">
         <!-- Dynamic Delivery Fee Tier Banner -->
         <div class="bg-primary/5 rounded-2xl p-4 shadow-xs border border-primary/20">
           <div class="flex items-center justify-between text-xs font-bold text-primary mb-1">
@@ -829,7 +923,7 @@
       <!-- ===================================================================== -->
       <!-- PHASE 4.2: CHECKOUT & PAYMENT SELECTION                               -->
       <!-- ===================================================================== -->
-      <section id="view-p4-checkout" class="screen-view hidden flex-col w-full px-4 pt-3 pb-36 flex-1 overflow-y-auto space-y-4">
+      <section id="view-p4-checkout" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 overflow-y-auto space-y-4">
         <!-- Verified Delivery Address & Landmark Confirmation -->
         <div class="bg-white rounded-2xl p-5 shadow-mobile-card border border-surface-container-high">
           <div class="flex items-center justify-between pb-2 border-b border-surface-container">
@@ -907,7 +1001,7 @@
       <!-- ===================================================================== -->
       <!-- PHASE 5: LIVE ORDER TRACKING (Order Placed -> Delivered)              -->
       <!-- ===================================================================== -->
-      <section id="view-p5-tracking" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 overflow-y-auto space-y-4">
+      <section id="view-p5-tracking" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 overflow-y-auto space-y-4">
         <!-- Order ETA Hero Card -->
         <div class="bg-white rounded-2xl p-5 shadow-mobile-card border border-surface-container-high">
           <div class="flex items-center justify-between mb-3">
@@ -1070,7 +1164,7 @@
       <!-- ===================================================================== -->
       <!-- PHASE 6: CUSTOM OFFLINE FALLBACK SCREEN                               -->
       <!-- ===================================================================== -->
-      <section id="view-offline-fallback" class="screen-view hidden flex-col w-full px-4 pt-6 pb-24 flex-1 overflow-y-auto items-center text-center">
+      <section id="view-offline-fallback" class="screen-view hidden flex-col w-full px-4 pt-6 pb-28 flex-1 min-h-0 overflow-y-auto items-center text-center">
         <div id="offline-fallback-container" data-status="offline" class="w-full bg-white rounded-3xl p-6 shadow-mobile-card border border-emerald-100 flex flex-col items-center">
           <!-- Offline Icon -->
           <div class="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mb-4 border-2 border-red-100">
@@ -1121,7 +1215,7 @@
       <!-- ===================================================================== -->
       <!-- PHASE: MY ACCOUNT & PROFILE VIEW (Swiggy / Flipkart Standard)         -->
       <!-- ===================================================================== -->
-      <section id="view-profile" class="screen-view hidden flex-col w-full px-4 pt-3 pb-48 flex-1 overflow-y-auto space-y-4">
+      <section id="view-profile" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 overflow-y-auto space-y-4">
         
         <!-- Profile Header / Title -->
         <div class="flex items-center justify-between">
@@ -1731,6 +1825,10 @@
       historyStack: [],
       sessionToken: null,
       latestOtp: '582941',
+      activeStoreId: 'sharma_brothers',
+      activeStoreCategory: 'all',
+      activeStore: null,
+      currentCategories: [],
       user: {
         phone: '',
         name: '',
@@ -1740,22 +1838,23 @@
         gps: null
       },
       catalog: [
-        { id: 'item_1', name_hi: 'आशीर्वाद चक्की आटा', name_en: 'Aashirvaad Chakki Atta', cat: 'atta', weight: '5 kg', weight_hi: '५ किग्रा', weight_en: '5 kg', price: 210, mrp: 240, qty: 0, icon: 'grain' },
-        { id: 'item_2', name_hi: 'फॉर्च्यून सरसों तेल', name_en: 'Fortune Mustard Oil', cat: 'oil', weight: '1 L', weight_hi: '१ लीटर', weight_en: '1 L', price: 145, mrp: 165, qty: 0, icon: 'opacity' },
-        { id: 'item_3', name_hi: 'टाटा आयोडाइज्ड नमक', name_en: 'Tata Salt Iodized', cat: 'spices', weight: '1 kg', weight_hi: '१ किग्रा', weight_en: '1 kg', price: 24, mrp: 28, qty: 0, icon: 'science' },
-        { id: 'item_4', name_hi: 'रेड लेबल कड़क चाय', name_en: 'Brooke Bond Red Label Tea', cat: 'tea', weight: '250 g', weight_hi: '२५० ग्राम', weight_en: '250 g', price: 95, mrp: 110, qty: 0, icon: 'emoji_food_beverage' },
-        { id: 'item_5', name_hi: 'अमूल शुद्ध गाय का घी', name_en: 'Amul Pure Cow Ghee', cat: 'oil', weight: '1 L', weight_hi: '१ लीटर', weight_en: '1 L', price: 580, mrp: 640, qty: 0, icon: 'local_drink' },
-        { id: 'item_6', name_hi: 'एमडीएच देगी मिर्च', name_en: 'MDH Deggi Mirch', cat: 'spices', weight: '100 g', weight_hi: '१०० ग्राम', weight_en: '100 g', price: 62, mrp: 75, qty: 0, icon: 'local_fire_department' },
-        { id: 'item_7', name_hi: 'मधुर शुद्ध चीनी', name_en: 'Madhur Pure Sugar', cat: 'kirana', weight: '1 kg', weight_hi: '१ किग्रा', weight_en: '1 kg', price: 48, mrp: 55, qty: 0, icon: 'cookie' }
+        { id: 'item_1', name_hi: 'आशीर्वाद चक्की आटा', name_en: 'Aashirvaad Chakki Atta', cat: 'atta', weight: '5 kg', weight_hi: '५ किग्रा', weight_en: '5 kg', price: 210, mrp: 240, qty: 0, icon: 'grain', store_id: 'sharma_brothers' },
+        { id: 'item_2', name_hi: 'फॉर्च्यून सरसों तेल', name_en: 'Fortune Mustard Oil', cat: 'oil', weight: '1 L', weight_hi: '१ लीटर', weight_en: '1 L', price: 145, mrp: 165, qty: 0, icon: 'opacity', store_id: 'sharma_brothers' },
+        { id: 'item_3', name_hi: 'टाटा आयोडाइज्ड नमक', name_en: 'Tata Salt Iodized', cat: 'spices', weight: '1 kg', weight_hi: '१ किग्रा', weight_en: '1 kg', price: 24, mrp: 28, qty: 0, icon: 'science', store_id: 'sharma_brothers' },
+        { id: 'item_4', name_hi: 'रेड लेबल कड़क चाय', name_en: 'Brooke Bond Red Label Tea', cat: 'tea', weight: '250 g', weight_hi: '२५० ग्राम', weight_en: '250 g', price: 95, mrp: 110, qty: 0, icon: 'emoji_food_beverage', store_id: 'sharma_brothers' },
+        { id: 'item_5', name_hi: 'अमूल शुद्ध गाय का घी', name_en: 'Amul Pure Cow Ghee', cat: 'oil', weight: '1 L', weight_hi: '१ लीटर', weight_en: '1 L', price: 580, mrp: 640, qty: 0, icon: 'local_drink', store_id: 'sharma_brothers' },
+        { id: 'item_6', name_hi: 'एमडीएच देगी मिर्च', name_en: 'MDH Deggi Mirch', cat: 'spices', weight: '100 g', weight_hi: '१०० ग्राम', weight_en: '100 g', price: 62, mrp: 75, qty: 0, icon: 'local_fire_department', store_id: 'sharma_brothers' },
+        { id: 'item_7', name_hi: 'मधुर शुद्ध चीनी', name_en: 'Madhur Pure Sugar', cat: 'kirana', weight: '1 kg', weight_hi: '१ किग्रा', weight_en: '1 kg', price: 48, mrp: 55, qty: 0, icon: 'cookie', store_id: 'sharma_brothers' }
       ],
       orderTimelineStage: 4, // 1 to 5
       orderId: '#RUR-9482',
       paymentMode: 'COD',
       deliveryOtp: '4821'
     };
+    window.AppStore = AppStore;
 
     // --- 3.1 REAL FASTAPI BACKEND API CLIENT ---
-    const API_BASE = window.GAONBAZAAR_API_BASE || 'http://127.0.0.1:8001/api';
+    const API_BASE = window.GAONBAZAAR_API_BASE || (window.location && window.location.protocol.startsWith('http') ? (window.location.origin + '/api') : 'http://127.0.0.1:8001/api');
 
     async function apiFetch(endpoint, options = {}) {
       const url = `${API_BASE}${endpoint}`;
@@ -1963,9 +2062,16 @@
       if (store1Sub) store1Sub.innerText = (lang === 'hi') ? 'दैनिक राशन, मसाले एवं तेल' : 'Daily Ration, Spices & Oil';
       if (store2Sub) store2Sub.innerText = (lang === 'hi') ? 'प्रमाणित बीज एवं कीटनाशक' : 'Certified Seeds & Farm Spray';
 
-      // Update Phase 3 Trust Label
-      const p3Trust = document.getElementById('p3-trust-lbl');
-      if (p3Trust) p3Trust.innerText = (lang === 'hi') ? 'सत्यापित दुकान • १८ वर्षों का भरोसा' : 'Verified Store • 18 Years Trust';
+      // Update Phase 3 Store Header & dynamic components dynamically
+      if (AppStore.activeStore) {
+        renderStoreHeaderDetails(AppStore.activeStore, AppStore.activeStore.id);
+      }
+      if (Array.isArray(AppStore.currentCategories) && AppStore.currentCategories.length > 0) {
+        renderStoreCategoryTabs(AppStore.currentCategories, AppStore.activeStoreCategory || 'all');
+      }
+      if (AppStore.currentPhase === 'store' || AppStore.activePhase === 'store') {
+        renderProductCatalog(AppStore.activeStoreCategory || 'all');
+      }
 
       // Update Phase 4.2 Labels
       const payUpiLbl = document.getElementById('pay-upi-lbl');
@@ -2553,28 +2659,299 @@
     // --- 7. PHASE 2: MAIN DASHBOARD LOGIC ---
     async function loadStoresFromBackend() {
       try {
-        const stores = await apiFetch('/stores');
-        if (stores && stores.length > 0) {
-          console.log(`[GaonBazaar DB]: ${stores.length} stores loaded from backend.`);
+        const coords = (AppStore.user && AppStore.user.gps) ? `?lat=${AppStore.user.gps.lat}&lng=${AppStore.user.gps.lng}` : '';
+        const stores = await apiFetch(`/stores${coords}`);
+        if (stores && Array.isArray(stores) && stores.length > 0) {
+          AppStore.stores = stores;
+          renderDashboardStoresFeed(stores);
         }
       } catch (e) {
         console.warn('Backend stores fetch warning:', e);
       }
     }
 
-    function selectCategory(catName) {
-      navigateToPhase('store');
-      filterCatalogCategory(catName === 'kirana' ? 'all' : catName);
+    function renderDashboardStoresFeed(stores) {
+      const listContainer = document.getElementById('p2-stores-list');
+      const countBadge = document.getElementById('p2-open-stores-count');
+      if (!listContainer) return;
+
+      const isHi = (AppStore.lang === 'hi');
+      const openStores = stores.filter(s => s.is_open);
+      if (countBadge) {
+        countBadge.innerText = isHi ? `${openStores.length} खुली हैं` : `${openStores.length} Open Now`;
+      }
+
+      const typeIcons = {
+        kirana: 'storefront',
+        pharma: 'medication',
+        agri: 'agriculture',
+        dairy: 'water_drop',
+        electronics: 'bolt'
+      };
+
+      const typeSubtitles = {
+        kirana: { hi: 'दैनिक राशन, मसाले एवं तेल', en: 'Daily Ration, Spices & Staples' },
+        pharma: { hi: 'जेनेरिक दवाइयां एवं प्राथमिक चिकित्सा', en: 'Generic Medicines & Healthcare' },
+        agri: { hi: 'प्रमाणित बीज, खाद एवं स्प्रे पंप', en: 'Certified Seeds & Fertilizers' },
+        dairy: { hi: 'शुद्ध ताज़ा दूध, पनीर व छाछ', en: 'Pure Village Milk & Dairy' },
+        electronics: { hi: 'बिजली का सामान व औज़ार', en: 'Electricals & Hand Tools' }
+      };
+
+      listContainer.innerHTML = stores.map(store => {
+        const stType = (store.store_type || store.category || 'kirana').toLowerCase();
+        const icon = typeIcons[stType] || 'storefront';
+        const title = isHi ? (store.hindi_name || store.name) : store.name;
+        const sub = typeSubtitles[stType] ? (isHi ? typeSubtitles[stType].hi : typeSubtitles[stType].en) : '';
+        const ratingHtml = (store.rating && store.rating > 0)
+          ? `<span class="text-tertiary font-bold flex items-center gap-0.5">★ ${store.rating}</span>`
+          : `<span class="text-emerald-600 font-bold flex items-center gap-0.5">${isHi ? '★ नया' : '★ New'}</span>`;
+
+        const statusPill = store.is_open
+          ? `<span class="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full shrink-0">${isHi ? 'खुली है' : 'Open'}</span>`
+          : `<span class="text-[10px] font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded-full shrink-0">${isHi ? 'बंद है' : 'Closed'}</span>`;
+
+        return `
+          <div onclick="openStoreView('${store.id}')" class="btn-tactile p-4 rounded-2xl bg-white shadow-mobile-card border border-surface-container-high flex flex-col gap-3 cursor-pointer hover:border-primary">
+            <div class="flex items-start justify-between gap-2">
+              <div class="flex gap-3 min-w-0">
+                <div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center text-primary shrink-0 shadow-inner">
+                  <span class="material-symbols-outlined text-[26px]">${icon}</span>
+                </div>
+                <div class="flex flex-col min-w-0">
+                  <div class="flex items-center gap-1">
+                    <h4 class="text-sm font-extrabold text-on-surface truncate">${title}</h4>
+                    <span class="material-symbols-outlined text-primary text-[14px]">verified</span>
+                  </div>
+                  <span class="text-[11px] text-on-surface-variant truncate">${sub}</span>
+                  <div class="flex items-center gap-2 mt-1 text-[11px] text-on-surface-variant font-semibold">
+                    ${ratingHtml}
+                    <span>•</span>
+                    <span>${store.distance_km || 1.2} km</span>
+                    <span>•</span>
+                    <span>${store.eta_mins || '30 Mins'}</span>
+                  </div>
+                </div>
+              </div>
+              ${statusPill}
+            </div>
+            <div class="flex items-center justify-between pt-2 border-t border-surface-container text-[11px]">
+              <span class="text-secondary font-bold">${isHi ? 'स्थानीय डिलीवरी (30 Mins)' : 'Local Delivery (30 Mins)'}</span>
+              <span class="text-primary font-bold flex items-center gap-1">
+                <span>${isHi ? 'दुकान देखें' : 'View Shop'}</span>
+                <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+              </span>
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
-    async function openStoreView(storeId = 'sharma_brothers') {
+    // --- 7.5 STORE CATALOG CACHE & INSTANT ZERO-LATENCY RENDERING ---
+    const STORE_CATALOG_CACHE = {
+      sharma_brothers: {
+        id: 'sharma_brothers',
+        name: 'Sharma Brothers Kirana',
+        hindi_name: 'शर्मा ब्रदर्स किराना स्टोर',
+        store_type: 'kirana',
+        rating: 4.8,
+        total_orders: 210,
+        trust_badge: 'सत्यापित किराना • Verified Village Dukandaar',
+        phone: '9876543210',
+        distance_km: 1.2,
+        eta_mins: '30 Mins',
+        categories: [
+          { id: 'all', name_en: 'All', name_hi: 'सभी', icon: 'category', count: 4 },
+          { id: 'atta', name_en: 'Flour & Grains', name_hi: 'आटा व अनाज', icon: 'grain', count: 1 },
+          { id: 'oil', name_en: 'Oils & Ghee', name_hi: 'तेल व घी', icon: 'oil_barrel', count: 1 },
+          { id: 'spices', name_en: 'Spices & Masala', name_hi: 'मसाले', icon: 'soup_kitchen', count: 1 },
+          { id: 'tea', name_en: 'Tea & Sugar', name_hi: 'चाय व चीनी', icon: 'coffee', count: 1 }
+        ],
+        products: [
+          { id: 'item_1', name_hi: 'आशीर्वाद चक्की आटा', name_en: 'Aashirvaad Chakki Atta', category: 'atta', weight: '5 kg', price: 210, mrp: 240, icon: 'grain' },
+          { id: 'item_2', name_hi: 'फॉर्च्यून सरसों तेल', name_en: 'Fortune Mustard Oil', category: 'oil', weight: '1 L', price: 145, mrp: 165, icon: 'oil_barrel' },
+          { id: 'item_3', name_hi: 'टाटा आयोडाइज्ड नमक', name_en: 'Tata Salt Iodized', category: 'spices', weight: '1 kg', price: 24, mrp: 28, icon: 'soup_kitchen' },
+          { id: 'item_4', name_hi: 'रेड लेबल कड़क चाय', name_en: 'Brooke Bond Red Label Tea', category: 'tea', weight: '250 g', price: 95, mrp: 110, icon: 'coffee' },
+          { id: 'item_5', name_hi: 'अमूल शुद्ध गाय का घी', name_en: 'Amul Pure Cow Ghee', category: 'oil', weight: '1 L', price: 580, mrp: 640, icon: 'local_drink' },
+          { id: 'item_6', name_hi: 'एमडीएच देगी मिर्च', name_en: 'MDH Deggi Mirch', category: 'spices', weight: '100 g', price: 62, mrp: 75, icon: 'soup_kitchen' },
+          { id: 'item_7', name_hi: 'मधुर शुद्ध चीनी', name_en: 'Madhur Pure Sugar', category: 'kirana', weight: '1 kg', price: 48, mrp: 55, icon: 'grain' }
+        ]
+      },
+      rampur_dawa: {
+        id: 'rampur_dawa',
+        name: 'Rampur Jan Aushadhi Kendra',
+        hindi_name: 'रामपुर जन औषधि केंद्र',
+        store_type: 'pharma',
+        rating: 4.7,
+        total_orders: 98,
+        trust_badge: 'प्रधानमंत्री जन औषधि केंद्र • Generic Medicines',
+        phone: '9876543212',
+        distance_km: 0.8,
+        eta_mins: '30 Mins',
+        categories: [
+          { id: 'all', name_en: 'All', name_hi: 'सभी', icon: 'category', count: 6 },
+          { id: 'pharma', name_en: 'Medicines & Tablets', name_hi: 'दवाइयां व गोलियां', icon: 'medication', count: 3 },
+          { id: 'hygiene', name_en: 'Hygiene & Antiseptic', name_hi: 'स्वच्छता व एंटीसेप्टिक', icon: 'sanitizer', count: 1 },
+          { id: 'firstaid', name_en: 'First Aid & Bandages', name_hi: 'प्राथमिक चिकित्सा', icon: 'medical_services', count: 1 },
+          { id: 'wellness', name_en: 'Health Supplements', name_hi: 'स्वास्थ्य सप्लीमेंट्स', icon: 'pill', count: 1 }
+        ],
+        products: [
+          { id: 'item_r1', name_en: 'Paracetamol 650mg (15 Tablets)', name_hi: 'पैरासिटामोल 650 मिलीग्राम (15 गोली)', category: 'pharma', weight: '15 Tablets', price: 18, mrp: 32, icon: 'medication' },
+          { id: 'item_r2', name_en: 'Jan Aushadhi ORS Electrolyte (5 Sachets)', name_hi: 'ओआरएस इलेक्ट्रोलाइट घोल (5 पैकेट)', category: 'pharma', weight: '5 Sachets', price: 22, mrp: 45, icon: 'vaccines' },
+          { id: 'item_r3', name_en: 'Dettol Antiseptic Liquid 100ml', name_hi: 'डेटॉल एंटीसेप्टिक लिक्विड 100ml', category: 'hygiene', weight: '100 ml', price: 42, mrp: 48, icon: 'sanitizer' },
+          { id: 'item_r4', name_en: 'Sterile Cotton Gauze & Bandage Roll', name_hi: 'मेडिकल पट्टी रोल व रुई', category: 'firstaid', weight: '5m Roll', price: 25, mrp: 35, icon: 'medical_services' },
+          { id: 'item_r5', name_en: 'Vitamin C + Zinc Chewable Tablets', name_hi: 'विटामिन सी + जिंक गोली (30 गोली)', category: 'wellness', weight: '30 Tablets', price: 55, mrp: 90, icon: 'pill' },
+          { id: 'item_r6', name_en: 'Ayurvedic Pain Relief Balm 25g', name_hi: 'आयुर्वेदिक दर्द निवारक बाम', category: 'pharma', weight: '25 g', price: 38, mrp: 50, icon: 'healing' }
+        ]
+      },
+      kisan_seva: {
+        id: 'kisan_seva',
+        name: 'Kisan Seva Kendra & Agri',
+        hindi_name: 'किसान सेवा केंद्र व खाद-बीज',
+        store_type: 'agri',
+        rating: 4.9,
+        total_orders: 145,
+        trust_badge: 'कृषि सेवा केंद्र • Govt Certified Agri & Seeds',
+        phone: '9876543211',
+        distance_km: 2.1,
+        eta_mins: '45 Mins',
+        categories: [
+          { id: 'all', name_en: 'All', name_hi: 'सभी', icon: 'category', count: 5 },
+          { id: 'fertilizer', name_en: 'Fertilizers & Khad', name_hi: 'खाद व उर्वरक', icon: 'compost', count: 2 },
+          { id: 'seeds', name_en: 'Hybrid Seeds', name_hi: 'उन्नत बीज', icon: 'spa', count: 1 },
+          { id: 'tools', name_en: 'Farming Pumps & Tools', name_hi: 'स्प्रे पंप व कृषि औजार', icon: 'construction', count: 1 },
+          { id: 'pesticides', name_en: 'Crop Protection', name_hi: 'कीटनाशक व फंगीसाइड', icon: 'pest_control', count: 1 }
+        ],
+        products: [
+          { id: 'item_a1', name_en: 'IFFCO DAP Fertilizer 50kg Bag', name_hi: 'इफको डीएपी खाद (50 किग्रा)', category: 'fertilizer', weight: '50 kg', price: 1350, mrp: 1450, icon: 'compost' },
+          { id: 'item_a2', name_en: 'Pioneer Hybrid Mustard Seeds 1kg', name_hi: 'पायनियर हाइब्रिड सरसों बीज 1 किग्रा', category: 'seeds', weight: '1 kg', price: 620, mrp: 700, icon: 'spa' },
+          { id: 'item_a3', name_en: '16L Manual Knapsack Crop Sprayer Pump', name_hi: '16 लीटर नैपसैक फसल स्प्रे पंप', category: 'tools', weight: '16L Tank', price: 1150, mrp: 1350, icon: 'construction' },
+          { id: 'item_a4', name_en: 'Organic Neem Oil Pesticide (1L)', name_hi: 'जैविक नीम तेल कीटनाशक 1 लीटर', category: 'pesticides', weight: '1 Litre', price: 290, mrp: 350, icon: 'pest_control' },
+          { id: 'item_a5', name_en: 'Neem Coated Urea (45kg Govt Subsidized)', name_hi: 'नीम कोटेड यूरिया खाद (45 किग्रा)', category: 'fertilizer', weight: '45 kg', price: 266, mrp: 280, icon: 'compost' }
+        ]
+      },
+      apna_dairy: {
+        id: 'apna_dairy',
+        name: 'Apna Dugdh Dairy Point',
+        hindi_name: 'अपना दुग्ध डेयरी पॉइंट',
+        store_type: 'dairy',
+        rating: 4.9,
+        total_orders: 162,
+        trust_badge: 'ताज़ा दुग्ध डेयरी • Pure Village Dairy',
+        phone: '9876543213',
+        distance_km: 1.5,
+        eta_mins: '30 Mins',
+        categories: [
+          { id: 'all', name_en: 'All', name_hi: 'सभी', icon: 'category', count: 5 },
+          { id: 'dairy', name_en: 'Fresh Milk', name_hi: 'ताज़ा दूध', icon: 'water_full', count: 2 },
+          { id: 'paneer', name_en: 'Paneer & Butter', name_hi: 'पनीर व मक्खन', icon: 'restaurant', count: 2 },
+          { id: 'beverages', name_en: 'Chaas & Lassi', name_hi: 'मटका छाछ व लस्सी', icon: 'local_cafe', count: 1 }
+        ],
+        products: [
+          { id: 'item_d1', name_en: 'Desi Buffalo Full Cream Milk', name_hi: 'ताज़ा भैंस का गाढ़ा दूध (1 ली)', category: 'dairy', weight: '1 Litre', price: 68, mrp: 72, icon: 'local_drink' },
+          { id: 'item_d2', name_en: 'Fresh Cow Milk Paneer', name_hi: 'ताज़ा मलाईदार पनीर (500 ग्रा)', category: 'paneer', weight: '500 g', price: 180, mrp: 210, icon: 'restaurant' },
+          { id: 'item_d3', name_en: 'Matka Chaas / Masala Buttermilk', name_hi: 'देसी मटका मसाला छाछ (1 ली)', category: 'beverages', weight: '1 Litre', price: 20, mrp: 25, icon: 'local_cafe' },
+          { id: 'item_d4', name_en: 'Desi White Butter / Makkhan', name_hi: 'शुद्ध सफेद मक्खन (250 ग्रा)', category: 'paneer', weight: '250 g', price: 110, mrp: 130, icon: 'restaurant' },
+          { id: 'item_d5', name_en: 'Fresh Cow Milk Dahi / Curd 500g', name_hi: 'ताज़ा मीठा दही (500 ग्रा)', category: 'dairy', weight: '500 g', price: 40, mrp: 45, icon: 'water_full' }
+        ]
+      }
+    };
+    window.STORE_CATALOG_CACHE = STORE_CATALOG_CACHE;
+
+    function selectCategory(catName) {
+      const storeMap = {
+        medicines: 'rampur_dawa',
+        pharma: 'rampur_dawa',
+        agri: 'kisan_seva',
+        dairy: 'apna_dairy',
+        kirana: 'sharma_brothers',
+        sabzi: 'sharma_brothers',
+        tools: 'kisan_seva'
+      };
+      const targetStore = storeMap[catName] || 'sharma_brothers';
+      openStoreView(targetStore, 'all');
+    }
+
+    async function openStoreView(storeId = 'sharma_brothers', initialCategory = 'all') {
+      AppStore.activeStoreId = storeId;
+      AppStore.activeStoreCategory = initialCategory;
       navigateToPhase('store');
-      try {
-        const products = await apiFetch(`/stores/${storeId}/products`);
-        if (products && products.length > 0) {
-          const qtyMap = {};
+
+      const storeSection = document.getElementById('view-p3-store');
+      if (storeSection) storeSection.scrollTop = 0;
+
+      // 1. INSTANT ZERO-LATENCY CACHE RENDER (Eliminates blank screen!)
+      const cached = STORE_CATALOG_CACHE[storeId];
+      if (cached) {
+        AppStore.activeStore = cached;
+        AppStore.currentCategories = cached.categories;
+        renderStoreHeaderDetails(cached, storeId);
+        renderStoreCategoryTabs(cached.categories, initialCategory);
+
+        const qtyMap = {};
+        if (Array.isArray(AppStore.catalog)) {
           AppStore.catalog.forEach(item => { if (item.qty > 0) qtyMap[item.id] = item.qty; });
-          AppStore.catalog = products.map(p => ({
+        }
+        AppStore.catalog = cached.products.map(p => ({
+          id: p.id,
+          name_hi: p.name_hi,
+          name_en: p.name_en,
+          cat: p.category,
+          weight: p.weight,
+          price: p.price,
+          mrp: p.mrp,
+          qty: qtyMap[p.id] || 0,
+          icon: p.icon || 'inventory_2',
+          store_id: storeId
+        }));
+        renderProductCatalog(initialCategory);
+      } else {
+        const prodContainer = document.getElementById('p3-product-list');
+        if (prodContainer) {
+          prodContainer.innerHTML = `
+            <div class="p-8 text-center flex flex-col items-center justify-center gap-2 text-on-surface-variant">
+              <span class="material-symbols-outlined text-[28px] animate-spin text-primary">progress_activity</span>
+              <span class="text-xs font-bold">${AppStore.lang === 'hi' ? 'दुकान व सामान लोड हो रहा है...' : 'Loading store catalog...'}</span>
+            </div>
+          `;
+        }
+      }
+
+      // 2. FETCH LATEST DYNAMIC DATA FROM BACKEND API
+      try {
+        const coords = (AppStore.user && AppStore.user.gps) ? `?lat=${AppStore.user.gps.lat}&lng=${AppStore.user.gps.lng}` : '';
+        const [storeData, catData, prodData] = await Promise.all([
+          apiFetch(`/stores/${storeId}${coords}`).catch(err => {
+            console.warn('Store fetch error:', err);
+            return null;
+          }),
+          apiFetch(`/stores/${storeId}/categories`).catch(err => {
+            console.warn('Store categories fetch error:', err);
+            return [];
+          }),
+          apiFetch(`/stores/${storeId}/products`).catch(err => {
+            console.warn('Store products fetch error:', err);
+            return [];
+          })
+        ]);
+
+        if (storeData) {
+          AppStore.activeStore = storeData;
+          renderStoreHeaderDetails(storeData, storeId);
+        }
+
+        if (Array.isArray(catData) && catData.length > 0) {
+          AppStore.currentCategories = catData;
+          const validCat = catData.some(c => c.id === initialCategory) ? initialCategory : 'all';
+          AppStore.activeStoreCategory = validCat;
+          renderStoreCategoryTabs(catData, validCat);
+        }
+
+        if (Array.isArray(prodData) && prodData.length > 0) {
+          const qtyMap = {};
+          if (Array.isArray(AppStore.catalog)) {
+            AppStore.catalog.forEach(item => { if (item.qty > 0) qtyMap[item.id] = item.qty; });
+          }
+          AppStore.catalog = prodData.map(p => ({
             id: p.id,
             name_hi: p.name_hi,
             name_en: p.name_en,
@@ -2583,12 +2960,43 @@
             price: p.price,
             mrp: p.mrp,
             qty: qtyMap[p.id] || 0,
-            icon: p.icon
+            icon: p.icon || 'inventory_2',
+            store_id: p.store_id || storeId
           }));
-          renderProductCatalog('all');
+          renderProductCatalog(AppStore.activeStoreCategory || 'all');
+
+          // Update cache with fresh database record
+          STORE_CATALOG_CACHE[storeId] = {
+            id: storeId,
+            name: storeData ? storeData.name : (cached ? cached.name : storeId),
+            hindi_name: storeData ? (storeData.hindi_name || storeData.name) : (cached ? cached.hindi_name : storeId),
+            store_type: storeData ? storeData.store_type : (cached ? cached.store_type : 'kirana'),
+            rating: storeData ? storeData.rating : (cached ? cached.rating : null),
+            total_orders: storeData ? storeData.total_orders : (cached ? cached.total_orders : 0),
+            trust_badge: storeData ? storeData.trust_badge : (cached ? cached.trust_badge : null),
+            phone: storeData ? storeData.phone : (cached ? cached.phone : null),
+            distance_km: storeData ? storeData.distance_km : 1.2,
+            eta_mins: storeData ? storeData.eta_mins : '30 Mins',
+            categories: catData,
+            products: prodData
+          };
+        } else if (!cached) {
+          AppStore.catalog = [];
+          const prodContainer = document.getElementById('p3-product-list');
+          if (prodContainer) {
+            const emptyMsg = AppStore.lang === 'hi'
+              ? 'इस दुकान में अभी सामान उपलब्ध नहीं है।'
+              : 'No items currently in stock for this store.';
+            prodContainer.innerHTML = `
+              <div class="p-8 text-center flex flex-col items-center justify-center gap-2 bg-white rounded-2xl border border-surface-container-high shadow-xs">
+                <span class="material-symbols-outlined text-outline text-[36px]">inventory_2</span>
+                <span class="text-xs font-bold text-on-surface-variant">${emptyMsg}</span>
+              </div>
+            `;
+          }
         }
       } catch (e) {
-        console.warn('Backend store products fetch warning:', e);
+        console.warn('openStoreView exception:', e);
       }
     }
     window.openStoreView = openStoreView;
@@ -2726,7 +3134,7 @@
                       <span class="text-[10px] text-on-surface-variant">${pWeight} • <strong class="text-primary font-bold">₹${prod.price}</strong> <span class="line-through text-outline">₹${prod.mrp}</span></span>
                     </div>
                   </div>
-                  <button onclick="openStoreWithProduct('sharma_brothers', '${prod.id}')" class="px-2.5 py-1.5 rounded-lg bg-primary text-white text-[10px] font-bold shrink-0 active:scale-95 flex items-center gap-1 shadow-xs">
+                  <button onclick="openStoreWithProduct('${prod.store_id || 'sharma_brothers'}', '${prod.id}')" class="px-2.5 py-1.5 rounded-lg bg-primary text-white text-[10px] font-bold shrink-0 active:scale-95 flex items-center gap-1 shadow-xs">
                     <span>${isHi ? 'दुकान देखें' : 'View'}</span>
                     <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
                   </button>
@@ -2774,57 +3182,166 @@
       }
     });
 
-    // --- 8. PHASE 3: STORE & PRODUCT VIEW LOGIC ---
+    // --- 8. PHASE 3: DYNAMIC STORE & PRODUCT VIEW LOGIC ---
+    function renderStoreHeaderDetails(store, storeId) {
+      const isHi = (AppStore.lang === 'hi');
+      const storeNameEl = document.getElementById('p3-store-name');
+      const trustContainer = document.getElementById('p3-trust-badge-container');
+      const trustLbl = document.getElementById('p3-trust-lbl');
+      const callBtn = document.getElementById('p3-store-call-btn');
+      const ratingBadge = document.getElementById('p3-store-rating-badge');
+      const distEl = document.getElementById('p3-store-dist');
+      const etaEl = document.getElementById('p3-store-eta');
+
+      if (!store) {
+        if (storeNameEl) storeNameEl.innerText = (storeId || 'Store').replace('_', ' ').toUpperCase();
+        if (trustContainer) trustContainer.classList.add('hidden');
+        if (ratingBadge) ratingBadge.innerHTML = `<span class="material-symbols-outlined text-[14px] text-emerald-500">fiber_new</span><span>${isHi ? '★ नया स्टोर' : '★ New Store'}</span>`;
+        if (callBtn) callBtn.classList.add('hidden');
+        if (distEl) distEl.innerText = '-- km';
+        if (etaEl) etaEl.innerText = '-- Mins';
+        return;
+      }
+
+      if (storeNameEl) {
+        storeNameEl.innerText = isHi ? (store.hindi_name || store.name) : (store.name || store.hindi_name);
+      }
+
+      if (trustContainer && trustLbl) {
+        if (store.trust_badge && store.trust_badge.trim()) {
+          trustLbl.innerText = store.trust_badge;
+          trustContainer.classList.remove('hidden');
+        } else {
+          trustContainer.classList.add('hidden');
+        }
+      }
+
+      if (callBtn) {
+        if (store.phone) {
+          callBtn.href = `tel:${store.phone}`;
+          callBtn.classList.remove('hidden');
+        } else {
+          callBtn.classList.add('hidden');
+        }
+      }
+
+      if (ratingBadge) {
+        if (typeof store.rating === 'number' && store.rating > 0) {
+          const ordersStr = store.total_orders ? ` (${store.total_orders}+ orders)` : '';
+          ratingBadge.innerHTML = `<span class="material-symbols-outlined text-[14px] text-amber-500" style="font-variation-settings: 'FILL' 1;">star</span><span>★ ${store.rating}${ordersStr}</span>`;
+        } else {
+          ratingBadge.innerHTML = `<span class="material-symbols-outlined text-[14px] text-emerald-500">fiber_new</span><span>${isHi ? '★ नया स्टोर' : '★ New Store'}</span>`;
+        }
+      }
+
+      if (distEl) {
+        distEl.innerText = `${store.distance_km || 1.2} km`;
+      }
+      if (etaEl) {
+        etaEl.innerText = store.eta_mins || '30 Mins';
+      }
+    }
+
+    function renderStoreCategoryTabs(categories, activeCat = 'all') {
+      const container = document.getElementById('p3-category-tabs-container');
+      if (!container) return;
+
+      if (!categories || !Array.isArray(categories) || categories.length === 0) {
+        container.innerHTML = `
+          <button onclick="filterCatalogCategory('all', this)" class="cat-pill active h-8 px-4 rounded-full bg-primary text-white font-bold text-xs shrink-0">${AppStore.lang === 'hi' ? 'सभी' : 'All'}</button>
+        `;
+        return;
+      }
+
+      const isHi = (AppStore.lang === 'hi');
+      container.innerHTML = categories.map(c => {
+        const title = isHi ? (c.name_hi || c.name_en) : (c.name_en || c.name_hi);
+        const isActive = (c.id === activeCat);
+        const bgClass = isActive ? 'bg-primary text-white font-bold' : 'bg-surface-container-low text-on-surface font-semibold';
+        return `
+          <button 
+            type="button"
+            onclick="filterCatalogCategory('${c.id}', this)"
+            data-cat-id="${c.id}"
+            class="cat-pill ${isActive ? 'active' : ''} ${bgClass} h-8 px-4 rounded-full text-xs shrink-0 flex items-center gap-1.5 transition-all shadow-xs"
+          >
+            <span class="material-symbols-outlined text-[15px]">${c.icon || 'category'}</span>
+            <span>${title}</span>
+            ${c.count > 0 ? `<span class="text-[9px] px-1.5 py-0.2 rounded-full ${isActive ? 'bg-white/20 text-white' : 'bg-surface-container text-on-surface-variant'}">${c.count}</span>` : ''}
+          </button>
+        `;
+      }).join('');
+    }
+
     function filterCatalogCategory(cat, btnElement) {
-      document.querySelectorAll('.cat-pill').forEach(btn => {
-        btn.classList.remove('bg-primary', 'text-white');
-        btn.classList.add('bg-surface-container-low', 'text-on-surface');
+      AppStore.activeStoreCategory = cat;
+      document.querySelectorAll('#p3-category-tabs-container .cat-pill').forEach(btn => {
+        btn.classList.remove('bg-primary', 'text-white', 'font-bold', 'active');
+        btn.classList.add('bg-surface-container-low', 'text-on-surface', 'font-semibold');
       });
+
       if (btnElement && btnElement.classList) {
-        btnElement.classList.add('bg-primary', 'text-white');
-        btnElement.classList.remove('bg-surface-container-low', 'text-on-surface');
+        btnElement.classList.add('bg-primary', 'text-white', 'font-bold', 'active');
+        btnElement.classList.remove('bg-surface-container-low', 'text-on-surface', 'font-semibold');
       } else {
-        const matchingBtn = Array.from(document.querySelectorAll('.cat-pill')).find(b => {
-          const onclickAttr = b.getAttribute('onclick') || '';
-          return onclickAttr.includes(`'${cat}'`);
-        }) || document.querySelector('.cat-pill');
+        const matchingBtn = document.querySelector(`#p3-category-tabs-container [data-cat-id="${cat}"]`) ||
+                            document.querySelector('#p3-category-tabs-container .cat-pill');
         if (matchingBtn) {
-          matchingBtn.classList.add('bg-primary', 'text-white');
-          matchingBtn.classList.remove('bg-surface-container-low', 'text-on-surface');
+          matchingBtn.classList.add('bg-primary', 'text-white', 'font-bold', 'active');
+          matchingBtn.classList.remove('bg-surface-container-low', 'text-on-surface', 'font-semibold');
         }
       }
 
       renderProductCatalog(cat);
     }
 
-    function renderProductCatalog(filterCat = 'all') {
+    function renderProductCatalog(filterCat = (AppStore.activeStoreCategory || 'all')) {
       const container = document.getElementById('p3-product-list');
+      if (!container) return;
       container.innerHTML = '';
 
-      const items = filterCat === 'all' 
-        ? AppStore.catalog 
-        : AppStore.catalog.filter(i => i.cat === filterCat || i.cat.includes(filterCat));
+      const catalog = AppStore.catalog || [];
+      const items = filterCat === 'all'
+        ? catalog
+        : catalog.filter(i => i.cat === filterCat || (i.cat && i.cat.toLowerCase() === filterCat.toLowerCase()));
 
+      if (items.length === 0) {
+        const isHi = (AppStore.lang === 'hi');
+        const emptyMsg = filterCat === 'all'
+          ? (isHi ? 'इस दुकान में अभी सामान उपलब्ध नहीं है।' : 'No products available in this store.')
+          : (isHi ? 'इस श्रेणी में कोई सामान नहीं मिला।' : 'No products found in this category.');
+        container.innerHTML = `
+          <div class="p-8 text-center flex flex-col items-center justify-center gap-2 bg-white rounded-2xl border border-surface-container-high shadow-xs">
+            <span class="material-symbols-outlined text-outline text-[32px]">production_quantity_limits</span>
+            <span class="text-xs font-bold text-on-surface-variant">${emptyMsg}</span>
+          </div>
+        `;
+        return;
+      }
+
+      const isHi = (AppStore.lang === 'hi');
       items.forEach(item => {
-        const title = AppStore.lang === 'hi' ? item.name_hi : item.name_en;
-        const weight = AppStore.lang === 'hi' ? (item.weight_hi || item.weight) : (item.weight_en || item.weight);
-        const discountPercent = Math.round(((item.mrp - item.price) / item.mrp) * 100);
+        const title = isHi ? (item.name_hi || item.name_en) : (item.name_en || item.name_hi);
+        const weight = isHi ? (item.weight_hi || item.weight) : (item.weight_en || item.weight);
+        const discountPercent = item.mrp && item.mrp > item.price
+          ? Math.round(((item.mrp - item.price) / item.mrp) * 100)
+          : 0;
 
         const card = document.createElement('div');
         card.id = `prod-card-${item.id}`;
         card.className = 'bg-white rounded-2xl p-4 shadow-mobile-card border border-surface-container-high flex items-center justify-between gap-3';
         card.innerHTML = `
-          <div class="flex items-center gap-3 min-w-0">
+          <div class="flex items-center gap-3 min-w-0 flex-1">
             <div class="w-16 h-16 rounded-xl bg-surface-container flex items-center justify-center text-primary shrink-0 shadow-inner">
-              <span class="material-symbols-outlined text-[28px]">${item.icon}</span>
+              <span class="material-symbols-outlined text-[28px]">${item.icon || 'inventory_2'}</span>
             </div>
             <div class="flex flex-col min-w-0">
               <h4 class="text-xs font-extrabold text-on-surface truncate">${title}</h4>
               <span class="text-[10px] text-on-surface-variant font-medium">${weight}</span>
               <div class="flex items-baseline gap-1.5 mt-0.5">
                 <span class="text-sm font-black text-on-surface">₹${item.price}</span>
-                <span class="text-[11px] text-outline line-through">₹${item.mrp}</span>
-                <span class="text-[9px] text-primary font-bold">${discountPercent}% OFF</span>
+                ${item.mrp && item.mrp > item.price ? `<span class="text-[11px] text-outline line-through">₹${item.mrp}</span>` : ''}
+                ${discountPercent > 0 ? `<span class="text-[9px] text-primary font-bold">${discountPercent}% OFF</span>` : ''}
               </div>
             </div>
           </div>
@@ -2851,7 +3368,9 @@
         container.appendChild(card);
       });
 
-      updateCartCalculations();
+      if (typeof updateCartCalculations === 'function') {
+        updateCartCalculations();
+      }
     }
 
     function modifyItemQty(itemId, delta) {
@@ -2859,7 +3378,7 @@
       if (!item) return;
 
       item.qty = Math.max(0, item.qty + delta);
-      renderProductCatalog();
+      renderProductCatalog(AppStore.activeStoreCategory || 'all');
       updateCartCalculations();
     }
 
@@ -3017,6 +3536,7 @@
 
       renderCartLineItems();
     }
+    window.updateCartCalculations = updateCartCalculations;
 
     function renderCartLineItems() {
       const container = document.getElementById('p4-cart-items-container');
@@ -3061,6 +3581,7 @@
         container.appendChild(row);
       });
     }
+    window.renderCartLineItems = renderCartLineItems;
 
     function clearFullCart() {
       AppStore.catalog.forEach(i => i.qty = 0);
@@ -3121,7 +3642,7 @@
         user_name: AppStore.user.name || 'Customer',
         village: AppStore.user.village || 'Panchayat Village',
         landmark: AppStore.user.landmark || 'Village Landmark',
-        store_id: 'sharma_brothers',
+        store_id: AppStore.activeStoreId || (cartItems[0] && cartItems[0].store_id) || 'sharma_brothers',
         payment_mode: AppStore.paymentMode || 'COD',
         distance_km: dist,
         customer_lat: AppStore.user.gps ? AppStore.user.gps.lat : 29.1324,
@@ -3799,6 +4320,7 @@
       // Render initial catalog & cart
       renderProductCatalog();
       window.applyBilingualState();
+      loadStoresFromBackend();
 
       // Check auto-test query
       const urlParams = new URLSearchParams(window.location.search);
@@ -3857,6 +4379,36 @@
         }
       }, 350);
     };
+
+    // Global Scroll Delegator to ensure window.scrollTo / window.scrollBy always target the active view
+    (function() {
+      const origScrollTo = window.scrollTo.bind(window);
+      const origScrollBy = window.scrollBy.bind(window);
+
+      function getActiveScrollContainer() {
+        return document.querySelector('.screen-view.active') ||
+               document.querySelector('main.overflow-y-auto') ||
+               document.querySelector('main') ||
+               document.documentElement ||
+               document.body;
+      }
+
+      window.scrollTo = function(...args) {
+        origScrollTo(...args);
+        const container = getActiveScrollContainer();
+        if (container && typeof container.scrollTo === 'function') {
+          container.scrollTo(...args);
+        }
+      };
+
+      window.scrollBy = function(...args) {
+        origScrollBy(...args);
+        const container = getActiveScrollContainer();
+        if (container && typeof container.scrollBy === 'function') {
+          container.scrollBy(...args);
+        }
+      };
+    })();
   </script>
 </body>
 </html>

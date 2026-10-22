@@ -52,6 +52,7 @@ def ensure_schema_migrations():
         existing_cols = {r[1] for r in res}
 
         new_cols = [
+            ("store_type", "VARCHAR(50) DEFAULT 'kirana'"),
             ("status", "VARCHAR(30) DEFAULT 'approved'"),
             ("owner_name", "VARCHAR(100) DEFAULT 'Ramesh Sharma'"),
             ("id_type", "VARCHAR(20) DEFAULT 'Aadhar'"),
@@ -137,6 +138,22 @@ def ensure_schema_migrations():
             conn.commit()
         except Exception as e:
             print(f"Notice creating support_tickets table: {e}")
+
+        # Ensure store_categories table exists
+        try:
+            conn.execute(text("""
+                CREATE TABLE IF NOT EXISTS store_categories (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    store_type VARCHAR(50) NOT NULL,
+                    category_id VARCHAR(50) NOT NULL,
+                    name_en VARCHAR(100) NOT NULL,
+                    name_hi VARCHAR(100) NOT NULL,
+                    icon VARCHAR(50) DEFAULT 'category'
+                )
+            """))
+            conn.commit()
+        except Exception as e:
+            print(f"Notice creating store_categories table: {e}")
 
         # Ensure all existing orders have balanced distance-based ledger splits
         try:

@@ -127,24 +127,36 @@ class ProductDTO(BaseModel):
     class Config:
         from_attributes = True
 
+class StoreCategoryDTO(BaseModel):
+    id: str
+    name_en: str
+    name_hi: str
+    icon: Optional[str] = "category"
+    count: Optional[int] = 0
+
+    class Config:
+        from_attributes = True
+
 class StoreDTO(BaseModel):
     id: str
     name: str
     hindi_name: Optional[str] = None
     category: str
-    rating: float
-    total_orders: int
-    distance_km: float
-    eta_mins: str
-    is_open: bool
-    trust_badge: str
-    phone: str
+    store_type: Optional[str] = "kirana"
+    rating: Optional[float] = None
+    total_orders: int = 0
+    distance_km: float = 1.2
+    eta_mins: str = "30 Mins"
+    is_open: bool = True
+    trust_badge: Optional[str] = None
+    phone: Optional[str] = None
     status: Optional[str] = "approved"
     owner_name: Optional[str] = None
     id_type: Optional[str] = "Aadhar"
     id_number: Optional[str] = None
     photo_url: Optional[str] = None
     payout_upi: Optional[str] = None
+    categories: Optional[List[dict]] = None
 
     class Config:
         from_attributes = True

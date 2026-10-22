@@ -115,9 +115,20 @@
         display: none !important;
       }
     }
+    html, body {
+      height: 100%;
+      height: 100dvh;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    main {
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
+    }
   </style>
 </head>
-<body class="h-full w-full text-on-surface flex flex-col antialiased select-none">
+<body class="h-full min-h-[100dvh] max-h-[100dvh] w-full text-on-surface flex flex-col antialiased select-none overflow-hidden bg-slate-50">
 
   <!-- ========================================================================= -->
   <!-- 0. SERVER DISCONNECTION / OFFLINE BANNER                                  -->
@@ -135,7 +146,7 @@
   <!-- ========================================================================= -->
   <!-- 1. FULL-SCREEN LOGIN / REGISTRATION GATE (Security Enforcement)           -->
   <!-- ========================================================================= -->
-  <div id="vendor-login-gate" class="min-h-screen w-full flex flex-col items-center justify-center p-3 sm:p-5 bg-slate-100 relative z-30">
+  <div id="vendor-login-gate" class="fixed inset-0 z-30 w-full h-[100dvh] flex flex-col items-center justify-center p-3 sm:p-5 bg-slate-100 overflow-y-auto">
     <div class="w-full max-w-sm bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-xl flex flex-col gap-4">
       
       <!-- Brand & Title -->
@@ -211,7 +222,7 @@
   <!-- ========================================================================= -->
   <!-- 2. TOP HEADER & STORE CONTROLS (Mobile-First 360px Optimized)             -->
   <!-- ========================================================================= -->
-  <header id="vendor-header" class="hidden sticky top-0 z-40 bg-white border-b border-surface-dim shadow-xs px-3 sm:px-6 py-2">
+  <header id="vendor-header" class="hidden sticky top-0 z-40 shrink-0 bg-white border-b border-surface-dim shadow-xs px-3 sm:px-6 py-2">
     <div class="max-w-6xl mx-auto flex flex-col gap-1.5">
       
       <!-- Row 1: Brand, Store Selector, Primary Operational CTAs -->
@@ -305,7 +316,7 @@
   </div>
 
   <!-- Main App Shell -->
-  <main class="flex-1 max-w-6xl w-full mx-auto p-3 sm:p-5 flex flex-col gap-4 pb-36 sm:pb-40">
+  <main class="flex-1 min-h-0 max-w-6xl w-full mx-auto p-3 sm:p-5 flex flex-col gap-4 pb-28 sm:pb-36 overflow-y-auto">
 
     <!-- ========================================================================= -->
     <!-- PENDING VERIFICATION LOCK VIEW (When status is pending_approval)           -->
@@ -2028,6 +2039,35 @@
     window.addEventListener('DOMContentLoaded', () => {
       initVendorApp();
     });
+
+    // Global Scroll Delegator to ensure window.scrollTo / window.scrollBy always target the main scroll container
+    (function() {
+      const origScrollTo = window.scrollTo.bind(window);
+      const origScrollBy = window.scrollBy.bind(window);
+
+      function getActiveScrollContainer() {
+        return document.querySelector('main.overflow-y-auto') ||
+               document.querySelector('main') ||
+               document.documentElement ||
+               document.body;
+      }
+
+      window.scrollTo = function(...args) {
+        origScrollTo(...args);
+        const container = getActiveScrollContainer();
+        if (container && typeof container.scrollTo === 'function') {
+          container.scrollTo(...args);
+        }
+      };
+
+      window.scrollBy = function(...args) {
+        origScrollBy(...args);
+        const container = getActiveScrollContainer();
+        if (container && typeof container.scrollBy === 'function') {
+          container.scrollBy(...args);
+        }
+      };
+    })();
   </script>
 </body>
 </html>

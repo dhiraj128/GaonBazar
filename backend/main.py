@@ -12,12 +12,12 @@ import sentry_sdk
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 
 from .database import engine, Base, get_db, check_database_integrity, ensure_schema_migrations
-from .models import User, OTPRecord, Landmark, Store, Product, Order, OrderItem, Runner, SupportTicket
+from .models import User, OTPRecord, Landmark, Store, Product, Order, OrderItem, Runner, SupportTicket, StoreCategory
 from .schemas import (
     SendOTPRequest, SendOTPResponse,
     VerifyOTPRequest, VerifyOTPResponse, UserProfileDTO, CustomerTrustStatusDTO,
     SaveLandmarkRequest, SaveLandmarkResponse,
-    StoreDTO, ProductDTO,
+    StoreDTO, ProductDTO, StoreCategoryDTO,
     CheckoutRequest, CheckoutResponse,
     OrderStatusResponse, CancelOrderRequest, OrderCancelResponse,
     VendorLoginRequest, VendorLoginResponse,
@@ -428,6 +428,110 @@ def list_stores(
         s.eta_mins = "30 Mins" if (s.distance_km or 1.2) <= 5.0 else "45-60 Mins"
         results.append(s)
     return results
+
+
+@app.get("/api/stores/{store_id}", response_model=StoreDTO)
+def get_store_profile(
+    store_id: str,
+    lat: Optional[float] = None,
+    lng: Optional[float] = None,
+    db: Session = Depends(get_db)
+):
+    """
+    Returns full details for a specific rural store (name, store_type, rating, trust_badge, eta).
+    Dynamic distance and delivery time calculated if coordinates are supplied.
+    """
+    store = db.query(Store).filter(Store.id == store_id).first()
+    if not store:
+        raise HTTPException(status_code=404, detail="Store not found")
+
+    if lat is not None and lng is not None and getattr(store, 'lat', None) and getattr(store, 'lng', None):
+        store.distance_km = calculate_haversine_km(store.lat, store.lng, lat, lng)
+    store.eta_mins = "30 Mins" if (store.distance_km or 1.2) <= 5.0 else "45-60 Mins"
+    return store
+
+
+@app.get("/api/stores/{store_id}/categories", response_model=List[StoreCategoryDTO])
+def get_store_dynamic_categories(
+    store_id: str,
+    db: Session = Depends(get_db)
+):
+    """
+    Dynamically generates store categories based on Store_Type (Kirana, Pharmacy, Agri, Dairy, Electronics)
+    and what products this specific store actually has in stock.
+    """
+    store = db.query(Store).filter(Store.id == store_id).first()
+    if not store:
+        raise HTTPException(status_code=404, detail="Store not found")
+
+    st_type = (store.store_type or store.category or "kirana").lower()
+
+    # Query predefined categories configured for this store_type from store_categories table
+    configured_cats = db.query(StoreCategory).filter(StoreCategory.store_type == st_type).all()
+    cat_meta_map = {
+        c.category_id: {"name_en": c.name_en, "name_hi": c.name_hi, "icon": c.icon}
+        for c in configured_cats
+    }
+
+    # Query actual in-stock product categories for this store
+    product_rows = db.query(Product.category).filter(
+        Product.store_id == store_id,
+        Product.in_stock == True
+    ).all()
+    actual_cats = [r[0] for r in product_rows if r[0]]
+    cat_counts = {}
+    for c in actual_cats:
+        cat_counts[c] = cat_counts.get(c, 0) + 1
+
+    total_products = len(actual_cats)
+
+    # Always include "all" as first category
+    categories_result = [
+        StoreCategoryDTO(
+            id="all",
+            name_en="All",
+            name_hi="सभी",
+            icon="category",
+            count=total_products
+        )
+    ]
+
+    seen_ids = {"all"}
+
+    # 1. First add categories that have actual in-stock products
+    for cat_id, count in cat_counts.items():
+        if cat_id not in seen_ids:
+            seen_ids.add(cat_id)
+            meta = cat_meta_map.get(cat_id, {
+                "name_en": cat_id.replace("_", " ").title(),
+                "name_hi": cat_id.replace("_", " ").title(),
+                "icon": "inventory_2"
+            })
+            categories_result.append(
+                StoreCategoryDTO(
+                    id=cat_id,
+                    name_en=meta["name_en"],
+                    name_hi=meta["name_hi"],
+                    icon=meta.get("icon", "category"),
+                    count=count
+                )
+            )
+
+    # 2. Also append other relevant categories for this store_type
+    for c in configured_cats:
+        if c.category_id not in seen_ids and c.category_id != "all":
+            seen_ids.add(c.category_id)
+            categories_result.append(
+                StoreCategoryDTO(
+                    id=c.category_id,
+                    name_en=c.name_en,
+                    name_hi=c.name_hi,
+                    icon=c.icon,
+                    count=0
+                )
+            )
+
+    return categories_result
 
 
 @app.get("/api/stores/{store_id}/products", response_model=List[ProductDTO])

@@ -57,16 +57,17 @@ class Store(Base):
     name = Column(String(100), nullable=False)
     hindi_name = Column(String(100), nullable=True)
     category = Column(String(50), default="kirana")
-    rating = Column(Float, default=4.8)
-    total_orders = Column(Integer, default=210)
+    store_type = Column(String(50), default="kirana")  # "kirana", "pharma", "agri", "dairy", "electronics"
+    rating = Column(Float, nullable=True, default=None)  # Dynamic variable from DB or None for new stores
+    total_orders = Column(Integer, default=0)
     distance_km = Column(Float, default=1.2)
     eta_mins = Column(String(50), default="30 Mins")
     lat = Column(Float, default=29.1350)
     lng = Column(Float, default=77.0100)
     is_open = Column(Boolean, default=True)
-    trust_badge = Column(String(100), default="सत्यापित दुकान • 18 Years Village Trust")
-    phone = Column(String(15), default="9876543210")
-    owner_name = Column(String(100), default="Ramesh Sharma")
+    trust_badge = Column(String(100), nullable=True, default=None)  # Dynamic variable or None
+    phone = Column(String(15), nullable=True, default=None)
+    owner_name = Column(String(100), nullable=True, default=None)
     id_type = Column(String(20), default="Aadhar")
     id_number = Column(String(50), default="XXXX-XXXX-8921")
     photo_url = Column(Text, nullable=True)
@@ -75,6 +76,17 @@ class Store(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     products = relationship("Product", back_populates="store", cascade="all, delete-orphan")
+
+
+class StoreCategory(Base):
+    __tablename__ = "store_categories"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    store_type = Column(String(50), index=True, nullable=False)  # "kirana", "pharma", "agri", "dairy", "electronics"
+    category_id = Column(String(50), nullable=False)  # "all", "atta", "pharma", "seeds", etc.
+    name_en = Column(String(100), nullable=False)
+    name_hi = Column(String(100), nullable=False)
+    icon = Column(String(50), default="category")
 
 
 class Product(Base):

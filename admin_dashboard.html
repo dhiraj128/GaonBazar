@@ -41,6 +41,10 @@
   </script>
 
   <style>
+    html, body {
+      height: 100%;
+      height: 100dvh;
+    }
     .hidden {
       display: none !important;
     }
@@ -53,10 +57,14 @@
     }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    main {
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
+    }
   </style>
 </head>
 
-<body class="h-full flex flex-col bg-slate-950 text-slate-100 antialiased overflow-x-hidden selection:bg-primary selection:text-white">
+<body class="h-full min-h-[100dvh] max-h-[100dvh] w-full flex flex-col bg-slate-950 text-slate-100 antialiased overflow-hidden selection:bg-primary selection:text-white">
 
   <!-- ========================================================================= -->
   <!-- 0. SERVER DISCONNECTION / OFFLINE BANNER                                  -->
@@ -74,7 +82,7 @@
   <!-- ========================================================================= -->
   <!-- 1. TOP SUPER ADMIN HEADER                                                 -->
   <!-- ========================================================================= -->
-  <header class="sticky top-0 z-40 bg-slate-900 border-b border-slate-800 shadow-md px-3 py-2.5 sm:px-6">
+  <header class="sticky top-0 z-40 shrink-0 bg-slate-900 border-b border-slate-800 shadow-md px-3 py-2.5 sm:px-6">
     <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2.5">
       
       <!-- Brand & Title -->
@@ -136,7 +144,7 @@
   </div>
 
   <!-- Main Dashboard Viewport -->
-  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 flex flex-col gap-5 pb-16 overflow-y-auto">
+  <main class="flex-1 min-h-0 max-w-7xl w-full mx-auto p-4 sm:p-6 flex flex-col gap-5 pb-28 sm:pb-32 overflow-y-auto">
 
     <!-- ======================================================================= -->
     <!-- 2. GLOBAL ECOSYSTEM METRICS RIBBON                                      -->
@@ -816,6 +824,35 @@
     }
 
     window.addEventListener('DOMContentLoaded', initAdminApp);
+  </script>
+
+  <!-- Smooth scroll forwarding delegator for Admin container -->
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const mainContainer = document.querySelector('main');
+      if (mainContainer) {
+        const origScrollTo = window.scrollTo.bind(window);
+        window.scrollTo = function(arg1, arg2) {
+          if (typeof arg1 === 'object') {
+            mainContainer.scrollTo(arg1);
+          } else if (typeof arg1 === 'number' && typeof arg2 === 'number') {
+            mainContainer.scrollTo(arg1, arg2);
+          } else {
+            origScrollTo(arg1, arg2);
+          }
+        };
+        const origScrollBy = window.scrollBy.bind(window);
+        window.scrollBy = function(arg1, arg2) {
+          if (typeof arg1 === 'object') {
+            mainContainer.scrollBy(arg1);
+          } else if (typeof arg1 === 'number' && typeof arg2 === 'number') {
+            mainContainer.scrollBy(arg1, arg2);
+          } else {
+            origScrollBy(arg1, arg2);
+          }
+        };
+      }
+    });
   </script>
 
 </body>
