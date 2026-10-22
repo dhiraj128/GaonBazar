@@ -42,6 +42,7 @@ class Landmark(Base):
     lat = Column(Float, nullable=True)
     lng = Column(Float, nullable=True)
     accuracy = Column(Float, nullable=True)
+    district = Column(String(100), nullable=True)
     village = Column(String(150), nullable=False)
     landmark_text = Column(Text, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)

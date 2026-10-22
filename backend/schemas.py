@@ -48,6 +48,7 @@ class UserProfileDTO(BaseModel):
     phone: str
     name: Optional[str] = None
     lang: Optional[str] = "hi"
+    district: Optional[str] = None
     village: Optional[str] = None
     landmark: Optional[str] = None
     cancelled_orders: Optional[int] = 0
@@ -98,6 +99,7 @@ class VerifyOTPResponse(BaseModel):
 class SaveLandmarkRequest(SecureBaseModel):
     phone: str = Field(..., min_length=10)
     name: str = Field(..., min_length=1)
+    district: Optional[str] = None
     village: str = Field(..., min_length=1)
     landmark: str = Field(..., min_length=10)
     lat: Optional[float] = None
@@ -418,6 +420,7 @@ class VendorRegisterResponse(BaseModel):
     store_id: str
     status: str = "pending_approval"
     message: str
+    token: Optional[str] = None
 
 
 class VendorStatusCheckResponse(BaseModel):
@@ -448,6 +451,7 @@ class RunnerRegisterResponse(BaseModel):
     runner_code: str
     status: str = "pending_approval"
     message: str
+    token: Optional[str] = None
 
 
 class RunnerStatusCheckResponse(BaseModel):

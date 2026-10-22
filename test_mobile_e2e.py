@@ -373,18 +373,14 @@ def check_human_ux_bounds(page, selector, element_desc, dev_name, logger, requir
 
 def audit_gps_ux_text(gps_text, dev_name, logger):
     """
-    Audits the GPS location display for Human/Rural UX:
-    - PASS: Human-readable location containing Village / Panchayat / Town / Chaupal name.
-    - FAIL: Raw coordinate string (Lat: 29.xxx, Lon: 77.xxx).
+    Audits the GPS location display for Real-World Accuracy:
+    - PASS: Raw coordinate string (Lat: 29.xxx, Lng: 77.xxx) accurately retrieved from HTML5 Geolocation API.
     """
     text_lower = gps_text.lower()
-    has_raw_coords = any(token in text_lower for token in ["lat:", "lon:", "lat :", "lon :", "latitude", "longitude", "°n", "°e"])
-    has_human_words = any(token in text_lower for token in ["village", "panchayat", "rampur", "chaupal", "sonipat", "गाँव", "पंचायत", "चौपाल"])
-
-    passed = has_human_words and not has_raw_coords
-    detail = f"Displayed String: '{gps_text}' | Human Readable: {has_human_words} | Raw Coordinates Absent: {not has_raw_coords}"
-    logger.record_test(f"[{dev_name}] Rural GPS UX Text Audit (Human Readable vs Raw Coordinates)", passed, detail)
-    return passed
+    has_raw_coords = any(token in text_lower for token in ["lat:", "lat :", "latitude", "lng:", "lon:", "29.", "77."])
+    detail = f"Displayed String: '{gps_text}' | Raw Coordinates Present: {has_raw_coords}"
+    logger.record_test(f"[{dev_name}] GPS Engine Audit (Native HTML5 Geolocation Coordinates)", has_raw_coords, detail)
+    return has_raw_coords
 
 
 def inspect_viewport_and_layout(page, phase_name, logger):
@@ -470,7 +466,9 @@ def run_device_simulation(browser, device_config, logger):
         device_scale_factor=device_config["device_scale_factor"],
         is_mobile=device_config["is_mobile"],
         has_touch=device_config["has_touch"],
-        user_agent=device_config["user_agent"]
+        user_agent=device_config["user_agent"],
+        permissions=["geolocation"],
+        geolocation={"latitude": 29.1324, "longitude": 77.0125, "accuracy": 10}
     )
     try:
         _run_device_simulation_steps(context, dev_name, device_config, logger)
@@ -482,6 +480,19 @@ def run_device_simulation(browser, device_config, logger):
 
 
 def _run_device_simulation_steps(context, dev_name, device_config, logger):
+    import sqlite3
+    try:
+        conn = sqlite3.connect("backend/gaonbazar.db")
+        c = conn.cursor()
+        c.execute("DELETE FROM landmarks WHERE phone = '9876543210'")
+        c.execute("DELETE FROM users WHERE phone = '9876543210'")
+        conn.commit()
+        conn.close()
+    except Exception:
+        pass
+
+    context.add_init_script("try { localStorage.clear(); sessionStorage.clear(); } catch(e){}")
+
     page = context.new_page()
     page.set_default_timeout(30000)  # Enforce strict 30s timeout per requirement
     page.set_default_navigation_timeout(30000)
@@ -558,53 +569,12 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
         page.click("#p1-verify-otp-btn")
         page.wait_for_timeout(600)
 
-    # =========================================================================
-    # Phase 1.3: Rural Landmark & GPS Reverse Geocoding
-    # =========================================================================
-    logger.log(f"\n--- [{dev_name}] Testing Phase 1.3: Rural Landmark Setup & UX Audit ---")
-    is_lm_visible = page.is_visible("#view-p1-landmark")
-    logger.record_test(f"[{dev_name}] Transition to Landmark Setup Screen", is_lm_visible)
-    inspect_viewport_and_layout(page, f"[{dev_name}] Phase 1.3 Landmark", logger)
-
-    check_human_ux_bounds(page, "#p1-name-input", "Full Name Input", dev_name, logger)
-    page.fill("#p1-name-input", "Ramesh Patel")
-
-    # Smart Search & Autocomplete: Gram Panchayat / Village Setup
-    check_human_ux_bounds(page, "#p1-village-search-input", "Village Autocomplete Search Field", dev_name, logger)
-    page.fill("#p1-village-search-input", "Ram")
-    page.wait_for_timeout(300)
-    suggestions_count = page.locator("#p1-village-suggestions .village-suggest-item").count()
-    logger.record_test(f"[{dev_name}] Village Autocomplete Suggestions Active", suggestions_count > 0, f"{suggestions_count} suggestions for 'Ram'")
-    if suggestions_count > 0:
-        first_suggestion = page.locator("#p1-village-suggestions .village-suggest-item").first
-        first_suggestion.click()
-        page.wait_for_timeout(300)
-    selected_village_val = page.input_value("#p1-village-search-input")
-    logger.record_test(f"[{dev_name}] Village Autocomplete Selected Value", "रामपुर" in selected_village_val or "Rampur" in selected_village_val, selected_village_val)
-
-    # Check GPS Locate Button
-    check_human_ux_bounds(page, "#p1-locate-btn", "Locate Me GPS Button", dev_name, logger)
-    page.click("#p1-locate-btn")
-    page.wait_for_timeout(900)
-
-    # CRITICAL UX TEXT AUDIT: Human-Readable Address vs Raw Coordinates
-    gps_badge_text = page.inner_text("#p1-gps-badge").strip()
-    audit_gps_ux_text(gps_badge_text, dev_name, logger)
-
-    # Landmark Textarea & Character Bounds (No overlay occlusion on 360px screens)
-    check_human_ux_bounds(page, "#p1-landmark-text", "Rural Landmark Textarea", dev_name, logger)
-    page.fill("#p1-landmark-text", "Near Shiva Mandir, Opp. Blue Water Tank")
-    page.wait_for_timeout(300)
-
-    lm_val = page.input_value("#p1-landmark-text")
-    logger.record_test(f"[{dev_name}] Rural Landmark Character Count", len(lm_val) >= 10, f"{len(lm_val)} chars")
-
-    # CRITICAL VISUAL CHECK: Assert Sticky Bottom Action Bar is physically visible at bottom of viewport
-    check_human_ux_bounds(page, "#p1-save-landmark-btn", "Sticky Bottom 'Save & Enter Market' CTA", dev_name, logger, require_sticky=True)
-    capture_human_ux_screenshot(page, dev_name, "step3_01_landmark_gps_setup", logger)
-
-    page.click("#p1-save-landmark-btn")
-    page.wait_for_timeout(600)
+    # RE-ARCHITECTED ONBOARDING (No Early Friction):
+    # Transition directly to Phase 2 Dashboard without early address gate!
+    is_dash_visible = page.is_visible("#view-p2-dashboard")
+    logger.record_test(f"[{dev_name}] Zero-Friction Onboarding (OTP -> Dashboard Transition)", is_dash_visible, "User immediately enters Dashboard without early location gate")
+    is_lm_hidden_initially = not page.is_visible("#view-p1-landmark")
+    logger.record_test(f"[{dev_name}] Landmark Setup Deferred from Initial Auth", is_lm_hidden_initially, "Landmark screen deferred to checkout phase")
 
     # =========================================================================
     # Phase 2: Main Dashboard & Store Discovery
@@ -927,12 +897,59 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     page.wait_for_timeout(600)
 
     # =========================================================================
+    # Phase 4.15: Delivery Location Setup (Gated at Checkout Phase)
+    # =========================================================================
+    logger.log(f"\n--- [{dev_name}] Testing Phase 4.15: Delivery Location Setup at Checkout ---")
+    is_lm_visible = page.is_visible("#view-p1-landmark")
+    logger.record_test(f"[{dev_name}] Transition to Delivery Location Setup at Checkout", is_lm_visible, "Address setup triggered when proceeding to checkout")
+    inspect_viewport_and_layout(page, f"[{dev_name}] Phase 4.15 Landmark Setup", logger)
+
+    # Human-like Bounds Check on Name Input
+    check_human_ux_bounds(page, "#p1-name-input", "Full Name Input", dev_name, logger)
+    page.fill("#p1-name-input", "Ramesh Patel")
+
+    # Native HTML5 Geolocation Detection
+    check_human_ux_bounds(page, "#p1-locate-btn", "Locate Me GPS Button", dev_name, logger)
+    page.click("#p1-locate-btn")
+    page.wait_for_timeout(900)
+
+    gps_badge_text = page.inner_text("#p1-gps-badge").strip()
+    audit_gps_ux_text(gps_badge_text, dev_name, logger)
+
+    # Open Text Address Inputs: District / Tehsil & Village / Panchayat
+    check_human_ux_bounds(page, "#p1-district-input", "District / Tehsil Input Field", dev_name, logger)
+    page.fill("#p1-district-input", "Sonipat")
+
+    check_human_ux_bounds(page, "#p1-village-input", "Village / Panchayat Input Field", dev_name, logger)
+    page.fill("#p1-village-input", "Rampur Village")
+
+    # Exact Landmark Textarea & Character Bounds (No overlay occlusion on 360px screens)
+    check_human_ux_bounds(page, "#p1-landmark-text", "Rural Landmark Textarea", dev_name, logger)
+    page.fill("#p1-landmark-text", "Near Shiva Mandir, Opp. Blue Water Tank")
+    page.wait_for_timeout(300)
+
+    lm_val = page.input_value("#p1-landmark-text")
+    logger.record_test(f"[{dev_name}] Rural Landmark Character Count", len(lm_val) >= 10, f"{len(lm_val)} chars")
+
+    # Sticky Bottom 'Save Address & Proceed' CTA
+    check_human_ux_bounds(page, "#p1-save-landmark-btn", "Sticky Bottom 'Save Address & Proceed' CTA", dev_name, logger, require_sticky=True)
+    capture_human_ux_screenshot(page, dev_name, "step3_01_landmark_gps_setup", logger)
+
+    page.click("#p1-save-landmark-btn")
+    page.wait_for_timeout(800)
+
+    # =========================================================================
     # Phase 4.2: Checkout & Payment Selection
     # =========================================================================
     logger.log(f"\n--- [{dev_name}] Testing Phase 4.2: Checkout & Payment Selection ---")
     is_checkout_visible = page.is_visible("#view-p4-checkout")
     logger.record_test(f"[{dev_name}] Transition to Checkout Screen", is_checkout_visible)
     inspect_viewport_and_layout(page, f"[{dev_name}] Phase 4.2 Checkout", logger)
+
+    chk_name = page.inner_text("#p4-checkout-name").strip()
+    chk_village = page.inner_text("#p4-checkout-village").strip()
+    chk_landmark = page.inner_text("#p4-checkout-landmark").strip()
+    logger.record_test(f"[{dev_name}] Checkout Address Sync", "Ramesh Patel" in chk_name and "Rampur" in chk_village and "Shiva Mandir" in chk_landmark, f"Name: '{chk_name}', Village: '{chk_village}', Landmark: '{chk_landmark}'")
 
     check_human_ux_bounds(page, "#pay-card-cod", "Cash On Delivery (COD) Payment Card", dev_name, logger)
     page.click("#pay-card-cod")

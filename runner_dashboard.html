@@ -1255,6 +1255,10 @@
         showToast('पंजीकरण सफल', res.message);
 
         RunnerStore.runnerId = res.runner_id;
+        if (res.token) {
+          RunnerStore.token = res.token;
+          localStorage.setItem('gaonbazar_runner_token', res.token);
+        }
         localStorage.setItem('gaonbazar_runner_session', JSON.stringify({
           runner_id: res.runner_id,
           phone: phone
@@ -1297,8 +1301,6 @@
         if (pCode) pCode.innerText = `गाँव मित्र कोड: ${res.runner_code || res.runner_id}`;
         if (pId) pId.innerText = `${idType} ${idNumber}`;
         if (pUpi) pUpi.innerText = payoutUpi;
-
-        await fetchAllRunnerData(true);
       } catch (err) {
         showToast('त्रुटि', 'Registration failed: ' + err.message);
       }
@@ -1363,8 +1365,9 @@
       try {
         const [profile, missions, ledger] = await Promise.all([
           runnerApiFetch(`/runner/profile?runner_id=${RunnerStore.runnerId}`).catch(() => ({
-            runner_id: 'gm_1',
-            name: 'Kamal Singh (कमल सिंह)',
+            runner_id: RunnerStore.runnerId || 'gm_1',
+            name: (RunnerStore.runnerId && RunnerStore.runnerId !== 'gm_1') ? 'रनर सत्यापन विचाराधीन' : 'Kamal Singh (कमल सिंह)',
+            status: (RunnerStore.runnerId && RunnerStore.runnerId !== 'gm_1') ? 'pending_approval' : 'approved',
             runner_code: '#GM-RAMPUR-07',
             hub_name: 'Rampur Mandi Cluster Hub #RMP-04',
             is_online: RunnerStore.isOnline,

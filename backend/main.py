@@ -65,6 +65,7 @@ SENTRY_DSN = os.getenv("SENTRY_DSN", None)
 if SENTRY_DSN:
     sentry_sdk.init(
         dsn=SENTRY_DSN,
+        default_integrations=False,
         integrations=[FastApiIntegration()],
         traces_sample_rate=1.0,
         environment=os.getenv("ENVIRONMENT", "production"),
@@ -74,6 +75,7 @@ else:
     # Initialize in fallback mode without remote DSN for offline/local environments
     sentry_sdk.init(
         dsn=None,
+        default_integrations=False,
         integrations=[FastApiIntegration()],
         traces_sample_rate=1.0,
         environment="development",
@@ -295,13 +297,13 @@ def verify_otp(payload: VerifyOTPRequest, db: Session = Depends(get_db)):
     session_token = issue_user_token(
         user_id=user_id_val,
         phone=phone,
-        name=user.name if user else "Ramesh Patel"
+        name=user.name if (user and user.name) else "Customer"
     )
 
     if not user:
         user = User(
             phone=phone,
-            name="Ramesh Patel",
+            name=None,
             lang="hi",
             session_token=session_token,
             created_at=datetime.utcnow()
@@ -324,10 +326,11 @@ def verify_otp(payload: VerifyOTPRequest, db: Session = Depends(get_db)):
         user=UserProfileDTO(
             id=user.id,
             phone=user.phone,
-            name=user.name or "Ramesh Patel",
+            name=user.name,
             lang=user.lang or "hi",
-            village=latest_lm.village if latest_lm else "Rampur Village (रामपुर)",
-            landmark=latest_lm.landmark_text if latest_lm else "Near Shiva Temple, Opp. Blue Water Tank",
+            district=latest_lm.district if (latest_lm and hasattr(latest_lm, 'district')) else None,
+            village=latest_lm.village if latest_lm else None,
+            landmark=latest_lm.landmark_text if latest_lm else None,
             cancelled_orders=user.cancelled_orders or 0,
             is_cod_blocked=bool(user.is_cod_blocked),
             is_blacklisted=bool(user.is_blacklisted),
@@ -374,6 +377,7 @@ def save_user_landmark(payload: SaveLandmarkRequest, db: Session = Depends(get_d
         lat=payload.lat or 29.1324,
         lng=payload.lng or 77.0125,
         accuracy=payload.accuracy or 6.0,
+        district=payload.district.strip() if payload.district else None,
         village=payload.village,
         landmark_text=landmark_text,
         created_at=datetime.utcnow()
@@ -389,6 +393,7 @@ def save_user_landmark(payload: SaveLandmarkRequest, db: Session = Depends(get_d
             phone=user.phone,
             name=user.name,
             lang=user.lang or "hi",
+            district=payload.district.strip() if payload.district else None,
             village=payload.village,
             landmark=landmark_text,
             cancelled_orders=user.cancelled_orders or 0,
@@ -1849,11 +1854,14 @@ def register_vendor(payload: VendorRegisterRequest, db: Session = Depends(get_db
     db.commit()
     db.refresh(new_store)
 
+    token = issue_vendor_token(new_store.id, new_store.phone)
+
     return VendorRegisterResponse(
         success=True,
         store_id=new_store.id,
         status="pending_approval",
-        message="पंजीकरण सफलतापूर्वक दर्ज हुआ! आपकी दुकान सत्यापन हेतु सुपर एडमिन को प्रेषित की गई है।"
+        message="पंजीकरण सफलतापूर्वक दर्ज हुआ! आपकी दुकान सत्यापन हेतु सुपर एडमिन को प्रेषित की गई है।",
+        token=token
     )
 
 
@@ -1914,12 +1922,15 @@ def register_runner(payload: RunnerRegisterRequest, db: Session = Depends(get_db
     db.commit()
     db.refresh(new_runner)
 
+    token = issue_runner_token(new_runner.id, new_runner.phone)
+
     return RunnerRegisterResponse(
         success=True,
         runner_id=new_runner.id,
         runner_code=new_runner.runner_code,
         status="pending_approval",
-        message="गाँव मित्र पंजीकरण सफल! आपका सत्यापन सुपर एडमिन द्वारा विचाराधीन है।"
+        message="गाँव मित्र पंजीकरण सफल! आपका सत्यापन सुपर एडमिन द्वारा विचाराधीन है।",
+        token=token
     )
 
 

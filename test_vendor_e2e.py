@@ -616,9 +616,18 @@ def _run_vendor_device_steps(context, dev_name, device_config, logger):
     logger.record_test(f"[{dev_name}] Live Order Cards Rendered in Queue", orders_count > 0, f"{orders_count} orders visible")
 
     # Look for Stage 1 Accept Order button
-    accept_selector = 'button:has-text("स्वीकार करें"), button:has-text("Accept Order")'
+    accept_selector = '#orders-container button:has-text("स्वीकार करें"):visible, #orders-container button:has-text("Accept Order"):visible'
     accept_btn = page.locator(accept_selector).first
-    if accept_btn.count() > 0:
+    try:
+        accept_btn.wait_for(state="visible", timeout=3000)
+    except Exception:
+        pass
+
+    if accept_btn.count() > 0 and accept_btn.is_visible():
+        try:
+            accept_btn.scroll_into_view_if_needed(timeout=2000)
+        except Exception:
+            pass
         check_element_bounds(page, accept_btn, "Order Accept CTA Button", logger)
         accept_btn.click()
         page.wait_for_timeout(1000)
@@ -628,7 +637,7 @@ def _run_vendor_device_steps(context, dev_name, device_config, logger):
         logger.record_test(f"[{dev_name}] Order Action: Accepted by Vendor", False, "Accept button not located")
 
     # Now look for Stage 2 Pack Order button
-    pack_selector = 'button:has-text("पैक हो गया"), button:has-text("Mark Packed")'
+    pack_selector = '#orders-container button:has-text("पैक हो गया"):visible, #orders-container button:has-text("Mark Packed"):visible'
     pack_btn = page.locator(pack_selector).first
     try:
         pack_btn.wait_for(state="visible", timeout=3000)
@@ -636,6 +645,10 @@ def _run_vendor_device_steps(context, dev_name, device_config, logger):
         pass
 
     if pack_btn.count() > 0 and pack_btn.is_visible():
+        try:
+            pack_btn.scroll_into_view_if_needed(timeout=2000)
+        except Exception:
+            pass
         check_element_bounds(page, pack_btn, "Mark Packed CTA Button", logger)
         pack_btn.click()
         page.wait_for_timeout(1000)
@@ -645,7 +658,7 @@ def _run_vendor_device_steps(context, dev_name, device_config, logger):
         logger.record_test(f"[{dev_name}] Order Action: Packed by Vendor", False, "Pack button not located")
 
     # Now look for Stage 3 Handover to Runner button
-    handover_selector = 'button:has-text("रनर को सौंपें"), button:has-text("Handover to Gaon Mitra")'
+    handover_selector = '#orders-container button:has-text("रनर को सौंपें"):visible, #orders-container button:has-text("Handover to Gaon Mitra"):visible'
     handover_btn = page.locator(handover_selector).first
     try:
         handover_btn.wait_for(state="visible", timeout=3000)
@@ -653,6 +666,10 @@ def _run_vendor_device_steps(context, dev_name, device_config, logger):
         pass
 
     if handover_btn.count() > 0 and handover_btn.is_visible():
+        try:
+            handover_btn.scroll_into_view_if_needed(timeout=2000)
+        except Exception:
+            pass
         check_element_bounds(page, handover_btn, "Handover to Runner CTA Button", logger)
         handover_btn.click()
         page.wait_for_timeout(1000)

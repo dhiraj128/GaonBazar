@@ -110,6 +110,16 @@ def ensure_schema_migrations():
                 except Exception as e:
                     print(f"Notice adding column {col_name} to users: {e}")
 
+        # Check landmarks columns for open text address (district)
+        res_landmarks = conn.execute(text("PRAGMA table_info(landmarks)")).fetchall()
+        existing_landmark_cols = {r[1] for r in res_landmarks}
+        if "district" not in existing_landmark_cols:
+            try:
+                conn.execute(text("ALTER TABLE landmarks ADD COLUMN district VARCHAR(100)"))
+                conn.commit()
+            except Exception as e:
+                print(f"Notice adding column district to landmarks: {e}")
+
         # Ensure support_tickets table exists
         try:
             conn.execute(text("""
