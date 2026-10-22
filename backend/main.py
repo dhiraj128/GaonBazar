@@ -726,13 +726,16 @@ def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
         admin_delivery_cut = 10.0
         eta_mins = "45-60 Mins"
 
-    # Free Delivery threshold at ₹299
-    FREE_DELIVERY_THRESHOLD = 299.0
-    if subtotal >= FREE_DELIVERY_THRESHOLD:
-        delivery_fee = 0.0
-        # Admin subsidizes delivery: runner still receives their payout
-        admin_delivery_cut = -(runner_payout)
+    # Delivery Discount rule: If subtotal >= 299, apply a flat ₹10 discount to the delivery fee.
+    # The Runner still gets their full distance payout. The ₹10 discount is absorbed by the Admin's margin.
+    DELIVERY_DISCOUNT_THRESHOLD = 299.0
+    DELIVERY_DISCOUNT_AMOUNT = 10.0
+    if subtotal >= DELIVERY_DISCOUNT_THRESHOLD:
+        delivery_discount = DELIVERY_DISCOUNT_AMOUNT
+        delivery_fee = max(0.0, base_delivery_fee - delivery_discount)
+        admin_delivery_cut = admin_delivery_cut - delivery_discount
     else:
+        delivery_discount = 0.0
         delivery_fee = base_delivery_fee
 
     admin_profit = admin_delivery_cut + platform_fee
@@ -762,6 +765,8 @@ def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
         store_name=store_name,
         subtotal=subtotal,
         delivery_fee=delivery_fee,
+        delivery_discount=delivery_discount,
+        base_delivery_fee=base_delivery_fee,
         platform_fee=platform_fee,
         savings=savings,
         total_amount=total_amount,
@@ -796,6 +801,8 @@ def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
         order_id=order.id,
         subtotal=order.subtotal,
         delivery_fee=order.delivery_fee,
+        delivery_discount=getattr(order, 'delivery_discount', delivery_discount) or 0.0,
+        base_delivery_fee=getattr(order, 'base_delivery_fee', base_delivery_fee) or base_delivery_fee,
         platform_fee=order.platform_fee,
         savings=order.savings,
         total_amount=order.total_amount,

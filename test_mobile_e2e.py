@@ -846,30 +846,42 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
         logger.record_test(f"[{dev_name}] Backend Long Distance Tier Splits (Subtotal ₹250)", False, str(e250))
 
     # -------------------------------------------------------------------------
-    # Free Delivery Threshold Validation (Subtotal >= ₹299, e.g. ₹350):
-    # Customer Delivery Fee -> ₹0 (FREE in UI), Runner Payout Preserved on Backend
+    # Delivery Discount Validation (Subtotal >= ₹299, e.g. ₹300 with 2.5 km distance):
+    # Customer Delivery Base Fee -> ₹25, Delivery Discount -> -₹10, Platform Fee -> ₹3
+    # Total -> ₹318 (NOT Free Delivery!)
     # -------------------------------------------------------------------------
     page.evaluate("""() => {
-        AppStore.selectedDistance = 1.2;
+        AppStore.selectedDistance = 2.5;
         AppStore.catalog.forEach(i => i.qty = 0);
-        AppStore.catalog[0].price = 350;
+        AppStore.catalog[0].price = 300;
         AppStore.catalog[0].qty = 1;
         updateCartCalculations();
     }""")
     page.wait_for_timeout(300)
 
-    free_delivery_text = page.inner_text("#p4-bill-delivery").strip()
-    free_total_text = page.inner_text("#p4-bill-total").strip()
-    free_valid = ("FREE" in free_delivery_text or "मुफ़्त" in free_delivery_text or "0" in free_delivery_text) and "353" in free_total_text
+    discount_delivery_text = page.inner_text("#p4-bill-delivery").strip()
+    discount_line_text = page.inner_text("#p4-bill-delivery-discount").strip()
+    discount_total_text = page.inner_text("#p4-bill-total").strip()
+    is_discount_row_visible = page.is_visible("#p4-bill-discount-row")
+
+    # Assert that delivery is NOT free, but shows base ₹25 with -₹10 discount and ₹318 total
+    not_free = "FREE" not in discount_delivery_text and "मुफ़्त" not in discount_delivery_text
+    discount_valid = (
+        not_free and
+        "25" in discount_delivery_text and
+        ("10" in discount_line_text or "-10" in discount_line_text) and
+        is_discount_row_visible and
+        "318" in discount_total_text
+    )
     logger.record_test(
-        f"[{dev_name}] Free Delivery Threshold UI (₹350 Subtotal >= ₹299 -> Free Delivery, ₹3 Platform, ₹353 Total)",
-        free_valid,
-        f"Delivery: {free_delivery_text}, Total: {free_total_text}"
+        f"[{dev_name}] Delivery Discount UI (₹300 Subtotal >= ₹299 -> Base ₹25 Delivery, -₹10 Discount, ₹318 Total - NOT Free)",
+        discount_valid,
+        f"Delivery: {discount_delivery_text}, Discount: {discount_line_text}, Total: {discount_total_text}, NotFree: {not_free}"
     )
 
-    # Backend API Check: ₹350 Cart must have delivery_fee == 0.0, runner_payout == 10.0, admin_delivery_cut == -10.0
+    # Backend API Check: ₹300 Cart with 2.5 km -> base_fee=25.0, discount=10.0 -> net delivery_fee=15.0, runner_payout=15.0, admin_profit=3.0, total=318.0
     try:
-        api_free_resp = page.request.post(
+        api_disc_resp = page.request.post(
             "http://127.0.0.1:8001/api/orders/checkout",
             headers={"X-Test-Bypass": "1"},
             data={
@@ -879,27 +891,28 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
                 "landmark": "Near Mandir",
                 "store_id": "sharma_brothers",
                 "payment_mode": "COD",
-                "distance_km": 1.2,
-                "items": [{"id": "item_free_del_test", "name": "Bulk Item", "price": 350.0, "qty": 1}]
+                "distance_km": 2.5,
+                "items": [{"id": "item_discount_test", "name": "Bulk Item", "price": 300.0, "qty": 1}]
             }
         )
-        api_free_accepted = (api_free_resp.status == 200)
-        api_free_data = api_free_resp.json() if api_free_accepted else {}
-        free_splits_valid = (
-            api_free_data.get("subtotal") == 350.0 and
-            api_free_data.get("delivery_fee") == 0.0 and
-            api_free_data.get("platform_fee") == 3.0 and
-            api_free_data.get("total_amount") == 353.0 and
-            api_free_data.get("runner_payout") == 10.0 and
-            api_free_data.get("admin_profit") == -7.0
+        api_disc_accepted = (api_disc_resp.status == 200)
+        api_disc_data = api_disc_resp.json() if api_disc_accepted else {}
+        disc_splits_valid = (
+            api_disc_data.get("subtotal") == 300.0 and
+            api_disc_data.get("delivery_fee") == 15.0 and  # Net delivery fee (25 - 10 = 15, NOT 0!)
+            api_disc_data.get("delivery_discount") == 10.0 and
+            api_disc_data.get("platform_fee") == 3.0 and
+            api_disc_data.get("total_amount") == 318.0 and
+            api_disc_data.get("runner_payout") == 15.0 and  # Runner gets full distance payout
+            api_disc_data.get("admin_profit") == 3.0       # Admin absorbs ₹10 discount: (10 - 10) + 3 = 3.0
         )
         logger.record_test(
-            f"[{dev_name}] Backend Free Delivery Splits (Subtotal ₹350 -> Delivery Fee ₹0, Runner ₹10, Subsidized Admin Cut)",
-            free_splits_valid,
-            f"Resp: {api_free_data}"
+            f"[{dev_name}] Backend Delivery Discount Splits (Subtotal ₹300, 2.5km -> Net Delivery ₹15, Discount ₹10, Runner ₹15, Total ₹318)",
+            disc_splits_valid,
+            f"Resp: {api_disc_data}"
         )
-    except Exception as e_free:
-        logger.record_test(f"[{dev_name}] Backend Free Delivery Splits (Subtotal ₹350)", False, str(e_free))
+    except Exception as e_disc:
+        logger.record_test(f"[{dev_name}] Backend Delivery Discount Splits (Subtotal ₹300)", False, str(e_disc))
 
     # -------------------------------------------------------------------------
     # Outside Delivery Zone Validation (> 8.0 km, e.g. 9.5 km): Must Fail / Reject

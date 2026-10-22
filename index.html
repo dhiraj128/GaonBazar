@@ -595,7 +595,7 @@
             <p class="text-[11px] text-white/90" data-i18n="p2_mandi_sub">ताज़ा आटा, सरसों तेल, डेयरी एवं घरेलू सामान घर तक</p>
             <div class="flex gap-2 mt-1">
               <span class="text-[10px] font-bold bg-white/20 backdrop-blur px-2.5 py-0.5 rounded-full">✓ हाथ में कैश (COD)</span>
-              <span class="text-[10px] font-bold bg-white/20 backdrop-blur px-2.5 py-0.5 rounded-full">✓ निःशुल्क डिलीवरी > ₹149</span>
+              <span class="text-[10px] font-bold bg-white/20 backdrop-blur px-2.5 py-0.5 rounded-full">✓ ₹10 Off Delivery over ₹299</span>
             </div>
           </div>
         </div>
@@ -834,7 +834,7 @@
           <div class="w-full bg-secondary text-white rounded-xl p-3 shadow-md flex items-center justify-between gap-2">
             <div class="flex flex-col pl-1 leading-tight">
               <span id="p3-bar-count-total" class="text-sm font-extrabold">1 सामान • ₹210</span>
-              <span class="text-[10px] text-secondary-fixed font-bold">मुफ़्त डिलीवरी अनलॉक ✓</span>
+              <span id="p3-bar-sub" class="text-[10px] text-secondary-fixed font-bold">₹10 Off Delivery over ₹299</span>
             </div>
             <button onclick="navigateToPhase('cart')" class="h-10 px-4 bg-white text-secondary rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm active:scale-95">
               <span data-i18n="p3_view_cart_btn">थैला देखें</span>
@@ -867,14 +867,14 @@
 
         <!-- Active Cart Wrapper (Shown when cart items > 0) -->
         <div id="p4-active-cart-wrapper" class="flex flex-col gap-4">
-          <!-- Dynamic Delivery Fee Tier Banner & Free Delivery Incentive -->
+          <!-- Dynamic Delivery Fee Tier Banner & Delivery Discount Incentive -->
           <div class="bg-primary/5 rounded-2xl p-4 shadow-xs border border-primary/20">
             <div class="flex items-center justify-between text-xs font-bold text-primary mb-1">
               <span id="p4-delivery-qualify-text">🛵 गाँव मित्र डिलीवरी शुल्क: ₹15</span>
               <span id="p4-delivery-tier-tag" class="text-[10px] bg-primary/15 text-primary px-2.5 py-0.5 rounded-full font-bold">0-2 km • 30 Mins</span>
             </div>
             <p id="p4-delivery-tier-sub" class="text-[11px] text-on-surface-variant mt-0.5">
-              ₹299 से अधिक के ऑर्डर पर डिलीवरी बिल्कुल मुफ़्त (FREE Delivery)
+              ₹299 से अधिक के ऑर्डर पर ₹10 डिलीवरी छूट (₹10 Off Delivery over ₹299)
             </p>
           </div>
 
@@ -908,7 +908,7 @@
               <span id="p4-bill-subtotal" class="font-bold text-on-surface">₹0.00</span>
             </div>
 
-            <!-- Delivery Fee (Dynamic with Free threshold strike-through) -->
+            <!-- Delivery Fee (Base Distance Fee) -->
             <div class="flex justify-between items-center text-xs text-on-surface-variant">
               <div class="flex items-center gap-1">
                 <span data-i18n="p4_delivery_fee">गाँव मित्र डिलीवरी शुल्क</span>
@@ -917,6 +917,15 @@
               <div class="flex items-center gap-1">
                 <span id="p4-bill-delivery" class="font-bold text-on-surface">₹0.00</span>
               </div>
+            </div>
+
+            <!-- Delivery Discount (Visible when Subtotal >= ₹299) -->
+            <div id="p4-bill-discount-row" class="hidden flex justify-between items-center text-xs text-emerald-700 font-semibold">
+              <div class="flex items-center gap-1">
+                <span class="material-symbols-outlined text-[15px]">local_offer</span>
+                <span data-i18n="p4_delivery_discount">डिलीवरी छूट (₹299+ ऑर्डर)</span>
+              </div>
+              <span id="p4-bill-delivery-discount" class="font-extrabold text-emerald-700">-₹10.00</span>
             </div>
 
             <!-- Platform Fee -->
@@ -1698,6 +1707,7 @@
         p4_bill_details: "बिल का पूरा हिसाब",
         p4_item_total: "सामान की कुल राशि",
         p4_delivery_fee: "गाँव मित्र डिलीवरी शुल्क",
+        p4_delivery_discount: "डिलीवरी छूट (₹299+ ऑर्डर)",
         p4_platform_fee: "सहकारी सेवा शुल्क",
         p4_savings: "इस ऑर्डर पर आपकी कुल बचत",
         p4_to_pay: "कुल देय राशि",
@@ -1817,6 +1827,7 @@
         p4_bill_details: "Bill Details",
         p4_item_total: "Item Total",
         p4_delivery_fee: "Delivery Partner Fee",
+        p4_delivery_discount: "Delivery Discount (₹299+ orders)",
         p4_platform_fee: "Platform Handling Fee",
         p4_savings: "Your Total Savings on this order",
         p4_to_pay: "Total Payable",
@@ -3543,6 +3554,7 @@
       // Update Cart Bar in Store View
       const cartBar = document.getElementById('p3-cart-bar');
       const barCountTotal = document.getElementById('p3-bar-count-total');
+      const barSub = document.getElementById('p3-bar-sub');
       const headerCartBadge = document.getElementById('header-cart-badge');
       const navCartBadge = document.getElementById('nav-cart-badge');
 
@@ -3554,6 +3566,14 @@
         barCountTotal.innerText = isHi 
           ? `${totalCount} सामान • ₹${subtotal}` 
           : `${totalCount} Items • ₹${subtotal}`;
+        if (barSub) {
+          if (subtotal >= 299) {
+            barSub.innerText = isHi ? '₹10 डिलीवरी छूट अनलॉक ✓' : '₹10 Off Delivery over ₹299 ✓';
+          } else {
+            const rem = 299 - subtotal;
+            barSub.innerText = isHi ? `₹${rem} और जोड़ें, ₹10 डिलीवरी छूट पाएं` : `₹10 Off Delivery over ₹299 (Add ₹${rem})`;
+          }
+        }
       } else if (cartBar) {
         cartBar.classList.add('hidden');
       }
@@ -3566,6 +3586,8 @@
       const countPill = document.getElementById('p4-cart-count-pill');
       const billSubtotal = document.getElementById('p4-bill-subtotal');
       const billDelivery = document.getElementById('p4-bill-delivery');
+      const billDiscountRow = document.getElementById('p4-bill-discount-row');
+      const billDiscount = document.getElementById('p4-bill-delivery-discount');
       const billPlatform = document.getElementById('p4-bill-platform');
       const billSavings = document.getElementById('p4-bill-savings');
       const billTotal = document.getElementById('p4-bill-total');
@@ -3580,7 +3602,8 @@
       const dist = getOrderDistanceKm();
       const isOutOfRange = (dist > 8.0);
       const MIN_ORDER_VALUE = 99;
-      const FREE_DELIVERY_THRESHOLD = 299;
+      const DELIVERY_DISCOUNT_THRESHOLD = 299;
+      const DELIVERY_DISCOUNT_AMOUNT = 10;
 
       if (totalCount === 0) {
         // EMPTY CART STATE: 0 items, ₹0.00 platform fee, proceed button disabled
@@ -3590,6 +3613,10 @@
         if (countPill) countPill.innerText = isHi ? '0 सामान' : '0 items';
         if (billSubtotal) billSubtotal.innerText = '₹0.00';
         if (billDelivery) billDelivery.innerText = '₹0.00';
+        if (billDiscountRow) {
+          billDiscountRow.classList.add('hidden');
+          billDiscountRow.classList.remove('flex');
+        }
         if (billPlatform) billPlatform.innerText = '₹0.00';
         if (billSavings) billSavings.innerText = '₹0.00';
         if (billTotal) billTotal.innerText = '₹0.00';
@@ -3626,24 +3653,36 @@
         baseDeliveryFee = 0;
       }
 
-      // Free Delivery logic: if subtotal >= ₹299, delivery fee is ₹0
-      const isFreeDelivery = (subtotal >= FREE_DELIVERY_THRESHOLD && !isOutOfRange);
-      const deliveryFee = isFreeDelivery ? 0 : baseDeliveryFee;
+      // Delivery Discount rule: if subtotal >= ₹299, apply flat ₹10 discount to delivery fee
+      const hasDeliveryDiscount = (subtotal >= DELIVERY_DISCOUNT_THRESHOLD && !isOutOfRange);
+      const deliveryDiscount = hasDeliveryDiscount ? DELIVERY_DISCOUNT_AMOUNT : 0;
+      const netDeliveryFee = Math.max(0, baseDeliveryFee - deliveryDiscount);
       const platformFee = 3;
-      const finalPayable = subtotal + deliveryFee + platformFee;
+      const finalPayable = subtotal + netDeliveryFee + platformFee;
 
       if (countPill) countPill.innerText = isHi ? `${totalCount} सामान` : `${totalCount} items`;
       if (billSubtotal) billSubtotal.innerText = `₹${subtotal}.00`;
 
+      // Base Delivery Fee line item
       if (billDelivery) {
-        if (isFreeDelivery) {
-          billDelivery.innerHTML = `<s class="text-slate-400 font-normal">₹${baseDeliveryFee}.00</s> <span class="text-emerald-700 font-black ml-1">मुफ़्त (FREE)</span>`;
+        billDelivery.innerText = `₹${baseDeliveryFee}.00`;
+      }
+
+      // Explicit Delivery Discount line item
+      if (billDiscountRow) {
+        if (hasDeliveryDiscount) {
+          billDiscountRow.classList.remove('hidden');
+          billDiscountRow.classList.add('flex');
+          if (billDiscount) billDiscount.innerText = `-₹${deliveryDiscount}.00`;
         } else {
-          billDelivery.innerText = `₹${deliveryFee}.00`;
+          billDiscountRow.classList.add('hidden');
+          billDiscountRow.classList.remove('flex');
         }
       }
+
       if (billPlatform) billPlatform.innerText = `₹${platformFee}.00`;
-      if (billSavings) billSavings.innerText = `₹${savings}.00`;
+      const totalSavingsWithDiscount = savings + deliveryDiscount;
+      if (billSavings) billSavings.innerText = `₹${totalSavingsWithDiscount}.00`;
       if (billTotal) billTotal.innerText = `₹${finalPayable}.00`;
       if (checkoutBtnPrice) checkoutBtnPrice.innerText = isHi ? `कुल ₹${finalPayable}.00` : `Total ₹${finalPayable}.00`;
       if (placeOrderText) placeOrderText.innerText = isHi ? `ऑर्डर कन्फर्म करें • ₹${finalPayable}` : `Confirm Order • ₹${finalPayable}`;
@@ -3682,31 +3721,31 @@
         }
       }
 
-      // Update Delivery Tier Banner & Free Delivery Incentive
+      // Update Delivery Tier Banner & Delivery Discount Incentive
       if (qualifyText) {
         if (isOutOfRange) {
           qualifyText.innerText = isHi ? `⚠️ डिलीवरी सीमा से बाहर (${dist} km)` : `⚠️ Outside Delivery Zone (${dist} km)`;
           if (tierTag) tierTag.innerText = '> 8.0 km';
           if (tierSub) tierSub.innerText = isHi ? 'यह पता हमारे 8 km डिलीवरी दायरे से बाहर है' : 'Address exceeds 8 km delivery radius';
-        } else if (isFreeDelivery) {
-          qualifyText.innerText = isHi ? `🎉 मुफ़्त डिलीवरी लागू! (${dist} km)` : `🎉 Free Delivery Applied! (${dist} km)`;
-          if (tierTag) tierTag.innerText = isHi ? 'मुफ़्त डिलीवरी' : 'FREE DELIVERY';
-          if (tierSub) tierSub.innerText = isHi ? `बधाई हो! ₹299+ के ऑर्डर पर ₹${baseDeliveryFee} डिलीवरी शुल्क माफ़!` : `Awesome! Free delivery unlocked for ₹299+ order!`;
+        } else if (hasDeliveryDiscount) {
+          qualifyText.innerText = isHi ? `🎉 ₹10 डिलीवरी छूट लागू! (${dist} km)` : `🎉 ₹10 Off Delivery over ₹299! (${dist} km)`;
+          if (tierTag) tierTag.innerText = isHi ? '₹10 छूट' : '₹10 OFF';
+          if (tierSub) tierSub.innerText = isHi ? `बधाई हो! ₹299+ के ऑर्डर पर डिलीवरी शुल्क में ₹10 की छूट मिली है!` : `Awesome! ₹10 Off Delivery over ₹299 applied to your order!`;
         } else {
-          const freeDiff = FREE_DELIVERY_THRESHOLD - subtotal;
-          const freeDiffStr = Number.isInteger(freeDiff) ? freeDiff : freeDiff.toFixed(2);
+          const discountDiff = DELIVERY_DISCOUNT_THRESHOLD - subtotal;
+          const discountDiffStr = Number.isInteger(discountDiff) ? discountDiff : discountDiff.toFixed(2);
           if (dist <= 2.0) {
             qualifyText.innerText = isHi ? `🛵 स्थानीय डिलीवरी: ₹15 (${dist} km)` : `🛵 Local Delivery: ₹15 (${dist} km)`;
-            if (tierTag) tierTag.innerText = isHi ? '0-2 km • 30 Mins' : '0-2 km • 30 Mins';
-            if (tierSub) tierSub.innerText = isHi ? `₹${freeDiffStr} का सामान और जोड़ें और पाएं मुफ़्त डिलीवरी!` : `Add ₹${freeDiffStr} more to unlock Free Delivery!`;
+            if (tierTag) tierTag.innerText = '0-2 km • 30 Mins';
+            if (tierSub) tierSub.innerText = isHi ? `₹${discountDiffStr} का सामान और जोड़ें, ₹10 छूट पाएं!` : `₹10 Off Delivery over ₹299 (Add ₹${discountDiffStr} more)`;
           } else if (dist <= 5.0) {
             qualifyText.innerText = isHi ? `🛵 गाँव सीमा डिलीवरी: ₹25 (${dist} km)` : `🛵 Village Edge Delivery: ₹25 (${dist} km)`;
-            if (tierTag) tierTag.innerText = isHi ? '2-5 km • 30 Mins' : '2-5 km • 30 Mins';
-            if (tierSub) tierSub.innerText = isHi ? `₹${freeDiffStr} का सामान और जोड़ें और पाएं मुफ़्त डिलीवरी!` : `Add ₹${freeDiffStr} more to unlock Free Delivery!`;
+            if (tierTag) tierTag.innerText = '2-5 km • 30 Mins';
+            if (tierSub) tierSub.innerText = isHi ? `₹${discountDiffStr} का सामान और जोड़ें, पाएं ₹10 छूट!` : `₹10 Off Delivery over ₹299 (Add ₹${discountDiffStr} more)`;
           } else {
             qualifyText.innerText = isHi ? `🛵 दूरस्थ डिलीवरी: ₹40 (${dist} km)` : `🛵 Long Distance Delivery: ₹40 (${dist} km)`;
-            if (tierTag) tierTag.innerText = isHi ? '5-8 km • 45-60 Mins' : '5-8 km • 45-60 Mins';
-            if (tierSub) tierSub.innerText = isHi ? `₹${freeDiffStr} का सामान और जोड़ें और पाएं मुफ़्त डिलीवरी!` : `Add ₹${freeDiffStr} more to unlock Free Delivery!`;
+            if (tierTag) tierTag.innerText = '5-8 km • 45-60 Mins';
+            if (tierSub) tierSub.innerText = isHi ? `₹${discountDiffStr} का सामान और जोड़ें, पाएं ₹10 छूट!` : `₹10 Off Delivery over ₹299 (Add ₹${discountDiffStr} more)`;
           }
         }
       }
@@ -3874,7 +3913,7 @@
         let fallbackDelivery = 15;
         if (dist > 5.0) fallbackDelivery = 40;
         else if (dist > 2.0) fallbackDelivery = 25;
-        if (fallbackSubtotal >= 299) fallbackDelivery = 0;
+        if (fallbackSubtotal >= 299) fallbackDelivery = Math.max(0, fallbackDelivery - 10);
         const finalPayable = fallbackSubtotal + fallbackDelivery + (fallbackSubtotal > 0 ? 3 : 0);
         document.getElementById('p5-order-amount').innerText = `₹${finalPayable}.00`;
         const isHi = AppStore.lang === 'hi';
@@ -4415,14 +4454,15 @@
           detail: "Dynamic [-] 1 [+] quantity stepper modifies store inventory & recalculates"
         },
         {
-          phase: "Phase 4: Bill Calculations & Delivery Fee Threshold",
+          phase: "Phase 4: Bill Calculations & Delivery Discount",
           test: () => {
             const subtotal = 355;
-            const isFree = subtotal >= 299;
-            const total = subtotal + (isFree ? 0 : 20) + 3;
-            return isFree && total === 358;
+            const hasDiscount = subtotal >= 299;
+            const delivery = hasDiscount ? (25 - 10) : 25;
+            const total = subtotal + delivery + 3;
+            return hasDiscount && total === 373;
           },
-          detail: "Free delivery logic above ₹299 and transparent fees accurate to 2 decimals"
+          detail: "₹10 Delivery discount logic above ₹299 and transparent fees accurate to 2 decimals"
         },
         {
           phase: "Phase 5: Live Order Tracking 5-Stage Timeline",

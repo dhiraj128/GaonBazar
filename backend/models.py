@@ -119,6 +119,8 @@ class Order(Base):
     store_name = Column(String(100), nullable=False)
     subtotal = Column(Float, nullable=False)
     delivery_fee = Column(Float, default=0.0)
+    delivery_discount = Column(Float, default=0.0)
+    base_delivery_fee = Column(Float, default=0.0)
     platform_fee = Column(Float, default=3.0)
     savings = Column(Float, default=0.0)
     total_amount = Column(Float, nullable=False)

@@ -91,7 +91,9 @@ def ensure_schema_migrations():
             ("eta_mins", "VARCHAR(50) DEFAULT '30 Mins'"),
             ("refund_amount", "FLOAT DEFAULT 0.0"),
             ("refund_penalty", "FLOAT DEFAULT 0.0"),
-            ("cancellation_reason", "VARCHAR(255)")
+            ("cancellation_reason", "VARCHAR(255)"),
+            ("delivery_discount", "FLOAT DEFAULT 0.0"),
+            ("base_delivery_fee", "FLOAT DEFAULT 0.0")
         ]
         for col_name, col_type in order_cols:
             if col_name not in existing_order_cols:

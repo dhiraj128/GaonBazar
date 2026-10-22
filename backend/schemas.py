@@ -185,6 +185,8 @@ class CheckoutResponse(BaseModel):
     order_id: str
     subtotal: float
     delivery_fee: float
+    delivery_discount: Optional[float] = 0.0
+    base_delivery_fee: Optional[float] = None
     platform_fee: float
     savings: float
     total_amount: float
