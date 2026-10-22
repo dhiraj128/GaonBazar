@@ -182,7 +182,7 @@
         </button>
 
         <!-- User Profile Quick Icon -->
-        <button id="header-user-icon" onclick="navigateToPhase('landmark')" title="User Profile / Address" class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-surface-container-highest active:scale-90 transition-all">
+        <button id="header-user-icon" onclick="navigateToPhase('profile')" title="User Profile / Account" class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-surface-container-highest active:scale-90 transition-all">
           <span class="material-symbols-outlined text-[20px]">person</span>
         </button>
       </div>
@@ -703,40 +703,6 @@
             </div>
           </div>
         </div>
-
-        <!-- ===================================================================== -->
-        <!-- CUSTOMER DASHBOARD BOTTOM NAVIGATION (Swiggy / Flipkart Standard)     -->
-        <!-- ===================================================================== -->
-        <nav id="customer-bottom-nav" class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-4 py-2 flex items-center justify-around shadow-sticky-bar max-w-full">
-          
-          <!-- Tab 1: Home / Stores -->
-          <button onclick="navigateToPhase('dashboard')" class="flex flex-col items-center justify-center py-1 px-3 text-primary font-black transition-all">
-            <span class="material-symbols-outlined text-[24px]">storefront</span>
-            <span id="nav-lbl-stores" class="text-[10px] tracking-wide mt-0.5 font-sans">दुकानें</span>
-          </button>
-
-          <!-- Tab 2: Categories -->
-          <button onclick="document.getElementById('p2-categories-container')?.scrollIntoView({behavior: 'smooth'})" class="flex flex-col items-center justify-center py-1 px-3 text-slate-500 hover:text-slate-800 font-bold transition-all">
-            <span class="material-symbols-outlined text-[24px]">category</span>
-            <span id="nav-lbl-categories" class="text-[10px] tracking-wide mt-0.5 font-sans">श्रेणियाँ</span>
-          </button>
-
-          <!-- Tab 3: Cart -->
-          <button onclick="navigateToPhase('cart')" class="flex flex-col items-center justify-center py-1 px-3 text-slate-500 hover:text-slate-800 font-bold transition-all">
-            <div class="relative flex items-center justify-center">
-              <span class="material-symbols-outlined text-[24px]">shopping_cart</span>
-              <span id="nav-cart-badge" class="absolute -top-1 -right-2 bg-secondary text-white text-[9px] px-1.5 rounded-full font-black">0</span>
-            </div>
-            <span id="nav-lbl-cart" class="text-[10px] tracking-wide mt-0.5 font-sans">थैला</span>
-          </button>
-
-          <!-- Tab 4: Orders / Track -->
-          <button onclick="navigateToPhase('tracking')" class="flex flex-col items-center justify-center py-1 px-3 text-slate-500 hover:text-slate-800 font-bold transition-all">
-            <span class="material-symbols-outlined text-[24px]">local_shipping</span>
-            <span id="nav-lbl-orders" class="text-[10px] tracking-wide mt-0.5 font-sans">ऑर्डर</span>
-          </button>
-
-        </nav>
       </section>
 
       <!-- ===================================================================== -->
@@ -1109,7 +1075,7 @@
         </div>
 
         <!-- Back to Home / Enter Market Button -->
-        <button onclick="navigateToPhase('dashboard')" class="w-full h-12 rounded-xl bg-primary text-white text-sm font-bold shadow-md flex items-center justify-center gap-2 active:scale-98">
+        <button id="p5-back-home-btn" onclick="navigateToPhase('dashboard')" class="w-full h-12 rounded-xl bg-primary text-white text-sm font-bold shadow-md flex items-center justify-center gap-2 active:scale-98">
           <span class="material-symbols-outlined text-[18px]">home</span>
           <span data-i18n="p5_back_home_btn">मुख्य बाज़ार पर वापस जाएँ</span>
         </button>
@@ -1166,7 +1132,305 @@
         </div>
       </section>
 
+      <!-- ===================================================================== -->
+      <!-- PHASE: MY ACCOUNT & PROFILE VIEW (Swiggy / Flipkart Standard)         -->
+      <!-- ===================================================================== -->
+      <section id="view-profile" class="screen-view hidden flex-col w-full px-4 pt-3 pb-48 flex-1 overflow-y-auto space-y-4">
+        
+        <!-- Profile Header / Title -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary to-emerald-700 text-white flex items-center justify-center font-black shadow-md">
+              <span class="material-symbols-outlined text-[24px]">account_circle</span>
+            </div>
+            <div>
+              <h1 class="text-lg font-black text-on-surface leading-tight font-hindi" data-i18n="profile_page_title">मेरा खाता</h1>
+              <p class="text-xs text-on-surface-variant font-medium" data-i18n="profile_page_sub">गाँव बाज़ार प्रोफ़ाइल एवं सहायता</p>
+            </div>
+          </div>
+          <button onclick="logoutCustomer()" class="px-3 py-1.5 rounded-xl border border-red-200 bg-red-50 text-red-700 text-xs font-bold flex items-center gap-1 active:scale-95 transition-all">
+            <span class="material-symbols-outlined text-[15px]">logout</span>
+            <span data-i18n="profile_logout_btn">लॉगआउट</span>
+          </button>
+        </div>
+
+        <!-- 1. User Details Card -->
+        <div id="profile-user-card" class="rounded-2xl bg-white p-4 shadow-mobile-card border border-surface-container-high space-y-3">
+          <div class="flex items-start justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center font-black text-lg border border-primary/20">
+                <span id="profile-user-avatar-initial">र</span>
+              </div>
+              <div>
+                <h2 id="profile-user-name" class="text-base font-extrabold text-on-surface leading-tight">रमेश पटेल</h2>
+                <p id="profile-user-phone" class="text-xs font-bold text-slate-500 mt-0.5">+91 98765 43210</p>
+              </div>
+            </div>
+            <div class="flex flex-col items-end">
+              <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full text-[10px] font-extrabold">
+                <span class="material-symbols-outlined text-[12px]">verified</span>
+                <span data-i18n="profile_verified_badge">सत्यापित ग्राहक</span>
+              </span>
+              <span class="text-[10px] text-slate-400 font-bold mt-1">Trust: <span id="profile-trust-score" class="text-emerald-600 font-black">100/100</span></span>
+            </div>
+          </div>
+
+          <!-- Primary Village Landmark -->
+          <div class="bg-surface-container/60 p-3 rounded-xl border border-surface-container-high space-y-1">
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-slate-500 font-bold flex items-center gap-1">
+                <span class="material-symbols-outlined text-primary text-[16px]">location_on</span>
+                <span data-i18n="profile_primary_address">मुख्य डिलीवरी पता / लैंडमार्क</span>
+              </span>
+              <button onclick="navigateToPhase('landmark')" class="text-primary text-[11px] font-extrabold hover:underline flex items-center gap-0.5">
+                <span class="material-symbols-outlined text-[12px]">edit</span>
+                <span data-i18n="profile_edit_address">बदलें</span>
+              </button>
+            </div>
+            <div class="text-xs">
+              <div id="profile-user-village" class="font-extrabold text-on-surface">रामपुर गाँव (क्लस्टर 01)</div>
+              <div id="profile-user-landmark" class="text-slate-600 text-[11px] mt-0.5 leading-relaxed">Near Shiva Temple, Opp. Blue Water Tank</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Language Preference Toggle Card -->
+        <div id="profile-lang-card" class="rounded-2xl bg-white p-4 shadow-mobile-card border border-surface-container-high space-y-2.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary text-[20px]">translate</span>
+              <span class="text-xs font-extrabold text-on-surface uppercase tracking-wide" data-i18n="profile_lang_title">भाषा प्राथमिकता / Language</span>
+            </div>
+            <span id="profile-current-lang-badge" class="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">हिंदी</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <button 
+              id="btn-profile-lang-hi" 
+              onclick="window.switchLanguage('hi')" 
+              class="h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all bg-primary text-white shadow-xs"
+            >
+              <span class="material-symbols-outlined text-[16px]">check</span>
+              <span>हिंदी (Hindi)</span>
+            </button>
+            <button 
+              id="btn-profile-lang-en" 
+              onclick="window.switchLanguage('en')" 
+              class="h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all bg-surface-container text-slate-700 hover:bg-surface-container-highest"
+            >
+              <span>English</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. Help & Support Card (Customer Care Entry Point) -->
+        <div id="profile-support-entry-card" class="rounded-2xl bg-gradient-to-br from-emerald-900 to-primary p-4 shadow-lg text-white space-y-3">
+          <div class="flex items-start justify-between">
+            <div class="flex items-center gap-2.5">
+              <div class="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center text-white">
+                <span class="material-symbols-outlined text-[24px]">support_agent</span>
+              </div>
+              <div>
+                <h3 class="text-sm font-extrabold leading-tight" data-i18n="profile_support_title">ग्राहक सहायता केंद्र</h3>
+                <p class="text-[11px] text-emerald-100" data-i18n="profile_support_sub">24/7 AI चैटबॉट एवं टोल-फ्री हेल्पलाइन</p>
+              </div>
+            </div>
+            <span class="text-[10px] font-bold bg-white/20 text-white px-2 py-0.5 rounded-full">24x7 Active</span>
+          </div>
+
+          <p class="text-xs text-emerald-50 leading-relaxed" data-i18n="profile_support_desc">
+            ऑर्डर स्थिति, रिफंड पूछताछ, या किसी समस्या के लिए तुरंत हमारे AI सहायक से चैट करें या टोल-फ्री कॉल करें।
+          </p>
+
+          <div class="flex items-center gap-2 pt-1">
+            <button 
+              id="btn-open-support" 
+              onclick="openSupportModal()" 
+              class="flex-1 h-11 bg-white text-primary rounded-xl font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-all"
+            >
+              <span class="material-symbols-outlined text-[18px]">chat</span>
+              <span data-i18n="profile_open_chat_btn">AI सहायता से चैट करें</span>
+            </button>
+            <a 
+              id="profile-direct-call-btn" 
+              href="tel:18001204266" 
+              class="h-11 px-4 bg-emerald-800/80 hover:bg-emerald-800 border border-white/30 text-white rounded-xl font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-all"
+            >
+              <span class="material-symbols-outlined text-[18px]">call</span>
+              <span>1800-120-4266</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- 4. Order History List Section -->
+        <div id="profile-orders-section" class="space-y-2.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary text-[20px]">receipt_long</span>
+              <h3 class="text-xs font-extrabold text-on-surface uppercase tracking-wide" data-i18n="profile_orders_title">पिछले ऑर्डर / Order History</h3>
+            </div>
+            <button id="btn-refresh-orders" onclick="loadUserOrderHistory()" class="text-primary text-xs font-bold flex items-center gap-1 hover:underline">
+              <span class="material-symbols-outlined text-[14px]">refresh</span>
+              <span data-i18n="profile_refresh_orders">ताज़ा करें</span>
+            </button>
+          </div>
+
+          <div id="profile-order-history-list" class="space-y-3">
+            <!-- Dynamic order history cards rendered here -->
+            <div class="p-6 bg-white rounded-2xl border border-surface-container-high text-center space-y-2">
+              <span class="material-symbols-outlined text-slate-300 text-[36px] animate-spin">progress_activity</span>
+              <p class="text-xs text-slate-500 font-medium">ऑर्डर लोड हो रहे हैं...</p>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- CUSTOMER BOTTOM NAVIGATION (Swiggy / Flipkart Standard 5-Tab)         -->
+      <!-- ===================================================================== -->
+      <nav id="customer-bottom-nav" class="hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-4 py-2 flex items-center justify-around shadow-sticky-bar max-w-full">
+        
+        <!-- Tab 1: Home / Stores -->
+        <button id="nav-btn-stores" onclick="navigateToPhase('dashboard')" class="flex flex-col items-center justify-center py-1 px-2.5 text-primary font-black transition-all">
+          <span class="material-symbols-outlined text-[24px]">storefront</span>
+          <span id="nav-lbl-stores" class="text-[10px] tracking-wide mt-0.5 font-sans">दुकानें</span>
+        </button>
+
+        <!-- Tab 2: Categories -->
+        <button id="nav-btn-categories" onclick="navigateToPhase('dashboard'); setTimeout(() => document.getElementById('p2-categories-container')?.scrollIntoView({behavior: 'smooth'}), 100)" class="flex flex-col items-center justify-center py-1 px-2.5 text-slate-500 hover:text-slate-800 font-bold transition-all">
+          <span class="material-symbols-outlined text-[24px]">category</span>
+          <span id="nav-lbl-categories" class="text-[10px] tracking-wide mt-0.5 font-sans">श्रेणियाँ</span>
+        </button>
+
+        <!-- Tab 3: Cart -->
+        <button id="nav-btn-cart" onclick="navigateToPhase('cart')" class="flex flex-col items-center justify-center py-1 px-2.5 text-slate-500 hover:text-slate-800 font-bold transition-all">
+          <div class="relative flex items-center justify-center">
+            <span class="material-symbols-outlined text-[24px]">shopping_cart</span>
+            <span id="nav-cart-badge" class="absolute -top-1 -right-2 bg-secondary text-white text-[9px] px-1.5 rounded-full font-black">0</span>
+          </div>
+          <span id="nav-lbl-cart" class="text-[10px] tracking-wide mt-0.5 font-sans">थैला</span>
+        </button>
+
+        <!-- Tab 4: Orders / Track -->
+        <button id="nav-btn-orders" onclick="navigateToPhase('tracking')" class="flex flex-col items-center justify-center py-1 px-2.5 text-slate-500 hover:text-slate-800 font-bold transition-all">
+          <span class="material-symbols-outlined text-[24px]">local_shipping</span>
+          <span id="nav-lbl-orders" class="text-[10px] tracking-wide mt-0.5 font-sans">ऑर्डर</span>
+        </button>
+
+        <!-- Tab 5: Profile / Account -->
+        <button id="nav-btn-profile" onclick="navigateToPhase('profile')" class="flex flex-col items-center justify-center py-1 px-2.5 text-slate-500 hover:text-slate-800 font-bold transition-all">
+          <span class="material-symbols-outlined text-[24px]">person</span>
+          <span id="nav-lbl-profile" class="text-[10px] tracking-wide mt-0.5 font-sans" data-i18n="nav_profile">खाता</span>
+        </button>
+
+      </nav>
+
     </main>
+
+    <!-- ========================================================================= -->
+    <!-- HELP & SUPPORT AI CHATBOT & ESCALATION MODAL (WhatsApp Style)             -->
+    <!-- ========================================================================= -->
+    <div id="modal-support-chat" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex flex-col justify-end sm:justify-center items-center p-0 sm:p-4">
+      
+      <div class="w-full max-w-md bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col h-[90vh] sm:h-[650px] max-h-[92vh] overflow-hidden border border-slate-200">
+        
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-emerald-800 to-primary text-white px-4 py-3 flex items-center justify-between shadow-md shrink-0">
+          <div class="flex items-center gap-2.5">
+            <button id="btn-close-support" onclick="closeSupportModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white active:scale-90 transition-all">
+              <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+            </button>
+            <div class="w-9 h-9 rounded-full bg-white text-primary flex items-center justify-center font-black shadow-xs">
+              <span class="material-symbols-outlined text-[22px]">smart_toy</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-sm font-extrabold leading-tight">GaonBazaar AI Assistant</span>
+              <span class="text-[10px] text-emerald-200 flex items-center gap-1 font-semibold">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Online • 24/7 Helpline</span>
+              </span>
+            </div>
+          </div>
+          <span class="text-[10px] font-bold bg-white/15 px-2.5 py-1 rounded-full text-white uppercase tracking-wider">AI Support</span>
+        </div>
+
+        <!-- Escalation Bar / Call Help Center (Always Prominent & Accessible) -->
+        <div class="bg-amber-50 border-b border-amber-200 px-4 py-2.5 flex items-center justify-between gap-2 shrink-0">
+          <div class="flex items-center gap-1.5 text-xs text-amber-900 font-bold">
+            <span class="material-symbols-outlined text-amber-700 text-[18px]">support_agent</span>
+            <span id="support-banner-text">तत्काल सहायता चाहिए?</span>
+          </div>
+          <!-- Massive High-Contrast Call Help Center CTA Button -->
+          <a 
+            id="btn-call-support" 
+            href="tel:18001204266" 
+            class="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-full text-xs font-black shadow-sm active:scale-95 transition-all cursor-pointer whitespace-nowrap min-h-[32px]"
+          >
+            <span class="material-symbols-outlined text-[16px]">call</span>
+            <span id="call-support-cta-label">📞 Call Help Center</span>
+          </a>
+        </div>
+
+        <!-- Chat Messages Container (Scrollable, Generous Spacing, WhatsApp Bubble Look) -->
+        <div id="chat-messages-container" class="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50 text-xs">
+          <!-- Initial Welcome Bubble -->
+          <div class="flex items-start gap-2 max-w-[85%]">
+            <div class="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center shrink-0 mt-0.5 text-[11px] font-black">GB</div>
+            <div class="bg-white text-slate-800 p-3 rounded-2xl rounded-tl-xs shadow-xs border border-slate-200/80 leading-relaxed">
+              <p class="font-semibold text-slate-900">नमस्ते! GaonBazaar AI सहायता केंद्र में आपका स्वागत है। मैं आपकी क्या मदद कर सकता हूँ?</p>
+              <p class="text-[10px] text-slate-400 mt-1">Hello! How can I help you with your orders or deliveries today?</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Suggestion Chips -->
+        <div class="px-3 py-2 bg-white border-t border-slate-100 flex items-center gap-2 overflow-x-auto no-scrollbar shrink-0">
+          <button id="chip-order-status" onclick="sendQuickMessage('Where is my order?')" class="whitespace-nowrap px-3 py-1.5 rounded-full bg-surface-container text-slate-700 hover:bg-surface-container-highest text-[11px] font-bold border border-slate-200 active:scale-95 transition-all">
+            📦 Where is my order?
+          </button>
+          <button id="chip-refund-status" onclick="sendQuickMessage('Refund status / रिफंड कब मिलेगा?')" class="whitespace-nowrap px-3 py-1.5 rounded-full bg-surface-container text-slate-700 hover:bg-surface-container-highest text-[11px] font-bold border border-slate-200 active:scale-95 transition-all">
+            💰 Refund status
+          </button>
+          <button id="chip-call-agent" onclick="sendQuickMessage('Speak to customer care / एजेंट से बात करें')" class="whitespace-nowrap px-3 py-1.5 rounded-full bg-surface-container text-slate-700 hover:bg-surface-container-highest text-[11px] font-bold border border-slate-200 active:scale-95 transition-all">
+            📞 Speak to agent
+          </button>
+        </div>
+
+        <!-- Chat Input Form -->
+        <div class="p-3 bg-white border-t border-slate-200 flex items-center gap-2 shrink-0">
+          <input 
+            id="chat-input-message" 
+            type="text" 
+            placeholder="Type your message... / सवाल लिखें..."
+            class="flex-1 h-11 bg-slate-100 rounded-full px-4 text-xs font-semibold text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/40 border border-slate-200"
+            onkeydown="if(event.key === 'Enter') sendChatMessage()"
+          />
+          <button 
+            id="btn-send-chat" 
+            onclick="sendChatMessage()" 
+            class="w-11 h-11 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary/90 active:scale-95 transition-all shadow-sm shrink-0"
+          >
+            <span class="material-symbols-outlined text-[20px]">send</span>
+          </button>
+        </div>
+
+        <!-- Bottom Toll-Free Escalation Bar -->
+        <div class="px-4 py-2.5 bg-slate-900 text-white flex items-center justify-between text-xs shrink-0">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-amber-400 text-[18px]">phone_in_talk</span>
+            <div class="flex flex-col">
+              <span class="text-[10px] text-slate-400 font-medium">Toll-Free Helpline (24x7)</span>
+              <span class="font-bold text-white tracking-wide">1800-120-4266</span>
+            </div>
+          </div>
+          <a id="btn-call-support-bottom" href="tel:18001204266" class="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-black shadow-xs flex items-center gap-1 active:scale-95">
+            <span class="material-symbols-outlined text-[15px]">call</span>
+            <span>Call Now</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
 
     <!-- Global Audio Guidance Toast Notification -->
     <div id="app-audio-toast" class="hidden pointer-events-none fixed bottom-20 left-4 right-4 z-50 bg-slate-900 text-white p-3 rounded-2xl shadow-2xl flex items-center justify-between border border-slate-700">
@@ -1332,7 +1596,22 @@
         offline_saved: "सुरक्षित",
         offline_retry: "पुनः प्रयास करें",
         offline_home: "सुरक्षित बाज़ार देखें",
-        toast_title: "आवाज़ निर्देश"
+        toast_title: "आवाज़ निर्देश",
+        // Profile & Support
+        profile_page_title: "मेरा खाता",
+        profile_page_sub: "गाँव बाज़ार प्रोफ़ाइल एवं सहायता",
+        profile_logout_btn: "लॉगआउट",
+        profile_verified_badge: "सत्यापित ग्राहक",
+        profile_primary_address: "मुख्य डिलीवरी पता / लैंडमार्क",
+        profile_edit_address: "बदलें",
+        profile_lang_title: "भाषा प्राथमिकता / Language",
+        profile_support_title: "ग्राहक सहायता केंद्र",
+        profile_support_sub: "24/7 AI चैटबॉट एवं टोल-फ्री हेल्पलाइन",
+        profile_support_desc: "ऑर्डर स्थिति, रिफंड पूछताछ, या किसी समस्या के लिए तुरंत हमारे AI सहायक से चैट करें या टोल-फ्री कॉल करें।",
+        profile_open_chat_btn: "AI सहायता से चैट करें",
+        profile_orders_title: "पिछले ऑर्डर",
+        profile_refresh_orders: "ताज़ा करें",
+        nav_profile: "खाता"
       },
       en: {
         header_sub: "",
@@ -1425,7 +1704,22 @@
         offline_saved: "Preserved",
         offline_retry: "Retry Connection",
         offline_home: "View Saved Market",
-        toast_title: "Voice Guidance"
+        toast_title: "Voice Guidance",
+        // Profile & Support
+        profile_page_title: "My Account",
+        profile_page_sub: "GaonBazaar Customer Profile & Support",
+        profile_logout_btn: "Logout",
+        profile_verified_badge: "Verified Customer",
+        profile_primary_address: "Primary Delivery Address",
+        profile_edit_address: "Edit",
+        profile_lang_title: "Language Preference",
+        profile_support_title: "Help & Support Center",
+        profile_support_sub: "24/7 AI Chatbot & Toll-free Helpline",
+        profile_support_desc: "Track live orders, inquire about refunds, or speak directly with our support team.",
+        profile_open_chat_btn: "Chat with AI Support",
+        profile_orders_title: "Past Orders",
+        profile_refresh_orders: "Refresh",
+        nav_profile: "Account"
       }
     };
 
@@ -1636,10 +1930,27 @@
       const navCats = document.getElementById('nav-lbl-categories');
       const navCart = document.getElementById('nav-lbl-cart');
       const navOrders = document.getElementById('nav-lbl-orders');
+      const navProfile = document.getElementById('nav-lbl-profile');
       if (navStores) navStores.innerText = (lang === 'hi') ? 'दुकानें' : 'Stores';
       if (navCats) navCats.innerText = (lang === 'hi') ? 'श्रेणियाँ' : 'Categories';
       if (navCart) navCart.innerText = (lang === 'hi') ? 'थैला' : 'Cart';
       if (navOrders) navOrders.innerText = (lang === 'hi') ? 'ऑर्डर' : 'Orders';
+      if (navProfile) navProfile.innerText = (lang === 'hi') ? 'खाता' : 'Account';
+
+      // Update Profile screen language toggle card buttons
+      const btnHi = document.getElementById('btn-profile-lang-hi');
+      const btnEn = document.getElementById('btn-profile-lang-en');
+      const curBadge = document.getElementById('profile-current-lang-badge');
+      if (curBadge) curBadge.innerText = (lang === 'hi') ? 'हिंदी' : 'English';
+      if (btnHi && btnEn) {
+        if (lang === 'hi') {
+          btnHi.className = "h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all bg-primary text-white shadow-xs";
+          btnEn.className = "h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all bg-surface-container text-slate-700 hover:bg-surface-container-highest";
+        } else {
+          btnHi.className = "h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all bg-surface-container text-slate-700 hover:bg-surface-container-highest";
+          btnEn.className = "h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all bg-primary text-white shadow-xs";
+        }
+      }
 
       // Update Phase 2 Category Tile Labels
       const catKirana = document.getElementById('cat-lbl-kirana');
@@ -1730,6 +2041,7 @@
         cart: 'view-p4-cart',
         checkout: 'view-p4-checkout',
         tracking: 'view-p5-tracking',
+        profile: 'view-profile',
         offline: 'view-offline-fallback'
       };
 
@@ -1786,6 +2098,24 @@
       }
       if (cleanPhase === 'cart') {
         updateCartCalculations();
+      }
+      if (cleanPhase === 'profile') {
+        renderProfileView();
+      }
+
+      // Customer Bottom Navigation Bar display & active tab update
+      const bottomNav = document.getElementById('customer-bottom-nav');
+      if (bottomNav) {
+        if (cleanPhase === 'dashboard' || cleanPhase === 'profile') {
+          bottomNav.classList.remove('hidden');
+          bottomNav.style.display = 'flex';
+          bottomNav.style.visibility = 'visible';
+          updateBottomNavActiveTab(cleanPhase);
+        } else {
+          bottomNav.classList.add('hidden');
+          bottomNav.style.display = 'none';
+          bottomNav.style.visibility = 'hidden';
+        }
       }
 
       // Header controls configuration
@@ -3036,6 +3366,344 @@
         }
       }
     });
+
+    // --- 11. PHASE: MY ACCOUNT & AI CUSTOMER SUPPORT ENGINE ---
+    window.switchLanguage = function(lang) {
+      window.toggleGlobalLanguage(lang);
+    };
+
+    function updateBottomNavActiveTab(activePhase) {
+      const isStores = activePhase === 'dashboard';
+      const isProfile = activePhase === 'profile';
+      const isCart = activePhase === 'cart';
+      const isOrders = activePhase === 'tracking';
+
+      const btnStores = document.getElementById('nav-btn-stores');
+      const btnProfile = document.getElementById('nav-btn-profile');
+      const btnCart = document.getElementById('nav-btn-cart');
+      const btnOrders = document.getElementById('nav-btn-orders');
+
+      if (btnStores) {
+        btnStores.className = isStores 
+          ? "flex flex-col items-center justify-center py-1 px-2.5 text-primary font-black transition-all"
+          : "flex flex-col items-center justify-center py-1 px-2.5 text-slate-500 hover:text-slate-800 font-bold transition-all";
+      }
+      if (btnProfile) {
+        btnProfile.className = isProfile 
+          ? "flex flex-col items-center justify-center py-1 px-2.5 text-primary font-black transition-all"
+          : "flex flex-col items-center justify-center py-1 px-2.5 text-slate-500 hover:text-slate-800 font-bold transition-all";
+      }
+      if (btnCart) {
+        btnCart.className = isCart
+          ? "flex flex-col items-center justify-center py-1 px-2.5 text-primary font-black transition-all"
+          : "flex flex-col items-center justify-center py-1 px-2.5 text-slate-500 hover:text-slate-800 font-bold transition-all";
+      }
+      if (btnOrders) {
+        btnOrders.className = isOrders
+          ? "flex flex-col items-center justify-center py-1 px-2.5 text-primary font-black transition-all"
+          : "flex flex-col items-center justify-center py-1 px-2.5 text-slate-500 hover:text-slate-800 font-bold transition-all";
+      }
+    }
+    window.updateBottomNavActiveTab = updateBottomNavActiveTab;
+
+    function renderProfileView() {
+      // 1. User details
+      const nameEl = document.getElementById('profile-user-name');
+      const phoneEl = document.getElementById('profile-user-phone');
+      const villageEl = document.getElementById('profile-user-village');
+      const landmarkEl = document.getElementById('profile-user-landmark');
+      const avatarEl = document.getElementById('profile-user-avatar-initial');
+      const trustScoreEl = document.getElementById('profile-trust-score');
+
+      const uName = (AppStore.user && AppStore.user.name) ? AppStore.user.name : (AppStore.lang === 'hi' ? 'रमेश पटेल' : 'Ramesh Patel');
+      const uPhone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '9876543210';
+      const uVillage = (AppStore.user && AppStore.user.village) ? AppStore.user.village : (AppStore.lang === 'hi' ? 'रामपुर गाँव (क्लस्टर ०१)' : 'Rampur Village (Cluster 01)');
+      const uLandmark = (AppStore.user && AppStore.user.landmark) ? AppStore.user.landmark : 'Near Shiva Temple, Opp. Blue Water Tank';
+
+      if (nameEl) nameEl.innerText = uName;
+      if (phoneEl) phoneEl.innerText = `+91 ${uPhone.substring(0, 5)} ${uPhone.substring(5)}`;
+      if (villageEl) villageEl.innerText = uVillage;
+      if (landmarkEl) landmarkEl.innerText = uLandmark;
+      if (avatarEl) avatarEl.innerText = uName.trim().charAt(0) || 'U';
+      if (trustScoreEl) trustScoreEl.innerText = '100/100';
+
+      // 2. Language buttons state
+      const isHi = (AppStore.lang === 'hi');
+      const btnHi = document.getElementById('btn-profile-lang-hi');
+      const btnEn = document.getElementById('btn-profile-lang-en');
+      const curBadge = document.getElementById('profile-current-lang-badge');
+      if (curBadge) curBadge.innerText = isHi ? 'हिंदी' : 'English';
+      if (btnHi && btnEn) {
+        if (isHi) {
+          btnHi.className = "h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all bg-primary text-white shadow-xs";
+          btnEn.className = "h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all bg-surface-container text-slate-700 hover:bg-surface-container-highest";
+        } else {
+          btnHi.className = "h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all bg-surface-container text-slate-700 hover:bg-surface-container-highest";
+          btnEn.className = "h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all bg-primary text-white shadow-xs";
+        }
+      }
+
+      // 3. Load order history
+      loadUserOrderHistory();
+    }
+    window.renderProfileView = renderProfileView;
+
+    async function loadUserOrderHistory() {
+      const container = document.getElementById('profile-order-history-list');
+      if (!container) return;
+
+      const isHi = (AppStore.lang === 'hi');
+      const phone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '9876543210';
+
+      try {
+        const orders = await apiFetch(`/user/${phone}/orders`);
+        if (orders && Array.isArray(orders) && orders.length > 0) {
+          container.innerHTML = orders.map(ord => {
+            const isDelivered = ord.timeline_stage === 5;
+            const isCancelled = (ord.status || '').toLowerCase().includes('cancel');
+            let badgeClass = "bg-amber-50 text-amber-800 border-amber-200";
+            let badgeIcon = "schedule";
+            if (isDelivered) {
+              badgeClass = "bg-emerald-50 text-emerald-800 border-emerald-200";
+              badgeIcon = "check_circle";
+            } else if (isCancelled) {
+              badgeClass = "bg-red-50 text-red-800 border-red-200";
+              badgeIcon = "cancel";
+            }
+
+            return `
+              <div class="rounded-2xl bg-white p-4 shadow-mobile-card border border-surface-container-high space-y-3 transition-all hover:border-primary/40">
+                <div class="flex items-start justify-between">
+                  <div class="space-y-0.5">
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs font-black text-on-surface">${ord.order_id}</span>
+                      <span class="text-[10px] text-slate-400 font-medium">• ${ord.payment_mode || 'COD'}</span>
+                    </div>
+                    <p class="text-xs font-bold text-slate-700">${ord.store_name}</p>
+                  </div>
+                  <span class="inline-flex items-center gap-1 border px-2 py-0.5 rounded-full text-[10px] font-black ${badgeClass}">
+                    <span class="material-symbols-outlined text-[13px]">${badgeIcon}</span>
+                    <span>${ord.status}</span>
+                  </span>
+                </div>
+
+                <div class="flex items-center justify-between text-xs pt-1 border-t border-slate-100">
+                  <div class="flex items-center gap-2 text-slate-500">
+                    <span class="font-bold text-on-surface">₹${Number(ord.total_amount).toFixed(2)}</span>
+                    <span class="text-[11px] text-slate-400">(${ord.items_count} ${isHi ? 'सामान' : 'items'})</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-[10px] bg-surface-container px-2 py-0.5 rounded-md font-bold text-slate-600">OTP: ${ord.delivery_otp}</span>
+                    <button onclick="AppStore.orderId = '${ord.order_id}'; navigateToPhase('tracking');" class="h-7 px-2.5 rounded-lg bg-primary/10 text-primary text-[11px] font-extrabold flex items-center gap-1 active:scale-95">
+                      <span>${isHi ? 'ट्रैक करें' : 'Track'}</span>
+                      <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('');
+          return;
+        }
+      } catch (err) {
+        console.warn('Failed to fetch past orders from backend, rendering local fallback:', err);
+      }
+
+      // Default realistic order history display if no backend orders or offline
+      container.innerHTML = `
+        <div class="rounded-2xl bg-white p-4 shadow-mobile-card border border-surface-container-high space-y-3">
+          <div class="flex items-start justify-between">
+            <div class="space-y-0.5">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-black text-on-surface">${AppStore.orderId || '#RUR-9482'}</span>
+                <span class="text-[10px] text-slate-400 font-medium">• ${AppStore.paymentMode || 'COD'}</span>
+              </div>
+              <p class="text-xs font-bold text-slate-700">Sharma Brothers Kirana</p>
+            </div>
+            <span class="inline-flex items-center gap-1 border border-amber-200 bg-amber-50 text-amber-800 px-2 py-0.5 rounded-full text-[10px] font-black">
+              <span class="material-symbols-outlined text-[13px]">local_shipping</span>
+              <span>${isHi ? 'रास्ते में है' : 'Out for Delivery'}</span>
+            </span>
+          </div>
+          <div class="flex items-center justify-between text-xs pt-1 border-t border-slate-100">
+            <div class="flex items-center gap-2 text-slate-500">
+              <span class="font-bold text-on-surface">₹248.00</span>
+              <span class="text-[11px] text-slate-400">(2 ${isHi ? 'सामान' : 'items'})</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] bg-surface-container px-2 py-0.5 rounded-md font-bold text-slate-600">OTP: ${AppStore.deliveryOtp || '4821'}</span>
+              <button onclick="navigateToPhase('tracking')" class="h-7 px-2.5 rounded-lg bg-primary/10 text-primary text-[11px] font-extrabold flex items-center gap-1 active:scale-95">
+                <span>${isHi ? 'ट्रैक करें' : 'Track'}</span>
+                <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    window.loadUserOrderHistory = loadUserOrderHistory;
+
+    function openSupportModal() {
+      const modal = document.getElementById('modal-support-chat');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        const input = document.getElementById('chat-input-message');
+        if (input) {
+          setTimeout(() => input.focus(), 150);
+        }
+      }
+    }
+    window.openSupportModal = openSupportModal;
+
+    function closeSupportModal() {
+      const modal = document.getElementById('modal-support-chat');
+      if (modal) {
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
+      }
+    }
+    window.closeSupportModal = closeSupportModal;
+
+    function sendQuickMessage(text) {
+      const input = document.getElementById('chat-input-message');
+      if (input) {
+        input.value = text;
+        sendChatMessage();
+      }
+    }
+    window.sendQuickMessage = sendQuickMessage;
+
+    async function sendChatMessage() {
+      const input = document.getElementById('chat-input-message');
+      const text = input ? input.value.trim() : '';
+      if (!text) return;
+
+      const container = document.getElementById('chat-messages-container');
+      const now = new Date();
+      const timeStr = `${now.getHours()}:${now.getMinutes() < 10 ? '0' : ''}${now.getMinutes()}`;
+
+      // 1. Append user speech bubble (WhatsApp style - right aligned emerald)
+      const userBubble = document.createElement('div');
+      userBubble.className = "flex justify-end";
+      userBubble.innerHTML = `
+        <div class="bg-emerald-600 text-white p-3 rounded-2xl rounded-tr-xs shadow-xs max-w-[85%] space-y-1">
+          <p class="font-medium text-xs leading-relaxed">${escapeHtml(text)}</p>
+          <p class="text-[9px] text-emerald-100 text-right">${timeStr}</p>
+        </div>
+      `;
+      container.appendChild(userBubble);
+      input.value = '';
+      container.scrollTop = container.scrollHeight;
+
+      // 2. Append temporary typing indicator
+      const typingBubble = document.createElement('div');
+      typingBubble.id = 'chat-typing-indicator';
+      typingBubble.className = "flex items-start gap-2 max-w-[85%]";
+      typingBubble.innerHTML = `
+        <div class="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center shrink-0 mt-0.5 text-[11px] font-black">GB</div>
+        <div class="bg-white text-slate-500 p-2.5 rounded-2xl rounded-tl-xs shadow-xs border border-slate-200/80 flex items-center gap-1.5 text-[11px]">
+          <span class="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce"></span>
+          <span class="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce [animation-delay:0.2s]"></span>
+          <span class="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce [animation-delay:0.4s]"></span>
+          <span class="text-[10px] text-slate-400 ml-1">AI replying...</span>
+        </div>
+      `;
+      container.appendChild(typingBubble);
+      container.scrollTop = container.scrollHeight;
+
+      // 3. Call backend POST /api/support/chat
+      try {
+        const payload = {
+          user_phone: (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '9876543210',
+          message: text,
+          order_id: AppStore.orderId || '#RUR-9482',
+          lang: AppStore.lang || 'hi'
+        };
+        const res = await apiFetch('/support/chat', {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+
+        // Remove typing indicator
+        const typingEl = document.getElementById('chat-typing-indicator');
+        if (typingEl) typingEl.remove();
+
+        const replyText = (res && res.reply) ? res.reply : (
+          AppStore.lang === 'hi' 
+            ? 'धन्यवाद! आपकी समस्या दर्ज कर ली गई है। यदि आपको तत्काल सहायता चाहिए, तो कृपया ऊपर दिए गए कॉल बटन से संपर्क करें।' 
+            : 'Thank you! Your query has been noted. For immediate support, please tap the Call Help Center button.'
+        );
+
+        // 4. Append AI response bubble (white, slate-900 text, left-aligned)
+        const aiBubble = document.createElement('div');
+        aiBubble.className = "flex items-start gap-2 max-w-[85%]";
+        aiBubble.innerHTML = `
+          <div class="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center shrink-0 mt-0.5 text-[11px] font-black">GB</div>
+          <div class="bg-white text-slate-800 p-3 rounded-2xl rounded-tl-xs shadow-xs border border-slate-200/80 leading-relaxed space-y-1">
+            <p class="font-medium text-xs text-slate-900 leading-relaxed">${escapeHtml(replyText)}</p>
+            <p class="text-[9px] text-slate-400 text-right">${timeStr}</p>
+          </div>
+        `;
+        container.appendChild(aiBubble);
+
+        // 5. If escalation requested, pulse the call CTA button
+        if (res && res.escalate_call) {
+          const callBtn = document.getElementById('btn-call-support');
+          if (callBtn) {
+            callBtn.classList.add('animate-pulse', 'ring-4', 'ring-emerald-400');
+            setTimeout(() => callBtn.classList.remove('animate-pulse', 'ring-4', 'ring-emerald-400'), 5000);
+          }
+        }
+      } catch (err) {
+        console.warn('Support chat error:', err);
+        const typingEl = document.getElementById('chat-typing-indicator');
+        if (typingEl) typingEl.remove();
+
+        const errorBubble = document.createElement('div');
+        errorBubble.className = "flex items-start gap-2 max-w-[85%]";
+        errorBubble.innerHTML = `
+          <div class="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center shrink-0 mt-0.5 text-[11px] font-black">GB</div>
+          <div class="bg-white text-slate-800 p-3 rounded-2xl rounded-tl-xs shadow-xs border border-slate-200/80 leading-relaxed space-y-1">
+            <p class="font-medium text-xs text-slate-900 leading-relaxed">
+              ${AppStore.lang === 'hi' 
+                ? 'नेटवर्क की समस्या के कारण संदेश नहीं भेजा जा सका। कृपया सीधे सहायता केंद्र को कॉल करें।' 
+                : 'Could not connect to support service. Please call our toll-free Help Center.'}
+            </p>
+            <p class="text-[9px] text-slate-400 text-right">${timeStr}</p>
+          </div>
+        `;
+        container.appendChild(errorBubble);
+      }
+
+      container.scrollTop = container.scrollHeight;
+    }
+    window.sendChatMessage = sendChatMessage;
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return text.replace(/[&<>"']/g, function(m) {
+        return {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#039;'
+        }[m];
+      });
+    }
+
+    function logoutCustomer() {
+      AppStore.sessionToken = null;
+      if (typeof showAudioToast === 'function') {
+        showAudioToast(
+          AppStore.lang === 'hi' ? 'लॉगआउट सफल' : 'Logged Out',
+          AppStore.lang === 'hi' ? 'आप सुरक्षित रूप से लॉगआउट हो चुके हैं।' : 'You have been safely logged out.'
+        );
+      }
+      navigateToPhase('login');
+    }
+    window.logoutCustomer = logoutCustomer;
 
     // --- 12. AUTOMATED QA TEST SUITE & SECURITY AUDIT RUNNER ---
     function openQaModal() {

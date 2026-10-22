@@ -992,6 +992,83 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     capture_human_ux_screenshot(page, dev_name, "step8_01_live_tracking", logger)
 
     # =========================================================================
+    # Phase 5.5: My Account View & AI Customer Support Chatbot Module
+    # =========================================================================
+    logger.log(f"\n--- [{dev_name}] Testing Phase 5.5: My Account & AI Customer Support Module ---")
+
+    # 1. Navigate back to Main Dashboard via 'Back to Village Market' CTA
+    page.click("#p5-back-home-btn")
+    page.wait_for_timeout(300)
+
+    # 2. Click the Profile / Account Tab in Bottom Navigation Bar
+    check_human_ux_bounds(page, "#nav-btn-profile", "Bottom Nav Profile Button", dev_name, logger)
+    page.click("#nav-btn-profile")
+    page.wait_for_timeout(400)
+
+    # 3. Assert Profile View is active and in viewport
+    is_profile_visible = page.is_visible("#view-profile")
+    logger.record_test(f"[{dev_name}] Transition to My Account & Profile View", is_profile_visible)
+    inspect_viewport_and_layout(page, f"[{dev_name}] Phase Profile", logger)
+
+    # 4. Verify User Details & Primary Village Landmark rendered
+    user_name = page.inner_text("#profile-user-name").strip()
+    user_phone = page.inner_text("#profile-user-phone").strip()
+    user_village = page.inner_text("#profile-user-village").strip()
+    has_user_details = len(user_name) > 0 and len(user_phone) > 0 and len(user_village) > 0
+    logger.record_test(
+        f"[{dev_name}] Profile User Details Rendered",
+        has_user_details,
+        f"Name: {user_name} | Phone: {user_phone} | Village: {user_village}"
+    )
+
+    # 5. Verify Order History List presence & rendering
+    is_history_present = page.is_visible("#profile-order-history-list")
+    logger.record_test(f"[{dev_name}] Order History List Rendered", is_history_present)
+
+    # 6. Verify Language Preference Toggle Ergonomics
+    check_human_ux_bounds(page, "#btn-profile-lang-hi", "Profile Language Hindi Button", dev_name, logger)
+    check_human_ux_bounds(page, "#btn-profile-lang-en", "Profile Language English Button", dev_name, logger)
+
+    # 7. Verify Help & Support Entry Point Card
+    check_human_ux_bounds(page, "#btn-open-support", "Open Help & Support Chatbot Button", dev_name, logger)
+    page.click("#btn-open-support")
+    page.wait_for_timeout(300)
+
+    is_modal_visible = page.is_visible("#modal-support-chat")
+    logger.record_test(f"[{dev_name}] Support Chatbot Modal Opened", is_modal_visible)
+
+    # 8. Type query 'Where is my order?' and submit
+    page.fill("#chat-input-message", "Where is my order?")
+    check_human_ux_bounds(page, "#btn-send-chat", "Send Chat Message Button", dev_name, logger)
+    page.click("#btn-send-chat")
+
+    # 9. Verify chatbot response is returned and displayed
+    page.wait_for_timeout(1000)
+    chat_text = page.inner_text("#chat-messages-container")
+    has_ai_reply = any(w in chat_text.lower() for w in ["order", "ऑर्डर", "rur-", "delivery", "डिलीवरी", "otp"])
+    logger.record_test(
+        f"[{dev_name}] AI Chatbot Intelligent Response",
+        has_ai_reply,
+        f"Snippet: {chat_text[-120:] if len(chat_text) > 120 else chat_text}"
+    )
+
+    # 10. Assert Massive High-Contrast 'Call Help Center' CTA button bounds, visibility & native tel link
+    check_human_ux_bounds(page, "#btn-call-support", "Massive Call Help Center CTA Button", dev_name, logger)
+    call_href = page.get_attribute("#btn-call-support", "href")
+    is_tel_valid = (call_href == "tel:18001204266")
+    logger.record_test(
+        f"[{dev_name}] Call Help Center Native Tel Link",
+        is_tel_valid,
+        f"href='{call_href}'"
+    )
+
+    capture_human_ux_screenshot(page, dev_name, "step8_02_account_and_support", logger)
+
+    # 11. Close Support Modal
+    page.click("#btn-close-support")
+    page.wait_for_timeout(200)
+
+    # =========================================================================
     # Phase 6: Total Network Failure Simulation & Custom Offline Fallback Page
     # =========================================================================
     logger.log(f"\n--- [{dev_name}] Testing Phase 6: Total Network Failure & Offline Resilience ---")

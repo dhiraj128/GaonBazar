@@ -12,7 +12,7 @@ import sentry_sdk
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 
 from .database import engine, Base, get_db, check_database_integrity, ensure_schema_migrations
-from .models import User, OTPRecord, Landmark, Store, Product, Order, OrderItem, Runner
+from .models import User, OTPRecord, Landmark, Store, Product, Order, OrderItem, Runner, SupportTicket
 from .schemas import (
     SendOTPRequest, SendOTPResponse,
     VerifyOTPRequest, VerifyOTPResponse, UserProfileDTO, CustomerTrustStatusDTO,
@@ -33,7 +33,9 @@ from .schemas import (
     VendorRegisterRequest, VendorRegisterResponse, VendorStatusCheckResponse,
     RunnerRegisterRequest, RunnerRegisterResponse, RunnerStatusCheckResponse,
     AdminMetricsResponse, AdminPendingVendorDTO, AdminPendingRunnerDTO,
-    AdminApprovalActionRequest, AdminGodViewOrderDTO, AdminCommissionLedgerResponse
+    AdminApprovalActionRequest, AdminGodViewOrderDTO, AdminCommissionLedgerResponse,
+    SupportChatRequest, SupportChatResponse, SupportTicketRequest, SupportTicketResponse,
+    UserOrderSummaryDTO
 )
 from .seed_data import seed_database
 from .security import (
@@ -959,6 +961,179 @@ def get_user_trust_status(phone: str, db: Session = Depends(get_db)):
         allowed_payment_modes=allowed,
         can_order=can_order
     )
+
+
+# =============================================================================
+# 4.2 CUSTOMER PROFILE, ORDER HISTORY & SUPPORT CHATBOT ENDPOINTS
+# =============================================================================
+
+@app.get("/api/user/{phone}/orders", response_model=List[UserOrderSummaryDTO])
+def get_user_orders(phone: str, db: Session = Depends(get_db)):
+    """
+    Returns full order history for a customer phone number.
+    Used by the 'My Account' & Profile screen.
+    """
+    orders = db.query(Order).filter(Order.user_phone == phone).order_by(Order.created_at.desc()).all()
+    results = []
+    for ord_obj in orders:
+        items_cnt = db.query(OrderItem).filter(OrderItem.order_id == ord_obj.id).count()
+        results.append(UserOrderSummaryDTO(
+            order_id=ord_obj.id,
+            store_name=ord_obj.store_name,
+            subtotal=ord_obj.subtotal,
+            delivery_fee=ord_obj.delivery_fee,
+            platform_fee=ord_obj.platform_fee,
+            total_amount=ord_obj.total_amount,
+            status=ord_obj.status,
+            timeline_stage=ord_obj.timeline_stage,
+            payment_mode=ord_obj.payment_mode,
+            items_count=items_cnt or 1,
+            delivery_otp=ord_obj.delivery_otp,
+            created_at=ord_obj.created_at.isoformat() if ord_obj.created_at else datetime.utcnow().isoformat()
+        ))
+    return results
+
+
+@app.post("/api/support/chat", response_model=SupportChatResponse)
+def support_chat_endpoint(payload: SupportChatRequest, db: Session = Depends(get_db)):
+    """
+    Simulates an AI chatbot response for GaonBazaar Customer Support:
+    - Recognizes order tracking queries ("Where is my order? / मेरा ऑर्डर कहाँ है?")
+    - Recognizes refund & cancellation questions
+    - Recognizes urgent escalation / customer service call queries
+    - Context-aware bilingual answers in Hindi / English
+    """
+    msg_raw = payload.message.strip()
+    msg_lower = msg_raw.lower()
+    lang = (payload.lang or "hi").lower()
+
+    # Default quick replies
+    quick_replies = [
+        "📦 मेरा ऑर्डर कहाँ है? / Where is my order?",
+        "💰 रिफंड की जानकारी / Refund status",
+        "📞 कॉल सहायता केंद्र / Call Help Center"
+    ]
+
+    # 1. Order tracking & status query detection
+    order_keywords = ["order", "ऑर्डर", "कहाँ", "where", "track", "status", "delivery", "kab", "कब", "late", "लेट", "देर", "पैक", "पहुंच"]
+    is_order_query = any(kw in msg_lower for kw in order_keywords)
+
+    if is_order_query:
+        # Check if user specified an order ID or search for user's most recent order
+        target_order = None
+        if payload.order_id:
+            candidate_ids = [payload.order_id, f"#{payload.order_id}", payload.order_id.lstrip("#")]
+            target_order = db.query(Order).filter(Order.id.in_(candidate_ids)).first()
+        if not target_order:
+            target_order = db.query(Order).filter(Order.user_phone == payload.user_phone).order_by(Order.created_at.desc()).first()
+
+        if target_order:
+            stage = target_order.timeline_stage
+            otp = target_order.delivery_otp
+            store = target_order.store_name
+            amt = f"₹{target_order.total_amount:.2f}"
+            eta = getattr(target_order, 'eta_mins', '30 Mins') or '30 Mins'
+
+            if "cancel" in (target_order.status or "").lower():
+                if lang == "hi":
+                    reply = f"आपका ऑर्डर {target_order.id} ({amt}) रद्द किया जा चुका है। यदि यह प्रीपेड (UPI) था, तो रिफंड राशि 2 घंटे में आपके मूल खाते में आ जाएगी।"
+                else:
+                    reply = f"Your order {target_order.id} ({amt}) has been cancelled. If prepaid, your refund will be credited within 2 hours."
+                return SupportChatResponse(reply=reply, action="order_cancelled", escalate_call=False, quick_replies=quick_replies)
+
+            if stage == 1:
+                if lang == "hi":
+                    reply = f"आपका ऑर्डर {target_order.id} ({amt}) दुकान ({store}) को प्राप्त हो चुका है और वे इसे स्वीकार कर रहे हैं। अनुमानित समय ~{eta} है।"
+                else:
+                    reply = f"Your order {target_order.id} ({amt}) has been received and is being accepted by {store}. Estimated delivery: ~{eta}."
+            elif stage == 2:
+                if lang == "hi":
+                    reply = f"दुकानदार ({store}) आपका सामान पैक कर रहा है। ऑर्डर {target_order.id} ~{eta} में आपके पास पहुँचेगा।"
+                else:
+                    reply = f"The store ({store}) is packing your items. Order {target_order.id} will reach you in ~{eta}."
+            elif stage == 3:
+                if lang == "hi":
+                    reply = f"ऑर्डर {target_order.id} पैक होकर तैयार है। गाँव मित्र (राइडर) पिकअप के लिए रवाना हो चुका है।"
+                else:
+                    reply = f"Order {target_order.id} is packed and ready. Gaon Mitra (runner) is en route for pickup."
+            elif stage == 4:
+                if lang == "hi":
+                    reply = f"ऑर्डर {target_order.id} रास्ते में है! आपका सुरक्षित 4-अंकीय डिलीवरी OTP '{otp}' है। सामान मिलने पर ही यह OTP राइडर को दें।"
+                else:
+                    reply = f"Order {target_order.id} is out for delivery! Your secure 4-digit Delivery OTP is '{otp}'. Share this with the runner upon delivery."
+            elif stage == 5:
+                if lang == "hi":
+                    reply = f"ऑर्डर {target_order.id} ({amt}) सफलतापूर्वक डिलीवर हो चुका है। GaonBazaar का उपयोग करने के लिए धन्यवाद!"
+                else:
+                    reply = f"Order {target_order.id} ({amt}) has been delivered successfully. Thank you for choosing GaonBazaar!"
+            else:
+                if lang == "hi":
+                    reply = f"ऑर्डर {target_order.id} की वर्तमान स्थिति: {target_order.status}।"
+                else:
+                    reply = f"Order {target_order.id} status: {target_order.status}."
+
+            return SupportChatResponse(reply=reply, action="order_tracking", escalate_call=False, quick_replies=quick_replies)
+        else:
+            if lang == "hi":
+                reply = "नमस्ते! आपके पंजीकृत नंबर पर कोई हालिया ऑर्डर नहीं मिला। यदि आपके पास ऑर्डर आईडी है, तो कृपया साझा करें या सहायता केंद्र को कॉल करें।"
+            else:
+                reply = "Hello! No recent order was found for your registered phone number. Please specify an Order ID or tap 'Call Help Center' for live agent support."
+            return SupportChatResponse(reply=reply, action="no_order_found", escalate_call=False, quick_replies=quick_replies)
+
+    # 2. Refund & cancellation query detection
+    refund_keywords = ["refund", "रिफंड", "पैसे", "money", "काट", "कटा", "कट गया", "वापस", "return", "कटौती", "पेनाल्टी", "penalty"]
+    if any(kw in msg_lower for kw in refund_keywords):
+        if lang == "hi":
+            reply = "प्रीपेड (UPI) ऑर्डर्स का रिफंड 2 घंटे के भीतर आपके बैंक खाते में क्रेडिट हो जाता है। 3-स्ट्राइक नियमों के अनुसार, तीसरे कैंसलेशन पर डिलीवरी और प्लेटफ़ॉर्म शुल्क की कटौती होती है।"
+        else:
+            reply = "Prepaid UPI refunds are processed back to your original source account within 2 hours. Cancellations after Strike 3 are subject to standard delivery & platform fee deductions."
+        return SupportChatResponse(reply=reply, action="refund_policy", escalate_call=False, quick_replies=quick_replies)
+
+    # 3. Call escalation / emergency agent assistance detection
+    escalation_keywords = ["call", "agent", "बात", "शिकायत", "care", "helpline", "help", "support", "emergency", "urgent", "कॉल", "एजेंट", "कस्टमर केयर", "फोन", "मदद"]
+    if any(kw in msg_lower for kw in escalation_keywords):
+        if lang == "hi":
+            reply = "हमारी गाँव सहायता टीम 24/7 आपकी सेवा में उपलब्ध है। तुरंत कस्टमर केयर से बात करने के लिए नीचे दिए गए '📞 कॉल सहायता केंद्र' (1800-120-4266) बटन को दबाएँ।"
+        else:
+            reply = "Our customer care executives are available 24/7 to resolve any issues. Tap the high-contrast '📞 Call Help Center' (1800-120-4266) button below to speak directly with an agent."
+        return SupportChatResponse(reply=reply, action="call_escalation", escalate_call=True, quick_replies=quick_replies)
+
+    # 4. Default general AI assistant reply
+    if lang == "hi":
+        reply = "नमस्ते! GaonBazaar AI सहायक में आपका स्वागत है। आप मुझसे अपने ऑर्डर की स्थिति ('मेरा ऑर्डर कहाँ है?'), रिफंड या डिलीवरी के बारे में पूछ सकते हैं, या सीधे सहायता केंद्र को कॉल कर सकते हैं।"
+    else:
+        reply = "Hello! Welcome to GaonBazaar AI Support. You can ask me 'Where is my order?', check refund updates, or tap Call Help Center to speak with our support team."
+
+    return SupportChatResponse(reply=reply, action="general_help", escalate_call=False, quick_replies=quick_replies)
+
+
+@app.post("/api/support/ticket", response_model=SupportTicketResponse)
+def create_support_ticket(payload: SupportTicketRequest, db: Session = Depends(get_db)):
+    """
+    Logs customer grievances and complaints into the SQLite support_tickets table.
+    """
+    ticket_id = f"TKT-{random.randint(10000, 99999)}"
+    ticket = SupportTicket(
+        ticket_id=ticket_id,
+        user_phone=payload.user_phone,
+        order_id=payload.order_id,
+        category=payload.category or "general",
+        message=payload.message,
+        status="open",
+        created_at=datetime.utcnow()
+    )
+    db.add(ticket)
+    db.commit()
+    db.refresh(ticket)
+
+    return SupportTicketResponse(
+        success=True,
+        ticket_id=ticket.ticket_id,
+        status=ticket.status,
+        message="Your support ticket has been registered. Our village support coordinator will resolve it shortly.",
+        created_at=ticket.created_at.isoformat() if ticket.created_at else datetime.utcnow().isoformat()
+    )
+
 
 
 # =============================================================================

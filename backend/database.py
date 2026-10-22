@@ -110,6 +110,24 @@ def ensure_schema_migrations():
                 except Exception as e:
                     print(f"Notice adding column {col_name} to users: {e}")
 
+        # Ensure support_tickets table exists
+        try:
+            conn.execute(text("""
+                CREATE TABLE IF NOT EXISTS support_tickets (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    ticket_id VARCHAR(50) NOT NULL,
+                    user_phone VARCHAR(15) NOT NULL,
+                    order_id VARCHAR(50),
+                    category VARCHAR(50) DEFAULT 'general',
+                    message TEXT NOT NULL,
+                    status VARCHAR(20) DEFAULT 'open',
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )
+            """))
+            conn.commit()
+        except Exception as e:
+            print(f"Notice creating support_tickets table: {e}")
+
         # Ensure all existing orders have balanced distance-based ledger splits
         try:
             orders_to_backfill = conn.execute(text(

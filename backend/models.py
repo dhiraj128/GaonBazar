@@ -161,3 +161,17 @@ class Runner(Base):
     total_completed_missions = Column(Integer, default=142)
     created_at = Column(DateTime, default=datetime.utcnow)
 
+
+class SupportTicket(Base):
+    __tablename__ = "support_tickets"
+
+    id = Column(Integer, primary_key=True, index=True)
+    ticket_id = Column(String(50), unique=True, index=True, nullable=False)
+    user_phone = Column(String(15), index=True, nullable=False)
+    order_id = Column(String(50), nullable=True)
+    category = Column(String(50), default="general")
+    message = Column(Text, nullable=False)
+    status = Column(String(20), default="open")  # "open", "in_progress", "resolved"
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+

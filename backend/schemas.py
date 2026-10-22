@@ -541,4 +541,50 @@ class AdminCommissionLedgerResponse(BaseModel):
     recent_transactions: List[dict]
 
 
+# --- Support & My Account Schemas ---
+class SupportChatRequest(SecureBaseModel):
+    user_phone: str = Field(..., min_length=10, max_length=15)
+    message: str = Field(..., min_length=1)
+    order_id: Optional[str] = None
+    lang: Optional[str] = "hi"
+
+
+class SupportChatResponse(BaseModel):
+    reply: str
+    action: Optional[str] = None
+    escalate_call: bool = False
+    quick_replies: Optional[List[str]] = []
+
+
+class SupportTicketRequest(SecureBaseModel):
+    user_phone: str = Field(..., min_length=10, max_length=15)
+    message: str = Field(..., min_length=1)
+    order_id: Optional[str] = None
+    category: Optional[str] = "general"
+
+
+class SupportTicketResponse(BaseModel):
+    success: bool
+    ticket_id: str
+    status: str
+    message: str
+    created_at: str
+
+
+class UserOrderSummaryDTO(BaseModel):
+    order_id: str
+    store_name: str
+    subtotal: float
+    delivery_fee: float
+    platform_fee: float
+    total_amount: float
+    status: str
+    timeline_stage: int
+    payment_mode: str
+    items_count: int
+    delivery_otp: str
+    created_at: str
+
+
+
 
