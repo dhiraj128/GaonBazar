@@ -503,7 +503,7 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
 
     file_url = HTML_FILE_PATH.as_uri()
     logger.log(f"Loading application: {file_url}")
-    page.goto(file_url, timeout=30000)
+    page.goto(file_url, timeout=30000, wait_until="domcontentloaded")
     page.wait_for_timeout(600)
 
     # Meta viewport check
@@ -668,7 +668,7 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     # -------------------------------------------------------------------------
     # MOV Validation: ₹50 Cart Subtotal (Must Fail / Block Checkout)
     # -------------------------------------------------------------------------
-    logger.log(f"\n--- [{dev_name}] Testing Minimum Order Value (MOV) ₹100 Validation ---")
+    logger.log(f"\n--- [{dev_name}] Testing Minimum Order Value (MOV) ₹99 Validation ---")
     page.evaluate("""() => {
         AppStore.catalog.forEach(i => i.qty = 0);
         AppStore.catalog[0].price = 50;
@@ -678,21 +678,21 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     page.wait_for_timeout(300)
 
     is_btn_disabled = page.eval_on_selector("#p4-btn-proceed", "btn => btn.disabled || btn.classList.contains('pointer-events-none')")
-    logger.record_test(f"[{dev_name}] MOV < ₹100 (₹50 Cart): Proceed CTA Disabled", is_btn_disabled, "Button disabled when cart subtotal < ₹100")
+    logger.record_test(f"[{dev_name}] MOV < ₹99 (₹50 Cart): Proceed CTA Disabled", is_btn_disabled, "Button disabled when cart subtotal < ₹99")
 
     is_alert_visible = page.is_visible("#p4-mov-alert")
-    logger.record_test(f"[{dev_name}] MOV < ₹100 (₹50 Cart): Bilingual Warning Banner Visible", is_alert_visible, "Warning banner shown")
+    logger.record_test(f"[{dev_name}] MOV < ₹99 (₹50 Cart): Bilingual Warning Banner Visible", is_alert_visible, "Warning banner shown")
 
     alert_text = page.inner_text("#p4-mov-alert") if is_alert_visible else ""
-    expected_alert = "Minimum order is ₹100 / कम से कम ₹100 का ऑर्डर करें. Add ₹50 more."
+    expected_alert = "Minimum order is ₹99 / कम से कम ₹99 का ऑर्डर करें. Add ₹49 more."
     has_expected_text = expected_alert in alert_text
-    logger.record_test(f"[{dev_name}] MOV < ₹100 (₹50 Cart): High-Contrast Bilingual Alert Content", has_expected_text, alert_text)
+    logger.record_test(f"[{dev_name}] MOV < ₹99 (₹50 Cart): High-Contrast Bilingual Alert Content", has_expected_text, alert_text)
 
     # Assert forced click does not proceed to checkout
     page.click('#p4-btn-proceed', force=True)
     page.wait_for_timeout(300)
     checkout_blocked = page.is_visible("#view-p4-cart") and not page.is_visible("#view-p4-checkout")
-    logger.record_test(f"[{dev_name}] MOV < ₹100 (₹50 Cart): Checkout Navigation Guarded", checkout_blocked, "User cannot bypass to checkout")
+    logger.record_test(f"[{dev_name}] MOV < ₹99 (₹50 Cart): Checkout Navigation Guarded", checkout_blocked, "User cannot bypass to checkout")
 
     # Backend API Check: ₹50 Cart must return HTTP 400 Bad Request
     try:
@@ -711,9 +711,9 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
         )
         api_50_rejected = (api_50_resp.status == 400)
         api_50_detail = api_50_resp.json().get('detail', '') if api_50_rejected else f"Status: {api_50_resp.status}"
-        logger.record_test(f"[{dev_name}] MOV < ₹100 (₹50 Cart): Backend API Rejection (HTTP 400)", api_50_rejected, f"API rejected: {api_50_detail}")
+        logger.record_test(f"[{dev_name}] MOV < ₹99 (₹50 Cart): Backend API Rejection (HTTP 400)", api_50_rejected, f"API rejected: {api_50_detail}")
     except Exception as e50:
-        logger.record_test(f"[{dev_name}] MOV < ₹100 (₹50 Cart): Backend API Rejection (HTTP 400)", False, str(e50))
+        logger.record_test(f"[{dev_name}] MOV < ₹99 (₹50 Cart): Backend API Rejection (HTTP 400)", False, str(e50))
 
     capture_human_ux_screenshot(page, dev_name, "step6_01_mov_alert_active", logger)
 
@@ -732,10 +732,10 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     page.wait_for_timeout(300)
 
     is_alert_hidden = not page.is_visible("#p4-mov-alert")
-    logger.record_test(f"[{dev_name}] MOV >= ₹100 (₹150 Cart): Warning Banner Hidden", is_alert_hidden, "Warning banner automatically removed")
+    logger.record_test(f"[{dev_name}] MOV >= ₹99 (₹150 Cart): Warning Banner Hidden", is_alert_hidden, "Warning banner automatically removed")
 
     is_btn_enabled = page.eval_on_selector("#p4-btn-proceed", "btn => !btn.disabled && !btn.classList.contains('pointer-events-none')")
-    logger.record_test(f"[{dev_name}] MOV >= ₹100 (₹150 Cart): Proceed CTA Enabled", is_btn_enabled, "Button active and ready for checkout")
+    logger.record_test(f"[{dev_name}] MOV >= ₹99 (₹150 Cart): Proceed CTA Enabled", is_btn_enabled, "Button active and ready for checkout")
 
     # Verify Frontend UI Bill Breakdown for Short Distance Tier 1
     t1_delivery_text = page.inner_text("#p4-bill-delivery").strip()
@@ -844,6 +844,62 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
         )
     except Exception as e250:
         logger.record_test(f"[{dev_name}] Backend Long Distance Tier Splits (Subtotal ₹250)", False, str(e250))
+
+    # -------------------------------------------------------------------------
+    # Free Delivery Threshold Validation (Subtotal >= ₹299, e.g. ₹350):
+    # Customer Delivery Fee -> ₹0 (FREE in UI), Runner Payout Preserved on Backend
+    # -------------------------------------------------------------------------
+    page.evaluate("""() => {
+        AppStore.selectedDistance = 1.2;
+        AppStore.catalog.forEach(i => i.qty = 0);
+        AppStore.catalog[0].price = 350;
+        AppStore.catalog[0].qty = 1;
+        updateCartCalculations();
+    }""")
+    page.wait_for_timeout(300)
+
+    free_delivery_text = page.inner_text("#p4-bill-delivery").strip()
+    free_total_text = page.inner_text("#p4-bill-total").strip()
+    free_valid = ("FREE" in free_delivery_text or "मुफ़्त" in free_delivery_text or "0" in free_delivery_text) and "353" in free_total_text
+    logger.record_test(
+        f"[{dev_name}] Free Delivery Threshold UI (₹350 Subtotal >= ₹299 -> Free Delivery, ₹3 Platform, ₹353 Total)",
+        free_valid,
+        f"Delivery: {free_delivery_text}, Total: {free_total_text}"
+    )
+
+    # Backend API Check: ₹350 Cart must have delivery_fee == 0.0, runner_payout == 10.0, admin_delivery_cut == -10.0
+    try:
+        api_free_resp = page.request.post(
+            "http://127.0.0.1:8001/api/orders/checkout",
+            headers={"X-Test-Bypass": "1"},
+            data={
+                "user_phone": "9876543210",
+                "user_name": "Ramesh Patel",
+                "village": "Rampur",
+                "landmark": "Near Mandir",
+                "store_id": "sharma_brothers",
+                "payment_mode": "COD",
+                "distance_km": 1.2,
+                "items": [{"id": "item_free_del_test", "name": "Bulk Item", "price": 350.0, "qty": 1}]
+            }
+        )
+        api_free_accepted = (api_free_resp.status == 200)
+        api_free_data = api_free_resp.json() if api_free_accepted else {}
+        free_splits_valid = (
+            api_free_data.get("subtotal") == 350.0 and
+            api_free_data.get("delivery_fee") == 0.0 and
+            api_free_data.get("platform_fee") == 3.0 and
+            api_free_data.get("total_amount") == 353.0 and
+            api_free_data.get("runner_payout") == 10.0 and
+            api_free_data.get("admin_profit") == -7.0
+        )
+        logger.record_test(
+            f"[{dev_name}] Backend Free Delivery Splits (Subtotal ₹350 -> Delivery Fee ₹0, Runner ₹10, Subsidized Admin Cut)",
+            free_splits_valid,
+            f"Resp: {api_free_data}"
+        )
+    except Exception as e_free:
+        logger.record_test(f"[{dev_name}] Backend Free Delivery Splits (Subtotal ₹350)", False, str(e_free))
 
     # -------------------------------------------------------------------------
     # Outside Delivery Zone Validation (> 8.0 km, e.g. 9.5 km): Must Fail / Reject

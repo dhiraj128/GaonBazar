@@ -649,14 +649,14 @@ def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
             "quantity": item_input.qty
         })
 
-    # Strict Minimum Order Value (MOV) of ₹100
-    MINIMUM_ORDER_VALUE = 100.0
+    # Strict Minimum Order Value (MOV) of ₹99
+    MINIMUM_ORDER_VALUE = 99.0
     if subtotal < MINIMUM_ORDER_VALUE:
         diff = MINIMUM_ORDER_VALUE - subtotal
         diff_str = f"{int(diff)}" if diff.is_integer() else f"{diff:.2f}"
         raise HTTPException(
             status_code=400,
-            detail=f"Minimum order is ₹100 / कम से कम ₹100 का ऑर्डर करें. Add ₹{diff_str} more."
+            detail=f"Minimum order is ₹99 / कम से कम ₹99 का ऑर्डर करें. Add ₹{diff_str} more."
         )
 
     # -------------------------------------------------------------------------
@@ -711,20 +711,29 @@ def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
     vendor_payout = subtotal
 
     if distance_km <= 2.0:
-        delivery_fee = 15.0
+        base_delivery_fee = 15.0
         runner_payout = 10.0
         admin_delivery_cut = 5.0
         eta_mins = "30 Mins"
     elif distance_km <= 5.0:
-        delivery_fee = 25.0
+        base_delivery_fee = 25.0
         runner_payout = 15.0
         admin_delivery_cut = 10.0
         eta_mins = "30 Mins"
     else:  # 5.1 to 8.0 km
-        delivery_fee = 40.0
+        base_delivery_fee = 40.0
         runner_payout = 30.0
         admin_delivery_cut = 10.0
         eta_mins = "45-60 Mins"
+
+    # Free Delivery threshold at ₹299
+    FREE_DELIVERY_THRESHOLD = 299.0
+    if subtotal >= FREE_DELIVERY_THRESHOLD:
+        delivery_fee = 0.0
+        # Admin subsidizes delivery: runner still receives their payout
+        admin_delivery_cut = -(runner_payout)
+    else:
+        delivery_fee = base_delivery_fee
 
     admin_profit = admin_delivery_cut + platform_fee
     total_amount = subtotal + delivery_fee + platform_fee
@@ -2000,8 +2009,40 @@ def register_runner(payload: RunnerRegisterRequest, db: Session = Depends(get_db
     Onboards a new village delivery partner (Gaon Mitra).
     Sets status to 'pending_approval' requiring Super Admin KYC review.
     """
+    # Check if a runner with this phone already exists
+    existing_runner = db.query(Runner).filter(Runner.phone == payload.phone).first()
+    if existing_runner:
+        existing_runner.name = payload.name
+        existing_runner.hub_id = payload.hub_id
+        existing_runner.id_type = payload.id_type
+        existing_runner.id_number = payload.id_number
+        existing_runner.vehicle_type = payload.vehicle_type
+        existing_runner.vehicle_number = payload.vehicle_number
+        existing_runner.payout_upi = payload.payout_upi
+        existing_runner.status = "pending_approval"
+        db.commit()
+        db.refresh(existing_runner)
+        token = issue_runner_token(existing_runner.id, existing_runner.phone)
+        return RunnerRegisterResponse(
+            success=True,
+            runner_id=existing_runner.id,
+            runner_code=existing_runner.runner_code,
+            status="pending_approval",
+            message="गाँव मित्र पंजीकरण सफल! आपका सत्यापन सुपर एडमिन द्वारा विचाराधीन है।",
+            token=token
+        )
+
     runner_id = f"gm_{uuid.uuid4().hex[:6]}"
-    runner_code = f"#GM-RAMPUR-{random.randint(10, 99)}"
+    
+    # Generate unique collision-free runner code
+    runner_code = None
+    for _ in range(100):
+        cand_code = f"#GM-RAMPUR-{random.randint(100, 9999)}"
+        if not db.query(Runner).filter(Runner.runner_code == cand_code).first():
+            runner_code = cand_code
+            break
+    if not runner_code:
+        runner_code = f"#GM-RAMPUR-{uuid.uuid4().hex[:4].upper()}"
 
     new_runner = Runner(
         id=runner_id,

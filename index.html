@@ -219,16 +219,18 @@
       <!-- ===================================================================== -->
       <section id="view-p1-login" class="screen-view active flex-col w-full px-4 pt-4 pb-28 flex-1 min-h-0 overflow-y-auto space-y-4">
         <!-- Hero Banner -->
-        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-surface-container to-surface-container-low p-5 shadow-sm border border-surface-container-high">
-          <div class="inline-flex items-center gap-1.5 bg-primary-fixed text-on-primary-fixed px-3 py-1 rounded-full text-xs font-bold mb-2">
-            <span class="material-symbols-outlined text-[15px] text-primary" style="font-variation-settings: 'FILL' 1;">eco</span>
-            <span data-i18n="p1_hero_badge">शुद्ध देसी • ताज़ा सुविधा घर तक</span>
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-surface-container to-surface-container-low p-5 shadow-sm border border-surface-container-high text-center">
+          <div class="flex justify-center w-full mb-3">
+            <div class="inline-flex items-center justify-center gap-1.5 bg-emerald-50 text-emerald-900 border border-emerald-300 px-3.5 py-1.5 rounded-full text-xs font-bold shadow-xs max-w-full">
+              <span class="material-symbols-outlined text-[16px] text-emerald-600 shrink-0" style="font-variation-settings: 'FILL' 1;">eco</span>
+              <span data-i18n="p1_hero_badge" class="truncate">100% शुद्ध देसी • ताज़ा सुविधा घर तक</span>
+            </div>
           </div>
           <h1 class="text-[22px] font-extrabold text-on-surface leading-tight font-hindi">
             <span data-i18n="p1_hero_title_1">"अपने गाँव की दुकान,</span><br/>
             <span class="text-secondary" data-i18n="p1_hero_title_2">आपके घर तक"</span>
           </h1>
-          <p class="text-xs text-on-surface-variant font-medium mt-1.5 flex items-center gap-1.5">
+          <p class="text-xs text-on-surface-variant font-medium mt-1.5 flex items-center justify-center gap-1.5">
             <span class="material-symbols-outlined text-primary text-[15px]">local_shipping</span>
             <span data-i18n="p1_hero_desc">विश्वसनीय गाँव के किराना एवं स्थानीय किसानों से सीधे</span>
           </p>
@@ -575,9 +577,9 @@
             <button type="button" id="p2-search-clear-btn" onclick="clearStoreSearch()" class="hidden text-outline hover:text-on-surface text-[16px] p-1">
               <span class="material-symbols-outlined text-[18px]">close</span>
             </button>
-            <button onclick="triggerVoiceSearch()" type="button" class="h-9 px-3 rounded-xl bg-secondary text-white text-[10px] font-bold flex items-center gap-1 active:scale-95 shrink-0">
-              <span class="material-symbols-outlined text-[16px] animate-pulse">mic</span>
-              <span data-i18n="p2_voice_search">बोल कर खोजें</span>
+            <button id="p2-voice-search-btn" onclick="triggerVoiceSearch()" type="button" class="h-9 px-3 rounded-xl bg-secondary text-white text-[10px] font-bold flex items-center gap-1 active:scale-95 shrink-0 transition-all">
+              <span id="p2-voice-search-icon" class="material-symbols-outlined text-[16px]">mic</span>
+              <span id="p2-voice-search-text" data-i18n="p2_voice_search">बोल कर खोजें</span>
             </button>
           </div>
           <!-- Smart Product & Store Discovery Overlay -->
@@ -847,69 +849,109 @@
       <!-- PHASE 4.1: CART REVIEW                                                -->
       <!-- ===================================================================== -->
       <section id="view-p4-cart" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 overflow-y-auto space-y-4">
-        <!-- Dynamic Delivery Fee Tier Banner -->
-        <div class="bg-primary/5 rounded-2xl p-4 shadow-xs border border-primary/20">
-          <div class="flex items-center justify-between text-xs font-bold text-primary mb-1">
-            <span id="p4-delivery-qualify-text">🛵 गाँव मित्र डिलीवरी शुल्क: ₹30</span>
-            <span id="p4-delivery-tier-tag" class="text-[10px] bg-primary/15 text-primary px-2.5 py-0.5 rounded-full font-bold">₹200+ पर ₹5 छूट</span>
+        
+        <!-- Empty Cart Illustration & State (Shown when cart items = 0) -->
+        <div id="p4-empty-cart-state" class="hidden flex flex-col items-center justify-center text-center py-12 px-4 space-y-4 bg-white rounded-3xl border border-surface-container-high shadow-mobile-card">
+          <div class="w-24 h-24 rounded-full bg-emerald-50 border-2 border-emerald-100 flex items-center justify-center text-primary shadow-inner">
+            <span class="material-symbols-outlined text-[48px] text-emerald-600">shopping_basket</span>
           </div>
-          <p id="p4-delivery-tier-sub" class="text-[11px] text-on-surface-variant mt-0.5">
-            ₹200 से अधिक के ऑर्डर पर केवल ₹25 डिलीवरी शुल्क (₹5 की सीधी बचत)
-          </p>
-        </div>
-
-        <!-- Cart Store Header -->
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-1.5">
-            <h3 class="text-xs font-extrabold text-on-surface uppercase" data-i18n="p4_items_title">थैले का सामान</h3>
-            <span id="p4-cart-count-pill" class="text-[10px] font-bold bg-surface-container-high px-2.5 py-0.5 rounded-full">3 सामान</span>
+          <div class="space-y-1.5">
+            <h3 class="text-lg font-extrabold text-on-surface" data-i18n="p4_empty_title">आपकी टोकरी खाली है</h3>
+            <p class="text-xs text-on-surface-variant max-w-xs mx-auto" data-i18n="p4_empty_subtitle">गाँव के बाज़ार से ताज़ा सामान, फल, सब्ज़ी व राशन चुनें और घर मंगाएँ।</p>
           </div>
-          <button onclick="clearFullCart()" class="text-error font-bold text-xs flex items-center gap-0.5 active:opacity-60">
-            <span class="material-symbols-outlined text-[14px]">delete_sweep</span>
-            <span>खाली करें</span>
+          <button onclick="navigateToPhase('dashboard')" class="mt-2 h-11 px-6 rounded-xl bg-primary text-white text-xs font-bold shadow-md flex items-center gap-2 active:scale-95 transition-all">
+            <span class="material-symbols-outlined text-[18px]">storefront</span>
+            <span data-i18n="p4_empty_btn">गाँव बाज़ार देखें</span>
           </button>
         </div>
 
-        <!-- Cart Items List Container -->
-        <div id="p4-cart-items-container" class="flex flex-col gap-3">
-          <!-- Dynamically filled with line items & steppers -->
-        </div>
+        <!-- Active Cart Wrapper (Shown when cart items > 0) -->
+        <div id="p4-active-cart-wrapper" class="flex flex-col gap-4">
+          <!-- Dynamic Delivery Fee Tier Banner & Free Delivery Incentive -->
+          <div class="bg-primary/5 rounded-2xl p-4 shadow-xs border border-primary/20">
+            <div class="flex items-center justify-between text-xs font-bold text-primary mb-1">
+              <span id="p4-delivery-qualify-text">🛵 गाँव मित्र डिलीवरी शुल्क: ₹15</span>
+              <span id="p4-delivery-tier-tag" class="text-[10px] bg-primary/15 text-primary px-2.5 py-0.5 rounded-full font-bold">0-2 km • 30 Mins</span>
+            </div>
+            <p id="p4-delivery-tier-sub" class="text-[11px] text-on-surface-variant mt-0.5">
+              ₹299 से अधिक के ऑर्डर पर डिलीवरी बिल्कुल मुफ़्त (FREE Delivery)
+            </p>
+          </div>
 
-        <!-- Transparent Bill Breakdown Card -->
-        <div class="bg-white rounded-2xl p-5 shadow-mobile-card border border-surface-container-high flex flex-col gap-2.5">
-          <h4 class="text-xs font-extrabold text-on-surface uppercase" data-i18n="p4_bill_details">बिल का पूरा हिसाब</h4>
-          <div class="flex justify-between text-xs text-on-surface-variant">
-            <span data-i18n="p4_item_total">सामान की कुल राशि</span>
-            <span id="p4-bill-subtotal" class="font-bold text-on-surface">₹565.00</span>
+          <!-- Cart Store Header -->
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-1.5">
+              <h3 class="text-xs font-extrabold text-on-surface uppercase" data-i18n="p4_items_title">थैले का सामान</h3>
+              <span id="p4-cart-count-pill" class="text-[10px] font-bold bg-surface-container-high px-2.5 py-0.5 rounded-full">0 सामान</span>
+            </div>
+            <button onclick="clearFullCart()" class="text-error font-bold text-xs flex items-center gap-0.5 active:opacity-60">
+              <span class="material-symbols-outlined text-[14px]">delete_sweep</span>
+              <span>खाली करें</span>
+            </button>
           </div>
-          <div class="flex justify-between text-xs text-on-surface-variant">
-            <span data-i18n="p4_delivery_fee">गाँव मित्र डिलीवरी शुल्क</span>
-            <span id="p4-bill-delivery" class="font-bold text-primary">मुफ़्त (₹0.00)</span>
+
+          <!-- Cart Items List Container -->
+          <div id="p4-cart-items-container" class="flex flex-col gap-3">
+            <!-- Dynamically filled with line items & steppers -->
           </div>
-          <div class="flex justify-between text-xs text-on-surface-variant">
-            <span data-i18n="p4_platform_fee">सहकारी सेवा शुल्क</span>
-            <span id="p4-bill-platform" class="font-bold text-on-surface">₹3.00</span>
-          </div>
-          <div class="flex justify-between text-xs text-primary font-bold bg-primary-fixed/20 p-2.5 rounded-lg">
-            <span data-i18n="p4_savings">इस ऑर्डर पर आपकी कुल बचत</span>
-            <span id="p4-bill-savings">₹65.00</span>
-          </div>
-          <div class="flex justify-between text-base font-extrabold text-on-surface border-t pt-2.5">
-            <span data-i18n="p4_to_pay">कुल देय राशि</span>
-            <span id="p4-bill-total" class="text-primary font-black">₹568.00</span>
+
+          <!-- Swiggy-Style Bill Breakdown Card -->
+          <div id="p4-bill-card" class="bg-white rounded-2xl p-5 shadow-mobile-card border border-surface-container-high flex flex-col gap-3">
+            <div class="flex items-center gap-2 pb-2 border-b border-surface-container">
+              <span class="material-symbols-outlined text-primary text-[18px]">receipt_long</span>
+              <h4 class="text-xs font-extrabold text-on-surface uppercase tracking-wider" data-i18n="p4_bill_details">बिल का पूरा हिसाब</h4>
+            </div>
+
+            <!-- Item Total -->
+            <div class="flex justify-between items-center text-xs text-on-surface-variant">
+              <span data-i18n="p4_item_total">सामान की कुल राशि</span>
+              <span id="p4-bill-subtotal" class="font-bold text-on-surface">₹0.00</span>
+            </div>
+
+            <!-- Delivery Fee (Dynamic with Free threshold strike-through) -->
+            <div class="flex justify-between items-center text-xs text-on-surface-variant">
+              <div class="flex items-center gap-1">
+                <span data-i18n="p4_delivery_fee">गाँव मित्र डिलीवरी शुल्क</span>
+                <span class="material-symbols-outlined text-outline text-[14px]" title="Dynamic distance delivery fee">info</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <span id="p4-bill-delivery" class="font-bold text-on-surface">₹0.00</span>
+              </div>
+            </div>
+
+            <!-- Platform Fee -->
+            <div class="flex justify-between items-center text-xs text-on-surface-variant">
+              <div class="flex items-center gap-1">
+                <span data-i18n="p4_platform_fee">सहकारी सेवा शुल्क</span>
+                <span class="material-symbols-outlined text-outline text-[14px]" title="Flat ₹3 platform maintenance fee">help</span>
+              </div>
+              <span id="p4-bill-platform" class="font-bold text-on-surface">₹0.00</span>
+            </div>
+
+            <!-- Savings Banner -->
+            <div id="p4-bill-savings-wrapper" class="flex justify-between items-center text-xs text-emerald-800 font-bold bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl">
+              <span data-i18n="p4_savings">इस ऑर्डर पर आपकी कुल बचत</span>
+              <span id="p4-bill-savings" class="font-extrabold text-emerald-700">₹0.00</span>
+            </div>
+
+            <!-- Grand Total -->
+            <div class="flex justify-between items-center text-base font-extrabold text-on-surface border-t border-surface-container pt-3">
+              <span data-i18n="p4_to_pay">कुल देय राशि</span>
+              <span id="p4-bill-total" class="text-primary font-black text-lg">₹0.00</span>
+            </div>
           </div>
         </div>
 
         <!-- Proceed to Checkout Sticky CTA (Fixed & Accessible) -->
-        <div class="fixed bottom-0 left-0 right-0 w-full z-50 bg-white px-4 py-3 border-t border-surface-container-high pb-safe shadow-sticky-bar">
+        <div id="p4-proceed-bar" class="fixed bottom-0 left-0 right-0 w-full z-50 bg-white px-4 py-3 border-t border-surface-container-high pb-safe shadow-sticky-bar">
           <!-- Minimum Order Value (MOV) Alert -->
           <div id="p4-mov-alert" class="hidden mb-2.5 p-3 rounded-xl bg-amber-100 border-2 border-amber-600 text-amber-950 font-bold text-xs items-center gap-2.5 shadow-sm">
             <span class="material-symbols-outlined text-amber-700 text-[20px] shrink-0 font-bold">warning</span>
-            <span id="p4-mov-alert-text" class="leading-tight font-extrabold text-[11px] sm:text-xs">Minimum order is ₹100 / कम से कम ₹100 का ऑर्डर करें. Add ₹X more.</span>
+            <span id="p4-mov-alert-text" class="leading-tight font-extrabold text-[11px] sm:text-xs">Minimum order is ₹99 / कम से कम ₹99 का ऑर्डर करें. Add ₹X more.</span>
           </div>
           <button id="p4-btn-proceed" onclick="navigateToPhase('checkout')" class="w-full h-[52px] rounded-xl bg-primary text-white text-base font-bold shadow-md flex items-center justify-between px-4 active:scale-98 transition-all">
             <div class="flex flex-col text-left leading-tight">
-              <span id="p4-checkout-btn-price" class="text-sm font-black">कुल ₹568.00</span>
+              <span id="p4-checkout-btn-price" class="text-sm font-black">कुल ₹0.00</span>
               <span id="p4-checkout-btn-sub" class="text-[10px] text-primary-fixed font-semibold">पता चुनें और भुगतान करें</span>
             </div>
             <div class="flex items-center gap-1">
@@ -961,10 +1003,13 @@
 
         <!-- Payment Method Options (Rural Trust: COD vs UPI) -->
         <div class="bg-white rounded-2xl p-5 shadow-mobile-card border border-surface-container-high flex flex-col gap-3">
-          <h4 class="text-xs font-extrabold text-on-surface uppercase" data-i18n="p4_payment_opts">भुगतान का तरीका</h4>
+          <div class="flex items-center justify-between pb-1 border-b border-surface-container">
+            <h4 class="text-xs font-extrabold text-on-surface uppercase tracking-wider" data-i18n="p4_payment_opts">भुगतान का तरीका (Payment Mode)</h4>
+            <span class="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">100% सुरक्षित</span>
+          </div>
           
           <!-- Option 1: COD (Default) -->
-          <label onclick="selectPaymentMethod('COD')" class="p-3.5 rounded-xl border-2 border-primary bg-primary/5 flex items-center justify-between cursor-pointer" id="pay-card-cod">
+          <label onclick="selectPaymentMethod('COD')" class="p-3.5 rounded-xl border-2 border-primary bg-primary/5 flex items-center justify-between cursor-pointer transition-all" id="pay-card-cod">
             <div class="flex items-center gap-2.5">
               <input type="radio" name="payment_mode" value="COD" checked class="accent-primary w-4 h-4"/>
               <div>
@@ -972,19 +1017,23 @@
                 <span class="text-[10px] text-on-surface-variant mt-0.5" data-i18n="p4_pay_cod_sub">सामान घर पर मिलने पर ही नकद रुपये दें</span>
               </div>
             </div>
-            <span class="text-[10px] font-bold text-primary bg-white px-2.5 py-0.5 rounded-full shadow-xs">सुरक्षित</span>
+            <span class="text-[10px] font-bold text-primary bg-white px-2.5 py-0.5 rounded-full shadow-xs border border-primary/20">सुरक्षित</span>
           </label>
 
           <!-- Option 2: UPI (PhonePe, GPay, Paytm) -->
-          <label onclick="selectPaymentMethod('UPI')" class="p-3.5 rounded-xl border border-surface-container-high bg-surface-container-low flex items-center justify-between cursor-pointer" id="pay-card-upi">
+          <label onclick="selectPaymentMethod('UPI')" class="p-3.5 rounded-xl border border-surface-container-high bg-surface-container-low flex items-center justify-between cursor-pointer transition-all" id="pay-card-upi">
             <div class="flex items-center gap-2.5">
               <input type="radio" name="payment_mode" value="UPI" class="accent-primary w-4 h-4"/>
               <div>
-                <span class="text-xs font-bold text-on-surface block" id="pay-upi-lbl">ऑनलाइन यूपीआई (गूगल पे, फोनपे, पेटीएम)</span>
-                <span class="text-[10px] text-on-surface-variant mt-0.5">तुरंत डिजिटल भुगतान</span>
+                <span class="text-xs font-bold text-on-surface block" id="pay-upi-lbl">ऑनलाइन यूपीआई (GPay, PhonePe, Paytm)</span>
+                <span class="text-[10px] text-on-surface-variant mt-0.5">तुरंत सुरक्षित डिजिटल भुगतान</span>
               </div>
             </div>
-            <span class="text-base">📱</span>
+            <div class="flex items-center gap-1">
+              <span class="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded text-[9px] font-black">GPay</span>
+              <span class="px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded text-[9px] font-black">PhonePe</span>
+              <span class="px-1.5 py-0.5 bg-sky-100 text-sky-700 rounded text-[9px] font-black">Paytm</span>
+            </div>
           </label>
         </div>
 
@@ -1001,7 +1050,7 @@
       <!-- ===================================================================== -->
       <!-- PHASE 5: LIVE ORDER TRACKING (Order Placed -> Delivered)              -->
       <!-- ===================================================================== -->
-      <section id="view-p5-tracking" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 overflow-y-auto space-y-4">
+      <section id="view-p5-tracking" class="screen-view hidden flex-col w-full px-4 pt-3 pb-6 flex-1 min-h-0 overflow-y-auto space-y-4">
         <!-- Order ETA Hero Card -->
         <div class="bg-white rounded-2xl p-5 shadow-mobile-card border border-surface-container-high">
           <div class="flex items-center justify-between mb-3">
@@ -1142,21 +1191,17 @@
           </div>
         </div>
 
-        <!-- Call Runner & Dukandaar Action Bar -->
-        <div class="grid grid-cols-2 gap-2.5">
-          <a href="tel:9876543210" class="h-12 rounded-xl bg-surface-container-high text-primary font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 shadow-xs">
-            <span class="material-symbols-outlined text-[16px]">call</span>
-            <span id="btn-call-runner-lbl">गाँव मित्र को कॉल करें</span>
-          </a>
-          <a href="tel:9876543210" class="h-12 rounded-xl bg-surface-container-high text-on-surface font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 shadow-xs">
-            <span class="material-symbols-outlined text-[16px]">storefront</span>
-            <span id="btn-call-store-lbl">दुकानदार को कॉल करें</span>
+        <!-- Call Delivery Partner Action Bar (Shopkeeper call removed per rural privacy) -->
+        <div class="w-full">
+          <a href="tel:9876543210" id="btn-call-runner" class="w-full h-12 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary font-bold text-xs flex items-center justify-center gap-2 active:scale-95 shadow-xs border border-primary/20 transition-all">
+            <span class="material-symbols-outlined text-[18px]">call</span>
+            <span id="btn-call-runner-lbl" data-i18n="p5_call_runner_btn">डिलीवरी पार्टनर को कॉल करें</span>
           </a>
         </div>
 
-        <!-- Back to Home / Enter Market Button -->
-        <button id="p5-back-home-btn" onclick="navigateToPhase('dashboard')" class="w-full h-12 rounded-xl bg-primary text-white text-sm font-bold shadow-md flex items-center justify-center gap-2 active:scale-98">
-          <span class="material-symbols-outlined text-[18px]">home</span>
+        <!-- Back to Home / Enter Market Button (Full-width, large) -->
+        <button id="p5-back-home-btn" onclick="navigateToPhase('dashboard')" class="w-full min-h-[52px] rounded-2xl bg-primary hover:bg-primary-dark text-white text-base font-extrabold shadow-md flex items-center justify-center gap-2 active:scale-98 transition-all">
+          <span class="material-symbols-outlined text-[20px]">storefront</span>
           <span data-i18n="p5_back_home_btn">मुख्य बाज़ार पर वापस जाएँ</span>
         </button>
       </section>
@@ -1589,7 +1634,7 @@
         header_sub: "",
         lang_btn: "हिंदी",
         // Phase 1
-        p1_hero_badge: "शुद्ध देसी • ताज़ा सुविधा घर तक",
+        p1_hero_badge: "100% शुद्ध देसी • ताज़ा सुविधा घर तक",
         p1_hero_title_1: "\"अपने गाँव की दुकान,",
         p1_hero_title_2: "आपके घर तक\"",
         p1_hero_desc: "विश्वसनीय गाँव के किराना एवं स्थानीय किसानों से सीधे",
@@ -1646,6 +1691,9 @@
         p3_call_shop: "दुकानदार को कॉल करें",
         p3_view_cart_btn: "थैला देखें",
         // Phase 4
+        p4_empty_title: "आपकी टोकरी खाली है",
+        p4_empty_subtitle: "गाँव के बाज़ार से ताज़ा सामान, फल, सब्ज़ी व राशन चुनें और घर मंगाएँ।",
+        p4_empty_btn: "गाँव बाज़ार देखें",
         p4_items_title: "थैले का सामान",
         p4_bill_details: "बिल का पूरा हिसाब",
         p4_item_total: "सामान की कुल राशि",
@@ -1663,6 +1711,7 @@
         p4_pay_cod_sub: "सामान घर पर मिलने पर ही नकद रुपये दें",
         p4_place_order_btn: "ऑर्डर कन्फर्म करें",
         // Phase 5
+        p5_call_runner_btn: "डिलीवरी पार्टनर को कॉल करें",
         p5_eta_label: "अनुमानित समय",
         p5_eta_sub: "सामान सीधे आपके द्वार पर पहुँच रहा है",
         p5_runner_banner: "गाँव मित्र सामान लेकर आपके घर की ओर निकल चुके हैं!",
@@ -1761,6 +1810,9 @@
         p3_call_shop: "Call Store",
         p3_view_cart_btn: "View Cart",
         // Phase 4
+        p4_empty_title: "Your cart is empty",
+        p4_empty_subtitle: "Explore fresh groceries, seeds, and essentials from local village shops.",
+        p4_empty_btn: "Explore Village Market",
         p4_items_title: "Cart Items",
         p4_bill_details: "Bill Details",
         p4_item_total: "Item Total",
@@ -1778,6 +1830,7 @@
         p4_pay_cod_sub: "Pay cash in hand upon doorstep arrival",
         p4_place_order_btn: "Confirm Order",
         // Phase 5
+        p5_call_runner_btn: "Call Delivery Partner",
         p5_eta_label: "Estimated Arrival",
         p5_eta_sub: "Direct to your doorstep",
         p5_runner_banner: "Your village delivery runner is on the way!",
@@ -1875,13 +1928,7 @@
         return await response.json();
       } catch (err) {
         console.warn(`[GaonBazaar Backend API]: ${endpoint}`, err.message || err);
-        const isOffline = !window.navigator.onLine || (err.message && (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')));
-        if (isOffline) {
-          showAudioToast(
-            AppStore.lang === 'hi' ? 'ऑफ़लाइन मोड' : 'Offline Rural Mode',
-            AppStore.lang === 'hi' ? 'सर्वर डिस्कनेक्ट है, स्थानीय कैश सुरक्षित है।' : 'Server disconnected. Saved in local village storage.'
-          );
-        }
+        // Silently handled in background without spamming technical toast
         throw err;
       }
     }
@@ -2076,7 +2123,7 @@
       // Update Phase 4.2 Labels
       const payUpiLbl = document.getElementById('pay-upi-lbl');
       const p4Sub = document.getElementById('p4-checkout-btn-sub');
-      if (payUpiLbl) payUpiLbl.innerText = (lang === 'hi') ? 'ऑनलाइन यूपीआई (गूगल पे, फोनपे, पेटीएम)' : 'UPI (Google Pay, PhonePe, Paytm)';
+      if (payUpiLbl) payUpiLbl.innerText = (lang === 'hi') ? 'ऑनलाइन यूपीआई (GPay, PhonePe, Paytm)' : 'UPI (Google Pay, PhonePe, Paytm)';
       if (p4Sub) p4Sub.innerText = (lang === 'hi') ? 'पता चुनें और भुगतान करें' : 'Select Address & Pay';
 
       // Update Phase 5 Labels
@@ -2092,7 +2139,7 @@
       if (p5Pay) p5Pay.innerText = (lang === 'hi') ? 'हाथ में नकद' : 'COD (Cash)';
       if (p5Route) p5Route.innerText = (lang === 'hi') ? 'रास्ता (१.२ किमी दूर)' : 'Route Trail (1.2 km away)';
       if (p5Sim) p5Sim.innerText = (lang === 'hi') ? 'अगला चरण देखें ⚡' : 'Next Step ⚡';
-      if (callRunner) callRunner.innerText = (lang === 'hi') ? 'गाँव मित्र को कॉल करें' : 'Call Runner';
+      if (callRunner) callRunner.innerText = (lang === 'hi') ? 'डिलीवरी पार्टनर को कॉल करें' : 'Call Delivery Partner';
       if (callStore) callStore.innerText = (lang === 'hi') ? 'दुकानदार को कॉल करें' : 'Call Shopkeeper';
 
       // Update phone hint if visible based on current state
@@ -2153,12 +2200,12 @@
       if (cleanPhase === 'checkout') {
         const cartItems = AppStore.catalog ? AppStore.catalog.filter(i => i.qty > 0) : [];
         const subtotal = cartItems.reduce((acc, i) => acc + (i.price * i.qty), 0);
-        if (subtotal < 100) {
-          console.warn('Cannot navigate to checkout: Cart subtotal is below ₹100 Minimum Order Value');
-          const diff = 100 - subtotal;
+        if (subtotal < 99) {
+          console.warn('Cannot navigate to checkout: Cart subtotal is below ₹99 Minimum Order Value');
+          const diff = 99 - subtotal;
           const diffStr = Number.isInteger(diff) ? diff : diff.toFixed(2);
           if (typeof showAudioToast === 'function') {
-            showAudioToast('Minimum Order / न्यूनतम ऑर्डर', `Minimum order is ₹100 / कम से कम ₹100 का ऑर्डर करें. Add ₹${diffStr} more.`);
+            showAudioToast('Minimum Order / न्यूनतम ऑर्डर', `Minimum order is ₹99 / कम से कम ₹99 का ऑर्डर करें. Add ₹${diffStr} more.`);
           }
           return;
         }
@@ -2477,9 +2524,7 @@
           badge.classList.add('text-primary', 'font-bold');
         }
         if (btnText) btnText.innerText = (AppStore.lang === 'hi') ? '✓ प्राप्त हुआ' : '✓ Found';
-        if (typeof showAudioToast === 'function') {
-          showAudioToast("GPS Coordinates", coordStr);
-        }
+        // GPS saved silently in background without technical toast spam
       };
 
       const handleError = (err) => {
@@ -2705,7 +2750,7 @@
         electronics: { hi: 'बिजली का सामान व औज़ार', en: 'Electricals & Hand Tools' }
       };
 
-      listContainer.innerHTML = stores.map(store => {
+      listContainer.innerHTML = stores.map((store, idx) => {
         const stType = (store.store_type || store.category || 'kirana').toLowerCase();
         const icon = typeIcons[stType] || 'storefront';
         const title = isHi ? (store.hindi_name || store.name) : store.name;
@@ -2717,6 +2762,9 @@
         const statusPill = store.is_open
           ? `<span class="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full shrink-0">${isHi ? 'खुली है' : 'Open'}</span>`
           : `<span class="text-[10px] font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded-full shrink-0">${isHi ? 'बंद है' : 'Closed'}</span>`;
+
+        const distIdAttr = (idx === 0 || store.id === 'sharma_brothers') ? 'id="store-1-dist"' : (idx === 1 || store.id === 'kisan_agri') ? 'id="store-2-dist"' : '';
+        const etaIdAttr = (idx === 0 || store.id === 'sharma_brothers') ? 'id="store-1-eta"' : (idx === 1 || store.id === 'kisan_agri') ? 'id="store-2-eta"' : '';
 
         return `
           <div onclick="openStoreView('${store.id}')" class="btn-tactile p-4 rounded-2xl bg-white shadow-mobile-card border border-surface-container-high flex flex-col gap-3 cursor-pointer hover:border-primary">
@@ -2734,9 +2782,9 @@
                   <div class="flex items-center gap-2 mt-1 text-[11px] text-on-surface-variant font-semibold">
                     ${ratingHtml}
                     <span>•</span>
-                    <span>${store.distance_km || 1.2} km</span>
+                    <span ${distIdAttr}>${store.distance_km || 1.2} km</span>
                     <span>•</span>
-                    <span>${store.eta_mins || '30 Mins'}</span>
+                    <span ${etaIdAttr}>${store.eta_mins || '30 Mins'}</span>
                   </div>
                 </div>
               </div>
@@ -3010,13 +3058,79 @@
     window.openStoreView = openStoreView;
     window.selectCategory = selectCategory;
 
+    let activeVoiceRecognition = null;
     function triggerVoiceSearch() {
-      showAudioToast('Voice Search Active', 'बोलें: "आशीर्वाद आटा" या "सरसों तेल"');
-      setTimeout(() => {
-        const input = document.getElementById('p2-search-input');
-        input.value = 'Atta';
-        filterStoreCatalog('Atta');
-      }, 1500);
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const voiceBtn = document.getElementById('p2-voice-search-btn');
+      const voiceText = document.getElementById('p2-voice-search-text');
+      const searchInput = document.getElementById('p2-search-input');
+
+      if (!SpeechRecognition) {
+        if (searchInput) {
+          searchInput.placeholder = (AppStore.lang === 'hi') ? 'माइक उपलब्ध नहीं - यहाँ लिखें...' : 'Mic not supported - Type here...';
+          searchInput.focus();
+        }
+        return;
+      }
+
+      if (activeVoiceRecognition) {
+        try { activeVoiceRecognition.stop(); } catch (e) {}
+        activeVoiceRecognition = null;
+        return;
+      }
+
+      try {
+        const recognition = new SpeechRecognition();
+        activeVoiceRecognition = recognition;
+        recognition.lang = (AppStore.lang === 'hi') ? 'hi-IN' : 'en-IN';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        if (voiceBtn) {
+          voiceBtn.classList.remove('bg-secondary');
+          voiceBtn.classList.add('bg-red-600', 'animate-pulse');
+        }
+        if (voiceText) {
+          voiceText.innerText = (AppStore.lang === 'hi') ? 'सुन रहे हैं...' : 'Listening...';
+        }
+        if (searchInput) {
+          searchInput.placeholder = (AppStore.lang === 'hi') ? 'बोलिए, हम सुन रहे हैं...' : 'Speak now, listening...';
+        }
+
+        recognition.onresult = (event) => {
+          if (event.results && event.results[0] && event.results[0][0]) {
+            const transcript = event.results[0][0].transcript;
+            if (searchInput) {
+              searchInput.value = transcript;
+              filterStoreCatalog(transcript);
+            }
+          }
+        };
+
+        recognition.onerror = (event) => {
+          console.warn('SpeechRecognition error:', event.error);
+        };
+
+        recognition.onend = () => {
+          activeVoiceRecognition = null;
+          if (voiceBtn) {
+            voiceBtn.classList.remove('bg-red-600', 'animate-pulse');
+            voiceBtn.classList.add('bg-secondary');
+          }
+          if (voiceText) {
+            voiceText.innerText = (AppStore.lang === 'hi') ? 'बोल कर खोजें' : 'Voice Search';
+          }
+          if (searchInput) {
+            searchInput.placeholder = (AppStore.lang === 'hi') ? 'किराना, दवाई, बीज खोजें...' : 'Search Kirana, medicine, seeds...';
+          }
+        };
+
+        recognition.start();
+      } catch (err) {
+        console.warn('SpeechRecognition start failed:', err);
+        activeVoiceRecognition = null;
+        if (searchInput) searchInput.focus();
+      }
     }
 
     function clearStoreSearch() {
@@ -3385,7 +3499,15 @@
       const item = AppStore.catalog.find(i => i.id === itemId);
       if (!item) return;
 
+      const prevQty = item.qty;
       item.qty = Math.max(0, item.qty + delta);
+      if (item.qty > prevQty && typeof showAudioToast === 'function') {
+        const itemName = (AppStore.lang === 'hi' && item.name_hi) ? item.name_hi : (item.name || item.name_en);
+        showAudioToast(
+          AppStore.lang === 'hi' ? 'थैले में जोड़ा गया' : 'Added to Cart',
+          AppStore.lang === 'hi' ? `${itemName} थैले में जोड़ा गया` : `${itemName} added to cart`
+        );
+      }
       renderProductCatalog(AppStore.activeStoreCategory || 'all');
       updateCartCalculations();
     }
@@ -3415,7 +3537,7 @@
       const totalCount = cartItems.reduce((acc, i) => acc + i.qty, 0);
       const subtotal = cartItems.reduce((acc, i) => acc + (i.price * i.qty), 0);
       const originalTotal = cartItems.reduce((acc, i) => acc + (i.mrp * i.qty), 0);
-      const savings = originalTotal - subtotal;
+      const savings = Math.max(0, originalTotal - subtotal);
       const isHi = (AppStore.lang === 'hi');
 
       // Update Cart Bar in Store View
@@ -3437,55 +3559,96 @@
       }
 
       // Update Phase 4.1 Cart Screen
+      const emptyState = document.getElementById('p4-empty-cart-state');
+      const activeWrapper = document.getElementById('p4-active-cart-wrapper');
+      const proceedBar = document.getElementById('p4-proceed-bar');
       const qualifyText = document.getElementById('p4-delivery-qualify-text');
-      const progressPercent = document.getElementById('p4-progress-percent');
-      const progressFill = document.getElementById('p4-progress-fill');
       const countPill = document.getElementById('p4-cart-count-pill');
       const billSubtotal = document.getElementById('p4-bill-subtotal');
       const billDelivery = document.getElementById('p4-bill-delivery');
+      const billPlatform = document.getElementById('p4-bill-platform');
       const billSavings = document.getElementById('p4-bill-savings');
       const billTotal = document.getElementById('p4-bill-total');
       const checkoutBtnPrice = document.getElementById('p4-checkout-btn-price');
       const placeOrderText = document.getElementById('place-order-text');
+      const btnProceed = document.getElementById('p4-btn-proceed');
+      const movAlert = document.getElementById('p4-mov-alert');
+      const movAlertText = document.getElementById('p4-mov-alert-text');
+      const tierTag = document.getElementById('p4-delivery-tier-tag');
+      const tierSub = document.getElementById('p4-delivery-tier-sub');
 
-      // Dynamic Delivery Fee based on Haversine Distance:
-      // 0 - 2.0 km (Local): Delivery ₹15 (Runner ₹10, Admin ₹5), ETA "30 Mins"
-      // 2.1 - 5.0 km (Village Edge): Delivery ₹25 (Runner ₹15, Admin ₹10), ETA "30 Mins"
-      // 5.1 - 8.0 km (Long Distance): Delivery ₹40 (Runner ₹30, Admin ₹10), ETA "45-60 Mins"
-      // > 8.0 km: Reject (Outside delivery zone)
       const dist = getOrderDistanceKm();
       const isOutOfRange = (dist > 8.0);
-      let deliveryFee = 0;
-      let etaEstimate = (dist > 5.0) ? '45-60 Mins' : '30 Mins';
+      const MIN_ORDER_VALUE = 99;
+      const FREE_DELIVERY_THRESHOLD = 299;
 
-      if (subtotal > 0) {
-        if (dist <= 2.0) {
-          deliveryFee = 15;
-        } else if (dist <= 5.0) {
-          deliveryFee = 25;
-        } else if (dist <= 8.0) {
-          deliveryFee = 40;
-        } else {
-          deliveryFee = 0;
+      if (totalCount === 0) {
+        // EMPTY CART STATE: 0 items, ₹0.00 platform fee, proceed button disabled
+        if (emptyState) emptyState.classList.remove('hidden');
+        if (activeWrapper) activeWrapper.classList.add('hidden');
+        if (proceedBar) proceedBar.classList.add('hidden');
+        if (countPill) countPill.innerText = isHi ? '0 सामान' : '0 items';
+        if (billSubtotal) billSubtotal.innerText = '₹0.00';
+        if (billDelivery) billDelivery.innerText = '₹0.00';
+        if (billPlatform) billPlatform.innerText = '₹0.00';
+        if (billSavings) billSavings.innerText = '₹0.00';
+        if (billTotal) billTotal.innerText = '₹0.00';
+        if (checkoutBtnPrice) checkoutBtnPrice.innerText = isHi ? 'कुल ₹0.00' : 'Total ₹0.00';
+        if (placeOrderText) placeOrderText.innerText = isHi ? 'ऑर्डर कन्फर्म करें • ₹0' : 'Confirm Order • ₹0';
+
+        if (btnProceed) {
+          btnProceed.disabled = true;
+          btnProceed.classList.add('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+          btnProceed.classList.remove('active:scale-98');
         }
+        if (movAlert) {
+          movAlert.classList.add('hidden');
+          movAlert.classList.remove('flex');
+        }
+        renderCartLineItems();
+        return;
       }
-      const platformFee = subtotal > 0 ? 3 : 0;
+
+      // ACTIVE CART STATE (totalCount > 0)
+      if (emptyState) emptyState.classList.add('hidden');
+      if (activeWrapper) activeWrapper.classList.remove('hidden');
+      if (proceedBar) proceedBar.classList.remove('hidden');
+
+      // Base Delivery Fee based on Haversine distance
+      let baseDeliveryFee = 15;
+      if (dist <= 2.0) {
+        baseDeliveryFee = 15;
+      } else if (dist <= 5.0) {
+        baseDeliveryFee = 25;
+      } else if (dist <= 8.0) {
+        baseDeliveryFee = 40;
+      } else {
+        baseDeliveryFee = 0;
+      }
+
+      // Free Delivery logic: if subtotal >= ₹299, delivery fee is ₹0
+      const isFreeDelivery = (subtotal >= FREE_DELIVERY_THRESHOLD && !isOutOfRange);
+      const deliveryFee = isFreeDelivery ? 0 : baseDeliveryFee;
+      const platformFee = 3;
       const finalPayable = subtotal + deliveryFee + platformFee;
 
       if (countPill) countPill.innerText = isHi ? `${totalCount} सामान` : `${totalCount} items`;
       if (billSubtotal) billSubtotal.innerText = `₹${subtotal}.00`;
-      if (billDelivery) billDelivery.innerText = deliveryFee === 0 ? '₹0.00' : `₹${deliveryFee}.00`;
+
+      if (billDelivery) {
+        if (isFreeDelivery) {
+          billDelivery.innerHTML = `<s class="text-slate-400 font-normal">₹${baseDeliveryFee}.00</s> <span class="text-emerald-700 font-black ml-1">मुफ़्त (FREE)</span>`;
+        } else {
+          billDelivery.innerText = `₹${deliveryFee}.00`;
+        }
+      }
+      if (billPlatform) billPlatform.innerText = `₹${platformFee}.00`;
       if (billSavings) billSavings.innerText = `₹${savings}.00`;
       if (billTotal) billTotal.innerText = `₹${finalPayable}.00`;
       if (checkoutBtnPrice) checkoutBtnPrice.innerText = isHi ? `कुल ₹${finalPayable}.00` : `Total ₹${finalPayable}.00`;
       if (placeOrderText) placeOrderText.innerText = isHi ? `ऑर्डर कन्फर्म करें • ₹${finalPayable}` : `Confirm Order • ₹${finalPayable}`;
 
-      // Strict Minimum Order Value (MOV) of ₹100 Validation & Zone Check
-      const movAlert = document.getElementById('p4-mov-alert');
-      const movAlertText = document.getElementById('p4-mov-alert-text');
-      const btnProceed = document.getElementById('p4-btn-proceed');
-      const MIN_ORDER_VALUE = 100;
-
+      // Strict Minimum Order Value (MOV) of ₹99 Validation & Zone Check
       if (btnProceed) {
         if (subtotal < MIN_ORDER_VALUE || isOutOfRange) {
           btnProceed.disabled = true;
@@ -3499,11 +3662,11 @@
       }
 
       if (movAlert) {
-        if (subtotal > 0 && subtotal < MIN_ORDER_VALUE) {
+        if (subtotal < MIN_ORDER_VALUE) {
           const diff = MIN_ORDER_VALUE - subtotal;
           const diffStr = Number.isInteger(diff) ? diff : diff.toFixed(2);
           if (movAlertText) {
-            movAlertText.innerText = `Minimum order is ₹100 / कम से कम ₹100 का ऑर्डर करें. Add ₹${diffStr} more.`;
+            movAlertText.innerText = `Minimum order is ₹99 / कम से कम ₹99 का ऑर्डर करें. Add ₹${diffStr} more.`;
           }
           movAlert.classList.remove('hidden');
           movAlert.classList.add('flex');
@@ -3519,26 +3682,32 @@
         }
       }
 
-      // Update Delivery Tier Banner
-      const tierTag = document.getElementById('p4-delivery-tier-tag');
-      const tierSub = document.getElementById('p4-delivery-tier-sub');
+      // Update Delivery Tier Banner & Free Delivery Incentive
       if (qualifyText) {
         if (isOutOfRange) {
           qualifyText.innerText = isHi ? `⚠️ डिलीवरी सीमा से बाहर (${dist} km)` : `⚠️ Outside Delivery Zone (${dist} km)`;
           if (tierTag) tierTag.innerText = '> 8.0 km';
           if (tierSub) tierSub.innerText = isHi ? 'यह पता हमारे 8 km डिलीवरी दायरे से बाहर है' : 'Address exceeds 8 km delivery radius';
-        } else if (dist <= 2.0) {
-          qualifyText.innerText = isHi ? `🛵 स्थानीय डिलीवरी: ₹15 (${dist} km)` : `🛵 Local Delivery: ₹15 (${dist} km)`;
-          if (tierTag) tierTag.innerText = isHi ? '0-2 km • 30 Mins' : '0-2 km • 30 Mins';
-          if (tierSub) tierSub.innerText = isHi ? `स्थानीय गाँव क्षेत्र (${dist} km): त्वरित 30 Mins डिलीवरी केवल ₹15` : `Local zone (${dist} km): Swift 30 Mins delivery for ₹15`;
-        } else if (dist <= 5.0) {
-          qualifyText.innerText = isHi ? `🛵 गाँव सीमा डिलीवरी: ₹25 (${dist} km)` : `🛵 Village Edge Delivery: ₹25 (${dist} km)`;
-          if (tierTag) tierTag.innerText = isHi ? '2-5 km • 30 Mins' : '2-5 km • 30 Mins';
-          if (tierSub) tierSub.innerText = isHi ? `गाँव सीमा क्षेत्र (${dist} km): सुरक्षित 30 Mins डिलीवरी केवल ₹25` : `Village edge (${dist} km): Safe 30 Mins delivery for ₹25`;
+        } else if (isFreeDelivery) {
+          qualifyText.innerText = isHi ? `🎉 मुफ़्त डिलीवरी लागू! (${dist} km)` : `🎉 Free Delivery Applied! (${dist} km)`;
+          if (tierTag) tierTag.innerText = isHi ? 'मुफ़्त डिलीवरी' : 'FREE DELIVERY';
+          if (tierSub) tierSub.innerText = isHi ? `बधाई हो! ₹299+ के ऑर्डर पर ₹${baseDeliveryFee} डिलीवरी शुल्क माफ़!` : `Awesome! Free delivery unlocked for ₹299+ order!`;
         } else {
-          qualifyText.innerText = isHi ? `🛵 दूरस्थ डिलीवरी: ₹40 (${dist} km)` : `🛵 Long Distance Delivery: ₹40 (${dist} km)`;
-          if (tierTag) tierTag.innerText = isHi ? '5-8 km • 45-60 Mins' : '5-8 km • 45-60 Mins';
-          if (tierSub) tierSub.innerText = isHi ? `दूरस्थ क्षेत्र (${dist} km): विशेष वाहन डिलीवरी 45-60 Mins केवल ₹40` : `Long distance (${dist} km): Express runner 45-60 Mins for ₹40`;
+          const freeDiff = FREE_DELIVERY_THRESHOLD - subtotal;
+          const freeDiffStr = Number.isInteger(freeDiff) ? freeDiff : freeDiff.toFixed(2);
+          if (dist <= 2.0) {
+            qualifyText.innerText = isHi ? `🛵 स्थानीय डिलीवरी: ₹15 (${dist} km)` : `🛵 Local Delivery: ₹15 (${dist} km)`;
+            if (tierTag) tierTag.innerText = isHi ? '0-2 km • 30 Mins' : '0-2 km • 30 Mins';
+            if (tierSub) tierSub.innerText = isHi ? `₹${freeDiffStr} का सामान और जोड़ें और पाएं मुफ़्त डिलीवरी!` : `Add ₹${freeDiffStr} more to unlock Free Delivery!`;
+          } else if (dist <= 5.0) {
+            qualifyText.innerText = isHi ? `🛵 गाँव सीमा डिलीवरी: ₹25 (${dist} km)` : `🛵 Village Edge Delivery: ₹25 (${dist} km)`;
+            if (tierTag) tierTag.innerText = isHi ? '2-5 km • 30 Mins' : '2-5 km • 30 Mins';
+            if (tierSub) tierSub.innerText = isHi ? `₹${freeDiffStr} का सामान और जोड़ें और पाएं मुफ़्त डिलीवरी!` : `Add ₹${freeDiffStr} more to unlock Free Delivery!`;
+          } else {
+            qualifyText.innerText = isHi ? `🛵 दूरस्थ डिलीवरी: ₹40 (${dist} km)` : `🛵 Long Distance Delivery: ₹40 (${dist} km)`;
+            if (tierTag) tierTag.innerText = isHi ? '5-8 km • 45-60 Mins' : '5-8 km • 45-60 Mins';
+            if (tierSub) tierSub.innerText = isHi ? `₹${freeDiffStr} का सामान और जोड़ें और पाएं मुफ़्त डिलीवरी!` : `Add ₹${freeDiffStr} more to unlock Free Delivery!`;
+          }
         }
       }
 
@@ -3621,12 +3790,12 @@
       const cartItems = AppStore.catalog.filter(i => i.qty > 0);
       const subtotal = cartItems.reduce((acc, i) => acc + (i.price * i.qty), 0);
 
-      // Guard: strictly reject if MOV of ₹100 is not met
-      if (subtotal < 100) {
-        const diff = 100 - subtotal;
+      // Guard: strictly reject if MOV of ₹99 is not met
+      if (subtotal < 99) {
+        const diff = 99 - subtotal;
         const diffStr = Number.isInteger(diff) ? diff : diff.toFixed(2);
         if (typeof showAudioToast === 'function') {
-          showAudioToast('Minimum Order / न्यूनतम ऑर्डर', `Minimum order is ₹100 / कम से कम ₹100 का ऑर्डर करें. Add ₹${diffStr} more.`);
+          showAudioToast('Minimum Order / न्यूनतम ऑर्डर', `Minimum order is ₹99 / कम से कम ₹99 का ऑर्डर करें. Add ₹${diffStr} more.`);
         }
         navigateToPhase('cart');
         return;
@@ -3690,7 +3859,7 @@
       } catch (err) {
         console.warn('Backend order checkout fallback:', err);
         // If rejected due to MOV or bad request, abort and alert without fallback order
-        if (err && err.message && (err.message.includes('Minimum order') || err.message.includes('कम से कम ₹100') || err.message.includes('400') || err.message.includes('delivery zone'))) {
+        if (err && err.message && (err.message.includes('Minimum order') || err.message.includes('कम से कम ₹99') || err.message.includes('कम से कम ₹100') || err.message.includes('400') || err.message.includes('delivery zone'))) {
           if (typeof showAudioToast === 'function') {
             showAudioToast('Order Error', err.message);
           }
@@ -3705,6 +3874,7 @@
         let fallbackDelivery = 15;
         if (dist > 5.0) fallbackDelivery = 40;
         else if (dist > 2.0) fallbackDelivery = 25;
+        if (fallbackSubtotal >= 299) fallbackDelivery = 0;
         const finalPayable = fallbackSubtotal + fallbackDelivery + (fallbackSubtotal > 0 ? 3 : 0);
         document.getElementById('p5-order-amount').innerText = `₹${finalPayable}.00`;
         const isHi = AppStore.lang === 'hi';
@@ -3797,7 +3967,7 @@
       const msg = AppStore.lang === 'hi' 
         ? "कृपया अपना १० अंकों का मोबाइल नंबर डालें ताकि OTP भेजा जा सके।" 
         : "Please enter your 10-digit mobile number to receive OTP.";
-      showAudioToast(AppStore.lang === 'hi' ? 'ऑडियो सहायता' : 'Voice Assistance', msg);
+      // Audio assistance spoken directly without toast popup spam
 
       if ('speechSynthesis' in window) {
         try {
@@ -4248,11 +4418,11 @@
           phase: "Phase 4: Bill Calculations & Delivery Fee Threshold",
           test: () => {
             const subtotal = 355;
-            const isFree = subtotal >= 149;
+            const isFree = subtotal >= 299;
             const total = subtotal + (isFree ? 0 : 20) + 3;
             return isFree && total === 358;
           },
-          detail: "Free delivery logic above ₹149 and transparent fees accurate to 2 decimals"
+          detail: "Free delivery logic above ₹299 and transparent fees accurate to 2 decimals"
         },
         {
           phase: "Phase 5: Live Order Tracking 5-Stage Timeline",
@@ -4382,20 +4552,12 @@
       });
     }
 
-    // Offline & Online Network Listeners
+    // Offline & Online Network Listeners (Silent background handling)
     window.addEventListener('offline', () => {
-      showAudioToast(
-        AppStore.lang === 'hi' ? 'इंटरनेट कनेक्शन बंद है' : 'Network Offline',
-        AppStore.lang === 'hi' ? 'आप ऑफ़लाइन मोड में हैं। डेटा स्थानीय कैश में सुरक्षित है।' : 'You are in offline mode. Data is preserved in local storage.'
-      );
       navigateToPhase('offline');
     });
 
     window.addEventListener('online', () => {
-      showAudioToast(
-        AppStore.lang === 'hi' ? 'इंटरनेट पुनः कनेक्ट हुआ' : 'Connection Restored',
-        AppStore.lang === 'hi' ? 'आप वापस ऑनलाइन हैं।' : 'Back online! Syncing live data.'
-      );
       if (AppStore.currentPhase === 'offline') {
         navigateToPhase('dashboard');
       }
