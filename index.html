@@ -801,18 +801,14 @@
       <!-- PHASE 4.1: CART REVIEW                                                -->
       <!-- ===================================================================== -->
       <section id="view-p4-cart" class="screen-view hidden flex-col w-full px-4 pt-3 pb-36 flex-1 overflow-y-auto space-y-4">
-        <!-- Free Delivery Progress Pill -->
-        <div class="bg-primary-fixed/30 rounded-2xl p-4 shadow-xs border border-primary/20">
-          <div class="flex items-center justify-between text-xs font-bold text-primary mb-1.5">
-            <span id="p4-delivery-qualify-text">🎉 मुफ़्त डिलीवरी अनलॉक!</span>
-            <span id="p4-progress-percent">100%</span>
+        <!-- Dynamic Delivery Fee Tier Banner -->
+        <div class="bg-primary/5 rounded-2xl p-4 shadow-xs border border-primary/20">
+          <div class="flex items-center justify-between text-xs font-bold text-primary mb-1">
+            <span id="p4-delivery-qualify-text">🛵 गाँव मित्र डिलीवरी शुल्क: ₹30</span>
+            <span id="p4-delivery-tier-tag" class="text-[10px] bg-primary/15 text-primary px-2.5 py-0.5 rounded-full font-bold">₹200+ पर ₹5 छूट</span>
           </div>
-          <div class="w-full h-2 bg-surface-container rounded-full overflow-hidden">
-            <div id="p4-progress-fill" class="h-full bg-primary rounded-full transition-all duration-300" style="width: 100%;"></div>
-          </div>
-          <p class="text-[10px] text-on-surface-variant mt-1.5 flex justify-between">
-            <span>₹149 से अधिक के ऑर्डर पर ₹0 डिलीवरी शुल्क</span>
-            <span class="font-bold text-primary">बचत ₹20</span>
+          <p id="p4-delivery-tier-sub" class="text-[11px] text-on-surface-variant mt-0.5">
+            ₹200 से अधिक के ऑर्डर पर केवल ₹25 डिलीवरी शुल्क (₹5 की सीधी बचत)
           </p>
         </div>
 
@@ -846,7 +842,7 @@
           </div>
           <div class="flex justify-between text-xs text-on-surface-variant">
             <span data-i18n="p4_platform_fee">सहकारी सेवा शुल्क</span>
-            <span class="font-bold text-on-surface">₹3.00</span>
+            <span id="p4-bill-platform" class="font-bold text-on-surface">₹3.00</span>
           </div>
           <div class="flex justify-between text-xs text-primary font-bold bg-primary-fixed/20 p-2.5 rounded-lg">
             <span data-i18n="p4_savings">इस ऑर्डर पर आपकी कुल बचत</span>
@@ -2631,14 +2627,19 @@
       const checkoutBtnPrice = document.getElementById('p4-checkout-btn-price');
       const placeOrderText = document.getElementById('place-order-text');
 
-      const isFreeDelivery = subtotal >= 149;
-      const deliveryFee = isFreeDelivery || subtotal === 0 ? 0 : 20;
+      // Dynamic Delivery Fee based on Subtotal:
+      // Tier 1 (₹100 to ₹200): ₹30
+      // Tier 2 (> ₹200): ₹25
+      let deliveryFee = 0;
+      if (subtotal > 0) {
+        deliveryFee = subtotal > 200 ? 25 : 30;
+      }
       const platformFee = subtotal > 0 ? 3 : 0;
       const finalPayable = subtotal + deliveryFee + platformFee;
 
       if (countPill) countPill.innerText = isHi ? `${totalCount} सामान` : `${totalCount} items`;
       if (billSubtotal) billSubtotal.innerText = `₹${subtotal}.00`;
-      if (billDelivery) billDelivery.innerText = deliveryFee === 0 ? (isHi ? 'मुफ़्त (₹0.00)' : 'FREE (₹0.00)') : `₹${deliveryFee}.00`;
+      if (billDelivery) billDelivery.innerText = deliveryFee === 0 ? '₹0.00' : `₹${deliveryFee}.00`;
       if (billSavings) billSavings.innerText = `₹${savings}.00`;
       if (billTotal) billTotal.innerText = `₹${finalPayable}.00`;
       if (checkoutBtnPrice) checkoutBtnPrice.innerText = isHi ? `कुल ₹${finalPayable}.00` : `Total ₹${finalPayable}.00`;
@@ -2677,18 +2678,23 @@
         }
       }
 
-      const pct = Math.min(100, Math.round((subtotal / 149) * 100));
-      if (progressFill) progressFill.style.width = `${pct}%`;
-      if (progressPercent) progressPercent.innerText = `${pct}%`;
+      // Update Delivery Tier Banner
+      const tierTag = document.getElementById('p4-delivery-tier-tag');
+      const tierSub = document.getElementById('p4-delivery-tier-sub');
       if (qualifyText) {
-        if (isHi) {
-          qualifyText.innerText = isFreeDelivery 
-            ? '🎉 मुफ़्त डिलीवरी अनलॉक!' 
-            : `मुफ़्त डिलीवरी के लिए ₹${149 - subtotal} और जोड़ें`;
+        if (subtotal > 200) {
+          qualifyText.innerText = isHi ? '🎉 विशेष डिलीवरी शुल्क: ₹25' : '🎉 Tier 2 Delivery: ₹25';
+          if (tierTag) tierTag.innerText = isHi ? '₹5 बचत अनलॉक!' : '₹5 Off Unlocked!';
+          if (tierSub) tierSub.innerText = isHi ? '₹200 से अधिक का ऑर्डर: आपको मिला ₹25 का रियायती शुल्क' : 'Order over ₹200: Discounted ₹25 delivery applied';
+        } else if (subtotal >= 100) {
+          const diff = 201 - subtotal;
+          qualifyText.innerText = isHi ? '🛵 गाँव मित्र डिलीवरी शुल्क: ₹30' : '🛵 Delivery Fee: ₹30';
+          if (tierTag) tierTag.innerText = isHi ? '₹200+ पर ₹5 छूट' : '₹5 Off on ₹200+';
+          if (tierSub) tierSub.innerText = isHi ? `₹${diff} का सामान और जोड़ें और ₹25 में डिलीवरी पाएँ` : `Add ₹${diff} more to get ₹25 delivery`;
         } else {
-          qualifyText.innerText = isFreeDelivery 
-            ? '🎉 Free Delivery Unlocked!' 
-            : `Add ₹${149 - subtotal} more for Free Delivery`;
+          qualifyText.innerText = isHi ? '🛵 न्यूनतम ऑर्डर ₹100' : '🛵 Min Order ₹100';
+          if (tierTag) tierTag.innerText = isHi ? 'कम से कम ₹100' : 'Min ₹100';
+          if (tierSub) tierSub.innerText = isHi ? 'गाँव में सुरक्षित डिलीवरी के लिए न्यूनतम ₹100 आवश्यक है' : 'Minimum order value is ₹100 for rural doorstep delivery';
         }
       }
 
@@ -2829,7 +2835,8 @@
         document.getElementById('p5-order-id').innerText = randId;
 
         const fallbackSubtotal = cartItems.reduce((acc, i) => acc + (i.price * i.qty), 0);
-        const finalPayable = fallbackSubtotal + (fallbackSubtotal >= 149 ? 0 : 20) + 3;
+        const fallbackDelivery = fallbackSubtotal > 200 ? 25 : (fallbackSubtotal >= 100 ? 30 : 0);
+        const finalPayable = fallbackSubtotal + fallbackDelivery + (fallbackSubtotal > 0 ? 3 : 0);
         document.getElementById('p5-order-amount').innerText = `₹${finalPayable}.00`;
         const isHi = AppStore.lang === 'hi';
         document.getElementById('p5-order-paymode').innerText = AppStore.paymentMode === 'COD' ? (isHi ? 'हाथ में नकद' : 'Cash on Delivery (COD)') : 'UPI Paid';

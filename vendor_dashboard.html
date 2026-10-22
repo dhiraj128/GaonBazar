@@ -953,6 +953,10 @@
         'Content-Type': 'application/json',
         ...(options.headers || {})
       };
+      const token = VendorStore.token || localStorage.getItem('gaonbazar_vendor_token');
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
       try {
         const res = await fetch(url, { ...options, headers });
         hideVendorOfflineBanner();

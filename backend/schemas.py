@@ -1,8 +1,37 @@
+import html
+import re
 from typing import List, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
+
+
+def sanitize_xss_input(val: str) -> str:
+    """Strips dangerous HTML/JS tags, event handlers, and malicious pseudo-protocols."""
+    if not isinstance(val, str):
+        return val
+    # Remove HTML tags (<script>, <iframe>, <img ...>, etc.)
+    cleaned = re.sub(r"<[^>]*?>", "", val)
+    # Remove javascript: / data: pseudo-protocols
+    cleaned = re.sub(r"javascript\s*:", "", cleaned, flags=re.IGNORECASE)
+    # Remove dangerous inline event handlers like onerror=, onload=, onclick=
+    cleaned = re.sub(r"on\w+\s*=", "", cleaned, flags=re.IGNORECASE)
+    return cleaned.strip()
+
+
+class SecureBaseModel(BaseModel):
+    """Base model that automatically sanitizes all incoming string fields to prevent stored/reflected XSS."""
+    @model_validator(mode="before")
+    @classmethod
+    def sanitize_string_fields(cls, data):
+        if isinstance(data, dict):
+            return {
+                k: sanitize_xss_input(v) if isinstance(v, str) else v
+                for k, v in data.items()
+            }
+        return data
+
 
 # --- Auth Schemas ---
-class SendOTPRequest(BaseModel):
+class SendOTPRequest(SecureBaseModel):
     phone: str = Field(..., min_length=10, max_length=15)
 
 class SendOTPResponse(BaseModel):
@@ -10,7 +39,7 @@ class SendOTPResponse(BaseModel):
     message: str
     otp: str
 
-class VerifyOTPRequest(BaseModel):
+class VerifyOTPRequest(SecureBaseModel):
     phone: str = Field(..., min_length=10, max_length=15)
     otp: str = Field(..., min_length=4, max_length=10)
 
@@ -29,7 +58,7 @@ class VerifyOTPResponse(BaseModel):
     user: UserProfileDTO
 
 # --- Landmark Schemas ---
-class SaveLandmarkRequest(BaseModel):
+class SaveLandmarkRequest(SecureBaseModel):
     phone: str = Field(..., min_length=10)
     name: str = Field(..., min_length=1)
     village: str = Field(..., min_length=1)
@@ -82,13 +111,13 @@ class StoreDTO(BaseModel):
         from_attributes = True
 
 # --- Order Schemas ---
-class CartItemInput(BaseModel):
+class CartItemInput(SecureBaseModel):
     id: str
     name: Optional[str] = None
     price: float
     qty: int
 
-class CheckoutRequest(BaseModel):
+class CheckoutRequest(SecureBaseModel):
     user_phone: str = Field(..., min_length=10)
     user_name: str
     village: str
@@ -105,6 +134,9 @@ class CheckoutResponse(BaseModel):
     platform_fee: float
     savings: float
     total_amount: float
+    vendor_payout: Optional[float] = None
+    runner_payout: Optional[float] = None
+    admin_profit: Optional[float] = None
     payment_mode: str
     status: str
     timeline_stage: int
@@ -126,7 +158,7 @@ class OrderStatusResponse(BaseModel):
 
 
 # --- Vendor (Dukandaar) Schemas ---
-class VendorLoginRequest(BaseModel):
+class VendorLoginRequest(SecureBaseModel):
     store_id: str = "sharma_brothers"
     phone: Optional[str] = "9876543210"
     pin: Optional[str] = "582941"
@@ -167,18 +199,18 @@ class VendorOrderDTO(BaseModel):
     items: List[VendorOrderItemDTO]
 
 
-class UpdateOrderStatusRequest(BaseModel):
+class UpdateOrderStatusRequest(SecureBaseModel):
     stage: int = Field(..., ge=1, le=5)
     action: Optional[str] = None
     note: Optional[str] = None
 
 
-class UpdateStockRequest(BaseModel):
+class UpdateStockRequest(SecureBaseModel):
     in_stock: bool
     price: Optional[float] = None
 
 
-class AddProductRequest(BaseModel):
+class AddProductRequest(SecureBaseModel):
     name_en: str
     name_hi: str
     category: str
@@ -189,7 +221,7 @@ class AddProductRequest(BaseModel):
     in_stock: Optional[bool] = True
 
 
-class StoreStatusUpdateRequest(BaseModel):
+class StoreStatusUpdateRequest(SecureBaseModel):
     is_open: bool
 
 
@@ -227,7 +259,7 @@ class RunnerProfileDTO(BaseModel):
     payout_upi: Optional[str] = None
 
 
-class RunnerLoginRequest(BaseModel):
+class RunnerLoginRequest(SecureBaseModel):
     phone: Optional[str] = "9876543220"
     otp: Optional[str] = "123456"
     runner_id: Optional[str] = "gm_1"
@@ -239,7 +271,7 @@ class RunnerLoginResponse(BaseModel):
     runner: RunnerProfileDTO
 
 
-class ShiftStatusRequest(BaseModel):
+class ShiftStatusRequest(SecureBaseModel):
     runner_id: str = "gm_1"
     is_online: bool
 
@@ -278,7 +310,7 @@ class RunnerMissionDTO(BaseModel):
     created_at: str
 
 
-class RunnerVerifyOTPRequest(BaseModel):
+class RunnerVerifyOTPRequest(SecureBaseModel):
     otp: str = Field(..., min_length=4, max_length=4)
     cod_collected: Optional[bool] = False
     note: Optional[str] = None
@@ -322,7 +354,7 @@ class RunnerLedgerDTO(BaseModel):
 # 6. RURAL-FRIENDLY ONBOARDING & REGISTRATION SCHEMAS
 # =============================================================================
 
-class VendorRegisterRequest(BaseModel):
+class VendorRegisterRequest(SecureBaseModel):
     phone: str = Field(..., min_length=10, max_length=15)
     otp: str = Field(..., min_length=4, max_length=6)
     shop_name: str = Field(..., min_length=3)
@@ -350,7 +382,7 @@ class VendorStatusCheckResponse(BaseModel):
     message: str
 
 
-class RunnerRegisterRequest(BaseModel):
+class RunnerRegisterRequest(SecureBaseModel):
     phone: str = Field(..., min_length=10, max_length=15)
     otp: str = Field(..., min_length=4, max_length=6)
     name: str = Field(..., min_length=2)
@@ -429,7 +461,7 @@ class AdminPendingRunnerDTO(BaseModel):
     created_at: str
 
 
-class AdminApprovalActionRequest(BaseModel):
+class AdminApprovalActionRequest(SecureBaseModel):
     reason: Optional[str] = None
 
 

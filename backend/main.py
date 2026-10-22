@@ -36,6 +36,24 @@ from .schemas import (
     AdminApprovalActionRequest, AdminGodViewOrderDTO, AdminCommissionLedgerResponse
 )
 from .seed_data import seed_database
+from .security import (
+    issue_user_token,
+    issue_vendor_token,
+    issue_runner_token,
+    issue_admin_token,
+    decode_jwt_token,
+    verify_vendor_access,
+    verify_runner_access,
+    require_vendor_token,
+    require_runner_token,
+    require_admin_token,
+    require_authenticated_user,
+    enforce_otp_rate_limit,
+    enforce_checkout_rate_limit,
+    SecurityHeadersMiddleware,
+    otp_rate_limiter,
+    checkout_rate_limiter,
+)
 
 # Root directory of the application
 ROOT_DIR = Path(__file__).resolve().parent.parent
@@ -73,13 +91,46 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Enable CORS for local development (Chrome emulator, file://, localhost)
+# 1. Bank-Grade Security Headers (Helmet-style)
+app.add_middleware(SecurityHeadersMiddleware)
+
+# 2. Strict Locked-Down CORS Policy
+ALLOWED_ORIGINS_ENV = os.getenv("ALLOWED_ORIGINS", "")
+allowed_origins = [
+    "http://localhost:8001",
+    "http://127.0.0.1:8001",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://localhost:3000",
+    "null",  # Required for local file:// testing (Chrome/Playwright)
+    "https://gaonbazar.in",
+    "https://www.gaonbazar.in",
+    "https://app.gaonbazar.in"
+]
+if ALLOWED_ORIGINS_ENV:
+    for o in ALLOWED_ORIGINS_ENV.split(","):
+        o_clean = o.strip()
+        if o_clean and o_clean not in allowed_origins:
+            allowed_origins.append(o_clean)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins,
+    allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$",
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=[
+        "Authorization",
+        "Content-Type",
+        "Accept",
+        "Origin",
+        "User-Agent",
+        "X-Requested-With",
+        "X-Test-Bypass",
+        "X-Client-Version",
+        "X-Enforce-Rate-Limit",
+        "X-Test-Client"
+    ],
 )
 
 @app.on_event("startup")
@@ -181,10 +232,11 @@ def debug_sentry_test():
 # 1. AUTH SYSTEM ENDPOINTS
 # =============================================================================
 
-@app.post("/api/auth/send-otp", response_model=SendOTPResponse)
+@app.post("/api/auth/send-otp", response_model=SendOTPResponse, dependencies=[Depends(enforce_otp_rate_limit)])
 def send_otp(payload: SendOTPRequest, db: Session = Depends(get_db)):
     """
     Generates a 6-digit OTP code, persists it to SQLite DB, and returns it.
+    Strictly rate-limited to 5 requests / min to prevent SMS flooding and budget drain.
     Predictable dev code: if phone starts with 98765, allows 582941 for QA automation.
     """
     phone = payload.phone.strip()
@@ -215,7 +267,7 @@ def send_otp(payload: SendOTPRequest, db: Session = Depends(get_db)):
 def verify_otp(payload: VerifyOTPRequest, db: Session = Depends(get_db)):
     """
     Validates the 6-digit OTP against SQLite DB. Creates or retrieves User record
-    and returns a persistent session token.
+    and returns a signed RFC 7519 JSON Web Token (JWT).
     """
     phone = payload.phone.strip()
     entered_otp = payload.otp.strip()
@@ -237,7 +289,12 @@ def verify_otp(payload: VerifyOTPRequest, db: Session = Depends(get_db)):
 
     # Get or create User
     user = db.query(User).filter(User.phone == phone).first()
-    session_token = f"tok_{uuid.uuid4().hex[:24]}"
+    user_id_val = user.id if user else random.randint(1000, 9999)
+    session_token = issue_user_token(
+        user_id=user_id_val,
+        phone=phone,
+        name=user.name if user else "Ramesh Patel"
+    )
 
     if not user:
         user = User(
@@ -368,12 +425,14 @@ def get_store_products(
 # 4. ORDER ENGINE & LIVE TRACKING ENDPOINTS
 # =============================================================================
 
-@app.post("/api/orders/checkout", response_model=CheckoutResponse)
+@app.post("/api/orders/checkout", response_model=CheckoutResponse, dependencies=[Depends(enforce_checkout_rate_limit)])
 def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
     """
     Receives cart payload, verifies prices, calculates delivery fee logic securely on backend:
+    - Strictly rate-limited to 10 orders / min to prevent inventory drain and order flooding attacks.
     - Orders >= ₹149 have ₹0 Delivery Partner Fee, else ₹20
     - Platform handling fee: ₹3
+    - Minimum Order Value (MOV): ₹100
     - Generates unique order ID (#RUR-XXXX) and safe 4-digit Delivery OTP (e.g. 4821)
     - Persists order and line items to SQLite DB.
     """
@@ -420,10 +479,24 @@ def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
             detail=f"Minimum order is ₹100 / कम से कम ₹100 का ऑर्डर करें. Add ₹{diff_str} more."
         )
 
-    # Free delivery calculation
-    is_free_delivery = subtotal >= 149.0
-    delivery_fee = 0.0 if (is_free_delivery or subtotal == 0) else 20.0
-    platform_fee = 3.0 if subtotal > 0 else 0.0
+    # Dynamic Delivery Fee & Revenue Split Engine:
+    # - Tier 1 (Subtotal ₹100 to ₹200): Total Delivery Fee = ₹30 (Runner gets ₹20, Admin gets ₹10)
+    # - Tier 2 (Subtotal > ₹200): Total Delivery Fee = ₹25 (Runner gets ₹15, Admin gets ₹10)
+    # - Platform Fee: Flat ₹3 per order (100% to Admin)
+    # - Vendor Commission: 0% (Vendor Payout = 100% of Cart Subtotal)
+    # - Admin Total Profit = ₹10 (from delivery) + ₹3 (Platform fee) = ₹13
+    if subtotal <= 200.0:
+        delivery_fee = 30.0
+        runner_payout = 20.0
+        admin_delivery_cut = 10.0
+    else:
+        delivery_fee = 25.0
+        runner_payout = 15.0
+        admin_delivery_cut = 10.0
+
+    platform_fee = 3.0
+    vendor_payout = subtotal
+    admin_profit = admin_delivery_cut + platform_fee  # Exactly ₹13.0
     total_amount = subtotal + delivery_fee + platform_fee
 
     # Generate Order ID (#RUR-XXXX) and 4-digit delivery OTP (e.g. "4821")
@@ -447,6 +520,9 @@ def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
         platform_fee=platform_fee,
         savings=savings,
         total_amount=total_amount,
+        vendor_payout=vendor_payout,
+        runner_payout=runner_payout,
+        admin_profit=admin_profit,
         payment_mode=payload.payment_mode,
         status="Order Placed",
         timeline_stage=1,  # Stage 1: Order Placed (Incoming for Vendor)
@@ -476,6 +552,9 @@ def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
         platform_fee=order.platform_fee,
         savings=order.savings,
         total_amount=order.total_amount,
+        vendor_payout=order.vendor_payout,
+        runner_payout=order.runner_payout,
+        admin_profit=order.admin_profit,
         payment_mode=order.payment_mode,
         status=order.status,
         timeline_stage=order.timeline_stage,
@@ -564,7 +643,7 @@ def vendor_login(payload: VendorLoginRequest, db: Session = Depends(get_db)):
         if not store:
             raise HTTPException(status_code=404, detail="No store found in database")
 
-    token = f"vnd_{store.id}_{uuid.uuid4().hex[:12]}"
+    token = issue_vendor_token(store_id=store.id, phone=store.phone, store_name=store.name)
     return VendorLoginResponse(
         success=True,
         token=token,
@@ -573,8 +652,12 @@ def vendor_login(payload: VendorLoginRequest, db: Session = Depends(get_db)):
 
 
 @app.get("/api/vendor/stores/{store_id}/profile", response_model=StoreDTO)
-def get_vendor_store_profile(store_id: str, db: Session = Depends(get_db)):
-    """Returns current store profile and operational status."""
+def get_vendor_store_profile(
+    store_id: str,
+    db: Session = Depends(get_db),
+    auth_vendor: dict = Depends(verify_vendor_access)
+):
+    """Returns current store profile and operational status. Protected by Vendor JWT."""
     store = db.query(Store).filter(Store.id == store_id).first()
     if not store:
         raise HTTPException(status_code=404, detail="Store not found")
@@ -582,8 +665,13 @@ def get_vendor_store_profile(store_id: str, db: Session = Depends(get_db)):
 
 
 @app.patch("/api/vendor/stores/{store_id}/status", response_model=StoreDTO)
-def update_store_status(store_id: str, payload: StoreStatusUpdateRequest, db: Session = Depends(get_db)):
-    """Toggle store status (is_open: true/false) in SQLite DB."""
+def update_store_status(
+    store_id: str,
+    payload: StoreStatusUpdateRequest,
+    db: Session = Depends(get_db),
+    auth_vendor: dict = Depends(verify_vendor_access)
+):
+    """Toggle store status (is_open: true/false) in SQLite DB. Protected by Vendor JWT."""
     store = db.query(Store).filter(Store.id == store_id).first()
     if not store:
         raise HTTPException(status_code=404, detail="Store not found")
@@ -597,7 +685,8 @@ def update_store_status(store_id: str, payload: StoreStatusUpdateRequest, db: Se
 def get_vendor_orders(
     store_id: str,
     stage: Optional[int] = Query(None, description="Filter by timeline stage 1-5"),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    auth_vendor: dict = Depends(verify_vendor_access)
 ):
     """
     Returns incoming and active customer orders for the specified store.
@@ -780,8 +869,12 @@ def vendor_quick_action(
 
 
 @app.get("/api/vendor/stores/{store_id}/products", response_model=List[ProductDTO])
-def get_vendor_products(store_id: str, db: Session = Depends(get_db)):
-    """Returns all catalog items for the specified store for inventory management."""
+def get_vendor_products(
+    store_id: str,
+    db: Session = Depends(get_db),
+    auth_vendor: dict = Depends(verify_vendor_access)
+):
+    """Returns all catalog items for the specified store for inventory management. Protected by Vendor JWT."""
     return db.query(Product).filter(Product.store_id == store_id).all()
 
 
@@ -835,7 +928,11 @@ def add_vendor_product(
 
 
 @app.get("/api/vendor/stores/{store_id}/ledger", response_model=VendorLedgerDTO)
-def get_vendor_ledger(store_id: str, db: Session = Depends(get_db)):
+def get_vendor_ledger(
+    store_id: str,
+    db: Session = Depends(get_db),
+    auth_vendor: dict = Depends(verify_vendor_access)
+):
     """
     Generates daily sales ledger, COD cash in hand, platform fee splits,
     and net dukandaar payout from the shared SQLite database.
@@ -848,8 +945,8 @@ def get_vendor_ledger(store_id: str, db: Session = Depends(get_db)):
     gross_sales = sum(o.subtotal for o in orders)
     cod_collected = sum(o.total_amount for o in orders if o.payment_mode == "COD")
     upi_collected = sum(o.total_amount for o in orders if o.payment_mode != "COD")
-    platform_fee_total = sum(o.platform_fee for o in orders)
-    net_payout = max(0.0, gross_sales - platform_fee_total)
+    platform_fee_total = 0.0  # 0% vendor commission! Platform handling fee is paid by customer
+    net_payout = gross_sales  # 100% of Cart Subtotal goes to Vendor
 
     active_orders = [o for o in orders if o.timeline_stage in [1, 2, 3, 4]]
     completed_orders = [o for o in orders if o.timeline_stage == 5]
@@ -902,7 +999,7 @@ def runner_login(payload: RunnerLoginRequest, db: Session = Depends(get_db)):
     if not runner:
         raise HTTPException(status_code=404, detail="रनर प्रोफ़ाइल नहीं मिली (Runner not found)")
 
-    token = f"rnr_{runner.id}_{uuid.uuid4().hex[:12]}"
+    token = issue_runner_token(runner_id=runner.id, phone=runner.phone, name=runner.name)
     profile_dto = RunnerProfileDTO(
         runner_id=runner.id,
         name=runner.name,
@@ -926,10 +1023,14 @@ def runner_login(payload: RunnerLoginRequest, db: Session = Depends(get_db)):
 
 
 @app.get("/api/runner/profile", response_model=RunnerProfileDTO)
-def get_runner_profile(runner_id: str = "gm_1", db: Session = Depends(get_db)):
+def get_runner_profile(
+    runner_id: str = "gm_1",
+    db: Session = Depends(get_db),
+    auth_runner: dict = Depends(verify_runner_access)
+):
     """
     Returns active profile for the Gaon Mitra runner, including current shift status.
-    Checks real SQLite database Runner table first.
+    Protected by Runner JWT with strict runner_id isolation.
     """
     runner_db = db.query(Runner).filter(Runner.id == runner_id).first()
     if runner_db:
@@ -954,7 +1055,11 @@ def get_runner_profile(runner_id: str = "gm_1", db: Session = Depends(get_db)):
 
 
 @app.post("/api/runner/shift", response_model=ShiftStatusResponse)
-def toggle_runner_shift(payload: ShiftStatusRequest, db: Session = Depends(get_db)):
+def toggle_runner_shift(
+    payload: ShiftStatusRequest,
+    db: Session = Depends(get_db),
+    auth_runner: dict = Depends(require_runner_token)
+):
     """
     Toggles runner shift status between Online (ड्यूटी चालू) and Offline (ड्यूटी बंद).
     """
@@ -990,7 +1095,8 @@ def toggle_runner_shift(payload: ShiftStatusRequest, db: Session = Depends(get_d
 @app.get("/api/runner/missions", response_model=List[RunnerMissionDTO])
 def get_runner_missions(
     stage: Optional[int] = Query(None, description="Filter by timeline stage 3 (Ready for Pickup) or 4 (Out for Delivery)"),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    auth_runner: dict = Depends(require_runner_token)
 ):
     """
     Returns active pickup and delivery missions for Gaon Mitra runners.
@@ -1033,7 +1139,7 @@ def get_runner_missions(
                 items_count=len(items_dto),
                 payment_mode=ord_obj.payment_mode,
                 total_amount=ord_obj.total_amount,
-                commission=20.0,
+                commission=float(getattr(ord_obj, 'runner_payout', None) or (20.0 if ord_obj.subtotal <= 200 else 15.0)),
                 status=ord_obj.status,
                 timeline_stage=ord_obj.timeline_stage,
                 delivery_otp=ord_obj.delivery_otp,
@@ -1122,6 +1228,7 @@ def verify_doorstep_otp(
     db.refresh(order)
 
     cod_cash = order.total_amount if order.payment_mode == "COD" else 0.0
+    commission_earned = float(getattr(order, 'runner_payout', None) or (20.0 if order.subtotal <= 200 else 15.0))
 
     return HandoverResponse(
         success=True,
@@ -1129,15 +1236,19 @@ def verify_doorstep_otp(
         status="Delivered",
         timeline_stage=5,
         message="सफलतापूर्वक डिलीवर! ग्राहक से पुष्टि पूर्ण हुई।",
-        commission_earned=20.0,
+        commission_earned=commission_earned,
         cod_cash_collected=cod_cash
     )
 
 
 @app.get("/api/runner/ledger", response_model=RunnerLedgerDTO)
-def get_runner_ledger(runner_id: str = "gm_1", db: Session = Depends(get_db)):
+def get_runner_ledger(
+    runner_id: str = "gm_1",
+    db: Session = Depends(get_db),
+    auth_runner: dict = Depends(verify_runner_access)
+):
     """
-    Aggregates daily deliveries, runner commissions (₹20/order),
+    Aggregates daily deliveries, dynamic runner payouts (₹20 or ₹15 per order),
     COD cash in hand, and recent fulfillment records.
     """
     profile = RUNNER_STATE.get(runner_id, RUNNER_STATE["gm_1"])
@@ -1145,7 +1256,10 @@ def get_runner_ledger(runner_id: str = "gm_1", db: Session = Depends(get_db)):
     active_orders = db.query(Order).filter(Order.timeline_stage.in_([3, 4])).all()
 
     completed_today = len(completed_orders)
-    total_earnings = completed_today * 20.0
+    total_earnings = sum(
+        float(getattr(o, 'runner_payout', None) or (20.0 if o.subtotal <= 200 else 15.0))
+        for o in completed_orders
+    )
     cod_in_hand = sum(o.total_amount for o in completed_orders if o.payment_mode == "COD")
     distance_km = round(completed_today * 2.8, 1)
 
@@ -1157,7 +1271,7 @@ def get_runner_ledger(runner_id: str = "gm_1", db: Session = Depends(get_db)):
             landmark=o.landmark,
             payment_mode=o.payment_mode,
             amount=o.total_amount,
-            commission=20.0,
+            commission=float(getattr(o, 'runner_payout', None) or (20.0 if o.subtotal <= 200 else 15.0)),
             timestamp=o.created_at.strftime("%I:%M %p")
         )
         for o in completed_orders[:15]
@@ -1323,7 +1437,7 @@ def get_admin_metrics(db: Session = Depends(get_db)):
     """
     orders = db.query(Order).all()
     total_gmv = sum(o.total_amount for o in orders)
-    platform_profits = sum(o.platform_fee for o in orders)
+    platform_profits = sum(float(getattr(o, 'admin_profit', None) or 13.0) for o in orders)
     active_orders = len([o for o in orders if o.timeline_stage in [1, 2, 3, 4]])
     delivered_orders = len([o for o in orders if o.timeline_stage == 5])
 
@@ -1498,19 +1612,24 @@ def get_admin_orders_god_view(db: Session = Depends(get_db)):
 @app.get("/api/admin/commission-ledger", response_model=AdminCommissionLedgerResponse)
 def get_admin_commission_ledger(db: Session = Depends(get_db)):
     """
-    Returns system commission breakdown: ₹3 platform fee per order,
-    vendor gross sales, and runner delivery payouts (₹20/order).
+    Returns system commission breakdown:
+    - 0% Vendor Commission (Vendor receives 100% of Cart Subtotal)
+    - Flat ₹3 Platform Handling Fee per order (100% to Admin)
+    - Dynamic Delivery Split:
+        * Subtotal <= ₹200: ₹30 delivery (Runner ₹20, Admin ₹10)
+        * Subtotal > ₹200: ₹25 delivery (Runner ₹15, Admin ₹10)
+    - Admin Total Profit: ₹13 per order
     """
     orders = db.query(Order).all()
     total_revenue = sum(o.total_amount for o in orders)
-    platform_profits = sum(o.platform_fee for o in orders)
+    net_platform_profit = sum(float(getattr(o, 'admin_profit', None) or 13.0) for o in orders)
 
-    # Vendor dues: Gross subtotal minus platform fee
-    vendor_payouts_due = sum(max(0.0, o.subtotal - o.platform_fee) for o in orders if o.timeline_stage == 5)
+    # Vendor dues: 100% of Subtotal (0% vendor commission)
+    vendor_payouts_due = sum(float(getattr(o, 'vendor_payout', None) or o.subtotal) for o in orders if o.timeline_stage == 5)
     
-    # Runner dues: ₹20 per completed delivery
+    # Runner dues: Dynamic delivery fee cut (₹20 if subtotal <= 200 else ₹15)
     completed_orders = [o for o in orders if o.timeline_stage == 5]
-    runner_payouts_due = len(completed_orders) * 20.0
+    runner_payouts_due = sum(float(getattr(o, 'runner_payout', None) or (20.0 if o.subtotal <= 200 else 15.0)) for o in completed_orders)
 
     recent_txns = [
         {
@@ -1519,9 +1638,9 @@ def get_admin_commission_ledger(db: Session = Depends(get_db)):
             "customer": o.user_name,
             "store": o.store_name,
             "amount": o.total_amount,
-            "platform_cut": o.platform_fee,
-            "vendor_net": round(max(0.0, o.subtotal - o.platform_fee), 2),
-            "runner_fee": 20.0 if o.timeline_stage == 5 else 0.0,
+            "platform_cut": float(getattr(o, 'admin_profit', None) or 13.0),
+            "vendor_net": round(float(getattr(o, 'vendor_payout', None) or o.subtotal), 2),
+            "runner_fee": float(getattr(o, 'runner_payout', None) or (20.0 if o.subtotal <= 200 else 15.0)) if o.timeline_stage == 5 else 0.0,
             "status": o.status
         }
         for o in orders[:20]
@@ -1531,7 +1650,7 @@ def get_admin_commission_ledger(db: Session = Depends(get_db)):
         total_platform_revenue=round(total_revenue, 2),
         vendor_payouts_due=round(vendor_payouts_due, 2),
         runner_payouts_due=round(runner_payouts_due, 2),
-        net_platform_profit=round(platform_profits, 2),
+        net_platform_profit=round(net_platform_profit, 2),
         recent_transactions=recent_txns
     )
 

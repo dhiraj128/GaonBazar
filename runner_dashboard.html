@@ -974,6 +974,10 @@
         'Content-Type': 'application/json',
         ...(options.headers || {})
       };
+      const token = RunnerStore.token || localStorage.getItem('gaonbazar_runner_token');
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
       try {
         const res = await fetch(url, { ...options, headers });
         hideRunnerOfflineBanner();

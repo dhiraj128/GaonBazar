@@ -730,25 +730,38 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     capture_human_ux_screenshot(page, dev_name, "step6_01_mov_alert_active", logger)
 
     # -------------------------------------------------------------------------
-    # MOV Validation: ₹120 Cart Subtotal (Must Succeed / Enable Checkout)
+    # Tier 1 Dynamic Pricing Validation: ₹150 Cart Subtotal
+    # Subtotal ₹100-₹200 -> Delivery ₹30, Platform ₹3, Total ₹183
+    # Payout splits: Vendor ₹150 (0% comm), Runner ₹20, Admin ₹13 (₹10 del + ₹3 plat)
     # -------------------------------------------------------------------------
     page.evaluate("""() => {
         AppStore.catalog.forEach(i => i.qty = 0);
-        AppStore.catalog[0].price = 120;
+        AppStore.catalog[0].price = 150;
         AppStore.catalog[0].qty = 1;
         updateCartCalculations();
     }""")
     page.wait_for_timeout(300)
 
     is_alert_hidden = not page.is_visible("#p4-mov-alert")
-    logger.record_test(f"[{dev_name}] MOV >= ₹100 (₹120 Cart): Warning Banner Hidden", is_alert_hidden, "Warning banner automatically removed")
+    logger.record_test(f"[{dev_name}] MOV >= ₹100 (₹150 Cart): Warning Banner Hidden", is_alert_hidden, "Warning banner automatically removed")
 
     is_btn_enabled = page.eval_on_selector("#p4-btn-proceed", "btn => !btn.disabled && !btn.classList.contains('pointer-events-none')")
-    logger.record_test(f"[{dev_name}] MOV >= ₹100 (₹120 Cart): Proceed CTA Enabled", is_btn_enabled, "Button active and ready for checkout")
+    logger.record_test(f"[{dev_name}] MOV >= ₹100 (₹150 Cart): Proceed CTA Enabled", is_btn_enabled, "Button active and ready for checkout")
 
-    # Backend API Check: ₹120 Cart must return HTTP 200 OK
+    # Verify Frontend UI Bill Breakdown for Tier 1
+    t1_delivery_text = page.inner_text("#p4-bill-delivery").strip()
+    t1_platform_text = page.inner_text("#p4-bill-platform").strip()
+    t1_total_text = page.inner_text("#p4-bill-total").strip()
+    t1_valid = ("30" in t1_delivery_text and "3" in t1_platform_text and "183" in t1_total_text)
+    logger.record_test(
+        f"[{dev_name}] Dynamic Delivery Tier 1 UI (₹150 Subtotal -> ₹30 Delivery, ₹3 Platform, ₹183 Total)",
+        t1_valid,
+        f"Delivery: {t1_delivery_text}, Platform: {t1_platform_text}, Total: {t1_total_text}"
+    )
+
+    # Backend API Check: ₹150 Cart must return HTTP 200 OK with correct dynamic splits
     try:
-        api_120_resp = page.request.post(
+        api_150_resp = page.request.post(
             "http://127.0.0.1:8001/api/orders/checkout",
             data={
                 "user_phone": "9876543210",
@@ -757,14 +770,84 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
                 "landmark": "Near Mandir",
                 "store_id": "sharma_brothers",
                 "payment_mode": "COD",
-                "items": [{"id": "item_mov_test_120", "name": "Item 120", "price": 120.0, "qty": 1}]
+                "items": [{"id": "item_mov_test_150", "name": "Item 150", "price": 150.0, "qty": 1}]
             }
         )
-        api_120_accepted = (api_120_resp.status == 200)
-        api_120_order_id = api_120_resp.json().get('order_id', '') if api_120_accepted else f"Status: {api_120_resp.status}"
-        logger.record_test(f"[{dev_name}] MOV >= ₹100 (₹120 Cart): Backend API Acceptance (HTTP 200)", api_120_accepted, f"Order created: {api_120_order_id}")
-    except Exception as e120:
-        logger.record_test(f"[{dev_name}] MOV >= ₹100 (₹120 Cart): Backend API Acceptance (HTTP 200)", False, str(e120))
+        api_150_accepted = (api_150_resp.status == 200)
+        api_150_data = api_150_resp.json() if api_150_accepted else {}
+        t1_splits_valid = (
+            api_150_data.get("subtotal") == 150.0 and
+            api_150_data.get("delivery_fee") == 30.0 and
+            api_150_data.get("platform_fee") == 3.0 and
+            api_150_data.get("total_amount") == 183.0 and
+            api_150_data.get("vendor_payout") == 150.0 and
+            api_150_data.get("runner_payout") == 20.0 and
+            api_150_data.get("admin_profit") == 13.0
+        )
+        logger.record_test(
+            f"[{dev_name}] Backend Tier 1 Splits (Subtotal ₹150 -> Fee ₹30, Vendor ₹150, Runner ₹20, Admin ₹13, Total ₹183)",
+            t1_splits_valid,
+            f"Resp: {api_150_data}"
+        )
+    except Exception as e150:
+        logger.record_test(f"[{dev_name}] Backend Tier 1 Splits (Subtotal ₹150)", False, str(e150))
+
+    # -------------------------------------------------------------------------
+    # Tier 2 Dynamic Pricing Validation: ₹250 Cart Subtotal
+    # Subtotal > ₹200 -> Delivery ₹25, Platform ₹3, Total ₹278
+    # Payout splits: Vendor ₹250 (0% comm), Runner ₹15, Admin ₹13 (₹10 del + ₹3 plat)
+    # -------------------------------------------------------------------------
+    page.evaluate("""() => {
+        AppStore.catalog.forEach(i => i.qty = 0);
+        AppStore.catalog[0].price = 250;
+        AppStore.catalog[0].qty = 1;
+        updateCartCalculations();
+    }""")
+    page.wait_for_timeout(300)
+
+    # Verify Frontend UI Bill Breakdown for Tier 2
+    t2_delivery_text = page.inner_text("#p4-bill-delivery").strip()
+    t2_platform_text = page.inner_text("#p4-bill-platform").strip()
+    t2_total_text = page.inner_text("#p4-bill-total").strip()
+    t2_valid = ("25" in t2_delivery_text and "3" in t2_platform_text and "278" in t2_total_text)
+    logger.record_test(
+        f"[{dev_name}] Dynamic Delivery Tier 2 UI (₹250 Subtotal -> ₹25 Delivery, ₹3 Platform, ₹278 Total)",
+        t2_valid,
+        f"Delivery: {t2_delivery_text}, Platform: {t2_platform_text}, Total: {t2_total_text}"
+    )
+
+    # Backend API Check: ₹250 Cart must return HTTP 200 OK with correct dynamic splits
+    try:
+        api_250_resp = page.request.post(
+            "http://127.0.0.1:8001/api/orders/checkout",
+            data={
+                "user_phone": "9876543210",
+                "user_name": "Ramesh Patel",
+                "village": "Rampur",
+                "landmark": "Near Mandir",
+                "store_id": "sharma_brothers",
+                "payment_mode": "COD",
+                "items": [{"id": "item_mov_test_250", "name": "Item 250", "price": 250.0, "qty": 1}]
+            }
+        )
+        api_250_accepted = (api_250_resp.status == 200)
+        api_250_data = api_250_resp.json() if api_250_accepted else {}
+        t2_splits_valid = (
+            api_250_data.get("subtotal") == 250.0 and
+            api_250_data.get("delivery_fee") == 25.0 and
+            api_250_data.get("platform_fee") == 3.0 and
+            api_250_data.get("total_amount") == 278.0 and
+            api_250_data.get("vendor_payout") == 250.0 and
+            api_250_data.get("runner_payout") == 15.0 and
+            api_250_data.get("admin_profit") == 13.0
+        )
+        logger.record_test(
+            f"[{dev_name}] Backend Tier 2 Splits (Subtotal ₹250 -> Fee ₹25, Vendor ₹250, Runner ₹15, Admin ₹13, Total ₹278)",
+            t2_splits_valid,
+            f"Resp: {api_250_data}"
+        )
+    except Exception as e250:
+        logger.record_test(f"[{dev_name}] Backend Tier 2 Splits (Subtotal ₹250)", False, str(e250))
 
     # Check Proceed button physical visibility
     check_human_ux_bounds(page, '#p4-btn-proceed', "Sticky Bottom 'Proceed' CTA", dev_name, logger, require_sticky=True)
@@ -812,8 +895,17 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
         db_session = SessionLocal()
         try:
             db_order = db_session.query(Order).filter(Order.id == order_id).first()
-            db_persisted = db_order is not None and db_order.total_amount > 0
-            detail = f"DB Order: {db_order.id} | Subtotal: ₹{db_order.subtotal} | Total: ₹{db_order.total_amount} | OTP: {db_order.delivery_otp}" if db_order else "Order not found in SQLite DB"
+            db_persisted = (
+                db_order is not None and 
+                db_order.total_amount > 0 and
+                db_order.vendor_payout is not None and
+                db_order.runner_payout is not None and
+                db_order.admin_profit is not None
+            )
+            detail = (
+                f"DB Order: {db_order.id} | Subtotal: ₹{db_order.subtotal} | Total: ₹{db_order.total_amount} | "
+                f"Vendor Payout: ₹{db_order.vendor_payout} | Runner: ₹{db_order.runner_payout} | Admin: ₹{db_order.admin_profit} | OTP: {db_order.delivery_otp}"
+            ) if db_order else "Order not found in SQLite DB"
             logger.record_test(f"[{dev_name}] SQLite Real Database Persistence Verification", db_persisted, detail)
         finally:
             db_session.close()

@@ -102,6 +102,9 @@ class Order(Base):
     platform_fee = Column(Float, default=3.0)
     savings = Column(Float, default=0.0)
     total_amount = Column(Float, nullable=False)
+    vendor_payout = Column(Float, default=0.0)
+    runner_payout = Column(Float, default=0.0)
+    admin_profit = Column(Float, default=13.0)
     payment_mode = Column(String(20), default="COD")
     status = Column(String(50), default="Order Placed")
     timeline_stage = Column(Integer, default=1)  # 1 to 5

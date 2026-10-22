@@ -57,6 +57,10 @@ jobs:
           echo "✗ Backend server health check timed out."
           exit 1
 
+      - name: Run Bank-Grade Security & Penetration Test Suite
+        run: |
+          python test_security.py
+
       - name: Run Customer Mobile App E2E Test Suite (5 Mobile Devices)
         run: |
           python test_mobile_e2e.py

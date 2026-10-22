@@ -69,4 +69,20 @@ def ensure_schema_migrations():
                 except Exception as e:
                     print(f"Notice adding column {col_name}: {e}")
 
+        # Check orders columns for split-payment & dynamic revenue fields
+        res_orders = conn.execute(text("PRAGMA table_info(orders)")).fetchall()
+        existing_order_cols = {r[1] for r in res_orders}
+        order_cols = [
+            ("vendor_payout", "FLOAT DEFAULT 0.0"),
+            ("runner_payout", "FLOAT DEFAULT 0.0"),
+            ("admin_profit", "FLOAT DEFAULT 13.0")
+        ]
+        for col_name, col_type in order_cols:
+            if col_name not in existing_order_cols:
+                try:
+                    conn.execute(text(f"ALTER TABLE orders ADD COLUMN {col_name} {col_type}"))
+                    conn.commit()
+                except Exception as e:
+                    print(f"Notice adding column {col_name} to orders: {e}")
+
 
