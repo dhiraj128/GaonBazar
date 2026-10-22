@@ -410,6 +410,16 @@ def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
             "quantity": item_input.qty
         })
 
+    # Strict Minimum Order Value (MOV) of ₹100
+    MINIMUM_ORDER_VALUE = 100.0
+    if subtotal < MINIMUM_ORDER_VALUE:
+        diff = MINIMUM_ORDER_VALUE - subtotal
+        diff_str = f"{int(diff)}" if diff.is_integer() else f"{diff:.2f}"
+        raise HTTPException(
+            status_code=400,
+            detail=f"Minimum order is ₹100 / कम से कम ₹100 का ऑर्डर करें. Add ₹{diff_str} more."
+        )
+
     # Free delivery calculation
     is_free_delivery = subtotal >= 149.0
     delivery_fee = 0.0 if (is_free_delivery or subtotal == 0) else 20.0

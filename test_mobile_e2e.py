@@ -671,16 +671,104 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     page.wait_for_timeout(600)
 
     # =========================================================================
-    # Phase 4.1: Cart Review
+    # Phase 4.1: Cart Review & Minimum Order Value (MOV) Enforcement
     # =========================================================================
-    logger.log(f"\n--- [{dev_name}] Testing Phase 4.1: Cart Review ---")
+    logger.log(f"\n--- [{dev_name}] Testing Phase 4.1: Cart Review & Minimum Order Value (MOV) ---")
     is_cart_visible = page.is_visible("#view-p4-cart")
     logger.record_test(f"[{dev_name}] Transition to Cart Review Screen", is_cart_visible)
     inspect_viewport_and_layout(page, f"[{dev_name}] Phase 4.1 Cart", logger)
 
+    # -------------------------------------------------------------------------
+    # MOV Validation: ₹50 Cart Subtotal (Must Fail / Block Checkout)
+    # -------------------------------------------------------------------------
+    logger.log(f"\n--- [{dev_name}] Testing Minimum Order Value (MOV) ₹100 Validation ---")
+    page.evaluate("""() => {
+        AppStore.catalog.forEach(i => i.qty = 0);
+        AppStore.catalog[0].price = 50;
+        AppStore.catalog[0].qty = 1;
+        updateCartCalculations();
+    }""")
+    page.wait_for_timeout(300)
+
+    is_btn_disabled = page.eval_on_selector("#p4-btn-proceed", "btn => btn.disabled || btn.classList.contains('pointer-events-none')")
+    logger.record_test(f"[{dev_name}] MOV < ₹100 (₹50 Cart): Proceed CTA Disabled", is_btn_disabled, "Button disabled when cart subtotal < ₹100")
+
+    is_alert_visible = page.is_visible("#p4-mov-alert")
+    logger.record_test(f"[{dev_name}] MOV < ₹100 (₹50 Cart): Bilingual Warning Banner Visible", is_alert_visible, "Warning banner shown")
+
+    alert_text = page.inner_text("#p4-mov-alert") if is_alert_visible else ""
+    expected_alert = "Minimum order is ₹100 / कम से कम ₹100 का ऑर्डर करें. Add ₹50 more."
+    has_expected_text = expected_alert in alert_text
+    logger.record_test(f"[{dev_name}] MOV < ₹100 (₹50 Cart): High-Contrast Bilingual Alert Content", has_expected_text, alert_text)
+
+    # Assert forced click does not proceed to checkout
+    page.click('#p4-btn-proceed', force=True)
+    page.wait_for_timeout(300)
+    checkout_blocked = page.is_visible("#view-p4-cart") and not page.is_visible("#view-p4-checkout")
+    logger.record_test(f"[{dev_name}] MOV < ₹100 (₹50 Cart): Checkout Navigation Guarded", checkout_blocked, "User cannot bypass to checkout")
+
+    # Backend API Check: ₹50 Cart must return HTTP 400 Bad Request
+    try:
+        api_50_resp = page.request.post(
+            "http://127.0.0.1:8001/api/orders/checkout",
+            data={
+                "user_phone": "9876543210",
+                "user_name": "Ramesh Patel",
+                "village": "Rampur",
+                "landmark": "Near Mandir",
+                "store_id": "sharma_brothers",
+                "payment_mode": "COD",
+                "items": [{"id": "item_mov_test_50", "name": "Item 50", "price": 50.0, "qty": 1}]
+            }
+        )
+        api_50_rejected = (api_50_resp.status == 400)
+        api_50_detail = api_50_resp.json().get('detail', '') if api_50_rejected else f"Status: {api_50_resp.status}"
+        logger.record_test(f"[{dev_name}] MOV < ₹100 (₹50 Cart): Backend API Rejection (HTTP 400)", api_50_rejected, f"API rejected: {api_50_detail}")
+    except Exception as e50:
+        logger.record_test(f"[{dev_name}] MOV < ₹100 (₹50 Cart): Backend API Rejection (HTTP 400)", False, str(e50))
+
+    capture_human_ux_screenshot(page, dev_name, "step6_01_mov_alert_active", logger)
+
+    # -------------------------------------------------------------------------
+    # MOV Validation: ₹120 Cart Subtotal (Must Succeed / Enable Checkout)
+    # -------------------------------------------------------------------------
+    page.evaluate("""() => {
+        AppStore.catalog.forEach(i => i.qty = 0);
+        AppStore.catalog[0].price = 120;
+        AppStore.catalog[0].qty = 1;
+        updateCartCalculations();
+    }""")
+    page.wait_for_timeout(300)
+
+    is_alert_hidden = not page.is_visible("#p4-mov-alert")
+    logger.record_test(f"[{dev_name}] MOV >= ₹100 (₹120 Cart): Warning Banner Hidden", is_alert_hidden, "Warning banner automatically removed")
+
+    is_btn_enabled = page.eval_on_selector("#p4-btn-proceed", "btn => !btn.disabled && !btn.classList.contains('pointer-events-none')")
+    logger.record_test(f"[{dev_name}] MOV >= ₹100 (₹120 Cart): Proceed CTA Enabled", is_btn_enabled, "Button active and ready for checkout")
+
+    # Backend API Check: ₹120 Cart must return HTTP 200 OK
+    try:
+        api_120_resp = page.request.post(
+            "http://127.0.0.1:8001/api/orders/checkout",
+            data={
+                "user_phone": "9876543210",
+                "user_name": "Ramesh Patel",
+                "village": "Rampur",
+                "landmark": "Near Mandir",
+                "store_id": "sharma_brothers",
+                "payment_mode": "COD",
+                "items": [{"id": "item_mov_test_120", "name": "Item 120", "price": 120.0, "qty": 1}]
+            }
+        )
+        api_120_accepted = (api_120_resp.status == 200)
+        api_120_order_id = api_120_resp.json().get('order_id', '') if api_120_accepted else f"Status: {api_120_resp.status}"
+        logger.record_test(f"[{dev_name}] MOV >= ₹100 (₹120 Cart): Backend API Acceptance (HTTP 200)", api_120_accepted, f"Order created: {api_120_order_id}")
+    except Exception as e120:
+        logger.record_test(f"[{dev_name}] MOV >= ₹100 (₹120 Cart): Backend API Acceptance (HTTP 200)", False, str(e120))
+
     # Check Proceed button physical visibility
     check_human_ux_bounds(page, '#p4-btn-proceed', "Sticky Bottom 'Proceed' CTA", dev_name, logger, require_sticky=True)
-    capture_human_ux_screenshot(page, dev_name, "step6_01_cart_review", logger)
+    capture_human_ux_screenshot(page, dev_name, "step6_02_cart_review_valid", logger)
 
     page.click('#p4-btn-proceed')
     page.wait_for_timeout(600)
