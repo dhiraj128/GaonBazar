@@ -15,11 +15,11 @@ from .database import engine, Base, get_db, check_database_integrity, ensure_sch
 from .models import User, OTPRecord, Landmark, Store, Product, Order, OrderItem, Runner
 from .schemas import (
     SendOTPRequest, SendOTPResponse,
-    VerifyOTPRequest, VerifyOTPResponse, UserProfileDTO,
+    VerifyOTPRequest, VerifyOTPResponse, UserProfileDTO, CustomerTrustStatusDTO,
     SaveLandmarkRequest, SaveLandmarkResponse,
     StoreDTO, ProductDTO,
     CheckoutRequest, CheckoutResponse,
-    OrderStatusResponse,
+    OrderStatusResponse, CancelOrderRequest, OrderCancelResponse,
     VendorLoginRequest, VendorLoginResponse,
     VendorOrderDTO, VendorOrderItemDTO,
     UpdateOrderStatusRequest, UpdateStockRequest,
@@ -325,7 +325,12 @@ def verify_otp(payload: VerifyOTPRequest, db: Session = Depends(get_db)):
             name=user.name or "Ramesh Patel",
             lang=user.lang or "hi",
             village=latest_lm.village if latest_lm else "Rampur Village (रामपुर)",
-            landmark=latest_lm.landmark_text if latest_lm else "Near Shiva Temple, Opp. Blue Water Tank"
+            landmark=latest_lm.landmark_text if latest_lm else "Near Shiva Temple, Opp. Blue Water Tank",
+            cancelled_orders=user.cancelled_orders or 0,
+            is_cod_blocked=bool(user.is_cod_blocked),
+            is_blacklisted=bool(user.is_blacklisted),
+            warning_alert=user.warning_alert,
+            trust_score=user.trust_score if user.trust_score is not None else 100
         )
     )
 
@@ -383,7 +388,12 @@ def save_user_landmark(payload: SaveLandmarkRequest, db: Session = Depends(get_d
             name=user.name,
             lang=user.lang or "hi",
             village=payload.village,
-            landmark=landmark_text
+            landmark=landmark_text,
+            cancelled_orders=user.cancelled_orders or 0,
+            is_cod_blocked=bool(user.is_cod_blocked),
+            is_blacklisted=bool(user.is_blacklisted),
+            warning_alert=user.warning_alert,
+            trust_score=user.trust_score if user.trust_score is not None else 100
         )
     )
 
@@ -472,6 +482,34 @@ def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
 
     # Run database integrity check before accepting order
     check_database_integrity()
+
+    # Fetch or register user profile to enforce Customer Trust Score & 3-Strike rules
+    user = db.query(User).filter(User.phone == payload.user_phone).first()
+    if not user:
+        user = User(
+            phone=payload.user_phone,
+            name=payload.user_name,
+            cancelled_orders=0,
+            is_cod_blocked=False,
+            is_blacklisted=False,
+            trust_score=100
+        )
+        db.add(user)
+        db.flush()
+
+    # STRIKE 3: Permanent Blacklist Enforcement
+    if user.is_blacklisted or (getattr(user, 'cancelled_orders', 0) or 0) >= 3:
+        raise HTTPException(
+            status_code=403,
+            detail="Account is permanently blacklisted from placing orders due to multiple cancellations (3 strikes reached) / एकाउंट ब्लैकलिस्ट कर दिया गया है।"
+        )
+
+    # STRIKE 2: Cash on Delivery (COD) Block Enforcement
+    if (user.is_cod_blocked or (getattr(user, 'cancelled_orders', 0) or 0) >= 2) and payload.payment_mode and payload.payment_mode.upper() == "COD":
+        raise HTTPException(
+            status_code=400,
+            detail="Cash on Delivery (COD) is blocked for this user due to frequent cancellations. Please pay online via UPI. / कैश ऑन डिलीवरी (COD) प्रतिबंधित है। कृपया UPI द्वारा भुगतान करें।"
+        )
 
     # Fetch store
     store = db.query(Store).filter(Store.id == payload.store_id).first()
@@ -580,8 +618,14 @@ def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
     admin_profit = admin_delivery_cut + platform_fee
     total_amount = subtotal + delivery_fee + platform_fee
 
-    # Generate Order ID (#RUR-XXXX) and 4-digit delivery OTP (e.g. "4821")
-    order_id = f"#RUR-{random.randint(1000, 9999)}"
+    # Generate unique collision-free Order ID (#RUR-XXXX) and 4-digit delivery OTP (e.g. "4821")
+    for _ in range(50):
+        candidate_id = f"#RUR-{random.randint(1000, 9999)}"
+        if not db.query(Order).filter(Order.id == candidate_id).first():
+            order_id = candidate_id
+            break
+    else:
+        order_id = f"#RUR-{random.randint(10000, 99999)}"
     delivery_otp = "4821"  # Default test delivery OTP for reliable QA, can also be random
 
     # Fetch user if exists
@@ -670,6 +714,8 @@ def get_order_status(order_id: str, db: Session = Depends(get_db)):
         user_name=order.user_name,
         village=order.village,
         landmark=order.landmark,
+        refund_amount=getattr(order, 'refund_amount', 0.0) or 0.0,
+        refund_penalty=getattr(order, 'refund_penalty', 0.0) or 0.0,
         created_at=order.created_at.isoformat()
     )
 
@@ -701,6 +747,218 @@ def advance_timeline(order_id: str, db: Session = Depends(get_db)):
         "timeline_stage": order.timeline_stage,
         "status": order.status
     }
+
+
+# =============================================================================
+# 4.1 CUSTOMER TRUST SCORE (3-STRIKE SYSTEM) & CANCELLATION ENGINE
+# =============================================================================
+
+def process_order_cancellation(order: Order, db: Session, reason: str = "Customer requested cancellation") -> dict:
+    """
+    Core 3-Strike Customer Trust Score & Refund Penalty Engine:
+    - Strike 1 (1 cancellation):
+        * Trigger in-app warning notification:
+          "Warning: Frequent cancellations may lead to COD restrictions."
+        * Full refund if prepaid; 0 if COD.
+    - Strike 2 (2 cancellations):
+        * Set is_cod_blocked = True in DB.
+        * COD blocked at checkout.
+        * Full refund if prepaid; 0 if COD.
+    - Strike 3 (3 cancellations):
+        * Set is_blacklisted = True in DB.
+        * Permanent checkout block.
+        * Exact Penalty Math: For prepaid orders, deduct Delivery Fee + Platform Fee (₹3).
+          Only the remaining item subtotal is refunded.
+    """
+    if order.timeline_stage == 0:
+        return {
+            "order_id": order.id,
+            "status": order.status,
+            "timeline_stage": 0,
+            "already_cancelled": True,
+            "payment_mode": order.payment_mode,
+            "subtotal": order.subtotal,
+            "delivery_fee": order.delivery_fee,
+            "platform_fee": order.platform_fee,
+            "total_amount": order.total_amount,
+            "refund_penalty": getattr(order, 'refund_penalty', 0.0) or 0.0,
+            "refund_amount": getattr(order, 'refund_amount', 0.0) or 0.0,
+            "cancelled_orders_count": 0,
+            "is_cod_blocked": False,
+            "is_blacklisted": False,
+            "warning_alert": None,
+            "trust_score": 100,
+            "message": "Order was already cancelled."
+        }
+
+    # Locate user
+    user = None
+    if order.user_id:
+        user = db.query(User).filter(User.id == order.user_id).first()
+    if not user and order.user_phone:
+        user = db.query(User).filter(User.phone == order.user_phone).first()
+    if not user and order.user_phone:
+        user = User(
+            phone=order.user_phone,
+            name=order.user_name,
+            cancelled_orders=0,
+            is_cod_blocked=False,
+            is_blacklisted=False,
+            trust_score=100
+        )
+        db.add(user)
+        db.flush()
+
+    user.cancelled_orders = (getattr(user, 'cancelled_orders', 0) or 0) + 1
+    current_strikes = user.cancelled_orders
+    is_prepaid = (order.payment_mode.upper() != "COD")
+    warning_notification = None
+
+    if current_strikes == 1:
+        # STRIKE 1: The Warning
+        user.is_cod_blocked = False
+        user.is_blacklisted = False
+        user.trust_score = 70
+        warning_notification = "Warning: Frequent cancellations may lead to COD restrictions."
+        user.warning_alert = warning_notification
+        
+        refund_penalty = 0.0
+        refund_amount = round(float(order.total_amount), 2) if is_prepaid else 0.0
+
+    elif current_strikes == 2:
+        # STRIKE 2: The COD Block
+        user.is_cod_blocked = True
+        user.is_blacklisted = False
+        user.trust_score = 40
+        warning_notification = "COD Blocked: Frequent cancellations have restricted Cash on Delivery. Please pay online via UPI."
+        user.warning_alert = warning_notification
+        
+        refund_penalty = 0.0
+        refund_amount = round(float(order.total_amount), 2) if is_prepaid else 0.0
+
+    else:
+        # STRIKE 3 (or higher): Blacklist & Refund Penalty
+        user.is_blacklisted = True
+        user.is_cod_blocked = True
+        user.trust_score = 0
+        warning_notification = "Account Blacklisted: Permanently restricted from checkout due to multiple cancellations."
+        user.warning_alert = warning_notification
+
+        # Exact Penalty Math: Deduct Delivery Fee + Platform Fee (₹3) from total paid amount
+        if is_prepaid:
+            refund_penalty = round(float(order.delivery_fee) + float(order.platform_fee), 2)
+            refund_amount = round(float(order.total_amount) - refund_penalty, 2)
+            if abs(refund_amount - order.subtotal) > 0.01:
+                refund_amount = round(float(order.subtotal), 2)
+        else:
+            refund_penalty = 0.0
+            refund_amount = 0.0
+
+    order.timeline_stage = 0
+    order.status = "Cancelled with Penalty" if (is_prepaid and refund_penalty > 0) else "Cancelled"
+    order.refund_penalty = refund_penalty
+    order.refund_amount = refund_amount
+    order.cancellation_reason = reason
+
+    db.commit()
+    db.refresh(order)
+    db.refresh(user)
+
+    return {
+        "order_id": order.id,
+        "status": order.status,
+        "timeline_stage": 0,
+        "payment_mode": order.payment_mode,
+        "subtotal": order.subtotal,
+        "delivery_fee": order.delivery_fee,
+        "platform_fee": order.platform_fee,
+        "total_amount": order.total_amount,
+        "refund_penalty": refund_penalty,
+        "refund_amount": refund_amount,
+        "cancelled_orders_count": user.cancelled_orders,
+        "is_cod_blocked": user.is_cod_blocked,
+        "is_blacklisted": user.is_blacklisted,
+        "warning_alert": user.warning_alert,
+        "trust_score": user.trust_score,
+        "message": warning_notification or "Order cancelled successfully."
+    }
+
+
+@app.post("/api/orders/{order_id}/cancel", response_model=OrderCancelResponse)
+def cancel_order_endpoint(
+    order_id: str,
+    payload: Optional[CancelOrderRequest] = None,
+    db: Session = Depends(get_db)
+):
+    """
+    Cancels an order and applies the 3-Strike Customer Trust Score & Refund Penalty rules.
+    """
+    candidate_ids = [order_id, f"#{order_id}", order_id.lstrip("#")]
+    order = db.query(Order).filter(Order.id.in_(candidate_ids)).first()
+    if not order:
+        raise HTTPException(status_code=404, detail=f"Order {order_id} not found")
+    if order.timeline_stage == 5:
+        raise HTTPException(status_code=400, detail="Cannot cancel an order that has already been delivered")
+
+    reason = payload.reason if (payload and payload.reason) else "Customer requested cancellation"
+    res = process_order_cancellation(order, db, reason=reason)
+    return OrderCancelResponse(
+        success=True,
+        order_id=res["order_id"],
+        status=res["status"],
+        timeline_stage=res["timeline_stage"],
+        payment_mode=res["payment_mode"],
+        subtotal=res["subtotal"],
+        delivery_fee=res["delivery_fee"],
+        platform_fee=res["platform_fee"],
+        total_amount=res["total_amount"],
+        refund_penalty=res["refund_penalty"],
+        refund_amount=res["refund_amount"],
+        cancelled_orders_count=res["cancelled_orders_count"],
+        is_cod_blocked=res["is_cod_blocked"],
+        is_blacklisted=res["is_blacklisted"],
+        warning_alert=res["warning_alert"],
+        message=res["message"]
+    )
+
+
+@app.get("/api/user/{phone}/trust-status", response_model=CustomerTrustStatusDTO)
+def get_user_trust_status(phone: str, db: Session = Depends(get_db)):
+    """
+    Returns the real-time Trust Score, strike status, warning notification, and allowed payment modes for a user.
+    """
+    user = db.query(User).filter(User.phone == phone).first()
+    if not user:
+        return CustomerTrustStatusDTO(
+            phone=phone,
+            name="Customer",
+            cancelled_orders=0,
+            is_cod_blocked=False,
+            is_blacklisted=False,
+            warning_alert=None,
+            trust_score=100,
+            allowed_payment_modes=["COD", "UPI"],
+            can_order=True
+        )
+
+    allowed = []
+    can_order = not (user.is_blacklisted or (getattr(user, 'cancelled_orders', 0) or 0) >= 3)
+    if can_order:
+        allowed.append("UPI")
+        if not (user.is_cod_blocked or (getattr(user, 'cancelled_orders', 0) or 0) >= 2):
+            allowed.append("COD")
+
+    return CustomerTrustStatusDTO(
+        phone=user.phone,
+        name=user.name or "Customer",
+        cancelled_orders=getattr(user, 'cancelled_orders', 0) or 0,
+        is_cod_blocked=bool(user.is_cod_blocked or (getattr(user, 'cancelled_orders', 0) or 0) >= 2),
+        is_blacklisted=bool(user.is_blacklisted or (getattr(user, 'cancelled_orders', 0) or 0) >= 3),
+        warning_alert=user.warning_alert,
+        trust_score=user.trust_score if user.trust_score is not None else 100,
+        allowed_payment_modes=allowed,
+        can_order=can_order
+    )
 
 
 # =============================================================================
@@ -911,15 +1169,13 @@ def vendor_quick_action(
     }
 
     if action == "cancel":
-        order.timeline_stage = 0
-        order.status = "Cancelled by Vendor"
+        process_order_cancellation(order, db, reason="Cancelled by Vendor")
     else:
         new_stage, status_name = action_map[action]
         order.timeline_stage = new_stage
         order.status = status_name
-
-    db.commit()
-    db.refresh(order)
+        db.commit()
+        db.refresh(order)
 
     items_dto = [
         VendorOrderItemDTO(

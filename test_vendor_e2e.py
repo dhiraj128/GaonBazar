@@ -277,7 +277,20 @@ def check_element_bounds(page, selector, desc, logger, dev_name=None, require_st
     if dev_name is None:
         dev_name = getattr(page, "_dev_name", "Device")
 
-    loc = page.locator(selector).first
+    if hasattr(selector, "evaluate"):
+        loc = selector
+    else:
+        locs = page.locator(selector)
+        loc = locs.first
+        try:
+            count = locs.count()
+            for i in range(count):
+                candidate = locs.nth(i)
+                if candidate.is_visible():
+                    loc = candidate
+                    break
+        except Exception:
+            pass
     try:
         loc.wait_for(state="attached", timeout=6000)
     except Exception as e:
@@ -519,7 +532,11 @@ def _run_vendor_device_steps(context, dev_name, device_config, logger):
 
     vendor_url = "http://127.0.0.1:8001/vendor"
     logger.log(f"Loading Vendor Portal: {vendor_url}")
-    page.goto(vendor_url, timeout=30000)
+    page.goto(vendor_url, timeout=30000, wait_until="domcontentloaded")
+    try:
+        page.wait_for_function("() => typeof tailwind !== 'undefined'", timeout=8000)
+    except Exception:
+        pass
     page.wait_for_timeout(1000)
 
     # -------------------------------------------------------------------------
@@ -599,33 +616,46 @@ def _run_vendor_device_steps(context, dev_name, device_config, logger):
     logger.record_test(f"[{dev_name}] Live Order Cards Rendered in Queue", orders_count > 0, f"{orders_count} orders visible")
 
     # Look for Stage 1 Accept Order button
-    accept_btn = page.locator('button:has-text("स्वीकार करें"), button:has-text("Accept Order")').first
+    accept_selector = 'button:has-text("स्वीकार करें"), button:has-text("Accept Order")'
+    accept_btn = page.locator(accept_selector).first
     if accept_btn.count() > 0:
-        check_element_bounds(page, 'button:has-text("स्वीकार करें")', "Order Accept CTA Button", logger)
+        check_element_bounds(page, accept_btn, "Order Accept CTA Button", logger)
         accept_btn.click()
-        page.wait_for_timeout(800)
+        page.wait_for_timeout(1000)
         capture_screenshot(page, f"{dev_name.replace(' ', '_')}_step2_order_accepted", logger)
         logger.record_test(f"[{dev_name}] Order Action: Accepted by Vendor", True, "Advanced to Stage 2 (Packing चालू)")
     else:
         logger.record_test(f"[{dev_name}] Order Action: Accepted by Vendor", False, "Accept button not located")
 
     # Now look for Stage 2 Pack Order button
-    pack_btn = page.locator('button:has-text("पैक हो गया"), button:has-text("Mark Packed")').first
-    if pack_btn.count() > 0:
-        check_element_bounds(page, 'button:has-text("पैक हो गया")', "Mark Packed CTA Button", logger)
+    pack_selector = 'button:has-text("पैक हो गया"), button:has-text("Mark Packed")'
+    pack_btn = page.locator(pack_selector).first
+    try:
+        pack_btn.wait_for(state="visible", timeout=3000)
+    except Exception:
+        pass
+
+    if pack_btn.count() > 0 and pack_btn.is_visible():
+        check_element_bounds(page, pack_btn, "Mark Packed CTA Button", logger)
         pack_btn.click()
-        page.wait_for_timeout(800)
+        page.wait_for_timeout(1000)
         capture_screenshot(page, f"{dev_name.replace(' ', '_')}_step3_order_packed", logger)
         logger.record_test(f"[{dev_name}] Order Action: Packed by Vendor", True, "Advanced to Stage 3 (Waiting for Runner)")
     else:
         logger.record_test(f"[{dev_name}] Order Action: Packed by Vendor", False, "Pack button not located")
 
     # Now look for Stage 3 Handover to Runner button
-    handover_btn = page.locator('button:has-text("रनर को सौंपें"), button:has-text("Handover to Gaon Mitra")').first
-    if handover_btn.count() > 0:
-        check_element_bounds(page, 'button:has-text("रनर को सौंपें")', "Handover to Runner CTA Button", logger)
+    handover_selector = 'button:has-text("रनर को सौंपें"), button:has-text("Handover to Gaon Mitra")'
+    handover_btn = page.locator(handover_selector).first
+    try:
+        handover_btn.wait_for(state="visible", timeout=3000)
+    except Exception:
+        pass
+
+    if handover_btn.count() > 0 and handover_btn.is_visible():
+        check_element_bounds(page, handover_btn, "Handover to Runner CTA Button", logger)
         handover_btn.click()
-        page.wait_for_timeout(800)
+        page.wait_for_timeout(1000)
         capture_screenshot(page, f"{dev_name.replace(' ', '_')}_step4_order_dispatched", logger)
         logger.record_test(f"[{dev_name}] Order Action: Handed Over to Gaon Mitra", True, "Advanced to Stage 4 (Out for Delivery)")
     else:
@@ -657,10 +687,21 @@ def _run_vendor_device_steps(context, dev_name, device_config, logger):
     # Find the first product stock toggle and click it
     first_toggle = page.locator("#inventory-container button:has-text('उपलब्ध'), #inventory-container button:has-text('अनुपलब्ध')").first
     if first_toggle.count() > 0:
+        try:
+            first_toggle.scroll_into_view_if_needed()
+        except Exception:
+            pass
         initial_stock_text = first_toggle.inner_text().strip()
         first_toggle.click()
-        page.wait_for_timeout(700)
-        toggled_stock_text = first_toggle.inner_text().strip()
+        try:
+            page.wait_for_function(
+                "orig => { const el = document.querySelector('#inventory-container button'); return el && el.innerText.trim() !== orig; }",
+                arg=initial_stock_text,
+                timeout=4000
+            )
+        except Exception:
+            page.wait_for_timeout(1000)
+        toggled_stock_text = page.locator("#inventory-container button:has-text('उपलब्ध'), #inventory-container button:has-text('अनुपलब्ध')").first.inner_text().strip()
         capture_screenshot(page, f"{dev_name.replace(' ', '_')}_step5_stock_toggled", logger)
         logger.record_test(
             f"[{dev_name}] Product In-Stock / Out-of-Stock Toggle",
@@ -668,8 +709,11 @@ def _run_vendor_device_steps(context, dev_name, device_config, logger):
             f"{initial_stock_text} -> {toggled_stock_text}"
         )
         # Toggle back to original
-        first_toggle.click()
-        page.wait_for_timeout(400)
+        try:
+            page.locator("#inventory-container button:has-text('उपलब्ध'), #inventory-container button:has-text('अनुपलब्ध')").first.click()
+            page.wait_for_timeout(600)
+        except Exception:
+            pass
     else:
         logger.record_test(f"[{dev_name}] Product In-Stock / Out-of-Stock Toggle", False, "No toggle found")
 

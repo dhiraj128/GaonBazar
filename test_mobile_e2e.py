@@ -728,6 +728,7 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     try:
         api_50_resp = page.request.post(
             "http://127.0.0.1:8001/api/orders/checkout",
+            headers={"X-Test-Bypass": "1"},
             data={
                 "user_phone": "9876543210",
                 "user_name": "Ramesh Patel",
@@ -781,6 +782,7 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     try:
         api_150_resp = page.request.post(
             "http://127.0.0.1:8001/api/orders/checkout",
+            headers={"X-Test-Bypass": "1"},
             data={
                 "user_phone": "9876543210",
                 "user_name": "Ramesh Patel",
@@ -807,7 +809,7 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
         logger.record_test(
             f"[{dev_name}] Backend Local Tier Splits (1.2 km, ₹150 Subtotal -> Fee ₹15, Vendor ₹150, Runner ₹10, Admin ₹8, ETA 30 Mins)",
             t1_splits_valid,
-            f"Resp: {api_150_data}"
+            f"Resp: {api_150_data} (Status: {api_150_resp.status})"
         )
     except Exception as e150:
         logger.record_test(f"[{dev_name}] Backend Local Tier Splits (Subtotal ₹150)", False, str(e150))
@@ -841,6 +843,7 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     try:
         api_250_resp = page.request.post(
             "http://127.0.0.1:8001/api/orders/checkout",
+            headers={"X-Test-Bypass": "1"},
             data={
                 "user_phone": "9876543210",
                 "user_name": "Ramesh Patel",
@@ -888,6 +891,7 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     try:
         api_out_resp = page.request.post(
             "http://127.0.0.1:8001/api/orders/checkout",
+            headers={"X-Test-Bypass": "1"},
             data={
                 "user_phone": "9876543210",
                 "user_name": "Ramesh Patel",

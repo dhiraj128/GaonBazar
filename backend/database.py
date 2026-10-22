@@ -79,7 +79,10 @@ def ensure_schema_migrations():
             ("runner_payout", "FLOAT DEFAULT 0.0"),
             ("admin_profit", "FLOAT DEFAULT 13.0"),
             ("distance_km", "FLOAT DEFAULT 1.5"),
-            ("eta_mins", "VARCHAR(50) DEFAULT '30 Mins'")
+            ("eta_mins", "VARCHAR(50) DEFAULT '30 Mins'"),
+            ("refund_amount", "FLOAT DEFAULT 0.0"),
+            ("refund_penalty", "FLOAT DEFAULT 0.0"),
+            ("cancellation_reason", "VARCHAR(255)")
         ]
         for col_name, col_type in order_cols:
             if col_name not in existing_order_cols:
@@ -88,6 +91,24 @@ def ensure_schema_migrations():
                     conn.commit()
                 except Exception as e:
                     print(f"Notice adding column {col_name} to orders: {e}")
+
+        # Check users columns for 3-strike customer trust score
+        res_users = conn.execute(text("PRAGMA table_info(users)")).fetchall()
+        existing_user_cols = {r[1] for r in res_users}
+        user_cols = [
+            ("cancelled_orders", "INTEGER DEFAULT 0"),
+            ("is_cod_blocked", "BOOLEAN DEFAULT 0"),
+            ("is_blacklisted", "BOOLEAN DEFAULT 0"),
+            ("warning_alert", "VARCHAR(255)"),
+            ("trust_score", "INTEGER DEFAULT 100")
+        ]
+        for col_name, col_type in user_cols:
+            if col_name not in existing_user_cols:
+                try:
+                    conn.execute(text(f"ALTER TABLE users ADD COLUMN {col_name} {col_type}"))
+                    conn.commit()
+                except Exception as e:
+                    print(f"Notice adding column {col_name} to users: {e}")
 
         # Ensure all existing orders have balanced distance-based ledger splits
         try:

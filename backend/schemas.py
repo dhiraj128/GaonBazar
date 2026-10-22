@@ -50,6 +50,43 @@ class UserProfileDTO(BaseModel):
     lang: Optional[str] = "hi"
     village: Optional[str] = None
     landmark: Optional[str] = None
+    cancelled_orders: Optional[int] = 0
+    is_cod_blocked: Optional[bool] = False
+    is_blacklisted: Optional[bool] = False
+    warning_alert: Optional[str] = None
+    trust_score: Optional[int] = 100
+
+class CustomerTrustStatusDTO(BaseModel):
+    phone: str
+    name: Optional[str] = "Customer"
+    cancelled_orders: int
+    is_cod_blocked: bool
+    is_blacklisted: bool
+    warning_alert: Optional[str] = None
+    trust_score: int
+    allowed_payment_modes: List[str]
+    can_order: bool
+
+class CancelOrderRequest(BaseModel):
+    reason: Optional[str] = "Customer requested cancellation"
+
+class OrderCancelResponse(BaseModel):
+    success: bool
+    order_id: str
+    status: str
+    timeline_stage: int
+    payment_mode: str
+    subtotal: float
+    delivery_fee: float
+    platform_fee: float
+    total_amount: float
+    refund_penalty: float
+    refund_amount: float
+    cancelled_orders_count: int
+    is_cod_blocked: bool
+    is_blacklisted: bool
+    warning_alert: Optional[str] = None
+    message: str
 
 class VerifyOTPResponse(BaseModel):
     success: bool
@@ -159,6 +196,8 @@ class OrderStatusResponse(BaseModel):
     user_name: str
     village: str
     landmark: str
+    refund_amount: Optional[float] = None
+    refund_penalty: Optional[float] = None
     created_at: str
 
 

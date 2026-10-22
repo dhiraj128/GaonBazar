@@ -16,29 +16,34 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            primary: '#16a34a', // Emerald 600
-            'primary-dark': '#15803d',
-            'primary-light': '#22c55e',
-            accent: '#d97706', // Amber 600
-            'accent-light': '#f59e0b',
-            surface: '#0f172a',
-            'surface-card': '#1e293b',
-            'surface-elevated': '#334155'
-          },
-          fontFamily: {
-            sans: ['"Plus Jakarta Sans"', '"Noto Sans Devanagari"', 'sans-serif']
+    if (typeof tailwind !== 'undefined') {
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: '#16a34a', // Emerald 600
+              'primary-dark': '#15803d',
+              'primary-light': '#22c55e',
+              accent: '#d97706', // Amber 600
+              'accent-light': '#f59e0b',
+              surface: '#0f172a',
+              'surface-card': '#1e293b',
+              'surface-elevated': '#334155'
+            },
+            fontFamily: {
+              sans: ['"Plus Jakarta Sans"', '"Noto Sans Devanagari"', 'sans-serif']
+            }
           }
         }
-      }
+      };
     }
   </script>
 
   <style>
+    .hidden {
+      display: none !important;
+    }
     body {
       font-family: 'Plus Jakarta Sans', 'Noto Sans Devanagari', sans-serif;
     }

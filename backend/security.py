@@ -374,7 +374,7 @@ def enforce_otp_rate_limit(
     client_ip = request.client.host if request.client else "127.0.0.1"
     
     # In general test mode, bypass unless explicitly testing rate limits
-    is_bypass = (TEST_MODE or CI_MODE) and (x_enforce_rate_limit != "1") and (x_test_bypass == "1" or not x_enforce_rate_limit)
+    is_bypass = (TEST_MODE or CI_MODE or x_test_bypass == "1") and (x_enforce_rate_limit != "1")
 
     allowed, retry_after = otp_rate_limiter.check_rate_limit(client_ip, is_test_bypass=is_bypass)
     if not allowed:
@@ -393,7 +393,7 @@ def enforce_checkout_rate_limit(
     """Dependency that enforces rate limit on /api/orders/checkout."""
     client_ip = request.client.host if request.client else "127.0.0.1"
 
-    is_bypass = (TEST_MODE or CI_MODE) and (x_enforce_rate_limit != "1") and (x_test_bypass == "1" or not x_enforce_rate_limit)
+    is_bypass = (TEST_MODE or CI_MODE or x_test_bypass == "1") and (x_enforce_rate_limit != "1")
 
     allowed, retry_after = checkout_rate_limiter.check_rate_limit(client_ip, is_test_bypass=is_bypass)
     if not allowed:

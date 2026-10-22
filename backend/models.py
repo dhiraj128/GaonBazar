@@ -11,6 +11,11 @@ class User(Base):
     name = Column(String(100), nullable=True)
     lang = Column(String(10), default="hi")
     session_token = Column(String(100), unique=True, index=True, nullable=True)
+    cancelled_orders = Column(Integer, default=0)
+    is_cod_blocked = Column(Boolean, default=False)
+    is_blacklisted = Column(Boolean, default=False)
+    warning_alert = Column(String(255), nullable=True)
+    trust_score = Column(Integer, default=100)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     landmarks = relationship("Landmark", back_populates="user", cascade="all, delete-orphan")
@@ -113,6 +118,9 @@ class Order(Base):
     status = Column(String(50), default="Order Placed")
     timeline_stage = Column(Integer, default=1)  # 1 to 5
     delivery_otp = Column(String(10), nullable=False)  # 4-digit code e.g. "4821"
+    refund_amount = Column(Float, default=0.0)
+    refund_penalty = Column(Float, default=0.0)
+    cancellation_reason = Column(String(255), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", back_populates="orders")
