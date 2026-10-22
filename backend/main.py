@@ -119,22 +119,11 @@ if ALLOWED_ORIGINS_ENV:
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
-    allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$",
+    allow_origins=["*", "null", "file://"],
+    allow_origin_regex=r".*",
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=[
-        "Authorization",
-        "Content-Type",
-        "Accept",
-        "Origin",
-        "User-Agent",
-        "X-Requested-With",
-        "X-Test-Bypass",
-        "X-Client-Version",
-        "X-Enforce-Rate-Limit",
-        "X-Test-Client"
-    ],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 @app.on_event("startup")
@@ -726,11 +715,13 @@ def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
         admin_delivery_cut = 10.0
         eta_mins = "45-60 Mins"
 
-    # Delivery Discount rule: If subtotal >= 299, apply a flat ₹10 discount to the delivery fee.
-    # The Runner still gets their full distance payout. The ₹10 discount is absorbed by the Admin's margin.
+    # Delivery Discount rule: If distance <= 5.0 km (Local & Village Edge) and subtotal >= 299,
+    # apply a flat ₹10 discount to the delivery fee.
+    # Long distance (> 5.0 km) retains standard ₹40 delivery fee.
+    # The Runner still gets their full distance payout. The ₹10 discount is absorbed by Admin margin.
     DELIVERY_DISCOUNT_THRESHOLD = 299.0
     DELIVERY_DISCOUNT_AMOUNT = 10.0
-    if subtotal >= DELIVERY_DISCOUNT_THRESHOLD:
+    if distance_km <= 5.0 and subtotal >= DELIVERY_DISCOUNT_THRESHOLD:
         delivery_discount = DELIVERY_DISCOUNT_AMOUNT
         delivery_fee = max(0.0, base_delivery_fee - delivery_discount)
         admin_delivery_cut = admin_delivery_cut - delivery_discount

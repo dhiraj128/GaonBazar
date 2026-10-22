@@ -1811,6 +1811,7 @@
 
             <button 
               id="stock-btn-${prod.id}"
+              data-product-id="${prod.id}"
               type="button"
               onclick="toggleStockStatus('${prod.id}', ${!prod.in_stock}, event)" 
               class="touch-manipulation px-3.5 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all select-none active:scale-95 cursor-pointer ${prod.in_stock ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}"
@@ -1830,20 +1831,42 @@
         if (event.preventDefault) event.preventDefault();
       }
 
+      // Explicitly target parent <button> from event or DOM, bypassing any event bubbling issues
+      let btn = null;
+      if (event) {
+        if (event.currentTarget && event.currentTarget.tagName === 'BUTTON') {
+          btn = event.currentTarget;
+        } else if (event.target) {
+          btn = (event.target.tagName === 'BUTTON') ? event.target : (event.target.closest ? event.target.closest('button') : null);
+        }
+      }
+      if (!btn && productId) {
+        btn = document.getElementById(`stock-btn-${productId}`) || document.querySelector(`button[id*="${productId}"]`);
+      }
+
       // 1. OPTIMISTIC DOM & STATE UPDATE (Instant 0ms visual change!)
       const prod = VendorStore.products.find(p => p.id === productId);
       const prevStockStatus = prod ? prod.in_stock : !newStockStatus;
+      if (typeof newStockStatus !== 'boolean') {
+        newStockStatus = prod ? !prod.in_stock : !prevStockStatus;
+      }
       if (prod) {
         prod.in_stock = newStockStatus;
       }
 
       const isHi = (VendorStore.lang === 'hi');
-      const btn = document.getElementById(`stock-btn-${productId}`);
       const lbl = document.getElementById(`stock-label-${productId}`);
 
+      // Forceful synchronous DOM update directly on button classList and innerHTML
       if (btn) {
         btn.setAttribute('onclick', `toggleStockStatus('${productId}', ${!newStockStatus}, event)`);
-        btn.className = `touch-manipulation px-3.5 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all select-none active:scale-95 cursor-pointer ${newStockStatus ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}`;
+        btn.setAttribute('data-in-stock', String(newStockStatus));
+        btn.classList.remove('bg-emerald-100', 'text-emerald-800', 'hover:bg-emerald-200', 'bg-slate-200', 'text-slate-700', 'hover:bg-slate-300');
+        if (newStockStatus) {
+          btn.classList.add('bg-emerald-100', 'text-emerald-800', 'hover:bg-emerald-200');
+        } else {
+          btn.classList.add('bg-slate-200', 'text-slate-700', 'hover:bg-slate-300');
+        }
         btn.innerHTML = `
           <span class="material-symbols-outlined text-[18px] pointer-events-none">${newStockStatus ? 'toggle_on' : 'toggle_off'}</span>
           <span class="pointer-events-none">${newStockStatus ? (isHi ? 'उपलब्ध' : 'In Stock') : (isHi ? 'अनुपलब्ध' : 'Out of Stock')}</span>
@@ -1874,7 +1897,13 @@
         if (prod) prod.in_stock = prevStockStatus;
         if (btn) {
           btn.setAttribute('onclick', `toggleStockStatus('${productId}', ${!prevStockStatus}, event)`);
-          btn.className = `touch-manipulation px-3.5 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all select-none active:scale-95 cursor-pointer ${prevStockStatus ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}`;
+          btn.setAttribute('data-in-stock', String(prevStockStatus));
+          btn.classList.remove('bg-emerald-100', 'text-emerald-800', 'hover:bg-emerald-200', 'bg-slate-200', 'text-slate-700', 'hover:bg-slate-300');
+          if (prevStockStatus) {
+            btn.classList.add('bg-emerald-100', 'text-emerald-800', 'hover:bg-emerald-200');
+          } else {
+            btn.classList.add('bg-slate-200', 'text-slate-700', 'hover:bg-slate-300');
+          }
           btn.innerHTML = `
             <span class="material-symbols-outlined text-[18px] pointer-events-none">${prevStockStatus ? 'toggle_on' : 'toggle_off'}</span>
             <span class="pointer-events-none">${prevStockStatus ? (isHi ? 'उपलब्ध' : 'In Stock') : (isHi ? 'अनुपलब्ध' : 'Out of Stock')}</span>

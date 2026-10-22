@@ -2774,8 +2774,14 @@
           ? `<span class="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full shrink-0">${isHi ? 'खुली है' : 'Open'}</span>`
           : `<span class="text-[10px] font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded-full shrink-0">${isHi ? 'बंद है' : 'Closed'}</span>`;
 
-        const distIdAttr = (idx === 0 || store.id === 'sharma_brothers') ? 'id="store-1-dist"' : (idx === 1 || store.id === 'kisan_agri') ? 'id="store-2-dist"' : '';
-        const etaIdAttr = (idx === 0 || store.id === 'sharma_brothers') ? 'id="store-1-eta"' : (idx === 1 || store.id === 'kisan_agri') ? 'id="store-2-eta"' : '';
+        const isStore1 = (idx === 0 || store.id === 'sharma_brothers');
+        const isStore2 = (idx === 1 || store.id === 'kisan_seva' || store.id === 'kisan_agri');
+        const distIdAttr = isStore1 ? 'id="store-1-dist"' : (isStore2 ? 'id="store-2-dist"' : '');
+        const etaIdAttr = isStore1 ? 'id="store-1-eta"' : (isStore2 ? 'id="store-2-eta"' : '');
+
+        const storeDist = (typeof store.distance_km === 'number' ? store.distance_km : parseFloat(store.distance_km)) || 1.2;
+        const calculatedEta = storeDist <= 5.0 ? '30 Mins' : '45-60 Mins';
+        const storeEta = (store.eta_mins && String(store.eta_mins).trim().length > 0) ? String(store.eta_mins).trim() : calculatedEta;
 
         return `
           <div onclick="openStoreView('${store.id}')" class="btn-tactile p-4 rounded-2xl bg-white shadow-mobile-card border border-surface-container-high flex flex-col gap-3 cursor-pointer hover:border-primary">
@@ -2793,16 +2799,16 @@
                   <div class="flex items-center gap-2 mt-1 text-[11px] text-on-surface-variant font-semibold">
                     ${ratingHtml}
                     <span>•</span>
-                    <span ${distIdAttr}>${store.distance_km || 1.2} km</span>
+                    <span ${distIdAttr}>${storeDist} km</span>
                     <span>•</span>
-                    <span ${etaIdAttr}>${store.eta_mins || '30 Mins'}</span>
+                    <span ${etaIdAttr}>${storeEta}</span>
                   </div>
                 </div>
               </div>
               ${statusPill}
             </div>
             <div class="flex items-center justify-between pt-2 border-t border-surface-container text-[11px]">
-              <span class="text-secondary font-bold">${isHi ? 'स्थानीय डिलीवरी (30 Mins)' : 'Local Delivery (30 Mins)'}</span>
+              <span class="text-secondary font-bold">${isHi ? `स्थानीय डिलीवरी (${storeEta})` : `Local Delivery (${storeEta})`}</span>
               <span class="text-primary font-bold flex items-center gap-1">
                 <span>${isHi ? 'दुकान देखें' : 'View Shop'}</span>
                 <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
@@ -2812,6 +2818,8 @@
         `;
       }).join('');
     }
+    window.renderStores = renderDashboardStoresFeed;
+    window.renderDashboardStoresFeed = renderDashboardStoresFeed;
 
     // --- 7.5 STORE CATALOG CACHE & INSTANT ZERO-LATENCY RENDERING ---
     const STORE_CATALOG_CACHE = {
