@@ -408,9 +408,15 @@
             <span id="detail-order-id" class="text-sm font-mono font-black text-white">#RUR-0000</span>
           </div>
         </div>
-        <span id="detail-stage-badge" class="px-2.5 py-1 rounded-full text-xs font-black bg-amber-500/20 text-amber-300 border border-amber-500/30">
-          पिकअप बाकी
-        </span>
+        <div class="flex items-center gap-1.5">
+          <span id="detail-eta-badge" class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-slate-700/80 text-slate-300 flex items-center gap-1">
+            <span class="material-symbols-outlined text-[12px]">schedule</span>
+            <span id="detail-eta-text">30 Mins</span>
+          </span>
+          <span id="detail-stage-badge" class="px-2.5 py-1 rounded-full text-xs font-black bg-amber-500/20 text-amber-300 border border-amber-500/30">
+            पिकअप बाकी
+          </span>
+        </div>
       </div>
 
       <!-- ===================================================================== -->
@@ -1523,6 +1529,9 @@
         const isStage3 = mission.timeline_stage === 3;
         const stageLabel = isStage3 ? 'दुकान से पिकअप बाकी' : 'रास्ते में (In-Transit)';
         const stageBadgeClass = isStage3 ? 'bg-amber-500/20 text-amber-300 border-amber-500/30' : 'bg-blue-500/20 text-blue-300 border-blue-500/30';
+        const dist = typeof mission.distance_km === 'number' ? mission.distance_km : 1.2;
+        const etaText = mission.eta_mins || (dist > 5.0 ? '45-60 Mins' : '30 Mins');
+        const comm = typeof mission.commission === 'number' ? mission.commission : (dist > 5.0 ? 30 : (dist > 2.0 ? 15 : 10));
 
         return `
           <div onclick="selectMission('${mission.id}')" class="bg-slate-800 rounded-3xl p-4 sm:p-5 border ${isStage3 ? 'border-amber-500/40' : 'border-slate-700'} shadow-md flex flex-col gap-3 cursor-pointer hover:border-primary transition-all active:scale-99">
@@ -1532,6 +1541,11 @@
               <div class="flex items-center gap-2">
                 <span class="font-mono font-black text-sm text-white">${mission.id}</span>
                 <span class="text-[10px] bg-slate-700 text-slate-300 px-2 py-0.5 rounded-full font-bold">${mission.items_count} सामान</span>
+                <span class="text-[10px] bg-slate-700/60 text-slate-300 px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[11px]">schedule</span>
+                  <span>${etaText}</span>
+                  <span class="text-slate-400">(${dist} km)</span>
+                </span>
               </div>
               <span class="px-2.5 py-0.5 rounded-full text-xs font-black border ${stageBadgeClass}">
                 ${stageLabel}
@@ -1567,7 +1581,7 @@
                 <span class="text-xs font-black ${mission.payment_mode === 'COD' ? 'text-amber-400' : 'text-emerald-400'}">
                   ${mission.payment_mode === 'COD' ? `💵 ₹${mission.total_amount} नकद (COD)` : `📱 ऑनलाइन UPI`}
                 </span>
-                <span class="text-[10px] text-purple-400 font-bold ml-1">• +₹20 आय</span>
+                <span class="text-[10px] text-purple-400 font-bold ml-1">• +₹${comm} आय</span>
               </div>
 
               <button class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-primary text-white flex items-center gap-1 shadow-sm">
@@ -1622,7 +1636,13 @@
       const elPayMode = document.getElementById('detail-payment-mode-label');
       const elTotalAmt = document.getElementById('detail-total-amount');
       const elHighlightAmt = document.getElementById('cb-amount-highlight');
+      const elEtaText = document.getElementById('detail-eta-text');
 
+      const dist = typeof m.distance_km === 'number' ? m.distance_km : 1.2;
+      const etaText = m.eta_mins || (dist > 5.0 ? '45-60 Mins' : '30 Mins');
+      const comm = typeof m.commission === 'number' ? m.commission : (dist > 5.0 ? 30 : (dist > 2.0 ? 15 : 10));
+
+      if (elEtaText) elEtaText.innerText = `${etaText} (${dist} km)`;
       if (elOrderId) elOrderId.innerText = m.id;
       if (elStoreName) elStoreName.innerText = m.store_name;
       if (elBtnCallStore) elBtnCallStore.href = `tel:${m.store_phone || '9876543210'}`;
@@ -1635,6 +1655,10 @@
       if (elHighlightAmt) elHighlightAmt.innerText = `(₹${m.total_amount}.00)`;
 
       const isHi = RunnerStore.lang === 'hi';
+      const elVerifyBtnText = document.querySelector('[data-i18n="verify_delivery_btn"]');
+      if (elVerifyBtnText) {
+        elVerifyBtnText.innerText = isHi ? `डिलीवरी पूर्ण करें (+₹${comm} आय)` : `Complete Delivery (+₹${comm})`;
+      }
       if (elPayMode) {
         elPayMode.innerText = m.payment_mode === 'COD' 
           ? (isHi ? '💵 नकद वसूली (COD)' : '💵 Cash on Delivery (COD)')

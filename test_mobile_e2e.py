@@ -636,6 +636,16 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     page.fill("#p2-search-input", "")
     page.wait_for_timeout(300)
 
+    # Dynamic Time Estimations Audit in Phase 2 Store Feed (<= 5.0 km -> '30 Mins')
+    s1_eta = page.inner_text("#store-1-eta").strip() if page.is_visible("#store-1-eta") else ""
+    s2_eta = page.inner_text("#store-2-eta").strip() if page.is_visible("#store-2-eta") else ""
+    eta_valid = (s1_eta == "30 Mins" and s2_eta == "30 Mins")
+    logger.record_test(
+        f"[{dev_name}] Phase 2 Store Feed Dynamic ETA (<= 5.0 km -> '30 Mins')",
+        eta_valid,
+        f"Store 1 ETA: '{s1_eta}' | Store 2 ETA: '{s2_eta}'"
+    )
+
     check_human_ux_bounds(page, 'div[onclick*="sharma_brothers"]', "Sharma Brothers Store Card", dev_name, logger)
     capture_human_ux_screenshot(page, dev_name, "step4_01_main_dashboard", logger)
 
@@ -648,6 +658,13 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     logger.log(f"\n--- [{dev_name}] Testing Phase 3: Store Catalog & Dynamic Steppers ---")
     is_store_visible = page.is_visible("#view-p3-store")
     logger.record_test(f"[{dev_name}] Transition to Store View (Sharma Brothers Kirana)", is_store_visible)
+
+    p3_eta = page.inner_text("#p3-store-eta").strip() if page.is_visible("#p3-store-eta") else ""
+    logger.record_test(
+        f"[{dev_name}] Phase 3 Store Overview ETA ('30 Mins')",
+        p3_eta == "30 Mins",
+        f"P3 ETA: '{p3_eta}'"
+    )
     inspect_viewport_and_layout(page, f"[{dev_name}] Phase 3 Store", logger)
 
     # Locate and assert visible ADD button
@@ -730,11 +747,12 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     capture_human_ux_screenshot(page, dev_name, "step6_01_mov_alert_active", logger)
 
     # -------------------------------------------------------------------------
-    # Tier 1 Dynamic Pricing Validation: ₹150 Cart Subtotal
-    # Subtotal ₹100-₹200 -> Delivery ₹30, Platform ₹3, Total ₹183
-    # Payout splits: Vendor ₹150 (0% comm), Runner ₹20, Admin ₹13 (₹10 del + ₹3 plat)
+    # Tier 1 Dynamic Pricing (Local: 0 - 2.0 km, e.g. 1.2 km): ₹150 Subtotal
+    # Distance <= 2.0 km -> Delivery ₹15, Platform ₹3, Total ₹168, ETA "30 Mins"
+    # Payout splits: Vendor ₹150 (0% comm), Runner ₹10, Admin ₹8 (₹5 del + ₹3 plat)
     # -------------------------------------------------------------------------
     page.evaluate("""() => {
+        AppStore.selectedDistance = 1.2;
         AppStore.catalog.forEach(i => i.qty = 0);
         AppStore.catalog[0].price = 150;
         AppStore.catalog[0].qty = 1;
@@ -748,18 +766,18 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     is_btn_enabled = page.eval_on_selector("#p4-btn-proceed", "btn => !btn.disabled && !btn.classList.contains('pointer-events-none')")
     logger.record_test(f"[{dev_name}] MOV >= ₹100 (₹150 Cart): Proceed CTA Enabled", is_btn_enabled, "Button active and ready for checkout")
 
-    # Verify Frontend UI Bill Breakdown for Tier 1
+    # Verify Frontend UI Bill Breakdown for Short Distance Tier 1
     t1_delivery_text = page.inner_text("#p4-bill-delivery").strip()
     t1_platform_text = page.inner_text("#p4-bill-platform").strip()
     t1_total_text = page.inner_text("#p4-bill-total").strip()
-    t1_valid = ("30" in t1_delivery_text and "3" in t1_platform_text and "183" in t1_total_text)
+    t1_valid = ("15" in t1_delivery_text and "3" in t1_platform_text and "168" in t1_total_text)
     logger.record_test(
-        f"[{dev_name}] Dynamic Delivery Tier 1 UI (₹150 Subtotal -> ₹30 Delivery, ₹3 Platform, ₹183 Total)",
+        f"[{dev_name}] Dynamic Delivery Local Tier UI (1.2 km, ₹150 Subtotal -> ₹15 Delivery, ₹3 Platform, ₹168 Total)",
         t1_valid,
         f"Delivery: {t1_delivery_text}, Platform: {t1_platform_text}, Total: {t1_total_text}"
     )
 
-    # Backend API Check: ₹150 Cart must return HTTP 200 OK with correct dynamic splits
+    # Backend API Check: 1.2 km Local Cart must return HTTP 200 OK with correct dynamic splits & ETA
     try:
         api_150_resp = page.request.post(
             "http://127.0.0.1:8001/api/orders/checkout",
@@ -770,6 +788,7 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
                 "landmark": "Near Mandir",
                 "store_id": "sharma_brothers",
                 "payment_mode": "COD",
+                "distance_km": 1.2,
                 "items": [{"id": "item_mov_test_150", "name": "Item 150", "price": 150.0, "qty": 1}]
             }
         )
@@ -777,27 +796,29 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
         api_150_data = api_150_resp.json() if api_150_accepted else {}
         t1_splits_valid = (
             api_150_data.get("subtotal") == 150.0 and
-            api_150_data.get("delivery_fee") == 30.0 and
+            api_150_data.get("delivery_fee") == 15.0 and
             api_150_data.get("platform_fee") == 3.0 and
-            api_150_data.get("total_amount") == 183.0 and
+            api_150_data.get("total_amount") == 168.0 and
             api_150_data.get("vendor_payout") == 150.0 and
-            api_150_data.get("runner_payout") == 20.0 and
-            api_150_data.get("admin_profit") == 13.0
+            api_150_data.get("runner_payout") == 10.0 and
+            api_150_data.get("admin_profit") == 8.0 and
+            api_150_data.get("eta_mins") == "30 Mins"
         )
         logger.record_test(
-            f"[{dev_name}] Backend Tier 1 Splits (Subtotal ₹150 -> Fee ₹30, Vendor ₹150, Runner ₹20, Admin ₹13, Total ₹183)",
+            f"[{dev_name}] Backend Local Tier Splits (1.2 km, ₹150 Subtotal -> Fee ₹15, Vendor ₹150, Runner ₹10, Admin ₹8, ETA 30 Mins)",
             t1_splits_valid,
             f"Resp: {api_150_data}"
         )
     except Exception as e150:
-        logger.record_test(f"[{dev_name}] Backend Tier 1 Splits (Subtotal ₹150)", False, str(e150))
+        logger.record_test(f"[{dev_name}] Backend Local Tier Splits (Subtotal ₹150)", False, str(e150))
 
     # -------------------------------------------------------------------------
-    # Tier 2 Dynamic Pricing Validation: ₹250 Cart Subtotal
-    # Subtotal > ₹200 -> Delivery ₹25, Platform ₹3, Total ₹278
-    # Payout splits: Vendor ₹250 (0% comm), Runner ₹15, Admin ₹13 (₹10 del + ₹3 plat)
+    # Tier 3 Dynamic Pricing (Long Distance: 5.1 - 8.0 km, e.g. 6.5 km): ₹250 Subtotal
+    # Distance 6.5 km -> Delivery ₹40, Platform ₹3, Total ₹293, ETA "45-60 Mins"
+    # Payout splits: Vendor ₹250 (0% comm), Runner ₹30, Admin ₹13 (₹10 del + ₹3 plat)
     # -------------------------------------------------------------------------
     page.evaluate("""() => {
+        AppStore.selectedDistance = 6.5;
         AppStore.catalog.forEach(i => i.qty = 0);
         AppStore.catalog[0].price = 250;
         AppStore.catalog[0].qty = 1;
@@ -805,18 +826,18 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     }""")
     page.wait_for_timeout(300)
 
-    # Verify Frontend UI Bill Breakdown for Tier 2
-    t2_delivery_text = page.inner_text("#p4-bill-delivery").strip()
-    t2_platform_text = page.inner_text("#p4-bill-platform").strip()
-    t2_total_text = page.inner_text("#p4-bill-total").strip()
-    t2_valid = ("25" in t2_delivery_text and "3" in t2_platform_text and "278" in t2_total_text)
+    # Verify Frontend UI Bill Breakdown for Long Distance Tier
+    t3_delivery_text = page.inner_text("#p4-bill-delivery").strip()
+    t3_platform_text = page.inner_text("#p4-bill-platform").strip()
+    t3_total_text = page.inner_text("#p4-bill-total").strip()
+    t3_valid = ("40" in t3_delivery_text and "3" in t3_platform_text and "293" in t3_total_text)
     logger.record_test(
-        f"[{dev_name}] Dynamic Delivery Tier 2 UI (₹250 Subtotal -> ₹25 Delivery, ₹3 Platform, ₹278 Total)",
-        t2_valid,
-        f"Delivery: {t2_delivery_text}, Platform: {t2_platform_text}, Total: {t2_total_text}"
+        f"[{dev_name}] Dynamic Delivery Long Distance Tier UI (6.5 km, ₹250 Subtotal -> ₹40 Delivery, ₹3 Platform, ₹293 Total)",
+        t3_valid,
+        f"Delivery: {t3_delivery_text}, Platform: {t3_platform_text}, Total: {t3_total_text}"
     )
 
-    # Backend API Check: ₹250 Cart must return HTTP 200 OK with correct dynamic splits
+    # Backend API Check: 6.5 km Long Distance Cart must return HTTP 200 OK with correct dynamic splits & ETA
     try:
         api_250_resp = page.request.post(
             "http://127.0.0.1:8001/api/orders/checkout",
@@ -827,27 +848,72 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
                 "landmark": "Near Mandir",
                 "store_id": "sharma_brothers",
                 "payment_mode": "COD",
+                "distance_km": 6.5,
                 "items": [{"id": "item_mov_test_250", "name": "Item 250", "price": 250.0, "qty": 1}]
             }
         )
         api_250_accepted = (api_250_resp.status == 200)
         api_250_data = api_250_resp.json() if api_250_accepted else {}
-        t2_splits_valid = (
+        t3_splits_valid = (
             api_250_data.get("subtotal") == 250.0 and
-            api_250_data.get("delivery_fee") == 25.0 and
+            api_250_data.get("delivery_fee") == 40.0 and
             api_250_data.get("platform_fee") == 3.0 and
-            api_250_data.get("total_amount") == 278.0 and
+            api_250_data.get("total_amount") == 293.0 and
             api_250_data.get("vendor_payout") == 250.0 and
-            api_250_data.get("runner_payout") == 15.0 and
-            api_250_data.get("admin_profit") == 13.0
+            api_250_data.get("runner_payout") == 30.0 and
+            api_250_data.get("admin_profit") == 13.0 and
+            api_250_data.get("eta_mins") == "45-60 Mins"
         )
         logger.record_test(
-            f"[{dev_name}] Backend Tier 2 Splits (Subtotal ₹250 -> Fee ₹25, Vendor ₹250, Runner ₹15, Admin ₹13, Total ₹278)",
-            t2_splits_valid,
+            f"[{dev_name}] Backend Long Distance Tier Splits (6.5 km, ₹250 Subtotal -> Fee ₹40, Vendor ₹250, Runner ₹30, Admin ₹13, ETA 45-60 Mins)",
+            t3_splits_valid,
             f"Resp: {api_250_data}"
         )
     except Exception as e250:
-        logger.record_test(f"[{dev_name}] Backend Tier 2 Splits (Subtotal ₹250)", False, str(e250))
+        logger.record_test(f"[{dev_name}] Backend Long Distance Tier Splits (Subtotal ₹250)", False, str(e250))
+
+    # -------------------------------------------------------------------------
+    # Outside Delivery Zone Validation (> 8.0 km, e.g. 9.5 km): Must Fail / Reject
+    # -------------------------------------------------------------------------
+    page.evaluate("""() => {
+        AppStore.selectedDistance = 9.5;
+        updateCartCalculations();
+    }""")
+    page.wait_for_timeout(300)
+
+    is_out_btn_disabled = page.eval_on_selector("#p4-btn-proceed", "btn => btn.disabled || btn.classList.contains('pointer-events-none')")
+    logger.record_test(f"[{dev_name}] Outside Delivery Zone (9.5 km): Proceed CTA Disabled", is_out_btn_disabled, "Button disabled when distance > 8 km")
+
+    # Backend API Check: 9.5 km must return HTTP 400 Bad Request
+    try:
+        api_out_resp = page.request.post(
+            "http://127.0.0.1:8001/api/orders/checkout",
+            data={
+                "user_phone": "9876543210",
+                "user_name": "Ramesh Patel",
+                "village": "Rampur",
+                "landmark": "Far Outside",
+                "store_id": "sharma_brothers",
+                "payment_mode": "COD",
+                "distance_km": 9.5,
+                "items": [{"id": "item_mov_test_out", "name": "Item Out", "price": 150.0, "qty": 1}]
+            }
+        )
+        api_out_rejected = (api_out_resp.status == 400)
+        api_out_detail = api_out_resp.json().get('detail', '') if api_out_rejected else f"Status: {api_out_resp.status}"
+        logger.record_test(f"[{dev_name}] Outside Delivery Zone (> 8.0 km): Backend API Rejection (HTTP 400)", api_out_rejected, f"API rejected: {api_out_detail}")
+    except Exception as eout:
+        logger.record_test(f"[{dev_name}] Outside Delivery Zone (> 8.0 km): Backend API Rejection", False, str(eout))
+
+    # Restore valid local order (1.2 km, ₹150) to continue end-to-end checkout flow
+    page.evaluate("""() => {
+        AppStore.selectedDistance = 1.2;
+        AppStore.catalog.forEach(i => i.qty = 0);
+        AppStore.catalog[0].price = 150;
+        AppStore.catalog[0].qty = 1;
+        updateCartCalculations();
+    }""")
+    page.wait_for_timeout(300)
 
     # Check Proceed button physical visibility
     check_human_ux_bounds(page, '#p4-btn-proceed', "Sticky Bottom 'Proceed' CTA", dev_name, logger, require_sticky=True)
@@ -888,6 +954,9 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     otp_visible = page.is_visible('text="DELIVERY OTP:"')
     logger.record_test(f"[{dev_name}] Safe Doorstep Delivery OTP Displayed", otp_visible, "4-digit OTP code visible")
 
+    p5_eta = page.inner_text("#p5-eta-time").strip()
+    logger.record_test(f"[{dev_name}] Live Tracking Dynamic ETA Displayed ('30 Mins')", "30 Mins" in p5_eta or "Mins" in p5_eta, f"ETA: '{p5_eta}'")
+
     # Assert Order exists in real SQLite database
     try:
         from backend.database import SessionLocal
@@ -900,11 +969,15 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
                 db_order.total_amount > 0 and
                 db_order.vendor_payout is not None and
                 db_order.runner_payout is not None and
-                db_order.admin_profit is not None
+                db_order.admin_profit is not None and
+                db_order.distance_km is not None and
+                db_order.eta_mins is not None and
+                abs(db_order.vendor_payout + db_order.runner_payout + db_order.admin_profit - db_order.total_amount) < 0.01
             )
             detail = (
                 f"DB Order: {db_order.id} | Subtotal: ₹{db_order.subtotal} | Total: ₹{db_order.total_amount} | "
-                f"Vendor Payout: ₹{db_order.vendor_payout} | Runner: ₹{db_order.runner_payout} | Admin: ₹{db_order.admin_profit} | OTP: {db_order.delivery_otp}"
+                f"Distance: {db_order.distance_km} km | ETA: {db_order.eta_mins} | "
+                f"Vendor: ₹{db_order.vendor_payout} | Runner: ₹{db_order.runner_payout} | Admin: ₹{db_order.admin_profit} | OTP: {db_order.delivery_otp}"
             ) if db_order else "Order not found in SQLite DB"
             logger.record_test(f"[{dev_name}] SQLite Real Database Persistence Verification", db_persisted, detail)
         finally:

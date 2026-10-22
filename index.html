@@ -660,16 +660,16 @@
                   <div class="flex items-center gap-2 mt-1 text-[11px] text-on-surface-variant font-semibold">
                     <span class="text-tertiary font-bold flex items-center gap-0.5">★ 4.8</span>
                     <span>•</span>
-                    <span>1.2 km</span>
+                    <span id="store-1-dist">1.2 km</span>
                     <span>•</span>
-                    <span>20-30 mins</span>
+                    <span id="store-1-eta">30 Mins</span>
                   </div>
                 </div>
               </div>
               <span class="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full shrink-0">खुली है</span>
             </div>
             <div class="flex items-center justify-between pt-2 border-t border-surface-container text-[11px]">
-              <span class="text-secondary font-bold">₹149 से अधिक पर मुफ़्त डिलीवरी</span>
+              <span class="text-secondary font-bold">स्थानीय डिलीवरी (30 Mins)</span>
               <span class="text-primary font-bold flex items-center gap-1">
                 <span data-i18n="p2_view_shop">दुकान देखें</span>
                 <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
@@ -693,9 +693,9 @@
                   <div class="flex items-center gap-2 mt-1 text-[11px] text-on-surface-variant font-semibold">
                     <span class="text-tertiary font-bold flex items-center gap-0.5">★ 4.9</span>
                     <span>•</span>
-                    <span>2.4 km</span>
+                    <span id="store-2-dist">2.4 km</span>
                     <span>•</span>
-                    <span>35-45 mins</span>
+                    <span id="store-2-eta">30 Mins</span>
                   </div>
                 </div>
               </div>
@@ -761,9 +761,9 @@
           <div class="flex items-center gap-3 mt-3 pt-2.5 border-t border-surface-container text-xs text-on-surface-variant font-semibold">
             <span class="text-tertiary font-bold">★ 4.8 (210+ orders)</span>
             <span>•</span>
-            <span>1.2 km</span>
+            <span id="p3-store-dist">1.2 km</span>
             <span>•</span>
-            <span>20-30 mins</span>
+            <span id="p3-store-eta">30 Mins</span>
           </div>
         </div>
 
@@ -975,7 +975,7 @@
                 <span class="material-symbols-outlined text-[14px]">schedule</span>
                 <span data-i18n="p5_eta_label">अनुमानित समय</span>
               </span>
-              <h2 id="p5-eta-time" class="text-lg font-black text-on-surface mt-0.5">४:३० बजे (१८-२५ मिनट)</h2>
+              <h2 id="p5-eta-time" class="text-lg font-black text-on-surface mt-0.5">30 Mins</h2>
               <p class="text-[11px] text-on-surface-variant" data-i18n="p5_eta_sub">सामान सीधे आपके द्वार पर पहुँच रहा है</p>
             </div>
             <div class="text-right">
@@ -2589,6 +2589,26 @@
       updateCartCalculations();
     }
 
+    function getOrderDistanceKm() {
+      if (typeof AppStore.selectedDistance === 'number' && AppStore.selectedDistance > 0) {
+        return AppStore.selectedDistance;
+      }
+      if (AppStore.user && AppStore.user.gps && typeof AppStore.user.gps.lat === 'number' && typeof AppStore.user.gps.lng === 'number') {
+        const lat1 = 29.1350, lon1 = 77.0100;
+        const lat2 = AppStore.user.gps.lat, lon2 = AppStore.user.gps.lng;
+        const R = 6371.0;
+        const dLat = (lat2 - lat1) * Math.PI / 180.0;
+        const dLon = (lon2 - lon1) * Math.PI / 180.0;
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                  Math.cos(lat1 * Math.PI / 180.0) * Math.cos(lat2 * Math.PI / 180.0) *
+                  Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const d = R * c;
+        return Math.round(d * 10) / 10;
+      }
+      return 1.2;
+    }
+
     function updateCartCalculations() {
       const cartItems = AppStore.catalog.filter(i => i.qty > 0);
       const totalCount = cartItems.reduce((acc, i) => acc + i.qty, 0);
@@ -2627,12 +2647,26 @@
       const checkoutBtnPrice = document.getElementById('p4-checkout-btn-price');
       const placeOrderText = document.getElementById('place-order-text');
 
-      // Dynamic Delivery Fee based on Subtotal:
-      // Tier 1 (₹100 to ₹200): ₹30
-      // Tier 2 (> ₹200): ₹25
+      // Dynamic Delivery Fee based on Haversine Distance:
+      // 0 - 2.0 km (Local): Delivery ₹15 (Runner ₹10, Admin ₹5), ETA "30 Mins"
+      // 2.1 - 5.0 km (Village Edge): Delivery ₹25 (Runner ₹15, Admin ₹10), ETA "30 Mins"
+      // 5.1 - 8.0 km (Long Distance): Delivery ₹40 (Runner ₹30, Admin ₹10), ETA "45-60 Mins"
+      // > 8.0 km: Reject (Outside delivery zone)
+      const dist = getOrderDistanceKm();
+      const isOutOfRange = (dist > 8.0);
       let deliveryFee = 0;
+      let etaEstimate = (dist > 5.0) ? '45-60 Mins' : '30 Mins';
+
       if (subtotal > 0) {
-        deliveryFee = subtotal > 200 ? 25 : 30;
+        if (dist <= 2.0) {
+          deliveryFee = 15;
+        } else if (dist <= 5.0) {
+          deliveryFee = 25;
+        } else if (dist <= 8.0) {
+          deliveryFee = 40;
+        } else {
+          deliveryFee = 0;
+        }
       }
       const platformFee = subtotal > 0 ? 3 : 0;
       const finalPayable = subtotal + deliveryFee + platformFee;
@@ -2645,14 +2679,14 @@
       if (checkoutBtnPrice) checkoutBtnPrice.innerText = isHi ? `कुल ₹${finalPayable}.00` : `Total ₹${finalPayable}.00`;
       if (placeOrderText) placeOrderText.innerText = isHi ? `ऑर्डर कन्फर्म करें • ₹${finalPayable}` : `Confirm Order • ₹${finalPayable}`;
 
-      // Strict Minimum Order Value (MOV) of ₹100 Validation
+      // Strict Minimum Order Value (MOV) of ₹100 Validation & Zone Check
       const movAlert = document.getElementById('p4-mov-alert');
       const movAlertText = document.getElementById('p4-mov-alert-text');
       const btnProceed = document.getElementById('p4-btn-proceed');
       const MIN_ORDER_VALUE = 100;
 
       if (btnProceed) {
-        if (subtotal < MIN_ORDER_VALUE) {
+        if (subtotal < MIN_ORDER_VALUE || isOutOfRange) {
           btnProceed.disabled = true;
           btnProceed.classList.add('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
           btnProceed.classList.remove('active:scale-98');
@@ -2672,6 +2706,12 @@
           }
           movAlert.classList.remove('hidden');
           movAlert.classList.add('flex');
+        } else if (isOutOfRange) {
+          if (movAlertText) {
+            movAlertText.innerText = `Outside delivery zone (${dist} km) / 8 km से बाहर डिलीवरी उपलब्ध नहीं है.`;
+          }
+          movAlert.classList.remove('hidden');
+          movAlert.classList.add('flex');
         } else {
           movAlert.classList.add('hidden');
           movAlert.classList.remove('flex');
@@ -2682,19 +2722,22 @@
       const tierTag = document.getElementById('p4-delivery-tier-tag');
       const tierSub = document.getElementById('p4-delivery-tier-sub');
       if (qualifyText) {
-        if (subtotal > 200) {
-          qualifyText.innerText = isHi ? '🎉 विशेष डिलीवरी शुल्क: ₹25' : '🎉 Tier 2 Delivery: ₹25';
-          if (tierTag) tierTag.innerText = isHi ? '₹5 बचत अनलॉक!' : '₹5 Off Unlocked!';
-          if (tierSub) tierSub.innerText = isHi ? '₹200 से अधिक का ऑर्डर: आपको मिला ₹25 का रियायती शुल्क' : 'Order over ₹200: Discounted ₹25 delivery applied';
-        } else if (subtotal >= 100) {
-          const diff = 201 - subtotal;
-          qualifyText.innerText = isHi ? '🛵 गाँव मित्र डिलीवरी शुल्क: ₹30' : '🛵 Delivery Fee: ₹30';
-          if (tierTag) tierTag.innerText = isHi ? '₹200+ पर ₹5 छूट' : '₹5 Off on ₹200+';
-          if (tierSub) tierSub.innerText = isHi ? `₹${diff} का सामान और जोड़ें और ₹25 में डिलीवरी पाएँ` : `Add ₹${diff} more to get ₹25 delivery`;
+        if (isOutOfRange) {
+          qualifyText.innerText = isHi ? `⚠️ डिलीवरी सीमा से बाहर (${dist} km)` : `⚠️ Outside Delivery Zone (${dist} km)`;
+          if (tierTag) tierTag.innerText = '> 8.0 km';
+          if (tierSub) tierSub.innerText = isHi ? 'यह पता हमारे 8 km डिलीवरी दायरे से बाहर है' : 'Address exceeds 8 km delivery radius';
+        } else if (dist <= 2.0) {
+          qualifyText.innerText = isHi ? `🛵 स्थानीय डिलीवरी: ₹15 (${dist} km)` : `🛵 Local Delivery: ₹15 (${dist} km)`;
+          if (tierTag) tierTag.innerText = isHi ? '0-2 km • 30 Mins' : '0-2 km • 30 Mins';
+          if (tierSub) tierSub.innerText = isHi ? `स्थानीय गाँव क्षेत्र (${dist} km): त्वरित 30 Mins डिलीवरी केवल ₹15` : `Local zone (${dist} km): Swift 30 Mins delivery for ₹15`;
+        } else if (dist <= 5.0) {
+          qualifyText.innerText = isHi ? `🛵 गाँव सीमा डिलीवरी: ₹25 (${dist} km)` : `🛵 Village Edge Delivery: ₹25 (${dist} km)`;
+          if (tierTag) tierTag.innerText = isHi ? '2-5 km • 30 Mins' : '2-5 km • 30 Mins';
+          if (tierSub) tierSub.innerText = isHi ? `गाँव सीमा क्षेत्र (${dist} km): सुरक्षित 30 Mins डिलीवरी केवल ₹25` : `Village edge (${dist} km): Safe 30 Mins delivery for ₹25`;
         } else {
-          qualifyText.innerText = isHi ? '🛵 न्यूनतम ऑर्डर ₹100' : '🛵 Min Order ₹100';
-          if (tierTag) tierTag.innerText = isHi ? 'कम से कम ₹100' : 'Min ₹100';
-          if (tierSub) tierSub.innerText = isHi ? 'गाँव में सुरक्षित डिलीवरी के लिए न्यूनतम ₹100 आवश्यक है' : 'Minimum order value is ₹100 for rural doorstep delivery';
+          qualifyText.innerText = isHi ? `🛵 दूरस्थ डिलीवरी: ₹40 (${dist} km)` : `🛵 Long Distance Delivery: ₹40 (${dist} km)`;
+          if (tierTag) tierTag.innerText = isHi ? '5-8 km • 45-60 Mins' : '5-8 km • 45-60 Mins';
+          if (tierSub) tierSub.innerText = isHi ? `दूरस्थ क्षेत्र (${dist} km): विशेष वाहन डिलीवरी 45-60 Mins केवल ₹40` : `Long distance (${dist} km): Express runner 45-60 Mins for ₹40`;
         }
       }
 
@@ -2786,6 +2829,16 @@
         return;
       }
 
+      // Guard: strictly reject if outside delivery zone (> 8.0 km)
+      const dist = getOrderDistanceKm();
+      if (dist > 8.0) {
+        if (typeof showAudioToast === 'function') {
+          showAudioToast('Delivery Zone / डिलीवरी सीमा', `Address is outside 8.0 km delivery zone (${dist} km). Orders outside 8.0 km cannot be accepted.`);
+        }
+        navigateToPhase('cart');
+        return;
+      }
+
       btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[20px]">progress_activity</span><span>Placing Order with Mandi Hub...</span>';
       btn.disabled = true;
 
@@ -2796,6 +2849,9 @@
         landmark: AppStore.user.landmark || 'Near Shiva Mandir, Opp. Blue Water Tank',
         store_id: 'sharma_brothers',
         payment_mode: AppStore.paymentMode || 'COD',
+        distance_km: dist,
+        customer_lat: AppStore.user.gps ? AppStore.user.gps.lat : 29.1324,
+        customer_lng: AppStore.user.gps ? AppStore.user.gps.lng : 77.0125,
         items: cartItems.map(i => ({
           id: i.id,
           name: i.name_en,
@@ -2813,17 +2869,25 @@
         AppStore.orderId = orderData.order_id;
         AppStore.deliveryOtp = orderData.delivery_otp;
         AppStore.orderTimelineStage = orderData.timeline_stage || 4;
+        AppStore.distanceKm = orderData.distance_km;
+        AppStore.etaMins = orderData.eta_mins;
 
         document.getElementById('p5-order-id').innerText = orderData.order_id;
         document.getElementById('p5-order-amount').innerText = `₹${orderData.total_amount}.00`;
         const isHi = AppStore.lang === 'hi';
         document.getElementById('p5-order-paymode').innerText = orderData.payment_mode === 'COD' ? (isHi ? 'हाथ में नकद' : 'Cash on Delivery (COD)') : 'UPI Paid';
+        
+        const etaElem = document.getElementById('p5-eta-time');
+        if (etaElem) {
+          etaElem.innerText = orderData.eta_mins || (dist > 5.0 ? '45-60 Mins' : '30 Mins');
+        }
+
         updateDeliveryOtpDisplay(orderData.delivery_otp);
         navigateToPhase('tracking');
       } catch (err) {
         console.warn('Backend order checkout fallback:', err);
         // If rejected due to MOV or bad request, abort and alert without fallback order
-        if (err && err.message && (err.message.includes('Minimum order') || err.message.includes('कम से कम ₹100') || err.message.includes('400'))) {
+        if (err && err.message && (err.message.includes('Minimum order') || err.message.includes('कम से कम ₹100') || err.message.includes('400') || err.message.includes('delivery zone'))) {
           if (typeof showAudioToast === 'function') {
             showAudioToast('Order Error', err.message);
           }
@@ -2835,11 +2899,17 @@
         document.getElementById('p5-order-id').innerText = randId;
 
         const fallbackSubtotal = cartItems.reduce((acc, i) => acc + (i.price * i.qty), 0);
-        const fallbackDelivery = fallbackSubtotal > 200 ? 25 : (fallbackSubtotal >= 100 ? 30 : 0);
+        let fallbackDelivery = 15;
+        if (dist > 5.0) fallbackDelivery = 40;
+        else if (dist > 2.0) fallbackDelivery = 25;
         const finalPayable = fallbackSubtotal + fallbackDelivery + (fallbackSubtotal > 0 ? 3 : 0);
         document.getElementById('p5-order-amount').innerText = `₹${finalPayable}.00`;
         const isHi = AppStore.lang === 'hi';
         document.getElementById('p5-order-paymode').innerText = AppStore.paymentMode === 'COD' ? (isHi ? 'हाथ में नकद' : 'Cash on Delivery (COD)') : 'UPI Paid';
+        const etaElem = document.getElementById('p5-eta-time');
+        if (etaElem) {
+          etaElem.innerText = dist > 5.0 ? '45-60 Mins' : '30 Mins';
+        }
         navigateToPhase('tracking');
       } finally {
         btn.disabled = false;

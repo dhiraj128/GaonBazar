@@ -1460,6 +1460,8 @@
       const isTransit = order.timeline_stage === 4;
       const isDelivered = order.timeline_stage === 5;
       const isHi = VendorStore.lang === 'hi';
+      const dist = typeof order.distance_km === 'number' ? order.distance_km : 1.2;
+      const etaDisplay = order.eta_mins || (dist > 5.0 ? '45-60 Mins' : '30 Mins');
 
       let stageBadge = '';
       if (isNew) {
@@ -1546,8 +1548,15 @@
           <div>
             <div class="flex items-start justify-between gap-2 mb-2.5">
               <div>
-                <span class="text-sm font-black text-slate-900 tracking-tight">${order.id}</span>
-                <span class="text-[11px] text-slate-400 ml-1.5">${new Date(order.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="text-sm font-black text-slate-900 tracking-tight">${order.id}</span>
+                  <span class="text-[11px] text-slate-400">${new Date(order.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[10px] font-bold">
+                    <span class="material-symbols-outlined text-[12px] text-slate-500">schedule</span>
+                    <span>${etaDisplay}</span>
+                    <span class="text-slate-400">(${dist} km)</span>
+                  </span>
+                </div>
               </div>
               <div>${stageBadge}</div>
             </div>

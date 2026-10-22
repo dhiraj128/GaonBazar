@@ -400,9 +400,17 @@ def list_stores(
 ):
     """
     Returns nearby verified rural stores and cooperatives.
+    Calculates distance and dynamic delivery time:
+    <= 5.0 km: 30 Mins | > 5.0 km: 45-60 Mins.
     """
     stores = db.query(Store).filter(Store.is_open == True).all()
-    return stores
+    results = []
+    for s in stores:
+        if lat is not None and lng is not None and getattr(s, 'lat', None) and getattr(s, 'lng', None):
+            s.distance_km = calculate_haversine_km(s.lat, s.lng, lat, lng)
+        s.eta_mins = "30 Mins" if (s.distance_km or 1.2) <= 5.0 else "45-60 Mins"
+        results.append(s)
+    return results
 
 
 @app.get("/api/stores/{store_id}/products", response_model=List[ProductDTO])
@@ -424,6 +432,29 @@ def get_store_products(
 # =============================================================================
 # 4. ORDER ENGINE & LIVE TRACKING ENDPOINTS
 # =============================================================================
+
+import math
+
+def calculate_haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    """
+    Calculates the great-circle distance between two GPS coordinates using the Haversine formula.
+    Returns distance in kilometers rounded to 2 decimal places.
+    """
+    R = 6371.0  # Earth's mean radius in kilometers
+    dlat = math.radians(lat2 - lat1)
+    dlon = math.radians(lon2 - lon1)
+    a = (math.sin(dlat / 2.0) ** 2 +
+         math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon / 2.0) ** 2)
+    c = 2.0 * math.atan2(math.sqrt(a), math.sqrt(1.0 - a))
+    return round(R * c, 2)
+
+DEFAULT_STORE_COORDS = {
+    "sharma_brothers": (29.1350, 77.0100),
+    "kisan_seva": (29.1450, 77.0200),
+    "rampur_dawa": (29.1320, 77.0090),
+    "apna_dairy": (29.1380, 77.0140),
+}
+
 
 @app.post("/api/orders/checkout", response_model=CheckoutResponse, dependencies=[Depends(enforce_checkout_rate_limit)])
 def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
@@ -479,24 +510,74 @@ def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
             detail=f"Minimum order is ₹100 / कम से कम ₹100 का ऑर्डर करें. Add ₹{diff_str} more."
         )
 
-    # Dynamic Delivery Fee & Revenue Split Engine:
-    # - Tier 1 (Subtotal ₹100 to ₹200): Total Delivery Fee = ₹30 (Runner gets ₹20, Admin gets ₹10)
-    # - Tier 2 (Subtotal > ₹200): Total Delivery Fee = ₹25 (Runner gets ₹15, Admin gets ₹10)
-    # - Platform Fee: Flat ₹3 per order (100% to Admin)
-    # - Vendor Commission: 0% (Vendor Payout = 100% of Cart Subtotal)
-    # - Admin Total Profit = ₹10 (from delivery) + ₹3 (Platform fee) = ₹13
-    if subtotal <= 200.0:
-        delivery_fee = 30.0
-        runner_payout = 20.0
-        admin_delivery_cut = 10.0
+    # -------------------------------------------------------------------------
+    # DYNAMIC DISTANCE CALCULATION (Haversine & Simulation)
+    # -------------------------------------------------------------------------
+    store_coords = DEFAULT_STORE_COORDS.get(payload.store_id, (29.1350, 77.0100))
+    if store and getattr(store, 'lat', None) is not None and getattr(store, 'lng', None) is not None:
+        store_lat = float(store.lat)
+        store_lng = float(store.lng)
     else:
+        store_lat, store_lng = store_coords
+
+    if payload.distance_km is not None:
+        distance_km = round(float(payload.distance_km), 2)
+    elif payload.customer_lat is not None and payload.customer_lng is not None:
+        distance_km = calculate_haversine_km(store_lat, store_lng, float(payload.customer_lat), float(payload.customer_lng))
+    else:
+        # Check latest saved Landmark for user_phone
+        user_landmark = db.query(Landmark).filter(Landmark.phone == payload.user_phone).order_by(Landmark.id.desc()).first()
+        if user_landmark and user_landmark.lat and user_landmark.lng:
+            distance_km = calculate_haversine_km(store_lat, store_lng, float(user_landmark.lat), float(user_landmark.lng))
+        elif store and getattr(store, 'distance_km', None):
+            distance_km = round(float(store.distance_km), 2)
+        else:
+            distance_km = 1.2
+
+    # Reject if outside delivery zone (> 8.0 km)
+    if distance_km > 8.0:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Outside delivery zone ({distance_km} km exceeds 8.0 km maximum delivery radius) / डिलीवरी क्षेत्र से बाहर है (> 8.0 किमी)"
+        )
+
+    # -------------------------------------------------------------------------
+    # DYNAMIC PRICING, SPLIT-PAYMENT & LOGISTICS ESTIMATIONS ENGINE
+    # -------------------------------------------------------------------------
+    # * Platform Fee: Flat ₹3 per order (100% to Admin)
+    # * 0 - 2.0 km (Local):
+    #   - Delivery Fee = ₹15
+    #   - Runner Split = ₹10 | Admin Split = ₹5
+    #   - ETA = 30 Mins
+    # * 2.1 - 5.0 km (Village Edge):
+    #   - Delivery Fee = ₹25
+    #   - Runner Split = ₹15 | Admin Split = ₹10
+    #   - ETA = 30 Mins
+    # * 5.1 - 8.0 km (Long Distance):
+    #   - Delivery Fee = ₹40
+    #   - Runner Split = ₹30 | Admin Split = ₹10
+    #   - ETA = 45-60 Mins
+    # * Vendor Commission: 0% (Vendor receives 100% of Cart Subtotal)
+    platform_fee = 3.0
+    vendor_payout = subtotal
+
+    if distance_km <= 2.0:
+        delivery_fee = 15.0
+        runner_payout = 10.0
+        admin_delivery_cut = 5.0
+        eta_mins = "30 Mins"
+    elif distance_km <= 5.0:
         delivery_fee = 25.0
         runner_payout = 15.0
         admin_delivery_cut = 10.0
+        eta_mins = "30 Mins"
+    else:  # 5.1 to 8.0 km
+        delivery_fee = 40.0
+        runner_payout = 30.0
+        admin_delivery_cut = 10.0
+        eta_mins = "45-60 Mins"
 
-    platform_fee = 3.0
-    vendor_payout = subtotal
-    admin_profit = admin_delivery_cut + platform_fee  # Exactly ₹13.0
+    admin_profit = admin_delivery_cut + platform_fee
     total_amount = subtotal + delivery_fee + platform_fee
 
     # Generate Order ID (#RUR-XXXX) and 4-digit delivery OTP (e.g. "4821")
@@ -523,6 +604,8 @@ def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
         vendor_payout=vendor_payout,
         runner_payout=runner_payout,
         admin_profit=admin_profit,
+        distance_km=distance_km,
+        eta_mins=eta_mins,
         payment_mode=payload.payment_mode,
         status="Order Placed",
         timeline_stage=1,  # Stage 1: Order Placed (Incoming for Vendor)
@@ -559,6 +642,8 @@ def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
         status=order.status,
         timeline_stage=order.timeline_stage,
         delivery_otp=order.delivery_otp,
+        distance_km=order.distance_km,
+        eta_mins=order.eta_mins,
         created_at=order.created_at.isoformat()
     )
 
@@ -1125,6 +1210,10 @@ def get_runner_missions(
             for it in ord_obj.items
         ]
 
+        m_dist = float(getattr(ord_obj, 'distance_km', None) or 1.2)
+        m_eta = getattr(ord_obj, 'eta_mins', None) or ("45-60 Mins" if m_dist > 5.0 else "30 Mins")
+        m_commission = float(getattr(ord_obj, 'runner_payout', None) or (30.0 if m_dist > 5.0 else (15.0 if m_dist > 2.0 else 10.0)))
+
         results.append(
             RunnerMissionDTO(
                 id=ord_obj.id,
@@ -1139,10 +1228,12 @@ def get_runner_missions(
                 items_count=len(items_dto),
                 payment_mode=ord_obj.payment_mode,
                 total_amount=ord_obj.total_amount,
-                commission=float(getattr(ord_obj, 'runner_payout', None) or (20.0 if ord_obj.subtotal <= 200 else 15.0)),
+                commission=m_commission,
                 status=ord_obj.status,
                 timeline_stage=ord_obj.timeline_stage,
                 delivery_otp=ord_obj.delivery_otp,
+                distance_km=m_dist,
+                eta_mins=m_eta,
                 created_at=ord_obj.created_at.isoformat()
             )
         )
@@ -1228,7 +1319,8 @@ def verify_doorstep_otp(
     db.refresh(order)
 
     cod_cash = order.total_amount if order.payment_mode == "COD" else 0.0
-    commission_earned = float(getattr(order, 'runner_payout', None) or (20.0 if order.subtotal <= 200 else 15.0))
+    o_dist = float(getattr(order, 'distance_km', None) or 1.2)
+    commission_earned = float(getattr(order, 'runner_payout', None) or (30.0 if o_dist > 5.0 else (15.0 if o_dist > 2.0 else 10.0)))
 
     return HandoverResponse(
         success=True,
@@ -1257,7 +1349,7 @@ def get_runner_ledger(
 
     completed_today = len(completed_orders)
     total_earnings = sum(
-        float(getattr(o, 'runner_payout', None) or (20.0 if o.subtotal <= 200 else 15.0))
+        float(getattr(o, 'runner_payout', None) or (30.0 if (getattr(o, 'distance_km', None) or 1.2) > 5.0 else (15.0 if (getattr(o, 'distance_km', None) or 1.2) > 2.0 else 10.0)))
         for o in completed_orders
     )
     cod_in_hand = sum(o.total_amount for o in completed_orders if o.payment_mode == "COD")
@@ -1603,7 +1695,12 @@ def get_admin_orders_god_view(db: Session = Depends(get_db)):
                 payment_mode=o.payment_mode,
                 timeline_stage=o.timeline_stage,
                 status=o.status,
-                delivery_otp=o.delivery_otp
+                delivery_otp=o.delivery_otp,
+                distance_km=float(getattr(o, 'distance_km', None) or 1.2),
+                eta_mins=getattr(o, 'eta_mins', None) or ("45-60 Mins" if (getattr(o, 'distance_km', None) or 1.2) > 5.0 else "30 Mins"),
+                vendor_payout=float(getattr(o, 'vendor_payout', None) or o.subtotal),
+                runner_payout=float(getattr(o, 'runner_payout', None) or 15.0),
+                admin_profit=float(getattr(o, 'admin_profit', None) or 13.0)
             )
         )
     return results
@@ -1615,10 +1712,11 @@ def get_admin_commission_ledger(db: Session = Depends(get_db)):
     Returns system commission breakdown:
     - 0% Vendor Commission (Vendor receives 100% of Cart Subtotal)
     - Flat ₹3 Platform Handling Fee per order (100% to Admin)
-    - Dynamic Delivery Split:
-        * Subtotal <= ₹200: ₹30 delivery (Runner ₹20, Admin ₹10)
-        * Subtotal > ₹200: ₹25 delivery (Runner ₹15, Admin ₹10)
-    - Admin Total Profit: ₹13 per order
+    - Dynamic Distance-Based Delivery Split:
+        * 0 - 2.0 km (Local): Delivery Fee = ₹15 (Runner ₹10, Admin ₹5)
+        * 2.1 - 5.0 km (Village Edge): Delivery Fee = ₹25 (Runner ₹15, Admin ₹10)
+        * 5.1 - 8.0 km (Long Distance): Delivery Fee = ₹40 (Runner ₹30, Admin ₹10)
+    - Admin Total Profit: Admin delivery cut + flat ₹3 platform fee
     """
     orders = db.query(Order).all()
     total_revenue = sum(o.total_amount for o in orders)
@@ -1627,9 +1725,12 @@ def get_admin_commission_ledger(db: Session = Depends(get_db)):
     # Vendor dues: 100% of Subtotal (0% vendor commission)
     vendor_payouts_due = sum(float(getattr(o, 'vendor_payout', None) or o.subtotal) for o in orders if o.timeline_stage == 5)
     
-    # Runner dues: Dynamic delivery fee cut (₹20 if subtotal <= 200 else ₹15)
+    # Runner dues: Dynamic delivery fee cut based on order distance/runner payout
     completed_orders = [o for o in orders if o.timeline_stage == 5]
-    runner_payouts_due = sum(float(getattr(o, 'runner_payout', None) or (20.0 if o.subtotal <= 200 else 15.0)) for o in completed_orders)
+    runner_payouts_due = sum(
+        float(getattr(o, 'runner_payout', None) or (30.0 if (getattr(o, 'distance_km', None) or 1.2) > 5.0 else (15.0 if (getattr(o, 'distance_km', None) or 1.2) > 2.0 else 10.0)))
+        for o in completed_orders
+    )
 
     recent_txns = [
         {
@@ -1637,10 +1738,12 @@ def get_admin_commission_ledger(db: Session = Depends(get_db)):
             "date": o.created_at.strftime("%Y-%m-%d %H:%M"),
             "customer": o.user_name,
             "store": o.store_name,
-            "amount": o.total_amount,
-            "platform_cut": float(getattr(o, 'admin_profit', None) or 13.0),
-            "vendor_net": round(float(getattr(o, 'vendor_payout', None) or o.subtotal), 2),
-            "runner_fee": float(getattr(o, 'runner_payout', None) or (20.0 if o.subtotal <= 200 else 15.0)) if o.timeline_stage == 5 else 0.0,
+            "amount": round(o.total_amount, 2),
+            "platform_cut": round(float(getattr(o, 'admin_profit', None) if getattr(o, 'admin_profit', None) is not None else (13.0 if (getattr(o, 'distance_km', None) or 1.2) > 2.0 else 8.0)), 2),
+            "vendor_net": round(float(getattr(o, 'vendor_payout', None) if getattr(o, 'vendor_payout', None) is not None else o.subtotal), 2),
+            "runner_fee": round(float(getattr(o, 'runner_payout', None) if getattr(o, 'runner_payout', None) is not None else (30.0 if (getattr(o, 'distance_km', None) or 1.2) > 5.0 else (15.0 if (getattr(o, 'distance_km', None) or 1.2) > 2.0 else 10.0))), 2),
+            "distance_km": float(getattr(o, 'distance_km', None) or 1.2),
+            "eta_mins": getattr(o, 'eta_mins', None) or ("45-60 Mins" if (getattr(o, 'distance_km', None) or 1.2) > 5.0 else "30 Mins"),
             "status": o.status
         }
         for o in orders[:20]

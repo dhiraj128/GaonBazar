@@ -125,6 +125,9 @@ class CheckoutRequest(SecureBaseModel):
     store_id: str = "sharma_brothers"
     payment_mode: str = "COD"  # "COD" or "UPI"
     items: List[CartItemInput]
+    customer_lat: Optional[float] = None
+    customer_lng: Optional[float] = None
+    distance_km: Optional[float] = None
 
 class CheckoutResponse(BaseModel):
     success: bool
@@ -141,6 +144,8 @@ class CheckoutResponse(BaseModel):
     status: str
     timeline_stage: int
     delivery_otp: str
+    distance_km: Optional[float] = None
+    eta_mins: Optional[str] = None
     created_at: str
 
 class OrderStatusResponse(BaseModel):
@@ -307,6 +312,8 @@ class RunnerMissionDTO(BaseModel):
     status: str
     timeline_stage: int
     delivery_otp: Optional[str] = None
+    distance_km: Optional[float] = None
+    eta_mins: Optional[str] = None
     created_at: str
 
 
@@ -480,6 +487,11 @@ class AdminGodViewOrderDTO(BaseModel):
     timeline_stage: int
     status: str
     delivery_otp: str
+    distance_km: Optional[float] = None
+    eta_mins: Optional[str] = None
+    vendor_payout: Optional[float] = None
+    runner_payout: Optional[float] = None
+    admin_profit: Optional[float] = None
 
 
 class AdminCommissionLedgerResponse(BaseModel):

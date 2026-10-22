@@ -721,7 +721,7 @@
           <td class="py-2.5 px-3 font-mono font-bold text-white">${o.order_id}</td>
           <td class="py-2.5 px-3 text-slate-400">${o.created_at}</td>
           <td class="py-2.5 px-3 font-medium text-slate-200">${o.customer_name} <span class="text-[10px] text-slate-500 block">${o.customer_phone}</span></td>
-          <td class="py-2.5 px-3 text-amber-200">${o.village} <span class="text-[10px] text-slate-400 block">${o.landmark}</span></td>
+          <td class="py-2.5 px-3 text-amber-200">${o.village} <span class="text-[10px] text-slate-400 block">${o.landmark}</span><span class="text-[10px] text-slate-400 block">⏱ ${o.eta_mins || '30 Mins'} (${o.distance_km || 1.2} km)</span></td>
           <td class="py-2.5 px-3 font-bold text-slate-300">${o.store_name}</td>
           <td class="py-2.5 px-3 text-slate-300 max-w-xs truncate">${o.items_summary}</td>
           <td class="py-2.5 px-3 font-black text-white">₹${o.total_amount}</td>

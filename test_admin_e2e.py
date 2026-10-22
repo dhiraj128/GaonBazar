@@ -506,6 +506,25 @@ def _run_admin_e2e_steps(browser, logger, contexts):
         ledger_txns > 0,
         f"Settlement ledger active with {ledger_txns} transactions; ₹3 fee / order tracked"
     )
+
+    # Assert distance-based ledger splits and accounting invariance
+    try:
+        ledger_api_resp = admin_page.request.get("http://127.0.0.1:8001/api/admin/commission-ledger")
+        if ledger_api_resp.status == 200:
+            ledger_data = ledger_api_resp.json()
+            txns = ledger_data.get("recent_transactions", [])
+            has_txns = len(txns) > 0
+            splits_balanced = all(
+                abs(t.get("platform_cut", 0) + t.get("vendor_net", 0) + t.get("runner_fee", 0) - t.get("amount", 0)) < 0.01
+                for t in txns
+            ) if has_txns else True
+            logger.record_test(
+                "Distance-Based Ledger Balance Sheet Invariance",
+                bool(has_txns and splits_balanced),
+                f"Ledger verified with {len(txns)} transactions: Invariance (Platform Cut + Vendor Net + Runner Fee == Total) held for all orders"
+            )
+    except Exception as e_ledg:
+        logger.record_test("Distance-Based Ledger Balance Sheet Invariance", False, str(e_ledg))
     capture_screenshot(admin_page, "13_admin_commission_ledger", logger)
 
     # Tab 5: Tablet View Responsiveness (800x1280)
