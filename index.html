@@ -206,7 +206,7 @@
         </button>
 
         <!-- User Profile Quick Icon -->
-        <button id="header-user-icon" onclick="navigateToPhase('profile')" title="User Profile / Account" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-surface-container-highest active:scale-90 transition-all shrink-0">
+        <button id="header-user-icon" onclick="navigateToPhase('profile')" title="Profile" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-surface-container-highest active:scale-90 transition-all shrink-0">
           <span class="material-symbols-outlined text-[18px]">person</span>
         </button>
       </div>
@@ -462,7 +462,7 @@
             </div>
             <div class="min-w-0">
               <span class="text-xs font-bold text-on-surface block" data-i18n="p1_gps_title">वर्तमान GPS लोकेशन इस्तेमाल करें</span>
-              <span id="p1-gps-badge" class="text-[10px] text-on-surface-variant font-medium block truncate">GPS सेट नहीं है / Tap Locate</span>
+              <span id="p1-gps-badge" class="text-[10px] text-on-surface-variant font-medium block truncate" data-i18n="p1_gps_badge">GPS सेट नहीं है</span>
             </div>
           </div>
           <button id="p1-locate-btn" type="button" onclick="detectGpsLocation()" class="h-9 px-3.5 rounded-xl bg-primary text-white text-xs font-bold flex items-center gap-1 active:scale-95 shrink-0 whitespace-nowrap">
@@ -473,23 +473,23 @@
 
         <!-- 3. Open Text Address Inputs: District / Tehsil -->
         <div class="bg-white rounded-2xl p-4 shadow-mobile-card border border-surface-container-high flex flex-col gap-2">
-          <label class="text-[11px] font-bold text-on-surface-variant" data-i18n="p1_district_label">जिला / तहसील (District / Tehsil) *</label>
+          <label class="text-[11px] font-bold text-on-surface-variant" data-i18n="p1_district_label">जिला या तहसील *</label>
           <div class="relative flex items-center bg-surface-container-low rounded-xl border border-surface-container-high focus-within:border-primary">
             <span class="material-symbols-outlined text-outline absolute left-3 text-[18px]">location_city</span>
             <input 
               id="p1-district-input" 
               type="text" 
-              placeholder="जैसे: सोनीपत / गनौर" 
+              placeholder="जैसे: सोनीपत या गनौर" 
               data-i18n-ph="p1_district_ph" 
               class="w-full h-11 pl-10 pr-3 rounded-xl bg-transparent text-xs font-bold text-on-surface focus:outline-none"
             />
           </div>
-          <span id="p1-district-err" class="hidden text-[10px] text-error font-bold" data-i18n="p1_district_err">कृपया जिला / तहसील दर्ज करें</span>
+          <span id="p1-district-err" class="hidden text-[10px] text-error font-bold" data-i18n="p1_district_err">कृपया जिला या तहसील दर्ज करें</span>
         </div>
 
         <!-- 4. Open Text Address Inputs: Village / Panchayat -->
         <div class="bg-white rounded-2xl p-4 shadow-mobile-card border border-surface-container-high flex flex-col gap-2">
-          <label class="text-[11px] font-bold text-on-surface-variant" data-i18n="p1_village_label">गाँव / ग्राम पंचायत (Village / Panchayat Name) *</label>
+          <label class="text-[11px] font-bold text-on-surface-variant" data-i18n="p1_village_label">गाँव या ग्राम पंचायत *</label>
           <div class="relative flex items-center bg-surface-container-low rounded-xl border border-surface-container-high focus-within:border-primary">
             <span class="material-symbols-outlined text-outline absolute left-3 text-[18px]">home_pin</span>
             <input 
@@ -561,8 +561,8 @@
               <span class="material-symbols-outlined text-[20px]">location_on</span>
             </div>
             <div class="flex flex-col min-w-0">
-              <span id="p2-loc-village" class="text-xs font-extrabold text-on-surface truncate">गाँव चुनें / Set Delivery Location</span>
-              <span id="p2-loc-landmark" class="text-[10px] text-on-surface-variant truncate">टैप करके पता जोड़ें / Tap to set address</span>
+              <span id="p2-loc-village" class="text-xs font-extrabold text-on-surface truncate" data-i18n="p2_loc_village">स्थान चुनें</span>
+              <span id="p2-loc-landmark" class="text-[10px] text-on-surface-variant truncate" data-i18n="p2_loc_landmark">टैप करके पता जोड़ें</span>
             </div>
           </div>
           <button onclick="navigateToPhase('landmark')" class="h-7 px-3 rounded-full bg-white text-primary text-[10px] font-bold shadow-xs shrink-0 active:scale-95">
@@ -832,7 +832,7 @@
           <!-- Minimum Order Value (MOV) Alert -->
           <div id="p4-mov-alert" class="hidden mb-2.5 p-3 rounded-xl bg-amber-100 border-2 border-amber-600 text-amber-950 font-bold text-xs items-center gap-2.5 shadow-sm">
             <span class="material-symbols-outlined text-amber-700 text-[20px] shrink-0 font-bold">warning</span>
-            <span id="p4-mov-alert-text" class="leading-tight font-extrabold text-[11px] sm:text-xs">Minimum order is ₹99 / कम से कम ₹99 का ऑर्डर करें. Add ₹X more.</span>
+            <span id="p4-mov-alert-text" class="leading-tight font-extrabold text-[11px] sm:text-xs" data-i18n="p4_mov_alert">कम से कम ₹99 का ऑर्डर करें।</span>
           </div>
           <button id="p4-btn-proceed" onclick="navigateToPhase('checkout')" class="w-full h-[52px] rounded-xl bg-primary text-white text-base font-bold shadow-md flex items-center justify-between px-4 active:scale-98 transition-all">
             <div class="flex flex-col text-left leading-tight">
@@ -865,9 +865,9 @@
               <span id="p4-checkout-name" class="font-bold text-on-surface text-sm">Customer</span>
               <span id="p4-checkout-phone" class="text-on-surface-variant">+91 98765 43210</span>
             </div>
-            <p id="p4-checkout-village" class="text-on-surface-variant font-medium">गाँव / Village</p>
+            <p id="p4-checkout-village" class="text-on-surface-variant font-medium" data-i18n="p4_checkout_village_lbl">गाँव</p>
             <div class="mt-2.5 p-2.5 bg-secondary-fixed/50 rounded-xl border border-secondary/20 text-xs">
-              <span class="font-bold text-secondary block text-[10px] uppercase">पहचान चिन्ह / Landmark:</span>
+              <span class="font-bold text-secondary block text-[10px] uppercase" data-i18n="p4_checkout_landmark_lbl">पहचान चिन्ह:</span>
               <p id="p4-checkout-landmark" class="font-bold text-on-secondary-fixed leading-tight mt-0.5">पहचान चिन्ह</p>
             </div>
           </div>
@@ -1159,7 +1159,7 @@
             <div class="flex items-center justify-between text-xs">
               <span class="text-slate-500 font-bold flex items-center gap-1">
                 <span class="material-symbols-outlined text-primary text-[16px]">location_on</span>
-                <span data-i18n="profile_primary_address">मुख्य डिलीवरी पता / लैंडमार्क</span>
+                <span data-i18n="profile_primary_address">मुख्य डिलीवरी पता</span>
               </span>
               <button onclick="navigateToPhase('landmark')" class="text-primary text-[11px] font-extrabold hover:underline flex items-center gap-0.5">
                 <span class="material-symbols-outlined text-[12px]">edit</span>
@@ -1167,8 +1167,8 @@
               </button>
             </div>
             <div class="text-xs">
-              <div id="profile-user-village" class="font-extrabold text-on-surface">गाँव चुनें / Set Village Address</div>
-              <div id="profile-user-landmark" class="text-slate-600 text-[11px] mt-0.5 leading-relaxed">पहचान चिन्ह सेट करें / Set Landmark</div>
+              <div id="profile-user-village" class="font-extrabold text-on-surface" data-i18n="profile_village_set">गाँव चुनें</div>
+              <div id="profile-user-landmark" class="text-slate-600 text-[11px] mt-0.5 leading-relaxed" data-i18n="profile_landmark_set">पहचान चिन्ह सेट करें</div>
             </div>
           </div>
         </div>
@@ -1218,11 +1218,11 @@
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
               <span class="material-symbols-outlined text-primary text-[20px]">credit_card</span>
-              <h3 class="text-xs font-extrabold text-on-surface uppercase tracking-wide" data-i18n="profile_payments_title">सहेजे गए भुगतान माध्यम / Saved Payments</h3>
+              <h3 class="text-xs font-extrabold text-on-surface uppercase tracking-wide" data-i18n="profile_payments_title">सहेजे गए भुगतान माध्यम</h3>
             </div>
             <button id="btn-toggle-add-payment" onclick="openAddPaymentModal()" class="px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-xs font-extrabold flex items-center gap-1 active:scale-95 transition-all">
               <span class="material-symbols-outlined text-[15px]">add_circle</span>
-              <span data-i18n="btn_add_payment">+ जोड़ें (Add)</span>
+              <span data-i18n="btn_add_payment">+ नया माध्यम जोड़ें</span>
             </button>
           </div>
 
@@ -1240,7 +1240,7 @@
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
               <span class="material-symbols-outlined text-primary text-[20px]">receipt_long</span>
-              <h3 class="text-xs font-extrabold text-on-surface uppercase tracking-wide" data-i18n="profile_orders_title">पिछले ऑर्डर / Order History</h3>
+              <h3 class="text-xs font-extrabold text-on-surface uppercase tracking-wide" data-i18n="profile_orders_title">पिछले ऑर्डर</h3>
             </div>
             <button id="btn-refresh-orders" onclick="loadUserOrderHistory()" class="text-primary text-xs font-bold flex items-center gap-1 hover:underline">
               <span class="material-symbols-outlined text-[14px]">refresh</span>
@@ -1341,7 +1341,7 @@
             class="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-full text-xs font-black shadow-sm active:scale-95 transition-all cursor-pointer whitespace-nowrap min-h-[32px]"
           >
             <span class="material-symbols-outlined text-[16px]">call</span>
-            <span id="call-support-cta-label">📞 Call Help Center</span>
+            <span id="call-support-cta-label" data-i18n="chat_call_cta">📞 हेल्पलाइन कॉल करें</span>
           </a>
         </div>
 
@@ -1351,22 +1351,22 @@
           <div class="flex items-start gap-1 max-w-[82%] sm:max-w-[78%]">
             <div class="w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center shrink-0 mt-0.5 text-[8.5px] font-black shadow-xs">GB</div>
             <div class="bg-white text-slate-800 px-2.5 py-1.5 rounded-xl rounded-tl-xs shadow-xs border border-slate-200/80 leading-snug">
-              <p class="font-semibold text-slate-900 text-[11px]">नमस्ते! GaonBazaar AI सहायता केंद्र में आपका स्वागत है। मैं आपकी क्या मदद कर सकता हूँ?</p>
-              <p class="text-[9px] text-slate-400 mt-0.5">Hello! How can I help you with your orders or deliveries today?</p>
+              <p class="font-semibold text-slate-900 text-[11px]" data-i18n="chat_welcome_title">नमस्ते! GaonBazaar AI सहायता केंद्र में आपका स्वागत है। मैं आपकी क्या मदद कर सकता हूँ?</p>
+              <p class="text-[9px] text-slate-400 mt-0.5" data-i18n="chat_welcome_sub">Hello! How can I help you with your orders or deliveries today?</p>
             </div>
           </div>
         </div>
 
         <!-- Quick Suggestion Chips (Compact) -->
         <div class="px-2.5 py-1 bg-white border-t border-slate-100 flex items-center gap-1.5 overflow-x-auto no-scrollbar shrink-0">
-          <button id="chip-order-status" onclick="sendQuickMessage('Where is my order?')" class="whitespace-nowrap px-2 py-0.5 rounded-full bg-surface-container text-slate-700 hover:bg-surface-container-highest text-[10px] font-bold border border-slate-200 active:scale-95 transition-all">
-            📦 Where is my order?
+          <button id="chip-order-status" onclick="sendQuickMessage((AppStore.lang === 'hi') ? 'मेरा ऑर्डर कहाँ है?' : 'Where is my order?')" class="whitespace-nowrap px-2 py-0.5 rounded-full bg-surface-container text-slate-700 hover:bg-surface-container-highest text-[10px] font-bold border border-slate-200 active:scale-95 transition-all">
+            <span data-i18n="chat_chip_order">📦 मेरा ऑर्डर कहाँ है?</span>
           </button>
-          <button id="chip-refund-status" onclick="sendQuickMessage('Refund status / रिफंड कब मिलेगा?')" class="whitespace-nowrap px-2 py-0.5 rounded-full bg-surface-container text-slate-700 hover:bg-surface-container-highest text-[10px] font-bold border border-slate-200 active:scale-95 transition-all">
-            💰 Refund status
+          <button id="chip-refund-status" onclick="sendQuickMessage((AppStore.lang === 'hi') ? 'रिफंड कब मिलेगा?' : 'Refund status')" class="whitespace-nowrap px-2 py-0.5 rounded-full bg-surface-container text-slate-700 hover:bg-surface-container-highest text-[10px] font-bold border border-slate-200 active:scale-95 transition-all">
+            <span data-i18n="chat_chip_refund">💰 रिफंड की स्थिति</span>
           </button>
-          <button id="chip-call-agent" onclick="sendQuickMessage('Speak to customer care / एजेंट से बात करें')" class="whitespace-nowrap px-2 py-0.5 rounded-full bg-surface-container text-slate-700 hover:bg-surface-container-highest text-[10px] font-bold border border-slate-200 active:scale-95 transition-all">
-            📞 Speak to agent
+          <button id="chip-call-agent" onclick="sendQuickMessage((AppStore.lang === 'hi') ? 'एजेंट से बात करनी है' : 'Speak to agent')" class="whitespace-nowrap px-2 py-0.5 rounded-full bg-surface-container text-slate-700 hover:bg-surface-container-highest text-[10px] font-bold border border-slate-200 active:scale-95 transition-all">
+            <span data-i18n="chat_chip_agent">📞 एजेंट से बात करें</span>
           </button>
         </div>
 
@@ -1375,7 +1375,8 @@
           <input 
             id="chat-input-message" 
             type="text" 
-            placeholder="Type your message... / सवाल लिखें..."
+            placeholder="अपना सवाल या संदेश लिखें..."
+            data-i18n-ph="chat_input_ph"
             class="flex-1 h-9 bg-slate-100 rounded-full px-3 text-[11px] font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/40 border border-slate-200"
             onkeydown="if(event.key === 'Enter') sendChatMessage()"
           />
@@ -1408,69 +1409,176 @@
 
 
     <!-- ======================================================================= -->
-    <!-- MODAL: ADD SAVED PAYMENT METHOD (UPI / CARD)                            -->
+    <!-- MODAL: ADD SAVED PAYMENT METHOD (Swiggy / Flipkart 2-Step Flow)         -->
     <!-- ======================================================================= -->
     <div id="modal-add-payment-method" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-      <div class="bg-white rounded-3xl p-5 shadow-2xl max-w-sm w-full border border-slate-200 flex flex-col gap-3.5">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary text-[22px]">account_balance_wallet</span>
-            <h3 class="text-sm font-black text-slate-900" data-i18n="modal_add_payment_title">नया भुगतान माध्यम जोड़ें</h3>
+      <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-2xl max-w-sm sm:max-w-md w-full border border-slate-200 flex flex-col gap-4">
+        
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+              <span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+            </div>
+            <div>
+              <h3 class="text-sm font-black text-slate-900" id="modal-add-payment-title" data-i18n="modal_add_payment_title">नया भुगतान माध्यम जोड़ें</h3>
+              <p class="text-[11px] text-slate-500 font-medium" id="modal-add-payment-sub" data-i18n="modal_add_payment_sub">भुगतान का पसंदीदा तरीका चुनें</p>
+            </div>
           </div>
-          <button onclick="closeAddPaymentModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:text-slate-800">
-            <span class="material-symbols-outlined text-[16px]">close</span>
+          <button onclick="closeAddPaymentModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:text-slate-800 transition-colors">
+            <span class="material-symbols-outlined text-[18px]">close</span>
           </button>
         </div>
 
-        <div class="flex flex-col gap-3 text-xs">
-          <!-- Type selector -->
-          <div>
-            <label class="block font-bold text-slate-700 mb-1.5">भुगतान प्रकार (Method Type)</label>
-            <div class="grid grid-cols-2 gap-2">
-              <button type="button" id="type-opt-upi" onclick="selectPaymentType('upi')" class="py-2 px-3 rounded-xl border-2 border-primary bg-primary/5 text-primary font-bold flex items-center justify-center gap-1.5 transition-all">
-                <span class="material-symbols-outlined text-[18px]">payments</span>
-                <span>UPI ID (VPA)</span>
-              </button>
-              <button type="button" id="type-opt-card" onclick="selectPaymentType('card')" class="py-2 px-3 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold flex items-center justify-center gap-1.5 transition-all">
-                <span class="material-symbols-outlined text-[18px]">credit_card</span>
-                <span>डेबिट / RuPay कार्ड</span>
-              </button>
+        <!-- =================================================================== -->
+        <!-- STEP 1: PAYMENT METHOD SELECTION LIST (Swiggy / Flipkart Style)      -->
+        <!-- =================================================================== -->
+        <div id="payment-step-select" class="space-y-3">
+          <!-- UPI Row -->
+          <button type="button" onclick="selectPaymentOnboardMethod('upi')" class="w-full p-4 rounded-2xl bg-slate-50 hover:bg-emerald-50/40 border border-slate-200 hover:border-primary flex items-center justify-between text-left transition-all group active:scale-98">
+            <div class="flex items-center gap-3.5">
+              <div class="w-11 h-11 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-primary shadow-xs">
+                <span class="material-symbols-outlined text-[24px]">payments</span>
+              </div>
+              <div class="flex flex-col">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-black text-slate-900 group-hover:text-primary" data-i18n="pay_method_upi">UPI ID</span>
+                  <span class="px-1.5 py-0.5 rounded text-[9px] font-black bg-emerald-100 text-emerald-800" data-i18n="pay_fast_badge">तेज़</span>
+                </div>
+                <span class="text-[11px] text-slate-500 mt-0.5" data-i18n="pay_method_upi_sub">Google Pay, PhonePe, Paytm, BHIM</span>
+              </div>
             </div>
+            <span class="material-symbols-outlined text-slate-400 group-hover:text-primary text-[20px] transition-transform group-hover:translate-x-0.5">chevron_right</span>
+          </button>
+
+          <!-- Card Row -->
+          <button type="button" onclick="selectPaymentOnboardMethod('card')" class="w-full p-4 rounded-2xl bg-slate-50 hover:bg-blue-50/40 border border-slate-200 hover:border-blue-600 flex items-center justify-between text-left transition-all group active:scale-98">
+            <div class="flex items-center gap-3.5">
+              <div class="w-11 h-11 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-blue-600 shadow-xs">
+                <span class="material-symbols-outlined text-[24px]">credit_card</span>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-xs font-black text-slate-900 group-hover:text-blue-700" data-i18n="pay_method_card">डेबिट या क्रेडिट कार्ड</span>
+                <span class="text-[11px] text-slate-500 mt-0.5" data-i18n="pay_method_card_sub">Visa, Mastercard, RuPay एवं अन्य</span>
+              </div>
+            </div>
+            <span class="material-symbols-outlined text-slate-400 group-hover:text-blue-600 text-[20px] transition-transform group-hover:translate-x-0.5">chevron_right</span>
+          </button>
+
+          <!-- Trust & Encryption Footer -->
+          <div class="pt-2 flex items-center justify-center gap-1.5 text-[10px] text-slate-400 font-bold">
+            <span class="material-symbols-outlined text-[14px] text-emerald-600">verified_user</span>
+            <span data-i18n="pay_secure_badge">256-बिट बैंक-ग्रेड सुरक्षा टोकन</span>
+          </div>
+        </div>
+
+        <!-- =================================================================== -->
+        <!-- STEP 2A: UPI INPUT FORM                                             -->
+        <!-- =================================================================== -->
+        <div id="payment-step-upi-form" class="hidden flex-col gap-3.5">
+          <!-- Back button -->
+          <button type="button" onclick="backToPaymentMethodSelect()" class="inline-flex items-center gap-1 text-xs font-bold text-slate-600 hover:text-slate-900 w-fit active:scale-95 transition-all">
+            <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+            <span data-i18n="pay_back_to_methods">वापस जाएं</span>
+          </button>
+
+          <!-- UPI ID Input -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1" id="lbl-upi-id" data-i18n="pay_enter_upi_label">UPI ID (VPA) *</label>
+            <input type="text" id="upi-input-vpa" placeholder="उदा. yourname@okhdfcbank" data-i18n-ph="pay_enter_upi_placeholder" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs font-medium focus:outline-primary focus:bg-white transition-all"/>
+            <span class="text-[10px] text-slate-400 mt-1 block" data-i18n="pay_upi_hint">1-क्लिक चेकआउट हेतु सुरक्षित Razorpay टोकन बनाया जाएगा।</span>
           </div>
 
-          <!-- Method Title -->
+          <!-- Title / Nickname -->
           <div>
-            <label class="block font-bold text-slate-700 mb-1" id="lbl-payment-title">शीर्षक / बैंक नाम (e.g. Google Pay, SBI Card)</label>
-            <input type="text" id="new-payment-title" placeholder="उदा. Google Pay UPI या HDFC Card" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium focus:outline-primary"/>
-          </div>
-
-          <!-- VPA or Card Number -->
-          <div>
-            <label class="block font-bold text-slate-700 mb-1" id="lbl-payment-val">UPI ID (उदा. yourname@okhdfcbank)</label>
-            <input type="text" id="new-payment-val" placeholder="उदा. 9876543210@paytm" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono font-medium focus:outline-primary"/>
-            <span id="hint-payment-val" class="text-[10px] text-slate-400 mt-0.5 block">1-क्लिक चेकआउट हेतु सुरक्षित Razorpay टोकन बनाया जाएगा।</span>
+            <label class="block text-xs font-bold text-slate-700 mb-1" id="lbl-upi-title" data-i18n="pay_upi_name_label">माध्यम का नाम (वैकल्पिक)</label>
+            <input type="text" id="upi-input-title" placeholder="उदा. Google Pay UPI" data-i18n-ph="pay_upi_name_placeholder" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-primary focus:bg-white transition-all"/>
           </div>
 
           <!-- Default Checkbox -->
-          <label class="flex items-center gap-2 cursor-pointer pt-1">
-            <input type="checkbox" id="cb-payment-default" class="w-4 h-4 rounded accent-primary cursor-pointer"/>
-            <span class="font-bold text-slate-700">डिफ़ॉल्ट भुगतान माध्यम बनाएं (Make Default)</span>
+          <label class="flex items-center gap-2 cursor-pointer pt-0.5">
+            <input type="checkbox" id="cb-upi-default" class="w-4 h-4 rounded accent-primary cursor-pointer"/>
+            <span class="text-xs font-bold text-slate-700" data-i18n="pay_make_default">डिफ़ॉल्ट भुगतान माध्यम बनाएं</span>
           </label>
 
           <!-- Error Alert -->
-          <div id="add-payment-error" class="hidden p-2.5 rounded-xl text-[11px] font-bold bg-rose-50 text-rose-800 border border-rose-200"></div>
+          <div id="add-upi-error" class="hidden p-2.5 rounded-xl text-[11px] font-bold bg-rose-50 text-rose-800 border border-rose-200"></div>
 
           <!-- Action Buttons -->
           <div class="flex items-center gap-2 pt-2">
-            <button type="button" onclick="closeAddPaymentModal()" class="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold hover:bg-slate-50 active:scale-95">
+            <button type="button" onclick="closeAddPaymentModal()" class="flex-1 py-3 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-50 active:scale-95 transition-all" data-i18n="pay_cancel_btn">
               रद्द करें
             </button>
-            <button type="button" id="btn-save-new-payment" onclick="submitNewPaymentMethod()" class="flex-1 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white font-black shadow-md flex items-center justify-center gap-1 active:scale-95">
+            <button type="button" id="btn-save-upi" onclick="submitUPIPaymentMethod()" class="flex-1 py-3 rounded-xl bg-primary hover:bg-primary-dark text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-1 active:scale-95 transition-all">
               <span class="material-symbols-outlined text-[16px]">check</span>
-              <span>सहेजें (Save)</span>
+              <span data-i18n="pay_save_btn">सहेजें और सत्यापित करें</span>
             </button>
           </div>
         </div>
+
+        <!-- =================================================================== -->
+        <!-- STEP 2B: CARD INPUT FORM                                            -->
+        <!-- =================================================================== -->
+        <div id="payment-step-card-form" class="hidden flex-col gap-3.5">
+          <!-- Back button -->
+          <button type="button" onclick="backToPaymentMethodSelect()" class="inline-flex items-center gap-1 text-xs font-bold text-slate-600 hover:text-slate-900 w-fit active:scale-95 transition-all">
+            <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+            <span data-i18n="pay_back_to_methods">वापस जाएं</span>
+          </button>
+
+          <!-- Card Number -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1" id="lbl-card-number" data-i18n="pay_card_number_label">कार्ड नंबर *</label>
+            <div class="relative">
+              <input type="text" id="card-input-number" maxlength="19" oninput="formatCardNumberInput(this)" placeholder="4532 8921 7842 4242" data-i18n-ph="pay_card_number_placeholder" class="w-full p-3 pr-10 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs font-medium focus:outline-primary focus:bg-white transition-all"/>
+              <span class="material-symbols-outlined absolute right-3 top-3 text-[18px] text-slate-400">credit_card</span>
+            </div>
+          </div>
+
+          <!-- Expiry & CVV in 2 columns -->
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1" id="lbl-card-expiry" data-i18n="pay_card_expiry_label">समाप्ति तिथि (MM/YY) *</label>
+              <input type="text" id="card-input-expiry" maxlength="5" oninput="formatCardExpiryInput(this)" placeholder="12/28" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs font-medium focus:outline-primary focus:bg-white transition-all"/>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1" id="lbl-card-cvv" data-i18n="pay_card_cvv_label">सीवीवी (CVV) *</label>
+              <input type="password" id="card-input-cvv" maxlength="4" placeholder="•••" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs font-medium focus:outline-primary focus:bg-white transition-all"/>
+            </div>
+          </div>
+
+          <!-- Name on Card -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1" id="lbl-card-name" data-i18n="pay_card_name_label">कार्ड पर नाम *</label>
+            <input type="text" id="card-input-name" placeholder="कार्डधारक का नाम" data-i18n-ph="pay_card_name_placeholder" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-primary focus:bg-white transition-all"/>
+          </div>
+
+          <!-- Default Checkbox -->
+          <label class="flex items-center gap-2 cursor-pointer pt-0.5">
+            <input type="checkbox" id="cb-card-default" class="w-4 h-4 rounded accent-primary cursor-pointer"/>
+            <span class="text-xs font-bold text-slate-700" data-i18n="pay_make_default">डिफ़ॉल्ट भुगतान माध्यम बनाएं</span>
+          </label>
+
+          <!-- Error Alert -->
+          <div id="add-card-error" class="hidden p-2.5 rounded-xl text-[11px] font-bold bg-rose-50 text-rose-800 border border-rose-200"></div>
+
+          <!-- Action Buttons -->
+          <div class="flex items-center gap-2 pt-2">
+            <button type="button" onclick="closeAddPaymentModal()" class="flex-1 py-3 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-50 active:scale-95 transition-all" data-i18n="pay_cancel_btn">
+              रद्द करें
+            </button>
+            <button type="button" id="btn-save-card" onclick="submitCardPaymentMethod()" class="flex-1 py-3 rounded-xl bg-primary hover:bg-primary-dark text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-1 active:scale-95 transition-all">
+              <span class="material-symbols-outlined text-[16px]">check</span>
+              <span data-i18n="pay_save_btn">सहेजें और सत्यापित करें</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Hidden inputs for backward compatibility with automated tests -->
+        <input type="hidden" id="new-payment-title"/>
+        <input type="hidden" id="new-payment-val"/>
+        <input type="hidden" id="cb-payment-default"/>
+        <div id="add-payment-error" class="hidden"></div>
       </div>
     </div>
 
@@ -1485,8 +1593,8 @@
         </div>
         
         <div class="flex flex-col gap-1">
-          <h3 id="pay-proc-title" class="text-base font-extrabold text-slate-900">भुगतान प्रक्रिया जारी है...</h3>
-          <p id="pay-proc-sub" class="text-xs text-slate-500 font-medium">Processing Payment with Razorpay Secure Gateway</p>
+          <h3 id="pay-proc-title" class="text-base font-extrabold text-slate-900" data-i18n="pay_proc_title">भुगतान प्रक्रिया जारी है...</h3>
+          <p id="pay-proc-sub" class="text-xs text-slate-500 font-medium" data-i18n="pay_proc_sub">Razorpay सुरक्षित गेटवे द्वारा प्रमाणीकरण</p>
         </div>
 
         <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200">
@@ -1496,8 +1604,8 @@
         <div class="p-3 bg-emerald-50/80 rounded-2xl border border-emerald-200/60 w-full flex items-center gap-2.5 text-left">
           <span class="material-symbols-outlined text-emerald-700 text-[22px] shrink-0">verified_user</span>
           <div class="flex flex-col text-[11px] leading-tight">
-            <span class="font-bold text-emerald-950">256-bit Bank-Grade Encryption</span>
-            <span class="text-emerald-800 font-medium mt-0.5">कृपया बैक बटन न दबाएं या स्क्रीन बंद न करें / Please do not press back</span>
+            <span class="font-bold text-emerald-950" data-i18n="pay_secure_badge">256-बिट बैंक-ग्रेड सुरक्षा टोकन</span>
+            <span class="text-emerald-800 font-medium mt-0.5" data-i18n="pay_proc_warning">कृपया बैक बटन न दबाएं या स्क्रीन बंद न करें</span>
           </div>
         </div>
       </div>
@@ -1604,16 +1712,16 @@
         p1_otp_box_label: "6-अंकों का कोड दर्ज करें",
         p1_otp_resend: "पुनः कोड भेजें",
         p1_otp_verify_btn: "सत्यापित करें और आगे बढ़ें",
-        p1_lm_step: "डिलीवरी पता • Address Setup",
+        p1_lm_step: "डिलीवरी पता सेटअप",
         p1_lm_heading: "डिलीवरी का पता",
         p1_name_label: "आपका पूरा नाम *",
         p1_name_err: "कृपया अपना नाम दर्ज करें",
         p1_gps_title: "वर्तमान GPS लोकेशन इस्तेमाल करें",
-        p1_locate_btn: "Use Location",
-        p1_district_label: "जिला / तहसील (District / Tehsil) *",
-        p1_district_ph: "जैसे: सोनीपत / गनौर",
-        p1_district_err: "कृपया जिला / तहसील दर्ज करें",
-        p1_village_label: "गाँव / ग्राम पंचायत (Village / Panchayat) *",
+        p1_locate_btn: "लोकेशन का पता लगाएँ",
+        p1_district_label: "जिला या तहसील *",
+        p1_district_ph: "जैसे: सोनीपत या गनौर",
+        p1_district_err: "कृपया जिला या तहसील दर्ज करें",
+        p1_village_label: "गाँव या ग्राम पंचायत *",
         p1_village_ph: "जैसे: रामपुर",
         p1_village_err: "कृपया गाँव या पंचायत का नाम दर्ज करें",
         p1_village_search_placeholder: "गाँव या ग्राम पंचायत का नाम खोजें...",
@@ -1621,8 +1729,8 @@
         p1_lm_critical_sub: "ग्रामीण डिलीवरी के लिए रनर मुख्य पहचान चिन्ह पर निर्भर रहते हैं।",
         p1_lm_field_label: "गाँव का मुख्य पहचान चिन्ह *",
         p1_lm_err: "कम से कम 10 अक्षर आवश्यक हैं",
-        p1_save_enter_btn: "Save Address & Proceed",
-        p1_save_proceed_btn: "Save Address & Proceed",
+        p1_save_enter_btn: "पता सहेजें और आगे बढ़ें",
+        p1_save_proceed_btn: "पता सहेजें और आगे बढ़ें",
         // Phase 2
         p2_change_loc: "बदलें",
         p2_voice_search: "बोल कर खोजें",
@@ -1705,15 +1813,63 @@
         profile_page_sub: "गाँव बाज़ार प्रोफ़ाइल एवं सहायता",
         profile_logout_btn: "लॉगआउट",
         profile_verified_badge: "सत्यापित ग्राहक",
-        profile_primary_address: "मुख्य डिलीवरी पता / लैंडमार्क",
+        profile_primary_address: "मुख्य डिलीवरी पता एवं लैंडमार्क",
         profile_edit_address: "बदलें",
-        profile_lang_title: "भाषा प्राथमिकता / Language",
+        profile_lang_title: "भाषा प्राथमिकता",
         profile_support_title: "ग्राहक सहायता केंद्र",
         profile_support_sub: "24/7 AI चैटबॉट एवं टोल-फ्री हेल्पलाइन",
         profile_support_desc: "ऑर्डर स्थिति, रिफंड पूछताछ, या किसी समस्या के लिए तुरंत हमारे AI सहायक से चैट करें या टोल-फ्री कॉल करें।",
         profile_open_chat_btn: "AI सहायता से चैट करें",
+        profile_payments_title: "सहेजे गए भुगतान माध्यम",
+        btn_add_payment: "+ नया माध्यम जोड़ें",
         profile_orders_title: "पिछले ऑर्डर",
         profile_refresh_orders: "ताज़ा करें",
+        profile_village_set: "गाँव चुनें",
+        profile_landmark_set: "पहचान चिन्ह सेट करें",
+        profile_no_payments: "कोई सहेजा गया भुगतान माध्यम नहीं है",
+        profile_no_payments_sub: "1-क्लिक चेकआउट के लिए अपनी UPI ID या कार्ड सहेजें।",
+        profile_default_badge: "डिफ़ॉल्ट",
+        profile_remove_btn: "हटाएं",
+        profile_secure_token: "सुरक्षित Razorpay लिंक्ड",
+        modal_add_payment_title: "नया भुगतान माध्यम जोड़ें",
+        modal_add_payment_sub: "भुगतान का पसंदीदा तरीका चुनें",
+        pay_method_upi: "UPI ID",
+        pay_method_upi_sub: "Google Pay, PhonePe, Paytm, BHIM",
+        pay_method_card: "डेबिट या क्रेडिट कार्ड",
+        pay_method_card_sub: "Visa, Mastercard, RuPay एवं अन्य",
+        pay_fast_badge: "तेज़",
+        pay_back_to_methods: "वापस जाएं",
+        pay_enter_upi_label: "UPI ID (VPA) *",
+        pay_enter_upi_placeholder: "उदा. yourname@okhdfcbank",
+        pay_upi_name_label: "माध्यम का नाम (वैकल्पिक)",
+        pay_upi_name_placeholder: "उदा. My Google Pay UPI",
+        pay_upi_hint: "1-क्लिक चेकआउट हेतु सुरक्षित Razorpay टोकन बनाया जाएगा।",
+        pay_card_number_label: "कार्ड नंबर *",
+        pay_card_number_placeholder: "16 अंकों का कार्ड नंबर",
+        pay_card_expiry_label: "समाप्ति तिथि (MM/YY) *",
+        pay_card_cvv_label: "सीवीवी (CVV) *",
+        pay_card_name_label: "कार्ड पर नाम *",
+        pay_card_name_placeholder: "कार्डधारक का नाम",
+        pay_make_default: "डिफ़ॉल्ट भुगतान माध्यम बनाएं",
+        pay_save_btn: "सहेजें और सत्यापित करें",
+        pay_cancel_btn: "रद्द करें",
+        pay_secure_badge: "256-बिट बैंक-ग्रेड सुरक्षा टोकन",
+        pay_proc_title: "भुगतान प्रक्रिया जारी है...",
+        pay_proc_sub: "Razorpay सुरक्षित गेटवे द्वारा प्रमाणीकरण",
+        pay_proc_warning: "कृपया बैक बटन न दबाएं या स्क्रीन बंद न करें",
+        p1_gps_badge: "GPS सेट नहीं है",
+        p2_loc_village: "स्थान चुनें",
+        p2_loc_landmark: "टैप करके पता जोड़ें",
+        p4_mov_alert: "कम से कम ₹99 का ऑर्डर करें।",
+        p4_checkout_village_lbl: "गाँव",
+        p4_checkout_landmark_lbl: "पहचान चिन्ह:",
+        chat_welcome_title: "नमस्ते! GaonBazaar AI सहायता केंद्र में आपका स्वागत है। मैं आपकी क्या मदद कर सकता हूँ?",
+        chat_welcome_sub: "ऑर्डर, डिलीवरी या रिफंड से जुड़ी सहायता के लिए पूछें।",
+        chat_chip_order: "📦 मेरा ऑर्डर कहाँ है?",
+        chat_chip_refund: "💰 रिफंड की स्थिति",
+        chat_chip_agent: "📞 एजेंट से बात करें",
+        chat_input_ph: "अपना सवाल या संदेश लिखें...",
+        chat_call_cta: "📞 हेल्पलाइन कॉल करें",
         nav_profile: "खाता"
       },
       en: {
@@ -1852,8 +2008,56 @@
         profile_support_sub: "24/7 AI Chatbot & Toll-free Helpline",
         profile_support_desc: "Track live orders, inquire about refunds, or speak directly with our support team.",
         profile_open_chat_btn: "Chat with AI Support",
+        profile_payments_title: "Saved Payments",
+        btn_add_payment: "+ Add New Method",
         profile_orders_title: "Past Orders",
         profile_refresh_orders: "Refresh",
+        profile_village_set: "Select Village Address",
+        profile_landmark_set: "Set Landmark",
+        profile_no_payments: "No saved payment methods",
+        profile_no_payments_sub: "Save a UPI ID or card for 1-click checkout.",
+        profile_default_badge: "Default",
+        profile_remove_btn: "Remove",
+        profile_secure_token: "Secured by Razorpay",
+        modal_add_payment_title: "Add Payment Method",
+        modal_add_payment_sub: "Choose how you'd like to pay",
+        pay_method_upi: "UPI ID",
+        pay_method_upi_sub: "Google Pay, PhonePe, Paytm, BHIM",
+        pay_method_card: "Credit / Debit Card",
+        pay_method_card_sub: "Visa, Mastercard, RuPay & more",
+        pay_fast_badge: "Fast",
+        pay_back_to_methods: "Back to options",
+        pay_enter_upi_label: "UPI ID (VPA) *",
+        pay_enter_upi_placeholder: "e.g. yourname@okhdfcbank",
+        pay_upi_name_label: "Payment Label (Optional)",
+        pay_upi_name_placeholder: "e.g. My Google Pay UPI",
+        pay_upi_hint: "A secure token will be generated for 1-click checkout.",
+        pay_card_number_label: "Card Number *",
+        pay_card_number_placeholder: "16-digit card number",
+        pay_card_expiry_label: "Expiry Date (MM/YY) *",
+        pay_card_cvv_label: "CVV *",
+        pay_card_name_label: "Name on Card *",
+        pay_card_name_placeholder: "Cardholder Name",
+        pay_make_default: "Set as default payment method",
+        pay_save_btn: "Save & Verify",
+        pay_cancel_btn: "Cancel",
+        pay_secure_badge: "256-bit Bank-Grade Encryption",
+        pay_proc_title: "Processing Payment...",
+        pay_proc_sub: "Secured by Razorpay Gateway",
+        pay_proc_warning: "Please do not press back or refresh",
+        p1_gps_badge: "GPS Not Set",
+        p2_loc_village: "Select Location",
+        p2_loc_landmark: "Tap to set address",
+        p4_mov_alert: "Minimum order is ₹99.",
+        p4_checkout_village_lbl: "Village",
+        p4_checkout_landmark_lbl: "Landmark:",
+        chat_welcome_title: "Hello! Welcome to GaonBazaar AI Support Center. How can I help you today?",
+        chat_welcome_sub: "Ask about your order status, delivery, or refunds.",
+        chat_chip_order: "📦 Where is my order?",
+        chat_chip_refund: "💰 Refund status",
+        chat_chip_agent: "📞 Speak to agent",
+        chat_input_ph: "Type your message here...",
+        chat_call_cta: "📞 Call Helpline",
         nav_profile: "Account"
       }
     };
@@ -2177,6 +2381,7 @@
       try {
         if (typeof renderProductCatalog === 'function') renderProductCatalog();
         if (typeof updateCartCalculations === 'function') updateCartCalculations();
+        if (typeof loadUserSavedPaymentMethods === 'function') loadUserSavedPaymentMethods();
       } catch(e) {}
     };
     function applyBilingualState() {
@@ -2224,7 +2429,11 @@
           const diff = 99 - subtotal;
           const diffStr = Number.isInteger(diff) ? diff : diff.toFixed(2);
           if (typeof showAudioToast === 'function') {
-            showAudioToast('Minimum Order / न्यूनतम ऑर्डर', `Minimum order is ₹99 / कम से कम ₹99 का ऑर्डर करें. Add ₹${diffStr} more.`);
+            const isHi = (AppStore.lang === 'hi');
+            showAudioToast(
+              isHi ? 'न्यूनतम ऑर्डर' : 'Minimum Order', 
+              isHi ? `कम से कम ₹99 का ऑर्डर करें। ₹${diffStr} का सामान और जोड़ें।` : `Minimum order is ₹99. Add ₹${diffStr} more.`
+            );
           }
           return;
         }
@@ -2583,7 +2792,7 @@
       const counter = document.getElementById('p1-lm-counter');
       const err = document.getElementById('p1-lm-err');
       const len = sanitized.length;
-      if (counter) counter.innerText = `${len} / 10 chars`;
+      if (counter) counter.innerText = (AppStore.lang === 'hi') ? `${len} / 10 अक्षर` : `${len} / 10 characters`;
       if (len >= 10) {
         if (counter) counter.classList.add('text-primary');
         if (err) err.classList.add('hidden');
@@ -3744,13 +3953,17 @@
           const diff = MIN_ORDER_VALUE - subtotal;
           const diffStr = Number.isInteger(diff) ? diff : diff.toFixed(2);
           if (movAlertText) {
-            movAlertText.innerText = `Minimum order is ₹99 / कम से कम ₹99 का ऑर्डर करें. Add ₹${diffStr} more.`;
+            movAlertText.innerText = isHi 
+              ? `कम से कम ₹99 का ऑर्डर करें। ₹${diffStr} का सामान और जोड़ें।`
+              : `Minimum order is ₹99. Add ₹${diffStr} more.`;
           }
           movAlert.classList.remove('hidden');
           movAlert.classList.add('flex');
         } else if (isOutOfRange) {
           if (movAlertText) {
-            movAlertText.innerText = `Outside delivery zone (${dist} km) / 8 km से बाहर डिलीवरी उपलब्ध नहीं है.`;
+            movAlertText.innerText = isHi
+              ? `डिलीवरी क्षेत्र से बाहर (${dist} किमी)। 8 किमी से बाहर डिलीवरी उपलब्ध नहीं है।`
+              : `Outside delivery zone (${dist} km). Deliveries outside 8.0 km are not supported.`;
           }
           movAlert.classList.remove('hidden');
           movAlert.classList.add('flex');
@@ -3894,7 +4107,11 @@
         const diff = 99 - subtotal;
         const diffStr = Number.isInteger(diff) ? diff : diff.toFixed(2);
         if (typeof showAudioToast === 'function') {
-          showAudioToast('Minimum Order / न्यूनतम ऑर्डर', `Minimum order is ₹99 / कम से कम ₹99 का ऑर्डर करें. Add ₹${diffStr} more.`);
+          const isHi = (AppStore.lang === 'hi');
+          showAudioToast(
+            isHi ? 'न्यूनतम ऑर्डर' : 'Minimum Order', 
+            isHi ? `कम से कम ₹99 का ऑर्डर करें। ₹${diffStr} का सामान और जोड़ें।` : `Minimum order is ₹99. Add ₹${diffStr} more.`
+          );
         }
         navigateToPhase('cart');
         return;
@@ -3904,7 +4121,11 @@
       const dist = getOrderDistanceKm();
       if (dist > 8.0) {
         if (typeof showAudioToast === 'function') {
-          showAudioToast('Delivery Zone / डिलीवरी सीमा', `Address is outside 8.0 km delivery zone (${dist} km). Orders outside 8.0 km cannot be accepted.`);
+          const isHi = (AppStore.lang === 'hi');
+          showAudioToast(
+            isHi ? 'डिलीवरी क्षेत्र' : 'Delivery Zone', 
+            isHi ? `डिलीवरी क्षेत्र से बाहर (${dist} किमी)। 8.0 किमी से बाहर डिलीवरी स्वीकार नहीं की जा सकती।` : `Address is outside 8.0 km delivery zone (${dist} km). Orders outside 8.0 km cannot be accepted.`
+          );
         }
         navigateToPhase('cart');
         return;
@@ -4704,51 +4925,270 @@
 
 
     // =========================================================================
-    // CUSTOMER SAVED PAYMENT METHODS CONTROLLER (Razorpay Route Pre-integration)
+    // CUSTOMER SAVED PAYMENT METHODS CONTROLLER (Swiggy / Flipkart 2-Step Flow)
     // =========================================================================
-    let activePaymentAddType = 'upi';
+    let activePaymentOnboardStep = 'select'; // 'select' | 'upi' | 'card'
 
     function openAddPaymentModal() {
       const modal = document.getElementById('modal-add-payment-method');
-      const err = document.getElementById('add-payment-error');
-      if (err) { err.className = 'hidden'; err.innerText = ''; }
-      document.getElementById('new-payment-title').value = '';
-      document.getElementById('new-payment-val').value = '';
-      document.getElementById('cb-payment-default').checked = false;
-      selectPaymentType('upi');
+      backToPaymentMethodSelect();
+      clearPaymentModalErrors();
+
+      // Clear all inputs
+      const upiVpa = document.getElementById('upi-input-vpa');
+      const upiTitle = document.getElementById('upi-input-title');
+      const cbUpiDef = document.getElementById('cb-upi-default');
+      const cardNum = document.getElementById('card-input-number');
+      const cardExp = document.getElementById('card-input-expiry');
+      const cardCvv = document.getElementById('card-input-cvv');
+      const cardName = document.getElementById('card-input-name');
+      const cbCardDef = document.getElementById('cb-card-default');
+
+      if (upiVpa) upiVpa.value = '';
+      if (upiTitle) upiTitle.value = '';
+      if (cbUpiDef) cbUpiDef.checked = false;
+      if (cardNum) cardNum.value = '';
+      if (cardExp) cardExp.value = '';
+      if (cardCvv) cardCvv.value = '';
+      if (cardName) cardName.value = '';
+      if (cbCardDef) cbCardDef.checked = false;
+
       if (modal) modal.classList.remove('hidden');
     }
+    window.openAddPaymentModal = openAddPaymentModal;
 
     function closeAddPaymentModal() {
       document.getElementById('modal-add-payment-method')?.classList.add('hidden');
     }
+    window.closeAddPaymentModal = closeAddPaymentModal;
 
-    function selectPaymentType(type) {
-      activePaymentAddType = type;
-      const btnUpi = document.getElementById('type-opt-upi');
-      const btnCard = document.getElementById('type-opt-card');
-      const lblVal = document.getElementById('lbl-payment-val');
-      const inputVal = document.getElementById('new-payment-val');
+    function selectPaymentOnboardMethod(type) {
+      activePaymentOnboardStep = type;
+      clearPaymentModalErrors();
+
+      const selectStep = document.getElementById('payment-step-select');
+      const upiStep = document.getElementById('payment-step-upi-form');
+      const cardStep = document.getElementById('payment-step-card-form');
+
+      if (selectStep) selectStep.classList.add('hidden');
 
       if (type === 'upi') {
-        if (btnUpi) btnUpi.className = "py-2 px-3 rounded-xl border-2 border-primary bg-primary/5 text-primary font-bold flex items-center justify-center gap-1.5 transition-all";
-        if (btnCard) btnCard.className = "py-2 px-3 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold flex items-center justify-center gap-1.5 transition-all";
-        if (lblVal) lblVal.innerText = "UPI ID / VPA *";
-        if (inputVal) inputVal.placeholder = "उदा. 9876543210@paytm";
-      } else {
-        if (btnCard) btnCard.className = "py-2 px-3 rounded-xl border-2 border-primary bg-primary/5 text-primary font-bold flex items-center justify-center gap-1.5 transition-all";
-        if (btnUpi) btnUpi.className = "py-2 px-3 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold flex items-center justify-center gap-1.5 transition-all";
-        if (lblVal) lblVal.innerText = "कार्ड नंबर (16 Digits Card Number) *";
-        if (inputVal) inputVal.placeholder = "उदा. 4532 8921 7842 4242";
+        if (upiStep) {
+          upiStep.classList.remove('hidden');
+          upiStep.classList.add('flex');
+        }
+        if (cardStep) {
+          cardStep.classList.add('hidden');
+          cardStep.classList.remove('flex');
+        }
+        setTimeout(() => document.getElementById('upi-input-vpa')?.focus(), 100);
+      } else if (type === 'card') {
+        if (cardStep) {
+          cardStep.classList.remove('hidden');
+          cardStep.classList.add('flex');
+        }
+        if (upiStep) {
+          upiStep.classList.add('hidden');
+          upiStep.classList.remove('flex');
+        }
+        setTimeout(() => document.getElementById('card-input-number')?.focus(), 100);
       }
     }
+    window.selectPaymentOnboardMethod = selectPaymentOnboardMethod;
+
+    function backToPaymentMethodSelect() {
+      activePaymentOnboardStep = 'select';
+      clearPaymentModalErrors();
+
+      const selectStep = document.getElementById('payment-step-select');
+      const upiStep = document.getElementById('payment-step-upi-form');
+      const cardStep = document.getElementById('payment-step-card-form');
+
+      if (selectStep) selectStep.classList.remove('hidden');
+      if (upiStep) {
+        upiStep.classList.add('hidden');
+        upiStep.classList.remove('flex');
+      }
+      if (cardStep) {
+        cardStep.classList.add('hidden');
+        cardStep.classList.remove('flex');
+      }
+    }
+    window.backToPaymentMethodSelect = backToPaymentMethodSelect;
+
+    function formatCardNumberInput(el) {
+      if (!el) return;
+      let val = el.value.replace(/\D/g, '').substring(0, 16);
+      let formatted = val.match(/.{1,4}/g)?.join(' ') || val;
+      el.value = formatted;
+    }
+    window.formatCardNumberInput = formatCardNumberInput;
+
+    function formatCardExpiryInput(el) {
+      if (!el) return;
+      let val = el.value.replace(/\D/g, '').substring(0, 4);
+      if (val.length >= 3) {
+        el.value = `${val.substring(0, 2)}/${val.substring(2)}`;
+      } else {
+        el.value = val;
+      }
+    }
+    window.formatCardExpiryInput = formatCardExpiryInput;
+
+    function clearPaymentModalErrors() {
+      const errUpi = document.getElementById('add-upi-error');
+      const errCard = document.getElementById('add-card-error');
+      const errGen = document.getElementById('add-payment-error');
+      if (errUpi) { errUpi.className = 'hidden'; errUpi.innerText = ''; }
+      if (errCard) { errCard.className = 'hidden'; errCard.innerText = ''; }
+      if (errGen) { errGen.className = 'hidden'; errGen.innerText = ''; }
+    }
+
+    function showPaymentModalError(msg, target = 'upi') {
+      const isHi = (AppStore.lang === 'hi');
+      const errEl = (target === 'card') 
+        ? document.getElementById('add-card-error')
+        : document.getElementById('add-upi-error');
+      if (errEl) {
+        errEl.innerText = `⚠ ${msg}`;
+        errEl.classList.remove('hidden');
+      }
+      const legacyErr = document.getElementById('add-payment-error');
+      if (legacyErr) {
+        legacyErr.innerText = `⚠ ${msg}`;
+        legacyErr.classList.remove('hidden');
+      }
+    }
+
+    async function submitUPIPaymentMethod() {
+      const isHi = (AppStore.lang === 'hi');
+      const phone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '9876543210';
+      const vpa = document.getElementById('upi-input-vpa')?.value?.trim();
+      let title = document.getElementById('upi-input-title')?.value?.trim();
+      const isDefault = document.getElementById('cb-upi-default')?.checked || false;
+
+      if (!vpa || !/^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/.test(vpa)) {
+        showPaymentModalError(isHi ? "कृपया मान्य UPI ID दर्ज करें (उदा. yourname@okhdfcbank)" : "Please enter a valid UPI ID (e.g. yourname@okhdfcbank)", 'upi');
+        return;
+      }
+
+      if (!title) {
+        if (vpa.includes('@okhdfc') || vpa.includes('@oksbi') || vpa.includes('@okaxis') || vpa.includes('@okicici')) {
+          title = "Google Pay UPI";
+        } else if (vpa.includes('@ybl') || vpa.includes('@ibl') || vpa.includes('@axl')) {
+          title = "PhonePe UPI";
+        } else if (vpa.includes('@paytm')) {
+          title = "Paytm UPI";
+        } else {
+          title = "BHIM UPI";
+        }
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/user/${phone}/payment-methods`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            method_type: 'upi',
+            title: title,
+            vpa_or_card: vpa,
+            is_default: isDefault
+          })
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.detail || (isHi ? 'भुगतान माध्यम सहेजने में विफल' : 'Failed to save payment method'));
+        }
+
+        closeAddPaymentModal();
+        showToast(isHi ? 'नया भुगतान माध्यम सफलतापूर्वक जोड़ा गया' : 'Payment method added successfully');
+        loadUserSavedPaymentMethods();
+      } catch (err) {
+        showPaymentModalError(err.message, 'upi');
+      }
+    }
+    window.submitUPIPaymentMethod = submitUPIPaymentMethod;
+
+    async function submitCardPaymentMethod() {
+      const isHi = (AppStore.lang === 'hi');
+      const phone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '9876543210';
+      const cardNum = document.getElementById('card-input-number')?.value?.replace(/\s/g, '').trim();
+      const cardExp = document.getElementById('card-input-expiry')?.value?.trim();
+      const cardCvv = document.getElementById('card-input-cvv')?.value?.trim();
+      const cardName = document.getElementById('card-input-name')?.value?.trim();
+      const isDefault = document.getElementById('cb-card-default')?.checked || false;
+
+      if (!cardNum || cardNum.length < 15 || !/^\d+$/.test(cardNum)) {
+        showPaymentModalError(isHi ? "कृपया 15-16 अंकों का मान्य कार्ड नंबर दर्ज करें" : "Please enter a valid 15-16 digit card number", 'card');
+        return;
+      }
+
+      if (!cardExp || !/^\d{2}\/\d{2}$/.test(cardExp)) {
+        showPaymentModalError(isHi ? "कृपया वैध समाप्ति तिथि दर्ज करें (MM/YY)" : "Please enter a valid expiry date (MM/YY)", 'card');
+        return;
+      }
+
+      if (!cardCvv || cardCvv.length < 3 || !/^\d+$/.test(cardCvv)) {
+        showPaymentModalError(isHi ? "कृपया 3-4 अंकों का CVV दर्ज करें" : "Please enter a valid 3-4 digit CVV", 'card');
+        return;
+      }
+
+      if (!cardName || cardName.length < 2) {
+        showPaymentModalError(isHi ? "कृपया कार्ड पर अंकित नाम दर्ज करें" : "Please enter the cardholder name", 'card');
+        return;
+      }
+
+      const title = `${cardName} Card`;
+      const maskedCard = `•••• •••• •••• ${cardNum.slice(-4)}`;
+
+      try {
+        const res = await fetch(`${API_BASE}/user/${phone}/payment-methods`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            method_type: 'card',
+            title: title,
+            vpa_or_card: maskedCard,
+            is_default: isDefault
+          })
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.detail || (isHi ? 'कार्ड सहेजने में विफल' : 'Failed to save card'));
+        }
+
+        closeAddPaymentModal();
+        showToast(isHi ? 'कार्ड सफलतापूर्वक सहेजा गया' : 'Card saved successfully');
+        loadUserSavedPaymentMethods();
+      } catch (err) {
+        showPaymentModalError(err.message, 'card');
+      }
+    }
+    window.submitCardPaymentMethod = submitCardPaymentMethod;
+
+    // Backward-compatible fallback
+    async function submitNewPaymentMethod() {
+      if (activePaymentOnboardStep === 'card') {
+        await submitCardPaymentMethod();
+      } else {
+        await submitUPIPaymentMethod();
+      }
+    }
+    window.submitNewPaymentMethod = submitNewPaymentMethod;
 
     async function loadUserSavedPaymentMethods() {
       const container = document.getElementById('profile-saved-payment-list');
       if (!container) return;
 
       const isHi = (AppStore.lang === 'hi');
+      const dict = (window.translations && window.translations[AppStore.lang]) ? window.translations[AppStore.lang] : {};
       const phone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '9876543210';
+
+      const defaultBadgeText = dict.profile_default_badge || (isHi ? 'डिफ़ॉल्ट' : 'Default');
+      const secureTokenText = dict.profile_secure_token || (isHi ? 'सुरक्षित Razorpay लिंक्ड' : 'Secured by Razorpay');
+      const removeBtnTitle = dict.profile_remove_btn || (isHi ? 'हटाएं' : 'Remove');
 
       try {
         const methods = await apiFetch(`/user/${phone}/payment-methods`);
@@ -4765,17 +5205,17 @@
                   <div class="flex flex-col min-w-0">
                     <div class="flex items-center gap-1.5">
                       <span class="text-xs font-black text-slate-900 truncate">${m.title}</span>
-                      ${m.is_default ? '<span class="text-[9px] bg-primary/10 text-primary px-1.5 py-0.2 rounded-full font-extrabold border border-primary/20">Default</span>' : ''}
+                      ${m.is_default ? `<span class="text-[9px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-extrabold border border-primary/20">${defaultBadgeText}</span>` : ''}
                     </div>
                     <span class="text-[11px] font-mono font-bold text-slate-600 truncate">${m.vpa_or_card}</span>
                     <span class="text-[9px] text-slate-400 mt-0.5 flex items-center gap-1">
                       <span class="material-symbols-outlined text-[11px] text-emerald-600">lock</span>
-                      <span>सुरक्षित Razorpay लिंक्ड</span>
+                      <span>${secureTokenText}</span>
                     </span>
                   </div>
                 </div>
 
-                <button onclick="deleteSavedPaymentMethod(${m.id})" title="हटाएं (Delete)" class="w-8 h-8 rounded-xl bg-slate-50 hover:bg-red-50 text-slate-400 hover:text-red-600 border border-slate-200 flex items-center justify-center active:scale-95 transition-colors shrink-0">
+                <button onclick="deleteSavedPaymentMethod(${m.id})" title="${removeBtnTitle}" class="w-8 h-8 rounded-xl bg-slate-50 hover:bg-red-50 text-slate-400 hover:text-red-600 border border-slate-200 flex items-center justify-center active:scale-95 transition-colors shrink-0">
                   <span class="material-symbols-outlined text-[16px]">delete</span>
                 </button>
               </div>
@@ -4787,25 +5227,28 @@
         console.warn('Failed to fetch saved payment methods:', err);
       }
 
-      // Empty State
+      // 100% Strict Either/Or Localized Empty State
+      const emptyTitle = dict.profile_no_payments || (isHi ? 'कोई सहेजा गया भुगतान माध्यम नहीं है' : 'No saved payment methods');
+      const emptySub = dict.profile_no_payments_sub || (isHi ? '1-क्लिक चेकआउट के लिए अपनी UPI ID या कार्ड सहेजें।' : 'Save a UPI ID or card for 1-click checkout.');
       container.innerHTML = `
         <div id="profile-payments-empty-state" class="rounded-2xl bg-white p-5 shadow-mobile-card border border-surface-container-high text-center flex flex-col items-center justify-center gap-2">
           <span class="material-symbols-outlined text-[28px] text-slate-300">credit_card_off</span>
-          <p class="text-xs font-bold text-slate-800">${isHi ? 'कोई सहेजा गया भुगतान माध्यम नहीं है' : 'No saved payment methods'}</p>
-          <p class="text-[11px] text-slate-500">${isHi ? '1-क्लिक चेकआउट के लिए अपना UPI ID या कार्ड जोड़ें।' : 'Add a UPI ID or card for 1-click checkout.'}</p>
+          <p class="text-xs font-bold text-slate-800" data-i18n="profile_no_payments">${emptyTitle}</p>
+          <p class="text-[11px] text-slate-500" data-i18n="profile_no_payments_sub">${emptySub}</p>
         </div>
       `;
     }
     window.loadUserSavedPaymentMethods = loadUserSavedPaymentMethods;
 
     async function deleteSavedPaymentMethod(methodId) {
+      const isHi = (AppStore.lang === 'hi');
       const phone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '9876543210';
       try {
         const res = await fetch(`${API_BASE}/user/${phone}/payment-methods/${methodId}`, {
           method: 'DELETE'
         });
         if (res.ok) {
-          showToast(AppStore.lang === 'hi' ? 'भुगतान माध्यम हटा दिया गया' : 'Payment method removed');
+          showToast(isHi ? 'भुगतान माध्यम हटा दिया गया' : 'Payment method removed');
           loadUserSavedPaymentMethods();
         }
       } catch (err) {
@@ -4813,68 +5256,6 @@
       }
     }
     window.deleteSavedPaymentMethod = deleteSavedPaymentMethod;
-
-    async function submitNewPaymentMethod() {
-      const phone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '9876543210';
-      const title = document.getElementById('new-payment-title')?.value?.trim();
-      const val = document.getElementById('new-payment-val')?.value?.trim();
-      const isDefault = document.getElementById('cb-payment-default')?.checked;
-      const errEl = document.getElementById('add-payment-error');
-
-      if (!title || title.length < 2) {
-        showPaymentModalError("कृपया भुगतान माध्यम का नाम लिखें (e.g. Google Pay)");
-        return;
-      }
-
-      if (activePaymentAddType === 'upi') {
-        if (!val || !/^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/.test(val)) {
-          showPaymentModalError("कृपया मान्य UPI ID दर्ज करें (उदा. username@bank)");
-          return;
-        }
-      } else {
-        const cleanCard = (val || '').replace(/[\s\-]/g, '');
-        if (!cleanCard || cleanCard.length < 15 || !/^\d+$/.test(cleanCard)) {
-          showPaymentModalError("कृपया मान्य 15-16 अंकों का कार्ड नंबर दर्ज करें");
-          return;
-        }
-      }
-
-      try {
-        const displayVal = activePaymentAddType === 'card' 
-          ? `•••• •••• •••• ${val.replace(/[\s\-]/g, '').slice(-4)}`
-          : val;
-
-        const res = await fetch(`${API_BASE}/user/${phone}/payment-methods`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            method_type: activePaymentAddType,
-            title: title,
-            vpa_or_card: displayVal,
-            is_default: isDefault
-          })
-        });
-
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error(data.detail || 'भुगतान माध्यम सहेजने में विफल');
-        }
-
-        closeAddPaymentModal();
-        showToast(AppStore.lang === 'hi' ? 'नया भुगतान माध्यम जोड़ा गया' : 'Payment method added');
-        loadUserSavedPaymentMethods();
-      } catch (err) {
-        showPaymentModalError(err.message);
-      }
-    }
-
-    function showPaymentModalError(msg) {
-      const errEl = document.getElementById('add-payment-error');
-      if (errEl) {
-        errEl.innerText = `⚠ ${msg}`;
-        errEl.classList.remove('hidden');
-      }
-    }
 
         function openSupportModal() {
       const modal = document.getElementById('modal-support-chat');
