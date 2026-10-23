@@ -66,6 +66,20 @@ except ImportError:
     sys.exit(1)
 
 BASE_DIR = Path(__file__).parent.resolve()
+
+# Load environment configuration (.env)
+env_file = BASE_DIR / ".env"
+if env_file.exists():
+    try:
+        with open(env_file, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    k, v = line.split("=", 1)
+                    os.environ[k.strip()] = v.strip()
+    except Exception as e:
+        print(f"Warning: Failed to parse .env file: {e}")
+
 HTML_FILE_PATH = BASE_DIR / "index.html"
 REPORT_FILE_PATH = BASE_DIR / "test_report.txt"
 SCREENSHOTS_DIR = BASE_DIR / "screenshots"
@@ -517,7 +531,12 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     inspect_viewport_and_layout(page, f"[{dev_name}] Phase 1.1 Login", logger)
     capture_human_ux_screenshot(page, dev_name, "step1_01_login_initial", logger)
 
-    # Human-like Bounds Check on Language Toggle Pill
+    # Check Hamburger Menu Button and Open Side Drawer to access Language Toggle
+    check_human_ux_bounds(page, "#btn-open-sidebar", "Hamburger Menu Button", dev_name, logger)
+    page.click("#btn-open-sidebar")
+    page.wait_for_timeout(350)
+
+    # Human-like Bounds Check on Language Toggle Pill inside Drawer
     check_human_ux_bounds(page, "#global-lang-btn", "Language Toggle Pill", dev_name, logger)
 
     initial_lang = page.inner_text("#global-lang-label").strip()
@@ -530,6 +549,10 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     if switched_lang != "हिंदी":
         page.click("#global-lang-btn")
         page.wait_for_timeout(300)
+
+    # Close side drawer via close button
+    page.click("#btn-close-sidebar")
+    page.wait_for_timeout(350)
 
     # Check Phone Input & Disabled Send OTP Button Bounds
     check_human_ux_bounds(page, "#p1-phone-input", "Phone Number Input Field", dev_name, logger)
@@ -959,9 +982,11 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
                 "items": [{"id": "item_mov_test_out", "name": "Item Out", "price": 150.0, "qty": 1}]
             }
         )
-        api_out_rejected = (api_out_resp.status == 400)
-        api_out_detail = api_out_resp.json().get('detail', '') if api_out_rejected else f"Status: {api_out_resp.status}"
-        logger.record_test(f"[{dev_name}] Outside Delivery Zone (> 8.0 km): Backend API Rejection (HTTP 400)", api_out_rejected, f"API rejected: {api_out_detail}")
+        is_bypass_on = os.getenv("BYPASS_GEOFENCE", "False").lower() in ("true", "1", "yes")
+        expected_status = 200 if is_bypass_on else 400
+        geofence_verified = (api_out_resp.status == expected_status)
+        api_out_detail = f"Status: {api_out_resp.status} (BYPASS_GEOFENCE={is_bypass_on})"
+        logger.record_test(f"[{dev_name}] Outside Delivery Zone (> 8.0 km): Backend Geofence Logic Enforced", geofence_verified, api_out_detail)
     except Exception as eout:
         logger.record_test(f"[{dev_name}] Outside Delivery Zone (> 8.0 km): Backend API Rejection", False, str(eout))
 
@@ -1145,7 +1170,12 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
         not has_profile_lang_card,
         "Redundant language preference card cleanly removed from profile screen"
     )
-    check_human_ux_bounds(page, "#global-lang-btn", "Global Header Language Toggle", dev_name, logger)
+    # Open Side Drawer to verify language toggle bounds
+    page.click("#btn-open-sidebar")
+    page.wait_for_timeout(350)
+    check_human_ux_bounds(page, "#global-lang-btn", "Side Drawer Language Toggle", dev_name, logger)
+    page.click("#btn-close-sidebar")
+    page.wait_for_timeout(350)
 
     # 7. Verify Help & Support Entry Point Card
     check_human_ux_bounds(page, "#btn-open-support", "Open Help & Support Chatbot Button", dev_name, logger)

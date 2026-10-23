@@ -39,12 +39,23 @@ def main():
             assert "9:41" not in header_text, "Error: Fake 9:41 clock still in header!"
             print("  ✓ PASS: Fake status bar icons (clock, 5G, battery) completely purged from header!")
 
-            # Verify Header Alignment
+            # Verify Native Top App Bar & Side Drawer
             logo_text = page.locator("header span:has-text('GaonBazaar')").first.inner_text().strip()
             assert logo_text == "GaonBazaar", f"Expected 'GaonBazaar', got '{logo_text}'"
-            assert page.locator("#global-lang-btn").is_visible(), "Language toggle button missing!"
-            assert page.locator("#header-user-icon").is_visible(), "Profile icon missing!"
-            print("  ✓ PASS: Header elements (GaonBazaar, Language, Profile) properly aligned!")
+            assert page.locator("#btn-open-sidebar").is_visible(), "Hamburger menu button (#btn-open-sidebar) missing from header!"
+            assert page.locator("#header-cart-icon").is_visible(), "Cart icon (#header-cart-icon) missing from header far-right!"
+            
+            # Verify Side Drawer slide-out and options
+            page.click("#btn-open-sidebar")
+            page.wait_for_timeout(350)
+            assert page.locator("#sidebar-drawer").is_visible(), "Side drawer (#sidebar-drawer) failed to open!"
+            assert page.locator("#sidebar-overlay").is_visible(), "Sidebar dark overlay (#sidebar-overlay) failed to appear!"
+            assert page.locator("#global-lang-btn").is_visible(), "Language toggle (#global-lang-btn) inside side drawer missing!"
+            
+            # Close Side Drawer via close button
+            page.click("#btn-close-sidebar")
+            page.wait_for_timeout(350)
+            print("  ✓ PASS: Native Top App Bar & Professional Side Drawer verified perfectly!")
 
             # -------------------------------------------------------------
             # TEST 2: OVERSCROLL BEHAVIOR (PREVENT PULL-TO-REFRESH)
