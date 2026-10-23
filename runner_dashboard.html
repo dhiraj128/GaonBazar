@@ -414,7 +414,7 @@
             <span class="material-symbols-outlined text-[12px]">schedule</span>
             <span id="detail-eta-text">30 Mins</span>
           </span>
-          <span id="detail-stage-badge" class="px-2.5 py-1 rounded-full text-xs font-black bg-amber-500/20 text-amber-300 border border-amber-500/30">
+          <span id="detail-stage-badge" class="px-2.5 py-1 rounded-full text-xs font-black bg-amber-500/20 text-amber-300 border border-amber-500/30" data-i18n="badge_pickup_pending">
             पिकअप बाकी
           </span>
         </div>
@@ -431,9 +431,9 @@
               <span class="material-symbols-outlined text-[24px]">store</span>
             </div>
             <div>
-              <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider block">चरण 1: दुकान से पिकअप</span>
+              <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider block" data-i18n="step1_store_pickup">चरण 1: दुकान से पिकअप</span>
               <h3 id="detail-store-name" class="text-sm font-black text-white leading-tight">Sharma Brothers Kirana</h3>
-              <span id="detail-store-sub" class="text-xs text-slate-400">रामपुर मुख्य बाज़ार</span>
+              <span id="detail-store-sub" class="text-xs text-slate-400" data-i18n="sample_store_sub">रामपुर मुख्य बाज़ार</span>
             </div>
           </div>
 
@@ -458,7 +458,7 @@
         <!-- Store Pickup Confirm CTA (Stage 3 -> 4) -->
         <button id="btn-confirm-pickup" onclick="handleConfirmPickup()" class="w-full py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-sm font-black flex items-center justify-center gap-2 shadow-lg active:scale-98 transition-all">
           <span class="material-symbols-outlined text-[20px]">check_circle</span>
-          <span id="btn-pickup-text">दुकान से सामान लिया</span>
+          <span id="btn-pickup-text" data-i18n="btn_confirm_pickup_action">दुकान से सामान लिया</span>
         </button>
 
       </div>
@@ -1041,6 +1041,19 @@
         filter_all: "सभी मिशन",
         filter_pickup: "पिकअप बाकी",
         filter_transit: "रास्ते में",
+        badge_pickup_pending: "दुकान से पिकअप बाकी",
+        badge_in_transit: "रास्ते में",
+        badge_out_for_delivery: "रास्ते में हैं",
+        step1_store_pickup: "चरण 1: दुकान से पिकअप",
+        btn_confirm_pickup_action: "दुकान से सामान लिया",
+        btn_pickup_done_action: "✓ सामान उठाया जा चुका है",
+        lbl_pickup_store: "पिकअप दुकान",
+        lbl_items: "सामान",
+        action_pickup: "पिकअप",
+        action_view_landmark: "लैंडमार्क देखें",
+        action_view_mission: "मिशन देखें",
+        sample_store_sub: "रामपुर मुख्य बाज़ार",
+        sample_customer_village: "ग्राम पंचायत रामपुर",
         btn_check_status: "स्वीकृति स्थिति जांचें",
         btn_switch_runner: "कमल सिंह पर स्विच करें",
         btn_save_runner_bank: "बैंक व UPI विवरण सहेजें",
@@ -1143,6 +1156,19 @@
         filter_all: "All Missions",
         filter_pickup: "Pickup",
         filter_transit: "In-Transit",
+        badge_pickup_pending: "Pickup Pending",
+        badge_in_transit: "In-Transit",
+        badge_out_for_delivery: "Out for Delivery",
+        step1_store_pickup: "Step 1: Store Pickup",
+        btn_confirm_pickup_action: "Confirm Pickup",
+        btn_pickup_done_action: "✓ Picked Up & In-Transit",
+        lbl_pickup_store: "Pickup Store",
+        lbl_items: "Items",
+        action_pickup: "Pickup",
+        action_view_landmark: "View Landmark",
+        action_view_mission: "View Mission",
+        sample_store_sub: "Rampur Main Market",
+        sample_customer_village: "Gram Panchayat Rampur",
         btn_check_status: "Check Approval Status",
         btn_switch_runner: "Switch to Kamal Singh",
         btn_save_runner_bank: "Save Bank & UPI Details",
@@ -2402,6 +2428,13 @@
       const opt2 = document.querySelector('#login-runner-id-select option[value="gm_2"]');
       if (opt1) opt1.innerText = isHi ? "कमल सिंह • #GM-RAMPUR-07" : "Kamal Singh • #GM-RAMPUR-07";
       if (opt2) opt2.innerText = isHi ? "मोहन लाल • #GM-RAMPUR-08" : "Mohan Lal • #GM-RAMPUR-08";
+
+      if (!RunnerStore.selectedMission) {
+        const dStage = document.getElementById('detail-stage-badge');
+        const dPickup = document.getElementById('btn-pickup-text');
+        if (dStage) dStage.innerText = dict.badge_pickup_pending || (isHi ? 'दुकान से पिकअप बाकी' : 'Pickup Pending');
+        if (dPickup) dPickup.innerText = dict.btn_confirm_pickup_action || (isHi ? 'दुकान से सामान लिया' : 'Confirm Pickup');
+      }
 
       updateHeaderAndKPISummary();
       renderMissionsQueue();

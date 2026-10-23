@@ -887,8 +887,8 @@
         <!-- Payment Method Options (Rural Trust: COD vs UPI) -->
         <div class="bg-white rounded-2xl p-5 shadow-mobile-card border border-surface-container-high flex flex-col gap-3">
           <div class="flex items-center justify-between pb-1 border-b border-surface-container">
-            <h4 class="text-xs font-extrabold text-on-surface uppercase tracking-wider" data-i18n="p4_payment_opts">भुगतान का तरीका (Payment Mode)</h4>
-            <span class="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">100% सुरक्षित</span>
+            <h4 class="text-xs font-extrabold text-on-surface uppercase tracking-wider" data-i18n="p4_payment_opts">भुगतान का तरीका</h4>
+            <span class="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200" data-i18n="p4_badge_100_secure">100% सुरक्षित</span>
           </div>
           
           <!-- Option 1: COD (Default) -->
@@ -900,7 +900,7 @@
                 <span class="text-[10px] text-on-surface-variant mt-0.5 block truncate" data-i18n="p4_pay_cod_sub">सामान घर पर मिलने पर ही नकद रुपये दें</span>
               </div>
             </div>
-            <span class="text-[10px] font-bold text-primary bg-white px-2.5 py-0.5 rounded-full shadow-xs border border-primary/20 shrink-0 inline-flex items-center justify-center box-border">सुरक्षित</span>
+            <span class="text-[10px] font-bold text-primary bg-white px-2.5 py-0.5 rounded-full shadow-xs border border-primary/20 shrink-0 inline-flex items-center justify-center box-border" data-i18n="p4_badge_secure">सुरक्षित</span>
           </label>
 
           <!-- Option 2: UPI (PhonePe, GPay, Paytm) -->
@@ -908,8 +908,8 @@
             <div class="flex items-center gap-2.5 min-w-0 flex-1">
               <input type="radio" name="payment_mode" value="UPI" class="accent-primary w-4 h-4 shrink-0"/>
               <div class="min-w-0">
-                <span class="text-xs font-bold text-on-surface block truncate" id="pay-upi-lbl">ऑनलाइन यूपीआई (GPay, PhonePe, Paytm)</span>
-                <span class="text-[10px] text-on-surface-variant mt-0.5 block truncate">तुरंत सुरक्षित डिजिटल भुगतान</span>
+                <span class="text-xs font-bold text-on-surface block truncate" id="pay-upi-lbl" data-i18n="p4_pay_upi">ऑनलाइन यूपीआई (GPay, PhonePe, Paytm)</span>
+                <span class="text-[10px] text-on-surface-variant mt-0.5 block truncate" data-i18n="p4_pay_upi_sub">तुरंत सुरक्षित डिजिटल भुगतान</span>
               </div>
             </div>
             <div class="flex items-center gap-1 shrink-0 pl-6 sm:pl-0">
@@ -1761,8 +1761,12 @@
         p4_pref_call: "गाँव पहुँचते ही पहले फ़ोन करें",
         p4_pref_neighbor: "घर पर न मिलने पर पड़ोसी को दे दें",
         p4_payment_opts: "भुगतान का तरीका",
+        p4_badge_100_secure: "100% सुरक्षित",
         p4_pay_cod: "हाथ में नकद (COD)",
         p4_pay_cod_sub: "सामान घर पर मिलने पर ही नकद रुपये दें",
+        p4_badge_secure: "सुरक्षित",
+        p4_pay_upi: "ऑनलाइन यूपीआई (GPay, PhonePe, Paytm)",
+        p4_pay_upi_sub: "तुरंत सुरक्षित डिजिटल भुगतान",
         p4_place_order_btn: "ऑर्डर कन्फर्म करें",
         // Phase 5
         p5_call_runner_btn: "डिलीवरी पार्टनर को कॉल करें",
@@ -1950,8 +1954,12 @@
         p4_pref_call: "Call before arriving",
         p4_pref_neighbor: "Leave with neighbor if away",
         p4_payment_opts: "Payment Options",
+        p4_badge_100_secure: "100% Secure",
         p4_pay_cod: "Cash on Delivery (COD)",
         p4_pay_cod_sub: "Pay cash in hand upon doorstep arrival",
+        p4_badge_secure: "Secure",
+        p4_pay_upi: "Online UPI (GPay, PhonePe, Paytm)",
+        p4_pay_upi_sub: "Instant Secure Digital Payment",
         p4_place_order_btn: "Confirm Order",
         // Phase 5
         p5_call_runner_btn: "Call Delivery Partner",
@@ -2319,7 +2327,7 @@
       // Update Phase 4.2 Labels
       const payUpiLbl = document.getElementById('pay-upi-lbl');
       const p4Sub = document.getElementById('p4-checkout-btn-sub');
-      if (payUpiLbl) payUpiLbl.innerText = (lang === 'hi') ? 'ऑनलाइन यूपीआई (GPay, PhonePe, Paytm)' : 'UPI (Google Pay, PhonePe, Paytm)';
+      if (payUpiLbl) payUpiLbl.innerText = dict.p4_pay_upi || ((lang === 'hi') ? 'ऑनलाइन यूपीआई (GPay, PhonePe, Paytm)' : 'UPI (Google Pay, PhonePe, Paytm)');
       if (p4Sub) p4Sub.innerText = (lang === 'hi') ? 'पता चुनें और भुगतान करें' : 'Select Address & Pay';
 
       // Update Phase 5 Labels
