@@ -1373,7 +1373,7 @@
       <!-- ===================================================================== -->
       <!-- CUSTOMER BOTTOM NAVIGATION (Swiggy / Flipkart Standard 5-Tab)         -->
       <!-- ===================================================================== -->
-      <nav id="customer-bottom-nav" class="hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 sm:px-4 py-1.5 flex items-center justify-around shadow-sticky-bar max-w-full">
+      <nav id="customer-bottom-nav" class="hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 sm:px-4 py-1.5 pb-safe flex items-center justify-around shadow-sticky-bar max-w-full">
         
         <!-- Tab 1: Home / Stores -->
         <button id="nav-btn-stores" onclick="navigateToPhase('dashboard')" class="flex flex-col items-center justify-center min-h-[48px] min-w-[48px] py-1 px-2 text-primary font-black transition-all active:scale-95 cursor-pointer">
@@ -1415,9 +1415,11 @@
     <!-- ========================================================================= -->
     <!-- HELP & SUPPORT AI CHATBOT & ESCALATION MODAL (WhatsApp Style)             -->
     <!-- ========================================================================= -->
-    <div id="modal-support-chat" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex flex-col justify-end sm:justify-center items-center p-0 sm:p-4">
+    <div id="modal-support-chat" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex flex-col justify-end sm:justify-center items-center p-0 sm:p-4 transition-opacity duration-300">
       
-      <div class="w-full max-w-md bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col h-[90vh] sm:h-[650px] max-h-[92vh] overflow-hidden border border-slate-200">
+      <div class="w-full max-w-md bg-white rounded-t-[32px] sm:rounded-3xl shadow-2xl flex flex-col h-[90vh] sm:h-[650px] max-h-[92vh] overflow-hidden border-t sm:border border-slate-200 animate-in slide-in-from-bottom duration-300">
+        <!-- Drag Handle -->
+        <div class="w-12 h-1.5 bg-slate-300 rounded-full mx-auto mt-2 mb-1 shrink-0 sm:hidden"></div>
         
         <!-- Header -->
         <div class="bg-gradient-to-r from-emerald-800 to-primary text-white px-4 py-3 flex items-center justify-between shadow-md shrink-0">
@@ -1519,16 +1521,18 @@
     </div>
 
     <!-- ======================================================================= -->
-    <!-- MODAL: TERMS & CONDITIONS                                               -->
+    <!-- BOTTOM SHEET: TERMS & CONDITIONS                                          -->
     <!-- ======================================================================= -->
-    <div id="modal-terms-conditions" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-      <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-2xl max-w-sm sm:max-w-md w-full border border-slate-200 flex flex-col gap-3 max-h-[85vh]">
+    <div id="modal-terms-conditions" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex flex-col justify-end sm:justify-center items-center p-0 sm:p-4 transition-opacity duration-300">
+      <div class="bg-white rounded-t-[32px] sm:rounded-3xl p-5 sm:p-6 pb-safe shadow-2xl max-w-sm sm:max-w-md w-full border-t sm:border border-slate-200 flex flex-col gap-3 max-h-[85vh] animate-in slide-in-from-bottom duration-300">
+        <!-- Drag Handle -->
+        <div class="w-12 h-1.5 bg-slate-300 rounded-full mx-auto -mt-2 mb-1 shrink-0"></div>
         <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
           <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-primary text-[22px]">description</span>
             <h3 class="text-sm font-black text-slate-900" data-i18n="drawer_terms">नियम व शर्तें</h3>
           </div>
-          <button onclick="closeTermsModal()" aria-label="Close Terms" class="w-9 h-9 rounded-full text-slate-400 hover:text-slate-700 flex items-center justify-center active:scale-90 cursor-pointer">
+          <button onclick="closeTermsModal()" aria-label="Close Terms" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full text-slate-400 hover:text-slate-700 flex items-center justify-center active:scale-90 cursor-pointer">
             <span class="material-symbols-outlined text-[20px]">close</span>
           </button>
         </div>
@@ -1540,7 +1544,7 @@
           <p class="font-bold text-slate-800">3. गोपनीयता व सुरक्षा (Privacy & Security)</p>
           <p>उपभोक्ता विवरण और फोन नंबर पूर्णतः सुरक्षित व एन्क्रिप्टेड रखे जाते हैं।</p>
         </div>
-        <button onclick="closeTermsModal()" class="w-full py-3 bg-primary text-white text-xs font-bold rounded-xl mt-1 active:scale-95 cursor-pointer">
+        <button onclick="closeTermsModal()" class="w-full min-h-[48px] py-3 bg-primary text-white text-xs font-bold rounded-xl mt-1 active:scale-95 cursor-pointer">
           स्वीकार करें / बंद करें
         </button>
       </div>
@@ -1548,10 +1552,12 @@
 
 
     <!-- ======================================================================= -->
-    <!-- MODAL: ADD SAVED PAYMENT METHOD (Swiggy / Flipkart 2-Step Flow)         -->
+    <!-- BOTTOM SHEET: ADD SAVED PAYMENT METHOD (Swiggy / Flipkart 2-Step Flow)  -->
     <!-- ======================================================================= -->
-    <div id="modal-add-payment-method" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-      <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-2xl max-w-sm sm:max-w-md w-full border border-slate-200 flex flex-col gap-4">
+    <div id="modal-add-payment-method" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex flex-col justify-end sm:justify-center items-center p-0 sm:p-4 transition-opacity duration-300">
+      <div class="bg-white rounded-t-[32px] sm:rounded-3xl p-5 sm:p-6 pb-safe shadow-2xl max-w-sm sm:max-w-md w-full border-t sm:border border-slate-200 flex flex-col gap-4 max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom duration-300">
+        <!-- Drag Handle -->
+        <div class="w-12 h-1.5 bg-slate-300 rounded-full mx-auto -mt-2 mb-1 shrink-0"></div>
         
         <!-- Modal Header -->
         <div class="flex items-center justify-between border-b border-slate-100 pb-3">
@@ -1773,8 +1779,10 @@
   <!-- ========================================================================= -->
   <!-- AUTOMATED END-TO-END QA, SECURITY & PERFORMANCE SUITE MODAL                -->
   <!-- ========================================================================= -->
-  <div id="qa-suite-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3">
-    <div class="w-full max-w-md bg-white rounded-3xl p-5 shadow-2xl flex flex-col max-h-[88vh] border border-slate-200">
+  <div id="qa-suite-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex flex-col justify-end sm:justify-center items-center p-0 sm:p-4 transition-opacity duration-300">
+    <div class="w-full max-w-md bg-white rounded-t-[32px] sm:rounded-3xl p-5 sm:p-6 pb-safe shadow-2xl flex flex-col max-h-[88vh] border-t sm:border border-slate-200 animate-in slide-in-from-bottom duration-300">
+      <!-- Drag Handle -->
+      <div class="w-12 h-1.5 bg-slate-300 rounded-full mx-auto -mt-2 mb-1 shrink-0"></div>
       <div class="flex items-center justify-between border-b pb-2.5">
         <div class="flex items-center gap-2">
           <span class="material-symbols-outlined text-secondary text-[24px]">verified</span>
@@ -5082,23 +5090,23 @@
 
       if (btnStores) {
         btnStores.className = isStores 
-          ? "flex flex-col items-center justify-center py-1 px-2.5 text-primary font-black transition-all"
-          : "flex flex-col items-center justify-center py-1 px-2.5 text-slate-500 hover:text-slate-800 font-bold transition-all";
+          ? "flex flex-col items-center justify-center min-h-[48px] min-w-[48px] py-1 px-2.5 text-primary font-black transition-all active:scale-95 cursor-pointer"
+          : "flex flex-col items-center justify-center min-h-[48px] min-w-[48px] py-1 px-2.5 text-slate-500 hover:text-slate-800 font-bold transition-all active:scale-95 cursor-pointer";
       }
       if (btnProfile) {
         btnProfile.className = isProfile 
-          ? "flex flex-col items-center justify-center py-1 px-2.5 text-primary font-black transition-all"
-          : "flex flex-col items-center justify-center py-1 px-2.5 text-slate-500 hover:text-slate-800 font-bold transition-all";
+          ? "flex flex-col items-center justify-center min-h-[48px] min-w-[48px] py-1 px-2.5 text-primary font-black transition-all active:scale-95 cursor-pointer"
+          : "flex flex-col items-center justify-center min-h-[48px] min-w-[48px] py-1 px-2.5 text-slate-500 hover:text-slate-800 font-bold transition-all active:scale-95 cursor-pointer";
       }
       if (btnCart) {
         btnCart.className = isCart
-          ? "flex flex-col items-center justify-center py-1 px-2.5 text-primary font-black transition-all"
-          : "flex flex-col items-center justify-center py-1 px-2.5 text-slate-500 hover:text-slate-800 font-bold transition-all";
+          ? "flex flex-col items-center justify-center min-h-[48px] min-w-[48px] py-1 px-2.5 text-primary font-black transition-all active:scale-95 cursor-pointer"
+          : "flex flex-col items-center justify-center min-h-[48px] min-w-[48px] py-1 px-2.5 text-slate-500 hover:text-slate-800 font-bold transition-all active:scale-95 cursor-pointer";
       }
       if (btnOrders) {
         btnOrders.className = isOrders
-          ? "flex flex-col items-center justify-center py-1 px-2.5 text-primary font-black transition-all"
-          : "flex flex-col items-center justify-center py-1 px-2.5 text-slate-500 hover:text-slate-800 font-bold transition-all";
+          ? "flex flex-col items-center justify-center min-h-[48px] min-w-[48px] py-1 px-2.5 text-primary font-black transition-all active:scale-95 cursor-pointer"
+          : "flex flex-col items-center justify-center min-h-[48px] min-w-[48px] py-1 px-2.5 text-slate-500 hover:text-slate-800 font-bold transition-all active:scale-95 cursor-pointer";
       }
     }
     window.updateBottomNavActiveTab = updateBottomNavActiveTab;

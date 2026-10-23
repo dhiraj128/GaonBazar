@@ -706,6 +706,8 @@ def _run_vendor_device_steps(context, dev_name, device_config, logger):
     if first_toggle.count() > 0:
         try:
             first_toggle.scroll_into_view_if_needed()
+            page.evaluate("() => { const el = document.querySelector('#inventory-container button'); if (el) el.scrollIntoView({ block: 'center' }); }")
+            page.wait_for_timeout(200)
         except Exception:
             pass
         initial_stock_text = first_toggle.inner_text().strip()

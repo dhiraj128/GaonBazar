@@ -223,68 +223,50 @@
   </div>
 
   <!-- ========================================================================= -->
-  <!-- 2. TOP HEADER & STORE CONTROLS (Mobile-First 360px Optimized)             -->
+  <!-- 2. NATIVE TOP APP BAR & STORE CONTROLS                                    -->
   <!-- ========================================================================= -->
-  <header id="vendor-header" class="hidden sticky top-0 z-40 shrink-0 bg-white border-b border-surface-dim shadow-xs px-3 sm:px-6 py-2">
-    <div class="max-w-6xl mx-auto flex flex-col gap-1.5">
+  <header id="vendor-header" class="hidden sticky top-0 z-40 shrink-0 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs px-3 sm:px-6 py-2.5">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-2">
       
-      <!-- Row 1: Brand, Store Selector, Primary Operational CTAs (Mobile 360px Optimized) -->
-      <div class="flex items-center justify-between gap-2">
-        <div class="flex items-center gap-1.5 min-w-0">
-          <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-primary text-white flex items-center justify-center shrink-0 shadow-sm">
-            <span class="material-symbols-outlined text-[18px] sm:text-[22px]">storefront</span>
-          </div>
-          <div class="flex flex-col min-w-0 justify-center">
-            <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider bg-primary-fixed text-on-primary-fixed px-2 py-0.5 rounded-md min-h-[20px] flex items-center justify-center w-fit shrink-0" id="store-badge-code">#SHR-01</span>
-            <select id="store-switcher-select" onchange="switchStore(this.value)" class="text-xs font-black text-on-surface bg-slate-50 border border-slate-200 rounded px-1.5 py-0.5 min-h-[26px] sm:min-h-[30px] focus:ring-0 cursor-pointer truncate max-w-[110px] sm:max-w-[200px]">
-              <option value="sharma_brothers">Sharma Brothers</option>
-              <option value="kisan_seva">Kisan Seva</option>
-              <option value="rampur_dawa">Rampur Dawa</option>
-              <option value="apna_dairy">Apna Dairy</option>
-            </select>
-          </div>
+      <!-- Brand & Store Switcher (Unified Page Title) -->
+      <div class="flex items-center gap-2 min-w-0">
+        <div class="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center shrink-0 shadow-xs">
+          <span class="material-symbols-outlined text-[22px]">storefront</span>
         </div>
-
-        <!-- Right Quick CTAs: Open/Close, Lang & Logout -->
-        <div class="flex items-center gap-1 sm:gap-2 shrink-0">
-          <!-- Shop Open/Close Toggle (guaranteed non-overlapping, min-h-[32px]) -->
-          <button id="store-open-btn" onclick="toggleStoreOpenStatus()" class="px-2 sm:px-2.5 py-1 rounded-lg sm:rounded-xl text-xs font-bold flex items-center gap-1 border transition-all bg-emerald-50 text-emerald-800 border-emerald-300 min-h-[32px] sm:min-h-[36px] active:scale-95 shrink-0">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" id="open-indicator-dot"></span>
-            <span id="open-status-label" class="hidden sm:inline">चालू</span>
-            <span id="open-status-mobile-label" class="sm:hidden text-[11px] font-black">चालू</span>
-          </button>
-
-          <!-- Language Switcher Pill -->
-          <button id="lang-toggle-btn" onclick="toggleLanguage()" class="px-2 sm:px-2.5 py-1 rounded-lg sm:rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-[11px] sm:text-xs font-bold flex items-center gap-1 min-h-[32px] sm:min-h-[36px] active:scale-95 shrink-0">
-            <span class="material-symbols-outlined text-[14px]">translate</span>
-            <span id="current-lang-text">English</span>
-          </button>
-
-          <!-- Logout CTA -->
-          <button id="btn-vendor-logout" onclick="handleVendorLogout()" title="लॉगआउट" class="w-8 h-8 rounded-lg sm:rounded-xl bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 flex items-center justify-center transition-colors active:scale-95 shrink-0">
-            <span class="material-symbols-outlined text-[16px]">logout</span>
-          </button>
+        <div class="flex flex-col min-w-0 justify-center">
+          <div class="flex items-center gap-1.5">
+            <span class="text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md min-h-[20px] flex items-center justify-center shrink-0" id="store-badge-code">#SHR-01</span>
+            <span id="header-phone" class="text-[10px] text-slate-400 font-medium truncate hidden sm:inline">+91 9876543210</span>
+            <span id="sync-beacon-text" class="hidden"></span>
+          </div>
+          <select id="store-switcher-select" onchange="switchStore(this.value)" class="text-xs font-black text-slate-800 bg-slate-100/80 border border-slate-200 rounded-lg px-2 py-1 min-h-[28px] focus:ring-0 cursor-pointer truncate max-w-[120px] sm:max-w-[200px] mt-0.5">
+            <option value="sharma_brothers">Sharma Brothers</option>
+            <option value="kisan_seva">Kisan Seva</option>
+            <option value="rampur_dawa">Rampur Dawa</option>
+            <option value="apna_dairy">Apna Dairy</option>
+          </select>
         </div>
       </div>
 
-      <!-- Row 2: Secondary Utility Strip (Phone, Status, Audio, Shortcuts) -->
-      <div class="flex items-center justify-between gap-2 pt-1 border-t border-slate-100 text-xs">
-        <div class="flex items-center gap-2 min-w-0">
-          <span class="flex items-center gap-1 text-[10px] sm:text-[11px] font-bold text-primary shrink-0">
-            <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
-            <span id="sync-beacon-text">लाइव 4G</span>
-          </span>
-          <span class="text-[10px] text-slate-300">|</span>
-          <span id="header-phone" class="text-[10px] sm:text-[11px] text-slate-500 font-medium truncate">+91 9876543210</span>
-        </div>
+      <!-- Quick Action Controls: Online Status, Language, Logout (Min 44x44px Touch Targets) -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <!-- Shop Open/Close Toggle CTA -->
+        <button id="store-open-btn" onclick="toggleStoreOpenStatus()" aria-label="Toggle Store Status" class="px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 border transition-all bg-emerald-50 text-emerald-800 border-emerald-300 min-h-[44px] min-w-[44px] active:scale-95 shrink-0 cursor-pointer">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" id="open-indicator-dot"></span>
+          <span id="open-status-label" class="hidden sm:inline">चालू</span>
+          <span id="open-status-mobile-label" class="sm:hidden text-xs font-black">चालू</span>
+        </button>
 
-        <div class="flex items-center gap-1.5 shrink-0">
-          <!-- Header KYC button -->
-          <button onclick="openVendorRegisterModal()" title="नई ग्रामीण दुकान पंजीकृत करें" class="px-2 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-[11px] font-black flex items-center gap-1 shadow-xs active:scale-95 transition-all shrink-0">
-            <span class="material-symbols-outlined text-[14px]">add_business</span>
-            <span class="hidden min-[380px]:inline" data-i18n="new_shop_btn">+ नई दुकान</span>
-          </button>
-        </div>
+        <!-- Language Switcher Pill -->
+        <button id="lang-toggle-btn" onclick="toggleLanguage()" aria-label="Toggle Language" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold flex items-center justify-center gap-1 min-h-[44px] min-w-[44px] active:scale-95 shrink-0 cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">translate</span>
+          <span id="current-lang-text">English</span>
+        </button>
+
+        <!-- Logout CTA -->
+        <button id="btn-vendor-logout" onclick="handleVendorLogout()" title="लॉगआउट" aria-label="Logout" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 flex items-center justify-center transition-colors active:scale-95 shrink-0 cursor-pointer">
+          <span class="material-symbols-outlined text-[20px]">logout</span>
+        </button>
       </div>
 
     </div>
@@ -700,67 +682,70 @@
   </main>
 
   <!-- ========================================================================= -->
-  <!-- 7.5 BOTTOM NAVIGATION BAR (Sticky Mobile-First Swiggy/Flipkart Standard)   -->
+  <!-- 7.5 BOTTOM NAVIGATION BAR (Fixed Native Android Swiggy/Zepto Standard)     -->
   <!-- ========================================================================= -->
-  <nav id="vendor-bottom-nav" class="hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-1 sm:px-4 py-1.5 flex items-center justify-around max-w-6xl mx-auto shadow-2xl">
+  <nav id="vendor-bottom-nav" class="hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-slate-200/90 shadow-[0_-4px_25px_rgba(0,0,0,0.08)] px-2 sm:px-6 py-2 flex items-center justify-around max-w-6xl mx-auto pb-safe">
     
     <!-- Tab 1: Orders -->
-    <button id="nav-btn-orders" onclick="switchMainTab('orders')" class="flex-1 min-w-0 max-w-[100px] flex flex-col items-center justify-center py-1 px-1 rounded-2xl bg-emerald-50 text-primary font-black shadow-xs transition-all min-h-[44px]">
+    <button id="nav-btn-orders" onclick="switchMainTab('orders')" class="flex-1 min-w-0 max-w-[100px] flex flex-col items-center justify-center py-1.5 px-2 rounded-2xl bg-emerald-50 text-primary font-black shadow-2xs transition-all min-h-[48px] active:scale-95 cursor-pointer">
       <div class="relative flex items-center justify-center">
-        <span class="material-symbols-outlined text-[22px]">list_alt</span>
+        <span class="material-symbols-outlined text-[24px]">list_alt</span>
         <span id="orders-badge-pill" class="absolute -top-1 -right-2 bg-primary text-white text-[9px] px-1.5 py-0.2 rounded-full font-black">0</span>
       </div>
-      <span class="text-[10px] sm:text-[11px] tracking-tight mt-0.5 truncate max-w-full" data-i18n="tab_live_orders">नए ऑर्डर</span>
+      <span class="text-[10px] sm:text-[11px] tracking-tight mt-0.5 truncate max-w-full font-sans" data-i18n="tab_live_orders">नए ऑर्डर</span>
     </button>
 
     <!-- Tab 2: Inventory / Stock -->
-    <button id="nav-btn-inventory" onclick="switchMainTab('inventory')" class="flex-1 min-w-0 max-w-[100px] flex flex-col items-center justify-center py-1 px-1 rounded-2xl text-slate-500 hover:text-slate-800 font-bold transition-all min-h-[44px]">
-      <span class="material-symbols-outlined text-[22px]">inventory_2</span>
-      <span class="text-[10px] sm:text-[11px] tracking-tight mt-0.5 truncate max-w-full" data-i18n="tab_inventory">सामान</span>
+    <button id="nav-btn-inventory" onclick="switchMainTab('inventory')" class="flex-1 min-w-0 max-w-[100px] flex flex-col items-center justify-center py-1.5 px-2 rounded-2xl text-slate-500 font-bold transition-all min-h-[48px] active:scale-95 cursor-pointer">
+      <span class="material-symbols-outlined text-[24px]">inventory_2</span>
+      <span class="text-[10px] sm:text-[11px] tracking-tight mt-0.5 truncate max-w-full font-sans" data-i18n="tab_inventory">सामान</span>
     </button>
 
     <!-- Tab 3: Ledger -->
-    <button id="nav-btn-ledger" onclick="switchMainTab('ledger')" class="flex-1 min-w-0 max-w-[100px] flex flex-col items-center justify-center py-1 px-1 rounded-2xl text-slate-500 hover:text-slate-800 font-bold transition-all min-h-[44px]">
-      <span class="material-symbols-outlined text-[22px]">receipt_long</span>
-      <span class="text-[10px] sm:text-[11px] tracking-tight mt-0.5 truncate max-w-full" data-i18n="tab_ledger">बहीखाता</span>
+    <button id="nav-btn-ledger" onclick="switchMainTab('ledger')" class="flex-1 min-w-0 max-w-[100px] flex flex-col items-center justify-center py-1.5 px-2 rounded-2xl text-slate-500 font-bold transition-all min-h-[48px] active:scale-95 cursor-pointer">
+      <span class="material-symbols-outlined text-[24px]">receipt_long</span>
+      <span class="text-[10px] sm:text-[11px] tracking-tight mt-0.5 truncate max-w-full font-sans" data-i18n="tab_ledger">बहीखाता</span>
     </button>
 
     <!-- Tab 4: Profile -->
-    <button id="nav-btn-settings" onclick="switchMainTab('settings')" class="flex-1 min-w-0 max-w-[100px] flex flex-col items-center justify-center py-1 px-1 rounded-2xl text-slate-500 hover:text-slate-800 font-bold transition-all min-h-[44px]">
-      <span class="material-symbols-outlined text-[22px]">store</span>
-      <span class="text-[10px] sm:text-[11px] tracking-tight mt-0.5 truncate max-w-full" data-i18n="tab_store_profile">प्रोफ़ाइल</span>
+    <button id="nav-btn-settings" onclick="switchMainTab('settings')" class="flex-1 min-w-0 max-w-[100px] flex flex-col items-center justify-center py-1.5 px-2 rounded-2xl text-slate-500 font-bold transition-all min-h-[48px] active:scale-95 cursor-pointer">
+      <span class="material-symbols-outlined text-[24px]">store</span>
+      <span class="text-[10px] sm:text-[11px] tracking-tight mt-0.5 truncate max-w-full font-sans" data-i18n="tab_store_profile">प्रोफ़ाइल</span>
     </button>
 
   </nav>
 
   <!-- ========================================================================= -->
-  <!-- 8. MODAL: ADD NEW PRODUCT                                                 -->
+  <!-- 8. BOTTOM SHEET: ADD NEW PRODUCT (Swipe-up Native Android Style)          -->
   <!-- ========================================================================= -->
-  <div id="modal-add-product" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3">
-    <div class="bg-white rounded-3xl p-5 shadow-2xl max-w-md w-full border border-slate-200 flex flex-col gap-3.5">
-      <div class="flex items-center justify-between border-b pb-2">
+  <div id="modal-add-product" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex flex-col justify-end p-0 sm:p-4 transition-opacity duration-300">
+    <div class="bg-white rounded-t-[32px] sm:rounded-3xl p-5 sm:p-6 pb-safe shadow-2xl max-w-md w-full mx-auto border-t sm:border border-slate-200 flex flex-col gap-3.5 max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom duration-300">
+      <!-- Drag Handle -->
+      <div class="w-12 h-1.5 bg-slate-300 rounded-full mx-auto -mt-2 mb-1 shrink-0"></div>
+      
+      <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
         <h3 class="text-sm font-black text-slate-900 flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary">add_shopping_cart</span>
+          <span class="material-symbols-outlined text-primary text-[22px]">add_shopping_cart</span>
           <span data-i18n="modal_add_prod_title">नया सामान जोड़ें</span>
         </h3>
-        <button onclick="closeAddProductModal()" class="text-slate-400 hover:text-slate-600 p-1">
-          <span class="material-symbols-outlined text-[18px]">close</span>
+        <button onclick="closeAddProductModal()" aria-label="Close Modal" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center text-slate-400 hover:text-slate-700 active:scale-90 cursor-pointer">
+          <span class="material-symbols-outlined text-[22px]">close</span>
         </button>
       </div>
 
-      <div class="flex flex-col gap-2.5 text-xs">
+      <div class="flex flex-col gap-3 text-xs">
         <div>
-          <label class="block font-bold text-slate-600 mb-1">Product Name (English) *</label>
-          <input type="text" id="new-prod-en" placeholder="e.g. Fortune Besan 1kg" class="w-full p-2.5 border rounded-xl"/>
+          <label class="block font-bold text-slate-700 mb-1">Product Name (English) *</label>
+          <input type="text" id="new-prod-en" placeholder="e.g. Fortune Besan 1kg" class="w-full p-3 border border-slate-200 rounded-xl focus:border-primary outline-none text-xs sm:text-sm font-medium"/>
         </div>
         <div>
-          <label class="block font-bold text-slate-600 mb-1" data-i18n="lbl_prod_name_hi">सामान का हिंदी नाम *</label>
-          <input type="text" id="new-prod-hi" placeholder="उदा. फॉर्च्यून चना बेसन" class="w-full p-2.5 border rounded-xl"/>
+          <label class="block font-bold text-slate-700 mb-1" data-i18n="lbl_prod_name_hi">सामान का हिंदी नाम *</label>
+          <input type="text" id="new-prod-hi" placeholder="उदा. फॉर्च्यून चना बेसन" class="w-full p-3 border border-slate-200 rounded-xl focus:border-primary outline-none text-xs sm:text-sm font-medium"/>
         </div>
-        <div class="grid grid-cols-2 gap-2">
+        <div class="grid grid-cols-2 gap-2.5">
           <div>
-            <label class="block font-bold text-slate-600 mb-1" data-i18n="lbl_prod_category">Category</label>
-            <select id="new-prod-cat" class="w-full p-2.5 border rounded-xl bg-white">
+            <label class="block font-bold text-slate-700 mb-1" data-i18n="lbl_prod_category">Category</label>
+            <select id="new-prod-cat" class="w-full p-3 border border-slate-200 rounded-xl bg-white focus:border-primary outline-none text-xs sm:text-sm font-medium">
               <option value="atta">Atta & Grains</option>
               <option value="oil">Oil & Ghee</option>
               <option value="spices">Spices</option>
@@ -771,34 +756,37 @@
             </select>
           </div>
           <div>
-            <label class="block font-bold text-slate-600 mb-1" data-i18n="lbl_prod_unit">वजन / पैक साइज *</label>
-            <input type="text" id="new-prod-weight" placeholder="1 kg" class="w-full p-2.5 border rounded-xl"/>
+            <label class="block font-bold text-slate-700 mb-1" data-i18n="lbl_prod_unit">वजन / पैक साइज *</label>
+            <input type="text" id="new-prod-weight" placeholder="1 kg" class="w-full p-3 border border-slate-200 rounded-xl focus:border-primary outline-none text-xs sm:text-sm font-medium"/>
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-2">
+        <div class="grid grid-cols-2 gap-2.5">
           <div>
-            <label class="block font-bold text-slate-600 mb-1" data-i18n="lbl_prod_price">Selling Price (₹) *</label>
-            <input type="number" id="new-prod-price" placeholder="85" class="w-full p-2.5 border rounded-xl"/>
+            <label class="block font-bold text-slate-700 mb-1" data-i18n="lbl_prod_price">Selling Price (₹) *</label>
+            <input type="number" id="new-prod-price" placeholder="85" class="w-full p-3 border border-slate-200 rounded-xl focus:border-primary outline-none text-xs sm:text-sm font-medium"/>
           </div>
           <div>
-            <label class="block font-bold text-slate-600 mb-1">MRP (₹) *</label>
-            <input type="number" id="new-prod-mrp" placeholder="95" class="w-full p-2.5 border rounded-xl"/>
+            <label class="block font-bold text-slate-700 mb-1">MRP (₹) *</label>
+            <input type="number" id="new-prod-mrp" placeholder="95" class="w-full p-3 border border-slate-200 rounded-xl focus:border-primary outline-none text-xs sm:text-sm font-medium"/>
           </div>
         </div>
       </div>
 
-      <div class="flex items-center gap-2 pt-2">
-        <button onclick="closeAddProductModal()" class="flex-1 py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-slate-700" data-i18n="btn_cancel">रद्द करें</button>
-        <button onclick="submitNewProduct()" class="flex-1 py-2.5 rounded-xl bg-primary text-white text-xs font-bold shadow-xs" data-i18n="btn_save_prod">सुरक्षित करें</button>
+      <div class="flex items-center gap-2.5 pt-2">
+        <button onclick="closeAddProductModal()" class="flex-1 min-h-[48px] rounded-xl border border-slate-300 text-xs font-bold text-slate-700 active:scale-95 cursor-pointer" data-i18n="btn_cancel">रद्द करें</button>
+        <button onclick="submitNewProduct()" class="flex-1 min-h-[48px] rounded-xl bg-primary text-white text-xs font-bold shadow-xs active:scale-95 cursor-pointer" data-i18n="btn_save_prod">सुरक्षित करें</button>
       </div>
     </div>
   </div>
 
   <!-- ========================================================================= -->
-  <!-- 8.1 VENDOR ONBOARDING & KYC REGISTRATION MODAL                            -->
+  <!-- 8.1 VENDOR ONBOARDING & KYC REGISTRATION BOTTOM SHEET                     -->
   <!-- ========================================================================= -->
-  <div id="vendor-auth-gate" class="hidden fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-6 shadow-2xl border border-slate-200 flex flex-col gap-4 max-h-[90vh] overflow-y-auto">
+  <div id="vendor-auth-gate" class="hidden fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex flex-col justify-end p-0 sm:p-5 overflow-y-auto transition-opacity duration-300">
+    <div class="bg-white rounded-t-[32px] sm:rounded-3xl max-w-lg w-full mx-auto p-5 sm:p-6 pb-safe shadow-2xl border-t sm:border border-slate-200 flex flex-col gap-4 max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom duration-300">
+      <!-- Drag Handle -->
+      <div class="w-12 h-1.5 bg-slate-300 rounded-full mx-auto -mt-2 mb-1 shrink-0"></div>
+
       <!-- Modal Header -->
       <div class="flex items-start justify-between border-b border-slate-100 pb-3">
         <div class="flex items-center gap-2.5">
@@ -810,8 +798,8 @@
             <p class="text-xs text-slate-500" data-i18n="modal_reg_sub">गांव बाज़ार सहकारी नेटवर्क से जुड़ें • सत्यापन अनिवार्य</p>
           </div>
         </div>
-        <button onclick="closeVendorRegisterModal()" class="text-slate-400 hover:text-slate-700 p-1">
-          <span class="material-symbols-outlined text-[20px]">close</span>
+        <button onclick="closeVendorRegisterModal()" aria-label="Close Registration Modal" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center text-slate-400 hover:text-slate-700 active:scale-90 cursor-pointer">
+          <span class="material-symbols-outlined text-[22px]">close</span>
         </button>
       </div>
 
@@ -824,7 +812,7 @@
             <input type="tel" id="reg-vendor-phone" placeholder="9876543210" value="9876500001" class="w-full px-3 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none" />
           </div>
           <div class="col-span-1 flex flex-col justify-end">
-            <button type="button" id="btn-send-vendor-otp" onclick="handleSendVendorOtp()" class="w-full py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-colors" data-i18n="btn_send_otp">
+            <button type="button" id="btn-send-vendor-otp" onclick="handleSendVendorOtp()" class="w-full min-h-[44px] rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all active:scale-95 cursor-pointer" data-i18n="btn_send_otp">
               OTP भेजें
             </button>
           </div>
@@ -896,11 +884,11 @@
       </div>
 
       <!-- Submit CTA Button -->
-      <div class="pt-2 border-t border-slate-100 flex items-center justify-end gap-2">
-        <button type="button" onclick="closeVendorRegisterModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-50 transition-colors" data-i18n="btn_cancel">
+      <div class="pt-2 border-t border-slate-100 flex items-center justify-end gap-2.5">
+        <button type="button" onclick="closeVendorRegisterModal()" class="min-h-[48px] px-5 rounded-xl border border-slate-200 text-slate-700 text-xs font-bold active:scale-95 transition-all cursor-pointer" data-i18n="btn_cancel">
           रद्द करें
         </button>
-        <button type="button" id="btn-submit-vendor-register" onclick="submitVendorRegistration()" class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-black shadow-md active:scale-95 transition-all flex items-center gap-1.5">
+        <button type="button" id="btn-submit-vendor-register" onclick="submitVendorRegistration()" class="min-h-[48px] px-6 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-black shadow-md active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
           <span class="material-symbols-outlined text-[18px]">send</span>
           <span data-i18n="btn_submit_reg">सत्यापन हेतु भेजें</span>
         </button>
@@ -2502,7 +2490,7 @@
         const btn = document.getElementById(`nav-btn-${t}`);
         if (sec) sec.classList.add('hidden');
         if (btn) {
-          btn.className = "flex-1 min-w-0 max-w-[100px] flex flex-col items-center justify-center py-1 px-1 rounded-2xl text-slate-500 hover:text-slate-800 font-bold transition-all min-h-[44px]";
+          btn.className = "flex-1 min-w-0 max-w-[100px] flex flex-col items-center justify-center py-1.5 px-2 rounded-2xl text-slate-500 font-bold transition-all min-h-[48px] active:scale-95 cursor-pointer";
         }
       });
 
@@ -2510,7 +2498,7 @@
       const activeBtn = document.getElementById(`nav-btn-${tabName}`);
       if (activeSec) activeSec.classList.remove('hidden');
       if (activeBtn) {
-        activeBtn.className = "flex-1 min-w-0 max-w-[100px] flex flex-col items-center justify-center py-1 px-1 rounded-2xl bg-emerald-50 text-primary font-black shadow-xs transition-all min-h-[44px]";
+        activeBtn.className = "flex-1 min-w-0 max-w-[100px] flex flex-col items-center justify-center py-1.5 px-2 rounded-2xl bg-emerald-50 text-primary font-black shadow-2xs transition-all min-h-[48px] active:scale-95 cursor-pointer";
       }
 
       // Update workspace title
