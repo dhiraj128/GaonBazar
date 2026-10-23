@@ -933,160 +933,130 @@
       <!-- PHASE 5: LIVE ORDER TRACKING (Order Placed -> Delivered)              -->
       <!-- ===================================================================== -->
       <section id="view-p5-tracking" class="screen-view hidden flex-col w-full px-4 pt-3 pb-6 flex-1 min-h-0 overflow-y-auto space-y-4">
-        <!-- Order ETA Hero Card -->
-        <div class="bg-white rounded-2xl p-5 shadow-mobile-card border border-surface-container-high">
-          <div class="flex items-center justify-between mb-3">
-            <div class="flex items-center gap-2">
-              <span id="p5-order-id" class="text-sm font-black text-on-surface">--</span>
-              <button onclick="copyOrderId()" class="h-6 px-2.5 rounded bg-surface-container text-[10px] font-bold text-primary active:scale-95">Copy</button>
-            </div>
-            <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed text-[11px] font-bold">
-              <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-              <span id="p5-status-pill" data-i18n="p5_status_in_progress">प्रगति पर है</span>
-            </span>
+        <!-- 1. EMPTY STATE CONTAINER (Visible when NO active order exists) -->
+        <div id="p5-tracking-empty-state" class="w-full bg-white rounded-3xl p-6 text-center shadow-mobile-card border border-surface-container-high flex flex-col items-center justify-center my-auto py-12">
+          <div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-4 text-primary">
+            <span class="material-symbols-outlined text-[40px]">local_shipping</span>
           </div>
+          <h3 id="p5-empty-title" data-i18n="p5_empty_title" class="text-base font-black text-on-surface mb-1.5">अभी कोई सक्रिय ऑर्डर नहीं है</h3>
+          <p id="p5-empty-sub" data-i18n="p5_empty_sub" class="text-xs text-on-surface-variant max-w-xs mb-6 font-medium leading-relaxed">ऑर्डर करने के लिए दुकानों पर जाएँ।</p>
+          <button id="p5-empty-goto-stores-btn" onclick="navigateToPhase('dashboard')" class="w-full max-w-xs min-h-[48px] rounded-2xl bg-primary hover:bg-primary-dark text-white text-sm font-extrabold shadow-md flex items-center justify-center gap-2 active:scale-98 transition-all">
+            <span class="material-symbols-outlined text-[20px]">storefront</span>
+            <span id="p5-empty-btn-text" data-i18n="p5_empty_btn">दुकानें देखें</span>
+          </button>
+        </div>
 
-          <div class="p-3.5 bg-gradient-to-r from-secondary/10 to-transparent rounded-xl flex items-center justify-between mb-3">
-            <div>
-              <span class="text-[10px] font-bold uppercase tracking-wider text-secondary flex items-center gap-1">
-                <span class="material-symbols-outlined text-[14px]">schedule</span>
-                <span data-i18n="p5_eta_label">अनुमानित समय</span>
+        <!-- 2. ACTIVE TRACKING CONTAINER (Hidden by default; dynamic rendering only) -->
+        <div id="p5-active-tracking-content" class="w-full flex flex-col space-y-4 hidden" style="display: none;">
+          <!-- Order ETA Hero Card -->
+          <div class="bg-white rounded-2xl p-5 shadow-mobile-card border border-surface-container-high">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <span id="p5-order-id" class="text-sm font-black text-on-surface">--</span>
+                <button onclick="copyOrderId()" class="h-6 px-2.5 rounded bg-surface-container text-[10px] font-bold text-primary active:scale-95">Copy</button>
+              </div>
+              <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed text-[11px] font-bold">
+                <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                <span id="p5-status-pill" data-i18n="p5_status_in_progress">प्रगति पर है</span>
               </span>
-              <h2 id="p5-eta-time" class="text-lg font-black text-on-surface mt-0.5">30 Mins</h2>
-              <p class="text-[11px] text-on-surface-variant" data-i18n="p5_eta_sub">सामान सीधे आपके द्वार पर पहुँच रहा है</p>
             </div>
-            <div class="text-right">
-              <span class="text-[10px] text-on-surface-variant block" id="p5-bill-lbl" data-i18n="p5_bill_total">कुल राशि</span>
-              <span id="p5-order-amount" class="text-base font-black text-primary">₹568.00</span>
-              <span class="text-[10px] font-bold text-secondary block" id="p5-order-paymode">हाथ में नकद</span>
-            </div>
-          </div>
 
-          <!-- Runner Active Banner -->
-          <div class="p-3 rounded-xl bg-primary/10 flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shrink-0 animate-bounce">
-              <span class="material-symbols-outlined text-[18px]">electric_moped</span>
-            </div>
-            <div class="min-w-0">
-              <span class="text-xs font-bold text-primary block truncate" data-i18n="p5_runner_banner">गाँव मित्र सामान लेकर आपके घर की ओर निकल चुके हैं!</span>
-              <span id="p5-runner-sub" data-i18n="p5_runner_sub" class="text-[10px] text-on-surface-variant truncate block mt-0.5">मोहन लाल (GM-102) • सीधे आपकी चौपाल की ओर</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- DELIVERY OTP VERIFICATION SECURITY BOX -->
-        <div class="bg-surface-container-high rounded-2xl p-5 shadow-xs border border-primary/20">
-          <div class="flex items-center gap-1.5 text-primary text-xs font-bold mb-1">
-            <span class="material-symbols-outlined text-[18px]">verified_user</span>
-            <span data-i18n="p5_delivery_otp_title">सुरक्षित डिलीवरी कोड</span>
-          </div>
-          <p class="text-[11px] text-on-surface-variant mb-3" data-i18n="p5_delivery_otp_hint">
-            सामान हाथ में मिलने के बाद ही यह 4-अंकीय OTP गाँव मित्र को बताएं:
-          </p>
-          <div class="bg-white rounded-xl p-3 flex items-center justify-between">
-            <span class="text-xs font-bold text-outline">DELIVERY OTP:</span>
-            <div id="p5-delivery-otp-digits" class="flex gap-2">
-              <span class="w-9 h-10 rounded-lg bg-surface-container flex items-center justify-center font-black text-base text-primary">4</span>
-              <span class="w-9 h-10 rounded-lg bg-surface-container flex items-center justify-center font-black text-base text-primary">8</span>
-              <span class="w-9 h-10 rounded-lg bg-surface-container flex items-center justify-center font-black text-base text-primary">2</span>
-              <span class="w-9 h-10 rounded-lg bg-surface-container flex items-center justify-center font-black text-base text-primary">1</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- 5-STAGE COLOR-CODED REALTIME TIMELINE -->
-        <div class="bg-white rounded-2xl p-5 shadow-mobile-card border border-surface-container-high flex flex-col gap-3">
-          <div class="flex items-center justify-between border-b pb-2.5">
-            <h3 class="text-xs font-extrabold text-on-surface uppercase" data-i18n="p5_timeline_title">ऑर्डर की स्थिति</h3>
-            <button onclick="advanceTimelineStep()" class="text-[10px] text-secondary font-bold underline" id="p5-sim-step-btn" data-i18n="p5_sim_step">अगला चरण देखें ⚡</button>
-          </div>
-
-          <!-- Timeline Steps -->
-          <div class="space-y-3.5 relative pl-6 text-xs before:content-[''] before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-outline-variant">
-            <!-- Stage 1 -->
-            <div class="relative flex items-start gap-2">
-              <span id="tl-dot-1" class="absolute -left-6 top-0.5 w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center text-[11px] font-bold">✓</span>
+            <div class="p-3.5 bg-gradient-to-r from-secondary/10 to-transparent rounded-xl flex items-center justify-between mb-3">
               <div>
-                <span class="font-bold text-on-surface block" data-i18n="p5_stage_1">1. ऑर्डर दर्ज हुआ</span>
-                <span class="text-[10px] text-on-surface-variant" data-i18n="p5_stage_1_desc">शर्मा ब्रदर्स किराना द्वारा पुष्टि की गई</span>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-secondary flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[14px]">schedule</span>
+                  <span data-i18n="p5_eta_label">अनुमानित समय</span>
+                </span>
+                <h2 id="p5-eta-time" class="text-lg font-black text-on-surface mt-0.5">--</h2>
+                <p class="text-[11px] text-on-surface-variant" data-i18n="p5_eta_sub">सामान सीधे आपके द्वार पर पहुँच रहा है</p>
+              </div>
+              <div class="text-right">
+                <span class="text-[10px] text-on-surface-variant block" id="p5-bill-lbl" data-i18n="p5_bill_total">कुल राशि</span>
+                <span id="p5-order-amount" class="text-base font-black text-primary">--</span>
+                <span class="text-[10px] font-bold text-secondary block" id="p5-order-paymode">--</span>
               </div>
             </div>
-            <!-- Stage 2 -->
-            <div class="relative flex items-start gap-2">
-              <span id="tl-dot-2" class="absolute -left-6 top-0.5 w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center text-[11px] font-bold">✓</span>
-              <div>
-                <span class="font-bold text-on-surface block" data-i18n="p5_stage_2">2. दुकानदार ने स्वीकारा</span>
-                <span class="text-[10px] text-on-surface-variant" data-i18n="p5_stage_2_desc">गनौर मंडी में सामान की पुष्टि हुई</span>
+
+            <!-- Runner Active Banner -->
+            <div class="p-3 rounded-xl bg-primary/10 flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shrink-0 animate-bounce">
+                <span class="material-symbols-outlined text-[18px]">electric_moped</span>
               </div>
-            </div>
-            <!-- Stage 3 -->
-            <div class="relative flex items-start gap-2">
-              <span id="tl-dot-3" class="absolute -left-6 top-0.5 w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center text-[11px] font-bold">✓</span>
-              <div>
-                <span class="font-bold text-on-surface block" data-i18n="p5_stage_3">3. सामान पैक हो गया</span>
-                <span class="text-[10px] text-on-surface-variant" data-i18n="p5_stage_3_desc">गाँव मित्र मोहन लाल (GM-102) को सौंपा गया</span>
-              </div>
-            </div>
-            <!-- Stage 4 -->
-            <div class="relative flex items-start gap-2">
-              <span id="tl-dot-4" class="absolute -left-6 top-0.5 w-5 h-5 rounded-full bg-secondary text-white flex items-center justify-center text-[11px] font-bold animate-pulse timeline-node-active">4</span>
-              <div>
-                <span class="font-bold text-secondary block" data-i18n="p5_stage_4">4. गाँव मित्र रास्ते में हैं</span>
-                <span class="text-[10px] text-on-surface-variant" data-i18n="p5_stage_4_desc">शिव मंदिर पहचान चिन्ह के समीप पहुँच रहे हैं</span>
-              </div>
-            </div>
-            <!-- Stage 5 -->
-            <div class="relative flex items-start gap-2">
-              <span id="tl-dot-5" class="absolute -left-6 top-0.5 w-5 h-5 rounded-full bg-surface-container text-outline flex items-center justify-center text-[11px] font-bold">5</span>
-              <div>
-                <span class="font-bold text-outline block" data-i18n="p5_stage_5">5. सफलतापूर्वक डिलीवर</span>
-                <span class="text-[10px] text-on-surface-variant" data-i18n="p5_stage_5_desc">सकुशल डिलीवरी व नकद रसीद</span>
+              <div class="min-w-0">
+                <span class="text-xs font-bold text-primary block truncate" data-i18n="p5_runner_banner">गाँव मित्र सामान लेकर आपके घर की ओर निकल चुके हैं!</span>
+                <span id="p5-runner-sub" data-i18n="p5_runner_sub" class="text-[10px] text-on-surface-variant truncate block mt-0.5">--</span>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- 2G-Ready Vector Route Schematic -->
-        <div class="bg-white rounded-2xl p-4 shadow-mobile-card border border-surface-container-high">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold text-on-surface flex items-center gap-1">
-              <span class="material-symbols-outlined text-secondary text-[16px]">navigation</span>
-              <span id="p5-route-lbl" data-i18n="p5_route_trail">रास्ता (1.2 किमी दूर)</span>
-            </span>
-            <span class="text-[9px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">2G / 3G Ready</span>
+          <!-- DELIVERY OTP VERIFICATION SECURITY BOX -->
+          <div id="p5-otp-box" class="bg-surface-container-high rounded-2xl p-5 shadow-xs border border-primary/20">
+            <div class="flex items-center gap-1.5 text-primary text-xs font-bold mb-1">
+              <span class="material-symbols-outlined text-[18px]">verified_user</span>
+              <span data-i18n="p5_delivery_otp_title">सुरक्षित डिलीवरी कोड</span>
+            </div>
+            <p class="text-[11px] text-on-surface-variant mb-3" data-i18n="p5_delivery_otp_hint">
+              सामान हाथ में मिलने के बाद ही यह 4-अंकीय OTP गाँव मित्र को बताएं:
+            </p>
+            <div class="bg-white rounded-xl p-3 flex items-center justify-between">
+              <span class="text-xs font-bold text-outline">DELIVERY OTP:</span>
+              <div id="p5-delivery-otp-digits" class="flex gap-2"></div>
+            </div>
           </div>
-          <!-- Schematic vector path -->
-          <svg class="w-full h-20" viewBox="0 0 340 70" fill="none">
-            <path d="M 25 35 Q 110 10 170 35 T 315 35" stroke="#d8e3fb" stroke-width="5" stroke-linecap="round"/>
-            <path d="M 25 35 Q 110 10 170 35" stroke="#006b2c" stroke-width="5" stroke-linecap="round"/>
-            <circle cx="25" cy="35" r="10" fill="#006b2c"/>
-            <text x="25" y="39" text-anchor="middle" fill="#fff" font-size="9" font-weight="bold">✓</text>
-            <circle cx="170" cy="35" r="12" fill="#ea580c" class="animate-pulse"/>
-            <text x="170" y="39" text-anchor="middle" fill="#fff" font-size="9" font-weight="bold">🏍️</text>
-            <circle cx="315" cy="35" r="10" fill="#dee8ff"/>
-            <text x="315" y="39" text-anchor="middle" fill="#006b2c" font-size="9" font-weight="bold">🏠</text>
-          </svg>
-          <div class="flex justify-between text-[10px] text-on-surface-variant pt-1 font-semibold">
-            <span id="p5-lm-store" data-i18n="p5_lm_store">शर्मा किराना</span>
-            <span id="p5-lm-transit" data-i18n="p5_lm_transit">शिव मंदिर</span>
-            <span id="p5-lm-dest" data-i18n="p5_lm_dest">आपका घर</span>
+
+          <!-- 5-STAGE COLOR-CODED REALTIME TIMELINE -->
+          <div id="p5-timeline-card" class="bg-white rounded-2xl p-5 shadow-mobile-card border border-surface-container-high flex flex-col gap-3">
+            <div class="flex items-center justify-between border-b pb-2.5">
+              <h3 class="text-xs font-extrabold text-on-surface uppercase" data-i18n="p5_timeline_title">ऑर्डर की स्थिति</h3>
+              <button onclick="advanceTimelineStep()" class="text-[10px] text-secondary font-bold underline" id="p5-sim-step-btn" data-i18n="p5_sim_step">अगला चरण देखें ⚡</button>
+            </div>
+
+            <!-- Dynamic Timeline Steps Container -->
+            <div id="p5-timeline-steps" class="space-y-3.5 relative pl-6 text-xs before:content-[''] before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-outline-variant"></div>
           </div>
-        </div>
 
-        <!-- Call Delivery Partner Action Bar (Shopkeeper call removed per rural privacy) -->
-        <div class="w-full">
-          <a href="tel:9876543210" id="btn-call-runner" class="w-full h-12 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary font-bold text-xs flex items-center justify-center gap-2 active:scale-95 shadow-xs border border-primary/20 transition-all">
-            <span class="material-symbols-outlined text-[18px]">call</span>
-            <span id="btn-call-runner-lbl" data-i18n="p5_call_runner_btn">डिलीवरी पार्टनर को कॉल करें</span>
-          </a>
-        </div>
+          <!-- 2G-Ready Vector Route Schematic -->
+          <div id="p5-route-card" class="bg-white rounded-2xl p-4 shadow-mobile-card border border-surface-container-high">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-on-surface flex items-center gap-1">
+                <span class="material-symbols-outlined text-secondary text-[16px]">navigation</span>
+                <span id="p5-route-lbl" data-i18n="p5_route_trail">रास्ता (1.2 किमी दूर)</span>
+              </span>
+              <span class="text-[9px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">2G / 3G Ready</span>
+            </div>
+            <!-- Schematic vector path -->
+            <svg class="w-full h-20" viewBox="0 0 340 70" fill="none">
+              <path d="M 25 35 Q 110 10 170 35 T 315 35" stroke="#d8e3fb" stroke-width="5" stroke-linecap="round"/>
+              <path d="M 25 35 Q 110 10 170 35" stroke="#006b2c" stroke-width="5" stroke-linecap="round"/>
+              <circle cx="25" cy="35" r="10" fill="#006b2c"/>
+              <text x="25" y="39" text-anchor="middle" fill="#fff" font-size="9" font-weight="bold">✓</text>
+              <circle cx="170" cy="35" r="12" fill="#ea580c" class="animate-pulse"/>
+              <text x="170" y="39" text-anchor="middle" fill="#fff" font-size="9" font-weight="bold">🏍️</text>
+              <circle cx="315" cy="35" r="10" fill="#dee8ff"/>
+              <text x="315" y="39" text-anchor="middle" fill="#006b2c" font-size="9" font-weight="bold">🏠</text>
+            </svg>
+            <div class="flex justify-between text-[10px] text-on-surface-variant pt-1 font-semibold">
+              <span id="p5-lm-store" data-i18n="p5_lm_store">--</span>
+              <span id="p5-lm-transit" data-i18n="p5_lm_transit">--</span>
+              <span id="p5-lm-dest" data-i18n="p5_lm_dest">--</span>
+            </div>
+          </div>
 
-        <!-- Back to Home / Enter Market Button (Full-width, large) -->
-        <button id="p5-back-home-btn" onclick="navigateToPhase('dashboard')" class="w-full min-h-[52px] rounded-2xl bg-primary hover:bg-primary-dark text-white text-base font-extrabold shadow-md flex items-center justify-center gap-2 active:scale-98 transition-all">
-          <span class="material-symbols-outlined text-[20px]">storefront</span>
-          <span data-i18n="p5_back_home_btn">मुख्य बाज़ार पर वापस जाएँ</span>
-        </button>
-      </section>
+          <!-- Call Delivery Partner Action Bar -->
+          <div id="p5-call-runner-card" class="w-full">
+            <a href="tel:9876543210" id="btn-call-runner" class="w-full h-12 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary font-bold text-xs flex items-center justify-center gap-2 active:scale-95 shadow-xs border border-primary/20 transition-all">
+              <span class="material-symbols-outlined text-[18px]">call</span>
+              <span id="btn-call-runner-lbl" data-i18n="p5_call_runner_btn">डिलीवरी पार्टनर को कॉल करें</span>
+            </a>
+          </div>
+
+          <!-- Back to Home / Enter Market Button -->
+          <button id="p5-back-home-btn" onclick="navigateToPhase('dashboard')" class="w-full min-h-[52px] rounded-2xl bg-primary hover:bg-primary-dark text-white text-base font-extrabold shadow-md flex items-center justify-center gap-2 active:scale-98 transition-all">
+            <span class="material-symbols-outlined text-[20px]">storefront</span>
+            <span data-i18n="p5_back_home_btn">मुख्य बाज़ार पर वापस जाएँ</span>
+          </button>
+        </div>
+      </section></section>
 
       <!-- ===================================================================== -->
       <!-- PHASE 6: CUSTOM OFFLINE FALLBACK SCREEN                               -->
@@ -1595,6 +1565,9 @@
         profile_no_orders: "कोई पिछला ऑर्डर नहीं मिला",
         profile_no_orders_sub: "आपके द्वारा किए गए सभी ऑर्डर यहाँ दिखाई देंगे।",
         p5_back_home_btn: "मुख्य बाज़ार पर वापस जाएँ",
+        p5_empty_title: "अभी कोई सक्रिय ऑर्डर नहीं है",
+        p5_empty_sub: "ऑर्डर करने के लिए दुकानों पर जाएँ।",
+        p5_empty_btn: "दुकानें देखें",
         offline_network_lbl: "नेटवर्क स्थिति",
         offline_disconnected: "डिस्कनेक्टेड",
         offline_sw_lbl: "ऑफ़लाइन कैश",
@@ -1732,6 +1705,9 @@
         profile_no_orders: "No past orders found",
         profile_no_orders_sub: "Orders you place will appear here.",
         p5_back_home_btn: "Back to Village Market",
+        p5_empty_title: "No active orders right now.",
+        p5_empty_sub: "Go to Stores to place an order.",
+        p5_empty_btn: "Go to Stores",
         offline_network_lbl: "Network Status",
         offline_disconnected: "Disconnected (Offline)",
         offline_sw_lbl: "Offline Cache",
@@ -1791,10 +1767,11 @@
         { id: 'item_6', name_hi: 'एमडीएच देगी मिर्च', name_en: 'MDH Deggi Mirch', cat: 'spices', weight: '100 g', weight_hi: '100 ग्राम', weight_en: '100 g', price: 62, mrp: 75, qty: 0, icon: 'local_fire_department', store_id: 'sharma_brothers' },
         { id: 'item_7', name_hi: 'मधुर शुद्ध चीनी', name_en: 'Madhur Pure Sugar', cat: 'kirana', weight: '1 kg', weight_hi: '1 किग्रा', weight_en: '1 kg', price: 48, mrp: 55, qty: 0, icon: 'cookie', store_id: 'sharma_brothers' }
       ],
-      orderTimelineStage: 4, // 1 to 5
+      orderTimelineStage: 1, // 1 to 5
       orderId: null,
       paymentMode: 'COD',
-      deliveryOtp: '4821'
+      deliveryOtp: null,
+      activeOrderData: null
     };
     window.AppStore = AppStore;
 
@@ -2175,6 +2152,9 @@
       }
       if (cleanPhase === 'profile') {
         renderProfileView();
+      }
+      if (cleanPhase === 'tracking') {
+        renderLiveTrackingView();
       }
 
       // Customer Bottom Navigation Bar display & active tab update
@@ -3829,7 +3809,8 @@
           etaElem.innerText = orderData.eta_mins || (dist > 5.0 ? '45-60 Mins' : '30 Mins');
         }
 
-        updateDeliveryOtpDisplay(orderData.delivery_otp);
+        AppStore.activeOrderData = orderData;
+        populateTrackingUI(orderData);
         navigateToPhase('tracking');
       } catch (err) {
         console.warn('Backend order checkout fallback:', err);
@@ -3858,6 +3839,18 @@
         if (etaElem) {
           etaElem.innerText = dist > 5.0 ? '45-60 Mins' : '30 Mins';
         }
+        const fallbackData = {
+          order_id: randId,
+          delivery_otp: '4821',
+          timeline_stage: 4,
+          distance_km: dist,
+          eta_mins: dist > 5.0 ? '45-60 Mins' : '30 Mins',
+          total_amount: finalPayable,
+          payment_mode: AppStore.paymentMode || 'COD',
+          store_name: AppStore.activeStore ? AppStore.activeStore.name : 'Sharma Brothers Kirana'
+        };
+        AppStore.activeOrderData = fallbackData;
+        populateTrackingUI(fallbackData);
         navigateToPhase('tracking');
       } finally {
         btn.disabled = false;
@@ -3865,6 +3858,40 @@
         btn.innerHTML = '<span class="material-symbols-outlined text-[20px]">shopping_bag</span><span id="place-order-text" data-i18n="p4_place_order_btn">' + ordText + '</span><span class="material-symbols-outlined text-[18px]">arrow_forward</span>';
       }
     }
+
+    function showTrackingEmptyState() {
+      const emptyEl = document.getElementById('p5-tracking-empty-state');
+      const activeEl = document.getElementById('p5-active-tracking-content');
+      if (emptyEl) {
+        emptyEl.classList.remove('hidden');
+        emptyEl.style.display = 'flex';
+      }
+      if (activeEl) {
+        activeEl.classList.add('hidden');
+        activeEl.style.display = 'none';
+      }
+      const ordId = document.getElementById('p5-order-id');
+      if (ordId) ordId.innerText = '--';
+      const eta = document.getElementById('p5-eta-time');
+      if (eta) eta.innerText = '--';
+      const amt = document.getElementById('p5-order-amount');
+      if (amt) amt.innerText = '--';
+      const pay = document.getElementById('p5-order-paymode');
+      if (pay) pay.innerText = '--';
+      const runnerSub = document.getElementById('p5-runner-sub');
+      if (runnerSub) runnerSub.innerText = '--';
+      const otpContainer = document.getElementById('p5-delivery-otp-digits');
+      if (otpContainer) otpContainer.innerHTML = '';
+      const tlSteps = document.getElementById('p5-timeline-steps');
+      if (tlSteps) tlSteps.innerHTML = '';
+      const lmStore = document.getElementById('p5-lm-store');
+      if (lmStore) lmStore.innerText = '--';
+      const lmTransit = document.getElementById('p5-lm-transit');
+      if (lmTransit) lmTransit.innerText = '--';
+      const lmDest = document.getElementById('p5-lm-dest');
+      if (lmDest) lmDest.innerText = '--';
+    }
+    window.showTrackingEmptyState = showTrackingEmptyState;
 
     function updateDeliveryOtpDisplay(otpStr) {
       const container = document.getElementById('p5-delivery-otp-digits');
@@ -3877,32 +3904,291 @@
         `;
       }
     }
+    window.updateDeliveryOtpDisplay = updateDeliveryOtpDisplay;
+
+    function renderTimelineSteps(stage, storeName) {
+      const container = document.getElementById('p5-timeline-steps');
+      if (!container) return;
+      const isHi = AppStore.lang === 'hi';
+      const dict = i18nDictionary[AppStore.lang] || i18nDictionary['hi'];
+
+      const storeDisplay = storeName || (AppStore.activeStore ? (isHi ? (AppStore.activeStore.hindi_name || AppStore.activeStore.name) : AppStore.activeStore.name) : (isHi ? 'शर्मा ब्रदर्स किराना' : 'Sharma Brothers Kirana'));
+      const landmarkDisplay = (AppStore.user && AppStore.user.landmark && AppStore.user.landmark.trim().length > 3) 
+        ? AppStore.user.landmark.trim() 
+        : (isHi ? 'शिव मंदिर' : 'Shiv Mandir');
+
+      const stagesConfig = [
+        {
+          num: 1,
+          titleKey: 'p5_stage_1',
+          descKey: 'p5_stage_1_desc',
+          defaultTitle: isHi ? '1. ऑर्डर दर्ज हुआ' : '1. Order Placed',
+          defaultDesc: isHi ? `${storeDisplay} द्वारा पुष्टि की गई` : `Confirmed by ${storeDisplay}`
+        },
+        {
+          num: 2,
+          titleKey: 'p5_stage_2',
+          descKey: 'p5_stage_2_desc',
+          defaultTitle: isHi ? '2. दुकानदार ने स्वीकारा' : '2. Store Accepted',
+          defaultDesc: isHi ? 'गनौर मंडी में सामान की पुष्टि हुई' : 'Verified at local market inventory'
+        },
+        {
+          num: 3,
+          titleKey: 'p5_stage_3',
+          descKey: 'p5_stage_3_desc',
+          defaultTitle: isHi ? '3. सामान पैक हो गया' : '3. Order Packed',
+          defaultDesc: isHi ? 'गाँव मित्र मोहन लाल (GM-102) को सौंपा गया' : 'Handed over to Gaon Mitra Mohan Lal (GM-102)'
+        },
+        {
+          num: 4,
+          titleKey: 'p5_stage_4',
+          descKey: 'p5_stage_4_desc',
+          defaultTitle: isHi ? '4. गाँव मित्र रास्ते में हैं' : '4. Runner Out for Delivery',
+          defaultDesc: isHi ? `${landmarkDisplay} पहचान चिन्ह के समीप पहुँच रहे हैं` : `Approaching ${landmarkDisplay} landmark`
+        },
+        {
+          num: 5,
+          titleKey: 'p5_stage_5',
+          descKey: 'p5_stage_5_desc',
+          defaultTitle: isHi ? '5. सफलतापूर्वक डिलीवर' : '5. Delivered Safely',
+          defaultDesc: isHi ? 'सकुशल डिलीवरी व नकद रसीद' : 'Delivered safely with cash receipt'
+        }
+      ];
+
+      let html = '';
+      stagesConfig.forEach(st => {
+        let dotClass = '';
+        let dotContent = '';
+        let titleColor = '';
+
+        if (st.num < stage) {
+          dotClass = 'bg-primary text-white';
+          dotContent = '✓';
+          titleColor = 'text-on-surface';
+        } else if (st.num === stage) {
+          dotClass = 'bg-secondary text-white animate-pulse timeline-node-active';
+          dotContent = String(st.num);
+          titleColor = 'text-secondary';
+        } else {
+          dotClass = 'bg-surface-container text-outline';
+          dotContent = String(st.num);
+          titleColor = 'text-outline';
+        }
+
+        const titleText = dict[st.titleKey] || st.defaultTitle;
+        const descText = dict[st.descKey] || st.defaultDesc;
+
+        html += `
+          <div class="relative flex items-start gap-2">
+            <span id="tl-dot-${st.num}" class="absolute -left-6 top-0.5 w-5 h-5 rounded-full ${dotClass} flex items-center justify-center text-[11px] font-bold">${dotContent}</span>
+            <div>
+              <span class="font-bold ${titleColor} block" data-i18n="${st.titleKey}">${titleText}</span>
+              <span class="text-[10px] text-on-surface-variant" data-i18n="${st.descKey}">${descText}</span>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+    window.renderTimelineSteps = renderTimelineSteps;
+
+    function updateRouteLandmarks(orderData = null) {
+      const isHi = AppStore.lang === 'hi';
+      const dict = i18nDictionary[AppStore.lang] || i18nDictionary['hi'];
+
+      const p5LmStore = document.getElementById('p5-lm-store');
+      const p5LmTransit = document.getElementById('p5-lm-transit');
+      const p5LmDest = document.getElementById('p5-lm-dest');
+      const p5Route = document.getElementById('p5-route-lbl');
+
+      if (p5LmStore) {
+        if (AppStore.activeStore && (AppStore.activeStore.name || AppStore.activeStore.hindi_name)) {
+          p5LmStore.innerText = isHi ? (AppStore.activeStore.hindi_name || AppStore.activeStore.name) : AppStore.activeStore.name;
+        } else {
+          p5LmStore.innerText = dict.p5_lm_store || (isHi ? 'शर्मा किराना' : 'Sharma Kirana');
+        }
+      }
+      if (p5LmTransit) {
+        if (AppStore.user && AppStore.user.landmark && AppStore.user.landmark.trim().length > 3) {
+          p5LmTransit.innerText = AppStore.user.landmark.trim();
+        } else {
+          p5LmTransit.innerText = dict.p5_lm_transit || (isHi ? 'शिव मंदिर' : 'Shiv Mandir');
+        }
+      }
+      if (p5LmDest) {
+        p5LmDest.innerText = dict.p5_lm_dest || (isHi ? 'आपका घर' : 'Your Home');
+      }
+      if (p5Route) {
+        const dist = (orderData && orderData.distance_km) || AppStore.distanceKm || '1.2';
+        p5Route.innerText = isHi ? ("रास्ता (" + dist + " किमी दूर)") : ("Route Trail (" + dist + " km away)");
+      }
+    }
+    window.updateRouteLandmarks = updateRouteLandmarks;
+
+    function populateTrackingUI(orderData) {
+      if (!orderData || !orderData.order_id) {
+        showTrackingEmptyState();
+        return;
+      }
+
+      const emptyEl = document.getElementById('p5-tracking-empty-state');
+      const activeEl = document.getElementById('p5-active-tracking-content');
+      if (emptyEl) {
+        emptyEl.classList.add('hidden');
+        emptyEl.style.display = 'none';
+      }
+      if (activeEl) {
+        activeEl.classList.remove('hidden');
+        activeEl.style.display = 'flex';
+      }
+
+      const isHi = AppStore.lang === 'hi';
+      const dict = i18nDictionary[AppStore.lang] || i18nDictionary['hi'];
+
+      AppStore.orderId = orderData.order_id;
+      AppStore.deliveryOtp = orderData.delivery_otp || '4821';
+      AppStore.orderTimelineStage = orderData.timeline_stage || 4;
+      AppStore.activeOrderData = orderData;
+
+      // 1. Order ID & Status Pill
+      const ordIdEl = document.getElementById('p5-order-id');
+      if (ordIdEl) ordIdEl.innerText = orderData.order_id;
+
+      const statusPill = document.getElementById('p5-status-pill');
+      if (statusPill) {
+        if (orderData.timeline_stage === 5 || orderData.status === 'Delivered') {
+          statusPill.innerText = isHi ? 'पहुँचा दिया गया' : 'Delivered';
+        } else {
+          statusPill.innerText = dict.p5_status_in_progress || (isHi ? 'प्रगति पर है' : 'In Progress');
+        }
+      }
+
+      // 2. ETA & Amount
+      const etaElem = document.getElementById('p5-eta-time');
+      if (etaElem) {
+        if (orderData.timeline_stage === 5 || orderData.status === 'Delivered') {
+          etaElem.innerText = isHi ? 'सफलतापूर्वक द्वार पर डिलीवर ✓' : 'Delivered at Doorstep ✓';
+        } else {
+          etaElem.innerText = orderData.eta_mins || (orderData.distance_km && orderData.distance_km > 5.0 ? '45-60 Mins' : '30 Mins');
+        }
+      }
+
+      const amtEl = document.getElementById('p5-order-amount');
+      if (amtEl) {
+        const total = orderData.total_amount ? Number(orderData.total_amount).toFixed(2) : '0.00';
+        amtEl.innerText = `₹${total}`;
+      }
+
+      const payEl = document.getElementById('p5-order-paymode');
+      if (payEl) {
+        payEl.innerText = orderData.payment_mode === 'COD' 
+          ? (isHi ? 'हाथ में नकद' : 'Cash on Delivery (COD)') 
+          : (isHi ? 'ऑनलाइन यूपीआई' : 'UPI Paid');
+      }
+
+      // 3. Runner details
+      const runnerSub = document.getElementById('p5-runner-sub');
+      if (runnerSub) {
+        runnerSub.innerText = isHi 
+          ? 'मोहन लाल (GM-102) • सीधे आपकी चौपाल की ओर' 
+          : 'Mohan Lal (GM-102) • En route to your doorstep';
+      }
+
+      // 4. Delivery OTP (4 digits)
+      if (orderData.delivery_otp) {
+        updateDeliveryOtpDisplay(String(orderData.delivery_otp));
+      }
+
+      // 5. Render 5-step timeline dynamically
+      renderTimelineSteps(AppStore.orderTimelineStage, orderData.store_name);
+
+      // 6. Update Route Schematic Landmarks
+      updateRouteLandmarks(orderData);
+    }
+    window.populateTrackingUI = populateTrackingUI;
+
+    async function renderLiveTrackingView(optionalOrderData = null) {
+      if (optionalOrderData && optionalOrderData.order_id) {
+        populateTrackingUI(optionalOrderData);
+        return;
+      }
+
+      // 1. If AppStore.orderId is set in session, check backend status
+      if (AppStore.orderId && AppStore.orderId !== '--') {
+        try {
+          const encId = encodeURIComponent(AppStore.orderId);
+          const data = await apiFetch(`/orders/${encId}/status`);
+          if (data && data.order_id) {
+            if (data.status === 'Cancelled') {
+              AppStore.orderId = null;
+              AppStore.activeOrderData = null;
+              showTrackingEmptyState();
+              return;
+            }
+            populateTrackingUI(data);
+            return;
+          }
+        } catch (e) {
+          console.warn('Backend order status fetch error:', e);
+          if (AppStore.activeOrderData && AppStore.activeOrderData.order_id === AppStore.orderId) {
+            populateTrackingUI(AppStore.activeOrderData);
+            return;
+          }
+        }
+      }
+
+      // 2. If no orderId in session or fetch failed, check user's active orders in SQLite DB
+      if (AppStore.user && AppStore.user.phone) {
+        try {
+          const encPhone = encodeURIComponent(AppStore.user.phone);
+          const userOrders = await apiFetch(`/user/${encPhone}/orders`);
+          if (Array.isArray(userOrders) && userOrders.length > 0) {
+            const activeOrder = userOrders.find(o => o.status !== 'Delivered' && o.status !== 'Cancelled');
+            if (activeOrder) {
+              AppStore.orderId = activeOrder.order_id;
+              populateTrackingUI(activeOrder);
+              return;
+            }
+          }
+        } catch (e) {
+          console.warn('User orders query error:', e);
+        }
+      }
+
+      // 3. No active order exists -> show clean Empty State UI
+      showTrackingEmptyState();
+    }
+    window.renderLiveTrackingView = renderLiveTrackingView;
 
     async function loadOrderStatusFromBackend(orderId) {
-      if (!orderId) return;
+      if (!orderId) {
+        showTrackingEmptyState();
+        return;
+      }
       try {
         const encId = encodeURIComponent(orderId);
         const data = await apiFetch(`/orders/${encId}/status`);
         if (data) {
-          AppStore.orderTimelineStage = data.timeline_stage;
-          AppStore.deliveryOtp = data.delivery_otp;
-          document.getElementById('p5-order-id').innerText = data.order_id;
-          document.getElementById('p5-order-amount').innerText = `₹${data.total_amount}.00`;
-          updateDeliveryOtpDisplay(data.delivery_otp);
-          updateTimelineNodes();
+          populateTrackingUI(data);
         }
       } catch (e) {
         console.warn('Backend order status fetch warning:', e);
+        showTrackingEmptyState();
       }
     }
+    window.loadOrderStatusFromBackend = loadOrderStatusFromBackend;
 
     // --- 10. PHASE 5: LIVE ORDER TRACKING & TIMELINE SIMULATOR ---
     function copyOrderId() {
+      if (!AppStore.orderId) return;
       navigator.clipboard?.writeText(AppStore.orderId);
       showAudioToast('Order ID Copied', AppStore.orderId);
     }
+    window.copyOrderId = copyOrderId;
 
     async function advanceTimelineStep() {
+      if (!AppStore.orderId) return;
       AppStore.orderTimelineStage = (AppStore.orderTimelineStage % 5) + 1;
       updateTimelineNodes();
       if (AppStore.orderId) {
@@ -3912,30 +4198,38 @@
         } catch (e) {}
       }
     }
+    window.advanceTimelineStep = advanceTimelineStep;
 
     function updateTimelineNodes() {
       const stage = AppStore.orderTimelineStage;
       for (let i = 1; i <= 5; i++) {
         const dot = document.getElementById(`tl-dot-${i}`);
         if (!dot) continue;
+        const titleSpan = dot.parentElement ? dot.parentElement.querySelector('span[data-i18n]') : null;
         if (i < stage) {
           dot.className = 'absolute -left-6 top-0.5 w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center text-[11px] font-bold';
           dot.innerText = '✓';
+          if (titleSpan) titleSpan.className = 'font-bold text-on-surface block';
         } else if (i === stage) {
           dot.className = 'absolute -left-6 top-0.5 w-5 h-5 rounded-full bg-secondary text-white flex items-center justify-center text-[11px] font-bold animate-pulse timeline-node-active';
           dot.innerText = i;
+          if (titleSpan) titleSpan.className = 'font-bold text-secondary block';
         } else {
           dot.className = 'absolute -left-6 top-0.5 w-5 h-5 rounded-full bg-surface-container text-outline flex items-center justify-center text-[11px] font-bold';
           dot.innerText = i;
+          if (titleSpan) titleSpan.className = 'font-bold text-outline block';
         }
       }
 
       if (stage === 5) {
         const isHi = AppStore.lang === 'hi';
-        document.getElementById('p5-status-pill').innerText = isHi ? 'पहुँचा दिया गया' : 'Delivered';
-        document.getElementById('p5-eta-time').innerText = isHi ? 'सफलतापूर्वक द्वार पर डिलीवर ✓' : 'Delivered at Doorstep ✓';
+        const pill = document.getElementById('p5-status-pill');
+        if (pill) pill.innerText = isHi ? 'पहुँचा दिया गया' : 'Delivered';
+        const eta = document.getElementById('p5-eta-time');
+        if (eta) eta.innerText = isHi ? 'सफलतापूर्वक द्वार पर डिलीवर ✓' : 'Delivered at Doorstep ✓';
       }
     }
+    window.updateTimelineNodes = updateTimelineNodes;
 
     // --- 11. AUDIO ASSISTANCE & TOAST UTILITIES ---
     function speakVoiceHelp(context) {
