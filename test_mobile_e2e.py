@@ -1128,17 +1128,43 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     page.click("#p5-back-home-btn")
     page.wait_for_timeout(300)
 
-    # 2. Click the Profile / Account Tab in Bottom Navigation Bar
-    check_human_ux_bounds(page, "#nav-btn-profile", "Bottom Nav Profile Button", dev_name, logger)
-    page.click("#nav-btn-profile")
+    # 2. Verify 3-Tab Bottom Navigation Bar touch bounds (Stores, Categories, Orders)
+    check_human_ux_bounds(page, "#nav-btn-stores", "Bottom Nav Stores Tab", dev_name, logger)
+    check_human_ux_bounds(page, "#nav-btn-categories", "Bottom Nav Categories Tab", dev_name, logger)
+    check_human_ux_bounds(page, "#nav-btn-orders", "Bottom Nav Orders Tab", dev_name, logger)
+
+    # 3. Open Side Drawer Navigation via Hamburger Menu on Dashboard
+    check_human_ux_bounds(page, "#btn-open-sidebar", "Header Hamburger Menu Button", dev_name, logger)
+    page.click("#btn-open-sidebar")
+    page.wait_for_timeout(350)
+    
+    # Verify side drawer options touch bounds
+    check_human_ux_bounds(page, "#drawer-account-btn", "Side Drawer Account Option", dev_name, logger)
+    check_human_ux_bounds(page, "#drawer-cart-btn", "Side Drawer Cart Option", dev_name, logger)
+    check_human_ux_bounds(page, "#drawer-orders-btn", "Side Drawer Orders Option", dev_name, logger)
+    check_human_ux_bounds(page, "#drawer-payments-btn", "Side Drawer Payments Option", dev_name, logger)
+    check_human_ux_bounds(page, "#drawer-support-btn", "Side Drawer Support Option", dev_name, logger)
+    check_human_ux_bounds(page, "#global-lang-btn", "Side Drawer Language Toggle", dev_name, logger)
+
+    # 4. Navigate to Profile View via Side Drawer
+    page.click("#drawer-account-btn")
     page.wait_for_timeout(400)
 
-    # 3. Assert Profile View is active and in viewport
+    # 5. Assert Profile View is active and in viewport
     is_profile_visible = page.is_visible("#view-profile")
-    logger.record_test(f"[{dev_name}] Transition to My Account & Profile View", is_profile_visible)
+    logger.record_test(f"[{dev_name}] Transition to My Account & Profile View via Drawer", is_profile_visible)
     inspect_viewport_and_layout(page, f"[{dev_name}] Phase Profile", logger)
 
-    # 4. Verify User Details & Primary Village Landmark rendered
+    # 5.1 Verify page-specific header visibility: Hamburger disappears, Left Arrow appears
+    is_hamburger_hidden = not page.is_visible("#btn-open-sidebar")
+    is_back_arrow_visible = page.is_visible("#global-nav-back")
+    logger.record_test(
+        f"[{dev_name}] Page-Specific Header Visibility (Back Arrow Replaces Hamburger on Subpages)",
+        is_hamburger_hidden and is_back_arrow_visible,
+        f"Hamburger hidden: {is_hamburger_hidden} | Back arrow visible: {is_back_arrow_visible}"
+    )
+
+    # 5.2 Verify User Details & Primary Village Landmark rendered
     user_name = page.inner_text("#profile-user-name").strip()
     user_phone = page.inner_text("#profile-user-phone").strip()
     user_village = page.inner_text("#profile-user-village").strip()
@@ -1149,11 +1175,16 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
         f"Name: {user_name} | Phone: {user_phone} | Village: {user_village}"
     )
 
-    # 5. Verify Order History List presence & rendering
-    is_history_present = page.is_visible("#profile-order-history-list")
-    logger.record_test(f"[{dev_name}] Order History List Rendered", is_history_present)
+    # 5.3 Verify Clean Single-Card Architecture & Logout CTA Button
+    check_human_ux_bounds(page, "#profile-primary-logout-btn", "Profile Logout CTA Button", dev_name, logger)
+    has_clutter_cards = page.locator("#profile-support-entry-card").count() > 0 or page.locator("#profile-saved-payments-section").count() > 0
+    logger.record_test(
+        f"[{dev_name}] Profile Clutter Cleaned (Support & Payment Cards Deleted)",
+        not has_clutter_cards,
+        "Account page retains only clean user profile card and logout button"
+    )
 
-    # 5.1 Strict Invisible Risk Metrics & Trust Score Purge Verification
+    # 5.4 Strict Invisible Risk Metrics & Trust Score Purge Verification
     profile_text = page.inner_text("#view-profile").lower()
     has_hostile_terms = any(term in profile_text for term in ["trust score", "strike", "cancellation count", "cancellations:"])
     has_trust_score_el = page.locator("#profile-trust-score").count() > 0
@@ -1163,27 +1194,19 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
         "Customer profile is 100% clean of internal risk & cancellation counters"
     )
 
-    # 6. Verify Redundant Language Card Removed & Global Header Switcher Active
-    has_profile_lang_card = page.locator("#profile-lang-card").count() > 0
-    logger.record_test(
-        f"[{dev_name}] Redundant Profile Language Card Deleted",
-        not has_profile_lang_card,
-        "Redundant language preference card cleanly removed from profile screen"
-    )
-    # Open Side Drawer to verify language toggle bounds
+    # 6. Navigate Back to Dashboard via Header Left Arrow
+    check_human_ux_bounds(page, "#global-nav-back", "Header Left Arrow Back Button", dev_name, logger)
+    page.click("#global-nav-back")
+    page.wait_for_timeout(400)
+
+    # 7. Open Side Drawer and launch Help & Support Chatbot
     page.click("#btn-open-sidebar")
     page.wait_for_timeout(350)
-    check_human_ux_bounds(page, "#global-lang-btn", "Side Drawer Language Toggle", dev_name, logger)
-    page.click("#btn-close-sidebar")
-    page.wait_for_timeout(350)
-
-    # 7. Verify Help & Support Entry Point Card
-    check_human_ux_bounds(page, "#btn-open-support", "Open Help & Support Chatbot Button", dev_name, logger)
-    page.click("#btn-open-support")
+    page.click("#drawer-support-btn")
     page.wait_for_timeout(300)
 
     is_modal_visible = page.is_visible("#modal-support-chat")
-    logger.record_test(f"[{dev_name}] Support Chatbot Modal Opened", is_modal_visible)
+    logger.record_test(f"[{dev_name}] Support Chatbot Modal Opened via Drawer", is_modal_visible)
 
     # 8. Type query 'Where is my order?' and submit
     page.fill("#chat-input-message", "Where is my order?")
