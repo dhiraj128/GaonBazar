@@ -65,6 +65,14 @@ jobs:
         run: |
           python test_security.py
 
+      - name: Run FinTech Payout & Payment Settings Tests
+        run: |
+          python test_payment_settings.py
+
+      - name: Run Razorpay Zero-Trust Payment Tests
+        run: |
+          python test_razorpay_payments.py
+
       - name: Run Customer Mobile App E2E Test Suite (5 Mobile Devices)
         run: |
           python test_mobile_e2e.py

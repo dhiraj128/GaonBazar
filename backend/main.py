@@ -630,7 +630,7 @@ def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
     if user.is_blacklisted or consecutive >= 3:
         raise HTTPException(
             status_code=403,
-            detail="Account is permanently blacklisted from placing orders due to multiple cancellations (3 strikes reached) / एकाउंट ब्लैकलिस्ट कर दिया गया है।"
+            detail="Account is permanently restricted from placing orders due to multiple cancellations. / बार-बार ऑर्डर रद्द करने के कारण आपका खाता प्रतिबंधित कर दिया गया है।"
         )
 
     # STRIKE 2: Cash on Delivery (COD) Block Enforcement

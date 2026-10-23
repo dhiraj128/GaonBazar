@@ -36,6 +36,12 @@ jobs:
     - name: Run Security Tests
       run: python test_security.py
 
+    - name: Run Payment Settings Tests
+      run: python test_payment_settings.py
+
+    - name: Run Razorpay Payment Tests
+      run: python test_razorpay_payments.py
+
     - name: Run Customer App Tests
       run: python test_mobile_e2e.py
 
