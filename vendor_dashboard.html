@@ -900,6 +900,70 @@
   <!-- 9. JAVASCRIPT STATE & REAL-TIME BACKEND ENGINE                            -->
   <!-- ========================================================================= -->
   <script>
+    // =========================================================================
+    // NATIVE ANDROID HARDWARE BACK & EDGE-SWIPE GESTURE ROUTER (popstate)
+    // Intercepts hardware back / edge-swipe to smoothly close open overlays
+    // (bottom sheets, modals) instead of exiting the web app.
+    // =========================================================================
+    (function initNativeOverlayBackRouter() {
+      const overlayStack = [];
+      let isProgrammaticBack = false;
+      let historyPushedCount = 0;
+
+      window.pushOverlayHistory = function(overlayId, closeCallback) {
+        if (!overlayId || typeof closeCallback !== 'function') return;
+        const existingIdx = overlayStack.findIndex(item => item.id === overlayId);
+        if (existingIdx !== -1) {
+          overlayStack.splice(existingIdx, 1);
+        }
+        overlayStack.push({ id: overlayId, close: closeCallback });
+        historyPushedCount++;
+        try {
+          window.history.pushState({ gaonbazar_overlay: overlayId, timestamp: Date.now() }, '');
+        } catch (e) {
+          console.warn('History pushState error:', e);
+        }
+      };
+
+      window.closeOverlayHistory = function(overlayId, isFromPopstate) {
+        const idx = overlayStack.findIndex(item => item.id === overlayId);
+        if (idx !== -1) {
+          overlayStack.splice(idx, 1);
+        }
+        if (!isFromPopstate) {
+          if (historyPushedCount > overlayStack.length) {
+            historyPushedCount--;
+            isProgrammaticBack = true;
+            try {
+              window.history.back();
+            } catch (e) {
+              console.warn('History back error:', e);
+            }
+          }
+        }
+      };
+
+      window.addEventListener('popstate', function(event) {
+        if (isProgrammaticBack) {
+          isProgrammaticBack = false;
+          return;
+        }
+        if (historyPushedCount > 0) {
+          historyPushedCount--;
+        }
+        if (overlayStack.length > 0) {
+          const topOverlay = overlayStack.pop();
+          if (topOverlay && typeof topOverlay.close === 'function') {
+            topOverlay.close(true /* isFromPopstate */);
+          }
+        }
+      });
+
+      window.getActiveOverlayStack = function() {
+        return overlayStack.map(o => o.id);
+      };
+    })();
+
     // --- 9.1 CONSTANTS & APPLICATION STATE ---
     // ============================================================================
     // LIVE BACKEND CONFIGURATION
@@ -1429,16 +1493,24 @@
       if (modal) {
         modal.classList.remove('hidden');
         modal.style.display = 'flex';
+        if (window.pushOverlayHistory) {
+          window.pushOverlayHistory('vendor-auth-gate', function(fromPop) {
+            closeVendorRegisterModal(fromPop);
+          });
+        }
       }
       updateLanguageUI();
     }
 
-    function closeVendorRegisterModal() {
+    function closeVendorRegisterModal(isFromPopstate) {
       const modal = document.getElementById('vendor-auth-gate');
       if (modal) {
         modal.classList.add('hidden');
         modal.style.display = 'none';
         modal.style.pointerEvents = 'none';
+        if (window.closeOverlayHistory) {
+          window.closeOverlayHistory('vendor-auth-gate', isFromPopstate);
+        }
       }
     }
 
@@ -2210,15 +2282,23 @@
         modal.classList.remove('hidden');
         modal.style.display = 'flex';
         modal.style.pointerEvents = 'auto';
+        if (window.pushOverlayHistory) {
+          window.pushOverlayHistory('modal-add-product', function(fromPop) {
+            closeAddProductModal(fromPop);
+          });
+        }
       }
     }
 
-    function closeAddProductModal() {
+    function closeAddProductModal(isFromPopstate) {
       const modal = document.getElementById('modal-add-product');
       if (modal) {
         modal.classList.add('hidden');
         modal.style.display = 'none';
         modal.style.pointerEvents = 'none';
+        if (window.closeOverlayHistory) {
+          window.closeOverlayHistory('modal-add-product', isFromPopstate);
+        }
       }
     }
 

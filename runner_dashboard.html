@@ -952,6 +952,70 @@
   <!-- 9. JAVASCRIPT STATE ENGINE & BACKEND API DISPATCH                         -->
   <!-- ========================================================================= -->
   <script>
+    // =========================================================================
+    // NATIVE ANDROID HARDWARE BACK & EDGE-SWIPE GESTURE ROUTER (popstate)
+    // Intercepts hardware back / edge-swipe to smoothly close open overlays
+    // (bottom sheets, modals, detail views) instead of exiting the web app.
+    // =========================================================================
+    (function initNativeOverlayBackRouter() {
+      const overlayStack = [];
+      let isProgrammaticBack = false;
+      let historyPushedCount = 0;
+
+      window.pushOverlayHistory = function(overlayId, closeCallback) {
+        if (!overlayId || typeof closeCallback !== 'function') return;
+        const existingIdx = overlayStack.findIndex(item => item.id === overlayId);
+        if (existingIdx !== -1) {
+          overlayStack.splice(existingIdx, 1);
+        }
+        overlayStack.push({ id: overlayId, close: closeCallback });
+        historyPushedCount++;
+        try {
+          window.history.pushState({ gaonbazar_overlay: overlayId, timestamp: Date.now() }, '');
+        } catch (e) {
+          console.warn('History pushState error:', e);
+        }
+      };
+
+      window.closeOverlayHistory = function(overlayId, isFromPopstate) {
+        const idx = overlayStack.findIndex(item => item.id === overlayId);
+        if (idx !== -1) {
+          overlayStack.splice(idx, 1);
+        }
+        if (!isFromPopstate) {
+          if (historyPushedCount > overlayStack.length) {
+            historyPushedCount--;
+            isProgrammaticBack = true;
+            try {
+              window.history.back();
+            } catch (e) {
+              console.warn('History back error:', e);
+            }
+          }
+        }
+      };
+
+      window.addEventListener('popstate', function(event) {
+        if (isProgrammaticBack) {
+          isProgrammaticBack = false;
+          return;
+        }
+        if (historyPushedCount > 0) {
+          historyPushedCount--;
+        }
+        if (overlayStack.length > 0) {
+          const topOverlay = overlayStack.pop();
+          if (topOverlay && typeof topOverlay.close === 'function') {
+            topOverlay.close(true /* isFromPopstate */);
+          }
+        }
+      });
+
+      window.getActiveOverlayStack = function() {
+        return overlayStack.map(o => o.id);
+      };
+    })();
+
     // --- 9.1 CONSTANTS & APPLICATION STATE ---
     // ============================================================================
     // LIVE BACKEND CONFIGURATION
@@ -1487,15 +1551,23 @@
         modal.classList.remove('hidden');
         modal.style.display = 'flex';
         modal.style.pointerEvents = 'auto';
+        if (window.pushOverlayHistory) {
+          window.pushOverlayHistory('runner-auth-gate', function(fromPop) {
+            closeRunnerRegisterModal(fromPop);
+          });
+        }
       }
     }
 
-    function closeRunnerRegisterModal() {
+    function closeRunnerRegisterModal(isFromPopstate) {
       const modal = document.getElementById('runner-auth-gate');
       if (modal) {
         modal.classList.add('hidden');
         modal.style.display = 'none';
         modal.style.pointerEvents = 'none';
+        if (window.closeOverlayHistory) {
+          window.closeOverlayHistory('runner-auth-gate', isFromPopstate);
+        }
       }
     }
 
@@ -1927,6 +1999,11 @@
         RunnerStore.selectedMission = found;
         renderMissionDetail();
         switchTab('detail');
+        if (window.pushOverlayHistory) {
+          window.pushOverlayHistory('runner-tab-detail', function(fromPop) {
+            switchTab('missions', fromPop);
+          });
+        }
       }
     }
 
@@ -2155,16 +2232,24 @@
       if (modal) {
         modal.classList.remove('hidden');
         modal.style.display = 'flex';
+        if (window.pushOverlayHistory) {
+          window.pushOverlayHistory('modal-delivery-success', function(fromPop) {
+            closeSuccessModal(fromPop);
+          });
+        }
       }
     }
 
-    function closeSuccessModal() {
+    function closeSuccessModal(isFromPopstate) {
       const modal = document.getElementById('modal-delivery-success');
       if (modal) {
         modal.classList.add('hidden');
         modal.style.display = 'none';
+        if (window.closeOverlayHistory) {
+          window.closeOverlayHistory('modal-delivery-success', isFromPopstate);
+        }
       }
-      switchTab('missions');
+      switchTab('missions', isFromPopstate);
     }
 
     // --- 9.13 TAB 3: LEDGER VIEW ---
@@ -2237,19 +2322,30 @@
       if (modal) {
         modal.classList.remove('hidden');
         modal.style.display = 'flex';
+        if (window.pushOverlayHistory) {
+          window.pushOverlayHistory('modal-deposit-slip', function(fromPop) {
+            closeDepositSlipModal(fromPop);
+          });
+        }
       }
     }
 
-    function closeDepositSlipModal() {
+    function closeDepositSlipModal(isFromPopstate) {
       const modal = document.getElementById('modal-deposit-slip');
       if (modal) {
         modal.classList.add('hidden');
         modal.style.display = 'none';
+        if (window.closeOverlayHistory) {
+          window.closeOverlayHistory('modal-deposit-slip', isFromPopstate);
+        }
       }
     }
 
     // --- 9.14 TAB SWITCHING ---
-    function switchTab(tabId) {
+    function switchTab(tabId, isFromPopstate) {
+      if (RunnerStore.activeTab === 'detail' && tabId !== 'detail' && window.closeOverlayHistory) {
+        window.closeOverlayHistory('runner-tab-detail', isFromPopstate);
+      }
       window.scrollTo({ top: 0, behavior: 'instant' });
       const mainScroll = document.querySelector('main');
       if (mainScroll) mainScroll.scrollTop = 0;

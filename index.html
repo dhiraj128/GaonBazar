@@ -2386,6 +2386,71 @@
       }
     }
 
+    // =========================================================================
+    // NATIVE ANDROID HARDWARE BACK & EDGE-SWIPE GESTURE ROUTER (popstate)
+    // Intercepts hardware back / edge-swipe to smoothly close open overlays
+    // (sidebars, bottom sheets, modals) instead of exiting the web app.
+    // =========================================================================
+    (function initNativeOverlayBackRouter() {
+      const overlayStack = [];
+      let isProgrammaticBack = false;
+      let historyPushedCount = 0;
+
+      window.pushOverlayHistory = function(overlayId, closeCallback) {
+        if (!overlayId || typeof closeCallback !== 'function') return;
+        const existingIdx = overlayStack.findIndex(item => item.id === overlayId);
+        if (existingIdx !== -1) {
+          overlayStack.splice(existingIdx, 1);
+        }
+        overlayStack.push({ id: overlayId, close: closeCallback });
+        historyPushedCount++;
+        try {
+          window.history.pushState({ gaonbazar_overlay: overlayId, timestamp: Date.now() }, '');
+        } catch (e) {
+          console.warn('History pushState error:', e);
+        }
+      };
+
+      window.closeOverlayHistory = function(overlayId, isFromPopstate) {
+        const idx = overlayStack.findIndex(item => item.id === overlayId);
+        if (idx !== -1) {
+          overlayStack.splice(idx, 1);
+        }
+        if (!isFromPopstate) {
+          // Closed via UI (button, backdrop, or programmatic switch)
+          if (historyPushedCount > overlayStack.length) {
+            historyPushedCount--;
+            isProgrammaticBack = true;
+            try {
+              window.history.back();
+            } catch (e) {
+              console.warn('History back error:', e);
+            }
+          }
+        }
+      };
+
+      window.addEventListener('popstate', function(event) {
+        if (isProgrammaticBack) {
+          isProgrammaticBack = false;
+          return;
+        }
+        if (historyPushedCount > 0) {
+          historyPushedCount--;
+        }
+        if (overlayStack.length > 0) {
+          const topOverlay = overlayStack.pop();
+          if (topOverlay && typeof topOverlay.close === 'function') {
+            topOverlay.close(true /* isFromPopstate */);
+          }
+        }
+      });
+
+      window.getActiveOverlayStack = function() {
+        return overlayStack.map(o => o.id);
+      };
+    })();
+
     // --- NATIVE SIDE DRAWER NAVIGATION & TERMS MODAL LOGIC ---
     function openSidebarDrawer() {
       const overlay = document.getElementById('sidebar-overlay');
@@ -2432,10 +2497,16 @@
 
       drawer.classList.remove('-translate-x-full');
       drawer.classList.add('translate-x-0');
+
+      if (window.pushOverlayHistory) {
+        window.pushOverlayHistory('sidebar-drawer', function(fromPop) {
+          closeSidebarDrawer(fromPop);
+        });
+      }
     }
     window.openSidebarDrawer = openSidebarDrawer;
 
-    function closeSidebarDrawer() {
+    function closeSidebarDrawer(isFromPopstate) {
       const overlay = document.getElementById('sidebar-overlay');
       const drawer = document.getElementById('sidebar-drawer');
       if (!drawer || !overlay) return;
@@ -2445,6 +2516,10 @@
 
       drawer.classList.remove('translate-x-0');
       drawer.classList.add('-translate-x-full');
+
+      if (window.closeOverlayHistory) {
+        window.closeOverlayHistory('sidebar-drawer', isFromPopstate);
+      }
     }
     window.closeSidebarDrawer = closeSidebarDrawer;
 
@@ -2453,15 +2528,23 @@
       if (modal) {
         modal.classList.remove('hidden');
         modal.classList.add('flex');
+        if (window.pushOverlayHistory) {
+          window.pushOverlayHistory('modal-terms-conditions', function(fromPop) {
+            closeTermsModal(fromPop);
+          });
+        }
       }
     }
     window.openTermsModal = openTermsModal;
 
-    function closeTermsModal() {
+    function closeTermsModal(isFromPopstate) {
       const modal = document.getElementById('modal-terms-conditions');
       if (modal) {
         modal.classList.remove('flex');
         modal.classList.add('hidden');
+        if (window.closeOverlayHistory) {
+          window.closeOverlayHistory('modal-terms-conditions', isFromPopstate);
+        }
       }
     }
     window.closeTermsModal = closeTermsModal;
@@ -5255,12 +5338,22 @@
       if (cardName) cardName.value = '';
       if (cbCardDef) cbCardDef.checked = false;
 
-      if (modal) modal.classList.remove('hidden');
+      if (modal) {
+        modal.classList.remove('hidden');
+        if (window.pushOverlayHistory) {
+          window.pushOverlayHistory('modal-add-payment-method', function(fromPop) {
+            closeAddPaymentModal(fromPop);
+          });
+        }
+      }
     }
     window.openAddPaymentModal = openAddPaymentModal;
 
-    function closeAddPaymentModal() {
+    function closeAddPaymentModal(isFromPopstate) {
       document.getElementById('modal-add-payment-method')?.classList.add('hidden');
+      if (window.closeOverlayHistory) {
+        window.closeOverlayHistory('modal-add-payment-method', isFromPopstate);
+      }
     }
     window.closeAddPaymentModal = closeAddPaymentModal;
 
@@ -5559,7 +5652,7 @@
     }
     window.deleteSavedPaymentMethod = deleteSavedPaymentMethod;
 
-        function openSupportModal() {
+    function openSupportModal() {
       const modal = document.getElementById('modal-support-chat');
       if (modal) {
         modal.classList.remove('hidden');
@@ -5570,17 +5663,25 @@
         if (input) {
           setTimeout(() => input.focus(), 150);
         }
+        if (window.pushOverlayHistory) {
+          window.pushOverlayHistory('modal-support-chat', function(fromPop) {
+            closeSupportModal(fromPop);
+          });
+        }
       }
     }
     window.openSupportModal = openSupportModal;
 
-    function closeSupportModal() {
+    function closeSupportModal(isFromPopstate) {
       const modal = document.getElementById('modal-support-chat');
       if (modal) {
         modal.classList.remove('flex');
         modal.classList.add('hidden');
         const bNav = document.getElementById('customer-bottom-nav');
         if (bNav) bNav.style.display = '';
+        if (window.closeOverlayHistory) {
+          window.closeOverlayHistory('modal-support-chat', isFromPopstate);
+        }
       }
     }
     window.closeSupportModal = closeSupportModal;
@@ -5773,10 +5874,18 @@
     // --- 12. AUTOMATED QA TEST SUITE & SECURITY AUDIT RUNNER ---
     function openQaModal() {
       document.getElementById('qa-suite-modal').classList.remove('hidden');
+      if (window.pushOverlayHistory) {
+        window.pushOverlayHistory('qa-suite-modal', function(fromPop) {
+          closeQaModal(fromPop);
+        });
+      }
     }
 
-    function closeQaModal() {
+    function closeQaModal(isFromPopstate) {
       document.getElementById('qa-suite-modal').classList.add('hidden');
+      if (window.closeOverlayHistory) {
+        window.closeOverlayHistory('qa-suite-modal', isFromPopstate);
+      }
     }
 
     function executeFullQaAudit() {
