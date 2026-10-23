@@ -248,9 +248,9 @@
         <!-- Right Quick CTAs: Open/Close, Lang & Logout -->
         <div class="flex items-center gap-1 sm:gap-2 shrink-0">
           <!-- Shop Open/Close Toggle (guaranteed non-overlapping, min-h-[32px]) -->
-          <button id="store-open-btn" onclick="toggleStoreOpenStatus()" class="px-2 sm:px-2.5 py-1 rounded-lg sm:rounded-xl text-xs font-bold flex items-center gap-1 border transition-all bg-emerald-50 text-primary border-emerald-300 min-h-[32px] sm:min-h-[36px] active:scale-95 shrink-0">
-            <span class="w-2 h-2 rounded-full bg-primary" id="open-indicator-dot"></span>
-            <span id="open-status-label" class="hidden sm:inline">दुकान चालू</span>
+          <button id="store-open-btn" onclick="toggleStoreOpenStatus()" class="px-2 sm:px-2.5 py-1 rounded-lg sm:rounded-xl text-xs font-bold flex items-center gap-1 border transition-all bg-emerald-50 text-emerald-800 border-emerald-300 min-h-[32px] sm:min-h-[36px] active:scale-95 shrink-0">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" id="open-indicator-dot"></span>
+            <span id="open-status-label" class="hidden sm:inline">चालू</span>
             <span id="open-status-mobile-label" class="sm:hidden text-[11px] font-black">चालू</span>
           </button>
 
@@ -640,32 +640,32 @@
           <!-- Account Holder Name -->
           <div class="sm:col-span-2">
             <label class="block text-xs font-bold text-slate-700 mb-1" data-i18n="bank_lbl_name">खाताधारक का पूरा नाम *</label>
-            <input type="text" id="vendor-bank-account-name" placeholder="उदा. Ramesh Sharma" class="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl text-xs font-semibold focus:outline-primary"/>
+            <input type="text" id="vendor-bank-account-name" data-i18n-ph="bank_ph_name" placeholder="उदा. Ramesh Sharma" class="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl text-xs font-semibold focus:outline-primary"/>
           </div>
 
           <!-- Account Number -->
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1" data-i18n="bank_lbl_acc">बैंक खाता संख्या *</label>
-            <input type="password" id="vendor-bank-account-number" placeholder="9-18 अंकों की खाता संख्या" class="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl text-xs font-mono font-semibold focus:outline-primary" autocomplete="off"/>
+            <input type="password" id="vendor-bank-account-number" data-i18n-ph="bank_ph_acc" placeholder="9-18 अंकों की खाता संख्या" class="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl text-xs font-mono font-semibold focus:outline-primary" autocomplete="off"/>
           </div>
 
           <!-- Re-enter Account Number -->
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1" data-i18n="bank_lbl_confirm">पुनः खाता संख्या दर्ज करें *</label>
-            <input type="password" id="vendor-bank-confirm-account-number" placeholder="खाता संख्या दोबारा दर्ज करें" class="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl text-xs font-mono font-semibold focus:outline-primary" autocomplete="off"/>
+            <input type="password" id="vendor-bank-confirm-account-number" data-i18n-ph="bank_ph_confirm" placeholder="खाता संख्या दोबारा दर्ज करें" class="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl text-xs font-mono font-semibold focus:outline-primary" autocomplete="off"/>
           </div>
 
           <!-- IFSC Code -->
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1" data-i18n="bank_lbl_ifsc">बैंक IFSC कोड *</label>
-            <input type="text" id="vendor-bank-ifsc" placeholder="उदा. SBIN0001234" maxlength="11" oninput="this.value = this.value.toUpperCase()" class="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl text-xs font-mono font-semibold uppercase focus:outline-primary"/>
+            <input type="text" id="vendor-bank-ifsc" data-i18n-ph="bank_ph_ifsc" placeholder="उदा. SBIN0001234" maxlength="11" oninput="this.value = this.value.toUpperCase()" class="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl text-xs font-mono font-semibold uppercase focus:outline-primary"/>
             <span class="text-[10px] text-slate-400 mt-0.5 block" data-i18n="bank_hint_ifsc">11 अक्षर मान्य कोड</span>
           </div>
 
           <!-- UPI ID -->
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1" data-i18n="bank_lbl_upi">UPI ID *</label>
-            <input type="text" id="vendor-bank-upi" placeholder="उदा. sharma.kirana@okaxis" class="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl text-xs font-mono font-semibold focus:outline-primary"/>
+            <input type="text" id="vendor-bank-upi" data-i18n-ph="bank_ph_upi" placeholder="उदा. sharma.kirana@okaxis" class="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl text-xs font-mono font-semibold focus:outline-primary"/>
             <span class="text-[10px] text-slate-400 mt-0.5 block" data-i18n="bank_hint_upi">तत्काल सेटलमेंट व सुरक्षा हेतु</span>
           </div>
         </div>
@@ -833,76 +833,76 @@
         <!-- OTP Entry -->
         <div>
           <label class="text-[11px] font-bold text-slate-700 block mb-1" data-i18n="lbl_reg_otp">OTP कोड *</label>
-          <input type="text" id="reg-vendor-otp" placeholder="6-digit OTP (e.g. 123456)" value="123456" maxlength="6" class="w-full px-3 py-2 text-xs sm:text-sm font-mono font-bold tracking-widest rounded-xl border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none" />
+          <input type="text" id="reg-vendor-otp" data-i18n-ph="reg_ph_otp" placeholder="6-digit OTP (e.g. 123456)" value="123456" maxlength="6" class="w-full px-3 py-2 text-xs sm:text-sm font-mono font-bold tracking-widest rounded-xl border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none" />
         </div>
 
         <!-- Shop Name & Owner Name -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <div>
-            <label class="text-[11px] font-bold text-slate-700 block mb-1">दुकान का नाम *</label>
-            <input type="text" id="reg-vendor-shop" placeholder="उदा. वर्मा किराना स्टोर" value="Verma General Store" class="w-full px-3 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none" />
+            <label class="text-[11px] font-bold text-slate-700 block mb-1" data-i18n="reg_lbl_shop">दुकान का नाम *</label>
+            <input type="text" id="reg-vendor-shop" data-i18n-ph="reg_ph_shop" placeholder="उदा. वर्मा किराना स्टोर" value="Verma General Store" class="w-full px-3 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none" />
           </div>
           <div>
-            <label class="text-[11px] font-bold text-slate-700 block mb-1">दुकानदार का नाम *</label>
-            <input type="text" id="reg-vendor-owner" placeholder="उदा. राजेश वर्मा" value="Rajesh Verma" class="w-full px-3 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none" />
+            <label class="text-[11px] font-bold text-slate-700 block mb-1" data-i18n="reg_lbl_owner">दुकानदार का नाम *</label>
+            <input type="text" id="reg-vendor-owner" data-i18n-ph="reg_ph_owner" placeholder="उदा. राजेश वर्मा" value="Rajesh Verma" class="w-full px-3 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none" />
           </div>
         </div>
 
         <!-- Category & Village -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <div>
-            <label class="text-[11px] font-bold text-slate-700 block mb-1">दुकान की श्रेणी *</label>
+            <label class="text-[11px] font-bold text-slate-700 block mb-1" data-i18n="reg_lbl_category">दुकान की श्रेणी *</label>
             <select id="reg-vendor-category" class="w-full px-3 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 focus:border-primary outline-none">
-              <option value="kirana">किराना एवं जनरल स्टोर</option>
-              <option value="dawa">दवा एवं जन औषधि</option>
-              <option value="kisan_seva">किसान सेवा केंद्र</option>
-              <option value="dairy">डेयरी एवं दुग्ध उत्पाद</option>
+              <option value="kirana" data-i18n="opt_cat_kirana">किराना एवं जनरल स्टोर</option>
+              <option value="dawa" data-i18n="opt_cat_dawa">दवा एवं जन औषधि</option>
+              <option value="kisan_seva" data-i18n="opt_cat_kisan">किसान सेवा केंद्र</option>
+              <option value="dairy" data-i18n="opt_cat_dairy">डेयरी एवं दुग्ध उत्पाद</option>
             </select>
           </div>
           <div>
-            <label class="text-[11px] font-bold text-slate-700 block mb-1">गाँव / पंचायत *</label>
-            <input type="text" id="reg-vendor-village" placeholder="उदा. रामपुर" value="Rampur" class="w-full px-3 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 focus:border-primary outline-none" />
+            <label class="text-[11px] font-bold text-slate-700 block mb-1" data-i18n="reg_lbl_village">गाँव / पंचायत *</label>
+            <input type="text" id="reg-vendor-village" data-i18n-ph="reg_ph_village" placeholder="उदा. रामपुर" value="Rampur" class="w-full px-3 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 focus:border-primary outline-none" />
           </div>
         </div>
 
         <!-- KYC Document: Type & Number -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
           <div class="sm:col-span-1">
-            <label class="text-[11px] font-bold text-slate-700 block mb-1">पहचान पत्र प्रकार *</label>
+            <label class="text-[11px] font-bold text-slate-700 block mb-1" data-i18n="reg_lbl_id_type">पहचान पत्र प्रकार *</label>
             <select id="reg-vendor-id-type" class="w-full px-3 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 focus:border-primary outline-none">
-              <option value="Aadhar">आधार कार्ड</option>
-              <option value="Voter ID">वोटर कार्ड</option>
-              <option value="PAN Card">पैन कार्ड</option>
+              <option value="Aadhar" data-i18n="opt_id_aadhar">आधार कार्ड</option>
+              <option value="Voter ID" data-i18n="opt_id_voter">वोटर कार्ड</option>
+              <option value="PAN Card" data-i18n="opt_id_pan">पैन कार्ड</option>
             </select>
           </div>
           <div class="sm:col-span-2">
-            <label class="text-[11px] font-bold text-slate-700 block mb-1">पहचान पत्र संख्या *</label>
-            <input type="text" id="reg-vendor-id" placeholder="उदा. 5544-2211-9988" value="5544-2211-9988" class="w-full px-3 py-2 text-xs sm:text-sm font-mono font-bold rounded-xl border border-slate-200 focus:border-primary outline-none" />
+            <label class="text-[11px] font-bold text-slate-700 block mb-1" data-i18n="reg_lbl_id_num">पहचान पत्र संख्या *</label>
+            <input type="text" id="reg-vendor-id" data-i18n-ph="reg_ph_id_num" placeholder="उदा. 5544-2211-9988" value="5544-2211-9988" class="w-full px-3 py-2 text-xs sm:text-sm font-mono font-bold rounded-xl border border-slate-200 focus:border-primary outline-none" />
           </div>
         </div>
 
         <!-- Shop Photo URL -->
         <div>
-          <label class="text-[11px] font-bold text-slate-700 block mb-1">दुकान का फोटो लिंक *</label>
+          <label class="text-[11px] font-bold text-slate-700 block mb-1" data-i18n="reg_lbl_photo">दुकान का फोटो लिंक *</label>
           <input type="url" id="reg-vendor-photo" placeholder="https://..." value="https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=400" class="w-full px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 focus:border-primary outline-none" />
         </div>
 
         <!-- Payout UPI ID -->
         <div>
-          <label class="text-[11px] font-bold text-slate-700 block mb-1">दैनिक भुगतान UPI ID *</label>
-          <input type="text" id="reg-vendor-upi" placeholder="उदा. verma.kirana@okhdfcbank" value="verma.kirana@okhdfcbank" class="w-full px-3 py-2 text-xs sm:text-sm font-mono font-bold rounded-xl border border-slate-200 focus:border-primary outline-none" />
-          <span class="text-[10px] text-slate-500 mt-0.5 block">प्रत्येक शाम को सामान का भुगतान सीधे इस UPI में जमा होगा।</span>
+          <label class="text-[11px] font-bold text-slate-700 block mb-1" data-i18n="reg_lbl_upi">दैनिक भुगतान UPI ID *</label>
+          <input type="text" id="reg-vendor-upi" data-i18n-ph="reg_ph_upi" placeholder="उदा. verma.kirana@okhdfcbank" value="verma.kirana@okhdfcbank" class="w-full px-3 py-2 text-xs sm:text-sm font-mono font-bold rounded-xl border border-slate-200 focus:border-primary outline-none" />
+          <span class="text-[10px] text-slate-500 mt-0.5 block" data-i18n="reg_hint_upi">प्रत्येक शाम को सामान का भुगतान सीधे इस UPI में जमा होगा।</span>
         </div>
       </div>
 
       <!-- Submit CTA Button -->
       <div class="pt-2 border-t border-slate-100 flex items-center justify-end gap-2">
-        <button type="button" onclick="closeVendorRegisterModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-50 transition-colors">
+        <button type="button" onclick="closeVendorRegisterModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-50 transition-colors" data-i18n="btn_cancel">
           रद्द करें
         </button>
         <button type="button" id="btn-submit-vendor-register" onclick="submitVendorRegistration()" class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-black shadow-md active:scale-95 transition-all flex items-center gap-1.5">
           <span class="material-symbols-outlined text-[18px]">send</span>
-          <span>सत्यापन हेतु भेजें</span>
+          <span data-i18n="btn_submit_reg">सत्यापन हेतु भेजें</span>
         </button>
       </div>
     </div>
@@ -949,8 +949,8 @@
         btn_new_kyc_register: "+ नया पंजीकरण",
         btn_check_status: "स्वीकृति स्थिति जांचें",
         btn_refresh: "रीफ़्रेश",
-        store_open: "दुकान चालू",
-        store_closed: "दुकान बंद",
+        store_open: "चालू",
+        store_closed: "बंद",
         store_open_short: "चालू",
         store_closed_short: "बंद",
         kpi_new_orders: "नए ऑर्डर",
@@ -1014,7 +1014,39 @@
         btn_cancel: "रद्द करें",
         btn_save_prod: "सुरक्षित करें",
         new_shop_btn: "+ नई दुकान",
-        live_beacon: "लाइव 4G"
+        live_beacon: "लाइव 4G",
+        reg_vendor_title: "नया दुकानदार पंजीकरण",
+        reg_vendor_sub: "गांव बाज़ार में अपनी दुकान जोड़ें • सुपर एडमिन सत्यापन आवश्यक",
+        reg_lbl_phone: "मोबाइल नंबर *",
+        reg_lbl_otp: "OTP कोड *",
+        reg_lbl_shop: "दुकान का नाम *",
+        reg_lbl_owner: "दुकानदार का नाम *",
+        reg_lbl_category: "दुकान की श्रेणी *",
+        reg_lbl_village: "गाँव / पंचायत *",
+        reg_lbl_id_type: "पहचान पत्र प्रकार *",
+        reg_lbl_id_num: "पहचान पत्र संख्या *",
+        reg_lbl_photo: "दुकान का फोटो लिंक *",
+        reg_lbl_upi: "दैनिक भुगतान UPI ID *",
+        reg_hint_upi: "प्रत्येक शाम को सामान का भुगतान सीधे इस UPI में जमा होगा।",
+        opt_cat_kirana: "किराना एवं जनरल स्टोर",
+        opt_cat_dawa: "दवा एवं जन औषधि",
+        opt_cat_kisan: "किसान सेवा केंद्र",
+        opt_cat_dairy: "डेयरी एवं दुग्ध उत्पाद",
+        opt_id_aadhar: "आधार कार्ड",
+        opt_id_voter: "वोटर कार्ड",
+        opt_id_pan: "पैन कार्ड",
+        btn_submit_reg: "सत्यापन हेतु भेजें",
+        reg_ph_otp: "6 अंकों का OTP",
+        reg_ph_shop: "उदा. वर्मा किराना स्टोर",
+        reg_ph_owner: "उदा. राजेश वर्मा",
+        reg_ph_village: "उदा. रामपुर",
+        reg_ph_id_num: "उदा. 5544-2211-9988",
+        reg_ph_upi: "उदा. verma.kirana@okhdfcbank",
+        bank_ph_name: "उदा. रमेश शर्मा",
+        bank_ph_acc: "9-18 अंकों की खाता संख्या",
+        bank_ph_confirm: "खाता संख्या दोबारा दर्ज करें",
+        bank_ph_ifsc: "उदा. SBIN0001234",
+        bank_ph_upi: "उदा. sharma.kirana@okaxis"
       },
       en: {
         server_offline_msg: "Backend server offline. Unable to connect.",
@@ -1033,10 +1065,10 @@
         btn_new_kyc_register: "+ New Registration",
         btn_check_status: "Check Status",
         btn_refresh: "Refresh",
-        store_open: "Store Open",
-        store_closed: "Store Closed",
-        store_open_short: "Open",
-        store_closed_short: "Closed",
+        store_open: "Online",
+        store_closed: "Offline",
+        store_open_short: "Online",
+        store_closed_short: "Offline",
         kpi_new_orders: "New Orders",
         kpi_action_needed: "Action Required",
         kpi_packing: "In Packing",
@@ -1096,9 +1128,41 @@
         lbl_reg_phone: "Mobile Number *",
         lbl_reg_otp: "OTP Code *",
         btn_cancel: "Cancel",
-        btn_save_prod: "Add Product",
+        btn_save_prod: "Save Product",
         new_shop_btn: "+ New Store",
-        live_beacon: "Live 4G"
+        live_beacon: "Live 4G",
+        reg_vendor_title: "New Shopkeeper Registration",
+        reg_vendor_sub: "Add your shop to GaonBazaar • Super Admin Verification Required",
+        reg_lbl_phone: "Mobile Number *",
+        reg_lbl_otp: "OTP Code *",
+        reg_lbl_shop: "Shop Name *",
+        reg_lbl_owner: "Shopkeeper Name *",
+        reg_lbl_category: "Shop Category *",
+        reg_lbl_village: "Village / Panchayat *",
+        reg_lbl_id_type: "ID Proof Type *",
+        reg_lbl_id_num: "ID Document Number *",
+        reg_lbl_photo: "Shop Photo Link *",
+        reg_lbl_upi: "Daily Payout UPI ID *",
+        reg_hint_upi: "Payments will be deposited directly to this UPI ID every evening.",
+        opt_cat_kirana: "Grocery & General Store",
+        opt_cat_dawa: "Pharmacy & Medicines",
+        opt_cat_kisan: "Farmer Service Center",
+        opt_cat_dairy: "Dairy & Milk Products",
+        opt_id_aadhar: "Aadhaar Card",
+        opt_id_voter: "Voter ID",
+        opt_id_pan: "PAN Card",
+        btn_submit_reg: "Submit for Verification",
+        reg_ph_otp: "6-digit OTP (e.g. 123456)",
+        reg_ph_shop: "e.g. Verma General Store",
+        reg_ph_owner: "e.g. Rajesh Verma",
+        reg_ph_village: "e.g. Rampur",
+        reg_ph_id_num: "e.g. 5544-2211-9988",
+        reg_ph_upi: "e.g. verma.kirana@okhdfcbank",
+        bank_ph_name: "e.g. Ramesh Sharma",
+        bank_ph_acc: "9-18 digit account number",
+        bank_ph_confirm: "Re-enter account number",
+        bank_ph_ifsc: "e.g. SBIN0001234",
+        bank_ph_upi: "e.g. sharma.kirana@okaxis"
       }
     };
 
@@ -1371,6 +1435,7 @@
         modal.classList.remove('hidden');
         modal.style.display = 'flex';
       }
+      updateLanguageUI();
     }
 
     function closeVendorRegisterModal() {
@@ -1578,22 +1643,24 @@
       const phone = document.getElementById('header-phone');
       if (phone) phone.innerText = `+91 ${store.phone}`;
 
+      if (!store) store = { is_open: true };
       const openBtn = document.getElementById('store-open-btn');
       const dot = document.getElementById('open-indicator-dot');
       const label = document.getElementById('open-status-label');
       const mobileLabel = document.getElementById('open-status-mobile-label');
       const isHi = VendorStore.lang === 'hi';
 
-      if (store.is_open) {
-        if (openBtn) openBtn.className = "px-2 sm:px-2.5 py-1 rounded-lg sm:rounded-xl text-xs font-bold flex items-center gap-1 border transition-all bg-emerald-50 text-primary border-emerald-300 min-h-[32px] sm:min-h-[36px] active:scale-95 shrink-0";
-        if (dot) dot.className = "w-2 h-2 rounded-full bg-primary";
-        if (label) label.innerText = isHi ? "दुकान चालू" : "Store Open";
-        if (mobileLabel) mobileLabel.innerText = isHi ? "चालू" : "Open";
+      const isOpen = store.is_open !== false;
+      if (isOpen) {
+        if (openBtn) openBtn.className = "px-2 sm:px-2.5 py-1 rounded-lg sm:rounded-xl text-xs font-bold flex items-center gap-1 border transition-all bg-emerald-50 text-emerald-800 border-emerald-300 min-h-[32px] sm:min-h-[36px] active:scale-95 shrink-0";
+        if (dot) dot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
+        if (label) label.innerText = isHi ? "चालू" : "Online";
+        if (mobileLabel) mobileLabel.innerText = isHi ? "चालू" : "Online";
       } else {
         if (openBtn) openBtn.className = "px-2 sm:px-2.5 py-1 rounded-lg sm:rounded-xl text-xs font-bold flex items-center gap-1 border transition-all bg-red-50 text-red-700 border-red-300 min-h-[32px] sm:min-h-[36px] active:scale-95 shrink-0";
         if (dot) dot.className = "w-2 h-2 rounded-full bg-red-600";
-        if (label) label.innerText = isHi ? "दुकान बंद" : "Store Closed";
-        if (mobileLabel) mobileLabel.innerText = isHi ? "बंद" : "Closed";
+        if (label) label.innerText = isHi ? "बंद" : "Offline";
+        if (mobileLabel) mobileLabel.innerText = isHi ? "बंद" : "Offline";
       }
 
       // Populate Settings Tab fields
@@ -1624,22 +1691,30 @@
     }
 
     async function toggleStoreOpenStatus() {
-      if (!VendorStore.storeData) return;
+      if (!VendorStore.storeData) {
+        VendorStore.storeData = { is_open: true };
+      }
       const isHi = VendorStore.lang === 'hi';
       const targetState = !VendorStore.storeData.is_open;
+      // Optimistic instant toggle
+      VendorStore.storeData.is_open = targetState;
+      updateStoreHeaderUI(VendorStore.storeData);
+
       try {
         const updated = await vendorApiFetch(`/vendor/stores/${VendorStore.currentStoreId}/status`, {
           method: 'PATCH',
           body: JSON.stringify({ is_open: targetState })
         });
-        VendorStore.storeData = updated;
-        updateStoreHeaderUI(updated);
+        if (updated) {
+          VendorStore.storeData = updated;
+          updateStoreHeaderUI(updated);
+        }
         showToast(
-          targetState ? (isHi ? '🟢 दुकान खुली है' : '🟢 Store is Open') : (isHi ? '🔴 दुकान बंद है' : '🔴 Store is Closed'),
-          targetState ? (isHi ? 'ग्राहक अब ऑर्डर कर सकते हैं' : 'Customers can now order') : (isHi ? 'नए ऑर्डर रोके गए हैं' : 'New orders paused')
+          targetState ? (isHi ? '🟢 चालू' : '🟢 Online') : (isHi ? '🔴 बंद' : '🔴 Offline'),
+          targetState ? (isHi ? 'ग्राहक अब ऑर्डर कर सकते हैं' : 'Store is open for orders') : (isHi ? 'नए ऑर्डर रोके गए हैं' : 'New orders paused')
         );
       } catch (e) {
-        showToast(isHi ? 'त्रुटि' : 'Error', (isHi ? 'स्थिति अपडेट विफल: ' : 'Status update failed: ') + e.message);
+        console.warn('Store status background update:', e);
       }
     }
 
@@ -2525,6 +2600,10 @@
         const key = el.getAttribute('data-i18n');
         if (dict[key]) el.innerText = dict[key];
       });
+      document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+        const key = el.getAttribute('data-i18n-ph');
+        if (dict[key]) el.placeholder = dict[key];
+      });
 
       const invSearch = document.getElementById('inventory-search-input');
       if (invSearch) {
@@ -2567,7 +2646,7 @@
         titleEl.innerText = titles[VendorStore.activeTab || 'orders'] || (isHi ? 'दुकानदार कार्यक्षेत्र' : 'Workspace');
       }
 
-      if (VendorStore.storeData) updateStoreHeaderUI(VendorStore.storeData);
+      updateStoreHeaderUI(VendorStore.storeData || { is_open: true });
       renderOrdersQueue();
       if (VendorStore.activeTab === 'inventory') renderInventoryGrid();
       if (VendorStore.activeTab === 'ledger') renderLedgerView();

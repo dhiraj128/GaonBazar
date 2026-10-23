@@ -671,28 +671,28 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
           <div class="sm:col-span-2">
             <label class="block text-slate-300 font-bold mb-1" data-i18n="bank_lbl_name">खाताधारक का नाम *</label>
-            <input type="text" id="runner-bank-account-name" placeholder="उदा. Kamal Singh" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-semibold focus:outline-none focus:border-primary"/>
+            <input type="text" id="runner-bank-account-name" data-i18n-ph="bank_ph_name" placeholder="उदा. Kamal Singh" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-semibold focus:outline-none focus:border-primary"/>
           </div>
 
           <div>
             <label class="block text-slate-300 font-bold mb-1" data-i18n="bank_lbl_acc">बैंक खाता संख्या *</label>
-            <input type="password" id="runner-bank-account-number" placeholder="9-18 अंकों की खाता संख्या" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono font-semibold focus:outline-none focus:border-primary" autocomplete="off"/>
+            <input type="password" id="runner-bank-account-number" data-i18n-ph="bank_ph_acc" placeholder="9-18 अंकों की खाता संख्या" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono font-semibold focus:outline-none focus:border-primary" autocomplete="off"/>
           </div>
 
           <div>
             <label class="block text-slate-300 font-bold mb-1" data-i18n="bank_lbl_confirm">पुनः खाता संख्या दर्ज करें *</label>
-            <input type="password" id="runner-bank-confirm-account-number" placeholder="खाता संख्या दोबारा दर्ज करें" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono font-semibold focus:outline-none focus:border-primary" autocomplete="off"/>
+            <input type="password" id="runner-bank-confirm-account-number" data-i18n-ph="bank_ph_confirm" placeholder="खाता संख्या दोबारा दर्ज करें" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono font-semibold focus:outline-none focus:border-primary" autocomplete="off"/>
           </div>
 
           <div>
             <label class="block text-slate-300 font-bold mb-1" data-i18n="bank_lbl_ifsc">बैंक IFSC कोड *</label>
-            <input type="text" id="runner-bank-ifsc" placeholder="उदा. PUNB0123400" maxlength="11" oninput="this.value = this.value.toUpperCase()" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono font-semibold uppercase focus:outline-none focus:border-primary"/>
+            <input type="text" id="runner-bank-ifsc" data-i18n-ph="bank_ph_ifsc" placeholder="उदा. PUNB0123400" maxlength="11" oninput="this.value = this.value.toUpperCase()" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono font-semibold uppercase focus:outline-none focus:border-primary"/>
             <span class="text-[10px] text-slate-500 mt-0.5 block" data-i18n="bank_hint_ifsc">11 अक्षर (4 अक्षर, 0, 6 अल्फ़ान्यूमेरिक)</span>
           </div>
 
           <div>
             <label class="block text-slate-300 font-bold mb-1" data-i18n="bank_lbl_upi">UPI ID (VPA) *</label>
-            <input type="text" id="runner-bank-upi" placeholder="उदा. kamal.singh@ybl" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono font-semibold focus:outline-none focus:border-primary"/>
+            <input type="text" id="runner-bank-upi" data-i18n-ph="bank_ph_upi" placeholder="उदा. kamal.singh@ybl" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono font-semibold focus:outline-none focus:border-primary"/>
             <span class="text-[10px] text-slate-500 mt-0.5 block" data-i18n="bank_hint_upi">तत्काल कमीशन क्रेडिट व सेटलमेंट हेतु</span>
           </div>
         </div>
@@ -1059,7 +1059,12 @@
         lbl_otp_code: "6-अंकीय OTP कोड *",
         otp_demo_hint: "डेमो कोड: 123456",
         auth_new_runner_prompt: "नया गाँव मित्र बनना चाहते हैं?",
-        btn_new_kyc_register: "+ नया पंजीकरण"
+        btn_new_kyc_register: "+ नया पंजीकरण",
+        bank_ph_name: "उदा. कमल सिंह",
+        bank_ph_acc: "9-18 अंकों की खाता संख्या",
+        bank_ph_confirm: "खाता संख्या दोबारा दर्ज करें",
+        bank_ph_ifsc: "उदा. PUNB0123400",
+        bank_ph_upi: "उदा. kamal.singh@ybl"
       },
       en: {
         server_offline_msg: "Backend server offline. Unable to connect.",
@@ -1156,7 +1161,12 @@
         lbl_otp_code: "6-digit OTP Code *",
         otp_demo_hint: "Demo code: 123456",
         auth_new_runner_prompt: "Want to become a new Gaon Mitra?",
-        btn_new_kyc_register: "+ New KYC Registration"
+        btn_new_kyc_register: "+ New KYC Registration",
+        bank_ph_name: "e.g. Kamal Singh",
+        bank_ph_acc: "9-18 digit account number",
+        bank_ph_confirm: "Re-enter account number",
+        bank_ph_ifsc: "e.g. PUNB0123400",
+        bank_ph_upi: "e.g. kamal.singh@ybl"
       }
     };
 
@@ -2373,6 +2383,10 @@
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (dict[key]) el.innerText = dict[key];
+      });
+      document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+        const key = el.getAttribute('data-i18n-ph');
+        if (dict[key]) el.placeholder = dict[key];
       });
 
       // Update Filter button texts
