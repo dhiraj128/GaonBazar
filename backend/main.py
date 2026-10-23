@@ -601,6 +601,16 @@ DEFAULT_STORE_COORDS = {
 }
 
 
+def is_geofence_bypass_enabled() -> bool:
+    """
+    Checks if the 8.0 km geofence validation is bypassed via environment configuration.
+    - If BYPASS_GEOFENCE=True (or 'true', '1', 'yes'), returns True (skip distance enforcement for testing).
+    - If False, missing, or any other value, returns False (strictly enforce 8.0 km limit).
+    """
+    raw_val = os.getenv("BYPASS_GEOFENCE", "False")
+    return str(raw_val).strip().lower() in ("true", "1", "yes")
+
+
 @app.post("/api/orders/checkout", response_model=CheckoutResponse, dependencies=[Depends(enforce_checkout_rate_limit)])
 def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
     """
@@ -712,8 +722,8 @@ def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
         else:
             distance_km = 1.2
 
-    # Reject if outside delivery zone (> 8.0 km)
-    if distance_km > 8.0:
+    # Reject if outside delivery zone (> 8.0 km) unless BYPASS_GEOFENCE=True
+    if not is_geofence_bypass_enabled() and distance_km > 8.0:
         raise HTTPException(
             status_code=400,
             detail=f"Outside delivery zone ({distance_km} km exceeds 8.0 km maximum delivery radius) / डिलीवरी क्षेत्र से बाहर है (> 8.0 किमी)"
@@ -1439,7 +1449,7 @@ def create_payment_order(payload: CreatePaymentOrderRequest, db: Session = Depen
             raise HTTPException(status_code=400, detail=f"Minimum order is ₹99. Add ₹{diff_str} more.")
 
         distance_km = float(payload.distance_km) if payload.distance_km is not None else 1.2
-        if distance_km > 8.0:
+        if not is_geofence_bypass_enabled() and distance_km > 8.0:
             raise HTTPException(status_code=400, detail=f"Outside delivery zone ({distance_km} km exceeds 8.0 km limit)")
 
         platform_fee = 3.0
