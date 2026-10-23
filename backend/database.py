@@ -114,7 +114,13 @@ def ensure_schema_migrations():
             ("refund_penalty", "FLOAT DEFAULT 0.0"),
             ("cancellation_reason", "VARCHAR(255)"),
             ("delivery_discount", "FLOAT DEFAULT 0.0"),
-            ("base_delivery_fee", "FLOAT DEFAULT 0.0")
+            ("base_delivery_fee", "FLOAT DEFAULT 0.0"),
+            ("payment_status", "VARCHAR(30) DEFAULT 'PENDING'"),
+            ("razorpay_order_id", "VARCHAR(100)"),
+            ("razorpay_payment_id", "VARCHAR(100)"),
+            ("razorpay_signature", "VARCHAR(255)"),
+            ("split_payout_status", "VARCHAR(30) DEFAULT 'unprocessed'"),
+            ("paid_at", "DATETIME")
         ]
         for col_name, col_type in order_cols:
             if col_name not in existing_order_cols:
@@ -204,6 +210,35 @@ def ensure_schema_migrations():
             conn.commit()
         except Exception as e:
             print(f"Notice creating saved_payment_methods table: {e}")
+
+        # Ensure payment_transactions table exists
+        try:
+            conn.execute(text("""
+                CREATE TABLE IF NOT EXISTS payment_transactions (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    order_id VARCHAR(50) NOT NULL,
+                    razorpay_order_id VARCHAR(100),
+                    razorpay_payment_id VARCHAR(100),
+                    amount FLOAT NOT NULL,
+                    amount_in_paise INTEGER NOT NULL,
+                    currency VARCHAR(10) DEFAULT 'INR',
+                    status VARCHAR(30) DEFAULT 'created',
+                    payment_mode VARCHAR(30) DEFAULT 'ONLINE',
+                    signature VARCHAR(255),
+                    verified BOOLEAN DEFAULT 0,
+                    verified_at DATETIME,
+                    raw_payload TEXT,
+                    vendor_split_amount FLOAT DEFAULT 0.0,
+                    runner_split_amount FLOAT DEFAULT 0.0,
+                    admin_platform_fee FLOAT DEFAULT 3.0,
+                    admin_margin FLOAT DEFAULT 0.0,
+                    route_transfer_status VARCHAR(30) DEFAULT 'prepared',
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )
+            """))
+            conn.commit()
+        except Exception as e:
+            print(f"Notice creating payment_transactions table: {e}")
 
         # Ensure all existing orders have balanced distance-based ledger splits
         try:

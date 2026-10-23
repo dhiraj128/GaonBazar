@@ -727,6 +727,63 @@ class AdminPayoutStatusUpdateRequest(SecureBaseModel):
         return self
 
 
+# =============================================================================
+# RAZORPAY ZERO-TRUST PAYMENT SCHEMAS
+# =============================================================================
+
+class CreatePaymentOrderRequest(SecureBaseModel):
+    order_id: Optional[str] = None
+    items: Optional[List[CartItemInput]] = None
+    store_id: Optional[str] = "sharma_brothers"
+    user_phone: Optional[str] = None
+    user_name: Optional[str] = None
+    village: Optional[str] = None
+    landmark: Optional[str] = None
+    distance_km: Optional[float] = None
+    customer_lat: Optional[float] = None
+    customer_lng: Optional[float] = None
+    amount: Optional[float] = None  # Client-supplied amount to check for tampering
+
+
+class CreatePaymentOrderResponse(BaseModel):
+    success: bool
+    order_id: str
+    razorpay_order_id: str
+    amount: float
+    amount_in_paise: int
+    currency: str = "INR"
+    key_id: str
+    customer: dict
+    message: str = "Razorpay order created successfully"
+
+
+class WebhookPaymentEventResponse(BaseModel):
+    success: bool
+    event: str
+    order_id: Optional[str] = None
+    payment_id: Optional[str] = None
+    status: str
+    split_status: Optional[str] = None
+    message: str
+
+
+class SplitPayoutDetailsDTO(BaseModel):
+    order_id: str
+    total_amount: float
+    subtotal: float
+    vendor_id: str
+    vendor_name: str
+    vendor_payout: float
+    runner_id: Optional[str] = None
+    runner_payout: float
+    platform_fee: float
+    admin_profit: float
+    payment_status: str
+    split_payout_status: str
+    route_transfers: List[dict]
+
+
+
 
 
 

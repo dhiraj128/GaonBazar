@@ -141,10 +141,17 @@ class Order(Base):
     refund_amount = Column(Float, default=0.0)
     refund_penalty = Column(Float, default=0.0)
     cancellation_reason = Column(String(255), nullable=True)
+    payment_status = Column(String(30), default="PENDING")  # "PENDING", "PAID", "FAILED"
+    razorpay_order_id = Column(String(100), nullable=True, index=True)
+    razorpay_payment_id = Column(String(100), nullable=True)
+    razorpay_signature = Column(String(255), nullable=True)
+    split_payout_status = Column(String(30), default="unprocessed")  # "unprocessed", "prepared", "settled"
+    paid_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", back_populates="orders")
     items = relationship("OrderItem", back_populates="order", cascade="all, delete-orphan")
+    transactions = relationship("PaymentTransaction", back_populates="order", cascade="all, delete-orphan")
 
 
 class OrderItem(Base):
@@ -210,6 +217,36 @@ class SavedPaymentMethod(Base):
     is_default = Column(Boolean, default=False)
     token_id = Column(String(100), nullable=True)  # e.g. "tok_rzp_mock_12345"
     created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class PaymentTransaction(Base):
+    __tablename__ = "payment_transactions"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    order_id = Column(String(50), ForeignKey("orders.id"), nullable=False, index=True)
+    razorpay_order_id = Column(String(100), index=True, nullable=True)
+    razorpay_payment_id = Column(String(100), index=True, nullable=True)
+    amount = Column(Float, nullable=False)
+    amount_in_paise = Column(Integer, nullable=False)
+    currency = Column(String(10), default="INR")
+    status = Column(String(30), default="created")  # "created", "captured", "failed", "verified"
+    payment_mode = Column(String(30), default="ONLINE")
+    signature = Column(String(255), nullable=True)
+    verified = Column(Boolean, default=False)
+    verified_at = Column(DateTime, nullable=True)
+    raw_payload = Column(Text, nullable=True)
+
+    # Razorpay Route split payout preparation
+    vendor_split_amount = Column(Float, default=0.0)
+    runner_split_amount = Column(Float, default=0.0)
+    admin_platform_fee = Column(Float, default=3.0)
+    admin_margin = Column(Float, default=0.0)
+    route_transfer_status = Column(String(30), default="prepared")  # "prepared", "settled"
+
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    order = relationship("Order", back_populates="transactions")
+
 
 
 
