@@ -440,12 +440,12 @@ def _run_admin_e2e_steps(browser, logger, contexts):
     capture_screenshot(admin_page, "08_admin_vendor_kyc_queue", logger)
 
     # Click Approve on this specific vendor card
-    approve_vendor_btn = admin_page.locator(f'#vendors-approval-container > div:has-text("{v_shop}") button:has-text("स्वीकारें (Approve)")').first
+    approve_vendor_btn = admin_page.locator(f'#vendors-approval-container > div:has-text("{v_shop}") button[data-action="approve"], #vendors-approval-container > div:has-text("{v_shop}") button:has-text("Approve"), #vendors-approval-container > div:has-text("{v_shop}") button:has-text("स्वीकारें")').first
     if approve_vendor_btn.count() > 0:
         approve_vendor_btn.click()
     else:
         # Fallback to any pending vendor approve button within approval container
-        admin_page.locator('#vendors-approval-container button:has-text("स्वीकारें (Approve)")').first.click()
+        admin_page.locator('#vendors-approval-container button[data-action="approve"], #vendors-approval-container button:has-text("Approve"), #vendors-approval-container button:has-text("स्वीकारें")').first.click()
 
     admin_page.wait_for_timeout(1000)
     capture_screenshot(admin_page, "09_admin_vendor_approved", logger)
@@ -465,12 +465,12 @@ def _run_admin_e2e_steps(browser, logger, contexts):
     capture_screenshot(admin_page, "10_admin_runner_kyc_queue", logger)
 
     # Click Approve on this specific runner card
-    approve_runner_btn = admin_page.locator(f'#runners-approval-container > div:has-text("{r_name}") button:has-text("स्वीकारें (Approve)")').first
+    approve_runner_btn = admin_page.locator(f'#runners-approval-container > div:has-text("{r_name}") button[data-action="approve"], #runners-approval-container > div:has-text("{r_name}") button:has-text("Approve"), #runners-approval-container > div:has-text("{r_name}") button:has-text("स्वीकारें")').first
     if approve_runner_btn.count() > 0:
         approve_runner_btn.click()
     else:
         # Fallback to any pending runner approve button within approval container
-        admin_page.locator('#runners-approval-container button:has-text("स्वीकारें (Approve)")').first.click()
+        admin_page.locator('#runners-approval-container button[data-action="approve"], #runners-approval-container button:has-text("Approve"), #runners-approval-container button:has-text("स्वीकारें")').first.click()
 
     admin_page.wait_for_timeout(1000)
     capture_screenshot(admin_page, "11_admin_runner_approved", logger)

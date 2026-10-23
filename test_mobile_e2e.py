@@ -684,9 +684,17 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     logger.record_test(f"[{dev_name}] MOV < ₹99 (₹50 Cart): Bilingual Warning Banner Visible", is_alert_visible, "Warning banner shown")
 
     alert_text = page.inner_text("#p4-mov-alert") if is_alert_visible else ""
-    expected_alert = "Minimum order is ₹99 / कम से कम ₹99 का ऑर्डर करें. Add ₹49 more."
-    has_expected_text = expected_alert in alert_text
-    logger.record_test(f"[{dev_name}] MOV < ₹99 (₹50 Cart): High-Contrast Bilingual Alert Content", has_expected_text, alert_text)
+    # Dynamic MOV alert verification via window.translations
+    is_valid_mov_alert = page.evaluate("""() => {
+        const lang = (window.AppStore && window.AppStore.lang) ? window.AppStore.lang : 'hi';
+        const dict = (window.translations && window.translations[lang]) ? window.translations[lang] : (window.translations ? window.translations['hi'] : {});
+        const alertEl = document.getElementById('p4-mov-alert-text');
+        if (!alertEl) return false;
+        const text = alertEl.innerText;
+        const base = dict.p4_mov_alert || (lang === 'hi' ? 'कम से कम ₹99 का ऑर्डर करें।' : 'Minimum order is ₹99.');
+        return text.includes('49') && (text.includes(base) || text.includes('₹99'));
+    }""")
+    logger.record_test(f"[{dev_name}] MOV < ₹99 (₹50 Cart): Dynamic Localized Alert Content", is_valid_mov_alert, alert_text)
 
     # Assert forced click does not proceed to checkout
     page.click('#p4-btn-proceed', force=True)

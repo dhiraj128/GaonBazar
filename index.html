@@ -3953,9 +3953,10 @@
           const diff = MIN_ORDER_VALUE - subtotal;
           const diffStr = Number.isInteger(diff) ? diff : diff.toFixed(2);
           if (movAlertText) {
-            movAlertText.innerText = isHi 
-              ? `कम से कम ₹99 का ऑर्डर करें। ₹${diffStr} का सामान और जोड़ें।`
-              : `Minimum order is ₹99. Add ₹${diffStr} more.`;
+            const dict = (window.translations && window.translations[AppStore.lang]) ? window.translations[AppStore.lang] : (i18nDictionary[AppStore.lang] || i18nDictionary['hi']);
+            const baseAlert = dict.p4_mov_alert || (isHi ? 'कम से कम ₹99 का ऑर्डर करें।' : 'Minimum order is ₹99.');
+            const addMsg = isHi ? `₹${diffStr} का सामान और जोड़ें।` : `Add ₹${diffStr} more.`;
+            movAlertText.innerText = `${baseAlert} ${addMsg}`;
           }
           movAlert.classList.remove('hidden');
           movAlert.classList.add('flex');

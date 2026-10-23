@@ -1,726 +1,726 @@
 ================================================================================
                GAONBAZAAR HUMAN-LIKE VISUAL UX TEST REPORT                    
 ================================================================================
-Date & Time: 2026-10-23 10:22:27
+Date & Time: 2026-10-23 12:38:30
 Tested File: C:\Users\dhira\Downloads\Goa Bazar\index.html
 Screenshots Directory: C:\Users\dhira\Downloads\Goa Bazar\screenshots
 Total Visual Screenshots Captured: 70
 Total Checks: 470
-Passed: 470
-Failed: 0
-Overall Status: SUCCESS (100% HEALTHY)
+Passed: 465
+Failed: 5
+Overall Status: ATTENTION REQUIRED
 --------------------------------------------------------------------------------
-[2026-10-23 10:20:16] Starting Playwright Human-Like Visual & UX Mobile Test Suite for GaonBazaar...
-[2026-10-23 10:20:17]   🚀 Starting GaonBazaar FastAPI backend server in background on port 8001 (no-reload)...
-[2026-10-23 10:20:20]   ✓ GaonBazaar Backend verified ready on http://127.0.0.1:8001/docs (2.23s)
-[2026-10-23 10:20:20] 
+[2026-10-23 12:35:16] Starting Playwright Human-Like Visual & UX Mobile Test Suite for GaonBazaar...
+[2026-10-23 12:35:17]   🚀 Starting GaonBazaar FastAPI backend server in background on port 8001 (no-reload)...
+[2026-10-23 12:35:20]   ✓ GaonBazaar Backend verified ready on http://127.0.0.1:8001/docs (2.80s)
+[2026-10-23 12:35:21] 
 ================================================================================
-[2026-10-23 10:20:20] STARTING HUMAN-LIKE VISUAL UX SIMULATION: iPhone 16
-[2026-10-23 10:20:20] Dimensions: 393x852 | DPR: 3.0
-[2026-10-23 10:20:20] ================================================================================
-[2026-10-23 10:20:20] Loading application: file:///C:/Users/dhira/Downloads/Goa%20Bazar/index.html
-[2026-10-23 10:20:22]   ✓ PASS: [iPhone 16] HTML Viewport Meta Tag Check (content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover")
-[2026-10-23 10:20:22] 
+[2026-10-23 12:35:21] STARTING HUMAN-LIKE VISUAL UX SIMULATION: iPhone 16
+[2026-10-23 12:35:21] Dimensions: 393x852 | DPR: 3.0
+[2026-10-23 12:35:21] ================================================================================
+[2026-10-23 12:35:21] Loading application: file:///C:/Users/dhira/Downloads/Goa%20Bazar/index.html
+[2026-10-23 12:35:28]   ✓ PASS: [iPhone 16] HTML Viewport Meta Tag Check (content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover")
+[2026-10-23 12:35:28] 
 --- [iPhone 16] Testing Phase 1.1: Phone Login & Language Toggle ---
-[2026-10-23 10:20:22]   ✓ PASS: [iPhone 16] Phase 1.1 Login - No Horizontal Overflow (doc: 393px, viewport: 393px)
-[2026-10-23 10:20:22]   ✓ PASS: [iPhone 16] Phase 1.1 Login - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
-[2026-10-23 10:20:23]   📸 [SCREENSHOT CAPTURED]: screenshots/iPhone_16/step1_01_login_initial.png
-[2026-10-23 10:20:23]   ✓ PASS: [iPhone 16] Language Toggle Pill - Human Viewport & Touch Target Audit (Bounds: 72x32px at (x:267, y:31) | Viewport: 393x852px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:23]   ✓ PASS: [iPhone 16] Bilingual Toggle (Instant State Switch) (हिंदी -> English)
-[2026-10-23 10:20:24]   📸 [SCREENSHOT CAPTURED]: screenshots/iPhone_16/step1_02_bilingual_toggle_en.png
-[2026-10-23 10:20:24]   ✓ PASS: [iPhone 16] Phone Number Input Field - Human Viewport & Touch Target Audit (Bounds: 226x56px at (x:116, y:437) | Viewport: 393x852px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:24]   ✓ PASS: [iPhone 16] Send OTP Button (Initial Disabled State) - Human Viewport & Touch Target Audit (Bounds: 319x54px at (x:37, y:622) | Viewport: 393x852px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:25]   ✓ PASS: [iPhone 16] 10-Digit Mobile Validation (Send OTP button enabled)
-[2026-10-23 10:20:25]   ✓ PASS: [iPhone 16] Send OTP Button (Active Enabled State) - Human Viewport & Touch Target Audit (Bounds: 319x54px at (x:37, y:622) | Viewport: 393x852px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:25]   📸 [SCREENSHOT CAPTURED]: screenshots/iPhone_16/step1_03_phone_validated.png
-[2026-10-23 10:20:26] 
+[2026-10-23 12:35:28]   ✓ PASS: [iPhone 16] Phase 1.1 Login - No Horizontal Overflow (doc: 393px, viewport: 393px)
+[2026-10-23 12:35:28]   ✓ PASS: [iPhone 16] Phase 1.1 Login - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
+[2026-10-23 12:35:43]   📸 [SCREENSHOT CAPTURED]: screenshots/iPhone_16/step1_01_login_initial.png
+[2026-10-23 12:35:43]   ✓ PASS: [iPhone 16] Language Toggle Pill - Human Viewport & Touch Target Audit (Bounds: 72x32px at (x:267, y:31) | Viewport: 393x852px | Collisions: None | Occlusion: None)
+[2026-10-23 12:35:44]   ✓ PASS: [iPhone 16] Bilingual Toggle (Instant State Switch) (हिंदी -> English)
+[2026-10-23 12:35:44]   📸 [SCREENSHOT CAPTURED]: screenshots/iPhone_16/step1_02_bilingual_toggle_en.png
+[2026-10-23 12:35:44]   ✓ PASS: [iPhone 16] Phone Number Input Field - Human Viewport & Touch Target Audit (Bounds: 226x56px at (x:116, y:437) | Viewport: 393x852px | Collisions: None | Occlusion: None)
+[2026-10-23 12:35:45]   ✓ PASS: [iPhone 16] Send OTP Button (Initial Disabled State) - Human Viewport & Touch Target Audit (Bounds: 319x54px at (x:37, y:622) | Viewport: 393x852px | Collisions: None | Occlusion: None)
+[2026-10-23 12:35:45]   ✓ PASS: [iPhone 16] 10-Digit Mobile Validation (Send OTP button enabled)
+[2026-10-23 12:35:45]   ✓ PASS: [iPhone 16] Send OTP Button (Active Enabled State) - Human Viewport & Touch Target Audit (Bounds: 319x54px at (x:37, y:622) | Viewport: 393x852px | Collisions: None | Occlusion: None)
+[2026-10-23 12:35:45]   📸 [SCREENSHOT CAPTURED]: screenshots/iPhone_16/step1_03_phone_validated.png
+[2026-10-23 12:35:46] 
 --- [iPhone 16] Testing Phase 1.2: OTP Verification ---
-[2026-10-23 10:20:26]   ✓ PASS: [iPhone 16] Transition to OTP Screen 
-[2026-10-23 10:20:26]   ✓ PASS: [iPhone 16] Phase 1.2 OTP - No Horizontal Overflow (doc: 393px, viewport: 393px)
-[2026-10-23 10:20:26]   ✓ PASS: [iPhone 16] Phase 1.2 OTP - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
-[2026-10-23 10:20:27]   ✓ PASS: [iPhone 16] OTP Verify & Continue Button - Human Viewport & Touch Target Audit (Bounds: 361x54px at (x:16, y:492) | Viewport: 393x852px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:27]   📸 [SCREENSHOT CAPTURED]: screenshots/iPhone_16/step2_01_otp_verification.png
-[2026-10-23 10:20:27]   ✓ PASS: [iPhone 16] Zero-Friction Onboarding (OTP -> Dashboard Transition) (User immediately enters Dashboard without early location gate)
-[2026-10-23 10:20:27]   ✓ PASS: [iPhone 16] Landmark Setup Deferred from Initial Auth (Landmark screen deferred to checkout phase)
-[2026-10-23 10:20:27] 
+[2026-10-23 12:35:46]   ✓ PASS: [iPhone 16] Transition to OTP Screen 
+[2026-10-23 12:35:46]   ✓ PASS: [iPhone 16] Phase 1.2 OTP - No Horizontal Overflow (doc: 393px, viewport: 393px)
+[2026-10-23 12:35:46]   ✓ PASS: [iPhone 16] Phase 1.2 OTP - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
+[2026-10-23 12:35:47]   ✓ PASS: [iPhone 16] OTP Verify & Continue Button - Human Viewport & Touch Target Audit (Bounds: 361x54px at (x:16, y:492) | Viewport: 393x852px | Collisions: None | Occlusion: None)
+[2026-10-23 12:35:47]   📸 [SCREENSHOT CAPTURED]: screenshots/iPhone_16/step2_01_otp_verification.png
+[2026-10-23 12:35:48]   ✓ PASS: [iPhone 16] Zero-Friction Onboarding (OTP -> Dashboard Transition) (User immediately enters Dashboard without early location gate)
+[2026-10-23 12:35:48]   ✓ PASS: [iPhone 16] Landmark Setup Deferred from Initial Auth (Landmark screen deferred to checkout phase)
+[2026-10-23 12:35:48] 
 --- [iPhone 16] Testing Phase 2: Main Dashboard & Store Discovery ---
-[2026-10-23 10:20:27]   ✓ PASS: [iPhone 16] Transition to Dashboard 
-[2026-10-23 10:20:27]   ✓ PASS: [iPhone 16] Phase 2 Dashboard - No Horizontal Overflow (doc: 393px, viewport: 393px)
-[2026-10-23 10:20:27]   ✓ PASS: [iPhone 16] Phase 2 Dashboard - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
-[2026-10-23 10:20:27]   ✓ PASS: [iPhone 16] Sticky Village Header Rendered (गाँव चुनें / Set Delivery Location)
-[2026-10-23 10:20:27]   ✓ PASS: [iPhone 16] Main Dashboard Search Bar - Human Viewport & Touch Target Audit (Bounds: 207x36px at (x:57, y:171) | Viewport: 393x852px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:28]   ✓ PASS: [iPhone 16] Store Discovery Search ('Sharma') (Sharma Brothers Kirana matched)
-[2026-10-23 10:20:28]   ✓ PASS: [iPhone 16] Product Discovery Search ('Sugar') (Found Sugar product in instant discovery overlay)
-[2026-10-23 10:20:28]   ✓ PASS: [iPhone 16] Phase 2 Store Feed Dynamic ETA (<= 5.0 km -> '30 Mins') (Store 1 ETA: '30 Mins' | Store 2 ETA: '30 Mins')
-[2026-10-23 10:20:29]   ✓ PASS: [iPhone 16] Sharma Brothers Store Card - Human Viewport & Touch Target Audit (Bounds: 361x129px at (x:16, y:451) | Viewport: 393x852px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:29]   📸 [SCREENSHOT CAPTURED]: screenshots/iPhone_16/step4_01_main_dashboard.png
-[2026-10-23 10:20:30] 
+[2026-10-23 12:35:48]   ✓ PASS: [iPhone 16] Transition to Dashboard 
+[2026-10-23 12:35:48]   ✓ PASS: [iPhone 16] Phase 2 Dashboard - No Horizontal Overflow (doc: 393px, viewport: 393px)
+[2026-10-23 12:35:48]   ✓ PASS: [iPhone 16] Phase 2 Dashboard - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
+[2026-10-23 12:35:48]   ✓ PASS: [iPhone 16] Sticky Village Header Rendered (स्थान चुनें)
+[2026-10-23 12:35:48]   ✓ PASS: [iPhone 16] Main Dashboard Search Bar - Human Viewport & Touch Target Audit (Bounds: 207x36px at (x:57, y:171) | Viewport: 393x852px | Collisions: None | Occlusion: None)
+[2026-10-23 12:35:49]   ✓ PASS: [iPhone 16] Store Discovery Search ('Sharma') (Sharma Brothers Kirana matched)
+[2026-10-23 12:35:49]   ✓ PASS: [iPhone 16] Product Discovery Search ('Sugar') (Found Sugar product in instant discovery overlay)
+[2026-10-23 12:35:49]   ✓ PASS: [iPhone 16] Phase 2 Store Feed Dynamic ETA (<= 5.0 km -> '30 Mins') (Store 1 ETA: '30 Mins' | Store 2 ETA: '30 Mins')
+[2026-10-23 12:35:50]   ✓ PASS: [iPhone 16] Sharma Brothers Store Card - Human Viewport & Touch Target Audit (Bounds: 361x129px at (x:16, y:451) | Viewport: 393x852px | Collisions: None | Occlusion: None)
+[2026-10-23 12:35:50]   📸 [SCREENSHOT CAPTURED]: screenshots/iPhone_16/step4_01_main_dashboard.png
+[2026-10-23 12:35:51] 
 --- [iPhone 16] Testing Phase 3: Store Catalog & Dynamic Steppers ---
-[2026-10-23 10:20:30]   ✓ PASS: [iPhone 16] Transition to Store View (Sharma Brothers Kirana) 
-[2026-10-23 10:20:30]   ✓ PASS: [iPhone 16] Phase 3 Store Overview ETA ('30 Mins') (P3 ETA: '30 Mins')
-[2026-10-23 10:20:30]   ✓ PASS: [iPhone 16] Phase 3 Store - No Horizontal Overflow (doc: 393px, viewport: 393px)
-[2026-10-23 10:20:30]   ✓ PASS: [iPhone 16] Phase 3 Store - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
-[2026-10-23 10:20:30]   ✓ PASS: [iPhone 16] Product 'ADD' Button - Human Viewport & Touch Target Audit (Bounds: 73x36px at (x:287, y:299) | Viewport: 393x852px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:30]   📸 [SCREENSHOT CAPTURED]: screenshots/iPhone_16/step5_01_store_catalog.png
-[2026-10-23 10:20:31]   ✓ PASS: [iPhone 16] Dynamic Stepper -> Cart Bar Triggered (Cart bar popped up)
-[2026-10-23 10:20:31]   ✓ PASS: [iPhone 16] Sticky Bottom Floating Cart Bar - Human Viewport & Touch Target Audit (Bounds: 393x89px at (x:0, y:763) | Viewport: 393x852px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:31]   📸 [SCREENSHOT CAPTURED]: screenshots/iPhone_16/step5_02_cart_bar_popped.png
-[2026-10-23 10:20:31] 
+[2026-10-23 12:35:51]   ✓ PASS: [iPhone 16] Transition to Store View (Sharma Brothers Kirana) 
+[2026-10-23 12:35:51]   ✓ PASS: [iPhone 16] Phase 3 Store Overview ETA ('30 Mins') (P3 ETA: '30 Mins')
+[2026-10-23 12:35:51]   ✓ PASS: [iPhone 16] Phase 3 Store - No Horizontal Overflow (doc: 393px, viewport: 393px)
+[2026-10-23 12:35:51]   ✓ PASS: [iPhone 16] Phase 3 Store - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
+[2026-10-23 12:35:51]   ✓ PASS: [iPhone 16] Product 'ADD' Button - Human Viewport & Touch Target Audit (Bounds: 73x36px at (x:287, y:299) | Viewport: 393x852px | Collisions: None | Occlusion: None)
+[2026-10-23 12:35:51]   📸 [SCREENSHOT CAPTURED]: screenshots/iPhone_16/step5_01_store_catalog.png
+[2026-10-23 12:35:52]   ✓ PASS: [iPhone 16] Dynamic Stepper -> Cart Bar Triggered (Cart bar popped up)
+[2026-10-23 12:35:52]   ✓ PASS: [iPhone 16] Sticky Bottom Floating Cart Bar - Human Viewport & Touch Target Audit (Bounds: 393x89px at (x:0, y:763) | Viewport: 393x852px | Collisions: None | Occlusion: None)
+[2026-10-23 12:35:52]   📸 [SCREENSHOT CAPTURED]: screenshots/iPhone_16/step5_02_cart_bar_popped.png
+[2026-10-23 12:35:53] 
 --- [iPhone 16] Testing Phase 4.1: Cart Review & Minimum Order Value (MOV) ---
-[2026-10-23 10:20:31]   ✓ PASS: [iPhone 16] Transition to Cart Review Screen 
-[2026-10-23 10:20:31]   ✓ PASS: [iPhone 16] Phase 4.1 Cart - No Horizontal Overflow (doc: 393px, viewport: 393px)
-[2026-10-23 10:20:31]   ✓ PASS: [iPhone 16] Phase 4.1 Cart - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
-[2026-10-23 10:20:31] 
+[2026-10-23 12:35:53]   ✓ PASS: [iPhone 16] Transition to Cart Review Screen 
+[2026-10-23 12:35:53]   ✓ PASS: [iPhone 16] Phase 4.1 Cart - No Horizontal Overflow (doc: 393px, viewport: 393px)
+[2026-10-23 12:35:53]   ✓ PASS: [iPhone 16] Phase 4.1 Cart - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
+[2026-10-23 12:35:53] 
 --- [iPhone 16] Testing Minimum Order Value (MOV) ₹99 Validation ---
-[2026-10-23 10:20:32]   ✓ PASS: [iPhone 16] MOV < ₹99 (₹50 Cart): Proceed CTA Disabled (Button disabled when cart subtotal < ₹99)
-[2026-10-23 10:20:32]   ✓ PASS: [iPhone 16] MOV < ₹99 (₹50 Cart): Bilingual Warning Banner Visible (Warning banner shown)
-[2026-10-23 10:20:32]   ✓ PASS: [iPhone 16] MOV < ₹99 (₹50 Cart): High-Contrast Bilingual Alert Content (warning
-Minimum order is ₹99 / कम से कम ₹99 का ऑर्डर करें. Add ₹49 more.)
-[2026-10-23 10:20:32]   ✓ PASS: [iPhone 16] MOV < ₹99 (₹50 Cart): Checkout Navigation Guarded (User cannot bypass to checkout)
-[2026-10-23 10:20:32]   ✓ PASS: [iPhone 16] MOV < ₹99 (₹50 Cart): Backend API Rejection (HTTP 400) (API rejected: Minimum order is ₹99 / कम से कम ₹99 का ऑर्डर करें. Add ₹49 more.)
-[2026-10-23 10:20:32]   📸 [SCREENSHOT CAPTURED]: screenshots/iPhone_16/step6_01_mov_alert_active.png
-[2026-10-23 10:20:33]   ✓ PASS: [iPhone 16] MOV >= ₹99 (₹150 Cart): Warning Banner Hidden (Warning banner automatically removed)
-[2026-10-23 10:20:33]   ✓ PASS: [iPhone 16] MOV >= ₹99 (₹150 Cart): Proceed CTA Enabled (Button active and ready for checkout)
-[2026-10-23 10:20:33]   ✓ PASS: [iPhone 16] Dynamic Delivery Local Tier UI (1.2 km, ₹150 Subtotal -> ₹15 Delivery, ₹3 Platform, ₹168 Total) (Delivery: ₹15.00, Platform: ₹3.00, Total: ₹168.00)
-[2026-10-23 10:20:33]   ✓ PASS: [iPhone 16] Backend Local Tier Splits (1.2 km, ₹150 Subtotal -> Fee ₹15, Vendor ₹150, Runner ₹10, Admin ₹8, ETA 30 Mins) (Resp: {'success': True, 'order_id': '#RUR-6962', 'subtotal': 150.0, 'delivery_fee': 15.0, 'delivery_discount': 0.0, 'base_delivery_fee': 15.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 168.0, 'vendor_payout': 150.0, 'runner_payout': 10.0, 'admin_profit': 8.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 1.2, 'eta_mins': '30 Mins', 'created_at': '2026-10-23T04:50:33.045868'} (Status: 200))
-[2026-10-23 10:20:33]   ✓ PASS: [iPhone 16] Dynamic Delivery Long Distance Tier UI (6.5 km, ₹250 Subtotal -> ₹40 Delivery, ₹3 Platform, ₹293 Total) (Delivery: ₹40.00, Platform: ₹3.00, Total: ₹293.00)
-[2026-10-23 10:20:33]   ✓ PASS: [iPhone 16] Backend Long Distance Tier Splits (6.5 km, ₹250 Subtotal -> Fee ₹40, Vendor ₹250, Runner ₹30, Admin ₹13, ETA 45-60 Mins) (Resp: {'success': True, 'order_id': '#RUR-8301', 'subtotal': 250.0, 'delivery_fee': 40.0, 'delivery_discount': 0.0, 'base_delivery_fee': 40.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 293.0, 'vendor_payout': 250.0, 'runner_payout': 30.0, 'admin_profit': 13.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 6.5, 'eta_mins': '45-60 Mins', 'created_at': '2026-10-23T04:50:33.394058'})
-[2026-10-23 10:20:33]   ✓ PASS: [iPhone 16] Delivery Discount UI (₹300 Subtotal >= ₹299 -> Base ₹25 Delivery, -₹10 Discount, ₹318 Total - NOT Free) (Delivery: ₹25.00, Discount: -₹10.00, Total: ₹318.00, NotFree: True)
-[2026-10-23 10:20:33]   ✓ PASS: [iPhone 16] Backend Delivery Discount Splits (Subtotal ₹300, 2.5km -> Net Delivery ₹15, Discount ₹10, Runner ₹15, Total ₹318) (Resp: {'success': True, 'order_id': '#RUR-5308', 'subtotal': 300.0, 'delivery_fee': 15.0, 'delivery_discount': 10.0, 'base_delivery_fee': 25.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 318.0, 'vendor_payout': 300.0, 'runner_payout': 15.0, 'admin_profit': 3.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 2.5, 'eta_mins': '30 Mins', 'created_at': '2026-10-23T04:50:33.728226'})
-[2026-10-23 10:20:34]   ✓ PASS: [iPhone 16] Outside Delivery Zone (9.5 km): Proceed CTA Disabled (Button disabled when distance > 8 km)
-[2026-10-23 10:20:34]   ✓ PASS: [iPhone 16] Outside Delivery Zone (> 8.0 km): Backend API Rejection (HTTP 400) (API rejected: Outside delivery zone (9.5 km exceeds 8.0 km maximum delivery radius) / डिलीवरी क्षेत्र से बाहर है (> 8.0 किमी))
-[2026-10-23 10:20:34]   ✓ PASS: [iPhone 16] Sticky Bottom 'Proceed' CTA - Human Viewport & Touch Target Audit (Bounds: 361x52px at (x:16, y:788) | Viewport: 393x852px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:34]   📸 [SCREENSHOT CAPTURED]: screenshots/iPhone_16/step6_02_cart_review_valid.png
-[2026-10-23 10:20:35] 
+[2026-10-23 12:35:53]   ✓ PASS: [iPhone 16] MOV < ₹99 (₹50 Cart): Proceed CTA Disabled (Button disabled when cart subtotal < ₹99)
+[2026-10-23 12:35:53]   ✓ PASS: [iPhone 16] MOV < ₹99 (₹50 Cart): Bilingual Warning Banner Visible (Warning banner shown)
+[2026-10-23 12:35:53]   ✗ FAIL: [iPhone 16] MOV < ₹99 (₹50 Cart): High-Contrast Bilingual Alert Content - ERROR: warning
+कम से कम ₹99 का ऑर्डर करें। ₹49 का सामान और जोड़ें।
+[2026-10-23 12:35:54]   ✓ PASS: [iPhone 16] MOV < ₹99 (₹50 Cart): Checkout Navigation Guarded (User cannot bypass to checkout)
+[2026-10-23 12:35:54]   ✓ PASS: [iPhone 16] MOV < ₹99 (₹50 Cart): Backend API Rejection (HTTP 400) (API rejected: Minimum order is ₹99 / कम से कम ₹99 का ऑर्डर करें. Add ₹49 more.)
+[2026-10-23 12:35:54]   📸 [SCREENSHOT CAPTURED]: screenshots/iPhone_16/step6_01_mov_alert_active.png
+[2026-10-23 12:35:54]   ✓ PASS: [iPhone 16] MOV >= ₹99 (₹150 Cart): Warning Banner Hidden (Warning banner automatically removed)
+[2026-10-23 12:35:54]   ✓ PASS: [iPhone 16] MOV >= ₹99 (₹150 Cart): Proceed CTA Enabled (Button active and ready for checkout)
+[2026-10-23 12:35:54]   ✓ PASS: [iPhone 16] Dynamic Delivery Local Tier UI (1.2 km, ₹150 Subtotal -> ₹15 Delivery, ₹3 Platform, ₹168 Total) (Delivery: ₹15.00, Platform: ₹3.00, Total: ₹168.00)
+[2026-10-23 12:35:54]   ✓ PASS: [iPhone 16] Backend Local Tier Splits (1.2 km, ₹150 Subtotal -> Fee ₹15, Vendor ₹150, Runner ₹10, Admin ₹8, ETA 30 Mins) (Resp: {'success': True, 'order_id': '#RUR-7072', 'subtotal': 150.0, 'delivery_fee': 15.0, 'delivery_discount': 0.0, 'base_delivery_fee': 15.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 168.0, 'vendor_payout': 150.0, 'runner_payout': 10.0, 'admin_profit': 8.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 1.2, 'eta_mins': '30 Mins', 'created_at': '2026-10-23T07:05:54.862172'} (Status: 200))
+[2026-10-23 12:35:55]   ✓ PASS: [iPhone 16] Dynamic Delivery Long Distance Tier UI (6.5 km, ₹250 Subtotal -> ₹40 Delivery, ₹3 Platform, ₹293 Total) (Delivery: ₹40.00, Platform: ₹3.00, Total: ₹293.00)
+[2026-10-23 12:35:55]   ✓ PASS: [iPhone 16] Backend Long Distance Tier Splits (6.5 km, ₹250 Subtotal -> Fee ₹40, Vendor ₹250, Runner ₹30, Admin ₹13, ETA 45-60 Mins) (Resp: {'success': True, 'order_id': '#RUR-3727', 'subtotal': 250.0, 'delivery_fee': 40.0, 'delivery_discount': 0.0, 'base_delivery_fee': 40.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 293.0, 'vendor_payout': 250.0, 'runner_payout': 30.0, 'admin_profit': 13.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 6.5, 'eta_mins': '45-60 Mins', 'created_at': '2026-10-23T07:05:55.269232'})
+[2026-10-23 12:35:55]   ✓ PASS: [iPhone 16] Delivery Discount UI (₹300 Subtotal >= ₹299 -> Base ₹25 Delivery, -₹10 Discount, ₹318 Total - NOT Free) (Delivery: ₹25.00, Discount: -₹10.00, Total: ₹318.00, NotFree: True)
+[2026-10-23 12:35:55]   ✓ PASS: [iPhone 16] Backend Delivery Discount Splits (Subtotal ₹300, 2.5km -> Net Delivery ₹15, Discount ₹10, Runner ₹15, Total ₹318) (Resp: {'success': True, 'order_id': '#RUR-8785', 'subtotal': 300.0, 'delivery_fee': 15.0, 'delivery_discount': 10.0, 'base_delivery_fee': 25.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 318.0, 'vendor_payout': 300.0, 'runner_payout': 15.0, 'admin_profit': 3.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 2.5, 'eta_mins': '30 Mins', 'created_at': '2026-10-23T07:05:55.657605'})
+[2026-10-23 12:35:56]   ✓ PASS: [iPhone 16] Outside Delivery Zone (9.5 km): Proceed CTA Disabled (Button disabled when distance > 8 km)
+[2026-10-23 12:35:56]   ✓ PASS: [iPhone 16] Outside Delivery Zone (> 8.0 km): Backend API Rejection (HTTP 400) (API rejected: Outside delivery zone (9.5 km exceeds 8.0 km maximum delivery radius) / डिलीवरी क्षेत्र से बाहर है (> 8.0 किमी))
+[2026-10-23 12:35:56]   ✓ PASS: [iPhone 16] Sticky Bottom 'Proceed' CTA - Human Viewport & Touch Target Audit (Bounds: 361x52px at (x:16, y:788) | Viewport: 393x852px | Collisions: None | Occlusion: None)
+[2026-10-23 12:35:56]   📸 [SCREENSHOT CAPTURED]: screenshots/iPhone_16/step6_02_cart_review_valid.png
+[2026-10-23 12:35:57] 
 --- [iPhone 16] Testing Phase 4.15: Delivery Location Setup at Checkout ---
-[2026-10-23 10:20:35]   ✓ PASS: [iPhone 16] Transition to Delivery Location Setup at Checkout (Address setup triggered when proceeding to checkout)
-[2026-10-23 10:20:35]   ✓ PASS: [iPhone 16] Phase 4.15 Landmark Setup - No Horizontal Overflow (doc: 393px, viewport: 393px)
-[2026-10-23 10:20:35]   ✓ PASS: [iPhone 16] Phase 4.15 Landmark Setup - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
-[2026-10-23 10:20:35]   ✓ PASS: [iPhone 16] Full Name Input - Human Viewport & Touch Target Audit (Bounds: 325x48px at (x:34, y:214) | Viewport: 393x852px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:35]   ✓ PASS: [iPhone 16] Locate Me GPS Button - Human Viewport & Touch Target Audit (Bounds: 123x36px at (x:237, y:319) | Viewport: 393x852px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:36]   ✓ PASS: [iPhone 16] GPS Engine Audit (Native HTML5 Geolocation Coordinates) (Displayed String: 'Lat: 29.1324, Lng: 77.0125 (±10m)' | Raw Coordinates Present: True)
-[2026-10-23 10:20:36]   ✓ PASS: [iPhone 16] District / Tehsil Input Field - Human Viewport & Touch Target Audit (Bounds: 325x44px at (x:34, y:429) | Viewport: 393x852px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:36]   ✓ PASS: [iPhone 16] Village / Panchayat Input Field - Human Viewport & Touch Target Audit (Bounds: 325x44px at (x:34, y:536) | Viewport: 393x852px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:37]   ✓ PASS: [iPhone 16] Rural Landmark Textarea - Human Viewport & Touch Target Audit (Bounds: 317x74px at (x:38, y:546) | Viewport: 393x852px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:37]   ✓ PASS: [iPhone 16] Rural Landmark Character Count (39 chars)
-[2026-10-23 10:20:37]   ✓ PASS: [iPhone 16] Sticky Bottom 'Save Address & Proceed' CTA - Human Viewport & Touch Target Audit (Bounds: 361x52px at (x:16, y:788) | Viewport: 393x852px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:37]   📸 [SCREENSHOT CAPTURED]: screenshots/iPhone_16/step3_01_landmark_gps_setup.png
-[2026-10-23 10:20:38] 
+[2026-10-23 12:35:57]   ✓ PASS: [iPhone 16] Transition to Delivery Location Setup at Checkout (Address setup triggered when proceeding to checkout)
+[2026-10-23 12:35:57]   ✓ PASS: [iPhone 16] Phase 4.15 Landmark Setup - No Horizontal Overflow (doc: 393px, viewport: 393px)
+[2026-10-23 12:35:57]   ✓ PASS: [iPhone 16] Phase 4.15 Landmark Setup - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
+[2026-10-23 12:35:57]   ✓ PASS: [iPhone 16] Full Name Input - Human Viewport & Touch Target Audit (Bounds: 325x48px at (x:34, y:214) | Viewport: 393x852px | Collisions: None | Occlusion: None)
+[2026-10-23 12:35:57]   ✓ PASS: [iPhone 16] Locate Me GPS Button - Human Viewport & Touch Target Audit (Bounds: 151x36px at (x:209, y:319) | Viewport: 393x852px | Collisions: None | Occlusion: None)
+[2026-10-23 12:35:58]   ✓ PASS: [iPhone 16] GPS Engine Audit (Native HTML5 Geolocation Coordinates) (Displayed String: 'Lat: 29.1324, Lng: 77.0125 (±10m)' | Raw Coordinates Present: True)
+[2026-10-23 12:35:58]   ✓ PASS: [iPhone 16] District / Tehsil Input Field - Human Viewport & Touch Target Audit (Bounds: 325x44px at (x:34, y:429) | Viewport: 393x852px | Collisions: None | Occlusion: None)
+[2026-10-23 12:35:59]   ✓ PASS: [iPhone 16] Village / Panchayat Input Field - Human Viewport & Touch Target Audit (Bounds: 325x44px at (x:34, y:536) | Viewport: 393x852px | Collisions: None | Occlusion: None)
+[2026-10-23 12:35:59]   ✓ PASS: [iPhone 16] Rural Landmark Textarea - Human Viewport & Touch Target Audit (Bounds: 317x74px at (x:38, y:546) | Viewport: 393x852px | Collisions: None | Occlusion: None)
+[2026-10-23 12:35:59]   ✓ PASS: [iPhone 16] Rural Landmark Character Count (39 chars)
+[2026-10-23 12:35:59]   ✓ PASS: [iPhone 16] Sticky Bottom 'Save Address & Proceed' CTA - Human Viewport & Touch Target Audit (Bounds: 361x52px at (x:16, y:788) | Viewport: 393x852px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:00]   📸 [SCREENSHOT CAPTURED]: screenshots/iPhone_16/step3_01_landmark_gps_setup.png
+[2026-10-23 12:36:00] 
 --- [iPhone 16] Testing Phase 4.2: Checkout & Payment Selection ---
-[2026-10-23 10:20:38]   ✓ PASS: [iPhone 16] Transition to Checkout Screen 
-[2026-10-23 10:20:38]   ✓ PASS: [iPhone 16] Phase 4.2 Checkout - No Horizontal Overflow (doc: 393px, viewport: 393px)
-[2026-10-23 10:20:38]   ✓ PASS: [iPhone 16] Phase 4.2 Checkout - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
-[2026-10-23 10:20:38]   ✓ PASS: [iPhone 16] Checkout Address Sync (Name: 'Ramesh Patel', Village: 'Rampur Village, Sonipat', Landmark: 'Near Shiva Mandir, Opp. Blue Water Tank')
-[2026-10-23 10:20:38]   ✓ PASS: [iPhone 16] Cash On Delivery (COD) Payment Card - Human Viewport & Touch Target Audit (Bounds: 319x65px at (x:37, y:511) | Viewport: 393x852px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:38]   ✓ PASS: [iPhone 16] Sticky Bottom 'Place Order' CTA - Human Viewport & Touch Target Audit (Bounds: 361x52px at (x:16, y:788) | Viewport: 393x852px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:38]   📸 [SCREENSHOT CAPTURED]: screenshots/iPhone_16/step7_01_checkout_payment.png
-[2026-10-23 10:20:40] 
+[2026-10-23 12:36:00]   ✓ PASS: [iPhone 16] Transition to Checkout Screen 
+[2026-10-23 12:36:00]   ✓ PASS: [iPhone 16] Phase 4.2 Checkout - No Horizontal Overflow (doc: 393px, viewport: 393px)
+[2026-10-23 12:36:00]   ✓ PASS: [iPhone 16] Phase 4.2 Checkout - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
+[2026-10-23 12:36:00]   ✓ PASS: [iPhone 16] Checkout Address Sync (Name: 'Ramesh Patel', Village: 'Rampur Village, Sonipat', Landmark: 'Near Shiva Mandir, Opp. Blue Water Tank')
+[2026-10-23 12:36:01]   ✓ PASS: [iPhone 16] Cash On Delivery (COD) Payment Card - Human Viewport & Touch Target Audit (Bounds: 319x65px at (x:37, y:511) | Viewport: 393x852px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:01]   ✓ PASS: [iPhone 16] Sticky Bottom 'Place Order' CTA - Human Viewport & Touch Target Audit (Bounds: 361x52px at (x:16, y:788) | Viewport: 393x852px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:01]   📸 [SCREENSHOT CAPTURED]: screenshots/iPhone_16/step7_01_checkout_payment.png
+[2026-10-23 12:36:03] 
 --- [iPhone 16] Testing Phase 5: Live Order Tracking ---
-[2026-10-23 10:20:40]   ✓ PASS: [iPhone 16] Transition to Live Order Tracking Screen 
-[2026-10-23 10:20:40]   ✓ PASS: [iPhone 16] Phase 5 Tracking - No Horizontal Overflow (doc: 393px, viewport: 393px)
-[2026-10-23 10:20:40]   ✓ PASS: [iPhone 16] Phase 5 Tracking - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
-[2026-10-23 10:20:40]   ✓ PASS: [iPhone 16] Live Tracking Order ID Generated (#RUR-3368)
-[2026-10-23 10:20:40]   ✓ PASS: [iPhone 16] Safe Doorstep Delivery OTP Displayed (4-digit OTP code visible)
-[2026-10-23 10:20:40]   ✓ PASS: [iPhone 16] Live Tracking Dynamic ETA Displayed ('30 Mins') (ETA: '30 Mins')
-[2026-10-23 10:20:41]   ✓ PASS: [iPhone 16] SQLite Real Database Persistence Verification (DB Order: #RUR-3368 | Subtotal: ₹210.0 | Total: ₹228.0 | Distance: 1.2 km | ETA: 30 Mins | Vendor: ₹210.0 | Runner: ₹10.0 | Admin: ₹8.0 | OTP: 4821)
-[2026-10-23 10:20:41]   📸 [SCREENSHOT CAPTURED]: screenshots/iPhone_16/step8_01_live_tracking.png
-[2026-10-23 10:20:41] 
+[2026-10-23 12:36:03]   ✓ PASS: [iPhone 16] Transition to Live Order Tracking Screen 
+[2026-10-23 12:36:03]   ✓ PASS: [iPhone 16] Phase 5 Tracking - No Horizontal Overflow (doc: 393px, viewport: 393px)
+[2026-10-23 12:36:03]   ✓ PASS: [iPhone 16] Phase 5 Tracking - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
+[2026-10-23 12:36:03]   ✓ PASS: [iPhone 16] Live Tracking Order ID Generated (#RUR-3397)
+[2026-10-23 12:36:03]   ✓ PASS: [iPhone 16] Safe Doorstep Delivery OTP Displayed (4-digit OTP code visible)
+[2026-10-23 12:36:03]   ✓ PASS: [iPhone 16] Live Tracking Dynamic ETA Displayed ('30 Mins') (ETA: '30 Mins')
+[2026-10-23 12:36:04]   ✓ PASS: [iPhone 16] SQLite Real Database Persistence Verification (DB Order: #RUR-3397 | Subtotal: ₹210.0 | Total: ₹228.0 | Distance: 1.2 km | ETA: 30 Mins | Vendor: ₹210.0 | Runner: ₹10.0 | Admin: ₹8.0 | OTP: 4821)
+[2026-10-23 12:36:04]   📸 [SCREENSHOT CAPTURED]: screenshots/iPhone_16/step8_01_live_tracking.png
+[2026-10-23 12:36:04] 
 --- [iPhone 16] Testing Phase 5.5: My Account & AI Customer Support Module ---
-[2026-10-23 10:20:41]   ✓ PASS: [iPhone 16] Bottom Nav Profile Button - Human Viewport & Touch Target Audit (Bounds: 44x49px at (x:319, y:795) | Viewport: 393x852px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:42]   ✓ PASS: [iPhone 16] Transition to My Account & Profile View 
-[2026-10-23 10:20:42]   ✓ PASS: [iPhone 16] Phase Profile - No Horizontal Overflow (doc: 393px, viewport: 393px)
-[2026-10-23 10:20:42]   ✓ PASS: [iPhone 16] Phase Profile - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
-[2026-10-23 10:20:42]   ✓ PASS: [iPhone 16] Profile User Details Rendered (Name: Ramesh Patel | Phone: +91 98765 43210 | Village: Rampur Village)
-[2026-10-23 10:20:42]   ✓ PASS: [iPhone 16] Order History List Rendered 
-[2026-10-23 10:20:42]   ✓ PASS: [iPhone 16] Invisible Risk Metrics (No Trust Score or Strike Counter in Customer DOM) (Customer profile is 100% clean of internal risk & cancellation counters)
-[2026-10-23 10:20:42]   ✓ PASS: [iPhone 16] Redundant Profile Language Card Deleted (Redundant language preference card cleanly removed from profile screen)
-[2026-10-23 10:20:42]   ✓ PASS: [iPhone 16] Global Header Language Toggle - Human Viewport & Touch Target Audit (Bounds: 72x32px at (x:267, y:31) | Viewport: 393x852px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:42]   ✓ PASS: [iPhone 16] Open Help & Support Chatbot Button - Human Viewport & Touch Target Audit (Bounds: 167x44px at (x:32, y:455) | Viewport: 393x852px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:43]   ✓ PASS: [iPhone 16] Support Chatbot Modal Opened 
-[2026-10-23 10:20:43]   ✓ PASS: [iPhone 16] Send Chat Message Button - Human Viewport & Touch Target Audit (Bounds: 36x36px at (x:348, y:755) | Viewport: 393x852px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:44]   ✓ PASS: [iPhone 16] AI Chatbot Intelligent Response (Snippet: .00) दुकान (Sharma Brothers Kirana) को प्राप्त हो चुका है और वे इसे स्वीकार कर रहे हैं। अनुमानित समय ~30 Mins है।
+[2026-10-23 12:36:05]   ✓ PASS: [iPhone 16] Bottom Nav Profile Button - Human Viewport & Touch Target Audit (Bounds: 44x49px at (x:319, y:795) | Viewport: 393x852px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:05]   ✓ PASS: [iPhone 16] Transition to My Account & Profile View 
+[2026-10-23 12:36:05]   ✓ PASS: [iPhone 16] Phase Profile - No Horizontal Overflow (doc: 393px, viewport: 393px)
+[2026-10-23 12:36:05]   ✓ PASS: [iPhone 16] Phase Profile - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
+[2026-10-23 12:36:05]   ✓ PASS: [iPhone 16] Profile User Details Rendered (Name: Ramesh Patel | Phone: +91 98765 43210 | Village: Rampur Village)
+[2026-10-23 12:36:05]   ✓ PASS: [iPhone 16] Order History List Rendered 
+[2026-10-23 12:36:05]   ✓ PASS: [iPhone 16] Invisible Risk Metrics (No Trust Score or Strike Counter in Customer DOM) (Customer profile is 100% clean of internal risk & cancellation counters)
+[2026-10-23 12:36:05]   ✓ PASS: [iPhone 16] Redundant Profile Language Card Deleted (Redundant language preference card cleanly removed from profile screen)
+[2026-10-23 12:36:06]   ✓ PASS: [iPhone 16] Global Header Language Toggle - Human Viewport & Touch Target Audit (Bounds: 72x32px at (x:267, y:31) | Viewport: 393x852px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:06]   ✓ PASS: [iPhone 16] Open Help & Support Chatbot Button - Human Viewport & Touch Target Audit (Bounds: 167x44px at (x:32, y:455) | Viewport: 393x852px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:07]   ✓ PASS: [iPhone 16] Support Chatbot Modal Opened 
+[2026-10-23 12:36:07]   ✓ PASS: [iPhone 16] Send Chat Message Button - Human Viewport & Touch Target Audit (Bounds: 36x36px at (x:348, y:755) | Viewport: 393x852px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:08]   ✓ PASS: [iPhone 16] AI Chatbot Intelligent Response (Snippet: .00) दुकान (Sharma Brothers Kirana) को प्राप्त हो चुका है और वे इसे स्वीकार कर रहे हैं। अनुमानित समय ~30 Mins है।
 
-10:20)
-[2026-10-23 10:20:44]   ✓ PASS: [iPhone 16] Massive Call Help Center CTA Button - Human Viewport & Touch Target Audit (Bounds: 163x32px at (x:213, y:156) | Viewport: 393x852px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:44]   ✓ PASS: [iPhone 16] Call Help Center Native Tel Link (href='tel:18001204266')
-[2026-10-23 10:20:44]   📸 [SCREENSHOT CAPTURED]: screenshots/iPhone_16/step8_02_account_and_support.png
-[2026-10-23 10:20:45] 
+12:36)
+[2026-10-23 12:36:08]   ✓ PASS: [iPhone 16] Massive Call Help Center CTA Button - Human Viewport & Touch Target Audit (Bounds: 158x32px at (x:218, y:156) | Viewport: 393x852px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:08]   ✓ PASS: [iPhone 16] Call Help Center Native Tel Link (href='tel:18001204266')
+[2026-10-23 12:36:09]   📸 [SCREENSHOT CAPTURED]: screenshots/iPhone_16/step8_02_account_and_support.png
+[2026-10-23 12:36:09] 
 --- [iPhone 16] Testing Phase 6: Total Network Failure & Offline Resilience ---
-[2026-10-23 10:20:45]   ⚡ [iPhone 16] Engaging Playwright network route interception (page.route('**/*', route.abort()))...
-[2026-10-23 10:20:45]   ✓ PASS: [iPhone 16] Custom Offline Fallback Card - Human Viewport & Touch Target Audit (Bounds: 361x566px at (x:16, y:96) | Viewport: 393x852px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:45]   ✓ PASS: [iPhone 16] Bilingual Offline Headings Check (HI: 'इंटरनेट कनेक्शन उपलब्ध नहीं है' | EN: 'No Internet Connection')
-[2026-10-23 10:20:45]   ✓ PASS: [iPhone 16] Offline Retry Connection Button - Human Viewport & Touch Target Audit (Bounds: 311x48px at (x:41, y:535) | Viewport: 393x852px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:46]   📸 [SCREENSHOT CAPTURED]: screenshots/iPhone_16/step9_01_offline_fallback.png
-[2026-10-23 10:20:46]   ✓ PASS: [iPhone 16] Standalone offline.html Fallback File Audit (Container visible: True | Title: 'इंटरनेट कनेक्शन उपलब्ध नहीं है')
-[2026-10-23 10:20:46] 
+[2026-10-23 12:36:09]   ⚡ [iPhone 16] Engaging Playwright network route interception (page.route('**/*', route.abort()))...
+[2026-10-23 12:36:10]   ✓ PASS: [iPhone 16] Custom Offline Fallback Card - Human Viewport & Touch Target Audit (Bounds: 361x566px at (x:16, y:96) | Viewport: 393x852px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:10]   ✓ PASS: [iPhone 16] Bilingual Offline Headings Check (HI: 'इंटरनेट कनेक्शन उपलब्ध नहीं है' | EN: 'No Internet Connection')
+[2026-10-23 12:36:10]   ✓ PASS: [iPhone 16] Offline Retry Connection Button - Human Viewport & Touch Target Audit (Bounds: 311x48px at (x:41, y:535) | Viewport: 393x852px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:10]   📸 [SCREENSHOT CAPTURED]: screenshots/iPhone_16/step9_01_offline_fallback.png
+[2026-10-23 12:36:10]   ✓ PASS: [iPhone 16] Standalone offline.html Fallback File Audit (Container visible: True | Title: 'इंटरनेट कनेक्शन उपलब्ध नहीं है')
+[2026-10-23 12:36:11] 
 --- [iPhone 16] Console & Script Execution Audit ---
-[2026-10-23 10:20:46]   ✓ PASS: [iPhone 16] Zero JavaScript Console Errors (Clean runtime execution)
-[2026-10-23 10:20:46] 
+[2026-10-23 12:36:11]   ✓ PASS: [iPhone 16] Zero JavaScript Console Errors (Clean runtime execution)
+[2026-10-23 12:36:11] 
 ================================================================================
-[2026-10-23 10:20:46] STARTING HUMAN-LIKE VISUAL UX SIMULATION: Redmi Note 10
-[2026-10-23 10:20:46] Dimensions: 393x851 | DPR: 2.75
-[2026-10-23 10:20:46] ================================================================================
-[2026-10-23 10:20:46] Loading application: file:///C:/Users/dhira/Downloads/Goa%20Bazar/index.html
-[2026-10-23 10:20:48]   ✓ PASS: [Redmi Note 10] HTML Viewport Meta Tag Check (content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover")
-[2026-10-23 10:20:48] 
+[2026-10-23 12:36:11] STARTING HUMAN-LIKE VISUAL UX SIMULATION: Redmi Note 10
+[2026-10-23 12:36:11] Dimensions: 393x851 | DPR: 2.75
+[2026-10-23 12:36:11] ================================================================================
+[2026-10-23 12:36:11] Loading application: file:///C:/Users/dhira/Downloads/Goa%20Bazar/index.html
+[2026-10-23 12:36:14]   ✓ PASS: [Redmi Note 10] HTML Viewport Meta Tag Check (content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover")
+[2026-10-23 12:36:14] 
 --- [Redmi Note 10] Testing Phase 1.1: Phone Login & Language Toggle ---
-[2026-10-23 10:20:48]   ✓ PASS: [Redmi Note 10] Phase 1.1 Login - No Horizontal Overflow (doc: 393px, viewport: 393px)
-[2026-10-23 10:20:48]   ✓ PASS: [Redmi Note 10] Phase 1.1 Login - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
-[2026-10-23 10:20:49]   📸 [SCREENSHOT CAPTURED]: screenshots/Redmi_Note_10/step1_01_login_initial.png
-[2026-10-23 10:20:49]   ✓ PASS: [Redmi Note 10] Language Toggle Pill - Human Viewport & Touch Target Audit (Bounds: 72x32px at (x:267, y:31) | Viewport: 393x851px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:49]   ✓ PASS: [Redmi Note 10] Bilingual Toggle (Instant State Switch) (हिंदी -> English)
-[2026-10-23 10:20:50]   📸 [SCREENSHOT CAPTURED]: screenshots/Redmi_Note_10/step1_02_bilingual_toggle_en.png
-[2026-10-23 10:20:50]   ✓ PASS: [Redmi Note 10] Phone Number Input Field - Human Viewport & Touch Target Audit (Bounds: 226x56px at (x:116, y:437) | Viewport: 393x851px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:50]   ✓ PASS: [Redmi Note 10] Send OTP Button (Initial Disabled State) - Human Viewport & Touch Target Audit (Bounds: 319x54px at (x:37, y:622) | Viewport: 393x851px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:51]   ✓ PASS: [Redmi Note 10] 10-Digit Mobile Validation (Send OTP button enabled)
-[2026-10-23 10:20:51]   ✓ PASS: [Redmi Note 10] Send OTP Button (Active Enabled State) - Human Viewport & Touch Target Audit (Bounds: 319x54px at (x:37, y:622) | Viewport: 393x851px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:51]   📸 [SCREENSHOT CAPTURED]: screenshots/Redmi_Note_10/step1_03_phone_validated.png
-[2026-10-23 10:20:52] 
+[2026-10-23 12:36:14]   ✓ PASS: [Redmi Note 10] Phase 1.1 Login - No Horizontal Overflow (doc: 393px, viewport: 393px)
+[2026-10-23 12:36:14]   ✓ PASS: [Redmi Note 10] Phase 1.1 Login - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
+[2026-10-23 12:36:22]   📸 [SCREENSHOT CAPTURED]: screenshots/Redmi_Note_10/step1_01_login_initial.png
+[2026-10-23 12:36:22]   ✓ PASS: [Redmi Note 10] Language Toggle Pill - Human Viewport & Touch Target Audit (Bounds: 72x32px at (x:267, y:31) | Viewport: 393x851px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:22]   ✓ PASS: [Redmi Note 10] Bilingual Toggle (Instant State Switch) (हिंदी -> English)
+[2026-10-23 12:36:23]   📸 [SCREENSHOT CAPTURED]: screenshots/Redmi_Note_10/step1_02_bilingual_toggle_en.png
+[2026-10-23 12:36:23]   ✓ PASS: [Redmi Note 10] Phone Number Input Field - Human Viewport & Touch Target Audit (Bounds: 226x56px at (x:116, y:437) | Viewport: 393x851px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:23]   ✓ PASS: [Redmi Note 10] Send OTP Button (Initial Disabled State) - Human Viewport & Touch Target Audit (Bounds: 319x54px at (x:37, y:622) | Viewport: 393x851px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:24]   ✓ PASS: [Redmi Note 10] 10-Digit Mobile Validation (Send OTP button enabled)
+[2026-10-23 12:36:24]   ✓ PASS: [Redmi Note 10] Send OTP Button (Active Enabled State) - Human Viewport & Touch Target Audit (Bounds: 319x54px at (x:37, y:622) | Viewport: 393x851px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:24]   📸 [SCREENSHOT CAPTURED]: screenshots/Redmi_Note_10/step1_03_phone_validated.png
+[2026-10-23 12:36:25] 
 --- [Redmi Note 10] Testing Phase 1.2: OTP Verification ---
-[2026-10-23 10:20:52]   ✓ PASS: [Redmi Note 10] Transition to OTP Screen 
-[2026-10-23 10:20:52]   ✓ PASS: [Redmi Note 10] Phase 1.2 OTP - No Horizontal Overflow (doc: 393px, viewport: 393px)
-[2026-10-23 10:20:52]   ✓ PASS: [Redmi Note 10] Phase 1.2 OTP - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
-[2026-10-23 10:20:52]   ✓ PASS: [Redmi Note 10] OTP Verify & Continue Button - Human Viewport & Touch Target Audit (Bounds: 361x54px at (x:16, y:492) | Viewport: 393x851px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:53]   📸 [SCREENSHOT CAPTURED]: screenshots/Redmi_Note_10/step2_01_otp_verification.png
-[2026-10-23 10:20:53]   ✓ PASS: [Redmi Note 10] Zero-Friction Onboarding (OTP -> Dashboard Transition) (User immediately enters Dashboard without early location gate)
-[2026-10-23 10:20:53]   ✓ PASS: [Redmi Note 10] Landmark Setup Deferred from Initial Auth (Landmark screen deferred to checkout phase)
-[2026-10-23 10:20:53] 
+[2026-10-23 12:36:25]   ✓ PASS: [Redmi Note 10] Transition to OTP Screen 
+[2026-10-23 12:36:25]   ✓ PASS: [Redmi Note 10] Phase 1.2 OTP - No Horizontal Overflow (doc: 393px, viewport: 393px)
+[2026-10-23 12:36:25]   ✓ PASS: [Redmi Note 10] Phase 1.2 OTP - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
+[2026-10-23 12:36:26]   ✓ PASS: [Redmi Note 10] OTP Verify & Continue Button - Human Viewport & Touch Target Audit (Bounds: 361x54px at (x:16, y:492) | Viewport: 393x851px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:26]   📸 [SCREENSHOT CAPTURED]: screenshots/Redmi_Note_10/step2_01_otp_verification.png
+[2026-10-23 12:36:27]   ✓ PASS: [Redmi Note 10] Zero-Friction Onboarding (OTP -> Dashboard Transition) (User immediately enters Dashboard without early location gate)
+[2026-10-23 12:36:27]   ✓ PASS: [Redmi Note 10] Landmark Setup Deferred from Initial Auth (Landmark screen deferred to checkout phase)
+[2026-10-23 12:36:27] 
 --- [Redmi Note 10] Testing Phase 2: Main Dashboard & Store Discovery ---
-[2026-10-23 10:20:53]   ✓ PASS: [Redmi Note 10] Transition to Dashboard 
-[2026-10-23 10:20:53]   ✓ PASS: [Redmi Note 10] Phase 2 Dashboard - No Horizontal Overflow (doc: 393px, viewport: 393px)
-[2026-10-23 10:20:53]   ✓ PASS: [Redmi Note 10] Phase 2 Dashboard - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
-[2026-10-23 10:20:53]   ✓ PASS: [Redmi Note 10] Sticky Village Header Rendered (गाँव चुनें / Set Delivery Location)
-[2026-10-23 10:20:53]   ✓ PASS: [Redmi Note 10] Main Dashboard Search Bar - Human Viewport & Touch Target Audit (Bounds: 207x36px at (x:57, y:171) | Viewport: 393x851px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:54]   ✓ PASS: [Redmi Note 10] Store Discovery Search ('Sharma') (Sharma Brothers Kirana matched)
-[2026-10-23 10:20:54]   ✓ PASS: [Redmi Note 10] Product Discovery Search ('Sugar') (Found Sugar product in instant discovery overlay)
-[2026-10-23 10:20:54]   ✓ PASS: [Redmi Note 10] Phase 2 Store Feed Dynamic ETA (<= 5.0 km -> '30 Mins') (Store 1 ETA: '30 Mins' | Store 2 ETA: '30 Mins')
-[2026-10-23 10:20:55]   ✓ PASS: [Redmi Note 10] Sharma Brothers Store Card - Human Viewport & Touch Target Audit (Bounds: 361x129px at (x:16, y:450) | Viewport: 393x851px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:55]   📸 [SCREENSHOT CAPTURED]: screenshots/Redmi_Note_10/step4_01_main_dashboard.png
-[2026-10-23 10:20:56] 
+[2026-10-23 12:36:27]   ✓ PASS: [Redmi Note 10] Transition to Dashboard 
+[2026-10-23 12:36:27]   ✓ PASS: [Redmi Note 10] Phase 2 Dashboard - No Horizontal Overflow (doc: 393px, viewport: 393px)
+[2026-10-23 12:36:27]   ✓ PASS: [Redmi Note 10] Phase 2 Dashboard - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
+[2026-10-23 12:36:27]   ✓ PASS: [Redmi Note 10] Sticky Village Header Rendered (स्थान चुनें)
+[2026-10-23 12:36:27]   ✓ PASS: [Redmi Note 10] Main Dashboard Search Bar - Human Viewport & Touch Target Audit (Bounds: 207x36px at (x:57, y:171) | Viewport: 393x851px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:27]   ✓ PASS: [Redmi Note 10] Store Discovery Search ('Sharma') (Sharma Brothers Kirana matched)
+[2026-10-23 12:36:28]   ✓ PASS: [Redmi Note 10] Product Discovery Search ('Sugar') (Found Sugar product in instant discovery overlay)
+[2026-10-23 12:36:28]   ✓ PASS: [Redmi Note 10] Phase 2 Store Feed Dynamic ETA (<= 5.0 km -> '30 Mins') (Store 1 ETA: '30 Mins' | Store 2 ETA: '30 Mins')
+[2026-10-23 12:36:28]   ✓ PASS: [Redmi Note 10] Sharma Brothers Store Card - Human Viewport & Touch Target Audit (Bounds: 361x129px at (x:16, y:450) | Viewport: 393x851px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:29]   📸 [SCREENSHOT CAPTURED]: screenshots/Redmi_Note_10/step4_01_main_dashboard.png
+[2026-10-23 12:36:29] 
 --- [Redmi Note 10] Testing Phase 3: Store Catalog & Dynamic Steppers ---
-[2026-10-23 10:20:56]   ✓ PASS: [Redmi Note 10] Transition to Store View (Sharma Brothers Kirana) 
-[2026-10-23 10:20:56]   ✓ PASS: [Redmi Note 10] Phase 3 Store Overview ETA ('30 Mins') (P3 ETA: '30 Mins')
-[2026-10-23 10:20:56]   ✓ PASS: [Redmi Note 10] Phase 3 Store - No Horizontal Overflow (doc: 393px, viewport: 393px)
-[2026-10-23 10:20:56]   ✓ PASS: [Redmi Note 10] Phase 3 Store - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
-[2026-10-23 10:20:56]   ✓ PASS: [Redmi Note 10] Product 'ADD' Button - Human Viewport & Touch Target Audit (Bounds: 73x36px at (x:287, y:299) | Viewport: 393x851px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:56]   📸 [SCREENSHOT CAPTURED]: screenshots/Redmi_Note_10/step5_01_store_catalog.png
-[2026-10-23 10:20:57]   ✓ PASS: [Redmi Note 10] Dynamic Stepper -> Cart Bar Triggered (Cart bar popped up)
-[2026-10-23 10:20:57]   ✓ PASS: [Redmi Note 10] Sticky Bottom Floating Cart Bar - Human Viewport & Touch Target Audit (Bounds: 393x89px at (x:0, y:762) | Viewport: 393x851px | Collisions: None | Occlusion: None)
-[2026-10-23 10:20:57]   📸 [SCREENSHOT CAPTURED]: screenshots/Redmi_Note_10/step5_02_cart_bar_popped.png
-[2026-10-23 10:20:57] 
+[2026-10-23 12:36:29]   ✓ PASS: [Redmi Note 10] Transition to Store View (Sharma Brothers Kirana) 
+[2026-10-23 12:36:29]   ✓ PASS: [Redmi Note 10] Phase 3 Store Overview ETA ('30 Mins') (P3 ETA: '30 Mins')
+[2026-10-23 12:36:29]   ✓ PASS: [Redmi Note 10] Phase 3 Store - No Horizontal Overflow (doc: 393px, viewport: 393px)
+[2026-10-23 12:36:29]   ✓ PASS: [Redmi Note 10] Phase 3 Store - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
+[2026-10-23 12:36:30]   ✓ PASS: [Redmi Note 10] Product 'ADD' Button - Human Viewport & Touch Target Audit (Bounds: 73x36px at (x:287, y:299) | Viewport: 393x851px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:30]   📸 [SCREENSHOT CAPTURED]: screenshots/Redmi_Note_10/step5_01_store_catalog.png
+[2026-10-23 12:36:31]   ✓ PASS: [Redmi Note 10] Dynamic Stepper -> Cart Bar Triggered (Cart bar popped up)
+[2026-10-23 12:36:31]   ✓ PASS: [Redmi Note 10] Sticky Bottom Floating Cart Bar - Human Viewport & Touch Target Audit (Bounds: 393x89px at (x:0, y:762) | Viewport: 393x851px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:31]   📸 [SCREENSHOT CAPTURED]: screenshots/Redmi_Note_10/step5_02_cart_bar_popped.png
+[2026-10-23 12:36:32] 
 --- [Redmi Note 10] Testing Phase 4.1: Cart Review & Minimum Order Value (MOV) ---
-[2026-10-23 10:20:57]   ✓ PASS: [Redmi Note 10] Transition to Cart Review Screen 
-[2026-10-23 10:20:57]   ✓ PASS: [Redmi Note 10] Phase 4.1 Cart - No Horizontal Overflow (doc: 393px, viewport: 393px)
-[2026-10-23 10:20:57]   ✓ PASS: [Redmi Note 10] Phase 4.1 Cart - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
-[2026-10-23 10:20:57] 
+[2026-10-23 12:36:32]   ✓ PASS: [Redmi Note 10] Transition to Cart Review Screen 
+[2026-10-23 12:36:32]   ✓ PASS: [Redmi Note 10] Phase 4.1 Cart - No Horizontal Overflow (doc: 393px, viewport: 393px)
+[2026-10-23 12:36:32]   ✓ PASS: [Redmi Note 10] Phase 4.1 Cart - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
+[2026-10-23 12:36:32] 
 --- [Redmi Note 10] Testing Minimum Order Value (MOV) ₹99 Validation ---
-[2026-10-23 10:20:58]   ✓ PASS: [Redmi Note 10] MOV < ₹99 (₹50 Cart): Proceed CTA Disabled (Button disabled when cart subtotal < ₹99)
-[2026-10-23 10:20:58]   ✓ PASS: [Redmi Note 10] MOV < ₹99 (₹50 Cart): Bilingual Warning Banner Visible (Warning banner shown)
-[2026-10-23 10:20:58]   ✓ PASS: [Redmi Note 10] MOV < ₹99 (₹50 Cart): High-Contrast Bilingual Alert Content (warning
-Minimum order is ₹99 / कम से कम ₹99 का ऑर्डर करें. Add ₹49 more.)
-[2026-10-23 10:20:58]   ✓ PASS: [Redmi Note 10] MOV < ₹99 (₹50 Cart): Checkout Navigation Guarded (User cannot bypass to checkout)
-[2026-10-23 10:20:58]   ✓ PASS: [Redmi Note 10] MOV < ₹99 (₹50 Cart): Backend API Rejection (HTTP 400) (API rejected: Minimum order is ₹99 / कम से कम ₹99 का ऑर्डर करें. Add ₹49 more.)
-[2026-10-23 10:20:58]   📸 [SCREENSHOT CAPTURED]: screenshots/Redmi_Note_10/step6_01_mov_alert_active.png
-[2026-10-23 10:20:59]   ✓ PASS: [Redmi Note 10] MOV >= ₹99 (₹150 Cart): Warning Banner Hidden (Warning banner automatically removed)
-[2026-10-23 10:20:59]   ✓ PASS: [Redmi Note 10] MOV >= ₹99 (₹150 Cart): Proceed CTA Enabled (Button active and ready for checkout)
-[2026-10-23 10:20:59]   ✓ PASS: [Redmi Note 10] Dynamic Delivery Local Tier UI (1.2 km, ₹150 Subtotal -> ₹15 Delivery, ₹3 Platform, ₹168 Total) (Delivery: ₹15.00, Platform: ₹3.00, Total: ₹168.00)
-[2026-10-23 10:20:59]   ✓ PASS: [Redmi Note 10] Backend Local Tier Splits (1.2 km, ₹150 Subtotal -> Fee ₹15, Vendor ₹150, Runner ₹10, Admin ₹8, ETA 30 Mins) (Resp: {'success': True, 'order_id': '#RUR-7879', 'subtotal': 150.0, 'delivery_fee': 15.0, 'delivery_discount': 0.0, 'base_delivery_fee': 15.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 168.0, 'vendor_payout': 150.0, 'runner_payout': 10.0, 'admin_profit': 8.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 1.2, 'eta_mins': '30 Mins', 'created_at': '2026-10-23T04:50:59.095625'} (Status: 200))
-[2026-10-23 10:20:59]   ✓ PASS: [Redmi Note 10] Dynamic Delivery Long Distance Tier UI (6.5 km, ₹250 Subtotal -> ₹40 Delivery, ₹3 Platform, ₹293 Total) (Delivery: ₹40.00, Platform: ₹3.00, Total: ₹293.00)
-[2026-10-23 10:20:59]   ✓ PASS: [Redmi Note 10] Backend Long Distance Tier Splits (6.5 km, ₹250 Subtotal -> Fee ₹40, Vendor ₹250, Runner ₹30, Admin ₹13, ETA 45-60 Mins) (Resp: {'success': True, 'order_id': '#RUR-2024', 'subtotal': 250.0, 'delivery_fee': 40.0, 'delivery_discount': 0.0, 'base_delivery_fee': 40.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 293.0, 'vendor_payout': 250.0, 'runner_payout': 30.0, 'admin_profit': 13.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 6.5, 'eta_mins': '45-60 Mins', 'created_at': '2026-10-23T04:50:59.437484'})
-[2026-10-23 10:20:59]   ✓ PASS: [Redmi Note 10] Delivery Discount UI (₹300 Subtotal >= ₹299 -> Base ₹25 Delivery, -₹10 Discount, ₹318 Total - NOT Free) (Delivery: ₹25.00, Discount: -₹10.00, Total: ₹318.00, NotFree: True)
-[2026-10-23 10:20:59]   ✓ PASS: [Redmi Note 10] Backend Delivery Discount Splits (Subtotal ₹300, 2.5km -> Net Delivery ₹15, Discount ₹10, Runner ₹15, Total ₹318) (Resp: {'success': True, 'order_id': '#RUR-1839', 'subtotal': 300.0, 'delivery_fee': 15.0, 'delivery_discount': 10.0, 'base_delivery_fee': 25.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 318.0, 'vendor_payout': 300.0, 'runner_payout': 15.0, 'admin_profit': 3.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 2.5, 'eta_mins': '30 Mins', 'created_at': '2026-10-23T04:50:59.781731'})
-[2026-10-23 10:21:00]   ✓ PASS: [Redmi Note 10] Outside Delivery Zone (9.5 km): Proceed CTA Disabled (Button disabled when distance > 8 km)
-[2026-10-23 10:21:00]   ✓ PASS: [Redmi Note 10] Outside Delivery Zone (> 8.0 km): Backend API Rejection (HTTP 400) (API rejected: Outside delivery zone (9.5 km exceeds 8.0 km maximum delivery radius) / डिलीवरी क्षेत्र से बाहर है (> 8.0 किमी))
-[2026-10-23 10:21:00]   ✓ PASS: [Redmi Note 10] Sticky Bottom 'Proceed' CTA - Human Viewport & Touch Target Audit (Bounds: 361x52px at (x:16, y:787) | Viewport: 393x851px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:00]   📸 [SCREENSHOT CAPTURED]: screenshots/Redmi_Note_10/step6_02_cart_review_valid.png
-[2026-10-23 10:21:01] 
+[2026-10-23 12:36:32]   ✓ PASS: [Redmi Note 10] MOV < ₹99 (₹50 Cart): Proceed CTA Disabled (Button disabled when cart subtotal < ₹99)
+[2026-10-23 12:36:32]   ✓ PASS: [Redmi Note 10] MOV < ₹99 (₹50 Cart): Bilingual Warning Banner Visible (Warning banner shown)
+[2026-10-23 12:36:32]   ✗ FAIL: [Redmi Note 10] MOV < ₹99 (₹50 Cart): High-Contrast Bilingual Alert Content - ERROR: warning
+कम से कम ₹99 का ऑर्डर करें। ₹49 का सामान और जोड़ें।
+[2026-10-23 12:36:32]   ✓ PASS: [Redmi Note 10] MOV < ₹99 (₹50 Cart): Checkout Navigation Guarded (User cannot bypass to checkout)
+[2026-10-23 12:36:32]   ✓ PASS: [Redmi Note 10] MOV < ₹99 (₹50 Cart): Backend API Rejection (HTTP 400) (API rejected: Minimum order is ₹99 / कम से कम ₹99 का ऑर्डर करें. Add ₹49 more.)
+[2026-10-23 12:36:32]   📸 [SCREENSHOT CAPTURED]: screenshots/Redmi_Note_10/step6_01_mov_alert_active.png
+[2026-10-23 12:36:33]   ✓ PASS: [Redmi Note 10] MOV >= ₹99 (₹150 Cart): Warning Banner Hidden (Warning banner automatically removed)
+[2026-10-23 12:36:33]   ✓ PASS: [Redmi Note 10] MOV >= ₹99 (₹150 Cart): Proceed CTA Enabled (Button active and ready for checkout)
+[2026-10-23 12:36:33]   ✓ PASS: [Redmi Note 10] Dynamic Delivery Local Tier UI (1.2 km, ₹150 Subtotal -> ₹15 Delivery, ₹3 Platform, ₹168 Total) (Delivery: ₹15.00, Platform: ₹3.00, Total: ₹168.00)
+[2026-10-23 12:36:33]   ✓ PASS: [Redmi Note 10] Backend Local Tier Splits (1.2 km, ₹150 Subtotal -> Fee ₹15, Vendor ₹150, Runner ₹10, Admin ₹8, ETA 30 Mins) (Resp: {'success': True, 'order_id': '#RUR-9898', 'subtotal': 150.0, 'delivery_fee': 15.0, 'delivery_discount': 0.0, 'base_delivery_fee': 15.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 168.0, 'vendor_payout': 150.0, 'runner_payout': 10.0, 'admin_profit': 8.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 1.2, 'eta_mins': '30 Mins', 'created_at': '2026-10-23T07:06:33.362659'} (Status: 200))
+[2026-10-23 12:36:33]   ✓ PASS: [Redmi Note 10] Dynamic Delivery Long Distance Tier UI (6.5 km, ₹250 Subtotal -> ₹40 Delivery, ₹3 Platform, ₹293 Total) (Delivery: ₹40.00, Platform: ₹3.00, Total: ₹293.00)
+[2026-10-23 12:36:33]   ✓ PASS: [Redmi Note 10] Backend Long Distance Tier Splits (6.5 km, ₹250 Subtotal -> Fee ₹40, Vendor ₹250, Runner ₹30, Admin ₹13, ETA 45-60 Mins) (Resp: {'success': True, 'order_id': '#RUR-4568', 'subtotal': 250.0, 'delivery_fee': 40.0, 'delivery_discount': 0.0, 'base_delivery_fee': 40.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 293.0, 'vendor_payout': 250.0, 'runner_payout': 30.0, 'admin_profit': 13.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 6.5, 'eta_mins': '45-60 Mins', 'created_at': '2026-10-23T07:06:33.787450'})
+[2026-10-23 12:36:34]   ✓ PASS: [Redmi Note 10] Delivery Discount UI (₹300 Subtotal >= ₹299 -> Base ₹25 Delivery, -₹10 Discount, ₹318 Total - NOT Free) (Delivery: ₹25.00, Discount: -₹10.00, Total: ₹318.00, NotFree: True)
+[2026-10-23 12:36:34]   ✓ PASS: [Redmi Note 10] Backend Delivery Discount Splits (Subtotal ₹300, 2.5km -> Net Delivery ₹15, Discount ₹10, Runner ₹15, Total ₹318) (Resp: {'success': True, 'order_id': '#RUR-5630', 'subtotal': 300.0, 'delivery_fee': 15.0, 'delivery_discount': 10.0, 'base_delivery_fee': 25.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 318.0, 'vendor_payout': 300.0, 'runner_payout': 15.0, 'admin_profit': 3.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 2.5, 'eta_mins': '30 Mins', 'created_at': '2026-10-23T07:06:34.193832'})
+[2026-10-23 12:36:34]   ✓ PASS: [Redmi Note 10] Outside Delivery Zone (9.5 km): Proceed CTA Disabled (Button disabled when distance > 8 km)
+[2026-10-23 12:36:34]   ✓ PASS: [Redmi Note 10] Outside Delivery Zone (> 8.0 km): Backend API Rejection (HTTP 400) (API rejected: Outside delivery zone (9.5 km exceeds 8.0 km maximum delivery radius) / डिलीवरी क्षेत्र से बाहर है (> 8.0 किमी))
+[2026-10-23 12:36:34]   ✓ PASS: [Redmi Note 10] Sticky Bottom 'Proceed' CTA - Human Viewport & Touch Target Audit (Bounds: 361x52px at (x:16, y:787) | Viewport: 393x851px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:35]   📸 [SCREENSHOT CAPTURED]: screenshots/Redmi_Note_10/step6_02_cart_review_valid.png
+[2026-10-23 12:36:35] 
 --- [Redmi Note 10] Testing Phase 4.15: Delivery Location Setup at Checkout ---
-[2026-10-23 10:21:01]   ✓ PASS: [Redmi Note 10] Transition to Delivery Location Setup at Checkout (Address setup triggered when proceeding to checkout)
-[2026-10-23 10:21:01]   ✓ PASS: [Redmi Note 10] Phase 4.15 Landmark Setup - No Horizontal Overflow (doc: 393px, viewport: 393px)
-[2026-10-23 10:21:01]   ✓ PASS: [Redmi Note 10] Phase 4.15 Landmark Setup - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
-[2026-10-23 10:21:01]   ✓ PASS: [Redmi Note 10] Full Name Input - Human Viewport & Touch Target Audit (Bounds: 325x48px at (x:34, y:214) | Viewport: 393x851px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:01]   ✓ PASS: [Redmi Note 10] Locate Me GPS Button - Human Viewport & Touch Target Audit (Bounds: 123x36px at (x:237, y:319) | Viewport: 393x851px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:02]   ✓ PASS: [Redmi Note 10] GPS Engine Audit (Native HTML5 Geolocation Coordinates) (Displayed String: 'Lat: 29.1324, Lng: 77.0125 (±10m)' | Raw Coordinates Present: True)
-[2026-10-23 10:21:02]   ✓ PASS: [Redmi Note 10] District / Tehsil Input Field - Human Viewport & Touch Target Audit (Bounds: 325x44px at (x:34, y:429) | Viewport: 393x851px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:02]   ✓ PASS: [Redmi Note 10] Village / Panchayat Input Field - Human Viewport & Touch Target Audit (Bounds: 325x44px at (x:34, y:535) | Viewport: 393x851px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:03]   ✓ PASS: [Redmi Note 10] Rural Landmark Textarea - Human Viewport & Touch Target Audit (Bounds: 317x74px at (x:38, y:545) | Viewport: 393x851px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:03]   ✓ PASS: [Redmi Note 10] Rural Landmark Character Count (39 chars)
-[2026-10-23 10:21:03]   ✓ PASS: [Redmi Note 10] Sticky Bottom 'Save Address & Proceed' CTA - Human Viewport & Touch Target Audit (Bounds: 361x52px at (x:16, y:787) | Viewport: 393x851px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:03]   📸 [SCREENSHOT CAPTURED]: screenshots/Redmi_Note_10/step3_01_landmark_gps_setup.png
-[2026-10-23 10:21:04] 
+[2026-10-23 12:36:35]   ✓ PASS: [Redmi Note 10] Transition to Delivery Location Setup at Checkout (Address setup triggered when proceeding to checkout)
+[2026-10-23 12:36:35]   ✓ PASS: [Redmi Note 10] Phase 4.15 Landmark Setup - No Horizontal Overflow (doc: 393px, viewport: 393px)
+[2026-10-23 12:36:35]   ✓ PASS: [Redmi Note 10] Phase 4.15 Landmark Setup - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
+[2026-10-23 12:36:36]   ✓ PASS: [Redmi Note 10] Full Name Input - Human Viewport & Touch Target Audit (Bounds: 325x48px at (x:34, y:214) | Viewport: 393x851px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:36]   ✓ PASS: [Redmi Note 10] Locate Me GPS Button - Human Viewport & Touch Target Audit (Bounds: 151x36px at (x:209, y:319) | Viewport: 393x851px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:37]   ✓ PASS: [Redmi Note 10] GPS Engine Audit (Native HTML5 Geolocation Coordinates) (Displayed String: 'Lat: 29.1324, Lng: 77.0125 (±10m)' | Raw Coordinates Present: True)
+[2026-10-23 12:36:37]   ✓ PASS: [Redmi Note 10] District / Tehsil Input Field - Human Viewport & Touch Target Audit (Bounds: 325x44px at (x:34, y:429) | Viewport: 393x851px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:37]   ✓ PASS: [Redmi Note 10] Village / Panchayat Input Field - Human Viewport & Touch Target Audit (Bounds: 325x44px at (x:34, y:535) | Viewport: 393x851px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:37]   ✓ PASS: [Redmi Note 10] Rural Landmark Textarea - Human Viewport & Touch Target Audit (Bounds: 317x74px at (x:38, y:545) | Viewport: 393x851px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:38]   ✓ PASS: [Redmi Note 10] Rural Landmark Character Count (39 chars)
+[2026-10-23 12:36:38]   ✓ PASS: [Redmi Note 10] Sticky Bottom 'Save Address & Proceed' CTA - Human Viewport & Touch Target Audit (Bounds: 361x52px at (x:16, y:787) | Viewport: 393x851px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:38]   📸 [SCREENSHOT CAPTURED]: screenshots/Redmi_Note_10/step3_01_landmark_gps_setup.png
+[2026-10-23 12:36:39] 
 --- [Redmi Note 10] Testing Phase 4.2: Checkout & Payment Selection ---
-[2026-10-23 10:21:04]   ✓ PASS: [Redmi Note 10] Transition to Checkout Screen 
-[2026-10-23 10:21:04]   ✓ PASS: [Redmi Note 10] Phase 4.2 Checkout - No Horizontal Overflow (doc: 393px, viewport: 393px)
-[2026-10-23 10:21:04]   ✓ PASS: [Redmi Note 10] Phase 4.2 Checkout - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
-[2026-10-23 10:21:04]   ✓ PASS: [Redmi Note 10] Checkout Address Sync (Name: 'Ramesh Patel', Village: 'Rampur Village, Sonipat', Landmark: 'Near Shiva Mandir, Opp. Blue Water Tank')
-[2026-10-23 10:21:04]   ✓ PASS: [Redmi Note 10] Cash On Delivery (COD) Payment Card - Human Viewport & Touch Target Audit (Bounds: 319x65px at (x:37, y:511) | Viewport: 393x851px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:04]   ✓ PASS: [Redmi Note 10] Sticky Bottom 'Place Order' CTA - Human Viewport & Touch Target Audit (Bounds: 361x52px at (x:16, y:787) | Viewport: 393x851px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:05]   📸 [SCREENSHOT CAPTURED]: screenshots/Redmi_Note_10/step7_01_checkout_payment.png
-[2026-10-23 10:21:06] 
+[2026-10-23 12:36:39]   ✓ PASS: [Redmi Note 10] Transition to Checkout Screen 
+[2026-10-23 12:36:39]   ✓ PASS: [Redmi Note 10] Phase 4.2 Checkout - No Horizontal Overflow (doc: 393px, viewport: 393px)
+[2026-10-23 12:36:39]   ✓ PASS: [Redmi Note 10] Phase 4.2 Checkout - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
+[2026-10-23 12:36:39]   ✓ PASS: [Redmi Note 10] Checkout Address Sync (Name: 'Ramesh Patel', Village: 'Rampur Village, Sonipat', Landmark: 'Near Shiva Mandir, Opp. Blue Water Tank')
+[2026-10-23 12:36:39]   ✓ PASS: [Redmi Note 10] Cash On Delivery (COD) Payment Card - Human Viewport & Touch Target Audit (Bounds: 319x65px at (x:37, y:511) | Viewport: 393x851px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:40]   ✓ PASS: [Redmi Note 10] Sticky Bottom 'Place Order' CTA - Human Viewport & Touch Target Audit (Bounds: 361x52px at (x:16, y:787) | Viewport: 393x851px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:40]   📸 [SCREENSHOT CAPTURED]: screenshots/Redmi_Note_10/step7_01_checkout_payment.png
+[2026-10-23 12:36:42] 
 --- [Redmi Note 10] Testing Phase 5: Live Order Tracking ---
-[2026-10-23 10:21:06]   ✓ PASS: [Redmi Note 10] Transition to Live Order Tracking Screen 
-[2026-10-23 10:21:06]   ✓ PASS: [Redmi Note 10] Phase 5 Tracking - No Horizontal Overflow (doc: 393px, viewport: 393px)
-[2026-10-23 10:21:06]   ✓ PASS: [Redmi Note 10] Phase 5 Tracking - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
-[2026-10-23 10:21:06]   ✓ PASS: [Redmi Note 10] Live Tracking Order ID Generated (#RUR-2573)
-[2026-10-23 10:21:06]   ✓ PASS: [Redmi Note 10] Safe Doorstep Delivery OTP Displayed (4-digit OTP code visible)
-[2026-10-23 10:21:06]   ✓ PASS: [Redmi Note 10] Live Tracking Dynamic ETA Displayed ('30 Mins') (ETA: '30 Mins')
-[2026-10-23 10:21:06]   ✓ PASS: [Redmi Note 10] SQLite Real Database Persistence Verification (DB Order: #RUR-2573 | Subtotal: ₹210.0 | Total: ₹228.0 | Distance: 1.2 km | ETA: 30 Mins | Vendor: ₹210.0 | Runner: ₹10.0 | Admin: ₹8.0 | OTP: 4821)
-[2026-10-23 10:21:06]   📸 [SCREENSHOT CAPTURED]: screenshots/Redmi_Note_10/step8_01_live_tracking.png
-[2026-10-23 10:21:06] 
+[2026-10-23 12:36:42]   ✓ PASS: [Redmi Note 10] Transition to Live Order Tracking Screen 
+[2026-10-23 12:36:42]   ✓ PASS: [Redmi Note 10] Phase 5 Tracking - No Horizontal Overflow (doc: 393px, viewport: 393px)
+[2026-10-23 12:36:42]   ✓ PASS: [Redmi Note 10] Phase 5 Tracking - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
+[2026-10-23 12:36:42]   ✓ PASS: [Redmi Note 10] Live Tracking Order ID Generated (#RUR-6099)
+[2026-10-23 12:36:42]   ✓ PASS: [Redmi Note 10] Safe Doorstep Delivery OTP Displayed (4-digit OTP code visible)
+[2026-10-23 12:36:42]   ✓ PASS: [Redmi Note 10] Live Tracking Dynamic ETA Displayed ('30 Mins') (ETA: '30 Mins')
+[2026-10-23 12:36:42]   ✓ PASS: [Redmi Note 10] SQLite Real Database Persistence Verification (DB Order: #RUR-6099 | Subtotal: ₹210.0 | Total: ₹228.0 | Distance: 1.2 km | ETA: 30 Mins | Vendor: ₹210.0 | Runner: ₹10.0 | Admin: ₹8.0 | OTP: 4821)
+[2026-10-23 12:36:42]   📸 [SCREENSHOT CAPTURED]: screenshots/Redmi_Note_10/step8_01_live_tracking.png
+[2026-10-23 12:36:42] 
 --- [Redmi Note 10] Testing Phase 5.5: My Account & AI Customer Support Module ---
-[2026-10-23 10:21:07]   ✓ PASS: [Redmi Note 10] Bottom Nav Profile Button - Human Viewport & Touch Target Audit (Bounds: 44x49px at (x:319, y:794) | Viewport: 393x851px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:07]   ✓ PASS: [Redmi Note 10] Transition to My Account & Profile View 
-[2026-10-23 10:21:07]   ✓ PASS: [Redmi Note 10] Phase Profile - No Horizontal Overflow (doc: 393px, viewport: 393px)
-[2026-10-23 10:21:07]   ✓ PASS: [Redmi Note 10] Phase Profile - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
-[2026-10-23 10:21:07]   ✓ PASS: [Redmi Note 10] Profile User Details Rendered (Name: Ramesh Patel | Phone: +91 98765 43210 | Village: Rampur Village)
-[2026-10-23 10:21:07]   ✓ PASS: [Redmi Note 10] Order History List Rendered 
-[2026-10-23 10:21:07]   ✓ PASS: [Redmi Note 10] Invisible Risk Metrics (No Trust Score or Strike Counter in Customer DOM) (Customer profile is 100% clean of internal risk & cancellation counters)
-[2026-10-23 10:21:07]   ✓ PASS: [Redmi Note 10] Redundant Profile Language Card Deleted (Redundant language preference card cleanly removed from profile screen)
-[2026-10-23 10:21:08]   ✓ PASS: [Redmi Note 10] Global Header Language Toggle - Human Viewport & Touch Target Audit (Bounds: 72x32px at (x:267, y:31) | Viewport: 393x851px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:08]   ✓ PASS: [Redmi Note 10] Open Help & Support Chatbot Button - Human Viewport & Touch Target Audit (Bounds: 167x44px at (x:32, y:455) | Viewport: 393x851px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:08]   ✓ PASS: [Redmi Note 10] Support Chatbot Modal Opened 
-[2026-10-23 10:21:08]   ✓ PASS: [Redmi Note 10] Send Chat Message Button - Human Viewport & Touch Target Audit (Bounds: 36x36px at (x:348, y:754) | Viewport: 393x851px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:10]   ✓ PASS: [Redmi Note 10] AI Chatbot Intelligent Response (Snippet: .00) दुकान (Sharma Brothers Kirana) को प्राप्त हो चुका है और वे इसे स्वीकार कर रहे हैं। अनुमानित समय ~30 Mins है।
+[2026-10-23 12:36:43]   ✓ PASS: [Redmi Note 10] Bottom Nav Profile Button - Human Viewport & Touch Target Audit (Bounds: 44x49px at (x:319, y:794) | Viewport: 393x851px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:43]   ✓ PASS: [Redmi Note 10] Transition to My Account & Profile View 
+[2026-10-23 12:36:43]   ✓ PASS: [Redmi Note 10] Phase Profile - No Horizontal Overflow (doc: 393px, viewport: 393px)
+[2026-10-23 12:36:43]   ✓ PASS: [Redmi Note 10] Phase Profile - Full-Width Expansion (No Squeezing) (root width: 393px / 393px (100% fill))
+[2026-10-23 12:36:43]   ✓ PASS: [Redmi Note 10] Profile User Details Rendered (Name: Ramesh Patel | Phone: +91 98765 43210 | Village: Rampur Village)
+[2026-10-23 12:36:43]   ✓ PASS: [Redmi Note 10] Order History List Rendered 
+[2026-10-23 12:36:43]   ✓ PASS: [Redmi Note 10] Invisible Risk Metrics (No Trust Score or Strike Counter in Customer DOM) (Customer profile is 100% clean of internal risk & cancellation counters)
+[2026-10-23 12:36:43]   ✓ PASS: [Redmi Note 10] Redundant Profile Language Card Deleted (Redundant language preference card cleanly removed from profile screen)
+[2026-10-23 12:36:43]   ✓ PASS: [Redmi Note 10] Global Header Language Toggle - Human Viewport & Touch Target Audit (Bounds: 72x32px at (x:267, y:31) | Viewport: 393x851px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:44]   ✓ PASS: [Redmi Note 10] Open Help & Support Chatbot Button - Human Viewport & Touch Target Audit (Bounds: 167x44px at (x:32, y:455) | Viewport: 393x851px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:44]   ✓ PASS: [Redmi Note 10] Support Chatbot Modal Opened 
+[2026-10-23 12:36:45]   ✓ PASS: [Redmi Note 10] Send Chat Message Button - Human Viewport & Touch Target Audit (Bounds: 36x36px at (x:348, y:754) | Viewport: 393x851px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:46]   ✓ PASS: [Redmi Note 10] AI Chatbot Intelligent Response (Snippet: .00) दुकान (Sharma Brothers Kirana) को प्राप्त हो चुका है और वे इसे स्वीकार कर रहे हैं। अनुमानित समय ~30 Mins है।
 
-10:21)
-[2026-10-23 10:21:10]   ✓ PASS: [Redmi Note 10] Massive Call Help Center CTA Button - Human Viewport & Touch Target Audit (Bounds: 163x32px at (x:213, y:156) | Viewport: 393x851px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:10]   ✓ PASS: [Redmi Note 10] Call Help Center Native Tel Link (href='tel:18001204266')
-[2026-10-23 10:21:10]   📸 [SCREENSHOT CAPTURED]: screenshots/Redmi_Note_10/step8_02_account_and_support.png
-[2026-10-23 10:21:10] 
+12:36)
+[2026-10-23 12:36:46]   ✓ PASS: [Redmi Note 10] Massive Call Help Center CTA Button - Human Viewport & Touch Target Audit (Bounds: 158x32px at (x:218, y:156) | Viewport: 393x851px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:46]   ✓ PASS: [Redmi Note 10] Call Help Center Native Tel Link (href='tel:18001204266')
+[2026-10-23 12:36:46]   📸 [SCREENSHOT CAPTURED]: screenshots/Redmi_Note_10/step8_02_account_and_support.png
+[2026-10-23 12:36:47] 
 --- [Redmi Note 10] Testing Phase 6: Total Network Failure & Offline Resilience ---
-[2026-10-23 10:21:10]   ⚡ [Redmi Note 10] Engaging Playwright network route interception (page.route('**/*', route.abort()))...
-[2026-10-23 10:21:11]   ✓ PASS: [Redmi Note 10] Custom Offline Fallback Card - Human Viewport & Touch Target Audit (Bounds: 361x566px at (x:16, y:96) | Viewport: 393x851px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:11]   ✓ PASS: [Redmi Note 10] Bilingual Offline Headings Check (HI: 'इंटरनेट कनेक्शन उपलब्ध नहीं है' | EN: 'No Internet Connection')
-[2026-10-23 10:21:11]   ✓ PASS: [Redmi Note 10] Offline Retry Connection Button - Human Viewport & Touch Target Audit (Bounds: 311x48px at (x:41, y:535) | Viewport: 393x851px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:11]   📸 [SCREENSHOT CAPTURED]: screenshots/Redmi_Note_10/step9_01_offline_fallback.png
-[2026-10-23 10:21:11]   ✓ PASS: [Redmi Note 10] Standalone offline.html Fallback File Audit (Container visible: True | Title: 'इंटरनेट कनेक्शन उपलब्ध नहीं है')
-[2026-10-23 10:21:11] 
+[2026-10-23 12:36:47]   ⚡ [Redmi Note 10] Engaging Playwright network route interception (page.route('**/*', route.abort()))...
+[2026-10-23 12:36:47]   ✓ PASS: [Redmi Note 10] Custom Offline Fallback Card - Human Viewport & Touch Target Audit (Bounds: 361x566px at (x:16, y:96) | Viewport: 393x851px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:48]   ✓ PASS: [Redmi Note 10] Bilingual Offline Headings Check (HI: 'इंटरनेट कनेक्शन उपलब्ध नहीं है' | EN: 'No Internet Connection')
+[2026-10-23 12:36:48]   ✓ PASS: [Redmi Note 10] Offline Retry Connection Button - Human Viewport & Touch Target Audit (Bounds: 311x48px at (x:41, y:535) | Viewport: 393x851px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:48]   📸 [SCREENSHOT CAPTURED]: screenshots/Redmi_Note_10/step9_01_offline_fallback.png
+[2026-10-23 12:36:48]   ✓ PASS: [Redmi Note 10] Standalone offline.html Fallback File Audit (Container visible: True | Title: 'इंटरनेट कनेक्शन उपलब्ध नहीं है')
+[2026-10-23 12:36:48] 
 --- [Redmi Note 10] Console & Script Execution Audit ---
-[2026-10-23 10:21:11]   ✓ PASS: [Redmi Note 10] Zero JavaScript Console Errors (Clean runtime execution)
-[2026-10-23 10:21:11] 
+[2026-10-23 12:36:48]   ✓ PASS: [Redmi Note 10] Zero JavaScript Console Errors (Clean runtime execution)
+[2026-10-23 12:36:48] 
 ================================================================================
-[2026-10-23 10:21:11] STARTING HUMAN-LIKE VISUAL UX SIMULATION: Realme 9
-[2026-10-23 10:21:11] Dimensions: 360x800 | DPR: 3.0
-[2026-10-23 10:21:11] ================================================================================
-[2026-10-23 10:21:11] Loading application: file:///C:/Users/dhira/Downloads/Goa%20Bazar/index.html
-[2026-10-23 10:21:13]   ✓ PASS: [Realme 9] HTML Viewport Meta Tag Check (content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover")
-[2026-10-23 10:21:13] 
+[2026-10-23 12:36:48] STARTING HUMAN-LIKE VISUAL UX SIMULATION: Realme 9
+[2026-10-23 12:36:48] Dimensions: 360x800 | DPR: 3.0
+[2026-10-23 12:36:48] ================================================================================
+[2026-10-23 12:36:48] Loading application: file:///C:/Users/dhira/Downloads/Goa%20Bazar/index.html
+[2026-10-23 12:36:51]   ✓ PASS: [Realme 9] HTML Viewport Meta Tag Check (content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover")
+[2026-10-23 12:36:51] 
 --- [Realme 9] Testing Phase 1.1: Phone Login & Language Toggle ---
-[2026-10-23 10:21:13]   ✓ PASS: [Realme 9] Phase 1.1 Login - No Horizontal Overflow (doc: 360px, viewport: 360px)
-[2026-10-23 10:21:13]   ✓ PASS: [Realme 9] Phase 1.1 Login - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
-[2026-10-23 10:21:14]   📸 [SCREENSHOT CAPTURED]: screenshots/Realme_9/step1_01_login_initial.png
-[2026-10-23 10:21:15]   ✓ PASS: [Realme 9] Language Toggle Pill - Human Viewport & Touch Target Audit (Bounds: 72x32px at (x:234, y:31) | Viewport: 360x800px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:15]   ✓ PASS: [Realme 9] Bilingual Toggle (Instant State Switch) (हिंदी -> English)
-[2026-10-23 10:21:15]   📸 [SCREENSHOT CAPTURED]: screenshots/Realme_9/step1_02_bilingual_toggle_en.png
-[2026-10-23 10:21:16]   ✓ PASS: [Realme 9] Phone Number Input Field - Human Viewport & Touch Target Audit (Bounds: 193x56px at (x:116, y:437) | Viewport: 360x800px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:16]   ✓ PASS: [Realme 9] Send OTP Button (Initial Disabled State) - Human Viewport & Touch Target Audit (Bounds: 286x54px at (x:37, y:594) | Viewport: 360x800px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:16]   ✓ PASS: [Realme 9] 10-Digit Mobile Validation (Send OTP button enabled)
-[2026-10-23 10:21:16]   ✓ PASS: [Realme 9] Send OTP Button (Active Enabled State) - Human Viewport & Touch Target Audit (Bounds: 286x54px at (x:37, y:594) | Viewport: 360x800px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:16]   📸 [SCREENSHOT CAPTURED]: screenshots/Realme_9/step1_03_phone_validated.png
-[2026-10-23 10:21:17] 
+[2026-10-23 12:36:51]   ✓ PASS: [Realme 9] Phase 1.1 Login - No Horizontal Overflow (doc: 360px, viewport: 360px)
+[2026-10-23 12:36:51]   ✓ PASS: [Realme 9] Phase 1.1 Login - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
+[2026-10-23 12:36:56]   📸 [SCREENSHOT CAPTURED]: screenshots/Realme_9/step1_01_login_initial.png
+[2026-10-23 12:36:56]   ✓ PASS: [Realme 9] Language Toggle Pill - Human Viewport & Touch Target Audit (Bounds: 72x32px at (x:234, y:31) | Viewport: 360x800px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:56]   ✓ PASS: [Realme 9] Bilingual Toggle (Instant State Switch) (हिंदी -> English)
+[2026-10-23 12:36:57]   📸 [SCREENSHOT CAPTURED]: screenshots/Realme_9/step1_02_bilingual_toggle_en.png
+[2026-10-23 12:36:57]   ✓ PASS: [Realme 9] Phone Number Input Field - Human Viewport & Touch Target Audit (Bounds: 193x56px at (x:116, y:437) | Viewport: 360x800px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:57]   ✓ PASS: [Realme 9] Send OTP Button (Initial Disabled State) - Human Viewport & Touch Target Audit (Bounds: 286x54px at (x:37, y:594) | Viewport: 360x800px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:58]   ✓ PASS: [Realme 9] 10-Digit Mobile Validation (Send OTP button enabled)
+[2026-10-23 12:36:58]   ✓ PASS: [Realme 9] Send OTP Button (Active Enabled State) - Human Viewport & Touch Target Audit (Bounds: 286x54px at (x:37, y:594) | Viewport: 360x800px | Collisions: None | Occlusion: None)
+[2026-10-23 12:36:58]   📸 [SCREENSHOT CAPTURED]: screenshots/Realme_9/step1_03_phone_validated.png
+[2026-10-23 12:36:59] 
 --- [Realme 9] Testing Phase 1.2: OTP Verification ---
-[2026-10-23 10:21:17]   ✓ PASS: [Realme 9] Transition to OTP Screen 
-[2026-10-23 10:21:17]   ✓ PASS: [Realme 9] Phase 1.2 OTP - No Horizontal Overflow (doc: 360px, viewport: 360px)
-[2026-10-23 10:21:17]   ✓ PASS: [Realme 9] Phase 1.2 OTP - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
-[2026-10-23 10:21:18]   ✓ PASS: [Realme 9] OTP Verify & Continue Button - Human Viewport & Touch Target Audit (Bounds: 328x54px at (x:16, y:492) | Viewport: 360x800px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:18]   📸 [SCREENSHOT CAPTURED]: screenshots/Realme_9/step2_01_otp_verification.png
-[2026-10-23 10:21:19]   ✓ PASS: [Realme 9] Zero-Friction Onboarding (OTP -> Dashboard Transition) (User immediately enters Dashboard without early location gate)
-[2026-10-23 10:21:19]   ✓ PASS: [Realme 9] Landmark Setup Deferred from Initial Auth (Landmark screen deferred to checkout phase)
-[2026-10-23 10:21:19] 
+[2026-10-23 12:36:59]   ✓ PASS: [Realme 9] Transition to OTP Screen 
+[2026-10-23 12:36:59]   ✓ PASS: [Realme 9] Phase 1.2 OTP - No Horizontal Overflow (doc: 360px, viewport: 360px)
+[2026-10-23 12:36:59]   ✓ PASS: [Realme 9] Phase 1.2 OTP - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
+[2026-10-23 12:37:00]   ✓ PASS: [Realme 9] OTP Verify & Continue Button - Human Viewport & Touch Target Audit (Bounds: 328x54px at (x:16, y:492) | Viewport: 360x800px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:00]   📸 [SCREENSHOT CAPTURED]: screenshots/Realme_9/step2_01_otp_verification.png
+[2026-10-23 12:37:01]   ✓ PASS: [Realme 9] Zero-Friction Onboarding (OTP -> Dashboard Transition) (User immediately enters Dashboard without early location gate)
+[2026-10-23 12:37:01]   ✓ PASS: [Realme 9] Landmark Setup Deferred from Initial Auth (Landmark screen deferred to checkout phase)
+[2026-10-23 12:37:01] 
 --- [Realme 9] Testing Phase 2: Main Dashboard & Store Discovery ---
-[2026-10-23 10:21:19]   ✓ PASS: [Realme 9] Transition to Dashboard 
-[2026-10-23 10:21:19]   ✓ PASS: [Realme 9] Phase 2 Dashboard - No Horizontal Overflow (doc: 360px, viewport: 360px)
-[2026-10-23 10:21:19]   ✓ PASS: [Realme 9] Phase 2 Dashboard - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
-[2026-10-23 10:21:19]   ✓ PASS: [Realme 9] Sticky Village Header Rendered (गाँव चुनें / Set Delivery Location)
-[2026-10-23 10:21:19]   ✓ PASS: [Realme 9] Main Dashboard Search Bar - Human Viewport & Touch Target Audit (Bounds: 174x36px at (x:57, y:171) | Viewport: 360x800px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:19]   ✓ PASS: [Realme 9] Store Discovery Search ('Sharma') (Sharma Brothers Kirana matched)
-[2026-10-23 10:21:20]   ✓ PASS: [Realme 9] Product Discovery Search ('Sugar') (Found Sugar product in instant discovery overlay)
-[2026-10-23 10:21:20]   ✓ PASS: [Realme 9] Phase 2 Store Feed Dynamic ETA (<= 5.0 km -> '30 Mins') (Store 1 ETA: '30 Mins' | Store 2 ETA: '30 Mins')
-[2026-10-23 10:21:20]   ✓ PASS: [Realme 9] Sharma Brothers Store Card - Human Viewport & Touch Target Audit (Bounds: 328x129px at (x:16, y:399) | Viewport: 360x800px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:20]   📸 [SCREENSHOT CAPTURED]: screenshots/Realme_9/step4_01_main_dashboard.png
-[2026-10-23 10:21:21] 
+[2026-10-23 12:37:01]   ✓ PASS: [Realme 9] Transition to Dashboard 
+[2026-10-23 12:37:01]   ✓ PASS: [Realme 9] Phase 2 Dashboard - No Horizontal Overflow (doc: 360px, viewport: 360px)
+[2026-10-23 12:37:01]   ✓ PASS: [Realme 9] Phase 2 Dashboard - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
+[2026-10-23 12:37:01]   ✓ PASS: [Realme 9] Sticky Village Header Rendered (स्थान चुनें)
+[2026-10-23 12:37:01]   ✓ PASS: [Realme 9] Main Dashboard Search Bar - Human Viewport & Touch Target Audit (Bounds: 174x36px at (x:57, y:171) | Viewport: 360x800px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:01]   ✓ PASS: [Realme 9] Store Discovery Search ('Sharma') (Sharma Brothers Kirana matched)
+[2026-10-23 12:37:02]   ✓ PASS: [Realme 9] Product Discovery Search ('Sugar') (Found Sugar product in instant discovery overlay)
+[2026-10-23 12:37:02]   ✓ PASS: [Realme 9] Phase 2 Store Feed Dynamic ETA (<= 5.0 km -> '30 Mins') (Store 1 ETA: '30 Mins' | Store 2 ETA: '30 Mins')
+[2026-10-23 12:37:02]   ✓ PASS: [Realme 9] Sharma Brothers Store Card - Human Viewport & Touch Target Audit (Bounds: 328x129px at (x:16, y:399) | Viewport: 360x800px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:02]   📸 [SCREENSHOT CAPTURED]: screenshots/Realme_9/step4_01_main_dashboard.png
+[2026-10-23 12:37:03] 
 --- [Realme 9] Testing Phase 3: Store Catalog & Dynamic Steppers ---
-[2026-10-23 10:21:21]   ✓ PASS: [Realme 9] Transition to Store View (Sharma Brothers Kirana) 
-[2026-10-23 10:21:21]   ✓ PASS: [Realme 9] Phase 3 Store Overview ETA ('30 Mins') (P3 ETA: '30 Mins')
-[2026-10-23 10:21:21]   ✓ PASS: [Realme 9] Phase 3 Store - No Horizontal Overflow (doc: 360px, viewport: 360px)
-[2026-10-23 10:21:21]   ✓ PASS: [Realme 9] Phase 3 Store - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
-[2026-10-23 10:21:21]   ✓ PASS: [Realme 9] Product 'ADD' Button - Human Viewport & Touch Target Audit (Bounds: 73x36px at (x:254, y:299) | Viewport: 360x800px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:21]   📸 [SCREENSHOT CAPTURED]: screenshots/Realme_9/step5_01_store_catalog.png
-[2026-10-23 10:21:22]   ✓ PASS: [Realme 9] Dynamic Stepper -> Cart Bar Triggered (Cart bar popped up)
-[2026-10-23 10:21:22]   ✓ PASS: [Realme 9] Sticky Bottom Floating Cart Bar - Human Viewport & Touch Target Audit (Bounds: 360x89px at (x:0, y:711) | Viewport: 360x800px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:22]   📸 [SCREENSHOT CAPTURED]: screenshots/Realme_9/step5_02_cart_bar_popped.png
-[2026-10-23 10:21:23] 
+[2026-10-23 12:37:03]   ✓ PASS: [Realme 9] Transition to Store View (Sharma Brothers Kirana) 
+[2026-10-23 12:37:03]   ✓ PASS: [Realme 9] Phase 3 Store Overview ETA ('30 Mins') (P3 ETA: '30 Mins')
+[2026-10-23 12:37:03]   ✓ PASS: [Realme 9] Phase 3 Store - No Horizontal Overflow (doc: 360px, viewport: 360px)
+[2026-10-23 12:37:03]   ✓ PASS: [Realme 9] Phase 3 Store - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
+[2026-10-23 12:37:04]   ✓ PASS: [Realme 9] Product 'ADD' Button - Human Viewport & Touch Target Audit (Bounds: 73x36px at (x:254, y:299) | Viewport: 360x800px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:04]   📸 [SCREENSHOT CAPTURED]: screenshots/Realme_9/step5_01_store_catalog.png
+[2026-10-23 12:37:04]   ✓ PASS: [Realme 9] Dynamic Stepper -> Cart Bar Triggered (Cart bar popped up)
+[2026-10-23 12:37:05]   ✓ PASS: [Realme 9] Sticky Bottom Floating Cart Bar - Human Viewport & Touch Target Audit (Bounds: 360x89px at (x:0, y:711) | Viewport: 360x800px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:05]   📸 [SCREENSHOT CAPTURED]: screenshots/Realme_9/step5_02_cart_bar_popped.png
+[2026-10-23 12:37:06] 
 --- [Realme 9] Testing Phase 4.1: Cart Review & Minimum Order Value (MOV) ---
-[2026-10-23 10:21:23]   ✓ PASS: [Realme 9] Transition to Cart Review Screen 
-[2026-10-23 10:21:23]   ✓ PASS: [Realme 9] Phase 4.1 Cart - No Horizontal Overflow (doc: 360px, viewport: 360px)
-[2026-10-23 10:21:23]   ✓ PASS: [Realme 9] Phase 4.1 Cart - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
-[2026-10-23 10:21:23] 
+[2026-10-23 12:37:06]   ✓ PASS: [Realme 9] Transition to Cart Review Screen 
+[2026-10-23 12:37:06]   ✓ PASS: [Realme 9] Phase 4.1 Cart - No Horizontal Overflow (doc: 360px, viewport: 360px)
+[2026-10-23 12:37:06]   ✓ PASS: [Realme 9] Phase 4.1 Cart - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
+[2026-10-23 12:37:06] 
 --- [Realme 9] Testing Minimum Order Value (MOV) ₹99 Validation ---
-[2026-10-23 10:21:23]   ✓ PASS: [Realme 9] MOV < ₹99 (₹50 Cart): Proceed CTA Disabled (Button disabled when cart subtotal < ₹99)
-[2026-10-23 10:21:23]   ✓ PASS: [Realme 9] MOV < ₹99 (₹50 Cart): Bilingual Warning Banner Visible (Warning banner shown)
-[2026-10-23 10:21:23]   ✓ PASS: [Realme 9] MOV < ₹99 (₹50 Cart): High-Contrast Bilingual Alert Content (warning
-Minimum order is ₹99 / कम से कम ₹99 का ऑर्डर करें. Add ₹49 more.)
-[2026-10-23 10:21:24]   ✓ PASS: [Realme 9] MOV < ₹99 (₹50 Cart): Checkout Navigation Guarded (User cannot bypass to checkout)
-[2026-10-23 10:21:24]   ✓ PASS: [Realme 9] MOV < ₹99 (₹50 Cart): Backend API Rejection (HTTP 400) (API rejected: Minimum order is ₹99 / कम से कम ₹99 का ऑर्डर करें. Add ₹49 more.)
-[2026-10-23 10:21:24]   📸 [SCREENSHOT CAPTURED]: screenshots/Realme_9/step6_01_mov_alert_active.png
-[2026-10-23 10:21:24]   ✓ PASS: [Realme 9] MOV >= ₹99 (₹150 Cart): Warning Banner Hidden (Warning banner automatically removed)
-[2026-10-23 10:21:24]   ✓ PASS: [Realme 9] MOV >= ₹99 (₹150 Cart): Proceed CTA Enabled (Button active and ready for checkout)
-[2026-10-23 10:21:24]   ✓ PASS: [Realme 9] Dynamic Delivery Local Tier UI (1.2 km, ₹150 Subtotal -> ₹15 Delivery, ₹3 Platform, ₹168 Total) (Delivery: ₹15.00, Platform: ₹3.00, Total: ₹168.00)
-[2026-10-23 10:21:24]   ✓ PASS: [Realme 9] Backend Local Tier Splits (1.2 km, ₹150 Subtotal -> Fee ₹15, Vendor ₹150, Runner ₹10, Admin ₹8, ETA 30 Mins) (Resp: {'success': True, 'order_id': '#RUR-7759', 'subtotal': 150.0, 'delivery_fee': 15.0, 'delivery_discount': 0.0, 'base_delivery_fee': 15.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 168.0, 'vendor_payout': 150.0, 'runner_payout': 10.0, 'admin_profit': 8.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 1.2, 'eta_mins': '30 Mins', 'created_at': '2026-10-23T04:51:24.517780'} (Status: 200))
-[2026-10-23 10:21:24]   ✓ PASS: [Realme 9] Dynamic Delivery Long Distance Tier UI (6.5 km, ₹250 Subtotal -> ₹40 Delivery, ₹3 Platform, ₹293 Total) (Delivery: ₹40.00, Platform: ₹3.00, Total: ₹293.00)
-[2026-10-23 10:21:24]   ✓ PASS: [Realme 9] Backend Long Distance Tier Splits (6.5 km, ₹250 Subtotal -> Fee ₹40, Vendor ₹250, Runner ₹30, Admin ₹13, ETA 45-60 Mins) (Resp: {'success': True, 'order_id': '#RUR-5054', 'subtotal': 250.0, 'delivery_fee': 40.0, 'delivery_discount': 0.0, 'base_delivery_fee': 40.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 293.0, 'vendor_payout': 250.0, 'runner_payout': 30.0, 'admin_profit': 13.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 6.5, 'eta_mins': '45-60 Mins', 'created_at': '2026-10-23T04:51:24.853834'})
-[2026-10-23 10:21:25]   ✓ PASS: [Realme 9] Delivery Discount UI (₹300 Subtotal >= ₹299 -> Base ₹25 Delivery, -₹10 Discount, ₹318 Total - NOT Free) (Delivery: ₹25.00, Discount: -₹10.00, Total: ₹318.00, NotFree: True)
-[2026-10-23 10:21:25]   ✓ PASS: [Realme 9] Backend Delivery Discount Splits (Subtotal ₹300, 2.5km -> Net Delivery ₹15, Discount ₹10, Runner ₹15, Total ₹318) (Resp: {'success': True, 'order_id': '#RUR-3213', 'subtotal': 300.0, 'delivery_fee': 15.0, 'delivery_discount': 10.0, 'base_delivery_fee': 25.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 318.0, 'vendor_payout': 300.0, 'runner_payout': 15.0, 'admin_profit': 3.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 2.5, 'eta_mins': '30 Mins', 'created_at': '2026-10-23T04:51:25.195780'})
-[2026-10-23 10:21:25]   ✓ PASS: [Realme 9] Outside Delivery Zone (9.5 km): Proceed CTA Disabled (Button disabled when distance > 8 km)
-[2026-10-23 10:21:25]   ✓ PASS: [Realme 9] Outside Delivery Zone (> 8.0 km): Backend API Rejection (HTTP 400) (API rejected: Outside delivery zone (9.5 km exceeds 8.0 km maximum delivery radius) / डिलीवरी क्षेत्र से बाहर है (> 8.0 किमी))
-[2026-10-23 10:21:25]   ✓ PASS: [Realme 9] Sticky Bottom 'Proceed' CTA - Human Viewport & Touch Target Audit (Bounds: 328x52px at (x:16, y:736) | Viewport: 360x800px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:25]   📸 [SCREENSHOT CAPTURED]: screenshots/Realme_9/step6_02_cart_review_valid.png
-[2026-10-23 10:21:26] 
+[2026-10-23 12:37:06]   ✓ PASS: [Realme 9] MOV < ₹99 (₹50 Cart): Proceed CTA Disabled (Button disabled when cart subtotal < ₹99)
+[2026-10-23 12:37:06]   ✓ PASS: [Realme 9] MOV < ₹99 (₹50 Cart): Bilingual Warning Banner Visible (Warning banner shown)
+[2026-10-23 12:37:06]   ✗ FAIL: [Realme 9] MOV < ₹99 (₹50 Cart): High-Contrast Bilingual Alert Content - ERROR: warning
+कम से कम ₹99 का ऑर्डर करें। ₹49 का सामान और जोड़ें।
+[2026-10-23 12:37:06]   ✓ PASS: [Realme 9] MOV < ₹99 (₹50 Cart): Checkout Navigation Guarded (User cannot bypass to checkout)
+[2026-10-23 12:37:06]   ✓ PASS: [Realme 9] MOV < ₹99 (₹50 Cart): Backend API Rejection (HTTP 400) (API rejected: Minimum order is ₹99 / कम से कम ₹99 का ऑर्डर करें. Add ₹49 more.)
+[2026-10-23 12:37:07]   📸 [SCREENSHOT CAPTURED]: screenshots/Realme_9/step6_01_mov_alert_active.png
+[2026-10-23 12:37:07]   ✓ PASS: [Realme 9] MOV >= ₹99 (₹150 Cart): Warning Banner Hidden (Warning banner automatically removed)
+[2026-10-23 12:37:07]   ✓ PASS: [Realme 9] MOV >= ₹99 (₹150 Cart): Proceed CTA Enabled (Button active and ready for checkout)
+[2026-10-23 12:37:07]   ✓ PASS: [Realme 9] Dynamic Delivery Local Tier UI (1.2 km, ₹150 Subtotal -> ₹15 Delivery, ₹3 Platform, ₹168 Total) (Delivery: ₹15.00, Platform: ₹3.00, Total: ₹168.00)
+[2026-10-23 12:37:07]   ✓ PASS: [Realme 9] Backend Local Tier Splits (1.2 km, ₹150 Subtotal -> Fee ₹15, Vendor ₹150, Runner ₹10, Admin ₹8, ETA 30 Mins) (Resp: {'success': True, 'order_id': '#RUR-9728', 'subtotal': 150.0, 'delivery_fee': 15.0, 'delivery_discount': 0.0, 'base_delivery_fee': 15.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 168.0, 'vendor_payout': 150.0, 'runner_payout': 10.0, 'admin_profit': 8.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 1.2, 'eta_mins': '30 Mins', 'created_at': '2026-10-23T07:07:07.487547'} (Status: 200))
+[2026-10-23 12:37:07]   ✓ PASS: [Realme 9] Dynamic Delivery Long Distance Tier UI (6.5 km, ₹250 Subtotal -> ₹40 Delivery, ₹3 Platform, ₹293 Total) (Delivery: ₹40.00, Platform: ₹3.00, Total: ₹293.00)
+[2026-10-23 12:37:07]   ✓ PASS: [Realme 9] Backend Long Distance Tier Splits (6.5 km, ₹250 Subtotal -> Fee ₹40, Vendor ₹250, Runner ₹30, Admin ₹13, ETA 45-60 Mins) (Resp: {'success': True, 'order_id': '#RUR-7727', 'subtotal': 250.0, 'delivery_fee': 40.0, 'delivery_discount': 0.0, 'base_delivery_fee': 40.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 293.0, 'vendor_payout': 250.0, 'runner_payout': 30.0, 'admin_profit': 13.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 6.5, 'eta_mins': '45-60 Mins', 'created_at': '2026-10-23T07:07:07.914749'})
+[2026-10-23 12:37:08]   ✓ PASS: [Realme 9] Delivery Discount UI (₹300 Subtotal >= ₹299 -> Base ₹25 Delivery, -₹10 Discount, ₹318 Total - NOT Free) (Delivery: ₹25.00, Discount: -₹10.00, Total: ₹318.00, NotFree: True)
+[2026-10-23 12:37:08]   ✓ PASS: [Realme 9] Backend Delivery Discount Splits (Subtotal ₹300, 2.5km -> Net Delivery ₹15, Discount ₹10, Runner ₹15, Total ₹318) (Resp: {'success': True, 'order_id': '#RUR-2696', 'subtotal': 300.0, 'delivery_fee': 15.0, 'delivery_discount': 10.0, 'base_delivery_fee': 25.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 318.0, 'vendor_payout': 300.0, 'runner_payout': 15.0, 'admin_profit': 3.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 2.5, 'eta_mins': '30 Mins', 'created_at': '2026-10-23T07:07:08.300350'})
+[2026-10-23 12:37:08]   ✓ PASS: [Realme 9] Outside Delivery Zone (9.5 km): Proceed CTA Disabled (Button disabled when distance > 8 km)
+[2026-10-23 12:37:08]   ✓ PASS: [Realme 9] Outside Delivery Zone (> 8.0 km): Backend API Rejection (HTTP 400) (API rejected: Outside delivery zone (9.5 km exceeds 8.0 km maximum delivery radius) / डिलीवरी क्षेत्र से बाहर है (> 8.0 किमी))
+[2026-10-23 12:37:09]   ✓ PASS: [Realme 9] Sticky Bottom 'Proceed' CTA - Human Viewport & Touch Target Audit (Bounds: 328x52px at (x:16, y:736) | Viewport: 360x800px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:09]   📸 [SCREENSHOT CAPTURED]: screenshots/Realme_9/step6_02_cart_review_valid.png
+[2026-10-23 12:37:09] 
 --- [Realme 9] Testing Phase 4.15: Delivery Location Setup at Checkout ---
-[2026-10-23 10:21:26]   ✓ PASS: [Realme 9] Transition to Delivery Location Setup at Checkout (Address setup triggered when proceeding to checkout)
-[2026-10-23 10:21:26]   ✓ PASS: [Realme 9] Phase 4.15 Landmark Setup - No Horizontal Overflow (doc: 360px, viewport: 360px)
-[2026-10-23 10:21:26]   ✓ PASS: [Realme 9] Phase 4.15 Landmark Setup - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
-[2026-10-23 10:21:26]   ✓ PASS: [Realme 9] Full Name Input - Human Viewport & Touch Target Audit (Bounds: 292x48px at (x:34, y:214) | Viewport: 360x800px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:27]   ✓ PASS: [Realme 9] Locate Me GPS Button - Human Viewport & Touch Target Audit (Bounds: 123x36px at (x:204, y:319) | Viewport: 360x800px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:28]   ✓ PASS: [Realme 9] GPS Engine Audit (Native HTML5 Geolocation Coordinates) (Displayed String: 'Lat: 29.1324, Lng: 77.0125 (±10m)' | Raw Coordinates Present: True)
-[2026-10-23 10:21:28]   ✓ PASS: [Realme 9] District / Tehsil Input Field - Human Viewport & Touch Target Audit (Bounds: 292x44px at (x:34, y:436) | Viewport: 360x800px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:28]   ✓ PASS: [Realme 9] Village / Panchayat Input Field - Human Viewport & Touch Target Audit (Bounds: 292x44px at (x:34, y:484) | Viewport: 360x800px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:28]   ✓ PASS: [Realme 9] Rural Landmark Textarea - Human Viewport & Touch Target Audit (Bounds: 284x74px at (x:38, y:494) | Viewport: 360x800px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:28]   ✓ PASS: [Realme 9] Rural Landmark Character Count (39 chars)
-[2026-10-23 10:21:28]   ✓ PASS: [Realme 9] Sticky Bottom 'Save Address & Proceed' CTA - Human Viewport & Touch Target Audit (Bounds: 328x52px at (x:16, y:736) | Viewport: 360x800px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:29]   📸 [SCREENSHOT CAPTURED]: screenshots/Realme_9/step3_01_landmark_gps_setup.png
-[2026-10-23 10:21:29] 
+[2026-10-23 12:37:09]   ✓ PASS: [Realme 9] Transition to Delivery Location Setup at Checkout (Address setup triggered when proceeding to checkout)
+[2026-10-23 12:37:09]   ✓ PASS: [Realme 9] Phase 4.15 Landmark Setup - No Horizontal Overflow (doc: 360px, viewport: 360px)
+[2026-10-23 12:37:09]   ✓ PASS: [Realme 9] Phase 4.15 Landmark Setup - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
+[2026-10-23 12:37:10]   ✓ PASS: [Realme 9] Full Name Input - Human Viewport & Touch Target Audit (Bounds: 292x48px at (x:34, y:214) | Viewport: 360x800px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:10]   ✓ PASS: [Realme 9] Locate Me GPS Button - Human Viewport & Touch Target Audit (Bounds: 151x36px at (x:176, y:327) | Viewport: 360x800px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:11]   ✓ PASS: [Realme 9] GPS Engine Audit (Native HTML5 Geolocation Coordinates) (Displayed String: 'Lat: 29.1324, Lng: 77.0125 (±10m)' | Raw Coordinates Present: True)
+[2026-10-23 12:37:11]   ✓ PASS: [Realme 9] District / Tehsil Input Field - Human Viewport & Touch Target Audit (Bounds: 292x44px at (x:34, y:436) | Viewport: 360x800px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:11]   ✓ PASS: [Realme 9] Village / Panchayat Input Field - Human Viewport & Touch Target Audit (Bounds: 292x44px at (x:34, y:484) | Viewport: 360x800px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:12]   ✓ PASS: [Realme 9] Rural Landmark Textarea - Human Viewport & Touch Target Audit (Bounds: 284x74px at (x:38, y:494) | Viewport: 360x800px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:12]   ✓ PASS: [Realme 9] Rural Landmark Character Count (39 chars)
+[2026-10-23 12:37:12]   ✓ PASS: [Realme 9] Sticky Bottom 'Save Address & Proceed' CTA - Human Viewport & Touch Target Audit (Bounds: 328x52px at (x:16, y:736) | Viewport: 360x800px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:12]   📸 [SCREENSHOT CAPTURED]: screenshots/Realme_9/step3_01_landmark_gps_setup.png
+[2026-10-23 12:37:13] 
 --- [Realme 9] Testing Phase 4.2: Checkout & Payment Selection ---
-[2026-10-23 10:21:29]   ✓ PASS: [Realme 9] Transition to Checkout Screen 
-[2026-10-23 10:21:29]   ✓ PASS: [Realme 9] Phase 4.2 Checkout - No Horizontal Overflow (doc: 360px, viewport: 360px)
-[2026-10-23 10:21:29]   ✓ PASS: [Realme 9] Phase 4.2 Checkout - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
-[2026-10-23 10:21:29]   ✓ PASS: [Realme 9] Checkout Address Sync (Name: 'Ramesh Patel', Village: 'Rampur Village, Sonipat', Landmark: 'Near Shiva Mandir, Opp. Blue Water Tank')
-[2026-10-23 10:21:30]   ✓ PASS: [Realme 9] Cash On Delivery (COD) Payment Card - Human Viewport & Touch Target Audit (Bounds: 286x65px at (x:37, y:511) | Viewport: 360x800px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:30]   ✓ PASS: [Realme 9] Sticky Bottom 'Place Order' CTA - Human Viewport & Touch Target Audit (Bounds: 328x52px at (x:16, y:736) | Viewport: 360x800px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:30]   📸 [SCREENSHOT CAPTURED]: screenshots/Realme_9/step7_01_checkout_payment.png
-[2026-10-23 10:21:32] 
+[2026-10-23 12:37:13]   ✓ PASS: [Realme 9] Transition to Checkout Screen 
+[2026-10-23 12:37:13]   ✓ PASS: [Realme 9] Phase 4.2 Checkout - No Horizontal Overflow (doc: 360px, viewport: 360px)
+[2026-10-23 12:37:13]   ✓ PASS: [Realme 9] Phase 4.2 Checkout - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
+[2026-10-23 12:37:13]   ✓ PASS: [Realme 9] Checkout Address Sync (Name: 'Ramesh Patel', Village: 'Rampur Village, Sonipat', Landmark: 'Near Shiva Mandir, Opp. Blue Water Tank')
+[2026-10-23 12:37:13]   ✓ PASS: [Realme 9] Cash On Delivery (COD) Payment Card - Human Viewport & Touch Target Audit (Bounds: 286x65px at (x:37, y:511) | Viewport: 360x800px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:14]   ✓ PASS: [Realme 9] Sticky Bottom 'Place Order' CTA - Human Viewport & Touch Target Audit (Bounds: 328x52px at (x:16, y:736) | Viewport: 360x800px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:14]   📸 [SCREENSHOT CAPTURED]: screenshots/Realme_9/step7_01_checkout_payment.png
+[2026-10-23 12:37:15] 
 --- [Realme 9] Testing Phase 5: Live Order Tracking ---
-[2026-10-23 10:21:32]   ✓ PASS: [Realme 9] Transition to Live Order Tracking Screen 
-[2026-10-23 10:21:32]   ✓ PASS: [Realme 9] Phase 5 Tracking - No Horizontal Overflow (doc: 360px, viewport: 360px)
-[2026-10-23 10:21:32]   ✓ PASS: [Realme 9] Phase 5 Tracking - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
-[2026-10-23 10:21:32]   ✓ PASS: [Realme 9] Live Tracking Order ID Generated (#RUR-7055)
-[2026-10-23 10:21:32]   ✓ PASS: [Realme 9] Safe Doorstep Delivery OTP Displayed (4-digit OTP code visible)
-[2026-10-23 10:21:32]   ✓ PASS: [Realme 9] Live Tracking Dynamic ETA Displayed ('30 Mins') (ETA: '30 Mins')
-[2026-10-23 10:21:32]   ✓ PASS: [Realme 9] SQLite Real Database Persistence Verification (DB Order: #RUR-7055 | Subtotal: ₹210.0 | Total: ₹228.0 | Distance: 1.2 km | ETA: 30 Mins | Vendor: ₹210.0 | Runner: ₹10.0 | Admin: ₹8.0 | OTP: 4821)
-[2026-10-23 10:21:32]   📸 [SCREENSHOT CAPTURED]: screenshots/Realme_9/step8_01_live_tracking.png
-[2026-10-23 10:21:32] 
+[2026-10-23 12:37:15]   ✓ PASS: [Realme 9] Transition to Live Order Tracking Screen 
+[2026-10-23 12:37:15]   ✓ PASS: [Realme 9] Phase 5 Tracking - No Horizontal Overflow (doc: 360px, viewport: 360px)
+[2026-10-23 12:37:15]   ✓ PASS: [Realme 9] Phase 5 Tracking - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
+[2026-10-23 12:37:15]   ✓ PASS: [Realme 9] Live Tracking Order ID Generated (#RUR-9256)
+[2026-10-23 12:37:16]   ✓ PASS: [Realme 9] Safe Doorstep Delivery OTP Displayed (4-digit OTP code visible)
+[2026-10-23 12:37:16]   ✓ PASS: [Realme 9] Live Tracking Dynamic ETA Displayed ('30 Mins') (ETA: '30 Mins')
+[2026-10-23 12:37:16]   ✓ PASS: [Realme 9] SQLite Real Database Persistence Verification (DB Order: #RUR-9256 | Subtotal: ₹210.0 | Total: ₹228.0 | Distance: 1.2 km | ETA: 30 Mins | Vendor: ₹210.0 | Runner: ₹10.0 | Admin: ₹8.0 | OTP: 4821)
+[2026-10-23 12:37:16]   📸 [SCREENSHOT CAPTURED]: screenshots/Realme_9/step8_01_live_tracking.png
+[2026-10-23 12:37:16] 
 --- [Realme 9] Testing Phase 5.5: My Account & AI Customer Support Module ---
-[2026-10-23 10:21:32]   ✓ PASS: [Realme 9] Bottom Nav Profile Button - Human Viewport & Touch Target Audit (Bounds: 44x49px at (x:290, y:743) | Viewport: 360x800px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:33]   ✓ PASS: [Realme 9] Transition to My Account & Profile View 
-[2026-10-23 10:21:33]   ✓ PASS: [Realme 9] Phase Profile - No Horizontal Overflow (doc: 360px, viewport: 360px)
-[2026-10-23 10:21:33]   ✓ PASS: [Realme 9] Phase Profile - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
-[2026-10-23 10:21:33]   ✓ PASS: [Realme 9] Profile User Details Rendered (Name: Ramesh Patel | Phone: +91 98765 43210 | Village: Rampur Village)
-[2026-10-23 10:21:33]   ✓ PASS: [Realme 9] Order History List Rendered 
-[2026-10-23 10:21:33]   ✓ PASS: [Realme 9] Invisible Risk Metrics (No Trust Score or Strike Counter in Customer DOM) (Customer profile is 100% clean of internal risk & cancellation counters)
-[2026-10-23 10:21:33]   ✓ PASS: [Realme 9] Redundant Profile Language Card Deleted (Redundant language preference card cleanly removed from profile screen)
-[2026-10-23 10:21:33]   ✓ PASS: [Realme 9] Global Header Language Toggle - Human Viewport & Touch Target Audit (Bounds: 72x32px at (x:234, y:31) | Viewport: 360x800px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:33]   ✓ PASS: [Realme 9] Open Help & Support Chatbot Button - Human Viewport & Touch Target Audit (Bounds: 134x44px at (x:32, y:455) | Viewport: 360x800px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:34]   ✓ PASS: [Realme 9] Support Chatbot Modal Opened 
-[2026-10-23 10:21:34]   ✓ PASS: [Realme 9] Send Chat Message Button - Human Viewport & Touch Target Audit (Bounds: 36x36px at (x:315, y:703) | Viewport: 360x800px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:35]   ✓ PASS: [Realme 9] AI Chatbot Intelligent Response (Snippet: .00) दुकान (Sharma Brothers Kirana) को प्राप्त हो चुका है और वे इसे स्वीकार कर रहे हैं। अनुमानित समय ~30 Mins है।
+[2026-10-23 12:37:17]   ✓ PASS: [Realme 9] Bottom Nav Profile Button - Human Viewport & Touch Target Audit (Bounds: 44x49px at (x:290, y:743) | Viewport: 360x800px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:17]   ✓ PASS: [Realme 9] Transition to My Account & Profile View 
+[2026-10-23 12:37:17]   ✓ PASS: [Realme 9] Phase Profile - No Horizontal Overflow (doc: 360px, viewport: 360px)
+[2026-10-23 12:37:17]   ✓ PASS: [Realme 9] Phase Profile - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
+[2026-10-23 12:37:17]   ✓ PASS: [Realme 9] Profile User Details Rendered (Name: Ramesh Patel | Phone: +91 98765 43210 | Village: Rampur Village)
+[2026-10-23 12:37:17]   ✓ PASS: [Realme 9] Order History List Rendered 
+[2026-10-23 12:37:17]   ✓ PASS: [Realme 9] Invisible Risk Metrics (No Trust Score or Strike Counter in Customer DOM) (Customer profile is 100% clean of internal risk & cancellation counters)
+[2026-10-23 12:37:17]   ✓ PASS: [Realme 9] Redundant Profile Language Card Deleted (Redundant language preference card cleanly removed from profile screen)
+[2026-10-23 12:37:17]   ✓ PASS: [Realme 9] Global Header Language Toggle - Human Viewport & Touch Target Audit (Bounds: 72x32px at (x:234, y:31) | Viewport: 360x800px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:18]   ✓ PASS: [Realme 9] Open Help & Support Chatbot Button - Human Viewport & Touch Target Audit (Bounds: 134x44px at (x:32, y:455) | Viewport: 360x800px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:18]   ✓ PASS: [Realme 9] Support Chatbot Modal Opened 
+[2026-10-23 12:37:19]   ✓ PASS: [Realme 9] Send Chat Message Button - Human Viewport & Touch Target Audit (Bounds: 36x36px at (x:315, y:703) | Viewport: 360x800px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:20]   ✓ PASS: [Realme 9] AI Chatbot Intelligent Response (Snippet: .00) दुकान (Sharma Brothers Kirana) को प्राप्त हो चुका है और वे इसे स्वीकार कर रहे हैं। अनुमानित समय ~30 Mins है।
 
-10:21)
-[2026-10-23 10:21:35]   ✓ PASS: [Realme 9] Massive Call Help Center CTA Button - Human Viewport & Touch Target Audit (Bounds: 163x32px at (x:180, y:165) | Viewport: 360x800px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:35]   ✓ PASS: [Realme 9] Call Help Center Native Tel Link (href='tel:18001204266')
-[2026-10-23 10:21:36]   📸 [SCREENSHOT CAPTURED]: screenshots/Realme_9/step8_02_account_and_support.png
-[2026-10-23 10:21:36] 
+12:37)
+[2026-10-23 12:37:20]   ✓ PASS: [Realme 9] Massive Call Help Center CTA Button - Human Viewport & Touch Target Audit (Bounds: 158x32px at (x:185, y:165) | Viewport: 360x800px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:20]   ✓ PASS: [Realme 9] Call Help Center Native Tel Link (href='tel:18001204266')
+[2026-10-23 12:37:21]   📸 [SCREENSHOT CAPTURED]: screenshots/Realme_9/step8_02_account_and_support.png
+[2026-10-23 12:37:21] 
 --- [Realme 9] Testing Phase 6: Total Network Failure & Offline Resilience ---
-[2026-10-23 10:21:36]   ⚡ [Realme 9] Engaging Playwright network route interception (page.route('**/*', route.abort()))...
-[2026-10-23 10:21:36]   ✓ PASS: [Realme 9] Custom Offline Fallback Card - Human Viewport & Touch Target Audit (Bounds: 328x566px at (x:16, y:96) | Viewport: 360x800px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:36]   ✓ PASS: [Realme 9] Bilingual Offline Headings Check (HI: 'इंटरनेट कनेक्शन उपलब्ध नहीं है' | EN: 'No Internet Connection')
-[2026-10-23 10:21:37]   ✓ PASS: [Realme 9] Offline Retry Connection Button - Human Viewport & Touch Target Audit (Bounds: 278x48px at (x:41, y:535) | Viewport: 360x800px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:37]   📸 [SCREENSHOT CAPTURED]: screenshots/Realme_9/step9_01_offline_fallback.png
-[2026-10-23 10:21:37]   ✓ PASS: [Realme 9] Standalone offline.html Fallback File Audit (Container visible: True | Title: 'इंटरनेट कनेक्शन उपलब्ध नहीं है')
-[2026-10-23 10:21:37] 
+[2026-10-23 12:37:21]   ⚡ [Realme 9] Engaging Playwright network route interception (page.route('**/*', route.abort()))...
+[2026-10-23 12:37:22]   ✓ PASS: [Realme 9] Custom Offline Fallback Card - Human Viewport & Touch Target Audit (Bounds: 328x566px at (x:16, y:96) | Viewport: 360x800px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:22]   ✓ PASS: [Realme 9] Bilingual Offline Headings Check (HI: 'इंटरनेट कनेक्शन उपलब्ध नहीं है' | EN: 'No Internet Connection')
+[2026-10-23 12:37:22]   ✓ PASS: [Realme 9] Offline Retry Connection Button - Human Viewport & Touch Target Audit (Bounds: 278x48px at (x:41, y:535) | Viewport: 360x800px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:22]   📸 [SCREENSHOT CAPTURED]: screenshots/Realme_9/step9_01_offline_fallback.png
+[2026-10-23 12:37:22]   ✓ PASS: [Realme 9] Standalone offline.html Fallback File Audit (Container visible: True | Title: 'इंटरनेट कनेक्शन उपलब्ध नहीं है')
+[2026-10-23 12:37:22] 
 --- [Realme 9] Console & Script Execution Audit ---
-[2026-10-23 10:21:37]   ✓ PASS: [Realme 9] Zero JavaScript Console Errors (Clean runtime execution)
-[2026-10-23 10:21:37] 
+[2026-10-23 12:37:22]   ✓ PASS: [Realme 9] Zero JavaScript Console Errors (Clean runtime execution)
+[2026-10-23 12:37:22] 
 ================================================================================
-[2026-10-23 10:21:37] STARTING HUMAN-LIKE VISUAL UX SIMULATION: Galaxy S22
-[2026-10-23 10:21:37] Dimensions: 360x780 | DPR: 3.0
-[2026-10-23 10:21:37] ================================================================================
-[2026-10-23 10:21:37] Loading application: file:///C:/Users/dhira/Downloads/Goa%20Bazar/index.html
-[2026-10-23 10:21:38]   ✓ PASS: [Galaxy S22] HTML Viewport Meta Tag Check (content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover")
-[2026-10-23 10:21:38] 
+[2026-10-23 12:37:22] STARTING HUMAN-LIKE VISUAL UX SIMULATION: Galaxy S22
+[2026-10-23 12:37:22] Dimensions: 360x780 | DPR: 3.0
+[2026-10-23 12:37:22] ================================================================================
+[2026-10-23 12:37:23] Loading application: file:///C:/Users/dhira/Downloads/Goa%20Bazar/index.html
+[2026-10-23 12:37:25]   ✓ PASS: [Galaxy S22] HTML Viewport Meta Tag Check (content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover")
+[2026-10-23 12:37:25] 
 --- [Galaxy S22] Testing Phase 1.1: Phone Login & Language Toggle ---
-[2026-10-23 10:21:38]   ✓ PASS: [Galaxy S22] Phase 1.1 Login - No Horizontal Overflow (doc: 360px, viewport: 360px)
-[2026-10-23 10:21:38]   ✓ PASS: [Galaxy S22] Phase 1.1 Login - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
-[2026-10-23 10:21:39]   📸 [SCREENSHOT CAPTURED]: screenshots/Galaxy_S22/step1_01_login_initial.png
-[2026-10-23 10:21:39]   ✓ PASS: [Galaxy S22] Language Toggle Pill - Human Viewport & Touch Target Audit (Bounds: 72x32px at (x:234, y:31) | Viewport: 360x780px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:40]   ✓ PASS: [Galaxy S22] Bilingual Toggle (Instant State Switch) (हिंदी -> English)
-[2026-10-23 10:21:40]   📸 [SCREENSHOT CAPTURED]: screenshots/Galaxy_S22/step1_02_bilingual_toggle_en.png
-[2026-10-23 10:21:40]   ✓ PASS: [Galaxy S22] Phone Number Input Field - Human Viewport & Touch Target Audit (Bounds: 193x56px at (x:116, y:437) | Viewport: 360x780px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:40]   ✓ PASS: [Galaxy S22] Send OTP Button (Initial Disabled State) - Human Viewport & Touch Target Audit (Bounds: 286x54px at (x:37, y:574) | Viewport: 360x780px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:41]   ✓ PASS: [Galaxy S22] 10-Digit Mobile Validation (Send OTP button enabled)
-[2026-10-23 10:21:41]   ✓ PASS: [Galaxy S22] Send OTP Button (Active Enabled State) - Human Viewport & Touch Target Audit (Bounds: 286x54px at (x:37, y:574) | Viewport: 360x780px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:41]   📸 [SCREENSHOT CAPTURED]: screenshots/Galaxy_S22/step1_03_phone_validated.png
-[2026-10-23 10:21:42] 
+[2026-10-23 12:37:25]   ✓ PASS: [Galaxy S22] Phase 1.1 Login - No Horizontal Overflow (doc: 360px, viewport: 360px)
+[2026-10-23 12:37:25]   ✓ PASS: [Galaxy S22] Phase 1.1 Login - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
+[2026-10-23 12:37:29]   📸 [SCREENSHOT CAPTURED]: screenshots/Galaxy_S22/step1_01_login_initial.png
+[2026-10-23 12:37:29]   ✓ PASS: [Galaxy S22] Language Toggle Pill - Human Viewport & Touch Target Audit (Bounds: 72x32px at (x:234, y:31) | Viewport: 360x780px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:29]   ✓ PASS: [Galaxy S22] Bilingual Toggle (Instant State Switch) (हिंदी -> English)
+[2026-10-23 12:37:30]   📸 [SCREENSHOT CAPTURED]: screenshots/Galaxy_S22/step1_02_bilingual_toggle_en.png
+[2026-10-23 12:37:30]   ✓ PASS: [Galaxy S22] Phone Number Input Field - Human Viewport & Touch Target Audit (Bounds: 193x56px at (x:116, y:437) | Viewport: 360x780px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:30]   ✓ PASS: [Galaxy S22] Send OTP Button (Initial Disabled State) - Human Viewport & Touch Target Audit (Bounds: 286x54px at (x:37, y:574) | Viewport: 360x780px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:31]   ✓ PASS: [Galaxy S22] 10-Digit Mobile Validation (Send OTP button enabled)
+[2026-10-23 12:37:31]   ✓ PASS: [Galaxy S22] Send OTP Button (Active Enabled State) - Human Viewport & Touch Target Audit (Bounds: 286x54px at (x:37, y:574) | Viewport: 360x780px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:31]   📸 [SCREENSHOT CAPTURED]: screenshots/Galaxy_S22/step1_03_phone_validated.png
+[2026-10-23 12:37:32] 
 --- [Galaxy S22] Testing Phase 1.2: OTP Verification ---
-[2026-10-23 10:21:42]   ✓ PASS: [Galaxy S22] Transition to OTP Screen 
-[2026-10-23 10:21:42]   ✓ PASS: [Galaxy S22] Phase 1.2 OTP - No Horizontal Overflow (doc: 360px, viewport: 360px)
-[2026-10-23 10:21:42]   ✓ PASS: [Galaxy S22] Phase 1.2 OTP - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
-[2026-10-23 10:21:43]   ✓ PASS: [Galaxy S22] OTP Verify & Continue Button - Human Viewport & Touch Target Audit (Bounds: 328x54px at (x:16, y:492) | Viewport: 360x780px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:43]   📸 [SCREENSHOT CAPTURED]: screenshots/Galaxy_S22/step2_01_otp_verification.png
-[2026-10-23 10:21:43]   ✓ PASS: [Galaxy S22] Zero-Friction Onboarding (OTP -> Dashboard Transition) (User immediately enters Dashboard without early location gate)
-[2026-10-23 10:21:43]   ✓ PASS: [Galaxy S22] Landmark Setup Deferred from Initial Auth (Landmark screen deferred to checkout phase)
-[2026-10-23 10:21:43] 
+[2026-10-23 12:37:32]   ✓ PASS: [Galaxy S22] Transition to OTP Screen 
+[2026-10-23 12:37:32]   ✓ PASS: [Galaxy S22] Phase 1.2 OTP - No Horizontal Overflow (doc: 360px, viewport: 360px)
+[2026-10-23 12:37:32]   ✓ PASS: [Galaxy S22] Phase 1.2 OTP - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
+[2026-10-23 12:37:33]   ✓ PASS: [Galaxy S22] OTP Verify & Continue Button - Human Viewport & Touch Target Audit (Bounds: 328x54px at (x:16, y:492) | Viewport: 360x780px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:33]   📸 [SCREENSHOT CAPTURED]: screenshots/Galaxy_S22/step2_01_otp_verification.png
+[2026-10-23 12:37:34]   ✓ PASS: [Galaxy S22] Zero-Friction Onboarding (OTP -> Dashboard Transition) (User immediately enters Dashboard without early location gate)
+[2026-10-23 12:37:34]   ✓ PASS: [Galaxy S22] Landmark Setup Deferred from Initial Auth (Landmark screen deferred to checkout phase)
+[2026-10-23 12:37:34] 
 --- [Galaxy S22] Testing Phase 2: Main Dashboard & Store Discovery ---
-[2026-10-23 10:21:43]   ✓ PASS: [Galaxy S22] Transition to Dashboard 
-[2026-10-23 10:21:43]   ✓ PASS: [Galaxy S22] Phase 2 Dashboard - No Horizontal Overflow (doc: 360px, viewport: 360px)
-[2026-10-23 10:21:43]   ✓ PASS: [Galaxy S22] Phase 2 Dashboard - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
-[2026-10-23 10:21:43]   ✓ PASS: [Galaxy S22] Sticky Village Header Rendered (गाँव चुनें / Set Delivery Location)
-[2026-10-23 10:21:44]   ✓ PASS: [Galaxy S22] Main Dashboard Search Bar - Human Viewport & Touch Target Audit (Bounds: 174x36px at (x:57, y:171) | Viewport: 360x780px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:44]   ✓ PASS: [Galaxy S22] Store Discovery Search ('Sharma') (Sharma Brothers Kirana matched)
-[2026-10-23 10:21:44]   ✓ PASS: [Galaxy S22] Product Discovery Search ('Sugar') (Found Sugar product in instant discovery overlay)
-[2026-10-23 10:21:45]   ✓ PASS: [Galaxy S22] Phase 2 Store Feed Dynamic ETA (<= 5.0 km -> '30 Mins') (Store 1 ETA: '30 Mins' | Store 2 ETA: '30 Mins')
-[2026-10-23 10:21:45]   ✓ PASS: [Galaxy S22] Sharma Brothers Store Card - Human Viewport & Touch Target Audit (Bounds: 328x129px at (x:16, y:379) | Viewport: 360x780px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:45]   📸 [SCREENSHOT CAPTURED]: screenshots/Galaxy_S22/step4_01_main_dashboard.png
-[2026-10-23 10:21:46] 
+[2026-10-23 12:37:34]   ✓ PASS: [Galaxy S22] Transition to Dashboard 
+[2026-10-23 12:37:34]   ✓ PASS: [Galaxy S22] Phase 2 Dashboard - No Horizontal Overflow (doc: 360px, viewport: 360px)
+[2026-10-23 12:37:34]   ✓ PASS: [Galaxy S22] Phase 2 Dashboard - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
+[2026-10-23 12:37:34]   ✓ PASS: [Galaxy S22] Sticky Village Header Rendered (स्थान चुनें)
+[2026-10-23 12:37:34]   ✓ PASS: [Galaxy S22] Main Dashboard Search Bar - Human Viewport & Touch Target Audit (Bounds: 174x36px at (x:57, y:171) | Viewport: 360x780px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:34]   ✓ PASS: [Galaxy S22] Store Discovery Search ('Sharma') (Sharma Brothers Kirana matched)
+[2026-10-23 12:37:34]   ✓ PASS: [Galaxy S22] Product Discovery Search ('Sugar') (Found Sugar product in instant discovery overlay)
+[2026-10-23 12:37:35]   ✓ PASS: [Galaxy S22] Phase 2 Store Feed Dynamic ETA (<= 5.0 km -> '30 Mins') (Store 1 ETA: '30 Mins' | Store 2 ETA: '30 Mins')
+[2026-10-23 12:37:35]   ✓ PASS: [Galaxy S22] Sharma Brothers Store Card - Human Viewport & Touch Target Audit (Bounds: 328x129px at (x:16, y:379) | Viewport: 360x780px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:35]   📸 [SCREENSHOT CAPTURED]: screenshots/Galaxy_S22/step4_01_main_dashboard.png
+[2026-10-23 12:37:36] 
 --- [Galaxy S22] Testing Phase 3: Store Catalog & Dynamic Steppers ---
-[2026-10-23 10:21:46]   ✓ PASS: [Galaxy S22] Transition to Store View (Sharma Brothers Kirana) 
-[2026-10-23 10:21:46]   ✓ PASS: [Galaxy S22] Phase 3 Store Overview ETA ('30 Mins') (P3 ETA: '30 Mins')
-[2026-10-23 10:21:46]   ✓ PASS: [Galaxy S22] Phase 3 Store - No Horizontal Overflow (doc: 360px, viewport: 360px)
-[2026-10-23 10:21:46]   ✓ PASS: [Galaxy S22] Phase 3 Store - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
-[2026-10-23 10:21:46]   ✓ PASS: [Galaxy S22] Product 'ADD' Button - Human Viewport & Touch Target Audit (Bounds: 73x36px at (x:254, y:299) | Viewport: 360x780px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:46]   📸 [SCREENSHOT CAPTURED]: screenshots/Galaxy_S22/step5_01_store_catalog.png
-[2026-10-23 10:21:47]   ✓ PASS: [Galaxy S22] Dynamic Stepper -> Cart Bar Triggered (Cart bar popped up)
-[2026-10-23 10:21:47]   ✓ PASS: [Galaxy S22] Sticky Bottom Floating Cart Bar - Human Viewport & Touch Target Audit (Bounds: 360x89px at (x:0, y:691) | Viewport: 360x780px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:47]   📸 [SCREENSHOT CAPTURED]: screenshots/Galaxy_S22/step5_02_cart_bar_popped.png
-[2026-10-23 10:21:48] 
+[2026-10-23 12:37:36]   ✓ PASS: [Galaxy S22] Transition to Store View (Sharma Brothers Kirana) 
+[2026-10-23 12:37:36]   ✓ PASS: [Galaxy S22] Phase 3 Store Overview ETA ('30 Mins') (P3 ETA: '30 Mins')
+[2026-10-23 12:37:36]   ✓ PASS: [Galaxy S22] Phase 3 Store - No Horizontal Overflow (doc: 360px, viewport: 360px)
+[2026-10-23 12:37:36]   ✓ PASS: [Galaxy S22] Phase 3 Store - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
+[2026-10-23 12:37:36]   ✓ PASS: [Galaxy S22] Product 'ADD' Button - Human Viewport & Touch Target Audit (Bounds: 73x36px at (x:254, y:299) | Viewport: 360x780px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:36]   📸 [SCREENSHOT CAPTURED]: screenshots/Galaxy_S22/step5_01_store_catalog.png
+[2026-10-23 12:37:37]   ✓ PASS: [Galaxy S22] Dynamic Stepper -> Cart Bar Triggered (Cart bar popped up)
+[2026-10-23 12:37:37]   ✓ PASS: [Galaxy S22] Sticky Bottom Floating Cart Bar - Human Viewport & Touch Target Audit (Bounds: 360x89px at (x:0, y:691) | Viewport: 360x780px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:37]   📸 [SCREENSHOT CAPTURED]: screenshots/Galaxy_S22/step5_02_cart_bar_popped.png
+[2026-10-23 12:37:38] 
 --- [Galaxy S22] Testing Phase 4.1: Cart Review & Minimum Order Value (MOV) ---
-[2026-10-23 10:21:48]   ✓ PASS: [Galaxy S22] Transition to Cart Review Screen 
-[2026-10-23 10:21:48]   ✓ PASS: [Galaxy S22] Phase 4.1 Cart - No Horizontal Overflow (doc: 360px, viewport: 360px)
-[2026-10-23 10:21:48]   ✓ PASS: [Galaxy S22] Phase 4.1 Cart - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
-[2026-10-23 10:21:48] 
+[2026-10-23 12:37:38]   ✓ PASS: [Galaxy S22] Transition to Cart Review Screen 
+[2026-10-23 12:37:38]   ✓ PASS: [Galaxy S22] Phase 4.1 Cart - No Horizontal Overflow (doc: 360px, viewport: 360px)
+[2026-10-23 12:37:38]   ✓ PASS: [Galaxy S22] Phase 4.1 Cart - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
+[2026-10-23 12:37:38] 
 --- [Galaxy S22] Testing Minimum Order Value (MOV) ₹99 Validation ---
-[2026-10-23 10:21:48]   ✓ PASS: [Galaxy S22] MOV < ₹99 (₹50 Cart): Proceed CTA Disabled (Button disabled when cart subtotal < ₹99)
-[2026-10-23 10:21:48]   ✓ PASS: [Galaxy S22] MOV < ₹99 (₹50 Cart): Bilingual Warning Banner Visible (Warning banner shown)
-[2026-10-23 10:21:48]   ✓ PASS: [Galaxy S22] MOV < ₹99 (₹50 Cart): High-Contrast Bilingual Alert Content (warning
-Minimum order is ₹99 / कम से कम ₹99 का ऑर्डर करें. Add ₹49 more.)
-[2026-10-23 10:21:48]   ✓ PASS: [Galaxy S22] MOV < ₹99 (₹50 Cart): Checkout Navigation Guarded (User cannot bypass to checkout)
-[2026-10-23 10:21:48]   ✓ PASS: [Galaxy S22] MOV < ₹99 (₹50 Cart): Backend API Rejection (HTTP 400) (API rejected: Minimum order is ₹99 / कम से कम ₹99 का ऑर्डर करें. Add ₹49 more.)
-[2026-10-23 10:21:48]   📸 [SCREENSHOT CAPTURED]: screenshots/Galaxy_S22/step6_01_mov_alert_active.png
-[2026-10-23 10:21:49]   ✓ PASS: [Galaxy S22] MOV >= ₹99 (₹150 Cart): Warning Banner Hidden (Warning banner automatically removed)
-[2026-10-23 10:21:49]   ✓ PASS: [Galaxy S22] MOV >= ₹99 (₹150 Cart): Proceed CTA Enabled (Button active and ready for checkout)
-[2026-10-23 10:21:49]   ✓ PASS: [Galaxy S22] Dynamic Delivery Local Tier UI (1.2 km, ₹150 Subtotal -> ₹15 Delivery, ₹3 Platform, ₹168 Total) (Delivery: ₹15.00, Platform: ₹3.00, Total: ₹168.00)
-[2026-10-23 10:21:49]   ✓ PASS: [Galaxy S22] Backend Local Tier Splits (1.2 km, ₹150 Subtotal -> Fee ₹15, Vendor ₹150, Runner ₹10, Admin ₹8, ETA 30 Mins) (Resp: {'success': True, 'order_id': '#RUR-3301', 'subtotal': 150.0, 'delivery_fee': 15.0, 'delivery_discount': 0.0, 'base_delivery_fee': 15.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 168.0, 'vendor_payout': 150.0, 'runner_payout': 10.0, 'admin_profit': 8.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 1.2, 'eta_mins': '30 Mins', 'created_at': '2026-10-23T04:51:49.266502'} (Status: 200))
-[2026-10-23 10:21:49]   ✓ PASS: [Galaxy S22] Dynamic Delivery Long Distance Tier UI (6.5 km, ₹250 Subtotal -> ₹40 Delivery, ₹3 Platform, ₹293 Total) (Delivery: ₹40.00, Platform: ₹3.00, Total: ₹293.00)
-[2026-10-23 10:21:49]   ✓ PASS: [Galaxy S22] Backend Long Distance Tier Splits (6.5 km, ₹250 Subtotal -> Fee ₹40, Vendor ₹250, Runner ₹30, Admin ₹13, ETA 45-60 Mins) (Resp: {'success': True, 'order_id': '#RUR-7228', 'subtotal': 250.0, 'delivery_fee': 40.0, 'delivery_discount': 0.0, 'base_delivery_fee': 40.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 293.0, 'vendor_payout': 250.0, 'runner_payout': 30.0, 'admin_profit': 13.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 6.5, 'eta_mins': '45-60 Mins', 'created_at': '2026-10-23T04:51:49.605296'})
-[2026-10-23 10:21:49]   ✓ PASS: [Galaxy S22] Delivery Discount UI (₹300 Subtotal >= ₹299 -> Base ₹25 Delivery, -₹10 Discount, ₹318 Total - NOT Free) (Delivery: ₹25.00, Discount: -₹10.00, Total: ₹318.00, NotFree: True)
-[2026-10-23 10:21:49]   ✓ PASS: [Galaxy S22] Backend Delivery Discount Splits (Subtotal ₹300, 2.5km -> Net Delivery ₹15, Discount ₹10, Runner ₹15, Total ₹318) (Resp: {'success': True, 'order_id': '#RUR-3704', 'subtotal': 300.0, 'delivery_fee': 15.0, 'delivery_discount': 10.0, 'base_delivery_fee': 25.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 318.0, 'vendor_payout': 300.0, 'runner_payout': 15.0, 'admin_profit': 3.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 2.5, 'eta_mins': '30 Mins', 'created_at': '2026-10-23T04:51:49.947431'})
-[2026-10-23 10:21:50]   ✓ PASS: [Galaxy S22] Outside Delivery Zone (9.5 km): Proceed CTA Disabled (Button disabled when distance > 8 km)
-[2026-10-23 10:21:50]   ✓ PASS: [Galaxy S22] Outside Delivery Zone (> 8.0 km): Backend API Rejection (HTTP 400) (API rejected: Outside delivery zone (9.5 km exceeds 8.0 km maximum delivery radius) / डिलीवरी क्षेत्र से बाहर है (> 8.0 किमी))
-[2026-10-23 10:21:50]   ✓ PASS: [Galaxy S22] Sticky Bottom 'Proceed' CTA - Human Viewport & Touch Target Audit (Bounds: 328x52px at (x:16, y:716) | Viewport: 360x780px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:50]   📸 [SCREENSHOT CAPTURED]: screenshots/Galaxy_S22/step6_02_cart_review_valid.png
-[2026-10-23 10:21:51] 
+[2026-10-23 12:37:38]   ✓ PASS: [Galaxy S22] MOV < ₹99 (₹50 Cart): Proceed CTA Disabled (Button disabled when cart subtotal < ₹99)
+[2026-10-23 12:37:38]   ✓ PASS: [Galaxy S22] MOV < ₹99 (₹50 Cart): Bilingual Warning Banner Visible (Warning banner shown)
+[2026-10-23 12:37:38]   ✗ FAIL: [Galaxy S22] MOV < ₹99 (₹50 Cart): High-Contrast Bilingual Alert Content - ERROR: warning
+कम से कम ₹99 का ऑर्डर करें। ₹49 का सामान और जोड़ें।
+[2026-10-23 12:37:39]   ✓ PASS: [Galaxy S22] MOV < ₹99 (₹50 Cart): Checkout Navigation Guarded (User cannot bypass to checkout)
+[2026-10-23 12:37:39]   ✓ PASS: [Galaxy S22] MOV < ₹99 (₹50 Cart): Backend API Rejection (HTTP 400) (API rejected: Minimum order is ₹99 / कम से कम ₹99 का ऑर्डर करें. Add ₹49 more.)
+[2026-10-23 12:37:39]   📸 [SCREENSHOT CAPTURED]: screenshots/Galaxy_S22/step6_01_mov_alert_active.png
+[2026-10-23 12:37:39]   ✓ PASS: [Galaxy S22] MOV >= ₹99 (₹150 Cart): Warning Banner Hidden (Warning banner automatically removed)
+[2026-10-23 12:37:39]   ✓ PASS: [Galaxy S22] MOV >= ₹99 (₹150 Cart): Proceed CTA Enabled (Button active and ready for checkout)
+[2026-10-23 12:37:39]   ✓ PASS: [Galaxy S22] Dynamic Delivery Local Tier UI (1.2 km, ₹150 Subtotal -> ₹15 Delivery, ₹3 Platform, ₹168 Total) (Delivery: ₹15.00, Platform: ₹3.00, Total: ₹168.00)
+[2026-10-23 12:37:39]   ✓ PASS: [Galaxy S22] Backend Local Tier Splits (1.2 km, ₹150 Subtotal -> Fee ₹15, Vendor ₹150, Runner ₹10, Admin ₹8, ETA 30 Mins) (Resp: {'success': True, 'order_id': '#RUR-4925', 'subtotal': 150.0, 'delivery_fee': 15.0, 'delivery_discount': 0.0, 'base_delivery_fee': 15.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 168.0, 'vendor_payout': 150.0, 'runner_payout': 10.0, 'admin_profit': 8.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 1.2, 'eta_mins': '30 Mins', 'created_at': '2026-10-23T07:07:39.567101'} (Status: 200))
+[2026-10-23 12:37:39]   ✓ PASS: [Galaxy S22] Dynamic Delivery Long Distance Tier UI (6.5 km, ₹250 Subtotal -> ₹40 Delivery, ₹3 Platform, ₹293 Total) (Delivery: ₹40.00, Platform: ₹3.00, Total: ₹293.00)
+[2026-10-23 12:37:39]   ✓ PASS: [Galaxy S22] Backend Long Distance Tier Splits (6.5 km, ₹250 Subtotal -> Fee ₹40, Vendor ₹250, Runner ₹30, Admin ₹13, ETA 45-60 Mins) (Resp: {'success': True, 'order_id': '#RUR-5092', 'subtotal': 250.0, 'delivery_fee': 40.0, 'delivery_discount': 0.0, 'base_delivery_fee': 40.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 293.0, 'vendor_payout': 250.0, 'runner_payout': 30.0, 'admin_profit': 13.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 6.5, 'eta_mins': '45-60 Mins', 'created_at': '2026-10-23T07:07:39.914647'})
+[2026-10-23 12:37:40]   ✓ PASS: [Galaxy S22] Delivery Discount UI (₹300 Subtotal >= ₹299 -> Base ₹25 Delivery, -₹10 Discount, ₹318 Total - NOT Free) (Delivery: ₹25.00, Discount: -₹10.00, Total: ₹318.00, NotFree: True)
+[2026-10-23 12:37:40]   ✓ PASS: [Galaxy S22] Backend Delivery Discount Splits (Subtotal ₹300, 2.5km -> Net Delivery ₹15, Discount ₹10, Runner ₹15, Total ₹318) (Resp: {'success': True, 'order_id': '#RUR-7699', 'subtotal': 300.0, 'delivery_fee': 15.0, 'delivery_discount': 10.0, 'base_delivery_fee': 25.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 318.0, 'vendor_payout': 300.0, 'runner_payout': 15.0, 'admin_profit': 3.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 2.5, 'eta_mins': '30 Mins', 'created_at': '2026-10-23T07:07:40.272884'})
+[2026-10-23 12:37:40]   ✓ PASS: [Galaxy S22] Outside Delivery Zone (9.5 km): Proceed CTA Disabled (Button disabled when distance > 8 km)
+[2026-10-23 12:37:40]   ✓ PASS: [Galaxy S22] Outside Delivery Zone (> 8.0 km): Backend API Rejection (HTTP 400) (API rejected: Outside delivery zone (9.5 km exceeds 8.0 km maximum delivery radius) / डिलीवरी क्षेत्र से बाहर है (> 8.0 किमी))
+[2026-10-23 12:37:40]   ✓ PASS: [Galaxy S22] Sticky Bottom 'Proceed' CTA - Human Viewport & Touch Target Audit (Bounds: 328x52px at (x:16, y:716) | Viewport: 360x780px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:41]   📸 [SCREENSHOT CAPTURED]: screenshots/Galaxy_S22/step6_02_cart_review_valid.png
+[2026-10-23 12:37:41] 
 --- [Galaxy S22] Testing Phase 4.15: Delivery Location Setup at Checkout ---
-[2026-10-23 10:21:51]   ✓ PASS: [Galaxy S22] Transition to Delivery Location Setup at Checkout (Address setup triggered when proceeding to checkout)
-[2026-10-23 10:21:51]   ✓ PASS: [Galaxy S22] Phase 4.15 Landmark Setup - No Horizontal Overflow (doc: 360px, viewport: 360px)
-[2026-10-23 10:21:51]   ✓ PASS: [Galaxy S22] Phase 4.15 Landmark Setup - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
-[2026-10-23 10:21:51]   ✓ PASS: [Galaxy S22] Full Name Input - Human Viewport & Touch Target Audit (Bounds: 292x48px at (x:34, y:214) | Viewport: 360x780px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:51]   ✓ PASS: [Galaxy S22] Locate Me GPS Button - Human Viewport & Touch Target Audit (Bounds: 123x36px at (x:204, y:319) | Viewport: 360x780px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:52]   ✓ PASS: [Galaxy S22] GPS Engine Audit (Native HTML5 Geolocation Coordinates) (Displayed String: 'Lat: 29.1324, Lng: 77.0125 (±10m)' | Raw Coordinates Present: True)
-[2026-10-23 10:21:52]   ✓ PASS: [Galaxy S22] District / Tehsil Input Field - Human Viewport & Touch Target Audit (Bounds: 292x44px at (x:34, y:436) | Viewport: 360x780px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:53]   ✓ PASS: [Galaxy S22] Village / Panchayat Input Field - Human Viewport & Touch Target Audit (Bounds: 292x44px at (x:34, y:464) | Viewport: 360x780px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:53]   ✓ PASS: [Galaxy S22] Rural Landmark Textarea - Human Viewport & Touch Target Audit (Bounds: 284x74px at (x:38, y:474) | Viewport: 360x780px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:53]   ✓ PASS: [Galaxy S22] Rural Landmark Character Count (39 chars)
-[2026-10-23 10:21:53]   ✓ PASS: [Galaxy S22] Sticky Bottom 'Save Address & Proceed' CTA - Human Viewport & Touch Target Audit (Bounds: 328x52px at (x:16, y:716) | Viewport: 360x780px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:53]   📸 [SCREENSHOT CAPTURED]: screenshots/Galaxy_S22/step3_01_landmark_gps_setup.png
-[2026-10-23 10:21:54] 
+[2026-10-23 12:37:41]   ✓ PASS: [Galaxy S22] Transition to Delivery Location Setup at Checkout (Address setup triggered when proceeding to checkout)
+[2026-10-23 12:37:41]   ✓ PASS: [Galaxy S22] Phase 4.15 Landmark Setup - No Horizontal Overflow (doc: 360px, viewport: 360px)
+[2026-10-23 12:37:41]   ✓ PASS: [Galaxy S22] Phase 4.15 Landmark Setup - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
+[2026-10-23 12:37:42]   ✓ PASS: [Galaxy S22] Full Name Input - Human Viewport & Touch Target Audit (Bounds: 292x48px at (x:34, y:214) | Viewport: 360x780px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:42]   ✓ PASS: [Galaxy S22] Locate Me GPS Button - Human Viewport & Touch Target Audit (Bounds: 151x36px at (x:176, y:327) | Viewport: 360x780px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:43]   ✓ PASS: [Galaxy S22] GPS Engine Audit (Native HTML5 Geolocation Coordinates) (Displayed String: 'Lat: 29.1324, Lng: 77.0125 (±10m)' | Raw Coordinates Present: True)
+[2026-10-23 12:37:43]   ✓ PASS: [Galaxy S22] District / Tehsil Input Field - Human Viewport & Touch Target Audit (Bounds: 292x44px at (x:34, y:436) | Viewport: 360x780px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:43]   ✓ PASS: [Galaxy S22] Village / Panchayat Input Field - Human Viewport & Touch Target Audit (Bounds: 292x44px at (x:34, y:464) | Viewport: 360x780px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:43]   ✓ PASS: [Galaxy S22] Rural Landmark Textarea - Human Viewport & Touch Target Audit (Bounds: 284x74px at (x:38, y:474) | Viewport: 360x780px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:44]   ✓ PASS: [Galaxy S22] Rural Landmark Character Count (39 chars)
+[2026-10-23 12:37:44]   ✓ PASS: [Galaxy S22] Sticky Bottom 'Save Address & Proceed' CTA - Human Viewport & Touch Target Audit (Bounds: 328x52px at (x:16, y:716) | Viewport: 360x780px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:44]   📸 [SCREENSHOT CAPTURED]: screenshots/Galaxy_S22/step3_01_landmark_gps_setup.png
+[2026-10-23 12:37:45] 
 --- [Galaxy S22] Testing Phase 4.2: Checkout & Payment Selection ---
-[2026-10-23 10:21:54]   ✓ PASS: [Galaxy S22] Transition to Checkout Screen 
-[2026-10-23 10:21:54]   ✓ PASS: [Galaxy S22] Phase 4.2 Checkout - No Horizontal Overflow (doc: 360px, viewport: 360px)
-[2026-10-23 10:21:54]   ✓ PASS: [Galaxy S22] Phase 4.2 Checkout - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
-[2026-10-23 10:21:54]   ✓ PASS: [Galaxy S22] Checkout Address Sync (Name: 'Ramesh Patel', Village: 'Rampur Village, Sonipat', Landmark: 'Near Shiva Mandir, Opp. Blue Water Tank')
-[2026-10-23 10:21:54]   ✓ PASS: [Galaxy S22] Cash On Delivery (COD) Payment Card - Human Viewport & Touch Target Audit (Bounds: 286x65px at (x:37, y:511) | Viewport: 360x780px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:55]   ✓ PASS: [Galaxy S22] Sticky Bottom 'Place Order' CTA - Human Viewport & Touch Target Audit (Bounds: 328x52px at (x:16, y:716) | Viewport: 360x780px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:55]   📸 [SCREENSHOT CAPTURED]: screenshots/Galaxy_S22/step7_01_checkout_payment.png
-[2026-10-23 10:21:56] 
+[2026-10-23 12:37:45]   ✓ PASS: [Galaxy S22] Transition to Checkout Screen 
+[2026-10-23 12:37:45]   ✓ PASS: [Galaxy S22] Phase 4.2 Checkout - No Horizontal Overflow (doc: 360px, viewport: 360px)
+[2026-10-23 12:37:45]   ✓ PASS: [Galaxy S22] Phase 4.2 Checkout - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
+[2026-10-23 12:37:45]   ✓ PASS: [Galaxy S22] Checkout Address Sync (Name: 'Ramesh Patel', Village: 'Rampur Village, Sonipat', Landmark: 'Near Shiva Mandir, Opp. Blue Water Tank')
+[2026-10-23 12:37:45]   ✓ PASS: [Galaxy S22] Cash On Delivery (COD) Payment Card - Human Viewport & Touch Target Audit (Bounds: 286x65px at (x:37, y:511) | Viewport: 360x780px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:45]   ✓ PASS: [Galaxy S22] Sticky Bottom 'Place Order' CTA - Human Viewport & Touch Target Audit (Bounds: 328x52px at (x:16, y:716) | Viewport: 360x780px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:45]   📸 [SCREENSHOT CAPTURED]: screenshots/Galaxy_S22/step7_01_checkout_payment.png
+[2026-10-23 12:37:47] 
 --- [Galaxy S22] Testing Phase 5: Live Order Tracking ---
-[2026-10-23 10:21:56]   ✓ PASS: [Galaxy S22] Transition to Live Order Tracking Screen 
-[2026-10-23 10:21:56]   ✓ PASS: [Galaxy S22] Phase 5 Tracking - No Horizontal Overflow (doc: 360px, viewport: 360px)
-[2026-10-23 10:21:56]   ✓ PASS: [Galaxy S22] Phase 5 Tracking - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
-[2026-10-23 10:21:56]   ✓ PASS: [Galaxy S22] Live Tracking Order ID Generated (#RUR-9771)
-[2026-10-23 10:21:56]   ✓ PASS: [Galaxy S22] Safe Doorstep Delivery OTP Displayed (4-digit OTP code visible)
-[2026-10-23 10:21:56]   ✓ PASS: [Galaxy S22] Live Tracking Dynamic ETA Displayed ('30 Mins') (ETA: '30 Mins')
-[2026-10-23 10:21:56]   ✓ PASS: [Galaxy S22] SQLite Real Database Persistence Verification (DB Order: #RUR-9771 | Subtotal: ₹210.0 | Total: ₹228.0 | Distance: 1.2 km | ETA: 30 Mins | Vendor: ₹210.0 | Runner: ₹10.0 | Admin: ₹8.0 | OTP: 4821)
-[2026-10-23 10:21:57]   📸 [SCREENSHOT CAPTURED]: screenshots/Galaxy_S22/step8_01_live_tracking.png
-[2026-10-23 10:21:57] 
+[2026-10-23 12:37:47]   ✓ PASS: [Galaxy S22] Transition to Live Order Tracking Screen 
+[2026-10-23 12:37:47]   ✓ PASS: [Galaxy S22] Phase 5 Tracking - No Horizontal Overflow (doc: 360px, viewport: 360px)
+[2026-10-23 12:37:47]   ✓ PASS: [Galaxy S22] Phase 5 Tracking - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
+[2026-10-23 12:37:47]   ✓ PASS: [Galaxy S22] Live Tracking Order ID Generated (#RUR-9319)
+[2026-10-23 12:37:47]   ✓ PASS: [Galaxy S22] Safe Doorstep Delivery OTP Displayed (4-digit OTP code visible)
+[2026-10-23 12:37:47]   ✓ PASS: [Galaxy S22] Live Tracking Dynamic ETA Displayed ('30 Mins') (ETA: '30 Mins')
+[2026-10-23 12:37:47]   ✓ PASS: [Galaxy S22] SQLite Real Database Persistence Verification (DB Order: #RUR-9319 | Subtotal: ₹210.0 | Total: ₹228.0 | Distance: 1.2 km | ETA: 30 Mins | Vendor: ₹210.0 | Runner: ₹10.0 | Admin: ₹8.0 | OTP: 4821)
+[2026-10-23 12:37:47]   📸 [SCREENSHOT CAPTURED]: screenshots/Galaxy_S22/step8_01_live_tracking.png
+[2026-10-23 12:37:47] 
 --- [Galaxy S22] Testing Phase 5.5: My Account & AI Customer Support Module ---
-[2026-10-23 10:21:57]   ✓ PASS: [Galaxy S22] Bottom Nav Profile Button - Human Viewport & Touch Target Audit (Bounds: 44x49px at (x:290, y:723) | Viewport: 360x780px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:58]   ✓ PASS: [Galaxy S22] Transition to My Account & Profile View 
-[2026-10-23 10:21:58]   ✓ PASS: [Galaxy S22] Phase Profile - No Horizontal Overflow (doc: 360px, viewport: 360px)
-[2026-10-23 10:21:58]   ✓ PASS: [Galaxy S22] Phase Profile - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
-[2026-10-23 10:21:58]   ✓ PASS: [Galaxy S22] Profile User Details Rendered (Name: Ramesh Patel | Phone: +91 98765 43210 | Village: Rampur Village)
-[2026-10-23 10:21:58]   ✓ PASS: [Galaxy S22] Order History List Rendered 
-[2026-10-23 10:21:58]   ✓ PASS: [Galaxy S22] Invisible Risk Metrics (No Trust Score or Strike Counter in Customer DOM) (Customer profile is 100% clean of internal risk & cancellation counters)
-[2026-10-23 10:21:58]   ✓ PASS: [Galaxy S22] Redundant Profile Language Card Deleted (Redundant language preference card cleanly removed from profile screen)
-[2026-10-23 10:21:58]   ✓ PASS: [Galaxy S22] Global Header Language Toggle - Human Viewport & Touch Target Audit (Bounds: 72x32px at (x:234, y:31) | Viewport: 360x780px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:58]   ✓ PASS: [Galaxy S22] Open Help & Support Chatbot Button - Human Viewport & Touch Target Audit (Bounds: 134x44px at (x:32, y:455) | Viewport: 360x780px | Collisions: None | Occlusion: None)
-[2026-10-23 10:21:58]   ✓ PASS: [Galaxy S22] Support Chatbot Modal Opened 
-[2026-10-23 10:21:59]   ✓ PASS: [Galaxy S22] Send Chat Message Button - Human Viewport & Touch Target Audit (Bounds: 36x36px at (x:315, y:683) | Viewport: 360x780px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:00]   ✓ PASS: [Galaxy S22] AI Chatbot Intelligent Response (Snippet: .00) दुकान (Sharma Brothers Kirana) को प्राप्त हो चुका है और वे इसे स्वीकार कर रहे हैं। अनुमानित समय ~30 Mins है।
+[2026-10-23 12:37:48]   ✓ PASS: [Galaxy S22] Bottom Nav Profile Button - Human Viewport & Touch Target Audit (Bounds: 44x49px at (x:290, y:723) | Viewport: 360x780px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:48]   ✓ PASS: [Galaxy S22] Transition to My Account & Profile View 
+[2026-10-23 12:37:49]   ✓ PASS: [Galaxy S22] Phase Profile - No Horizontal Overflow (doc: 360px, viewport: 360px)
+[2026-10-23 12:37:49]   ✓ PASS: [Galaxy S22] Phase Profile - Full-Width Expansion (No Squeezing) (root width: 360px / 360px (100% fill))
+[2026-10-23 12:37:49]   ✓ PASS: [Galaxy S22] Profile User Details Rendered (Name: Ramesh Patel | Phone: +91 98765 43210 | Village: Rampur Village)
+[2026-10-23 12:37:49]   ✓ PASS: [Galaxy S22] Order History List Rendered 
+[2026-10-23 12:37:49]   ✓ PASS: [Galaxy S22] Invisible Risk Metrics (No Trust Score or Strike Counter in Customer DOM) (Customer profile is 100% clean of internal risk & cancellation counters)
+[2026-10-23 12:37:49]   ✓ PASS: [Galaxy S22] Redundant Profile Language Card Deleted (Redundant language preference card cleanly removed from profile screen)
+[2026-10-23 12:37:49]   ✓ PASS: [Galaxy S22] Global Header Language Toggle - Human Viewport & Touch Target Audit (Bounds: 72x32px at (x:234, y:31) | Viewport: 360x780px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:49]   ✓ PASS: [Galaxy S22] Open Help & Support Chatbot Button - Human Viewport & Touch Target Audit (Bounds: 134x44px at (x:32, y:455) | Viewport: 360x780px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:49]   ✓ PASS: [Galaxy S22] Support Chatbot Modal Opened 
+[2026-10-23 12:37:50]   ✓ PASS: [Galaxy S22] Send Chat Message Button - Human Viewport & Touch Target Audit (Bounds: 36x36px at (x:315, y:683) | Viewport: 360x780px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:51]   ✓ PASS: [Galaxy S22] AI Chatbot Intelligent Response (Snippet: .00) दुकान (Sharma Brothers Kirana) को प्राप्त हो चुका है और वे इसे स्वीकार कर रहे हैं। अनुमानित समय ~30 Mins है।
 
-10:21)
-[2026-10-23 10:22:00]   ✓ PASS: [Galaxy S22] Massive Call Help Center CTA Button - Human Viewport & Touch Target Audit (Bounds: 163x32px at (x:180, y:163) | Viewport: 360x780px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:00]   ✓ PASS: [Galaxy S22] Call Help Center Native Tel Link (href='tel:18001204266')
-[2026-10-23 10:22:00]   📸 [SCREENSHOT CAPTURED]: screenshots/Galaxy_S22/step8_02_account_and_support.png
-[2026-10-23 10:22:01] 
+12:37)
+[2026-10-23 12:37:51]   ✓ PASS: [Galaxy S22] Massive Call Help Center CTA Button - Human Viewport & Touch Target Audit (Bounds: 158x32px at (x:185, y:163) | Viewport: 360x780px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:51]   ✓ PASS: [Galaxy S22] Call Help Center Native Tel Link (href='tel:18001204266')
+[2026-10-23 12:37:51]   📸 [SCREENSHOT CAPTURED]: screenshots/Galaxy_S22/step8_02_account_and_support.png
+[2026-10-23 12:37:52] 
 --- [Galaxy S22] Testing Phase 6: Total Network Failure & Offline Resilience ---
-[2026-10-23 10:22:01]   ⚡ [Galaxy S22] Engaging Playwright network route interception (page.route('**/*', route.abort()))...
-[2026-10-23 10:22:01]   ✓ PASS: [Galaxy S22] Custom Offline Fallback Card - Human Viewport & Touch Target Audit (Bounds: 328x566px at (x:16, y:96) | Viewport: 360x780px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:01]   ✓ PASS: [Galaxy S22] Bilingual Offline Headings Check (HI: 'इंटरनेट कनेक्शन उपलब्ध नहीं है' | EN: 'No Internet Connection')
-[2026-10-23 10:22:01]   ✓ PASS: [Galaxy S22] Offline Retry Connection Button - Human Viewport & Touch Target Audit (Bounds: 278x48px at (x:41, y:535) | Viewport: 360x780px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:01]   📸 [SCREENSHOT CAPTURED]: screenshots/Galaxy_S22/step9_01_offline_fallback.png
-[2026-10-23 10:22:02]   ✓ PASS: [Galaxy S22] Standalone offline.html Fallback File Audit (Container visible: True | Title: 'इंटरनेट कनेक्शन उपलब्ध नहीं है')
-[2026-10-23 10:22:02] 
+[2026-10-23 12:37:52]   ⚡ [Galaxy S22] Engaging Playwright network route interception (page.route('**/*', route.abort()))...
+[2026-10-23 12:37:52]   ✓ PASS: [Galaxy S22] Custom Offline Fallback Card - Human Viewport & Touch Target Audit (Bounds: 328x566px at (x:16, y:96) | Viewport: 360x780px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:52]   ✓ PASS: [Galaxy S22] Bilingual Offline Headings Check (HI: 'इंटरनेट कनेक्शन उपलब्ध नहीं है' | EN: 'No Internet Connection')
+[2026-10-23 12:37:53]   ✓ PASS: [Galaxy S22] Offline Retry Connection Button - Human Viewport & Touch Target Audit (Bounds: 278x48px at (x:41, y:535) | Viewport: 360x780px | Collisions: None | Occlusion: None)
+[2026-10-23 12:37:53]   📸 [SCREENSHOT CAPTURED]: screenshots/Galaxy_S22/step9_01_offline_fallback.png
+[2026-10-23 12:37:53]   ✓ PASS: [Galaxy S22] Standalone offline.html Fallback File Audit (Container visible: True | Title: 'इंटरनेट कनेक्शन उपलब्ध नहीं है')
+[2026-10-23 12:37:53] 
 --- [Galaxy S22] Console & Script Execution Audit ---
-[2026-10-23 10:22:02]   ✓ PASS: [Galaxy S22] Zero JavaScript Console Errors (Clean runtime execution)
-[2026-10-23 10:22:02] 
+[2026-10-23 12:37:53]   ✓ PASS: [Galaxy S22] Zero JavaScript Console Errors (Clean runtime execution)
+[2026-10-23 12:37:53] 
 ================================================================================
-[2026-10-23 10:22:02] STARTING HUMAN-LIKE VISUAL UX SIMULATION: Nothing Phone 1
-[2026-10-23 10:22:02] Dimensions: 412x915 | DPR: 2.625
-[2026-10-23 10:22:02] ================================================================================
-[2026-10-23 10:22:02] Loading application: file:///C:/Users/dhira/Downloads/Goa%20Bazar/index.html
-[2026-10-23 10:22:03]   ✓ PASS: [Nothing Phone 1] HTML Viewport Meta Tag Check (content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover")
-[2026-10-23 10:22:03] 
+[2026-10-23 12:37:53] STARTING HUMAN-LIKE VISUAL UX SIMULATION: Nothing Phone 1
+[2026-10-23 12:37:53] Dimensions: 412x915 | DPR: 2.625
+[2026-10-23 12:37:53] ================================================================================
+[2026-10-23 12:37:53] Loading application: file:///C:/Users/dhira/Downloads/Goa%20Bazar/index.html
+[2026-10-23 12:37:57]   ✓ PASS: [Nothing Phone 1] HTML Viewport Meta Tag Check (content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover")
+[2026-10-23 12:37:57] 
 --- [Nothing Phone 1] Testing Phase 1.1: Phone Login & Language Toggle ---
-[2026-10-23 10:22:03]   ✓ PASS: [Nothing Phone 1] Phase 1.1 Login - No Horizontal Overflow (doc: 412px, viewport: 412px)
-[2026-10-23 10:22:03]   ✓ PASS: [Nothing Phone 1] Phase 1.1 Login - Full-Width Expansion (No Squeezing) (root width: 412px / 412px (100% fill))
-[2026-10-23 10:22:04]   📸 [SCREENSHOT CAPTURED]: screenshots/Nothing_Phone_1/step1_01_login_initial.png
-[2026-10-23 10:22:04]   ✓ PASS: [Nothing Phone 1] Language Toggle Pill - Human Viewport & Touch Target Audit (Bounds: 72x32px at (x:286, y:31) | Viewport: 412x915px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:04]   ✓ PASS: [Nothing Phone 1] Bilingual Toggle (Instant State Switch) (हिंदी -> English)
-[2026-10-23 10:22:05]   📸 [SCREENSHOT CAPTURED]: screenshots/Nothing_Phone_1/step1_02_bilingual_toggle_en.png
-[2026-10-23 10:22:05]   ✓ PASS: [Nothing Phone 1] Phone Number Input Field - Human Viewport & Touch Target Audit (Bounds: 245x56px at (x:116, y:421) | Viewport: 412x915px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:05]   ✓ PASS: [Nothing Phone 1] Send OTP Button (Initial Disabled State) - Human Viewport & Touch Target Audit (Bounds: 338x54px at (x:37, y:606) | Viewport: 412x915px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:06]   ✓ PASS: [Nothing Phone 1] 10-Digit Mobile Validation (Send OTP button enabled)
-[2026-10-23 10:22:06]   ✓ PASS: [Nothing Phone 1] Send OTP Button (Active Enabled State) - Human Viewport & Touch Target Audit (Bounds: 338x54px at (x:37, y:606) | Viewport: 412x915px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:06]   📸 [SCREENSHOT CAPTURED]: screenshots/Nothing_Phone_1/step1_03_phone_validated.png
-[2026-10-23 10:22:07] 
+[2026-10-23 12:37:57]   ✓ PASS: [Nothing Phone 1] Phase 1.1 Login - No Horizontal Overflow (doc: 412px, viewport: 412px)
+[2026-10-23 12:37:57]   ✓ PASS: [Nothing Phone 1] Phase 1.1 Login - Full-Width Expansion (No Squeezing) (root width: 412px / 412px (100% fill))
+[2026-10-23 12:38:06]   📸 [SCREENSHOT CAPTURED]: screenshots/Nothing_Phone_1/step1_01_login_initial.png
+[2026-10-23 12:38:06]   ✓ PASS: [Nothing Phone 1] Language Toggle Pill - Human Viewport & Touch Target Audit (Bounds: 72x32px at (x:286, y:31) | Viewport: 412x915px | Collisions: None | Occlusion: None)
+[2026-10-23 12:38:06]   ✓ PASS: [Nothing Phone 1] Bilingual Toggle (Instant State Switch) (हिंदी -> English)
+[2026-10-23 12:38:07]   📸 [SCREENSHOT CAPTURED]: screenshots/Nothing_Phone_1/step1_02_bilingual_toggle_en.png
+[2026-10-23 12:38:07]   ✓ PASS: [Nothing Phone 1] Phone Number Input Field - Human Viewport & Touch Target Audit (Bounds: 245x56px at (x:116, y:421) | Viewport: 412x915px | Collisions: None | Occlusion: None)
+[2026-10-23 12:38:07]   ✓ PASS: [Nothing Phone 1] Send OTP Button (Initial Disabled State) - Human Viewport & Touch Target Audit (Bounds: 338x54px at (x:37, y:606) | Viewport: 412x915px | Collisions: None | Occlusion: None)
+[2026-10-23 12:38:08]   ✓ PASS: [Nothing Phone 1] 10-Digit Mobile Validation (Send OTP button enabled)
+[2026-10-23 12:38:08]   ✓ PASS: [Nothing Phone 1] Send OTP Button (Active Enabled State) - Human Viewport & Touch Target Audit (Bounds: 338x54px at (x:37, y:606) | Viewport: 412x915px | Collisions: None | Occlusion: None)
+[2026-10-23 12:38:08]   📸 [SCREENSHOT CAPTURED]: screenshots/Nothing_Phone_1/step1_03_phone_validated.png
+[2026-10-23 12:38:09] 
 --- [Nothing Phone 1] Testing Phase 1.2: OTP Verification ---
-[2026-10-23 10:22:07]   ✓ PASS: [Nothing Phone 1] Transition to OTP Screen 
-[2026-10-23 10:22:07]   ✓ PASS: [Nothing Phone 1] Phase 1.2 OTP - No Horizontal Overflow (doc: 412px, viewport: 412px)
-[2026-10-23 10:22:07]   ✓ PASS: [Nothing Phone 1] Phase 1.2 OTP - Full-Width Expansion (No Squeezing) (root width: 412px / 412px (100% fill))
-[2026-10-23 10:22:07]   ✓ PASS: [Nothing Phone 1] OTP Verify & Continue Button - Human Viewport & Touch Target Audit (Bounds: 380x54px at (x:16, y:492) | Viewport: 412x915px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:08]   📸 [SCREENSHOT CAPTURED]: screenshots/Nothing_Phone_1/step2_01_otp_verification.png
-[2026-10-23 10:22:08]   ✓ PASS: [Nothing Phone 1] Zero-Friction Onboarding (OTP -> Dashboard Transition) (User immediately enters Dashboard without early location gate)
-[2026-10-23 10:22:08]   ✓ PASS: [Nothing Phone 1] Landmark Setup Deferred from Initial Auth (Landmark screen deferred to checkout phase)
-[2026-10-23 10:22:08] 
+[2026-10-23 12:38:09]   ✓ PASS: [Nothing Phone 1] Transition to OTP Screen 
+[2026-10-23 12:38:09]   ✓ PASS: [Nothing Phone 1] Phase 1.2 OTP - No Horizontal Overflow (doc: 412px, viewport: 412px)
+[2026-10-23 12:38:09]   ✓ PASS: [Nothing Phone 1] Phase 1.2 OTP - Full-Width Expansion (No Squeezing) (root width: 412px / 412px (100% fill))
+[2026-10-23 12:38:10]   ✓ PASS: [Nothing Phone 1] OTP Verify & Continue Button - Human Viewport & Touch Target Audit (Bounds: 380x54px at (x:16, y:492) | Viewport: 412x915px | Collisions: None | Occlusion: None)
+[2026-10-23 12:38:10]   📸 [SCREENSHOT CAPTURED]: screenshots/Nothing_Phone_1/step2_01_otp_verification.png
+[2026-10-23 12:38:11]   ✓ PASS: [Nothing Phone 1] Zero-Friction Onboarding (OTP -> Dashboard Transition) (User immediately enters Dashboard without early location gate)
+[2026-10-23 12:38:11]   ✓ PASS: [Nothing Phone 1] Landmark Setup Deferred from Initial Auth (Landmark screen deferred to checkout phase)
+[2026-10-23 12:38:11] 
 --- [Nothing Phone 1] Testing Phase 2: Main Dashboard & Store Discovery ---
-[2026-10-23 10:22:08]   ✓ PASS: [Nothing Phone 1] Transition to Dashboard 
-[2026-10-23 10:22:08]   ✓ PASS: [Nothing Phone 1] Phase 2 Dashboard - No Horizontal Overflow (doc: 412px, viewport: 412px)
-[2026-10-23 10:22:08]   ✓ PASS: [Nothing Phone 1] Phase 2 Dashboard - Full-Width Expansion (No Squeezing) (root width: 412px / 412px (100% fill))
-[2026-10-23 10:22:08]   ✓ PASS: [Nothing Phone 1] Sticky Village Header Rendered (गाँव चुनें / Set Delivery Location)
-[2026-10-23 10:22:08]   ✓ PASS: [Nothing Phone 1] Main Dashboard Search Bar - Human Viewport & Touch Target Audit (Bounds: 226x36px at (x:57, y:171) | Viewport: 412x915px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:09]   ✓ PASS: [Nothing Phone 1] Store Discovery Search ('Sharma') (Sharma Brothers Kirana matched)
-[2026-10-23 10:22:09]   ✓ PASS: [Nothing Phone 1] Product Discovery Search ('Sugar') (Found Sugar product in instant discovery overlay)
-[2026-10-23 10:22:09]   ✓ PASS: [Nothing Phone 1] Phase 2 Store Feed Dynamic ETA (<= 5.0 km -> '30 Mins') (Store 1 ETA: '30 Mins' | Store 2 ETA: '30 Mins')
-[2026-10-23 10:22:10]   ✓ PASS: [Nothing Phone 1] Sharma Brothers Store Card - Human Viewport & Touch Target Audit (Bounds: 380x129px at (x:16, y:514) | Viewport: 412x915px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:10]   📸 [SCREENSHOT CAPTURED]: screenshots/Nothing_Phone_1/step4_01_main_dashboard.png
-[2026-10-23 10:22:10] 
+[2026-10-23 12:38:11]   ✓ PASS: [Nothing Phone 1] Transition to Dashboard 
+[2026-10-23 12:38:11]   ✓ PASS: [Nothing Phone 1] Phase 2 Dashboard - No Horizontal Overflow (doc: 412px, viewport: 412px)
+[2026-10-23 12:38:11]   ✓ PASS: [Nothing Phone 1] Phase 2 Dashboard - Full-Width Expansion (No Squeezing) (root width: 412px / 412px (100% fill))
+[2026-10-23 12:38:11]   ✓ PASS: [Nothing Phone 1] Sticky Village Header Rendered (स्थान चुनें)
+[2026-10-23 12:38:11]   ✓ PASS: [Nothing Phone 1] Main Dashboard Search Bar - Human Viewport & Touch Target Audit (Bounds: 226x36px at (x:57, y:171) | Viewport: 412x915px | Collisions: None | Occlusion: None)
+[2026-10-23 12:38:11]   ✓ PASS: [Nothing Phone 1] Store Discovery Search ('Sharma') (Sharma Brothers Kirana matched)
+[2026-10-23 12:38:11]   ✓ PASS: [Nothing Phone 1] Product Discovery Search ('Sugar') (Found Sugar product in instant discovery overlay)
+[2026-10-23 12:38:12]   ✓ PASS: [Nothing Phone 1] Phase 2 Store Feed Dynamic ETA (<= 5.0 km -> '30 Mins') (Store 1 ETA: '30 Mins' | Store 2 ETA: '30 Mins')
+[2026-10-23 12:38:12]   ✓ PASS: [Nothing Phone 1] Sharma Brothers Store Card - Human Viewport & Touch Target Audit (Bounds: 380x129px at (x:16, y:514) | Viewport: 412x915px | Collisions: None | Occlusion: None)
+[2026-10-23 12:38:12]   📸 [SCREENSHOT CAPTURED]: screenshots/Nothing_Phone_1/step4_01_main_dashboard.png
+[2026-10-23 12:38:13] 
 --- [Nothing Phone 1] Testing Phase 3: Store Catalog & Dynamic Steppers ---
-[2026-10-23 10:22:10]   ✓ PASS: [Nothing Phone 1] Transition to Store View (Sharma Brothers Kirana) 
-[2026-10-23 10:22:10]   ✓ PASS: [Nothing Phone 1] Phase 3 Store Overview ETA ('30 Mins') (P3 ETA: '30 Mins')
-[2026-10-23 10:22:10]   ✓ PASS: [Nothing Phone 1] Phase 3 Store - No Horizontal Overflow (doc: 412px, viewport: 412px)
-[2026-10-23 10:22:10]   ✓ PASS: [Nothing Phone 1] Phase 3 Store - Full-Width Expansion (No Squeezing) (root width: 412px / 412px (100% fill))
-[2026-10-23 10:22:11]   ✓ PASS: [Nothing Phone 1] Product 'ADD' Button - Human Viewport & Touch Target Audit (Bounds: 73x36px at (x:306, y:299) | Viewport: 412x915px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:11]   📸 [SCREENSHOT CAPTURED]: screenshots/Nothing_Phone_1/step5_01_store_catalog.png
-[2026-10-23 10:22:11]   ✓ PASS: [Nothing Phone 1] Dynamic Stepper -> Cart Bar Triggered (Cart bar popped up)
-[2026-10-23 10:22:11]   ✓ PASS: [Nothing Phone 1] Sticky Bottom Floating Cart Bar - Human Viewport & Touch Target Audit (Bounds: 412x89px at (x:0, y:826) | Viewport: 412x915px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:12]   📸 [SCREENSHOT CAPTURED]: screenshots/Nothing_Phone_1/step5_02_cart_bar_popped.png
-[2026-10-23 10:22:12] 
+[2026-10-23 12:38:13]   ✓ PASS: [Nothing Phone 1] Transition to Store View (Sharma Brothers Kirana) 
+[2026-10-23 12:38:13]   ✓ PASS: [Nothing Phone 1] Phase 3 Store Overview ETA ('30 Mins') (P3 ETA: '30 Mins')
+[2026-10-23 12:38:13]   ✓ PASS: [Nothing Phone 1] Phase 3 Store - No Horizontal Overflow (doc: 412px, viewport: 412px)
+[2026-10-23 12:38:13]   ✓ PASS: [Nothing Phone 1] Phase 3 Store - Full-Width Expansion (No Squeezing) (root width: 412px / 412px (100% fill))
+[2026-10-23 12:38:13]   ✓ PASS: [Nothing Phone 1] Product 'ADD' Button - Human Viewport & Touch Target Audit (Bounds: 73x36px at (x:306, y:299) | Viewport: 412x915px | Collisions: None | Occlusion: None)
+[2026-10-23 12:38:13]   📸 [SCREENSHOT CAPTURED]: screenshots/Nothing_Phone_1/step5_01_store_catalog.png
+[2026-10-23 12:38:14]   ✓ PASS: [Nothing Phone 1] Dynamic Stepper -> Cart Bar Triggered (Cart bar popped up)
+[2026-10-23 12:38:14]   ✓ PASS: [Nothing Phone 1] Sticky Bottom Floating Cart Bar - Human Viewport & Touch Target Audit (Bounds: 412x89px at (x:0, y:826) | Viewport: 412x915px | Collisions: None | Occlusion: None)
+[2026-10-23 12:38:14]   📸 [SCREENSHOT CAPTURED]: screenshots/Nothing_Phone_1/step5_02_cart_bar_popped.png
+[2026-10-23 12:38:15] 
 --- [Nothing Phone 1] Testing Phase 4.1: Cart Review & Minimum Order Value (MOV) ---
-[2026-10-23 10:22:12]   ✓ PASS: [Nothing Phone 1] Transition to Cart Review Screen 
-[2026-10-23 10:22:12]   ✓ PASS: [Nothing Phone 1] Phase 4.1 Cart - No Horizontal Overflow (doc: 412px, viewport: 412px)
-[2026-10-23 10:22:12]   ✓ PASS: [Nothing Phone 1] Phase 4.1 Cart - Full-Width Expansion (No Squeezing) (root width: 412px / 412px (100% fill))
-[2026-10-23 10:22:12] 
+[2026-10-23 12:38:15]   ✓ PASS: [Nothing Phone 1] Transition to Cart Review Screen 
+[2026-10-23 12:38:15]   ✓ PASS: [Nothing Phone 1] Phase 4.1 Cart - No Horizontal Overflow (doc: 412px, viewport: 412px)
+[2026-10-23 12:38:15]   ✓ PASS: [Nothing Phone 1] Phase 4.1 Cart - Full-Width Expansion (No Squeezing) (root width: 412px / 412px (100% fill))
+[2026-10-23 12:38:15] 
 --- [Nothing Phone 1] Testing Minimum Order Value (MOV) ₹99 Validation ---
-[2026-10-23 10:22:13]   ✓ PASS: [Nothing Phone 1] MOV < ₹99 (₹50 Cart): Proceed CTA Disabled (Button disabled when cart subtotal < ₹99)
-[2026-10-23 10:22:13]   ✓ PASS: [Nothing Phone 1] MOV < ₹99 (₹50 Cart): Bilingual Warning Banner Visible (Warning banner shown)
-[2026-10-23 10:22:13]   ✓ PASS: [Nothing Phone 1] MOV < ₹99 (₹50 Cart): High-Contrast Bilingual Alert Content (warning
-Minimum order is ₹99 / कम से कम ₹99 का ऑर्डर करें. Add ₹49 more.)
-[2026-10-23 10:22:13]   ✓ PASS: [Nothing Phone 1] MOV < ₹99 (₹50 Cart): Checkout Navigation Guarded (User cannot bypass to checkout)
-[2026-10-23 10:22:13]   ✓ PASS: [Nothing Phone 1] MOV < ₹99 (₹50 Cart): Backend API Rejection (HTTP 400) (API rejected: Minimum order is ₹99 / कम से कम ₹99 का ऑर्डर करें. Add ₹49 more.)
-[2026-10-23 10:22:13]   📸 [SCREENSHOT CAPTURED]: screenshots/Nothing_Phone_1/step6_01_mov_alert_active.png
-[2026-10-23 10:22:13]   ✓ PASS: [Nothing Phone 1] MOV >= ₹99 (₹150 Cart): Warning Banner Hidden (Warning banner automatically removed)
-[2026-10-23 10:22:13]   ✓ PASS: [Nothing Phone 1] MOV >= ₹99 (₹150 Cart): Proceed CTA Enabled (Button active and ready for checkout)
-[2026-10-23 10:22:13]   ✓ PASS: [Nothing Phone 1] Dynamic Delivery Local Tier UI (1.2 km, ₹150 Subtotal -> ₹15 Delivery, ₹3 Platform, ₹168 Total) (Delivery: ₹15.00, Platform: ₹3.00, Total: ₹168.00)
-[2026-10-23 10:22:13]   ✓ PASS: [Nothing Phone 1] Backend Local Tier Splits (1.2 km, ₹150 Subtotal -> Fee ₹15, Vendor ₹150, Runner ₹10, Admin ₹8, ETA 30 Mins) (Resp: {'success': True, 'order_id': '#RUR-8261', 'subtotal': 150.0, 'delivery_fee': 15.0, 'delivery_discount': 0.0, 'base_delivery_fee': 15.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 168.0, 'vendor_payout': 150.0, 'runner_payout': 10.0, 'admin_profit': 8.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 1.2, 'eta_mins': '30 Mins', 'created_at': '2026-10-23T04:52:13.927815'} (Status: 200))
-[2026-10-23 10:22:14]   ✓ PASS: [Nothing Phone 1] Dynamic Delivery Long Distance Tier UI (6.5 km, ₹250 Subtotal -> ₹40 Delivery, ₹3 Platform, ₹293 Total) (Delivery: ₹40.00, Platform: ₹3.00, Total: ₹293.00)
-[2026-10-23 10:22:14]   ✓ PASS: [Nothing Phone 1] Backend Long Distance Tier Splits (6.5 km, ₹250 Subtotal -> Fee ₹40, Vendor ₹250, Runner ₹30, Admin ₹13, ETA 45-60 Mins) (Resp: {'success': True, 'order_id': '#RUR-7202', 'subtotal': 250.0, 'delivery_fee': 40.0, 'delivery_discount': 0.0, 'base_delivery_fee': 40.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 293.0, 'vendor_payout': 250.0, 'runner_payout': 30.0, 'admin_profit': 13.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 6.5, 'eta_mins': '45-60 Mins', 'created_at': '2026-10-23T04:52:14.274654'})
-[2026-10-23 10:22:14]   ✓ PASS: [Nothing Phone 1] Delivery Discount UI (₹300 Subtotal >= ₹299 -> Base ₹25 Delivery, -₹10 Discount, ₹318 Total - NOT Free) (Delivery: ₹25.00, Discount: -₹10.00, Total: ₹318.00, NotFree: True)
-[2026-10-23 10:22:14]   ✓ PASS: [Nothing Phone 1] Backend Delivery Discount Splits (Subtotal ₹300, 2.5km -> Net Delivery ₹15, Discount ₹10, Runner ₹15, Total ₹318) (Resp: {'success': True, 'order_id': '#RUR-7245', 'subtotal': 300.0, 'delivery_fee': 15.0, 'delivery_discount': 10.0, 'base_delivery_fee': 25.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 318.0, 'vendor_payout': 300.0, 'runner_payout': 15.0, 'admin_profit': 3.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 2.5, 'eta_mins': '30 Mins', 'created_at': '2026-10-23T04:52:14.617929'})
-[2026-10-23 10:22:14]   ✓ PASS: [Nothing Phone 1] Outside Delivery Zone (9.5 km): Proceed CTA Disabled (Button disabled when distance > 8 km)
-[2026-10-23 10:22:14]   ✓ PASS: [Nothing Phone 1] Outside Delivery Zone (> 8.0 km): Backend API Rejection (HTTP 400) (API rejected: Outside delivery zone (9.5 km exceeds 8.0 km maximum delivery radius) / डिलीवरी क्षेत्र से बाहर है (> 8.0 किमी))
-[2026-10-23 10:22:15]   ✓ PASS: [Nothing Phone 1] Sticky Bottom 'Proceed' CTA - Human Viewport & Touch Target Audit (Bounds: 380x52px at (x:16, y:851) | Viewport: 412x915px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:15]   📸 [SCREENSHOT CAPTURED]: screenshots/Nothing_Phone_1/step6_02_cart_review_valid.png
-[2026-10-23 10:22:16] 
+[2026-10-23 12:38:15]   ✓ PASS: [Nothing Phone 1] MOV < ₹99 (₹50 Cart): Proceed CTA Disabled (Button disabled when cart subtotal < ₹99)
+[2026-10-23 12:38:15]   ✓ PASS: [Nothing Phone 1] MOV < ₹99 (₹50 Cart): Bilingual Warning Banner Visible (Warning banner shown)
+[2026-10-23 12:38:15]   ✗ FAIL: [Nothing Phone 1] MOV < ₹99 (₹50 Cart): High-Contrast Bilingual Alert Content - ERROR: warning
+कम से कम ₹99 का ऑर्डर करें। ₹49 का सामान और जोड़ें।
+[2026-10-23 12:38:16]   ✓ PASS: [Nothing Phone 1] MOV < ₹99 (₹50 Cart): Checkout Navigation Guarded (User cannot bypass to checkout)
+[2026-10-23 12:38:16]   ✓ PASS: [Nothing Phone 1] MOV < ₹99 (₹50 Cart): Backend API Rejection (HTTP 400) (API rejected: Minimum order is ₹99 / कम से कम ₹99 का ऑर्डर करें. Add ₹49 more.)
+[2026-10-23 12:38:16]   📸 [SCREENSHOT CAPTURED]: screenshots/Nothing_Phone_1/step6_01_mov_alert_active.png
+[2026-10-23 12:38:16]   ✓ PASS: [Nothing Phone 1] MOV >= ₹99 (₹150 Cart): Warning Banner Hidden (Warning banner automatically removed)
+[2026-10-23 12:38:16]   ✓ PASS: [Nothing Phone 1] MOV >= ₹99 (₹150 Cart): Proceed CTA Enabled (Button active and ready for checkout)
+[2026-10-23 12:38:16]   ✓ PASS: [Nothing Phone 1] Dynamic Delivery Local Tier UI (1.2 km, ₹150 Subtotal -> ₹15 Delivery, ₹3 Platform, ₹168 Total) (Delivery: ₹15.00, Platform: ₹3.00, Total: ₹168.00)
+[2026-10-23 12:38:16]   ✓ PASS: [Nothing Phone 1] Backend Local Tier Splits (1.2 km, ₹150 Subtotal -> Fee ₹15, Vendor ₹150, Runner ₹10, Admin ₹8, ETA 30 Mins) (Resp: {'success': True, 'order_id': '#RUR-7074', 'subtotal': 150.0, 'delivery_fee': 15.0, 'delivery_discount': 0.0, 'base_delivery_fee': 15.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 168.0, 'vendor_payout': 150.0, 'runner_payout': 10.0, 'admin_profit': 8.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 1.2, 'eta_mins': '30 Mins', 'created_at': '2026-10-23T07:08:16.559926'} (Status: 200))
+[2026-10-23 12:38:16]   ✓ PASS: [Nothing Phone 1] Dynamic Delivery Long Distance Tier UI (6.5 km, ₹250 Subtotal -> ₹40 Delivery, ₹3 Platform, ₹293 Total) (Delivery: ₹40.00, Platform: ₹3.00, Total: ₹293.00)
+[2026-10-23 12:38:16]   ✓ PASS: [Nothing Phone 1] Backend Long Distance Tier Splits (6.5 km, ₹250 Subtotal -> Fee ₹40, Vendor ₹250, Runner ₹30, Admin ₹13, ETA 45-60 Mins) (Resp: {'success': True, 'order_id': '#RUR-9632', 'subtotal': 250.0, 'delivery_fee': 40.0, 'delivery_discount': 0.0, 'base_delivery_fee': 40.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 293.0, 'vendor_payout': 250.0, 'runner_payout': 30.0, 'admin_profit': 13.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 6.5, 'eta_mins': '45-60 Mins', 'created_at': '2026-10-23T07:08:16.898881'})
+[2026-10-23 12:38:17]   ✓ PASS: [Nothing Phone 1] Delivery Discount UI (₹300 Subtotal >= ₹299 -> Base ₹25 Delivery, -₹10 Discount, ₹318 Total - NOT Free) (Delivery: ₹25.00, Discount: -₹10.00, Total: ₹318.00, NotFree: True)
+[2026-10-23 12:38:17]   ✓ PASS: [Nothing Phone 1] Backend Delivery Discount Splits (Subtotal ₹300, 2.5km -> Net Delivery ₹15, Discount ₹10, Runner ₹15, Total ₹318) (Resp: {'success': True, 'order_id': '#RUR-9179', 'subtotal': 300.0, 'delivery_fee': 15.0, 'delivery_discount': 10.0, 'base_delivery_fee': 25.0, 'platform_fee': 3.0, 'savings': 0.0, 'total_amount': 318.0, 'vendor_payout': 300.0, 'runner_payout': 15.0, 'admin_profit': 3.0, 'payment_mode': 'COD', 'status': 'Order Placed', 'timeline_stage': 1, 'delivery_otp': '4821', 'distance_km': 2.5, 'eta_mins': '30 Mins', 'created_at': '2026-10-23T07:08:17.252168'})
+[2026-10-23 12:38:17]   ✓ PASS: [Nothing Phone 1] Outside Delivery Zone (9.5 km): Proceed CTA Disabled (Button disabled when distance > 8 km)
+[2026-10-23 12:38:17]   ✓ PASS: [Nothing Phone 1] Outside Delivery Zone (> 8.0 km): Backend API Rejection (HTTP 400) (API rejected: Outside delivery zone (9.5 km exceeds 8.0 km maximum delivery radius) / डिलीवरी क्षेत्र से बाहर है (> 8.0 किमी))
+[2026-10-23 12:38:17]   ✓ PASS: [Nothing Phone 1] Sticky Bottom 'Proceed' CTA - Human Viewport & Touch Target Audit (Bounds: 380x52px at (x:16, y:851) | Viewport: 412x915px | Collisions: None | Occlusion: None)
+[2026-10-23 12:38:18]   📸 [SCREENSHOT CAPTURED]: screenshots/Nothing_Phone_1/step6_02_cart_review_valid.png
+[2026-10-23 12:38:18] 
 --- [Nothing Phone 1] Testing Phase 4.15: Delivery Location Setup at Checkout ---
-[2026-10-23 10:22:16]   ✓ PASS: [Nothing Phone 1] Transition to Delivery Location Setup at Checkout (Address setup triggered when proceeding to checkout)
-[2026-10-23 10:22:16]   ✓ PASS: [Nothing Phone 1] Phase 4.15 Landmark Setup - No Horizontal Overflow (doc: 412px, viewport: 412px)
-[2026-10-23 10:22:16]   ✓ PASS: [Nothing Phone 1] Phase 4.15 Landmark Setup - Full-Width Expansion (No Squeezing) (root width: 412px / 412px (100% fill))
-[2026-10-23 10:22:16]   ✓ PASS: [Nothing Phone 1] Full Name Input - Human Viewport & Touch Target Audit (Bounds: 344x48px at (x:34, y:214) | Viewport: 412x915px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:16]   ✓ PASS: [Nothing Phone 1] Locate Me GPS Button - Human Viewport & Touch Target Audit (Bounds: 123x36px at (x:256, y:315) | Viewport: 412x915px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:17]   ✓ PASS: [Nothing Phone 1] GPS Engine Audit (Native HTML5 Geolocation Coordinates) (Displayed String: 'Lat: 29.1324, Lng: 77.0125 (±10m)' | Raw Coordinates Present: True)
-[2026-10-23 10:22:17]   ✓ PASS: [Nothing Phone 1] District / Tehsil Input Field - Human Viewport & Touch Target Audit (Bounds: 344x44px at (x:34, y:429) | Viewport: 412x915px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:17]   ✓ PASS: [Nothing Phone 1] Village / Panchayat Input Field - Human Viewport & Touch Target Audit (Bounds: 344x44px at (x:34, y:549) | Viewport: 412x915px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:17]   ✓ PASS: [Nothing Phone 1] Rural Landmark Textarea - Human Viewport & Touch Target Audit (Bounds: 336x74px at (x:38, y:638) | Viewport: 412x915px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:18]   ✓ PASS: [Nothing Phone 1] Rural Landmark Character Count (39 chars)
-[2026-10-23 10:22:18]   ✓ PASS: [Nothing Phone 1] Sticky Bottom 'Save Address & Proceed' CTA - Human Viewport & Touch Target Audit (Bounds: 380x52px at (x:16, y:851) | Viewport: 412x915px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:18]   📸 [SCREENSHOT CAPTURED]: screenshots/Nothing_Phone_1/step3_01_landmark_gps_setup.png
-[2026-10-23 10:22:19] 
+[2026-10-23 12:38:18]   ✓ PASS: [Nothing Phone 1] Transition to Delivery Location Setup at Checkout (Address setup triggered when proceeding to checkout)
+[2026-10-23 12:38:18]   ✓ PASS: [Nothing Phone 1] Phase 4.15 Landmark Setup - No Horizontal Overflow (doc: 412px, viewport: 412px)
+[2026-10-23 12:38:18]   ✓ PASS: [Nothing Phone 1] Phase 4.15 Landmark Setup - Full-Width Expansion (No Squeezing) (root width: 412px / 412px (100% fill))
+[2026-10-23 12:38:18]   ✓ PASS: [Nothing Phone 1] Full Name Input - Human Viewport & Touch Target Audit (Bounds: 344x48px at (x:34, y:214) | Viewport: 412x915px | Collisions: None | Occlusion: None)
+[2026-10-23 12:38:19]   ✓ PASS: [Nothing Phone 1] Locate Me GPS Button - Human Viewport & Touch Target Audit (Bounds: 151x36px at (x:228, y:319) | Viewport: 412x915px | Collisions: None | Occlusion: None)
+[2026-10-23 12:38:20]   ✓ PASS: [Nothing Phone 1] GPS Engine Audit (Native HTML5 Geolocation Coordinates) (Displayed String: 'Lat: 29.1324, Lng: 77.0125 (±10m)' | Raw Coordinates Present: True)
+[2026-10-23 12:38:20]   ✓ PASS: [Nothing Phone 1] District / Tehsil Input Field - Human Viewport & Touch Target Audit (Bounds: 344x44px at (x:34, y:429) | Viewport: 412x915px | Collisions: None | Occlusion: None)
+[2026-10-23 12:38:20]   ✓ PASS: [Nothing Phone 1] Village / Panchayat Input Field - Human Viewport & Touch Target Audit (Bounds: 344x44px at (x:34, y:549) | Viewport: 412x915px | Collisions: None | Occlusion: None)
+[2026-10-23 12:38:20]   ✓ PASS: [Nothing Phone 1] Rural Landmark Textarea - Human Viewport & Touch Target Audit (Bounds: 336x74px at (x:38, y:638) | Viewport: 412x915px | Collisions: None | Occlusion: None)
+[2026-10-23 12:38:21]   ✓ PASS: [Nothing Phone 1] Rural Landmark Character Count (39 chars)
+[2026-10-23 12:38:21]   ✓ PASS: [Nothing Phone 1] Sticky Bottom 'Save Address & Proceed' CTA - Human Viewport & Touch Target Audit (Bounds: 380x52px at (x:16, y:851) | Viewport: 412x915px | Collisions: None | Occlusion: None)
+[2026-10-23 12:38:21]   📸 [SCREENSHOT CAPTURED]: screenshots/Nothing_Phone_1/step3_01_landmark_gps_setup.png
+[2026-10-23 12:38:22] 
 --- [Nothing Phone 1] Testing Phase 4.2: Checkout & Payment Selection ---
-[2026-10-23 10:22:19]   ✓ PASS: [Nothing Phone 1] Transition to Checkout Screen 
-[2026-10-23 10:22:19]   ✓ PASS: [Nothing Phone 1] Phase 4.2 Checkout - No Horizontal Overflow (doc: 412px, viewport: 412px)
-[2026-10-23 10:22:19]   ✓ PASS: [Nothing Phone 1] Phase 4.2 Checkout - Full-Width Expansion (No Squeezing) (root width: 412px / 412px (100% fill))
-[2026-10-23 10:22:19]   ✓ PASS: [Nothing Phone 1] Checkout Address Sync (Name: 'Ramesh Patel', Village: 'Rampur Village, Sonipat', Landmark: 'Near Shiva Mandir, Opp. Blue Water Tank')
-[2026-10-23 10:22:19]   ✓ PASS: [Nothing Phone 1] Cash On Delivery (COD) Payment Card - Human Viewport & Touch Target Audit (Bounds: 338x65px at (x:37, y:511) | Viewport: 412x915px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:19]   ✓ PASS: [Nothing Phone 1] Sticky Bottom 'Place Order' CTA - Human Viewport & Touch Target Audit (Bounds: 380x52px at (x:16, y:851) | Viewport: 412x915px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:19]   📸 [SCREENSHOT CAPTURED]: screenshots/Nothing_Phone_1/step7_01_checkout_payment.png
-[2026-10-23 10:22:21] 
+[2026-10-23 12:38:22]   ✓ PASS: [Nothing Phone 1] Transition to Checkout Screen 
+[2026-10-23 12:38:22]   ✓ PASS: [Nothing Phone 1] Phase 4.2 Checkout - No Horizontal Overflow (doc: 412px, viewport: 412px)
+[2026-10-23 12:38:22]   ✓ PASS: [Nothing Phone 1] Phase 4.2 Checkout - Full-Width Expansion (No Squeezing) (root width: 412px / 412px (100% fill))
+[2026-10-23 12:38:22]   ✓ PASS: [Nothing Phone 1] Checkout Address Sync (Name: 'Ramesh Patel', Village: 'Rampur Village, Sonipat', Landmark: 'Near Shiva Mandir, Opp. Blue Water Tank')
+[2026-10-23 12:38:22]   ✓ PASS: [Nothing Phone 1] Cash On Delivery (COD) Payment Card - Human Viewport & Touch Target Audit (Bounds: 338x65px at (x:37, y:511) | Viewport: 412x915px | Collisions: None | Occlusion: None)
+[2026-10-23 12:38:22]   ✓ PASS: [Nothing Phone 1] Sticky Bottom 'Place Order' CTA - Human Viewport & Touch Target Audit (Bounds: 380x52px at (x:16, y:851) | Viewport: 412x915px | Collisions: None | Occlusion: None)
+[2026-10-23 12:38:22]   📸 [SCREENSHOT CAPTURED]: screenshots/Nothing_Phone_1/step7_01_checkout_payment.png
+[2026-10-23 12:38:24] 
 --- [Nothing Phone 1] Testing Phase 5: Live Order Tracking ---
-[2026-10-23 10:22:21]   ✓ PASS: [Nothing Phone 1] Transition to Live Order Tracking Screen 
-[2026-10-23 10:22:21]   ✓ PASS: [Nothing Phone 1] Phase 5 Tracking - No Horizontal Overflow (doc: 412px, viewport: 412px)
-[2026-10-23 10:22:21]   ✓ PASS: [Nothing Phone 1] Phase 5 Tracking - Full-Width Expansion (No Squeezing) (root width: 412px / 412px (100% fill))
-[2026-10-23 10:22:21]   ✓ PASS: [Nothing Phone 1] Live Tracking Order ID Generated (#RUR-8560)
-[2026-10-23 10:22:21]   ✓ PASS: [Nothing Phone 1] Safe Doorstep Delivery OTP Displayed (4-digit OTP code visible)
-[2026-10-23 10:22:21]   ✓ PASS: [Nothing Phone 1] Live Tracking Dynamic ETA Displayed ('30 Mins') (ETA: '30 Mins')
-[2026-10-23 10:22:21]   ✓ PASS: [Nothing Phone 1] SQLite Real Database Persistence Verification (DB Order: #RUR-8560 | Subtotal: ₹210.0 | Total: ₹228.0 | Distance: 1.2 km | ETA: 30 Mins | Vendor: ₹210.0 | Runner: ₹10.0 | Admin: ₹8.0 | OTP: 4821)
-[2026-10-23 10:22:21]   📸 [SCREENSHOT CAPTURED]: screenshots/Nothing_Phone_1/step8_01_live_tracking.png
-[2026-10-23 10:22:21] 
+[2026-10-23 12:38:24]   ✓ PASS: [Nothing Phone 1] Transition to Live Order Tracking Screen 
+[2026-10-23 12:38:24]   ✓ PASS: [Nothing Phone 1] Phase 5 Tracking - No Horizontal Overflow (doc: 412px, viewport: 412px)
+[2026-10-23 12:38:24]   ✓ PASS: [Nothing Phone 1] Phase 5 Tracking - Full-Width Expansion (No Squeezing) (root width: 412px / 412px (100% fill))
+[2026-10-23 12:38:24]   ✓ PASS: [Nothing Phone 1] Live Tracking Order ID Generated (#RUR-3048)
+[2026-10-23 12:38:24]   ✓ PASS: [Nothing Phone 1] Safe Doorstep Delivery OTP Displayed (4-digit OTP code visible)
+[2026-10-23 12:38:24]   ✓ PASS: [Nothing Phone 1] Live Tracking Dynamic ETA Displayed ('30 Mins') (ETA: '30 Mins')
+[2026-10-23 12:38:24]   ✓ PASS: [Nothing Phone 1] SQLite Real Database Persistence Verification (DB Order: #RUR-3048 | Subtotal: ₹210.0 | Total: ₹228.0 | Distance: 1.2 km | ETA: 30 Mins | Vendor: ₹210.0 | Runner: ₹10.0 | Admin: ₹8.0 | OTP: 4821)
+[2026-10-23 12:38:24]   📸 [SCREENSHOT CAPTURED]: screenshots/Nothing_Phone_1/step8_01_live_tracking.png
+[2026-10-23 12:38:24] 
 --- [Nothing Phone 1] Testing Phase 5.5: My Account & AI Customer Support Module ---
-[2026-10-23 10:22:22]   ✓ PASS: [Nothing Phone 1] Bottom Nav Profile Button - Human Viewport & Touch Target Audit (Bounds: 44x49px at (x:337, y:858) | Viewport: 412x915px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:22]   ✓ PASS: [Nothing Phone 1] Transition to My Account & Profile View 
-[2026-10-23 10:22:22]   ✓ PASS: [Nothing Phone 1] Phase Profile - No Horizontal Overflow (doc: 412px, viewport: 412px)
-[2026-10-23 10:22:22]   ✓ PASS: [Nothing Phone 1] Phase Profile - Full-Width Expansion (No Squeezing) (root width: 412px / 412px (100% fill))
-[2026-10-23 10:22:22]   ✓ PASS: [Nothing Phone 1] Profile User Details Rendered (Name: Ramesh Patel | Phone: +91 98765 43210 | Village: Rampur Village)
-[2026-10-23 10:22:22]   ✓ PASS: [Nothing Phone 1] Order History List Rendered 
-[2026-10-23 10:22:22]   ✓ PASS: [Nothing Phone 1] Invisible Risk Metrics (No Trust Score or Strike Counter in Customer DOM) (Customer profile is 100% clean of internal risk & cancellation counters)
-[2026-10-23 10:22:22]   ✓ PASS: [Nothing Phone 1] Redundant Profile Language Card Deleted (Redundant language preference card cleanly removed from profile screen)
-[2026-10-23 10:22:22]   ✓ PASS: [Nothing Phone 1] Global Header Language Toggle - Human Viewport & Touch Target Audit (Bounds: 72x32px at (x:286, y:31) | Viewport: 412x915px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:23]   ✓ PASS: [Nothing Phone 1] Open Help & Support Chatbot Button - Human Viewport & Touch Target Audit (Bounds: 186x44px at (x:32, y:455) | Viewport: 412x915px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:23]   ✓ PASS: [Nothing Phone 1] Support Chatbot Modal Opened 
-[2026-10-23 10:22:23]   ✓ PASS: [Nothing Phone 1] Send Chat Message Button - Human Viewport & Touch Target Audit (Bounds: 36x36px at (x:367, y:818) | Viewport: 412x915px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:25]   ✓ PASS: [Nothing Phone 1] AI Chatbot Intelligent Response (Snippet: .00) दुकान (Sharma Brothers Kirana) को प्राप्त हो चुका है और वे इसे स्वीकार कर रहे हैं। अनुमानित समय ~30 Mins है।
+[2026-10-23 12:38:25]   ✓ PASS: [Nothing Phone 1] Bottom Nav Profile Button - Human Viewport & Touch Target Audit (Bounds: 44x49px at (x:337, y:858) | Viewport: 412x915px | Collisions: None | Occlusion: None)
+[2026-10-23 12:38:25]   ✓ PASS: [Nothing Phone 1] Transition to My Account & Profile View 
+[2026-10-23 12:38:25]   ✓ PASS: [Nothing Phone 1] Phase Profile - No Horizontal Overflow (doc: 412px, viewport: 412px)
+[2026-10-23 12:38:25]   ✓ PASS: [Nothing Phone 1] Phase Profile - Full-Width Expansion (No Squeezing) (root width: 412px / 412px (100% fill))
+[2026-10-23 12:38:25]   ✓ PASS: [Nothing Phone 1] Profile User Details Rendered (Name: Ramesh Patel | Phone: +91 98765 43210 | Village: Rampur Village)
+[2026-10-23 12:38:25]   ✓ PASS: [Nothing Phone 1] Order History List Rendered 
+[2026-10-23 12:38:25]   ✓ PASS: [Nothing Phone 1] Invisible Risk Metrics (No Trust Score or Strike Counter in Customer DOM) (Customer profile is 100% clean of internal risk & cancellation counters)
+[2026-10-23 12:38:25]   ✓ PASS: [Nothing Phone 1] Redundant Profile Language Card Deleted (Redundant language preference card cleanly removed from profile screen)
+[2026-10-23 12:38:26]   ✓ PASS: [Nothing Phone 1] Global Header Language Toggle - Human Viewport & Touch Target Audit (Bounds: 72x32px at (x:286, y:31) | Viewport: 412x915px | Collisions: None | Occlusion: None)
+[2026-10-23 12:38:26]   ✓ PASS: [Nothing Phone 1] Open Help & Support Chatbot Button - Human Viewport & Touch Target Audit (Bounds: 186x44px at (x:32, y:455) | Viewport: 412x915px | Collisions: None | Occlusion: None)
+[2026-10-23 12:38:26]   ✓ PASS: [Nothing Phone 1] Support Chatbot Modal Opened 
+[2026-10-23 12:38:27]   ✓ PASS: [Nothing Phone 1] Send Chat Message Button - Human Viewport & Touch Target Audit (Bounds: 36x36px at (x:367, y:818) | Viewport: 412x915px | Collisions: None | Occlusion: None)
+[2026-10-23 12:38:28]   ✓ PASS: [Nothing Phone 1] AI Chatbot Intelligent Response (Snippet: .00) दुकान (Sharma Brothers Kirana) को प्राप्त हो चुका है और वे इसे स्वीकार कर रहे हैं। अनुमानित समय ~30 Mins है।
 
-10:22)
-[2026-10-23 10:22:25]   ✓ PASS: [Nothing Phone 1] Massive Call Help Center CTA Button - Human Viewport & Touch Target Audit (Bounds: 163x32px at (x:232, y:163) | Viewport: 412x915px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:25]   ✓ PASS: [Nothing Phone 1] Call Help Center Native Tel Link (href='tel:18001204266')
-[2026-10-23 10:22:25]   📸 [SCREENSHOT CAPTURED]: screenshots/Nothing_Phone_1/step8_02_account_and_support.png
-[2026-10-23 10:22:25] 
+12:38)
+[2026-10-23 12:38:28]   ✓ PASS: [Nothing Phone 1] Massive Call Help Center CTA Button - Human Viewport & Touch Target Audit (Bounds: 158x32px at (x:237, y:163) | Viewport: 412x915px | Collisions: None | Occlusion: None)
+[2026-10-23 12:38:28]   ✓ PASS: [Nothing Phone 1] Call Help Center Native Tel Link (href='tel:18001204266')
+[2026-10-23 12:38:28]   📸 [SCREENSHOT CAPTURED]: screenshots/Nothing_Phone_1/step8_02_account_and_support.png
+[2026-10-23 12:38:29] 
 --- [Nothing Phone 1] Testing Phase 6: Total Network Failure & Offline Resilience ---
-[2026-10-23 10:22:25]   ⚡ [Nothing Phone 1] Engaging Playwright network route interception (page.route('**/*', route.abort()))...
-[2026-10-23 10:22:26]   ✓ PASS: [Nothing Phone 1] Custom Offline Fallback Card - Human Viewport & Touch Target Audit (Bounds: 380x548px at (x:16, y:96) | Viewport: 412x915px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:26]   ✓ PASS: [Nothing Phone 1] Bilingual Offline Headings Check (HI: 'इंटरनेट कनेक्शन उपलब्ध नहीं है' | EN: 'No Internet Connection')
-[2026-10-23 10:22:26]   ✓ PASS: [Nothing Phone 1] Offline Retry Connection Button - Human Viewport & Touch Target Audit (Bounds: 330x48px at (x:41, y:517) | Viewport: 412x915px | Collisions: None | Occlusion: None)
-[2026-10-23 10:22:26]   📸 [SCREENSHOT CAPTURED]: screenshots/Nothing_Phone_1/step9_01_offline_fallback.png
-[2026-10-23 10:22:26]   ✓ PASS: [Nothing Phone 1] Standalone offline.html Fallback File Audit (Container visible: True | Title: 'इंटरनेट कनेक्शन उपलब्ध नहीं है')
-[2026-10-23 10:22:26] 
+[2026-10-23 12:38:29]   ⚡ [Nothing Phone 1] Engaging Playwright network route interception (page.route('**/*', route.abort()))...
+[2026-10-23 12:38:29]   ✓ PASS: [Nothing Phone 1] Custom Offline Fallback Card - Human Viewport & Touch Target Audit (Bounds: 380x548px at (x:16, y:96) | Viewport: 412x915px | Collisions: None | Occlusion: None)
+[2026-10-23 12:38:29]   ✓ PASS: [Nothing Phone 1] Bilingual Offline Headings Check (HI: 'इंटरनेट कनेक्शन उपलब्ध नहीं है' | EN: 'No Internet Connection')
+[2026-10-23 12:38:29]   ✓ PASS: [Nothing Phone 1] Offline Retry Connection Button - Human Viewport & Touch Target Audit (Bounds: 330x48px at (x:41, y:517) | Viewport: 412x915px | Collisions: None | Occlusion: None)
+[2026-10-23 12:38:30]   📸 [SCREENSHOT CAPTURED]: screenshots/Nothing_Phone_1/step9_01_offline_fallback.png
+[2026-10-23 12:38:30]   ✓ PASS: [Nothing Phone 1] Standalone offline.html Fallback File Audit (Container visible: True | Title: 'इंटरनेट कनेक्शन उपलब्ध नहीं है')
+[2026-10-23 12:38:30] 
 --- [Nothing Phone 1] Console & Script Execution Audit ---
-[2026-10-23 10:22:26]   ✓ PASS: [Nothing Phone 1] Zero JavaScript Console Errors (Clean runtime execution)
-[2026-10-23 10:22:27]   ✓ Playwright browser closed cleanly.
+[2026-10-23 12:38:30]   ✓ PASS: [Nothing Phone 1] Zero JavaScript Console Errors (Clean runtime execution)
+[2026-10-23 12:38:30]   ✓ Playwright browser closed cleanly.

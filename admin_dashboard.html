@@ -73,10 +73,10 @@
   <div id="admin-server-offline-banner" class="hidden sticky top-0 z-50 bg-red-600 text-white px-4 py-2 text-xs font-bold flex items-center justify-between shadow-md">
     <div class="flex items-center gap-2">
       <span class="material-symbols-outlined text-[18px]">wifi_off</span>
-      <span>सर्वर से संपर्क नहीं हो पा रहा है • Backend Server Offline (Port 8001)</span>
+      <span id="admin-offline-msg" data-i18n="server_offline_msg">सर्वर से संपर्क नहीं हो पा रहा है (पोर्ट 8001)</span>
     </div>
-    <button onclick="refreshAdminData()" class="px-2.5 py-1 bg-white text-red-700 rounded-lg text-[11px] font-black active:scale-95 transition-all">
-      पुनः प्रयास (Retry)
+    <button onclick="refreshAdminData()" id="admin-offline-retry-btn" data-i18n="server_offline_retry" class="px-2.5 py-1 bg-white text-red-700 rounded-lg text-[11px] font-black active:scale-95 transition-all">
+      पुनः प्रयास
     </button>
   </div>
 
@@ -93,12 +93,12 @@
         </div>
         <div>
           <div class="flex items-center gap-1.5">
-            <h1 class="text-sm sm:text-base font-black text-white tracking-tight">गांव बाज़ार • Super Admin</h1>
+            <h1 id="admin-app-title" class="text-sm sm:text-base font-black text-white tracking-tight" data-i18n="app_title">गांव बाज़ार • सुपर एडमिन</h1>
             <span class="text-[9px] sm:text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded-full border border-emerald-500/30">
               v2.0
             </span>
           </div>
-          <span class="text-[10px] sm:text-xs text-slate-400">Hyperlocal Rural Delivery Network</span>
+          <span class="text-[10px] sm:text-xs text-slate-400" data-i18n="app_sub">Hyperlocal Rural Delivery Network</span>
         </div>
       </div>
 
@@ -106,11 +106,17 @@
       <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
         <div class="hidden md:flex items-center gap-1.5 bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-800 text-xs text-slate-300">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>System Healthy • Port 8001</span>
+          <span data-i18n="system_healthy">सिस्टम सक्रिय • पोर्ट 8001</span>
         </div>
 
         <button onclick="refreshAdminData()" title="Refresh All Data" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center justify-center transition-all active:scale-95">
           <span class="material-symbols-outlined text-[18px]">sync</span>
+        </button>
+
+        <!-- Admin Language Switcher -->
+        <button id="admin-lang-toggle-btn" onclick="toggleAdminLanguage()" class="px-2 sm:px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center gap-1 transition-all active:scale-95">
+          <span class="material-symbols-outlined text-[15px]">translate</span>
+          <span id="admin-current-lang-text">English</span>
         </button>
 
         <a href="index.html" target="_blank" class="px-2 sm:px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center gap-1 transition-all">
@@ -222,40 +228,40 @@
       <!-- Tab 1: Vendor KYC Queue -->
       <button id="admin-tab-btn-vendors" onclick="switchTab('vendors')" class="px-3.5 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 bg-primary text-white shadow-sm transition-all whitespace-nowrap shrink-0 min-h-[38px]">
         <span class="material-symbols-outlined text-[18px]">storefront</span>
-        <span>Vendor KYC (दुकानदार)</span>
+        <span data-i18n="tab_vendors">दुकानदार सत्यापन कतार</span>
         <span id="tab-vendor-badge" class="ml-1 text-[10px] bg-white text-emerald-800 px-2 py-0.5 rounded-full font-black">0</span>
       </button>
 
       <!-- Tab 2: Runner KYC Queue -->
       <button id="admin-tab-btn-runners" onclick="switchTab('runners')" class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-slate-900 text-slate-300 hover:text-white border border-slate-800 transition-all whitespace-nowrap shrink-0 min-h-[38px]">
         <span class="material-symbols-outlined text-[18px]">two_wheeler</span>
-        <span>Gaon Mitra KYC (रनर)</span>
+        <span data-i18n="tab_runners">गाँव मित्र सत्यापन कतार</span>
         <span id="tab-runner-badge" class="ml-1 text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full font-bold">0</span>
       </button>
 
       <!-- Tab 3: Live Order God-View -->
       <button id="admin-tab-btn-orders" onclick="switchTab('orders')" class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-slate-900 text-slate-300 hover:text-white border border-slate-800 transition-all whitespace-nowrap shrink-0 min-h-[38px]">
         <span class="material-symbols-outlined text-[18px]">visibility</span>
-        <span>Live God-View (ऑर्डर)</span>
+        <span data-i18n="tab_orders">लाइव ऑर्डर समग्र दृश्य</span>
       </button>
 
       <!-- Tab 4: Commission & Payout Ledger -->
       <button id="admin-tab-btn-ledger" onclick="switchTab('ledger')" class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-slate-900 text-slate-300 hover:text-white border border-slate-800 transition-all whitespace-nowrap shrink-0 min-h-[38px]">
         <span class="material-symbols-outlined text-[18px]">account_balance</span>
-        <span>Ledger & Dues (बहीखाता)</span>
+        <span data-i18n="tab_ledger">प्लेटफ़ॉर्म आय व बहीखाता</span>
       </button>
 
       <!-- Tab 6: Bank & Payout Verification -->
       <button id="admin-tab-btn-bank" onclick="switchTab('bank')" class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-slate-900 text-slate-300 hover:text-white border border-slate-800 transition-all whitespace-nowrap shrink-0 min-h-[38px]">
         <span class="material-symbols-outlined text-[18px]">account_balance</span>
-        <span>Bank Payout KYC (बैंक सत्यापन)</span>
+        <span data-i18n="tab_bank">बैंक व पेआउट सत्यापन</span>
         <span id="tab-bank-badge" class="ml-1 text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full font-bold">0</span>
       </button>
 
       <!-- Tab 5: Account Risk Profile & Cancellation Controls -->
       <button id="admin-tab-btn-risk" onclick="switchTab('risk')" class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-slate-900 text-slate-300 hover:text-white border border-slate-800 transition-all whitespace-nowrap shrink-0 min-h-[38px]">
         <span class="material-symbols-outlined text-[18px]">security</span>
-        <span>Account Risk Profile (खाता जोखिम)</span>
+        <span data-i18n="tab_risk">आंतरिक खाता जोखिम प्रबंधन</span>
       </button>
 
     </div>
@@ -264,19 +270,19 @@
     <!-- 9. TAB 6: BANK & PAYOUT KYC VERIFICATION QUEUE                          -->
     <!-- ======================================================================= -->
     <section id="tab-bank" class="hidden flex-col gap-4">
-      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+      <div class="flex flex-wrap items-center justify-between gap-2.5">
         <div>
-          <h2 class="text-base sm:text-lg font-black text-white flex items-center gap-2">
+          <h2 class="text-sm sm:text-base font-black text-white flex items-center gap-2">
             <span class="material-symbols-outlined text-primary">account_balance</span>
-            <span>Vendor & Runner Bank Payout KYC Control</span>
+            <span data-i18n="bank_queue_title">दुकानदार व रनर बैंक पेआउट सत्यापन</span>
           </h2>
-          <p class="text-xs text-slate-400">Review submitted bank account details, IFSC, and UPI IDs for Razorpay Route Linked Accounts.</p>
+          <p class="text-xs text-slate-400" data-i18n="bank_queue_sub">बैंक खाता, IFSC और UPI सत्यापन</p>
         </div>
 
         <div class="flex items-center gap-2">
           <button onclick="fetchPayoutVerifications()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold border border-slate-700 flex items-center gap-1 shadow-sm active:scale-95">
             <span class="material-symbols-outlined text-[16px]">refresh</span>
-            <span>Refresh</span>
+            <span data-i18n="btn_refresh">रीफ्रेश</span>
           </button>
         </div>
       </div>
@@ -311,21 +317,21 @@
     <!-- ======================================================================= -->
     <section id="tab-vendors" class="flex flex-col gap-4">
       
-      <div class="flex items-center justify-between">
+      <div class="flex flex-wrap items-center justify-between gap-2.5">
         <div>
-          <h2 class="text-sm font-black text-white flex items-center gap-2">
+          <h2 class="text-sm sm:text-base font-black text-white flex items-center gap-2">
             <span class="material-symbols-outlined text-primary">verified_user</span>
-            <span>दुकानदार सत्यापन कतार (Pending Vendor KYC Queue)</span>
+            <span data-i18n="vendor_queue_title">दुकानदार सत्यापन कतार</span>
           </h2>
-          <p class="text-xs text-slate-400">Review rural shop applications before granting active catalog access.</p>
+          <p class="text-xs text-slate-400" data-i18n="vendor_queue_sub">दुकान का विवरण और केवाईसी जांचें।</p>
         </div>
 
         <div class="flex items-center gap-2">
           <button onclick="fetchPendingVendors('pending_approval')" class="px-3 py-1 rounded-xl text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
-            Pending Only
+            <span data-i18n="pending_only">केवल लंबित</span>
           </button>
           <button onclick="fetchPendingVendors('all')" class="px-3 py-1 rounded-xl text-xs font-bold bg-slate-800 text-slate-400 hover:text-slate-200">
-            All Vendors
+            <span data-i18n="all_records">सभी रिकॉर्ड</span>
           </button>
         </div>
       </div>
@@ -345,21 +351,21 @@
     <!-- ======================================================================= -->
     <section id="tab-runners" class="hidden flex-col gap-4">
       
-      <div class="flex items-center justify-between">
+      <div class="flex flex-wrap items-center justify-between gap-2.5">
         <div>
-          <h2 class="text-sm font-black text-white flex items-center gap-2">
+          <h2 class="text-sm sm:text-base font-black text-white flex items-center gap-2">
             <span class="material-symbols-outlined text-amber-400">two_wheeler</span>
-            <span>गाँव मित्र सत्यापन कतार (Pending Runner KYC Queue)</span>
+            <span data-i18n="runner_queue_title">गाँव मित्र सत्यापन कतार</span>
           </h2>
-          <p class="text-xs text-slate-400">Review village delivery partner applications, driving permits, and vehicle photos.</p>
+          <p class="text-xs text-slate-400" data-i18n="runner_queue_sub">गाँव मित्र डिलीवरी पार्टनर और वाहन विवरण जांचें।</p>
         </div>
 
         <div class="flex items-center gap-2">
           <button onclick="fetchPendingRunners('pending_approval')" class="px-3 py-1 rounded-xl text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
-            Pending Only
+            <span data-i18n="pending_only">केवल लंबित</span>
           </button>
           <button onclick="fetchPendingRunners('all')" class="px-3 py-1 rounded-xl text-xs font-bold bg-slate-800 text-slate-400 hover:text-slate-200">
-            All Runners
+            <span data-i18n="all_records">सभी रिकॉर्ड</span>
           </button>
         </div>
       </div>
@@ -538,8 +544,78 @@
       runners: [],
       orders: [],
       ledger: null,
-      pollTimer: null
+      pollTimer: null,
+      lang: localStorage.getItem('gaonbazar_admin_lang') || localStorage.getItem('gaonbazar_lang') || 'hi'
     };
+
+    const AdminI18N = {
+      hi: {
+        app_title: "गांव बाज़ार • सुपर एडमिन",
+        app_sub: "हाइपरलोकल ग्रामीण डिलीवरी नेटवर्क",
+        system_healthy: "सिस्टम सक्रिय • पोर्ट 8001",
+        server_offline_msg: "सर्वर से संपर्क नहीं हो पा रहा है (पोर्ट 8001)",
+        server_offline_retry: "पुनः प्रयास",
+        tab_vendors: "दुकानदार सत्यापन कतार",
+        tab_runners: "गाँव मित्र सत्यापन कतार",
+        tab_orders: "लाइव ऑर्डर समग्र दृश्य",
+        tab_ledger: "प्लेटफ़ॉर्म आय व बहीखाता",
+        tab_bank: "बैंक व पेआउट सत्यापन",
+        tab_risk: "आंतरिक खाता जोखिम प्रबंधन",
+        vendor_queue_title: "दुकानदार सत्यापन कतार",
+        vendor_queue_sub: "दुकान का विवरण और केवाईसी जांचें।",
+        runner_queue_title: "गाँव मित्र सत्यापन कतार",
+        runner_queue_sub: "गाँव मित्र डिलीवरी पार्टनर और वाहन विवरण जांचें।",
+        bank_queue_title: "दुकानदार व रनर बैंक पेआउट सत्यापन",
+        bank_queue_sub: "बैंक खाता, IFSC और UPI सत्यापन",
+        pending_only: "केवल लंबित",
+        all_records: "सभी रिकॉर्ड",
+        btn_refresh: "रीफ्रेश"
+      },
+      en: {
+        app_title: "GaonBazaar • Super Admin",
+        app_sub: "Hyperlocal Rural Delivery Network",
+        system_healthy: "System Healthy • Port 8001",
+        server_offline_msg: "Backend Server Offline (Port 8001)",
+        server_offline_retry: "Retry",
+        tab_vendors: "Pending Vendor KYC Queue",
+        tab_runners: "Pending Runner KYC Queue",
+        tab_orders: "Live Order God-View Table",
+        tab_ledger: "Platform Payout Ledger",
+        tab_bank: "Bank & Payout KYC Control",
+        tab_risk: "Account Risk Profile",
+        vendor_queue_title: "Pending Vendor KYC Queue",
+        vendor_queue_sub: "Review rural shop applications before granting active catalog access.",
+        runner_queue_title: "Pending Runner KYC Queue",
+        runner_queue_sub: "Review village delivery partner applications, permits, and vehicles.",
+        bank_queue_title: "Vendor & Runner Bank Payout KYC Control",
+        bank_queue_sub: "Review submitted bank account details, IFSC, and UPI IDs.",
+        pending_only: "Pending Only",
+        all_records: "All Records",
+        btn_refresh: "Refresh"
+      }
+    };
+
+    function toggleAdminLanguage() {
+      AdminStore.lang = AdminStore.lang === 'hi' ? 'en' : 'hi';
+      localStorage.setItem('gaonbazar_admin_lang', AdminStore.lang);
+      localStorage.setItem('gaonbazar_lang', AdminStore.lang);
+      updateAdminLanguageUI();
+    }
+
+    function updateAdminLanguageUI() {
+      const isHi = AdminStore.lang === 'hi';
+      const langText = document.getElementById('admin-current-lang-text');
+      if (langText) langText.innerText = isHi ? 'English' : 'हिंदी';
+
+      const dict = AdminI18N[AdminStore.lang] || AdminI18N.hi;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) el.innerText = dict[key];
+      });
+
+      if (AdminStore.vendors && AdminStore.vendors.length) renderPendingVendors(AdminStore.vendors);
+      if (AdminStore.runners && AdminStore.runners.length) renderPendingRunners(AdminStore.runners);
+    }
 
     async function adminFetch(endpoint, options = {}) {
       const url = `${API_BASE}${endpoint}`;
@@ -548,20 +624,22 @@
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
+
+      let res;
       try {
-        const res = await fetch(url, { ...options, headers });
-        hideAdminOfflineBanner();
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({ detail: res.statusText }));
-          throw new Error(err.detail || `Server error: ${res.status}`);
-        }
-        return await res.json();
-      } catch (err) {
-        if (err.message && (err.message.includes('fetch') || err.message.includes('Network') || err.message.includes('Failed') || err.name === 'TypeError')) {
-          showAdminOfflineBanner();
-        }
-        throw err;
+        res = await fetch(url, { ...options, headers });
+      } catch (netErr) {
+        showAdminOfflineBanner();
+        throw netErr;
       }
+
+      hideAdminOfflineBanner();
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ detail: res.statusText }));
+        throw new Error(err.detail || `Server error: ${res.status}`);
+      }
+      return await res.json();
     }
 
     function showAdminOfflineBanner() {
@@ -574,11 +652,21 @@
       if (b) b.classList.add('hidden');
     }
 
+    async function checkAdminServerHeartbeat() {
+      try {
+        const res = await fetch(`${API_BASE}/health`, { method: 'GET', cache: 'no-cache' });
+        if (res.ok) hideAdminOfflineBanner();
+      } catch (_) {
+        showAdminOfflineBanner();
+      }
+    }
+
     async function initAdminApp() {
       const savedToken = localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_admin_token');
       if (savedToken) {
         AdminStore.token = savedToken;
       }
+      updateAdminLanguageUI();
       await refreshAdminData();
       if (AdminStore.pollTimer) clearInterval(AdminStore.pollTimer);
       AdminStore.pollTimer = setInterval(() => {
@@ -652,6 +740,7 @@
         return;
       }
 
+      const isHi = AdminStore.lang === 'hi';
       container.innerHTML = vendors.map(v => {
         const isPending = v.status === 'pending_approval';
         const isApproved = v.status === 'approved';
@@ -684,13 +773,13 @@
             <!-- Action Buttons -->
             <div class="flex items-center gap-2 pt-1">
               ${isPending ? `
-                <button id="btn-approve-vendor-${v.store_id}" onclick="handleApproveVendor('${v.store_id}')" class="flex-1 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-black flex items-center justify-center gap-1 shadow-md active:scale-95 transition-all">
+                <button id="btn-approve-vendor-${v.store_id}" data-action="approve" onclick="handleApproveVendor('${v.store_id}')" class="flex-1 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-black flex items-center justify-center gap-1 shadow-md active:scale-95 transition-all">
                   <span class="material-symbols-outlined text-[16px]">check</span>
-                  <span>स्वीकारें (Approve)</span>
+                  <span>${isHi ? 'स्वीकारें' : 'Approve'}</span>
                 </button>
-                <button id="btn-reject-vendor-${v.store_id}" onclick="handleRejectVendor('${v.store_id}')" class="flex-1 py-2.5 rounded-xl bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30 text-xs font-black flex items-center justify-center gap-1 active:scale-95 transition-all">
+                <button id="btn-reject-vendor-${v.store_id}" data-action="reject" onclick="handleRejectVendor('${v.store_id}')" class="flex-1 py-2.5 rounded-xl bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30 text-xs font-black flex items-center justify-center gap-1 active:scale-95 transition-all">
                   <span class="material-symbols-outlined text-[16px]">close</span>
-                  <span>अस्वीकार (Reject)</span>
+                  <span>${isHi ? 'अस्वीकार' : 'Reject'}</span>
                 </button>
               ` : `
                 <span class="text-xs font-bold text-slate-400 italic">Status: ${v.status}</span>
@@ -745,6 +834,7 @@
         return;
       }
 
+      const isHi = AdminStore.lang === 'hi';
       container.innerHTML = runners.map(r => {
         const isPending = r.status === 'pending_approval';
         const isApproved = r.status === 'approved';
@@ -777,13 +867,13 @@
             <!-- Action Buttons -->
             <div class="flex items-center gap-2 pt-1">
               ${isPending ? `
-                <button id="btn-approve-runner-${r.runner_id}" onclick="handleApproveRunner('${r.runner_id}')" class="flex-1 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-black flex items-center justify-center gap-1 shadow-md active:scale-95 transition-all">
+                <button id="btn-approve-runner-${r.runner_id}" data-action="approve" onclick="handleApproveRunner('${r.runner_id}')" class="flex-1 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-black flex items-center justify-center gap-1 shadow-md active:scale-95 transition-all">
                   <span class="material-symbols-outlined text-[16px]">check</span>
-                  <span>स्वीकारें (Approve)</span>
+                  <span>${isHi ? 'स्वीकारें' : 'Approve'}</span>
                 </button>
-                <button id="btn-reject-runner-${r.runner_id}" onclick="handleRejectRunner('${r.runner_id}')" class="flex-1 py-2.5 rounded-xl bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30 text-xs font-black flex items-center justify-center gap-1 active:scale-95 transition-all">
+                <button id="btn-reject-runner-${r.runner_id}" data-action="reject" onclick="handleRejectRunner('${r.runner_id}')" class="flex-1 py-2.5 rounded-xl bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30 text-xs font-black flex items-center justify-center gap-1 active:scale-95 transition-all">
                   <span class="material-symbols-outlined text-[16px]">close</span>
-                  <span>अस्वीकार (Reject)</span>
+                  <span>${isHi ? 'अस्वीकार' : 'Reject'}</span>
                 </button>
               ` : `
                 <span class="text-xs font-bold text-slate-400 italic">Status: ${r.status}</span>
@@ -909,18 +999,22 @@
             : "ml-1 text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full font-bold";
         }
 
+        const isHi = AdminStore.lang === 'hi';
         tbody.innerHTML = list.map(item => {
           const isVendor = item.entity_type === 'vendor';
           const roleBadge = isVendor 
-            ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">Vendor (दुकान)</span>`
-            : `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Runner (गाँव मित्र)</span>`;
+            ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">${isHi ? 'दुकानदार' : 'Vendor'}</span>`
+            : `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">${isHi ? 'गाँव मित्र' : 'Runner'}</span>`;
 
           const status = (item.verification_status || 'pending').toLowerCase();
-          let statusBadge = `<span class="px-2.5 py-1 rounded-full text-[11px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1 w-fit"><span class="material-symbols-outlined text-[13px]">hourglass_top</span><span>Pending</span></span>`;
+          const pendingLabel = isHi ? 'सत्यापन लंबित' : 'Pending';
+          const verifiedLabel = isHi ? 'सत्यापित' : 'Verified';
+          const rejectedLabel = isHi ? 'अस्वीकृत' : 'Rejected';
+          let statusBadge = `<span class="px-2.5 py-1 rounded-full text-[11px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1 w-fit"><span class="material-symbols-outlined text-[13px]">hourglass_top</span><span>${pendingLabel}</span></span>`;
           if (status === 'verified') {
-            statusBadge = `<span class="px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1 w-fit"><span class="material-symbols-outlined text-[13px]">verified</span><span>Verified</span></span>`;
+            statusBadge = `<span class="px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1 w-fit"><span class="material-symbols-outlined text-[13px]">verified</span><span>${verifiedLabel}</span></span>`;
           } else if (status === 'rejected') {
-            statusBadge = `<span class="px-2.5 py-1 rounded-full text-[11px] font-black bg-rose-500/20 text-rose-300 border border-rose-500/40 flex items-center gap-1 w-fit"><span class="material-symbols-outlined text-[13px]">cancel</span><span>Rejected</span></span>`;
+            statusBadge = `<span class="px-2.5 py-1 rounded-full text-[11px] font-black bg-rose-500/20 text-rose-300 border border-rose-500/40 flex items-center gap-1 w-fit"><span class="material-symbols-outlined text-[13px]">cancel</span><span>${rejectedLabel}</span></span>`;
           }
 
           return `
@@ -935,7 +1029,7 @@
                 </div>
               </td>
               <td class="py-3 px-3.5 font-bold text-slate-200">
-                ${item.account_holder_name || '<span class="text-slate-600 font-normal">Not Provided</span>'}
+                ${item.account_holder_name || '<span class="text-slate-600 font-normal">--</span>'}
               </td>
               <td class="py-3 px-3.5 font-mono text-slate-300">
                 ${item.account_number_masked || '<span class="text-slate-600 font-sans">--</span>'}
@@ -953,17 +1047,17 @@
                 <div class="flex items-center justify-end gap-1.5">
                   ${status !== 'verified' ? `
                     <button onclick="updatePayoutStatus('${item.entity_type}', '${item.entity_id}', 'verified')" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-black shadow-xs active:scale-95 transition-all">
-                      सत्यापित करें (Verify)
+                      ${isHi ? 'सत्यापित करें' : 'Verify'}
                     </button>
                   ` : ''}
                   ${status !== 'rejected' ? `
                     <button onclick="updatePayoutStatus('${item.entity_type}', '${item.entity_id}', 'rejected')" class="px-2.5 py-1 rounded-lg bg-red-600/80 hover:bg-red-500 text-white text-[11px] font-bold active:scale-95 transition-all">
-                      अस्वीकृत करें (Reject)
+                      ${isHi ? 'अस्वीकृत' : 'Reject'}
                     </button>
                   ` : ''}
                   ${status !== 'pending' ? `
-                    <button onclick="updatePayoutStatus('${item.entity_type}', '${item.entity_id}', 'pending')" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium border border-slate-700 active:scale-95 transition-all" title="Reset to Pending">
-                      लंबित (Reset)
+                    <button onclick="updatePayoutStatus('${item.entity_type}', '${item.entity_id}', 'pending')" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium border border-slate-700 active:scale-95 transition-all" title="Reset">
+                      ${isHi ? 'लंबित' : 'Reset'}
                     </button>
                   ` : ''}
                 </div>

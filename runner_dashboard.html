@@ -114,10 +114,10 @@
   <div id="runner-server-offline-banner" class="hidden sticky top-0 z-50 bg-red-600 text-white px-4 py-2 text-xs font-bold flex items-center justify-between shadow-md">
     <div class="flex items-center gap-2">
       <span class="material-symbols-outlined text-[18px]">wifi_off</span>
-      <span>सर्वर से संपर्क नहीं हो पा रहा है • Backend Server Offline (Port 8001)</span>
+      <span id="runner-offline-msg" data-i18n="server_offline_msg">सर्वर से संपर्क नहीं हो पा रहा है (पोर्ट 8001)</span>
     </div>
     <button onclick="fetchAllRunnerData(true)" class="px-2.5 py-1 bg-white text-red-700 rounded-lg text-[11px] font-black active:scale-95 transition-all">
-      पुनः प्रयास (Retry)
+      <span id="runner-offline-retry-btn" data-i18n="server_offline_retry">पुनः प्रयास</span>
     </button>
   </div>
 
@@ -201,37 +201,35 @@
   <header id="runner-header" class="hidden sticky top-0 z-40 shrink-0 bg-slate-950 border-b border-slate-800 shadow-lg px-3 py-2 sm:px-5">
     <div class="max-w-4xl mx-auto flex flex-col gap-1.5">
       
-      <!-- Row 1: Identity, Duty Shift Button, Language, Logout -->
+      <!-- Row 1: Identity, Duty Shift Button, Language, Logout (Mobile 360px Optimized) -->
       <div class="flex items-center justify-between gap-2">
-        <div class="flex items-center gap-2 min-w-0">
-          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center shrink-0">
-            <span class="material-symbols-outlined text-[20px] sm:text-[24px]">two_wheeler</span>
+        <div class="flex items-center gap-1.5 min-w-0">
+          <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[18px] sm:text-[22px]">two_wheeler</span>
           </div>
-          <div class="flex flex-col min-w-0">
-            <div class="flex items-center gap-1.5 flex-nowrap">
-              <span id="runner-name-display" class="text-xs sm:text-sm font-black text-white leading-tight shrink-0 whitespace-nowrap">कमल सिंह (Kamal)</span>
-              <span id="runner-badge-code" class="text-[9px] sm:text-[10px] font-mono font-bold bg-amber-400/20 text-amber-300 px-2 py-1 rounded-md border border-amber-400/30 shrink-0 min-h-[22px] flex items-center justify-center">#GM-RAMPUR-07</span>
-            </div>
+          <div class="flex flex-col min-w-0 justify-center">
+            <span id="runner-name-display" class="text-xs sm:text-sm font-black text-white leading-tight truncate max-w-[105px] sm:max-w-[180px]">कमल सिंह</span>
+            <span id="runner-badge-code" class="text-[9px] font-mono font-bold bg-amber-400/20 text-amber-300 px-2 py-0.5 rounded border border-amber-400/30 w-fit min-h-[20px] flex items-center justify-center mt-0.5 shrink-0">#GM-RAMPUR-07</span>
           </div>
         </div>
 
         <div class="flex items-center gap-1 sm:gap-2 shrink-0">
-          <!-- Duty Shift Online / Offline Toggle (min-h-[36px], guaranteed non-overlapping) -->
-          <button id="shift-toggle-btn" onclick="toggleRunnerShift()" class="px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1 border transition-all bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm active:scale-95 min-h-[36px]" title="ड्यूटी स्थिति बदलें (Shift Toggle)">
+          <!-- Duty Shift Online / Offline Toggle (guaranteed non-overlapping, min-h-[32px]) -->
+          <button id="shift-toggle-btn" onclick="toggleRunnerShift()" class="px-2 sm:px-2.5 py-1 rounded-lg sm:rounded-xl text-xs font-black flex items-center gap-1 border transition-all bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm active:scale-95 min-h-[32px] sm:min-h-[36px] shrink-0" title="Shift Toggle">
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" id="shift-indicator-dot"></span>
-            <span id="shift-status-label" class="hidden sm:inline">ड्यूटी चालू (Online)</span>
-            <span id="shift-status-mobile" class="sm:hidden text-[11px]">चालू</span>
+            <span id="shift-status-label" class="hidden sm:inline">ड्यूटी चालू</span>
+            <span id="shift-status-mobile" class="sm:hidden text-[11px] font-black">चालू</span>
           </button>
 
           <!-- Language Switcher Pill -->
-          <button id="lang-toggle-btn" onclick="toggleLanguage()" class="px-2 sm:px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-[11px] sm:text-xs font-bold flex items-center gap-1 min-h-[36px] active:scale-95" title="भाषा बदलें">
+          <button id="lang-toggle-btn" onclick="toggleLanguage()" class="px-2 sm:px-2.5 py-1 rounded-lg sm:rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-[11px] sm:text-xs font-bold flex items-center gap-1 min-h-[32px] sm:min-h-[36px] active:scale-95 shrink-0" title="Language">
             <span class="material-symbols-outlined text-[14px]">translate</span>
             <span id="current-lang-text">English</span>
           </button>
 
           <!-- Runner Logout CTA -->
-          <button id="btn-runner-logout" onclick="handleRunnerLogout()" title="लॉगआउट (Logout)" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-800/50 flex items-center justify-center transition-colors active:scale-95">
-            <span class="material-symbols-outlined text-[18px]">logout</span>
+          <button id="btn-runner-logout" onclick="handleRunnerLogout()" title="लॉगआउट" class="w-8 h-8 rounded-lg sm:rounded-xl bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-800/50 flex items-center justify-center transition-colors active:scale-95 shrink-0">
+            <span class="material-symbols-outlined text-[16px]">logout</span>
           </button>
         </div>
       </div>
@@ -660,54 +658,54 @@
     <section id="tab-settings" class="hidden flex-col gap-3.5">
       <div class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-md flex flex-col gap-4">
         
-        <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+        <div class="flex flex-wrap items-center justify-between gap-2.5 border-b border-slate-700 pb-3">
           <div class="flex items-center gap-2">
-            <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center">
+            <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center shrink-0">
               <span class="material-symbols-outlined text-[20px]">account_balance</span>
             </div>
             <div>
-              <h2 class="text-sm font-black text-white" data-i18n="runner_bank_title">बैंक खाता व UPI सेटिंग्स (Payout Settings)</h2>
+              <h2 class="text-sm font-black text-white" data-i18n="runner_bank_title">बैंक खाता व UPI सेटिंग्स</h2>
               <span class="text-[10px] text-slate-400 block" data-i18n="runner_bank_sub">डिलीवरी कमीशन (₹20/ऑर्डर) सीधे आपके बैंक में</span>
             </div>
           </div>
 
-          <span id="runner-bank-status-badge" class="px-2.5 py-1 rounded-full text-[11px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center gap-1">
+          <span id="runner-bank-status-badge" class="px-2.5 py-1 rounded-full text-[11px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center gap-1 shrink-0">
             <span class="material-symbols-outlined text-[13px]">hourglass_top</span>
-            <span>सत्यापन लंबित (Pending)</span>
+            <span data-i18n="bank_status_pending">सत्यापन लंबित</span>
           </span>
         </div>
 
-        <p class="text-xs text-slate-300 leading-relaxed">
+        <p class="text-xs text-slate-300 leading-relaxed" data-i18n="runner_bank_desc">
           गाँव मित्र डिलीवरी कमीशन की दैनिक निकासी Razorpay Route लिंक्ड बैंक खाते या UPI में स्थानांतरित की जाती है।
         </p>
 
         <!-- Form fields -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
           <div class="sm:col-span-2">
-            <label class="block text-slate-300 font-bold mb-1">खाताधारक का नाम (Account Holder Name) *</label>
+            <label class="block text-slate-300 font-bold mb-1" data-i18n="bank_lbl_name">खाताधारक का नाम *</label>
             <input type="text" id="runner-bank-account-name" placeholder="उदा. Kamal Singh" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-semibold focus:outline-none focus:border-primary"/>
           </div>
 
           <div>
-            <label class="block text-slate-300 font-bold mb-1">बैंक खाता संख्या (Account Number) *</label>
+            <label class="block text-slate-300 font-bold mb-1" data-i18n="bank_lbl_acc">बैंक खाता संख्या *</label>
             <input type="password" id="runner-bank-account-number" placeholder="9-18 अंकों की खाता संख्या" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono font-semibold focus:outline-none focus:border-primary" autocomplete="off"/>
           </div>
 
           <div>
-            <label class="block text-slate-300 font-bold mb-1">पुनः खाता संख्या दर्ज करें (Re-enter Account Number) *</label>
+            <label class="block text-slate-300 font-bold mb-1" data-i18n="bank_lbl_confirm">पुनः खाता संख्या दर्ज करें *</label>
             <input type="password" id="runner-bank-confirm-account-number" placeholder="खाता संख्या दोबारा दर्ज करें" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono font-semibold focus:outline-none focus:border-primary" autocomplete="off"/>
           </div>
 
           <div>
-            <label class="block text-slate-300 font-bold mb-1">बैंक IFSC कोड (IFSC Code) *</label>
+            <label class="block text-slate-300 font-bold mb-1" data-i18n="bank_lbl_ifsc">बैंक IFSC कोड *</label>
             <input type="text" id="runner-bank-ifsc" placeholder="उदा. PUNB0123400" maxlength="11" oninput="this.value = this.value.toUpperCase()" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono font-semibold uppercase focus:outline-none focus:border-primary"/>
-            <span class="text-[10px] text-slate-500 mt-0.5 block">11 अक्षर (4 अक्षर, 0, 6 अल्फ़ान्यूमेरिक)</span>
+            <span class="text-[10px] text-slate-500 mt-0.5 block" data-i18n="bank_hint_ifsc">11 अक्षर (4 अक्षर, 0, 6 अल्फ़ान्यूमेरिक)</span>
           </div>
 
           <div>
-            <label class="block text-slate-300 font-bold mb-1">UPI ID (VPA) *</label>
+            <label class="block text-slate-300 font-bold mb-1" data-i18n="bank_lbl_upi">UPI ID (VPA) *</label>
             <input type="text" id="runner-bank-upi" placeholder="उदा. kamal.singh@ybl" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono font-semibold focus:outline-none focus:border-primary"/>
-            <span class="text-[10px] text-slate-500 mt-0.5 block">तत्काल कमीशन क्रेडिट व सेटलमेंट हेतु</span>
+            <span class="text-[10px] text-slate-500 mt-0.5 block" data-i18n="bank_hint_upi">तत्काल कमीशन क्रेडिट व सेटलमेंट हेतु</span>
           </div>
         </div>
 
@@ -889,7 +887,7 @@
             <input type="text" id="reg-runner-name" placeholder="उदा. सोनू कुमार (Sonu Kumar)" value="Sonu Kumar (सोनू कुमार)" class="w-full px-3 py-2 text-xs font-semibold rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-primary outline-none" />
           </div>
           <div>
-            <label class="font-bold text-slate-300 block mb-1">क्लस्टर हब / कार्य क्षेत्र (Driving Area) *</label>
+            <label class="font-bold text-slate-300 block mb-1">क्लस्टर हब / कार्य क्षेत्र *</label>
             <input type="text" id="reg-runner-area" placeholder="उदा. Rampur Mandi Cluster" value="Rampur Mandi Cluster" class="w-full px-3 py-2 text-xs font-semibold rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-primary outline-none" />
           </div>
         </div>
@@ -897,16 +895,16 @@
         <!-- Vehicle Type & Vehicle Number -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <div>
-            <label class="font-bold text-slate-300 block mb-1">वाहन प्रकार (Vehicle Type) *</label>
+            <label class="font-bold text-slate-300 block mb-1">वाहन का प्रकार *</label>
             <select id="reg-runner-vehicle-type" class="w-full px-3 py-2 text-xs font-semibold rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-primary outline-none">
-              <option value="Motorcycle">मोटरसाइकिल (Motorcycle)</option>
-              <option value="Scooter">स्कूटर (Scooter)</option>
-              <option value="Bicycle">साइकिल (Bicycle)</option>
-              <option value="E-Rickshaw">ई-रिक्शा (E-Rickshaw)</option>
+              <option value="Motorcycle">मोटरसाइकिल</option>
+              <option value="Scooter">स्कूटर</option>
+              <option value="Bicycle">साइकिल</option>
+              <option value="E-Rickshaw">ई-रिक्शा</option>
             </select>
           </div>
           <div>
-            <label class="font-bold text-slate-300 block mb-1">वाहन नंबर (Vehicle Number) *</label>
+            <label class="font-bold text-slate-300 block mb-1">वाहन नंबर *</label>
             <input type="text" id="reg-runner-vehicle" placeholder="उदा. UP-14-BZ-3312" value="UP-14-BZ-3312" class="w-full px-3 py-2 text-xs font-mono font-bold rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-primary outline-none" />
           </div>
         </div>
@@ -916,26 +914,26 @@
           <div class="sm:col-span-1">
             <label class="font-bold text-slate-300 block mb-1">पहचान पत्र प्रकार *</label>
             <select id="reg-runner-id-type" class="w-full px-3 py-2 text-xs font-semibold rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-primary outline-none">
-              <option value="Aadhar">आधार कार्ड (Aadhar)</option>
-              <option value="Driving License">ड्राइविंग लाइसेंस (DL)</option>
-              <option value="Voter ID">वोटर कार्ड (Voter ID)</option>
+              <option value="Aadhar">आधार कार्ड</option>
+              <option value="Driving License">ड्राइविंग लाइसेंस</option>
+              <option value="Voter ID">वोटर कार्ड</option>
             </select>
           </div>
           <div class="sm:col-span-2">
-            <label class="font-bold text-slate-300 block mb-1">पहचान पत्र संख्या (ID Number) *</label>
+            <label class="font-bold text-slate-300 block mb-1">पहचान पत्र संख्या *</label>
             <input type="text" id="reg-runner-id" placeholder="उदा. 4433-2211-7788" value="4433-2211-7788" class="w-full px-3 py-2 text-xs font-mono font-bold rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-primary outline-none" />
           </div>
         </div>
 
         <!-- Selfie / Vehicle Photo URL -->
         <div>
-          <label class="font-bold text-slate-300 block mb-1">फोटो / सेल्फ़ी लिंक (Photo URL) *</label>
+          <label class="font-bold text-slate-300 block mb-1">फोटो / सेल्फ़ी लिंक *</label>
           <input type="url" id="reg-runner-photo" placeholder="https://..." value="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400" class="w-full px-3 py-2 text-xs font-mono rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-primary outline-none" />
         </div>
 
         <!-- Payout UPI ID -->
         <div>
-          <label class="font-bold text-slate-300 block mb-1">दैनिक डिलीवरी पारिश्रमिक UPI ID (Payout UPI ID) *</label>
+          <label class="font-bold text-slate-300 block mb-1">दैनिक डिलीवरी पारिश्रमिक UPI ID *</label>
           <input type="text" id="reg-runner-upi" placeholder="उदा. sonu.kumar@paytm" value="sonu.kumar@paytm" class="w-full px-3 py-2 text-xs font-mono font-bold rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-primary outline-none" />
           <span class="text-[10px] text-slate-400 mt-0.5 block">प्रत्येक सफल डिलीवरी का ₹20 पारिश्रमिक सीधे इस UPI में अंतरित होगा।</span>
         </div>
@@ -944,11 +942,11 @@
       <!-- Submit CTA Button -->
       <div class="pt-2 border-t border-slate-800 flex items-center justify-end gap-2">
         <button type="button" onclick="closeRunnerRegisterModal()" class="px-4 py-2 rounded-xl border border-slate-700 text-slate-300 text-xs font-bold hover:bg-slate-800 transition-colors">
-          रद्द करें (Cancel)
+          रद्द करें
         </button>
         <button type="button" id="btn-submit-runner-register" onclick="submitRunnerRegistration()" class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-black shadow-md active:scale-95 transition-all flex items-center gap-1.5">
           <span class="material-symbols-outlined text-[18px]">send</span>
-          <span>सत्यापन हेतु भेजें (Submit KYC)</span>
+          <span>सत्यापन हेतु भेजें</span>
         </button>
       </div>
     </div>
@@ -979,6 +977,12 @@
     // Translations Dictionary
     const I18N = {
       hi: {
+        server_offline_msg: "सर्वर से संपर्क नहीं हो पा रहा है (पोर्ट 8001)",
+        server_offline_retry: "पुनः प्रयास",
+        shift_online: "ड्यूटी चालू",
+        shift_offline: "ड्यूटी बंद",
+        shift_online_short: "चालू",
+        shift_offline_short: "बंद",
         kpi_active_missions: "सक्रिय मिशन",
         kpi_pickup_pending: "पिकअप व रास्ते में",
         kpi_delivered_today: "सफल डिलीवरी",
@@ -1001,10 +1005,29 @@
         tab_missions: "मिशन",
         tab_detail: "लैंडमार्क",
         tab_ledger: "बहीखाता",
+        tab_settings: "बैंक खाता",
+        runner_bank_title: "बैंक खाता व UPI सेटिंग्स",
+        runner_bank_sub: "डिलीवरी कमीशन (₹20/ऑर्डर) सीधे आपके बैंक में",
+        runner_bank_desc: "गाँव मित्र डिलीवरी कमीशन की दैनिक निकासी Razorpay Route लिंक्ड बैंक खाते या UPI में स्थानांतरित की जाती है।",
+        bank_status_pending: "सत्यापन लंबित",
+        bank_status_verified: "सत्यापित",
+        bank_lbl_name: "खाताधारक का नाम *",
+        bank_lbl_acc: "बैंक खाता संख्या *",
+        bank_lbl_confirm: "पुनः खाता संख्या दर्ज करें *",
+        bank_lbl_ifsc: "बैंक IFSC कोड *",
+        bank_hint_ifsc: "11 अक्षर (4 अक्षर, 0, 6 अल्फ़ान्यूमेरिक)",
+        bank_lbl_upi: "UPI ID (VPA) *",
+        bank_hint_upi: "तत्काल कमीशन क्रेडिट व सेटलमेंट हेतु",
         modal_success_title: "सफल डिलीवरी!",
         btn_login_submit: "लॉगिन करके ड्यूटी शुरू करें"
       },
       en: {
+        server_offline_msg: "Backend Server Offline (Port 8001)",
+        server_offline_retry: "Retry",
+        shift_online: "Duty Online",
+        shift_offline: "Duty Offline",
+        shift_online_short: "Online",
+        shift_offline_short: "Offline",
         kpi_active_missions: "Active Missions",
         kpi_pickup_pending: "Pickup & In-Transit",
         kpi_delivered_today: "Delivered Today",
@@ -1027,6 +1050,19 @@
         tab_missions: "Missions",
         tab_detail: "Landmark",
         tab_ledger: "Ledger",
+        tab_settings: "Bank & UPI",
+        runner_bank_title: "Bank Account & UPI Settings",
+        runner_bank_sub: "Delivery commission (₹20/order) directly into your bank",
+        runner_bank_desc: "Daily Gaon Mitra delivery payout settlement is routed to your verified linked bank or UPI ID.",
+        bank_status_pending: "Pending Verification",
+        bank_status_verified: "Verified",
+        bank_lbl_name: "Account Holder Full Name *",
+        bank_lbl_acc: "Bank Account Number *",
+        bank_lbl_confirm: "Re-enter Account Number *",
+        bank_lbl_ifsc: "Bank IFSC Code *",
+        bank_hint_ifsc: "11 characters (4 letters, 0, 6 alphanumeric)",
+        bank_lbl_upi: "UPI ID (VPA) *",
+        bank_hint_upi: "For instant commission credit and settlement",
         modal_success_title: "Delivery Completed!",
         btn_login_submit: "Login to Shift"
       }
@@ -1085,7 +1121,7 @@
       if (RunnerStore.audioEnabled) playChime('alert');
     }
 
-    // --- 9.3 API CLIENT WRAPPER ---
+    // --- 9.3 API CLIENT WRAPPER (Network-Accurate Heartbeat & Zero False Positives) ---
     async function runnerApiFetch(endpoint, options = {}) {
       const url = `${API_BASE}${endpoint}`;
       const headers = {
@@ -1096,20 +1132,24 @@
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
+
+      let res;
       try {
-        const res = await fetch(url, { ...options, headers });
-        hideRunnerOfflineBanner();
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({ detail: res.statusText }));
-          throw new Error(err.detail || `Server error: ${res.status}`);
-        }
-        return await res.json();
-      } catch (err) {
-        if (err.message && (err.message.includes('fetch') || err.message.includes('Network') || err.message.includes('Failed') || err.name === 'TypeError')) {
-          showRunnerOfflineBanner();
-        }
-        throw err;
+        res = await fetch(url, { ...options, headers });
+      } catch (netErr) {
+        // True network disconnection
+        showRunnerOfflineBanner();
+        throw netErr;
       }
+
+      // Successful network response from server
+      hideRunnerOfflineBanner();
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ detail: res.statusText }));
+        throw new Error(err.detail || `Server error: ${res.status}`);
+      }
+      return await res.json();
     }
 
     function showRunnerOfflineBanner() {
@@ -1120,6 +1160,15 @@
     function hideRunnerOfflineBanner() {
       const b = document.getElementById('runner-server-offline-banner');
       if (b) b.classList.add('hidden');
+    }
+
+    async function checkRunnerServerHeartbeat() {
+      try {
+        const res = await fetch(`${API_BASE}/health`, { method: 'GET', cache: 'no-cache' });
+        if (res.ok) hideRunnerOfflineBanner();
+      } catch (_) {
+        showRunnerOfflineBanner();
+      }
     }
 
     // --- 9.32 RUNNER AUTHENTICATION GATE HANDLERS ---
@@ -1586,18 +1635,19 @@
       const shiftDot = document.getElementById('shift-indicator-dot');
       const shiftLabel = document.getElementById('shift-status-label');
       const shiftMobile = document.getElementById('shift-status-mobile');
+      const isHi = RunnerStore.lang === 'hi';
 
       if (shiftBtn && shiftDot) {
         if (RunnerStore.isOnline) {
-          shiftBtn.className = "px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-black flex items-center gap-1 sm:gap-1.5 border transition-all bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm active:scale-95";
-          shiftDot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse";
-          if (shiftLabel) shiftLabel.innerText = "ड्यूटी चालू (Online)";
-          if (shiftMobile) shiftMobile.innerText = "चालू";
+          shiftBtn.className = "px-2 sm:px-2.5 py-1 rounded-lg sm:rounded-xl text-xs font-black flex items-center gap-1 border transition-all bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm active:scale-95 min-h-[32px] sm:min-h-[36px] shrink-0";
+          shiftDot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
+          if (shiftLabel) shiftLabel.innerText = isHi ? "ड्यूटी चालू" : "Duty Online";
+          if (shiftMobile) shiftMobile.innerText = isHi ? "चालू" : "Online";
         } else {
-          shiftBtn.className = "px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-black flex items-center gap-1 sm:gap-1.5 border transition-all bg-slate-800 text-slate-400 border-slate-700 shadow-sm active:scale-95";
-          shiftDot.className = "w-2.5 h-2.5 rounded-full bg-slate-500";
-          if (shiftLabel) shiftLabel.innerText = "ड्यूटी बंद (Offline)";
-          if (shiftMobile) shiftMobile.innerText = "बंद";
+          shiftBtn.className = "px-2 sm:px-2.5 py-1 rounded-lg sm:rounded-xl text-xs font-black flex items-center gap-1 border transition-all bg-slate-800 text-slate-400 border-slate-700 shadow-sm active:scale-95 min-h-[32px] sm:min-h-[36px] shrink-0";
+          shiftDot.className = "w-2 h-2 rounded-full bg-slate-500";
+          if (shiftLabel) shiftLabel.innerText = isHi ? "ड्यूटी बंद" : "Duty Offline";
+          if (shiftMobile) shiftMobile.innerText = isHi ? "बंद" : "Offline";
         }
       }
 
@@ -1619,6 +1669,7 @@
     // --- 9.6 SHIFT TOGGLE HANDLER ---
     async function toggleRunnerShift() {
       const nextStatus = !RunnerStore.isOnline;
+      const isHi = RunnerStore.lang === 'hi';
       try {
         const res = await runnerApiFetch('/runner/shift', {
           method: 'POST',
@@ -1631,8 +1682,8 @@
         RunnerStore.isOnline = res.is_online;
         updateHeaderAndKPISummary();
         showToast(
-          RunnerStore.isOnline ? 'ड्यूटी चालू (Online)' : 'ड्यूटी बंद (Offline)',
-          RunnerStore.isOnline ? 'अब आपको नए मिशन की सूचनाएँ प्राप्त होंगी' : 'शिफ्ट समाप्त • मिशन अलर्ट बंद'
+          RunnerStore.isOnline ? (isHi ? 'ड्यूटी चालू' : 'Duty Online') : (isHi ? 'ड्यूटी बंद' : 'Duty Offline'),
+          RunnerStore.isOnline ? (isHi ? 'अब आपको नए मिशन की सूचनाएँ प्राप्त होंगी' : 'Now receiving new mission alerts') : (isHi ? 'शिफ्ट समाप्त • मिशन अलर्ट बंद' : 'Shift ended • Mission alerts off')
         );
       } catch (e) {
         // Fallback optimistic toggle
@@ -2114,15 +2165,16 @@
 
         if (badge) {
           const status = (data.verification_status || 'pending').toLowerCase();
+          const isHi = RunnerStore.lang === 'hi';
           if (status === 'verified') {
-            badge.className = "px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1";
-            badge.innerHTML = `<span class="material-symbols-outlined text-[13px]">verified</span><span>सत्यापित खाता (Verified)</span>`;
+            badge.className = "px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1 shrink-0";
+            badge.innerHTML = `<span class="material-symbols-outlined text-[13px]">verified</span><span>${isHi ? 'सत्यापित' : 'Verified'}</span>`;
           } else if (status === 'rejected') {
-            badge.className = "px-2.5 py-1 rounded-full text-[11px] font-black bg-rose-500/20 text-rose-300 border border-rose-500/40 flex items-center gap-1";
-            badge.innerHTML = `<span class="material-symbols-outlined text-[13px]">cancel</span><span>अस्वीकृत (Rejected)</span>`;
+            badge.className = "px-2.5 py-1 rounded-full text-[11px] font-black bg-rose-500/20 text-rose-300 border border-rose-500/40 flex items-center gap-1 shrink-0";
+            badge.innerHTML = `<span class="material-symbols-outlined text-[13px]">cancel</span><span>${isHi ? 'अस्वीकृत' : 'Rejected'}</span>`;
           } else {
-            badge.className = "px-2.5 py-1 rounded-full text-[11px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center gap-1";
-            badge.innerHTML = `<span class="material-symbols-outlined text-[13px]">hourglass_top</span><span>सत्यापन लंबित (Pending)</span>`;
+            badge.className = "px-2.5 py-1 rounded-full text-[11px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center gap-1 shrink-0";
+            badge.innerHTML = `<span class="material-symbols-outlined text-[13px]">hourglass_top</span><span>${isHi ? 'सत्यापन लंबित' : 'Pending Verification'}</span>`;
           }
         }
 
