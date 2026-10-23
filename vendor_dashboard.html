@@ -913,7 +913,14 @@
   <!-- ========================================================================= -->
   <script>
     // --- 9.1 CONSTANTS & APPLICATION STATE ---
-    const API_BASE = window.GAONBAZAAR_API_BASE || 'http://127.0.0.1:8001/api';
+    // ============================================================================
+    // LIVE BACKEND CONFIGURATION
+    // Paste your deployed Render/Production API URL below (e.g. 'https://gaonbazar.onrender.com/api').
+    // If empty, automatically falls back to current origin or local dev (http://127.0.0.1:8001/api).
+    // Can also be set in browser console: localStorage.setItem('gaonbazar_api_base', 'https://...');
+    // ============================================================================
+    const LIVE_API_URL = ''; // <-- PASTE LIVE RENDER BACKEND URL HERE
+    const API_BASE = window.GAONBAZAAR_API_BASE || localStorage.getItem('gaonbazar_api_base') || (LIVE_API_URL ? LIVE_API_URL.replace(/\/+$/, '') : (window.location && window.location.protocol.startsWith('http') && !window.location.host.includes('localhost') && !window.location.host.includes('127.0.0.1') ? (window.location.origin + '/api') : 'http://127.0.0.1:8001/api'));
     
     const VendorStore = {
       currentStoreId: 'sharma_brothers',

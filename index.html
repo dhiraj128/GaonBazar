@@ -93,8 +93,11 @@
       padding: 0;
       overflow-x: hidden;
       background-color: #f9f9ff;
+      overscroll-behavior: none;
+      overscroll-behavior-y: none;
     }
     body {
+      overscroll-behavior: none;
       overscroll-behavior-y: none;
       font-family: 'Plus Jakarta Sans', 'Noto Sans Devanagari', sans-serif;
     }
@@ -103,6 +106,8 @@
       height: 100dvh;
       max-height: 100dvh;
       min-height: 100dvh;
+      overscroll-behavior: none;
+      overscroll-behavior-y: none;
     }
     .pb-safe {
       padding-bottom: max(env(safe-area-inset-bottom, 16px), 16px);
@@ -135,7 +140,8 @@
       min-height: 0;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      overscroll-behavior-y: contain;
+      overscroll-behavior: none;
+      overscroll-behavior-y: none;
     }
     /* Stepper and active button tactile feedback */
     .btn-tactile:active {
@@ -163,29 +169,19 @@
   <!-- ========================================================================= -->
   <div id="app-root" class="w-full h-[100dvh] max-h-[100dvh] flex flex-col bg-surface relative overflow-hidden">
 
-    <!-- Top Hardware Status Bar -->
-    <div class="w-full bg-surface/95 backdrop-blur pt-1.5 px-4 flex items-center justify-between text-xs font-semibold text-on-surface-variant z-50 select-none border-b border-surface-container/50">
-      <span id="device-clock" class="tracking-tight font-bold text-[13px]">9:41</span>
-      <div class="flex items-center gap-1.5">
-        <span class="material-symbols-outlined text-[15px]">signal_cellular_4_bar</span>
-        <span class="text-[10px] font-bold text-primary">5G</span>
-        <span class="material-symbols-outlined text-[15px]">battery_full</span>
-      </div>
-    </div>
-
     <!-- App Global Sticky Header -->
-    <header class="w-full bg-surface/95 backdrop-blur-md border-b border-surface-container-high px-4 py-2 flex items-center justify-between gap-1.5 z-40">
-      <div class="flex items-center gap-1.5 min-w-0">
+    <header class="w-full bg-surface/95 backdrop-blur-md border-b border-surface-container-high px-4 py-2.5 flex items-center justify-between gap-2 z-40 pt-safe">
+      <div class="flex items-center gap-2 min-w-0">
         <!-- Back Navigation Button -->
         <button id="global-nav-back" onclick="navigateBack()" aria-label="Go Back" class="hidden w-8 h-8 -ml-1 rounded-full text-on-surface hover:bg-surface-container active:scale-90 transition-all flex items-center justify-center shrink-0">
           <span class="material-symbols-outlined text-[22px]">arrow_back</span>
         </button>
         <!-- Logo (Strictly "GaonBazaar" only, no bilingual tagline) -->
-        <div class="flex items-center gap-1.5 min-w-0 shrink">
+        <div class="flex items-center gap-2 min-w-0 shrink">
           <div class="w-8 h-8 rounded-xl bg-primary flex items-center justify-center text-white shadow-sm shrink-0">
             <span class="material-symbols-outlined text-[18px]">storefront</span>
           </div>
-          <span class="font-bold text-[15px] text-primary tracking-tight font-sans truncate">GaonBazaar</span>
+          <span class="font-bold text-base text-primary tracking-tight font-sans truncate">GaonBazaar</span>
           <span id="header-subtitle" class="hidden"></span>
         </div>
       </div>
@@ -331,7 +327,7 @@
             onclick="submitPhoneLogin()" 
             disabled 
             type="button" 
-            class="w-full h-[54px] rounded-xl bg-primary text-white text-base font-bold shadow-md flex items-center justify-center gap-2 opacity-50 cursor-not-allowed active:scale-[0.98] transition-all"
+            class="w-full min-h-[52px] py-3.5 px-6 rounded-2xl bg-primary hover:bg-primary/90 text-white text-base font-bold shadow-lg flex items-center justify-center gap-2 opacity-50 cursor-not-allowed active:scale-[0.98] transition-all"
           >
             <span class="material-symbols-outlined text-[20px]">send_to_mobile</span>
             <span id="p1-send-otp-text" data-i18n="p1_send_otp_btn">OTP भेजें</span>
@@ -421,7 +417,7 @@
           </div>
         </div>
 
-        <button id="p1-verify-otp-btn" onclick="submitVerifyOtp()" class="w-full h-[54px] rounded-xl bg-secondary text-white text-base font-bold shadow-md flex items-center justify-center gap-2 active:scale-98 transition-all">
+        <button id="p1-verify-otp-btn" onclick="submitVerifyOtp()" class="w-full min-h-[52px] py-3.5 px-6 rounded-2xl bg-secondary hover:bg-secondary/90 text-white text-base font-bold shadow-lg flex items-center justify-center gap-2 active:scale-98 transition-all">
           <span data-i18n="p1_otp_verify_btn">सत्यापित करें और आगे बढ़ें</span>
           <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
         </button>
@@ -2111,7 +2107,14 @@
     window.AppStore = AppStore;
 
     // --- 3.1 REAL FASTAPI BACKEND API CLIENT ---
-    const API_BASE = window.GAONBAZAAR_API_BASE || (window.location && window.location.protocol.startsWith('http') ? (window.location.origin + '/api') : 'http://127.0.0.1:8001/api');
+    // ============================================================================
+    // LIVE BACKEND CONFIGURATION
+    // Paste your deployed Render/Production API URL below (e.g. 'https://gaonbazar.onrender.com/api').
+    // If empty, automatically falls back to current origin or local dev (http://127.0.0.1:8001/api).
+    // Can also be set in browser console: localStorage.setItem('gaonbazar_api_base', 'https://...');
+    // ============================================================================
+    const LIVE_API_URL = ''; // <-- PASTE LIVE RENDER BACKEND URL HERE
+    const API_BASE = window.GAONBAZAAR_API_BASE || localStorage.getItem('gaonbazar_api_base') || (LIVE_API_URL ? LIVE_API_URL.replace(/\/+$/, '') : (window.location && window.location.protocol.startsWith('http') && !window.location.host.includes('localhost') && !window.location.host.includes('127.0.0.1') ? (window.location.origin + '/api') : 'http://127.0.0.1:8001/api'));
 
     async function apiFetch(endpoint, options = {}) {
       const url = `${API_BASE}${endpoint}`;
@@ -3326,76 +3329,106 @@
     window.selectCategory = selectCategory;
 
     let activeVoiceRecognition = null;
+
+    function resetVoiceSearchUI() {
+      const voiceBtn = document.getElementById('p2-voice-search-btn');
+      const voiceText = document.getElementById('p2-voice-search-text');
+      const voiceIcon = document.getElementById('p2-voice-search-icon');
+      const searchInput = document.getElementById('p2-search-input');
+      const isHi = AppStore.lang === 'hi';
+
+      if (voiceBtn) {
+        voiceBtn.classList.remove('bg-red-600', 'animate-pulse');
+        voiceBtn.classList.add('bg-secondary');
+      }
+      if (voiceIcon) {
+        voiceIcon.innerText = 'mic';
+      }
+      if (voiceText) {
+        voiceText.innerText = isHi ? 'बोल कर खोजें' : 'Voice Search';
+      }
+      if (searchInput && (searchInput.placeholder.includes('...') || searchInput.placeholder.includes('बोलिए') || searchInput.placeholder.includes('Listening'))) {
+        searchInput.placeholder = isHi ? 'किराना, दवाई, बीज खोजें...' : 'Search Kirana, medicine, seeds...';
+      }
+      activeVoiceRecognition = null;
+    }
+
     function triggerVoiceSearch() {
+      // 1. Use webkitSpeechRecognition or SpeechRecognition
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       const voiceBtn = document.getElementById('p2-voice-search-btn');
       const voiceText = document.getElementById('p2-voice-search-text');
+      const voiceIcon = document.getElementById('p2-voice-search-icon');
       const searchInput = document.getElementById('p2-search-input');
+      const isHi = AppStore.lang === 'hi';
 
       if (!SpeechRecognition) {
         if (searchInput) {
-          searchInput.placeholder = (AppStore.lang === 'hi') ? 'माइक उपलब्ध नहीं - यहाँ लिखें...' : 'Mic not supported - Type here...';
+          searchInput.placeholder = isHi ? 'माइक समर्थित नहीं - यहाँ टाइप करें...' : 'Mic not supported - Type here...';
           searchInput.focus();
         }
         return;
       }
 
+      // If active recognition is running, allow clicking to cancel
       if (activeVoiceRecognition) {
         try { activeVoiceRecognition.stop(); } catch (e) {}
-        activeVoiceRecognition = null;
+        resetVoiceSearchUI();
         return;
       }
 
       try {
         const recognition = new SpeechRecognition();
         activeVoiceRecognition = recognition;
-        recognition.lang = (AppStore.lang === 'hi') ? 'hi-IN' : 'en-IN';
+
+        // 2. Set continuous = false so it stops automatically after one phrase
+        recognition.continuous = false;
         recognition.interimResults = false;
         recognition.maxAlternatives = 1;
 
+        // 3. Set recognition.lang = 'hi-IN' to properly understand Hindi & English mixed rural words (Chawal, Aata, etc.)
+        recognition.lang = 'hi-IN';
+
+        // Update button UI to "Listening..." state
         if (voiceBtn) {
           voiceBtn.classList.remove('bg-secondary');
           voiceBtn.classList.add('bg-red-600', 'animate-pulse');
         }
+        if (voiceIcon) {
+          voiceIcon.innerText = 'graphic_eq';
+        }
         if (voiceText) {
-          voiceText.innerText = (AppStore.lang === 'hi') ? 'सुन रहे हैं...' : 'Listening...';
+          voiceText.innerText = isHi ? 'सुन रहे हैं...' : 'Listening...';
         }
         if (searchInput) {
-          searchInput.placeholder = (AppStore.lang === 'hi') ? 'बोलिए, हम सुन रहे हैं...' : 'Speak now, listening...';
+          searchInput.placeholder = isHi ? 'बोलिए (उदा. आटा, चावल)...' : 'Listening (e.g. Aata, Chawal)...';
         }
 
+        // 4. In onresult, capture transcript, put in input, and automatically trigger product search
         recognition.onresult = (event) => {
           if (event.results && event.results[0] && event.results[0][0]) {
-            const transcript = event.results[0][0].transcript;
+            const transcript = event.results[0][0].transcript.trim();
             if (searchInput) {
               searchInput.value = transcript;
-              filterStoreCatalog(transcript);
             }
+            filterStoreCatalog(transcript);
           }
         };
 
+        // 5. In onend and onerror, strictly reset the button UI back to normal mic icon
         recognition.onerror = (event) => {
           console.warn('SpeechRecognition error:', event.error);
+          resetVoiceSearchUI();
         };
 
         recognition.onend = () => {
-          activeVoiceRecognition = null;
-          if (voiceBtn) {
-            voiceBtn.classList.remove('bg-red-600', 'animate-pulse');
-            voiceBtn.classList.add('bg-secondary');
-          }
-          if (voiceText) {
-            voiceText.innerText = (AppStore.lang === 'hi') ? 'बोल कर खोजें' : 'Voice Search';
-          }
-          if (searchInput) {
-            searchInput.placeholder = (AppStore.lang === 'hi') ? 'किराना, दवाई, बीज खोजें...' : 'Search Kirana, medicine, seeds...';
-          }
+          resetVoiceSearchUI();
         };
 
         recognition.start();
       } catch (err) {
         console.warn('SpeechRecognition start failed:', err);
-        activeVoiceRecognition = null;
+        resetVoiceSearchUI();
         if (searchInput) searchInput.focus();
       }
     }
@@ -3443,8 +3476,10 @@
         return nameHi.includes(q) || nameEn.includes(q) || cat.includes(q) ||
                (q.includes('sugar') && (nameEn.includes('sugar') || nameHi.includes('चीनी'))) ||
                (q.includes('चीनी') && (nameEn.includes('sugar') || nameHi.includes('चीनी'))) ||
-               (q.includes('atta') && (nameEn.includes('atta') || nameHi.includes('आटा'))) ||
-               (q.includes('आटा') && (nameEn.includes('atta') || nameHi.includes('आटा')));
+               ((q.includes('atta') || q.includes('aata')) && (nameEn.includes('atta') || nameHi.includes('आटा') || nameEn.includes('flour'))) ||
+               (q.includes('आटा') && (nameEn.includes('atta') || nameHi.includes('आटा') || nameEn.includes('flour'))) ||
+               ((q.includes('chawal') || q.includes('rice')) && (nameEn.includes('rice') || nameHi.includes('चावल'))) ||
+               (q.includes('चावल') && (nameEn.includes('rice') || nameHi.includes('चावल')));
       });
 
       // 2. Identify stores that sell these products or match the query directly
