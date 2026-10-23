@@ -156,7 +156,7 @@
     <!-- ======================================================================= -->
     <!-- 2. GLOBAL ECOSYSTEM METRICS RIBBON                                      -->
     <!-- ======================================================================= -->
-    <section class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+    <section class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6 shrink-0 relative">
       
       <!-- Metric 1: Total GMV -->
       <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 flex flex-col justify-between">
@@ -223,7 +223,7 @@
     <!-- ======================================================================= -->
     <!-- 3. MAIN NAVIGATION TABS (Super Admin Controls - Mobile-First Scrollable) -->
     <!-- ======================================================================= -->
-    <div class="flex items-center gap-2 border-b border-slate-800 pb-2 overflow-x-auto no-scrollbar">
+    <div class="flex items-center gap-2 border-b border-slate-800 pb-3 mb-6 overflow-x-auto no-scrollbar shrink-0 relative">
       
       <!-- Tab 1: Vendor KYC Queue -->
       <button id="admin-tab-btn-vendors" onclick="switchTab('vendors')" class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-slate-800 text-white border border-slate-600 shadow-sm transition-all whitespace-nowrap shrink-0 min-h-[38px]">
@@ -269,7 +269,7 @@
     <!-- ======================================================================= -->
     <!-- 9. TAB 6: BANK & PAYOUT KYC VERIFICATION QUEUE                          -->
     <!-- ======================================================================= -->
-    <section id="tab-bank" class="hidden flex-col gap-4">
+    <section id="tab-bank" class="hidden mt-10 shrink-0 flex-col gap-6 p-4 sm:p-6 bg-slate-900/60 rounded-3xl border border-slate-800/80 shadow-lg" style="margin-top: 40px;">
       <div class="flex flex-wrap items-center justify-between gap-2.5">
         <div>
           <h2 class="text-sm sm:text-base font-black text-white flex items-center gap-2">
@@ -315,32 +315,32 @@
     <!-- ======================================================================= -->
     <!-- 4. TAB 1: VENDOR KYC APPROVAL QUEUE                                     -->
     <!-- ======================================================================= -->
-    <section id="tab-vendors" class="flex flex-col gap-4">
+    <section id="tab-vendors" class="mt-10 shrink-0 flex flex-col gap-6 p-4 sm:p-6 bg-slate-900/60 rounded-3xl border border-slate-800/80 shadow-lg" style="margin-top: 40px;">
       
-      <div class="flex flex-wrap items-center justify-between gap-2.5">
-        <div>
-          <h2 class="text-sm sm:text-base font-black text-white flex items-center gap-2">
-            <span class="material-symbols-outlined text-slate-400 text-[20px]">storefront</span>
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-slate-800/70">
+        <div class="flex flex-col gap-1">
+          <h2 class="text-sm sm:text-base font-black text-white flex items-center gap-2.5">
+            <span class="material-symbols-outlined text-slate-400 text-[22px]">storefront</span>
             <span data-i18n="vendor_queue_title">दुकानदार सत्यापन कतार</span>
           </h2>
-          <p class="text-xs text-slate-400" data-i18n="vendor_queue_sub">दुकान का विवरण और केवाईसी जांचें।</p>
+          <p class="text-xs text-slate-400 mt-0.5" data-i18n="vendor_queue_sub">दुकान का विवरण और केवाईसी जांचें।</p>
         </div>
 
-        <div class="flex items-center gap-2">
-          <button onclick="fetchPendingVendors('pending_approval')" class="px-3 py-1 rounded-xl text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+        <div class="flex items-center gap-2.5 shrink-0 pt-1 sm:pt-0">
+          <button onclick="fetchPendingVendors('pending_approval')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 hover:bg-amber-500/30 active:scale-95 transition-all">
             <span data-i18n="pending_only">केवल लंबित</span>
           </button>
-          <button onclick="fetchPendingVendors('all')" class="px-3 py-1 rounded-xl text-xs font-bold bg-slate-800 text-slate-400 hover:text-slate-200">
+          <button onclick="fetchPendingVendors('all')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:text-white border border-slate-700 active:scale-95 transition-all">
             <span data-i18n="all_records">सभी रिकॉर्ड</span>
           </button>
         </div>
       </div>
 
       <!-- Pending Vendors Cards / Grid Container (Horizontal scroll on narrow viewports) -->
-      <div class="overflow-x-auto pb-3 w-full">
-        <div id="vendors-approval-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 w-full min-w-0">
+      <div class="overflow-x-auto pb-4 w-full">
+        <div id="vendors-approval-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full min-w-0">
           <!-- Rendered dynamically -->
-          <div class="col-span-full bg-slate-900 rounded-3xl p-8 border border-slate-800 text-center text-slate-400 text-xs">
+          <div class="col-span-full bg-slate-900 rounded-3xl p-8 sm:p-10 border border-slate-800 text-center text-slate-400 text-xs flex flex-col items-center justify-center gap-2">
             Loading vendor applications...
           </div>
         </div>
@@ -351,32 +351,32 @@
     <!-- ======================================================================= -->
     <!-- 5. TAB 2: RUNNER KYC APPROVAL QUEUE                                     -->
     <!-- ======================================================================= -->
-    <section id="tab-runners" class="hidden flex-col gap-4">
+    <section id="tab-runners" class="hidden mt-10 shrink-0 flex-col gap-6 p-4 sm:p-6 bg-slate-900/60 rounded-3xl border border-slate-800/80 shadow-lg" style="margin-top: 40px;">
       
-      <div class="flex flex-wrap items-center justify-between gap-2.5">
-        <div>
-          <h2 class="text-sm sm:text-base font-black text-white flex items-center gap-2">
-            <span class="material-symbols-outlined text-amber-400">two_wheeler</span>
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-slate-800/70">
+        <div class="flex flex-col gap-1">
+          <h2 class="text-sm sm:text-base font-black text-white flex items-center gap-2.5">
+            <span class="material-symbols-outlined text-amber-400 text-[22px]">two_wheeler</span>
             <span data-i18n="runner_queue_title">गाँव मित्र सत्यापन कतार</span>
           </h2>
-          <p class="text-xs text-slate-400" data-i18n="runner_queue_sub">गाँव मित्र डिलीवरी पार्टनर और वाहन विवरण जांचें।</p>
+          <p class="text-xs text-slate-400 mt-0.5" data-i18n="runner_queue_sub">गाँव मित्र डिलीवरी पार्टनर और वाहन विवरण जांचें।</p>
         </div>
 
-        <div class="flex items-center gap-2">
-          <button onclick="fetchPendingRunners('pending_approval')" class="px-3 py-1 rounded-xl text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+        <div class="flex items-center gap-2.5 shrink-0 pt-1 sm:pt-0">
+          <button onclick="fetchPendingRunners('pending_approval')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 hover:bg-amber-500/30 active:scale-95 transition-all">
             <span data-i18n="pending_only">केवल लंबित</span>
           </button>
-          <button onclick="fetchPendingRunners('all')" class="px-3 py-1 rounded-xl text-xs font-bold bg-slate-800 text-slate-400 hover:text-slate-200">
+          <button onclick="fetchPendingRunners('all')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:text-white border border-slate-700 active:scale-95 transition-all">
             <span data-i18n="all_records">सभी रिकॉर्ड</span>
           </button>
         </div>
       </div>
 
       <!-- Pending Runners Cards / Grid Container (Horizontal scroll on narrow viewports) -->
-      <div class="overflow-x-auto pb-3 w-full">
-        <div id="runners-approval-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 w-full min-w-0">
+      <div class="overflow-x-auto pb-4 w-full">
+        <div id="runners-approval-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full min-w-0">
           <!-- Rendered dynamically -->
-          <div class="col-span-full bg-slate-900 rounded-3xl p-8 border border-slate-800 text-center text-slate-400 text-xs">
+          <div class="col-span-full bg-slate-900 rounded-3xl p-8 sm:p-10 border border-slate-800 text-center text-slate-400 text-xs flex flex-col items-center justify-center gap-2">
             Loading runner applications...
           </div>
         </div>
@@ -387,7 +387,7 @@
     <!-- ======================================================================= -->
     <!-- 6. TAB 3: LIVE ORDER GOD-VIEW                                           -->
     <!-- ======================================================================= -->
-    <section id="tab-orders" class="hidden flex-col gap-4">
+    <section id="tab-orders" class="hidden mt-10 shrink-0 flex-col gap-6 p-4 sm:p-6 bg-slate-900/60 rounded-3xl border border-slate-800/80 shadow-lg" style="margin-top: 40px;">
       
       <div class="flex items-center justify-between">
         <div>
@@ -429,7 +429,7 @@
     <!-- ======================================================================= -->
     <!-- 7. TAB 4: COMMISSION & PAYOUT LEDGER                                    -->
     <!-- ======================================================================= -->
-    <section id="tab-ledger" class="hidden flex-col gap-4">
+    <section id="tab-ledger" class="hidden mt-10 shrink-0 flex-col gap-6 p-4 sm:p-6 bg-slate-900/60 rounded-3xl border border-slate-800/80 shadow-lg" style="margin-top: 40px;">
       
       <div class="flex items-center justify-between">
         <div>
@@ -495,7 +495,7 @@
     <!-- ======================================================================= -->
     <!-- 7.5 TAB 5: ACCOUNT RISK PROFILE & CONSECUTIVE CANCELLATIONS             -->
     <!-- ======================================================================= -->
-    <section id="tab-risk" class="hidden flex-col gap-4">
+    <section id="tab-risk" class="hidden mt-10 shrink-0 flex-col gap-6 p-4 sm:p-6 bg-slate-900/60 rounded-3xl border border-slate-800/80 shadow-lg" style="margin-top: 40px;">
       
       <div class="flex items-center justify-between">
         <div>
@@ -995,8 +995,9 @@
       const vendors = AdminStore.vendors;
       if (vendors.length === 0) {
         container.innerHTML = `
-          <div class="col-span-full bg-slate-900 rounded-3xl p-8 border border-slate-800 text-center text-slate-400 text-xs">
-            ${dict.empty_vendors}
+          <div class="col-span-full bg-slate-900 rounded-3xl p-8 sm:p-10 border border-slate-800 text-center text-slate-400 text-xs flex flex-col items-center justify-center gap-3">
+            <span class="material-symbols-outlined text-slate-600 text-[36px]">storefront</span>
+            <span class="font-medium text-slate-300">${dict.empty_vendors}</span>
           </div>
         `;
         return;
@@ -1097,8 +1098,9 @@
       const runners = AdminStore.runners;
       if (runners.length === 0) {
         container.innerHTML = `
-          <div class="col-span-full bg-slate-900 rounded-3xl p-8 border border-slate-800 text-center text-slate-400 text-xs">
-            ${dict.empty_runners}
+          <div class="col-span-full bg-slate-900 rounded-3xl p-8 sm:p-10 border border-slate-800 text-center text-slate-400 text-xs flex flex-col items-center justify-center gap-3">
+            <span class="material-symbols-outlined text-slate-600 text-[36px]">two_wheeler</span>
+            <span class="font-medium text-slate-300">${dict.empty_runners}</span>
           </div>
         `;
         return;
