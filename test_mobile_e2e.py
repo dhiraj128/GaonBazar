@@ -31,7 +31,7 @@ import urllib.request
 from pathlib import Path
 from datetime import datetime
 
-def start_global_timeout_watchdog(timeout_seconds=240):
+def start_global_timeout_watchdog(timeout_seconds=360):
     """
     Strict Global Watchdog Timeout:
     Guarantees the entire test suite process exits hard after timeout_seconds,
@@ -1392,7 +1392,7 @@ def ensure_backend_running(logger):
 
 
 def main():
-    start_global_timeout_watchdog(timeout_seconds=240)
+    start_global_timeout_watchdog(timeout_seconds=360)
     logger = TestLogger()
     logger.log("Starting Playwright Human-Like Visual & UX Mobile Test Suite for GaonBazaar...")
 

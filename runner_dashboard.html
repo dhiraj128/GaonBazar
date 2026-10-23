@@ -119,7 +119,7 @@
       <span class="material-symbols-outlined text-[18px]">wifi_off</span>
       <span id="runner-offline-msg" data-i18n="server_offline_msg">सर्वर ऑफ़लाइन है। संपर्क नहीं हो पा रहा है।</span>
     </div>
-    <button onclick="fetchAllRunnerData(true)" class="px-2.5 py-1 bg-white text-red-700 rounded-lg text-[11px] font-black active:scale-95 transition-all">
+    <button onclick="fetchAllRunnerData(true)" class="min-h-[40px] px-3.5 py-2 bg-white text-red-700 rounded-xl text-xs font-black active:scale-95 transition-all cursor-pointer">
       <span id="runner-offline-retry-btn" data-i18n="server_offline_retry">पुनः प्रयास</span>
     </button>
   </div>
@@ -141,7 +141,7 @@
             <span class="text-xs text-amber-400/90 font-semibold" data-i18n="auth_gate_sub">गाँव मित्र प्रमाणीकरण प्रवेश</span>
           </div>
         </div>
-        <button type="button" onclick="toggleLanguage()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center gap-1 active:scale-95 shrink-0" title="Language">
+        <button type="button" onclick="toggleLanguage()" class="min-h-[44px] px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center gap-1 active:scale-95 shrink-0 cursor-pointer" title="Language">
           <span class="material-symbols-outlined text-[16px]">translate</span>
           <span class="current-lang-text-label">हिंदी</span>
         </button>
@@ -168,7 +168,7 @@
         <label class="text-[11px] font-bold text-slate-400 block mb-1" data-i18n="lbl_runner_phone">पंजीकृत मोबाइल नंबर *</label>
         <div class="flex gap-2">
           <input type="tel" id="login-runner-phone" placeholder="9876543220" value="9876543220" class="flex-1 px-3.5 py-3 text-sm font-bold rounded-xl border border-slate-700 bg-slate-800 text-white focus:border-amber-400 outline-none" />
-          <button type="button" id="btn-send-login-runner-otp" onclick="handleSendLoginRunnerOtp()" class="px-4 py-2.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs sm:text-sm font-bold whitespace-nowrap active:scale-95 transition-all shadow-sm" data-i18n="btn_send_otp">
+          <button type="button" id="btn-send-login-runner-otp" onclick="handleSendLoginRunnerOtp()" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs sm:text-sm font-bold whitespace-nowrap active:scale-95 transition-all shadow-sm cursor-pointer" data-i18n="btn_send_otp">
             OTP भेजें
           </button>
         </div>
@@ -193,7 +193,7 @@
       <!-- Registration link (with exact id for test_admin_e2e.py) -->
       <div class="pt-3 border-t border-slate-800 flex items-center justify-between text-xs">
         <span class="text-slate-400" data-i18n="auth_new_runner_prompt">नया गाँव मित्र बनना चाहते हैं?</span>
-        <button type="button" id="btn-open-runner-register" onclick="openRunnerRegisterModal()" class="font-bold text-amber-400 hover:underline flex items-center gap-1">
+        <button type="button" id="btn-open-runner-register" onclick="openRunnerRegisterModal()" class="min-h-[44px] px-2 font-bold text-amber-400 hover:underline flex items-center gap-1 active:scale-95 cursor-pointer">
           <span class="material-symbols-outlined text-[16px]">person_add</span>
           <span data-i18n="btn_new_kyc_register">+ नया पंजीकरण</span>
         </button>
@@ -256,7 +256,7 @@
       <span id="toast-title" class="text-xs font-black text-amber-300">नया डिलीवरी मिशन!</span>
       <span id="toast-subtitle" class="text-[11px] text-slate-200 truncate">दुकान से पिकअप उपलब्ध है</span>
     </div>
-    <button onclick="dismissToast()" class="text-slate-400 hover:text-white p-1">
+    <button onclick="dismissToast()" aria-label="Close notification" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center text-slate-400 hover:text-white active:scale-90 cursor-pointer">
       <span class="material-symbols-outlined text-[18px]">close</span>
     </button>
   </div>
@@ -365,13 +365,13 @@
       <!-- Filter Bar & Refresh Indicator -->
       <div class="flex items-center justify-between gap-2 flex-wrap">
         <div class="flex items-center gap-1.5" id="mission-filter-group">
-          <button id="filter-btn-all" onclick="filterMissions('all')" class="mission-filter-pill px-3 py-1.5 rounded-full text-xs font-black bg-primary text-white border border-primary transition-all" data-i18n="filter_all">
+          <button id="filter-btn-all" onclick="filterMissions('all')" class="mission-filter-pill min-h-[40px] px-4 py-2 rounded-full text-xs font-black bg-primary text-white border border-primary transition-all active:scale-95 cursor-pointer" data-i18n="filter_all">
             सभी मिशन
           </button>
-          <button id="filter-btn-pickup" onclick="filterMissions('pickup')" class="mission-filter-pill px-3 py-1.5 rounded-full text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 transition-all" data-i18n="filter_pickup">
+          <button id="filter-btn-pickup" onclick="filterMissions('pickup')" class="mission-filter-pill min-h-[40px] px-4 py-2 rounded-full text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 transition-all active:scale-95 cursor-pointer" data-i18n="filter_pickup">
             पिकअप बाकी
           </button>
-          <button id="filter-btn-transit" onclick="filterMissions('transit')" class="mission-filter-pill px-3 py-1.5 rounded-full text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 transition-all" data-i18n="filter_transit">
+          <button id="filter-btn-transit" onclick="filterMissions('transit')" class="mission-filter-pill min-h-[40px] px-4 py-2 rounded-full text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 transition-all active:scale-95 cursor-pointer" data-i18n="filter_transit">
             रास्ते में
           </button>
         </div>
@@ -401,8 +401,8 @@
       <!-- Top Selected Order Banner -->
       <div class="bg-slate-800 rounded-2xl p-3 border border-slate-700 flex items-center justify-between">
         <div class="flex items-center gap-2">
-          <button onclick="switchTab('missions')" class="w-8 h-8 rounded-xl bg-slate-700 flex items-center justify-center text-slate-200 hover:text-white" title="वापस जाएं">
-            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+          <button onclick="switchTab('missions')" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-slate-700 flex items-center justify-center text-slate-200 hover:text-white active:scale-90 cursor-pointer" title="वापस जाएं">
+            <span class="material-symbols-outlined text-[20px]">arrow_back</span>
           </button>
           <div>
             <span class="text-[10px] text-slate-400 uppercase font-bold block" data-i18n="active_mission_label">सक्रिय मिशन</span>
@@ -438,7 +438,7 @@
           </div>
 
           <!-- 1-Tap Call Dukandaar CTA -->
-          <a id="btn-call-store" href="tel:9876543210" class="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black flex items-center gap-1.5 shadow-sm active:scale-95 transition-all shrink-0">
+          <a id="btn-call-store" href="tel:9876543210" class="min-h-[44px] px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black flex items-center gap-1.5 shadow-sm active:scale-95 transition-all shrink-0 cursor-pointer">
             <span class="material-symbols-outlined text-[18px]">call</span>
             <span data-i18n="call_dukandaar_btn">दुकानदार को कॉल करें</span>
           </a>
@@ -481,7 +481,7 @@
           </div>
 
           <!-- 1-Tap Call Customer CTA -->
-          <a id="btn-call-customer" href="tel:9876543210" class="px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-black flex items-center gap-1.5 shadow-sm active:scale-95 transition-all shrink-0">
+          <a id="btn-call-customer" href="tel:9876543210" class="min-h-[44px] px-3.5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-black flex items-center gap-1.5 shadow-sm active:scale-95 transition-all shrink-0 cursor-pointer">
             <span class="material-symbols-outlined text-[18px]">call</span>
             <span data-i18n="call_customer_btn">ग्राहक को कॉल करें</span>
           </a>
@@ -714,7 +714,7 @@
 
         <!-- Submit CTA -->
         <div class="flex justify-end pt-1">
-          <button id="btn-save-runner-bank" onclick="saveRunnerPayoutSettings()" class="px-5 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-xs font-black flex items-center gap-2 shadow-lg active:scale-95 transition-all">
+          <button id="btn-save-runner-bank" onclick="saveRunnerPayoutSettings()" class="min-h-[48px] px-6 py-3 bg-primary hover:bg-primary-dark text-white rounded-xl text-xs font-black flex items-center gap-2 shadow-lg active:scale-95 transition-all cursor-pointer">
             <span class="material-symbols-outlined text-[18px]">verified</span>
             <span data-i18n="btn_save_runner_bank">बैंक व UPI विवरण सहेजें</span>
           </button>
@@ -864,7 +864,7 @@
             <input type="tel" id="reg-runner-phone" placeholder="9876543220" value="9876500002" class="w-full px-3 py-2 text-xs font-semibold rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-primary outline-none" />
           </div>
           <div class="col-span-1 flex flex-col justify-end">
-            <button type="button" id="btn-send-runner-otp" onclick="handleSendRunnerOtp()" class="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-colors" data-i18n="btn_send_otp">
+            <button type="button" id="btn-send-runner-otp" onclick="handleSendRunnerOtp()" class="w-full min-h-[44px] py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-colors active:scale-95 cursor-pointer" data-i18n="btn_send_otp">
               OTP भेजें
             </button>
           </div>
@@ -1910,7 +1910,7 @@
                 <span class="text-[10px] text-purple-400 font-bold ml-1">• +₹${comm} ${isHi ? 'आय' : 'Fee'}</span>
               </div>
 
-              <button class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-primary text-white flex items-center gap-1 shadow-sm">
+              <button class="min-h-[44px] px-4 py-2 rounded-xl text-xs font-black bg-primary text-white flex items-center gap-1 shadow-sm active:scale-95 cursor-pointer">
                 <span>${isStage3 ? (isHi ? 'पिकअप करें' : 'Pickup') : (isHi ? 'लैंडमार्क देखें' : 'View Landmark')}</span>
                 <span class="material-symbols-outlined text-[16px]">chevron_right</span>
               </button>
@@ -1933,11 +1933,11 @@
     function filterMissions(f) {
       RunnerStore.missionFilter = f;
       document.querySelectorAll('.mission-filter-pill').forEach(btn => {
-        btn.className = "mission-filter-pill px-3 py-1.5 rounded-full text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 transition-all";
+        btn.className = "mission-filter-pill min-h-[40px] px-4 py-2 rounded-full text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 transition-all active:scale-95 cursor-pointer";
       });
       const active = document.getElementById(`filter-btn-${f}`);
       if (active) {
-        active.className = "mission-filter-pill px-3 py-1.5 rounded-full text-xs font-black bg-primary text-white border border-primary transition-all";
+        active.className = "mission-filter-pill min-h-[40px] px-4 py-2 rounded-full text-xs font-black bg-primary text-white border border-primary transition-all active:scale-95 cursor-pointer";
       }
       renderMissionsQueue();
     }

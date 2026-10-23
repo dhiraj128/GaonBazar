@@ -354,12 +354,12 @@
         <div class="rounded-2xl bg-white p-5 shadow-mobile-card border border-surface-container-high space-y-4">
           
           <!-- Auth Mode Tabs (Sign In vs Sign Up) -->
-          <div class="bg-surface-container p-1 rounded-xl flex items-center border border-surface-container-high">
+          <div class="bg-surface-container p-1 rounded-xl flex items-center border border-surface-container-high gap-1">
             <button 
               id="auth-tab-signin" 
               type="button" 
               onclick="window.switchAuthMode('signin')" 
-              class="flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 bg-white text-primary shadow-xs"
+              class="flex-1 min-h-[44px] py-2.5 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 bg-white text-primary shadow-xs active:scale-95 cursor-pointer"
             >
               <span class="material-symbols-outlined text-[16px]">login</span>
               <span id="auth-tab-signin-text">लॉगिन करें</span>
@@ -368,7 +368,7 @@
               id="auth-tab-signup" 
               type="button" 
               onclick="window.switchAuthMode('signup')" 
-              class="flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 text-on-surface-variant hover:text-on-surface"
+              class="flex-1 min-h-[44px] py-2.5 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 text-on-surface-variant hover:text-on-surface active:scale-95 cursor-pointer"
             >
               <span class="material-symbols-outlined text-[16px]">person_add</span>
               <span id="auth-tab-signup-text">नया खाता बनाएं</span>
@@ -499,8 +499,8 @@
               <span class="text-[10px] text-on-surface-variant block mt-0.5" data-i18n="p1_otp_sms_sent">सत्यापन कोड भेजा गया</span>
             </div>
           </div>
-          <button onclick="navigateToPhase('login')" class="h-8 px-3 rounded-lg bg-surface-container text-primary font-bold text-xs flex items-center gap-1 active:scale-95">
-            <span class="material-symbols-outlined text-[14px]">edit</span>
+          <button onclick="navigateToPhase('login')" class="min-h-[44px] px-3.5 rounded-xl bg-surface-container text-primary font-bold text-xs flex items-center gap-1.5 active:scale-95 cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">edit</span>
             <span data-i18n="p1_otp_edit">बदलें</span>
           </button>
         </div>
@@ -530,7 +530,7 @@
 
           <div class="flex items-center justify-between mt-4 text-xs">
             <span class="text-on-surface-variant font-medium">पुनः भेजने का समय: <strong id="p1-countdown">0:24s</strong></span>
-            <button id="p1-resend-btn" disabled onclick="resendOtpCode()" class="text-outline opacity-50 font-bold" data-i18n="p1_otp_resend">पुनः कोड भेजें</button>
+            <button id="p1-resend-btn" disabled onclick="resendOtpCode()" class="min-h-[44px] px-3 py-2 rounded-lg text-outline opacity-50 font-bold inline-flex items-center justify-center active:scale-95 transition-all cursor-pointer" data-i18n="p1_otp_resend">पुनः कोड भेजें</button>
           </div>
         </div>
 
@@ -578,7 +578,7 @@
               <span id="p1-gps-badge" class="text-[10px] text-on-surface-variant font-medium block truncate" data-i18n="p1_gps_badge">GPS सेट नहीं है</span>
             </div>
           </div>
-          <button id="p1-locate-btn" type="button" onclick="detectGpsLocation()" class="h-9 px-3.5 rounded-xl bg-primary text-white text-xs font-bold flex items-center gap-1 active:scale-95 shrink-0 whitespace-nowrap">
+          <button id="p1-locate-btn" type="button" onclick="detectGpsLocation()" class="min-h-[44px] px-3.5 rounded-xl bg-primary text-white text-xs font-bold flex items-center gap-1 active:scale-95 shrink-0 whitespace-nowrap cursor-pointer">
             <span class="material-symbols-outlined text-[15px]">near_me</span>
             <span id="p1-locate-text" data-i18n="p1_locate_btn">Use Location</span>
           </button>
@@ -646,10 +646,10 @@
 
           <!-- Suggestion Chips -->
           <div class="flex flex-wrap gap-1.5 pt-1">
-            <button type="button" onclick="appendChipLandmark('🛕 शिव मंदिर के पास')" class="px-2.5 py-1 rounded-full bg-surface-container-high text-[10px] font-bold hover:bg-surface-container-highest">🛕 शिव मंदिर</button>
-            <button type="button" onclick="appendChipLandmark('🏫 प्राथमिक विद्यालय के पास')" class="px-2.5 py-1 rounded-full bg-surface-container-high text-[10px] font-bold hover:bg-surface-container-highest">🏫 प्राथमिक स्कूल</button>
-            <button type="button" onclick="appendChipLandmark('💧 पानी की टंकी के पास')" class="px-2.5 py-1 rounded-full bg-surface-container-high text-[10px] font-bold hover:bg-surface-container-highest">💧 पानी की टंकी</button>
-            <button type="button" onclick="appendChipLandmark('🌳 गाँव की चौपाल')" class="px-2.5 py-1 rounded-full bg-surface-container-high text-[10px] font-bold hover:bg-surface-container-highest">🌳 चौपाल</button>
+            <button type="button" onclick="appendChipLandmark('🛕 शिव मंदिर के पास')" class="min-h-[38px] px-3.5 py-1.5 rounded-full bg-surface-container-high hover:bg-surface-container-highest text-xs font-bold active:scale-95 transition-all cursor-pointer">🛕 शिव मंदिर</button>
+            <button type="button" onclick="appendChipLandmark('🏫 प्राथमिक विद्यालय के पास')" class="min-h-[38px] px-3.5 py-1.5 rounded-full bg-surface-container-high hover:bg-surface-container-highest text-xs font-bold active:scale-95 transition-all cursor-pointer">🏫 प्राथमिक स्कूल</button>
+            <button type="button" onclick="appendChipLandmark('💧 पानी की टंकी के पास')" class="min-h-[38px] px-3.5 py-1.5 rounded-full bg-surface-container-high hover:bg-surface-container-highest text-xs font-bold active:scale-95 transition-all cursor-pointer">💧 पानी की टंकी</button>
+            <button type="button" onclick="appendChipLandmark('🌳 गाँव की चौपाल')" class="min-h-[38px] px-3.5 py-1.5 rounded-full bg-surface-container-high hover:bg-surface-container-highest text-xs font-bold active:scale-95 transition-all cursor-pointer">🌳 चौपाल</button>
           </div>
           <span id="p1-lm-err" class="hidden text-[10px] text-error font-bold" data-i18n="p1_lm_err">कम से कम 10 अक्षर आवश्यक हैं</span>
         </div>
@@ -678,7 +678,7 @@
               <span id="p2-loc-landmark" class="text-[10px] text-on-surface-variant truncate" data-i18n="p2_loc_landmark">टैप करके पता जोड़ें</span>
             </div>
           </div>
-          <button onclick="navigateToPhase('landmark')" class="h-7 px-3 rounded-full bg-white text-primary text-[10px] font-bold shadow-xs shrink-0 active:scale-95">
+          <button onclick="navigateToPhase('landmark')" class="min-h-[44px] px-3.5 rounded-full bg-white text-primary text-xs font-bold shadow-xs shrink-0 flex items-center justify-center active:scale-95 cursor-pointer">
             <span data-i18n="p2_change_loc">बदलें</span>
           </button>
         </div>
@@ -688,11 +688,11 @@
           <div class="flex items-center gap-2 p-2 rounded-2xl bg-white shadow-mobile-card border border-surface-container-high relative z-20">
             <span class="material-symbols-outlined text-outline text-[20px] ml-1">search</span>
             <input id="p2-search-input" oninput="filterStoreCatalog(this.value)" onfocus="if(this.value) filterStoreCatalog(this.value)" type="text" placeholder="किराना, दवाई, बीज खोजें..." data-i18n-ph="p2_search_placeholder" class="w-full h-9 py-2 bg-transparent text-xs font-semibold focus:outline-none"/>
-            <button type="button" id="p2-search-clear-btn" onclick="clearStoreSearch()" class="hidden text-outline hover:text-on-surface text-[16px] p-1">
+            <button type="button" id="p2-search-clear-btn" onclick="clearStoreSearch()" class="hidden w-10 h-10 min-w-[40px] min-h-[40px] items-center justify-center text-outline hover:text-on-surface active:scale-90 cursor-pointer">
               <span class="material-symbols-outlined text-[18px]">close</span>
             </button>
-            <button id="p2-voice-search-btn" onclick="triggerVoiceSearch()" type="button" class="h-9 px-3 rounded-xl bg-secondary text-white text-[10px] font-bold flex items-center gap-1 active:scale-95 shrink-0 transition-all">
-              <span id="p2-voice-search-icon" class="material-symbols-outlined text-[16px]">mic</span>
+            <button id="p2-voice-search-btn" onclick="triggerVoiceSearch()" type="button" class="min-h-[44px] px-3.5 rounded-xl bg-secondary text-white text-xs font-bold flex items-center gap-1.5 active:scale-95 shrink-0 transition-all cursor-pointer">
+              <span id="p2-voice-search-icon" class="material-symbols-outlined text-[18px]">mic</span>
               <span id="p2-voice-search-text" data-i18n="p2_voice_search">बोल कर खोजें</span>
             </button>
           </div>
@@ -871,8 +871,8 @@
               <h3 class="text-xs font-extrabold text-on-surface uppercase" data-i18n="p4_items_title">थैले का सामान</h3>
               <span id="p4-cart-count-pill" class="text-[10px] font-bold bg-surface-container-high px-2.5 py-0.5 rounded-full inline-flex items-center justify-center shrink-0 box-border">0 सामान</span>
             </div>
-            <button onclick="clearFullCart()" class="text-error font-bold text-xs flex items-center gap-0.5 active:opacity-60">
-              <span class="material-symbols-outlined text-[14px]">delete_sweep</span>
+            <button onclick="clearFullCart()" class="min-h-[44px] min-w-[44px] px-2.5 py-1.5 rounded-xl text-error font-bold text-xs flex items-center gap-1 active:scale-95 transition-all cursor-pointer">
+              <span class="material-symbols-outlined text-[16px]">delete_sweep</span>
               <span data-i18n="p4_clear_cart">खाली करें</span>
             </button>
           </div>
@@ -969,7 +969,7 @@
               <span class="material-symbols-outlined text-primary text-[18px]">pin_drop</span>
               <span data-i18n="p4_dest_title">डिलीवरी का पता</span>
             </div>
-            <button onclick="navigateToPhase('landmark')" class="text-xs text-secondary font-bold active:opacity-75">बदलें</button>
+            <button onclick="navigateToPhase('landmark')" class="min-h-[44px] px-3 py-1.5 rounded-lg inline-flex items-center text-xs text-secondary font-bold active:scale-95 transition-all cursor-pointer">बदलें</button>
           </div>
           <div class="mt-3 text-xs">
             <div class="flex items-center gap-2 mb-1">
@@ -1067,7 +1067,7 @@
             <div class="flex items-center justify-between mb-3">
               <div class="flex items-center gap-2">
                 <span id="p5-order-id" class="text-sm font-black text-on-surface">--</span>
-                <button onclick="copyOrderId()" class="h-6 px-2.5 rounded bg-surface-container text-[10px] font-bold text-primary active:scale-95">Copy</button>
+                <button onclick="copyOrderId()" class="min-h-[44px] px-3.5 rounded-xl bg-surface-container text-xs font-bold text-primary active:scale-95 cursor-pointer inline-flex items-center justify-center">Copy</button>
               </div>
               <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed text-[11px] font-bold">
                 <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
@@ -1122,7 +1122,7 @@
           <div id="p5-timeline-card" class="bg-white rounded-2xl p-5 shadow-mobile-card border border-surface-container-high flex flex-col gap-3">
             <div class="flex items-center justify-between border-b pb-2.5">
               <h3 class="text-xs font-extrabold text-on-surface uppercase" data-i18n="p5_timeline_title">ऑर्डर की स्थिति</h3>
-              <button onclick="advanceTimelineStep()" class="text-[10px] text-secondary font-bold underline" id="p5-sim-step-btn" data-i18n="p5_sim_step">अगला चरण देखें ⚡</button>
+              <button onclick="advanceTimelineStep()" class="min-h-[44px] px-2.5 py-1.5 rounded-lg inline-flex items-center text-xs font-bold text-secondary active:scale-95 transition-all cursor-pointer underline" id="p5-sim-step-btn" data-i18n="p5_sim_step">अगला चरण देखें ⚡</button>
             </div>
 
             <!-- Dynamic Timeline Steps Container -->
@@ -1239,8 +1239,8 @@
               <p class="text-xs text-on-surface-variant font-medium" data-i18n="profile_page_sub">गाँव बाज़ार प्रोफ़ाइल एवं सहायता</p>
             </div>
           </div>
-          <button onclick="logoutCustomer()" class="px-3 py-1.5 rounded-xl border border-red-200 bg-red-50 text-red-700 text-xs font-bold flex items-center gap-1 active:scale-95 transition-all">
-            <span class="material-symbols-outlined text-[15px]">logout</span>
+          <button onclick="logoutCustomer()" class="min-h-[44px] px-3.5 py-2.5 rounded-xl border border-red-200 bg-red-50 text-red-700 text-xs font-bold flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">logout</span>
             <span data-i18n="profile_logout_btn">लॉगआउट</span>
           </button>
         </div>
@@ -1272,8 +1272,8 @@
                 <span class="material-symbols-outlined text-primary text-[16px]">location_on</span>
                 <span data-i18n="profile_primary_address">मुख्य डिलीवरी पता</span>
               </span>
-              <button onclick="navigateToPhase('landmark')" class="text-primary text-[11px] font-extrabold hover:underline flex items-center gap-0.5">
-                <span class="material-symbols-outlined text-[12px]">edit</span>
+              <button onclick="navigateToPhase('landmark')" class="min-h-[44px] px-2.5 rounded-lg inline-flex items-center gap-1 text-primary text-xs font-extrabold hover:underline active:scale-95 transition-all cursor-pointer">
+                <span class="material-symbols-outlined text-[14px]">edit</span>
                 <span data-i18n="profile_edit_address">बदलें</span>
               </button>
             </div>
@@ -1331,8 +1331,8 @@
               <span class="material-symbols-outlined text-primary text-[20px]">credit_card</span>
               <h3 class="text-xs font-extrabold text-on-surface uppercase tracking-wide" data-i18n="profile_payments_title">सहेजे गए भुगतान माध्यम</h3>
             </div>
-            <button id="btn-toggle-add-payment" onclick="openAddPaymentModal()" class="px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-xs font-extrabold flex items-center gap-1 active:scale-95 transition-all">
-              <span class="material-symbols-outlined text-[15px]">add_circle</span>
+            <button id="btn-toggle-add-payment" onclick="openAddPaymentModal()" class="min-h-[44px] px-3.5 py-2 rounded-xl bg-primary/10 text-primary text-xs font-extrabold flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer">
+              <span class="material-symbols-outlined text-[16px]">add_circle</span>
               <span data-i18n="btn_add_payment">+ नया माध्यम जोड़ें</span>
             </button>
           </div>
@@ -1353,8 +1353,8 @@
               <span class="material-symbols-outlined text-primary text-[20px]">receipt_long</span>
               <h3 class="text-xs font-extrabold text-on-surface uppercase tracking-wide" data-i18n="profile_orders_title">पिछले ऑर्डर</h3>
             </div>
-            <button id="btn-refresh-orders" onclick="loadUserOrderHistory()" class="text-primary text-xs font-bold flex items-center gap-1 hover:underline">
-              <span class="material-symbols-outlined text-[14px]">refresh</span>
+            <button id="btn-refresh-orders" onclick="loadUserOrderHistory()" class="min-h-[44px] px-3 py-1.5 rounded-xl text-primary text-xs font-bold flex items-center gap-1.5 hover:bg-primary/5 active:scale-95 transition-all cursor-pointer">
+              <span class="material-symbols-outlined text-[16px]">refresh</span>
               <span data-i18n="profile_refresh_orders">ताज़ा करें</span>
             </button>
           </div>
@@ -1472,33 +1472,34 @@
 
         <!-- Quick Suggestion Chips (Compact) -->
         <div class="px-2.5 py-1 bg-white border-t border-slate-100 flex items-center gap-1.5 overflow-x-auto no-scrollbar shrink-0">
-          <button id="chip-order-status" onclick="sendQuickMessage((AppStore.lang === 'hi') ? 'मेरा ऑर्डर कहाँ है?' : 'Where is my order?')" class="whitespace-nowrap px-2 py-0.5 rounded-full bg-surface-container text-slate-700 hover:bg-surface-container-highest text-[10px] font-bold border border-slate-200 active:scale-95 transition-all">
+          <button id="chip-order-status" onclick="sendQuickMessage((AppStore.lang === 'hi') ? 'मेरा ऑर्डर कहाँ है?' : 'Where is my order?')" class="whitespace-nowrap min-h-[38px] px-3.5 py-1.5 rounded-full bg-surface-container text-slate-700 hover:bg-surface-container-highest text-xs font-bold border border-slate-200 active:scale-95 transition-all cursor-pointer">
             <span data-i18n="chat_chip_order">📦 मेरा ऑर्डर कहाँ है?</span>
           </button>
-          <button id="chip-refund-status" onclick="sendQuickMessage((AppStore.lang === 'hi') ? 'रिफंड कब मिलेगा?' : 'Refund status')" class="whitespace-nowrap px-2 py-0.5 rounded-full bg-surface-container text-slate-700 hover:bg-surface-container-highest text-[10px] font-bold border border-slate-200 active:scale-95 transition-all">
+          <button id="chip-refund-status" onclick="sendQuickMessage((AppStore.lang === 'hi') ? 'रिफंड कब मिलेगा?' : 'Refund status')" class="whitespace-nowrap min-h-[38px] px-3.5 py-1.5 rounded-full bg-surface-container text-slate-700 hover:bg-surface-container-highest text-xs font-bold border border-slate-200 active:scale-95 transition-all cursor-pointer">
             <span data-i18n="chat_chip_refund">💰 रिफंड की स्थिति</span>
           </button>
-          <button id="chip-call-agent" onclick="sendQuickMessage((AppStore.lang === 'hi') ? 'एजेंट से बात करनी है' : 'Speak to agent')" class="whitespace-nowrap px-2 py-0.5 rounded-full bg-surface-container text-slate-700 hover:bg-surface-container-highest text-[10px] font-bold border border-slate-200 active:scale-95 transition-all">
+          <button id="chip-call-agent" onclick="sendQuickMessage((AppStore.lang === 'hi') ? 'एजेंट से बात करनी है' : 'Speak to agent')" class="whitespace-nowrap min-h-[38px] px-3.5 py-1.5 rounded-full bg-surface-container text-slate-700 hover:bg-surface-container-highest text-xs font-bold border border-slate-200 active:scale-95 transition-all cursor-pointer">
             <span data-i18n="chat_chip_agent">📞 एजेंट से बात करें</span>
           </button>
         </div>
 
         <!-- Chat Input Form (Compact) -->
-        <div class="p-2 bg-white border-t border-slate-200 flex items-center gap-1.5 shrink-0">
+        <div class="p-2.5 bg-white border-t border-slate-200 flex items-center gap-2 shrink-0">
           <input 
             id="chat-input-message" 
             type="text" 
             placeholder="अपना सवाल या संदेश लिखें..."
             data-i18n-ph="chat_input_ph"
-            class="flex-1 h-9 bg-slate-100 rounded-full px-3 text-[11px] font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/40 border border-slate-200"
+            class="flex-1 h-11 bg-slate-100 rounded-full px-4 text-xs font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/40 border border-slate-200"
             onkeydown="if(event.key === 'Enter') sendChatMessage()"
           />
           <button 
             id="btn-send-chat" 
             onclick="sendChatMessage()" 
-            class="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary/90 active:scale-95 transition-all shadow-sm shrink-0"
+            aria-label="Send Message"
+            class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary/90 active:scale-95 transition-all shadow-sm shrink-0 cursor-pointer"
           >
-            <span class="material-symbols-outlined text-[16px]">send</span>
+            <span class="material-symbols-outlined text-[18px]">send</span>
           </button>
         </div>
 
@@ -1622,7 +1623,7 @@
         <!-- =================================================================== -->
         <div id="payment-step-upi-form" class="hidden flex-col gap-3.5">
           <!-- Back button -->
-          <button type="button" onclick="backToPaymentMethodSelect()" class="inline-flex items-center gap-1 text-xs font-bold text-slate-600 hover:text-slate-900 w-fit active:scale-95 transition-all">
+          <button type="button" onclick="backToPaymentMethodSelect()" class="min-h-[44px] px-2 py-1.5 rounded-lg inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-slate-900 w-fit active:scale-95 transition-all cursor-pointer">
             <span class="material-symbols-outlined text-[16px]">arrow_back</span>
             <span data-i18n="pay_back_to_methods">वापस जाएं</span>
           </button>
@@ -1666,7 +1667,7 @@
         <!-- =================================================================== -->
         <div id="payment-step-card-form" class="hidden flex-col gap-3.5">
           <!-- Back button -->
-          <button type="button" onclick="backToPaymentMethodSelect()" class="inline-flex items-center gap-1 text-xs font-bold text-slate-600 hover:text-slate-900 w-fit active:scale-95 transition-all">
+          <button type="button" onclick="backToPaymentMethodSelect()" class="min-h-[44px] px-2 py-1.5 rounded-lg inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-slate-900 w-fit active:scale-95 transition-all cursor-pointer">
             <span class="material-symbols-outlined text-[16px]">arrow_back</span>
             <span data-i18n="pay_back_to_methods">वापस जाएं</span>
           </button>
@@ -1765,8 +1766,8 @@
           <span id="toast-msg" class="text-[10px] text-slate-300">"कृपया अपना मोबाइल नंबर दर्ज करें"</span>
         </div>
       </div>
-      <button onclick="closeAudioToast()" class="pointer-events-auto p-1 rounded-full text-slate-400 hover:text-white">
-        <span class="material-symbols-outlined text-[16px]">close</span>
+      <button onclick="closeAudioToast()" aria-label="Close Toast" class="pointer-events-auto w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full text-slate-400 hover:text-white active:scale-90 cursor-pointer">
+        <span class="material-symbols-outlined text-[18px]">close</span>
       </button>
     </div>
 
@@ -2352,11 +2353,11 @@
 
       if (tabSignIn && tabSignUp) {
         if (isSignIn) {
-          tabSignIn.className = 'flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 bg-white text-primary shadow-xs';
-          tabSignUp.className = 'flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 text-on-surface-variant hover:text-on-surface';
+          tabSignIn.className = 'flex-1 min-h-[44px] py-2.5 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 bg-white text-primary shadow-xs active:scale-95 cursor-pointer';
+          tabSignUp.className = 'flex-1 min-h-[44px] py-2.5 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 text-on-surface-variant hover:text-on-surface active:scale-95 cursor-pointer';
         } else {
-          tabSignUp.className = 'flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 bg-white text-secondary shadow-xs';
-          tabSignIn.className = 'flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 text-on-surface-variant hover:text-on-surface';
+          tabSignUp.className = 'flex-1 min-h-[44px] py-2.5 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 bg-white text-secondary shadow-xs active:scale-95 cursor-pointer';
+          tabSignIn.className = 'flex-1 min-h-[44px] py-2.5 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 text-on-surface-variant hover:text-on-surface active:scale-95 cursor-pointer';
         }
       }
 
@@ -4043,12 +4044,12 @@
               </button>
             ` : `
               <div class="flex items-center bg-surface-container-low rounded-xl p-0.5 shadow-xs border border-surface-container-high">
-                <button onclick="modifyItemQty('${item.id}', -1)" aria-label="Decrease quantity" class="w-10 h-10 min-w-[40px] min-h-[40px] rounded-lg bg-white text-on-surface flex items-center justify-center font-bold active:scale-90 cursor-pointer">
-                  <span class="material-symbols-outlined text-[16px]">remove</span>
+                <button onclick="modifyItemQty('${item.id}', -1)" aria-label="Decrease quantity" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-lg bg-white text-on-surface flex items-center justify-center font-bold active:scale-90 cursor-pointer">
+                  <span class="material-symbols-outlined text-[18px]">remove</span>
                 </button>
                 <span class="w-7 text-center font-black text-xs text-on-surface">${item.qty}</span>
-                <button onclick="modifyItemQty('${item.id}', 1)" aria-label="Increase quantity" class="w-10 h-10 min-w-[40px] min-h-[40px] rounded-lg bg-primary text-white flex items-center justify-center font-bold active:scale-90 cursor-pointer">
-                  <span class="material-symbols-outlined text-[16px]">add</span>
+                <button onclick="modifyItemQty('${item.id}', 1)" aria-label="Increase quantity" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-lg bg-primary text-white flex items-center justify-center font-bold active:scale-90 cursor-pointer">
+                  <span class="material-symbols-outlined text-[18px]">add</span>
                 </button>
               </div>
             `}
@@ -4345,12 +4346,12 @@
             </div>
           </div>
           <div class="flex items-center bg-surface-container-low rounded-xl p-0.5 shadow-xs border border-surface-container-high shrink-0">
-            <button onclick="modifyItemQty('${item.id}', -1)" aria-label="Decrease quantity" class="w-9 h-9 min-w-[36px] min-h-[36px] rounded-lg bg-white text-on-surface flex items-center justify-center active:scale-90 cursor-pointer">
-              <span class="material-symbols-outlined text-[15px]">remove</span>
+            <button onclick="modifyItemQty('${item.id}', -1)" aria-label="Decrease quantity" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-lg bg-white text-on-surface flex items-center justify-center active:scale-90 cursor-pointer">
+              <span class="material-symbols-outlined text-[18px]">remove</span>
             </button>
-            <span class="w-6 text-center font-bold text-xs">${item.qty}</span>
-            <button onclick="modifyItemQty('${item.id}', 1)" aria-label="Increase quantity" class="w-9 h-9 min-w-[36px] min-h-[36px] rounded-lg bg-primary text-white flex items-center justify-center active:scale-90 cursor-pointer">
-              <span class="material-symbols-outlined text-[15px]">add</span>
+            <span class="w-7 text-center font-bold text-xs">${item.qty}</span>
+            <button onclick="modifyItemQty('${item.id}', 1)" aria-label="Increase quantity" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-lg bg-primary text-white flex items-center justify-center active:scale-90 cursor-pointer">
+              <span class="material-symbols-outlined text-[18px]">add</span>
             </button>
           </div>
         `;
