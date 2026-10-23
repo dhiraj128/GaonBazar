@@ -760,7 +760,7 @@
             </div>
             <button onclick="clearFullCart()" class="text-error font-bold text-xs flex items-center gap-0.5 active:opacity-60">
               <span class="material-symbols-outlined text-[14px]">delete_sweep</span>
-              <span>खाली करें</span>
+              <span data-i18n="p4_clear_cart">खाली करें</span>
             </button>
           </div>
 
@@ -1747,6 +1747,7 @@
         p4_empty_subtitle: "गाँव के बाज़ार से ताज़ा सामान, फल, सब्ज़ी व राशन चुनें और घर मंगाएँ।",
         p4_empty_btn: "गाँव बाज़ार देखें",
         p4_items_title: "थैले का सामान",
+        p4_clear_cart: "खाली करें",
         p4_bill_details: "बिल का पूरा हिसाब",
         p4_item_total: "सामान की कुल राशि",
         p4_delivery_fee: "गाँव मित्र डिलीवरी शुल्क",
@@ -1935,6 +1936,7 @@
         p4_empty_subtitle: "Explore fresh groceries, seeds, and essentials from local village shops.",
         p4_empty_btn: "Explore Village Market",
         p4_items_title: "Cart Items",
+        p4_clear_cart: "Clear Cart",
         p4_bill_details: "Bill Details",
         p4_item_total: "Item Total",
         p4_delivery_fee: "Delivery Partner Fee",
@@ -3893,14 +3895,12 @@
         baseDeliveryFee = 15;
       } else if (dist <= 5.0) {
         baseDeliveryFee = 25;
-      } else if (dist <= 8.0) {
-        baseDeliveryFee = 40;
       } else {
-        baseDeliveryFee = 0;
+        baseDeliveryFee = 40;
       }
 
-      // Delivery Discount rule: if subtotal >= ₹299, apply flat ₹10 discount to delivery fee
-      const hasDeliveryDiscount = (subtotal >= DELIVERY_DISCOUNT_THRESHOLD && !isOutOfRange);
+      // Delivery Discount rule: if subtotal >= ₹299 and within discountable distance (<= 5.0 km), apply flat ₹10 discount to delivery fee
+      const hasDeliveryDiscount = (subtotal >= DELIVERY_DISCOUNT_THRESHOLD && dist <= 5.0);
       const deliveryDiscount = hasDeliveryDiscount ? DELIVERY_DISCOUNT_AMOUNT : 0;
       const netDeliveryFee = Math.max(0, baseDeliveryFee - deliveryDiscount);
       const platformFee = 3;
@@ -3933,9 +3933,10 @@
       if (checkoutBtnPrice) checkoutBtnPrice.innerText = isHi ? `कुल ₹${finalPayable}.00` : `Total ₹${finalPayable}.00`;
       if (placeOrderText) placeOrderText.innerText = isHi ? `ऑर्डर कन्फर्म करें • ₹${finalPayable}` : `Confirm Order • ₹${finalPayable}`;
 
-      // Strict Minimum Order Value (MOV) of ₹99 Validation & Zone Check
+      // Strict Minimum Order Value (MOV) of ₹99 Validation
+      // Note: Client displays distance warnings but NEVER blocks "Proceed to Pay" button; backend is the ultimate authority.
       if (btnProceed) {
-        if (subtotal < MIN_ORDER_VALUE || isOutOfRange) {
+        if (subtotal < MIN_ORDER_VALUE) {
           btnProceed.disabled = true;
           btnProceed.classList.add('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
           btnProceed.classList.remove('active:scale-98');
@@ -3961,8 +3962,8 @@
         } else if (isOutOfRange) {
           if (movAlertText) {
             movAlertText.innerText = isHi
-              ? `डिलीवरी क्षेत्र से बाहर (${dist} किमी)। 8 किमी से बाहर डिलीवरी उपलब्ध नहीं है।`
-              : `Outside delivery zone (${dist} km). Deliveries outside 8.0 km are not supported.`;
+              ? `दूरी चेतावनी: यह पता 8.0 किमी डिलीवरी सीमा से बाहर (${dist} किमी) है। स्वीकृति सर्वर नीति पर निर्भर है।`
+              : `Distance Warning: Address exceeds standard 8.0 km radius (${dist} km). Subject to backend policy.`;
           }
           movAlert.classList.remove('hidden');
           movAlert.classList.add('flex');
@@ -4116,19 +4117,8 @@
         return;
       }
 
-      // Guard: strictly reject if outside delivery zone (> 8.0 km)
+      // Retrieve distance for backend calculation; backend is the ultimate authority for geofence enforcement
       const dist = getOrderDistanceKm();
-      if (dist > 8.0) {
-        if (typeof showAudioToast === 'function') {
-          const isHi = (AppStore.lang === 'hi');
-          showAudioToast(
-            isHi ? 'डिलीवरी क्षेत्र' : 'Delivery Zone', 
-            isHi ? `डिलीवरी क्षेत्र से बाहर (${dist} किमी)। 8.0 किमी से बाहर डिलीवरी स्वीकार नहीं की जा सकती।` : `Address is outside 8.0 km delivery zone (${dist} km). Orders outside 8.0 km cannot be accepted.`
-          );
-        }
-        navigateToPhase('cart');
-        return;
-      }
 
       btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[20px]">progress_activity</span><span>Placing Order with Mandi Hub...</span>';
       btn.disabled = true;
@@ -4299,8 +4289,12 @@
         navigateToPhase('tracking');
       } catch (err) {
         console.warn('Backend order checkout fallback:', err);
-        // If rejected due to MOV or bad request, abort and alert without fallback order
-        if (err && err.message && (err.message.includes('Minimum order') || err.message.includes('कम से कम ₹99') || err.message.includes('कम से कम ₹100') || err.message.includes('400') || err.message.includes('delivery zone'))) {
+        btn.disabled = false;
+        const ordText = (i18nDictionary[AppStore.lang] || i18nDictionary['hi']).p4_place_order_btn;
+        btn.innerHTML = '<span class="material-symbols-outlined text-[20px]">shopping_bag</span><span id="place-order-text" data-i18n="p4_place_order_btn">' + ordText + '</span><span class="material-symbols-outlined text-[18px]">arrow_forward</span>';
+
+        // If rejected due to MOV or bad request (including geofence limit), abort and alert without fallback order
+        if (err && err.message && (err.message.includes('Minimum order') || err.message.includes('कम से कम ₹99') || err.message.includes('कम से कम ₹100') || err.message.includes('400') || err.message.includes('delivery zone') || err.message.includes('क्षेत्र से बाहर'))) {
           if (typeof showAudioToast === 'function') {
             showAudioToast('Order Error', err.message);
           }

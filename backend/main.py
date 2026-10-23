@@ -10,12 +10,12 @@ from pathlib import Path
 import razorpay
 from dotenv import load_dotenv
 
-# Load environment variables from .env file (checks backend/.env and root .env)
+# Load environment variables from .env file (checks root .env, then backend/.env)
 _backend_dir = Path(__file__).resolve().parent
 _root_dir = _backend_dir.parent
-for _env_file in [_backend_dir / ".env", _root_dir / ".env"]:
+for _env_file in [_root_dir / ".env", _backend_dir / ".env"]:
     if _env_file.exists():
-        load_dotenv(dotenv_path=_env_file, override=True)
+        load_dotenv(dotenv_path=_env_file, override=False)
 from fastapi import FastAPI, Depends, HTTPException, Query, Response, Request
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware

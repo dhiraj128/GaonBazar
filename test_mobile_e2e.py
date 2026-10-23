@@ -665,6 +665,13 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     logger.record_test(f"[{dev_name}] Transition to Cart Review Screen", is_cart_visible)
     inspect_viewport_and_layout(page, f"[{dev_name}] Phase 4.1 Cart", logger)
 
+    # Verify Clear Cart button dynamic localization
+    clear_btn_text = page.inner_text('button[onclick="clearFullCart()"] span[data-i18n="p4_clear_cart"]').strip()
+    curr_lang = page.evaluate("AppStore.lang")
+    expected_clear_text = "Clear Cart" if curr_lang == 'en' else "खाली करें"
+    is_clear_cart_localized = (clear_btn_text == expected_clear_text)
+    logger.record_test(f"[{dev_name}] Clear Cart Button Dynamic Localization", is_clear_cart_localized, f"Lang: {curr_lang} | Text: '{clear_btn_text}' (Expected: '{expected_clear_text}')")
+
     # -------------------------------------------------------------------------
     # MOV Validation: ₹50 Cart Subtotal (Must Fail / Block Checkout)
     # -------------------------------------------------------------------------
@@ -931,8 +938,10 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     }""")
     page.wait_for_timeout(300)
 
-    is_out_btn_disabled = page.eval_on_selector("#p4-btn-proceed", "btn => btn.disabled || btn.classList.contains('pointer-events-none')")
-    logger.record_test(f"[{dev_name}] Outside Delivery Zone (9.5 km): Proceed CTA Disabled", is_out_btn_disabled, "Button disabled when distance > 8 km")
+    is_out_btn_enabled = page.eval_on_selector("#p4-btn-proceed", "btn => !btn.disabled && !btn.classList.contains('pointer-events-none')")
+    is_warning_shown = page.eval_on_selector("#p4-mov-alert", "el => !el.classList.contains('hidden')")
+    logger.record_test(f"[{dev_name}] Outside Delivery Zone (9.5 km): Distance Warning Shown", is_warning_shown, "UI displays distance warning banner")
+    logger.record_test(f"[{dev_name}] Outside Delivery Zone (9.5 km): Proceed CTA Enabled (Backend is Authority)", is_out_btn_enabled, "Proceed to Pay is not blocked on frontend")
 
     # Backend API Check: 9.5 km must return HTTP 400 Bad Request
     try:
