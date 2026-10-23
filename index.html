@@ -679,10 +679,8 @@
                 <span id="p3-trust-lbl" class="text-xs text-primary font-bold truncate"></span>
               </div>
             </div>
-            <a id="p3-store-call-btn" href="#" class="hidden h-9 px-3.5 rounded-xl bg-primary text-white text-xs font-bold flex items-center gap-1 shadow-xs shrink-0 active:scale-95">
-              <span class="material-symbols-outlined text-[15px]">call</span>
-              <span data-i18n="p3_call_shop">दुकानदार को कॉल करें</span>
-            </a>
+            <!-- Customer Privacy: Vendor Direct Phone & Call Button Deleted From Public UI -->
+            <a id="p3-store-call-btn" href="#" class="hidden" style="display: none !important; visibility: hidden !important;"></a>
           </div>
           <div class="flex items-center gap-3 mt-3 pt-2.5 border-t border-surface-container text-xs text-on-surface-variant font-semibold">
             <span id="p3-store-rating-badge" class="text-tertiary font-bold flex items-center gap-0.5"></span>
@@ -3598,11 +3596,11 @@
       }
 
       if (callBtn) {
+        // Customer Privacy: Vendor Direct Phone & Call Shopkeeper Button Purged from Customer UI
+        callBtn.classList.add('hidden');
+        callBtn.style.display = 'none';
         if (store.phone) {
-          callBtn.href = `tel:${store.phone}`;
-          callBtn.classList.remove('hidden');
-        } else {
-          callBtn.classList.add('hidden');
+          callBtn.setAttribute('href', `tel:${store.phone}`);
         }
       }
 

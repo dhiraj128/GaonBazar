@@ -70,12 +70,12 @@
   <!-- ========================================================================= -->
   <!-- 0. SERVER DISCONNECTION / OFFLINE BANNER                                  -->
   <!-- ========================================================================= -->
-  <div id="admin-server-offline-banner" class="hidden sticky top-0 z-50 bg-red-600 text-white px-4 py-2.5 text-xs font-bold flex items-center justify-between shadow-lg">
+  <div id="admin-server-offline-banner" class="hidden relative w-full shrink-0 z-40 bg-red-600 text-white px-4 py-2.5 text-xs font-bold flex items-center justify-between shadow-lg">
     <div class="flex items-center gap-2">
       <span class="material-symbols-outlined text-[18px]">wifi_off</span>
-      <span id="admin-offline-msg" data-i18n="server_offline_msg">सर्वर से संपर्क नहीं हो पा रहा है (पोर्ट 8001)</span>
+      <span id="admin-offline-msg" data-i18n="server_offline_msg">सर्वर ऑफ़लाइन है। संपर्क नहीं हो पा रहा है।</span>
     </div>
-    <button onclick="refreshAdminData()" id="admin-offline-retry-btn" data-i18n="server_offline_retry" class="px-2.5 py-1 bg-white text-red-700 rounded-lg text-[11px] font-black active:scale-95 transition-all">
+    <button onclick="refreshAdminData(false)" id="admin-offline-retry-btn" data-i18n="server_offline_retry" class="px-2.5 py-1 bg-white text-red-700 rounded-lg text-[11px] font-black active:scale-95 transition-all">
       पुनः प्रयास
     </button>
   </div>
@@ -94,7 +94,7 @@
         <div>
           <div class="flex items-center gap-1.5">
             <h1 id="admin-app-title" class="text-sm sm:text-base font-black text-white tracking-tight" data-i18n="app_title">गांव बाज़ार • सुपर एडमिन</h1>
-            <span class="text-[9px] sm:text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded-full border border-emerald-500/30">
+            <span class="text-[9px] sm:text-[10px] font-mono font-black bg-emerald-500 text-slate-950 px-2 py-0.5 rounded-full">
               v2.0
             </span>
           </div>
@@ -151,7 +151,7 @@
   </div>
 
   <!-- Main Dashboard Viewport -->
-  <main class="flex-1 min-h-0 max-w-7xl w-full mx-auto p-4 sm:p-6 flex flex-col gap-5 pb-28 sm:pb-32 overflow-y-auto">
+  <main class="flex-1 min-h-0 max-w-7xl w-full mx-auto p-4 sm:p-6 flex flex-col gap-5 pb-32 sm:pb-36 overflow-y-auto">
 
     <!-- ======================================================================= -->
     <!-- 2. GLOBAL ECOSYSTEM METRICS RIBBON                                      -->
@@ -212,7 +212,7 @@
       <div onclick="switchTab('runners')" class="bg-slate-900 rounded-2xl p-4 border border-emerald-500/30 flex flex-col justify-between cursor-pointer hover:border-emerald-400 transition-colors">
         <span class="text-[10px] sm:text-[11px] font-bold text-emerald-400 uppercase tracking-wider flex items-center justify-between gap-1">
           <span class="truncate" data-i18n="kpi_gaon_mitras">गाँव मित्र</span>
-          <span id="badge-pending-runners-count" class="text-[9px] sm:text-[10px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded-md font-black border border-emerald-500/30 shrink-0">0 Pending</span>
+          <span id="badge-pending-runners-count" class="text-[9px] sm:text-[10px] bg-emerald-500 text-slate-950 px-2 py-0.5 rounded-md font-black shrink-0">0 Pending</span>
         </span>
         <div id="metric-runners" class="text-2xl font-black text-white mt-1">0</div>
         <span class="text-[10px] text-emerald-400 font-semibold mt-0.5 truncate" data-i18n="kpi_gaon_mitras_sub">केवाईसी सत्यापन कतार</span>
@@ -229,7 +229,7 @@
       <button id="admin-tab-btn-vendors" onclick="switchTab('vendors')" class="px-3.5 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 bg-primary text-white shadow-sm transition-all whitespace-nowrap shrink-0 min-h-[38px]">
         <span class="material-symbols-outlined text-[18px]">storefront</span>
         <span data-i18n="tab_vendors">दुकानदार सत्यापन कतार</span>
-        <span id="tab-vendor-badge" class="ml-1 text-[10px] bg-white text-emerald-800 px-2 py-0.5 rounded-full font-black">0</span>
+        <span id="tab-vendor-badge" class="ml-1 text-[10px] bg-slate-950 text-white px-2 py-0.5 rounded-full font-black">0</span>
       </button>
 
       <!-- Tab 2: Runner KYC Queue -->
@@ -295,9 +295,9 @@
               <tr>
                 <th class="py-3 px-3.5" data-i18n="th_entity_role">संस्था / भूमिका</th>
                 <th class="py-3 px-3.5" data-i18n="th_acc_holder">खाताधारक का नाम</th>
-                <th class="py-3 px-3.5" data-i18n="th_masked_acc">खाता संख्या (गोपनीय)</th>
+                <th class="py-3 px-3.5" data-i18n="th_masked_acc">खाता संख्या</th>
                 <th class="py-3 px-3.5" data-i18n="th_ifsc">IFSC कोड</th>
-                <th class="py-3 px-3.5" data-i18n="th_upi_id">UPI आईडी (VPA)</th>
+                <th class="py-3 px-3.5" data-i18n="th_upi_id">UPI आईडी</th>
                 <th class="py-3 px-3.5" data-i18n="th_kyc_status">केवाईसी स्थिति</th>
                 <th class="py-3 px-3.5 text-right" data-i18n="th_action">सत्यापन कार्रवाई</th>
               </tr>
@@ -503,7 +503,7 @@
             <span class="material-symbols-outlined text-amber-400">shield</span>
             <span data-i18n="tab5_heading">आंतरिक खाता जोखिम प्रबंधन</span>
           </h2>
-          <p class="text-xs text-slate-400" data-i18n="tab5_sub">लगातार रद्दीकरण, सीओडी प्रतिबंध स्थिति और ब्लैकलिस्टेड खातों की निगरानी (ग्राहकों के लिए अदृश्य)।</p>
+          <p class="text-xs text-slate-400" data-i18n="tab5_sub">लगातार रद्दीकरण, सीओडी प्रतिबंध स्थिति और ब्लैकलिस्टेड खातों की निगरानी</p>
         </div>
 
         <button onclick="fetchRiskProfiles()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:text-white flex items-center gap-1 border border-slate-700">
@@ -567,7 +567,7 @@
               <span id="modal-kyc-phone" class="font-mono font-bold text-white text-xs">--</span>
             </div>
             <div>
-              <span class="text-[10px] text-slate-400 uppercase font-bold block" data-i18n="modal_lbl_id_proof">पहचान प्रमाण (KYC ID)</span>
+              <span class="text-[10px] text-slate-400 uppercase font-bold block" data-i18n="modal_lbl_id_proof">पहचान प्रमाण</span>
               <span id="modal-kyc-id" class="font-mono font-bold text-emerald-400 text-xs">--</span>
             </div>
           </div>
@@ -626,7 +626,7 @@
               <span class="material-symbols-outlined text-[16px]">close</span>
               <span data-i18n="modal_btn_reject">अस्वीकार करें</span>
             </button>
-            <button id="btn-modal-approve" onclick="executeModalApprove()" class="flex-1 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-black flex items-center justify-center gap-1 shadow-md active:scale-95 transition-all">
+            <button id="btn-modal-approve" onclick="executeModalApprove()" class="flex-1 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-black flex items-center justify-center gap-1 shadow-md active:scale-95 transition-all">
               <span class="material-symbols-outlined text-[16px]">check</span>
               <span data-i18n="modal_btn_approve">सत्यापित करें</span>
             </button>
@@ -659,7 +659,7 @@
         app_title: "गांव बाज़ार • सुपर एडमिन",
         app_sub: "हाइपरलोकल ग्रामीण डिलीवरी नेटवर्क",
         system_healthy: "सिस्टम सक्रिय • पोर्ट 8001",
-        server_offline_msg: "सर्वर से संपर्क नहीं हो पा रहा है (पोर्ट 8001)",
+        server_offline_msg: "सर्वर ऑफ़लाइन है। संपर्क नहीं हो पा रहा है।",
         server_offline_retry: "पुनः प्रयास",
         nav_customer: "ग्राहक ऐप",
         nav_vendor: "दुकानदार",
@@ -719,7 +719,7 @@
         th_runner_fee: "रनर कमीशन",
         th_status: "स्थिति",
         tab5_heading: "आंतरिक खाता जोखिम प्रबंधन",
-        tab5_sub: "लगातार रद्दीकरण, सीओडी प्रतिबंध स्थिति और ब्लैकलिस्टेड खातों की निगरानी (ग्राहकों के लिए अदृश्य)।",
+        tab5_sub: "लगातार रद्दीकरण, सीओडी प्रतिबंध स्थिति और ब्लैकलिस्टेड खातों की निगरानी",
         btn_refresh_risk: "जोखिम प्रोफाइल रीफ्रेश",
         th_cust_name: "ग्राहक का नाम",
         th_phone: "फ़ोन",
@@ -729,14 +729,14 @@
         th_risk_assessment: "जोखिम मूल्यांकन",
         th_entity_role: "संस्था / भूमिका",
         th_acc_holder: "खाताधारक का नाम",
-        th_masked_acc: "खाता संख्या (गोपनीय)",
+        th_masked_acc: "खाता संख्या",
         th_ifsc: "IFSC कोड",
-        th_upi_id: "UPI आईडी (VPA)",
+        th_upi_id: "UPI आईडी",
         th_kyc_status: "केवाईसी स्थिति",
         th_action: "सत्यापन कार्रवाई",
         modal_vendor_title: "दुकानदार सत्यापन विवरण",
         modal_runner_title: "गाँव मित्र सत्यापन विवरण",
-        modal_lbl_id_proof: "पहचान प्रमाण (KYC ID)",
+        modal_lbl_id_proof: "पहचान प्रमाण",
         modal_lbl_bank_acc: "खाता संख्या",
         modal_lbl_ifsc: "IFSC कोड",
         modal_lbl_upi: "UPI आईडी",
@@ -756,7 +756,7 @@
         app_title: "GaonBazaar • Super Admin",
         app_sub: "Hyperlocal Rural Delivery Network",
         system_healthy: "System Healthy • Port 8001",
-        server_offline_msg: "Backend Server Offline (Port 8001)",
+        server_offline_msg: "Backend server offline. Unable to connect.",
         server_offline_retry: "Retry",
         nav_customer: "Customer App",
         nav_vendor: "Vendor Portal",
@@ -816,7 +816,7 @@
         th_runner_fee: "Runner Fee",
         th_status: "Status",
         tab5_heading: "Account Risk Profile Controls",
-        tab5_sub: "Monitor consecutive cancellations, COD restriction status, and blacklisted accounts (Invisible to Customers).",
+        tab5_sub: "Monitor consecutive cancellations, COD restriction status, and blacklisted accounts.",
         btn_refresh_risk: "Refresh Risk Profiles",
         th_cust_name: "Customer Name",
         th_phone: "Phone",
@@ -826,9 +826,9 @@
         th_risk_assessment: "Risk Assessment",
         th_entity_role: "Entity / Role",
         th_acc_holder: "Account Holder Name",
-        th_masked_acc: "Account Number (Masked)",
+        th_masked_acc: "Account Number",
         th_ifsc: "IFSC Code",
-        th_upi_id: "UPI ID (VPA)",
+        th_upi_id: "UPI ID",
         th_kyc_status: "KYC Status",
         th_action: "Verification Action",
         modal_vendor_title: "Vendor KYC Verification Details",
@@ -836,11 +836,11 @@
         modal_lbl_id_proof: "KYC ID Proof",
         modal_lbl_bank_acc: "Account Number",
         modal_lbl_ifsc: "IFSC Code",
-        modal_lbl_upi: "UPI ID (VPA)",
+        modal_lbl_upi: "UPI ID",
         modal_lbl_vehicle: "Vehicle Details",
         modal_btn_approve: "Approve Application",
         modal_btn_reject: "Reject Application",
-        modal_btn_ban: "Block / Ban User (Fraud Control)",
+        modal_btn_ban: "Block / Ban User",
         modal_btn_close: "Close",
         empty_vendors: "No pending vendor applications",
         empty_runners: "No pending runner applications",
@@ -861,7 +861,7 @@
     function updateAdminLanguageUI() {
       const isHi = AdminStore.lang === 'hi';
       const langText = document.getElementById('admin-current-lang-text');
-      if (langText) langText.innerText = isHi ? 'English' : 'हिंदी';
+      if (langText) langText.innerText = isHi ? 'हिंदी' : 'English';
 
       const dict = AdminI18N[AdminStore.lang] || AdminI18N.hi;
       document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -933,7 +933,7 @@
       }, 5000);
     }
 
-    async function refreshAdminData(showToastFeedback = true) {
+    async function refreshAdminData(showToastFeedback = false) {
       try {
         const [metrics, pendingVendors, pendingRunners, godviewOrders, ledgerData] = await Promise.all([
           adminFetch('/admin/metrics').catch(() => null),
@@ -956,7 +956,7 @@
         renderCommissionLedger();
 
         if (showToastFeedback) {
-          showToast('Data Synced', 'Super Admin Control Center updated');
+          showToast(AdminStore.lang === 'hi' ? 'डेटा सिंक हुआ' : 'Data Synced', AdminStore.lang === 'hi' ? 'सुपर एडमिन कंट्रोल सेंटर अपडेटेड' : 'Super Admin Control Center updated');
         }
       } catch (err) {
         console.warn('Admin refresh notice:', err);
@@ -1017,7 +1017,7 @@
                 <h3 class="text-sm font-black text-white">${v.name}</h3>
                 <span class="text-xs text-slate-400">${v.owner_name} • ${v.phone}</span>
               </div>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isApproved ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : isBanned ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30' : isPending ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-red-500/20 text-red-300 border border-red-500/30'}">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isApproved ? 'bg-emerald-500 text-slate-950 font-black border border-emerald-400' : isBanned ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30' : isPending ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-red-500/20 text-red-300 border border-red-500/30'}">
                 ${v.status}
               </span>
             </div>
@@ -1119,7 +1119,7 @@
                 <h3 class="text-sm font-black text-white">${r.name}</h3>
                 <span class="text-xs text-slate-400">${r.phone} • ${r.hub_name}</span>
               </div>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isApproved ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : isBanned ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30' : isPending ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-red-500/20 text-red-300 border border-red-500/30'}">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isApproved ? 'bg-emerald-500 text-slate-950 font-black border border-emerald-400' : isBanned ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30' : isPending ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-red-500/20 text-red-300 border border-red-500/30'}">
                 ${r.status}
               </span>
             </div>
@@ -1222,7 +1222,7 @@
       const statusBadge = document.getElementById('modal-kyc-status-badge');
       const st = (v.status || 'pending_approval').toLowerCase();
       statusBadge.innerText = st;
-      statusBadge.className = `px-2 py-0.5 rounded-full text-[10px] font-bold ${st === 'approved' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : st === 'banned' ? 'bg-rose-500/30 text-rose-300 border border-rose-500/40' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'}`;
+      statusBadge.className = `px-2 py-0.5 rounded-full text-[10px] font-bold ${st === 'approved' ? 'bg-emerald-500 text-slate-950 font-black border border-emerald-400' : st === 'banned' ? 'bg-rose-500/30 text-rose-300 border border-rose-500/40' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'}`;
 
       const photoEl = document.getElementById('modal-kyc-photo');
       const iconEl = document.getElementById('modal-kyc-icon');
@@ -1283,7 +1283,7 @@
       const statusBadge = document.getElementById('modal-kyc-status-badge');
       const st = (r.status || 'pending_approval').toLowerCase();
       statusBadge.innerText = st;
-      statusBadge.className = `px-2 py-0.5 rounded-full text-[10px] font-bold ${st === 'approved' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : st === 'banned' ? 'bg-rose-500/30 text-rose-300 border border-rose-500/40' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'}`;
+      statusBadge.className = `px-2 py-0.5 rounded-full text-[10px] font-bold ${st === 'approved' ? 'bg-emerald-500 text-slate-950 font-black border border-emerald-400' : st === 'banned' ? 'bg-rose-500/30 text-rose-300 border border-rose-500/40' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'}`;
 
       const photoEl = document.getElementById('modal-kyc-photo');
       const iconEl = document.getElementById('modal-kyc-icon');
@@ -1387,7 +1387,7 @@
           <td class="py-2.5 px-3 font-black text-white">₹${o.total_amount}</td>
           <td class="py-2.5 px-3 font-bold ${o.payment_mode === 'COD' ? 'text-amber-400' : 'text-emerald-400'}">${o.payment_mode}</td>
           <td class="py-2.5 px-3">
-            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${o.timeline_stage === 5 ? 'bg-emerald-500/20 text-emerald-300' : 'bg-blue-500/20 text-blue-300'}">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${o.timeline_stage === 5 ? 'bg-emerald-500 text-slate-950 font-black' : 'bg-blue-500/20 text-blue-300'}">
               Stage ${o.timeline_stage}: ${o.status}
             </span>
           </td>
@@ -1458,7 +1458,7 @@
           const isVendor = item.entity_type === 'vendor';
           const roleBadge = isVendor 
             ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">${isHi ? 'दुकानदार' : 'Vendor'}</span>`
-            : `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">${isHi ? 'गाँव मित्र' : 'Runner'}</span>`;
+            : `<span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-emerald-500 text-slate-950">${isHi ? 'गाँव मित्र' : 'Runner'}</span>`;
 
           const status = (item.verification_status || 'pending').toLowerCase();
           const pendingLabel = isHi ? 'सत्यापन लंबित' : 'Pending';
@@ -1466,7 +1466,7 @@
           const rejectedLabel = isHi ? 'अस्वीकृत' : 'Rejected';
           let statusBadge = `<span class="px-2.5 py-1 rounded-full text-[11px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1 w-fit"><span class="material-symbols-outlined text-[13px]">hourglass_top</span><span>${pendingLabel}</span></span>`;
           if (status === 'verified') {
-            statusBadge = `<span class="px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1 w-fit"><span class="material-symbols-outlined text-[13px]">verified</span><span>${verifiedLabel}</span></span>`;
+            statusBadge = `<span class="px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-500 text-slate-950 flex items-center gap-1 w-fit"><span class="material-symbols-outlined text-[13px] text-slate-950">verified</span><span>${verifiedLabel}</span></span>`;
           } else if (status === 'rejected') {
             statusBadge = `<span class="px-2.5 py-1 rounded-full text-[11px] font-black bg-rose-500/20 text-rose-300 border border-rose-500/40 flex items-center gap-1 w-fit"><span class="material-symbols-outlined text-[13px]">cancel</span><span>${rejectedLabel}</span></span>`;
           }
@@ -1500,7 +1500,7 @@
               <td class="py-3 px-3.5 text-right">
                 <div class="flex items-center justify-end gap-1.5">
                   ${status !== 'verified' ? `
-                    <button onclick="updatePayoutStatus('${item.entity_type}', '${item.entity_id}', 'verified')" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-black shadow-xs active:scale-95 transition-all">
+                    <button onclick="updatePayoutStatus('${item.entity_type}', '${item.entity_id}', 'verified')" class="px-2.5 py-1 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-[11px] font-black shadow-xs active:scale-95 transition-all">
                       ${isHi ? 'सत्यापित करें' : 'Verify'}
                     </button>
                   ` : ''}
@@ -1580,22 +1580,22 @@
 
         tbody.innerHTML = users.map(u => {
           const strikes = u.consecutive_cancellations || 0;
-          let strikeBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-black bg-emerald-500/20 text-emerald-400">0 ${isHi ? 'स्ट्राइक (सुरक्षित)' : 'Strikes (Clean)'}</span>`;
+          let strikeBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-black bg-emerald-500 text-slate-950">${isHi ? '0 स्ट्राइक • सुरक्षित' : '0 Strikes • Clean'}</span>`;
           if (strikes === 1) {
-            strikeBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-black bg-amber-500/20 text-amber-300">1 ${isHi ? 'स्ट्राइक (चेतावनी)' : 'Strike (Warning Sent)'}</span>`;
+            strikeBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-black bg-amber-500 text-slate-950">${isHi ? '1 स्ट्राइक • चेतावनी' : '1 Strike • Warning'}</span>`;
           } else if (strikes === 2) {
-            strikeBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-black bg-orange-500/20 text-orange-400">2 ${isHi ? 'स्ट्राइक (सीओडी ब्लॉक)' : 'Strikes (COD Blocked)'}</span>`;
+            strikeBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-black bg-orange-500 text-slate-950">${isHi ? '2 स्ट्राइक • सीओडी ब्लॉक' : '2 Strikes • COD Blocked'}</span>`;
           } else if (strikes >= 3) {
-            strikeBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-black bg-red-500/20 text-red-400">${strikes} ${isHi ? 'स्ट्राइक (ब्लैकलिस्ट)' : 'Strikes (Penalty & Blacklist)'}</span>`;
+            strikeBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-black bg-red-600 text-white">${strikes} ${isHi ? 'स्ट्राइक • ब्लैकलिस्ट' : 'Strikes • Blacklisted'}</span>`;
           }
 
           const codPill = u.is_cod_blocked 
-            ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-red-500/20 text-red-400">${isHi ? 'प्रतिबंधित' : 'Blocked'}</span>` 
-            : `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-400">${isHi ? 'अनुमति' : 'Allowed'}</span>`;
+            ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-red-600 text-white">${isHi ? 'प्रतिबंधित' : 'Blocked'}</span>` 
+            : `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500 text-slate-950">${isHi ? 'अनुमति' : 'Allowed'}</span>`;
 
           const accountPill = u.is_blacklisted 
-            ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-red-500/30 text-red-300 border border-red-500/40">${isHi ? 'ब्लैकलिस्टेड' : 'Blacklisted'}</span>` 
-            : `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-400">${isHi ? 'सक्रिय' : 'Active'}</span>`;
+            ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-red-600 text-white">${isHi ? 'ब्लैकलिस्टेड' : 'Blacklisted'}</span>` 
+            : `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500 text-slate-950">${isHi ? 'सक्रिय' : 'Active'}</span>`;
 
           const alertText = u.warning_alert || (isHi ? 'सामान्य खाता गतिविधि' : 'Normal account activity');
 

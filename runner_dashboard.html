@@ -4,7 +4,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛒</text></svg>"/>
     <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
-  <title>GaonBazaar - Gaon Mitra (गाँव मित्र) Delivery Partner Dashboard</title>
+  <title>गाँव मित्र • डिलीवरी पार्टनर डैशबोर्ड</title>
 
   <!-- Google Fonts: Plus Jakarta Sans & Noto Sans Devanagari -->
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -111,10 +111,10 @@
   <!-- ========================================================================= -->
   <!-- 0. SERVER DISCONNECTION / OFFLINE BANNER                                  -->
   <!-- ========================================================================= -->
-  <div id="runner-server-offline-banner" class="hidden sticky top-0 z-50 bg-red-600 text-white px-4 py-2 text-xs font-bold flex items-center justify-between shadow-md">
+  <div id="runner-server-offline-banner" class="hidden relative w-full shrink-0 z-40 bg-red-600 text-white px-4 py-2 text-xs font-bold flex items-center justify-between shadow-md">
     <div class="flex items-center gap-2">
       <span class="material-symbols-outlined text-[18px]">wifi_off</span>
-      <span id="runner-offline-msg" data-i18n="server_offline_msg">सर्वर से संपर्क नहीं हो पा रहा है (पोर्ट 8001)</span>
+      <span id="runner-offline-msg" data-i18n="server_offline_msg">सर्वर ऑफ़लाइन है। संपर्क नहीं हो पा रहा है।</span>
     </div>
     <button onclick="fetchAllRunnerData(true)" class="px-2.5 py-1 bg-white text-red-700 rounded-lg text-[11px] font-black active:scale-95 transition-all">
       <span id="runner-offline-retry-btn" data-i18n="server_offline_retry">पुनः प्रयास</span>
@@ -127,41 +127,45 @@
   <div id="runner-login-gate" class="fixed inset-0 z-30 w-full h-[100dvh] flex flex-col items-center justify-center p-3 sm:p-5 bg-slate-950 text-slate-100 overflow-y-auto">
     <div class="w-full max-w-sm bg-slate-900 rounded-3xl p-5 sm:p-6 border border-slate-800 shadow-2xl flex flex-col gap-4">
       
-      <!-- Brand & Title -->
-      <div class="flex items-center gap-3">
-        <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center shrink-0 shadow-md">
-          <span class="material-symbols-outlined text-[28px]">two_wheeler</span>
+      <!-- Brand & Title with Language Toggle -->
+      <div class="flex items-center justify-between gap-2">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center shrink-0 shadow-md">
+            <span class="material-symbols-outlined text-[28px]">two_wheeler</span>
+          </div>
+          <div>
+            <h2 class="text-base font-black text-white leading-tight" data-i18n="auth_gate_title">गाँव मित्र • डिलीवरी पार्टनर</h2>
+            <span class="text-xs text-amber-400/90 font-semibold" data-i18n="auth_gate_sub">गाँव मित्र प्रमाणीकरण प्रवेश</span>
+          </div>
         </div>
-        <div>
-          <h2 class="text-base font-black text-white leading-tight">गाँव मित्र • डिलीवरी पार्टनर</h2>
-          <span class="text-xs text-amber-400/90 font-semibold">Gaon Mitra Runner Login Gate</span>
-        </div>
+        <button type="button" onclick="toggleLanguage()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center gap-1 active:scale-95 shrink-0" title="Language">
+          <span class="material-symbols-outlined text-[16px]">translate</span>
+          <span class="current-lang-text-label">हिंदी</span>
+        </button>
       </div>
 
       <!-- Instructions -->
       <div class="bg-slate-800/80 rounded-2xl p-3 border border-slate-700 text-xs text-slate-300 flex items-start gap-2">
         <span class="material-symbols-outlined text-amber-400 text-[18px] shrink-0 mt-0.5">verified_user</span>
         <div>
-          <span class="font-bold text-white">प्रमाणित डिलीवरी पार्टनर गेट</span>
-          <p class="text-[11px] text-slate-400 mt-0.5">अपनी रनर ID और OTP द्वारा प्रमाणित होकर दैनिक डिलीवरी ड्यूटी शुरू करें।</p>
+          <span class="font-bold text-white" data-i18n="auth_gate_box_title">प्रमाणित डिलीवरी पार्टनर गेट</span>
+          <p class="text-[11px] text-slate-400 mt-0.5" data-i18n="auth_gate_box_sub">अपना गाँव मित्र नाम दर्ज करें और OTP द्वारा प्रमाणित होकर दैनिक डिलीवरी ड्यूटी शुरू करें।</p>
         </div>
       </div>
 
-      <!-- Runner Selector -->
+      <!-- Runner Name Input -->
       <div>
-        <label class="text-[11px] font-bold text-slate-400 block mb-1">रनर खाता चुनें (Select Runner) *</label>
-        <select id="login-runner-id-select" onchange="onLoginRunnerChange(this.value)" class="w-full px-3 py-2.5 text-xs sm:text-sm font-bold rounded-xl border border-slate-700 bg-slate-800 text-white focus:border-amber-400 outline-none">
-          <option value="gm_1">कमल सिंह (Kamal Singh) • #GM-RAMPUR-07</option>
-          <option value="gm_2">मोहन लाल (Mohan Lal) • #GM-RAMPUR-08</option>
-        </select>
+        <label class="text-[11px] font-bold text-slate-400 block mb-1" data-i18n="lbl_select_runner">गाँव मित्र का नाम *</label>
+        <input type="text" id="login-runner-name-input" placeholder="कमल सिंह" value="कमल सिंह" oninput="onLoginRunnerNameInput(this.value)" class="w-full px-3 py-2.5 text-xs sm:text-sm font-bold rounded-xl border border-slate-700 bg-slate-800 text-white focus:border-amber-400 outline-none" />
+        <input type="hidden" id="login-runner-id-select" value="gm_1" />
       </div>
 
       <!-- Mobile Phone -->
       <div>
-        <label class="text-[11px] font-bold text-slate-400 block mb-1">पंजीकृत मोबाइल नंबर (Mobile) *</label>
+        <label class="text-[11px] font-bold text-slate-400 block mb-1" data-i18n="lbl_runner_phone">पंजीकृत मोबाइल नंबर *</label>
         <div class="flex gap-2">
           <input type="tel" id="login-runner-phone" placeholder="9876543220" value="9876543220" class="flex-1 px-3 py-2.5 text-sm font-bold rounded-xl border border-slate-700 bg-slate-800 text-white focus:border-amber-400 outline-none" />
-          <button type="button" id="btn-send-login-runner-otp" onclick="handleSendLoginRunnerOtp()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 text-xs font-bold whitespace-nowrap active:scale-95 transition-all">
+          <button type="button" id="btn-send-login-runner-otp" onclick="handleSendLoginRunnerOtp()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 text-xs font-bold whitespace-nowrap active:scale-95 transition-all" data-i18n="btn_send_otp">
             OTP भेजें
           </button>
         </div>
@@ -169,9 +173,9 @@
 
       <!-- 6-digit OTP -->
       <div>
-        <label class="text-[11px] font-bold text-slate-400 block mb-1">6-अंकीय OTP कोड *</label>
+        <label class="text-[11px] font-bold text-slate-400 block mb-1" data-i18n="lbl_otp_code">6-अंकीय OTP कोड *</label>
         <input type="text" id="login-runner-otp" placeholder="123456" value="123456" maxlength="6" class="w-full px-3 py-2.5 text-sm font-mono font-bold tracking-widest text-center rounded-xl border border-slate-700 bg-slate-800 text-white focus:border-amber-400 outline-none" />
-        <span class="text-[10px] text-slate-400 mt-0.5 block text-center">डेमो कोड: 123456</span>
+        <span class="text-[10px] text-slate-400 mt-0.5 block text-center" data-i18n="otp_demo_hint">डेमो कोड: 123456</span>
       </div>
 
       <!-- Error box -->
@@ -185,10 +189,10 @@
 
       <!-- Registration link (with exact id for test_admin_e2e.py) -->
       <div class="pt-3 border-t border-slate-800 flex items-center justify-between text-xs">
-        <span class="text-slate-400">नया गाँव मित्र बनना चाहते हैं?</span>
+        <span class="text-slate-400" data-i18n="auth_new_runner_prompt">नया गाँव मित्र बनना चाहते हैं?</span>
         <button type="button" id="btn-open-runner-register" onclick="openRunnerRegisterModal()" class="font-bold text-amber-400 hover:underline flex items-center gap-1">
           <span class="material-symbols-outlined text-[16px]">person_add</span>
-          <span>+ नया पंजीकरण (KYC)</span>
+          <span data-i18n="btn_new_kyc_register">+ नया पंजीकरण</span>
         </button>
       </div>
 
@@ -234,30 +238,12 @@
         </div>
       </div>
 
-      <!-- Row 2: Secondary Hub Info & Quick Shortcuts Strip -->
+      <!-- Row 2: Secondary Hub Info Strip (No cross-app shortcuts or audio buttons) -->
       <div class="flex items-center justify-between gap-2 pt-1 border-t border-slate-800/80 text-xs">
         <span id="runner-hub-display" class="text-[10px] sm:text-[11px] text-slate-400 truncate flex items-center gap-1 min-w-0">
           <span class="material-symbols-outlined text-[12px] text-primary shrink-0">hub</span>
           <span class="truncate">रामपुर क्लस्टर हब #RMP-04</span>
         </span>
-
-        <div class="flex items-center gap-1.5 shrink-0">
-          <!-- Audio Alert Chime Toggle -->
-          <button id="audio-toggle-btn" onclick="toggleAudioAlerts()" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center justify-center transition-colors active:scale-95" title="ध्वनि अलर्ट">
-            <span class="material-symbols-outlined text-[15px]" id="audio-icon">volume_up</span>
-          </button>
-
-          <!-- Ecosystem Shortcuts -->
-          <a href="vendor_dashboard.html" target="_blank" title="Vendor Portal" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-slate-800 text-slate-300 border border-slate-700 flex items-center justify-center">
-            <span class="material-symbols-outlined text-[15px]">storefront</span>
-          </a>
-          <a href="admin_dashboard.html" target="_blank" title="Super Admin" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-slate-800 text-purple-400 border border-slate-700 flex items-center justify-center">
-            <span class="material-symbols-outlined text-[15px]">admin_panel_settings</span>
-          </a>
-          <a href="index.html" target="_blank" title="Customer App" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-slate-800 text-slate-300 border border-slate-700 flex items-center justify-center">
-            <span class="material-symbols-outlined text-[15px]">smartphone</span>
-          </a>
-        </div>
       </div>
 
     </div>
@@ -290,7 +276,7 @@
         सत्यापन प्रक्रियाधीन
       </span>
 
-      <h2 class="text-xl font-black text-white mb-1" id="pending-runner-name">सोनू कुमार (Sonu Kumar)</h2>
+      <h2 class="text-xl font-black text-white mb-1" id="pending-runner-name">सोनू कुमार</h2>
       <p class="text-xs text-slate-400 mb-4" id="pending-runner-code">गाँव मित्र कोड: #GM-RAMPUR-99</p>
 
       <div class="w-full bg-slate-950 rounded-2xl p-4 border border-amber-500/30 text-left text-xs text-slate-300 mb-5 flex flex-col gap-2">
@@ -310,10 +296,10 @@
       <div class="flex flex-col sm:flex-row items-center gap-2.5 w-full">
         <button id="btn-check-runner-status" onclick="checkCurrentRunnerApprovalStatus()" class="w-full py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-black shadow-md flex items-center justify-center gap-2 transition-all active:scale-95">
           <span class="material-symbols-outlined text-[18px]">refresh</span>
-          <span>स्वीकृति स्थिति जांचें (Check Status)</span>
+          <span data-i18n="btn_check_status">स्वीकृति स्थिति जांचें</span>
         </button>
-        <button onclick="switchRunner('gm_1')" class="w-full sm:w-auto px-4 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-all whitespace-nowrap border border-slate-700">
-          कमल सिंह (gm_1) पर स्विच करें
+        <button onclick="switchRunner('gm_1')" class="w-full sm:w-auto px-4 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-all whitespace-nowrap border border-slate-700" data-i18n="btn_switch_runner">
+          कमल सिंह पर स्विच करें
         </button>
       </div>
     </div>
@@ -372,21 +358,21 @@
     </section>
 
     <!-- ======================================================================= -->
-    <!-- 3. TAB 1: ACTIVE MISSIONS QUEUE (सक्रिय मिशन)                           -->
+    <!-- 3. TAB 1: ACTIVE MISSIONS QUEUE                                         -->
     <!-- ======================================================================= -->
     <section id="tab-missions" class="flex flex-col gap-3">
       
       <!-- Filter Bar & Refresh Indicator -->
       <div class="flex items-center justify-between gap-2 flex-wrap">
         <div class="flex items-center gap-1.5" id="mission-filter-group">
-          <button id="filter-btn-all" onclick="filterMissions('all')" class="mission-filter-pill px-3 py-1.5 rounded-full text-xs font-black bg-primary text-white border border-primary transition-all">
-            सभी मिशन (All)
+          <button id="filter-btn-all" onclick="filterMissions('all')" class="mission-filter-pill px-3 py-1.5 rounded-full text-xs font-black bg-primary text-white border border-primary transition-all" data-i18n="filter_all">
+            सभी मिशन
           </button>
-          <button id="filter-btn-pickup" onclick="filterMissions('pickup')" class="mission-filter-pill px-3 py-1.5 rounded-full text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 transition-all">
-            पिकअप बाकी (Pickup)
+          <button id="filter-btn-pickup" onclick="filterMissions('pickup')" class="mission-filter-pill px-3 py-1.5 rounded-full text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 transition-all" data-i18n="filter_pickup">
+            पिकअप बाकी
           </button>
-          <button id="filter-btn-transit" onclick="filterMissions('transit')" class="mission-filter-pill px-3 py-1.5 rounded-full text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 transition-all">
-            रास्ते में (In-Transit)
+          <button id="filter-btn-transit" onclick="filterMissions('transit')" class="mission-filter-pill px-3 py-1.5 rounded-full text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 transition-all" data-i18n="filter_transit">
+            रास्ते में
           </button>
         </div>
 
@@ -408,7 +394,7 @@
     </section>
 
     <!-- ======================================================================= -->
-    <!-- 4. TAB 2: ACTIVE MISSION DETAILS & LANDMARK (मिशन विवरण व लैंडमार्क)    -->
+    <!-- 4. TAB 2: ACTIVE MISSION DETAILS & LANDMARK                             -->
     <!-- ======================================================================= -->
     <section id="tab-detail" class="hidden flex-col gap-3.5">
       
@@ -462,7 +448,7 @@
         <div>
           <span class="text-[11px] font-bold text-slate-300 uppercase block mb-1.5 flex items-center gap-1">
             <span class="material-symbols-outlined text-[14px] text-primary">inventory_2</span>
-            <span data-i18n="package_contents_label">सामान चेकलिस्ट (Package Items)</span>
+            <span data-i18n="package_contents_label">सामान चेकलिस्ट</span>
           </span>
           <div id="detail-items-list" class="flex flex-col gap-1.5 bg-slate-900 rounded-2xl p-3 border border-slate-800">
             <!-- Items rendered dynamically -->
@@ -488,9 +474,9 @@
               <span class="material-symbols-outlined text-[24px]">person_pin_circle</span>
             </div>
             <div>
-              <span class="text-[10px] font-bold text-blue-400 uppercase tracking-wider block">चरण 2: ग्राहक डिलीवरी स्थल</span>
-              <h3 id="detail-customer-name" class="text-sm font-black text-white leading-tight">Ramesh Patel (रमेश पटेल)</h3>
-              <span id="detail-customer-village" class="text-xs text-slate-400">ग्राम पंचायत रामपुर (Rampur)</span>
+              <span class="text-[10px] font-bold text-blue-400 uppercase tracking-wider block" data-i18n="step2_delivery_dest">चरण 2: ग्राहक डिलीवरी स्थल</span>
+              <h3 id="detail-customer-name" class="text-sm font-black text-white leading-tight">रमेश पटेल</h3>
+              <span id="detail-customer-village" class="text-xs text-slate-400">ग्राम पंचायत रामपुर</span>
             </div>
           </div>
 
@@ -508,12 +494,12 @@
           </div>
           <div class="flex flex-col min-w-0">
             <span class="text-[11px] font-extrabold uppercase text-amber-900 tracking-wider flex items-center gap-1">
-              <span data-i18n="landmark_box_heading">गाँव का मुख्य पहचान स्थल (Rural Landmark)</span>
+              <span data-i18n="landmark_box_heading">गाँव का मुख्य पहचान स्थल</span>
             </span>
             <p id="runner-landmark-text" class="text-base sm:text-lg font-black text-slate-950 leading-snug mt-0.5">
               Near Shiva Mandir, Opp. Blue Water Tank, Khasra 42
             </p>
-            <span class="text-[11px] text-amber-800 font-bold mt-1">
+            <span class="text-[11px] text-amber-800 font-bold mt-1" data-i18n="landmark_box_sub">
               ✓ स्थानीय ग्रामीण मील का पत्थर • धूप में स्पष्ट दिखाई देने योग्य
             </span>
           </div>
@@ -524,12 +510,12 @@
           <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-amber-400 text-[24px]">payments</span>
             <div>
-              <span class="text-[10px] text-slate-400 font-bold uppercase block">भुगतान विधि (Payment)</span>
-              <span id="detail-payment-mode-label" class="text-xs font-black text-amber-300">💵 नकद वसूली (Cash on Delivery)</span>
+              <span class="text-[10px] text-slate-400 font-bold uppercase block" data-i18n="lbl_payment_method">भुगतान विधि</span>
+              <span id="detail-payment-mode-label" class="text-xs font-black text-amber-300">💵 नकद वसूली</span>
             </div>
           </div>
           <div class="text-right">
-            <span class="text-[10px] text-slate-400 font-bold uppercase block">वसूली योग्य राशि</span>
+            <span class="text-[10px] text-slate-400 font-bold uppercase block" data-i18n="lbl_collect_amount">वसूली योग्य राशि</span>
             <span id="detail-total-amount" class="text-lg font-black text-white">₹358.00</span>
           </div>
         </div>
@@ -541,9 +527,9 @@
           <div class="flex items-center justify-between">
             <span class="text-xs font-black text-emerald-400 flex items-center gap-1.5">
               <span class="material-symbols-outlined text-[18px]">verified_user</span>
-              <span data-i18n="otp_handover_heading">ग्राहक का 4-अंकीय डिलीवरी कोड (OTP)</span>
+              <span data-i18n="otp_handover_heading">ग्राहक का 4-अंकीय डिलीवरी कोड</span>
             </span>
-            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-bold">सुरक्षित हैंडओवर</span>
+            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-bold" data-i18n="badge_secure_handover">सुरक्षित हैंडओवर</span>
           </div>
 
           <!-- 4 Large Touch OTP Inputs -->
@@ -575,7 +561,7 @@
     </section>
 
     <!-- ======================================================================= -->
-    <!-- 5. TAB 3: SHIFT EARNINGS & COD SETTLEMENT LEDGER (कमाई व बहीखाता)      -->
+    <!-- 5. TAB 3: SHIFT EARNINGS & COD SETTLEMENT LEDGER                        -->
     <!-- ======================================================================= -->
     <section id="tab-ledger" class="hidden flex-col gap-3.5">
       
@@ -612,7 +598,7 @@
           </div>
 
           <div class="bg-slate-900 rounded-2xl p-3 border border-slate-800">
-            <span class="text-[10px] font-bold text-blue-400 uppercase block" data-i18n="ledger_stat_cod">नकद वसूली (COD)</span>
+            <span class="text-[10px] font-bold text-blue-400 uppercase block" data-i18n="ledger_stat_cod">नकद वसूली</span>
             <span id="ledger-cod-cash" class="text-xl font-black text-blue-300 mt-1 block">₹0.00</span>
             <span class="text-[9px] text-blue-400" data-i18n="ledger_stat_cod_sub">हब में जमा करें</span>
           </div>
@@ -730,7 +716,7 @@
         <div class="flex justify-end pt-1">
           <button id="btn-save-runner-bank" onclick="saveRunnerPayoutSettings()" class="px-5 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-xs font-black flex items-center gap-2 shadow-lg active:scale-95 transition-all">
             <span class="material-symbols-outlined text-[18px]">verified</span>
-            <span>बैंक व UPI विवरण सहेजें (Save Payout Settings)</span>
+            <span data-i18n="btn_save_runner_bank">बैंक व UPI विवरण सहेजें</span>
           </button>
         </div>
 
@@ -748,26 +734,26 @@
     <!-- Tab 1: Missions Queue -->
     <button id="nav-btn-missions" onclick="switchTab('missions')" class="flex flex-col items-center gap-1 py-1 px-3 rounded-2xl text-primary font-black transition-all">
       <span class="material-symbols-outlined text-[24px]">local_shipping</span>
-      <span class="text-[10px] tracking-wide" data-i18n="tab_missions">मिशन (Missions)</span>
+      <span class="text-[10px] tracking-wide" data-i18n="tab_missions">मिशन</span>
     </button>
 
     <!-- Tab 2: Mission Detail & Landmark -->
     <button id="nav-btn-detail" onclick="switchTab('detail')" class="flex flex-col items-center gap-1 py-1 px-3 rounded-2xl text-slate-400 font-bold hover:text-slate-200 transition-all">
       <span class="material-symbols-outlined text-[24px]">explore</span>
-      <span class="text-[10px] tracking-wide" data-i18n="tab_detail">लैंडमार्क (Landmark)</span>
+      <span class="text-[10px] tracking-wide" data-i18n="tab_detail">लैंडमार्क</span>
     </button>
 
     <!-- Tab 3: Shift Earnings & Ledger -->
     <button id="nav-btn-ledger" onclick="switchTab('ledger')" class="flex flex-col items-center gap-1 py-1 px-3 rounded-2xl text-slate-400 font-bold hover:text-slate-200 transition-all">
       <span class="material-symbols-outlined text-[24px]">account_balance_wallet</span>
-      <span class="text-[10px] tracking-wide" data-i18n="tab_ledger">बहीखाता (Ledger)</span>
+      <span class="text-[10px] tracking-wide" data-i18n="tab_ledger">बहीखाता</span>
     </button>
 
   
     <!-- Tab 4: Bank & UPI Settings -->
     <button id="nav-btn-settings" onclick="switchTab('settings')" class="flex flex-col items-center gap-1 py-1 px-3 rounded-2xl text-slate-400 font-bold hover:text-slate-200 transition-all">
       <span class="material-symbols-outlined text-[24px]">account_balance</span>
-      <span class="text-[10px] tracking-wide" data-i18n="tab_settings">बैंक खाता (Bank)</span>
+      <span class="text-[10px] tracking-wide" data-i18n="tab_settings">बैंक खाता</span>
     </button>
 
   </nav>
@@ -780,18 +766,18 @@
       <div class="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center">
         <span class="material-symbols-outlined text-[36px]">celebration</span>
       </div>
-      <h3 class="text-base font-black text-white" data-i18n="modal_success_title">सफल डिलीवरी! (Mission Completed)</h3>
+      <h3 class="text-base font-black text-white" data-i18n="modal_success_title">सफल डिलीवरी!</h3>
       <p id="modal-success-sub" class="text-xs text-slate-300">
         ऑर्डर सफलतापूर्वक ग्राहक के लैंडमार्क पर सौंपा गया।
       </p>
 
       <div class="bg-slate-800 rounded-2xl p-3 border border-slate-700 w-full flex items-center justify-between">
-        <span class="text-xs font-bold text-slate-400">आपकी आय (Commission)</span>
+        <span class="text-xs font-bold text-slate-400" data-i18n="modal_success_commission">आपकी आय</span>
         <span class="text-sm font-black text-emerald-400">+₹20.00</span>
       </div>
 
-      <button onclick="closeSuccessModal()" class="w-full py-3 rounded-xl bg-primary text-white text-xs font-black shadow-md mt-1">
-        अगला मिशन देखें (View Next Mission)
+      <button onclick="closeSuccessModal()" class="w-full py-3 rounded-xl bg-primary text-white text-xs font-black shadow-md mt-1" data-i18n="modal_btn_next">
+        अगला मिशन देखें
       </button>
     </div>
   </div>
@@ -852,8 +838,8 @@
             <span class="material-symbols-outlined text-[24px]">two_wheeler</span>
           </div>
           <div>
-            <h2 class="text-base font-black text-white">गाँव मित्र पंजीकरण (Runner Registration)</h2>
-            <p class="text-xs text-slate-400">ग्रामीण डिलीवरी नेटवर्क से जुड़ें • KYC सत्यापन अनिवार्य</p>
+            <h2 class="text-base font-black text-white" data-i18n="reg_runner_title">गाँव मित्र पंजीकरण</h2>
+            <p class="text-xs text-slate-400" data-i18n="reg_runner_sub">ग्रामीण डिलीवरी नेटवर्क से जुड़ें • KYC सत्यापन अनिवार्य</p>
           </div>
         </div>
         <button onclick="closeRunnerRegisterModal()" class="text-slate-400 hover:text-white p-1">
@@ -866,11 +852,11 @@
         <!-- Phone & OTP Verification -->
         <div class="grid grid-cols-3 gap-2">
           <div class="col-span-2">
-            <label class="font-bold text-slate-300 block mb-1">मोबाइल नंबर (Phone Number) *</label>
+            <label class="font-bold text-slate-300 block mb-1" data-i18n="reg_lbl_phone">मोबाइल नंबर *</label>
             <input type="tel" id="reg-runner-phone" placeholder="9876543220" value="9876500002" class="w-full px-3 py-2 text-xs font-semibold rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-primary outline-none" />
           </div>
           <div class="col-span-1 flex flex-col justify-end">
-            <button type="button" id="btn-send-runner-otp" onclick="handleSendRunnerOtp()" class="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-colors">
+            <button type="button" id="btn-send-runner-otp" onclick="handleSendRunnerOtp()" class="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-colors" data-i18n="btn_send_otp">
               OTP भेजें
             </button>
           </div>
@@ -878,19 +864,19 @@
 
         <!-- OTP Entry -->
         <div>
-          <label class="font-bold text-slate-300 block mb-1">OTP कोड (Verification Code) *</label>
-          <input type="text" id="reg-runner-otp" placeholder="6-digit OTP (e.g. 123456)" value="123456" maxlength="6" class="w-full px-3 py-2 text-xs font-mono font-bold tracking-widest rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-primary outline-none" />
+          <label class="font-bold text-slate-300 block mb-1" data-i18n="reg_lbl_otp">OTP कोड *</label>
+          <input type="text" id="reg-runner-otp" placeholder="123456" value="123456" maxlength="6" class="w-full px-3 py-2 text-xs font-mono font-bold tracking-widest rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-primary outline-none" />
         </div>
 
         <!-- Full Name & Hub Area -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <div>
-            <label class="font-bold text-slate-300 block mb-1">पूरा नाम (Full Name) *</label>
-            <input type="text" id="reg-runner-name" placeholder="उदा. सोनू कुमार (Sonu Kumar)" value="Sonu Kumar (सोनू कुमार)" class="w-full px-3 py-2 text-xs font-semibold rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-primary outline-none" />
+            <label class="font-bold text-slate-300 block mb-1" data-i18n="reg_lbl_name">पूरा नाम *</label>
+            <input type="text" id="reg-runner-name" placeholder="सोनू कुमार" value="सोनू कुमार" class="w-full px-3 py-2 text-xs font-semibold rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-primary outline-none" />
           </div>
           <div>
-            <label class="font-bold text-slate-300 block mb-1">क्लस्टर हब / कार्य क्षेत्र *</label>
-            <input type="text" id="reg-runner-area" placeholder="उदा. Rampur Mandi Cluster" value="Rampur Mandi Cluster" class="w-full px-3 py-2 text-xs font-semibold rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-primary outline-none" />
+            <label class="font-bold text-slate-300 block mb-1" data-i18n="reg_lbl_area">क्लस्टर हब / कार्य क्षेत्र *</label>
+            <input type="text" id="reg-runner-area" placeholder="Rampur Mandi Cluster" value="Rampur Mandi Cluster" class="w-full px-3 py-2 text-xs font-semibold rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-primary outline-none" />
           </div>
         </div>
 
@@ -979,7 +965,7 @@
     // Translations Dictionary
     const I18N = {
       hi: {
-        server_offline_msg: "सर्वर से संपर्क नहीं हो पा रहा है (पोर्ट 8001)",
+        server_offline_msg: "सर्वर ऑफ़लाइन है। संपर्क नहीं हो पा रहा है।",
         server_offline_retry: "पुनः प्रयास",
         shift_online: "ड्यूटी चालू",
         shift_offline: "ड्यूटी बंद",
@@ -998,6 +984,11 @@
         package_contents_label: "सामान चेकलिस्ट",
         call_customer_btn: "ग्राहक को कॉल करें",
         landmark_box_heading: "गाँव का मुख्य पहचान स्थल",
+        landmark_box_sub: "✓ स्थानीय ग्रामीण मील का पत्थर • धूप में स्पष्ट दिखाई देने योग्य",
+        step2_delivery_dest: "चरण 2: ग्राहक डिलीवरी स्थल",
+        lbl_payment_method: "भुगतान विधि",
+        lbl_collect_amount: "वसूली योग्य राशि",
+        badge_secure_handover: "सुरक्षित हैंडओवर",
         otp_handover_heading: "ग्राहक से 4-अंकीय OTP लें",
         cod_collected_confirm: "ग्राहक से पूरी नकद राशि प्राप्त कर ली गई है",
         verify_delivery_btn: "सत्यापित करें व डिलीवरी पूरी करें (+₹20 आय)",
@@ -1021,6 +1012,8 @@
         bank_lbl_upi: "UPI ID (VPA) *",
         bank_hint_upi: "तत्काल कमीशन क्रेडिट व सेटलमेंट हेतु",
         modal_success_title: "सफल डिलीवरी!",
+        modal_success_commission: "आपकी आय",
+        modal_btn_next: "अगला मिशन देखें",
         btn_login_submit: "लॉगिन करके ड्यूटी शुरू करें",
         kpi_per_order_payout: "₹20 प्रति सफल डिलीवरी",
         btn_bank_settings: "बैंक सेटिंग्स",
@@ -1028,7 +1021,7 @@
         ledger_stat_completed_sub: "सफल मिशन",
         ledger_stat_payout: "रनर कुल आय",
         ledger_stat_payout_sub: "₹20 प्रति डिलीवरी",
-        ledger_stat_cod: "नकद वसूली (COD)",
+        ledger_stat_cod: "नकद वसूली",
         ledger_stat_cod_sub: "हब में जमा करें",
         ledger_stat_distance: "दूरी (कि.मी.)",
         ledger_stat_distance_sub: "अनुमानित दायरा",
@@ -1044,10 +1037,32 @@
         deposit_deliveries: "आज की कुल डिलीवरी",
         deposit_total_cod: "हब को देय नकद",
         deposit_runner_earnings: "रनर कुल पारिश्रमिक",
-        deposit_btn_close: "बंद करें"
+        deposit_btn_close: "बंद करें",
+        filter_all: "सभी मिशन",
+        filter_pickup: "पिकअप बाकी",
+        filter_transit: "रास्ते में",
+        btn_check_status: "स्वीकृति स्थिति जांचें",
+        btn_switch_runner: "कमल सिंह पर स्विच करें",
+        btn_save_runner_bank: "बैंक व UPI विवरण सहेजें",
+        reg_runner_title: "गाँव मित्र पंजीकरण",
+        reg_runner_sub: "ग्रामीण डिलीवरी नेटवर्क से जुड़ें • KYC सत्यापन अनिवार्य",
+        reg_lbl_phone: "मोबाइल नंबर *",
+        reg_lbl_otp: "OTP कोड *",
+        reg_lbl_name: "पूरा नाम *",
+        reg_lbl_area: "क्लस्टर हब / कार्य क्षेत्र *",
+        btn_send_otp: "OTP भेजें",
+        auth_gate_title: "गाँव मित्र • डिलीवरी पार्टनर",
+        auth_gate_sub: "गाँव मित्र प्रमाणीकरण प्रवेश",
+        auth_gate_box_title: "प्रमाणित डिलीवरी पार्टनर गेट",
+        auth_gate_box_sub: "अपनी रनर ID और OTP द्वारा प्रमाणित होकर दैनिक डिलीवरी ड्यूटी शुरू करें।",
+        lbl_select_runner: "रनर खाता चुनें *",
+        lbl_otp_code: "6-अंकीय OTP कोड *",
+        otp_demo_hint: "डेमो कोड: 123456",
+        auth_new_runner_prompt: "नया गाँव मित्र बनना चाहते हैं?",
+        btn_new_kyc_register: "+ नया पंजीकरण"
       },
       en: {
-        server_offline_msg: "Backend Server Offline (Port 8001)",
+        server_offline_msg: "Backend server offline. Unable to connect.",
         server_offline_retry: "Retry",
         shift_online: "Duty Online",
         shift_offline: "Duty Offline",
@@ -1058,7 +1073,7 @@
         kpi_delivered_today: "Delivered Today",
         kpi_verified_handover: "OTP Verified",
         kpi_shift_earnings: "Today's Earnings",
-        kpi_cod_cash: "COD Cash in Hand",
+        kpi_cod_cash: "Cash in Hand",
         kpi_deposit_due: "Deposit at Cluster Hub",
         auto_sync_label: "Live 4s Auto-Sync",
         active_mission_label: "Active Mission",
@@ -1066,6 +1081,11 @@
         package_contents_label: "Package Items Checklist",
         call_customer_btn: "Call Customer",
         landmark_box_heading: "Rural Landmark & Drop-off Point",
+        landmark_box_sub: "✓ Local Rural Landmark • Clearly visible in sunlight",
+        step2_delivery_dest: "Step 2: Customer Delivery Destination",
+        lbl_payment_method: "Payment Method",
+        lbl_collect_amount: "Collection Amount",
+        badge_secure_handover: "Secure Handover",
         otp_handover_heading: "Customer 4-digit Delivery OTP",
         cod_collected_confirm: "Cash payment collected from customer",
         verify_delivery_btn: "Verify OTP & Complete Delivery (+₹20)",
@@ -1089,6 +1109,8 @@
         bank_lbl_upi: "UPI ID (VPA) *",
         bank_hint_upi: "For instant commission credit and settlement",
         modal_success_title: "Delivery Completed!",
+        modal_success_commission: "Your Earnings",
+        modal_btn_next: "View Next Mission",
         btn_login_submit: "Login to Shift",
         kpi_per_order_payout: "₹20 / Delivered Order",
         btn_bank_settings: "Bank Settings",
@@ -1096,7 +1118,7 @@
         ledger_stat_completed_sub: "Completed Missions",
         ledger_stat_payout: "Runner Earnings",
         ledger_stat_payout_sub: "₹20 / Delivery",
-        ledger_stat_cod: "COD Cash in Hand",
+        ledger_stat_cod: "Cash in Hand",
         ledger_stat_cod_sub: "Deposit to Hub",
         ledger_stat_distance: "Distance (km)",
         ledger_stat_distance_sub: "Estimated Range",
@@ -1112,61 +1134,39 @@
         deposit_deliveries: "Today's Total Deliveries",
         deposit_total_cod: "COD Cash Due to Hub",
         deposit_runner_earnings: "Runner Shift Earnings",
-        deposit_btn_close: "Close"
+        deposit_btn_close: "Close",
+        filter_all: "All Missions",
+        filter_pickup: "Pickup",
+        filter_transit: "In-Transit",
+        btn_check_status: "Check Approval Status",
+        btn_switch_runner: "Switch to Kamal Singh",
+        btn_save_runner_bank: "Save Bank & UPI Details",
+        reg_runner_title: "Runner Registration",
+        reg_runner_sub: "Join Rural Delivery Network • KYC Verification Required",
+        reg_lbl_phone: "Phone Number *",
+        reg_lbl_otp: "OTP Code *",
+        reg_lbl_name: "Full Name *",
+        reg_lbl_area: "Cluster Hub / Delivery Area *",
+        btn_send_otp: "Send OTP",
+        auth_gate_title: "Gaon Mitra • Delivery Partner",
+        auth_gate_sub: "Gaon Mitra Authentication Gate",
+        auth_gate_box_title: "Certified Delivery Partner Gate",
+        auth_gate_box_sub: "Authenticate with Runner ID & OTP to begin daily delivery shift.",
+        lbl_select_runner: "Select Runner Account *",
+        lbl_otp_code: "6-digit OTP Code *",
+        otp_demo_hint: "Demo code: 123456",
+        auth_new_runner_prompt: "Want to become a new Gaon Mitra?",
+        btn_new_kyc_register: "+ New KYC Registration"
       }
     };
 
-    // --- 9.2 WEB AUDIO API CHIME SYNTHESIZER ---
+    // --- 9.2 AUDIO NOTIFICATIONS (Silent Mode Enforced) ---
     function playChime(type = 'alert') {
-      if (!RunnerStore.audioEnabled) return;
-      try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (type === 'alert') {
-          // Alert note (Two-tone horn)
-          const osc1 = audioCtx.createOscillator();
-          const gain1 = audioCtx.createGain();
-          osc1.type = 'triangle';
-          osc1.frequency.setValueAtTime(660, audioCtx.currentTime);
-          osc1.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15);
-          gain1.gain.setValueAtTime(0.3, audioCtx.currentTime);
-          gain1.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
-          osc1.connect(gain1);
-          gain1.connect(audioCtx.destination);
-          osc1.start();
-          osc1.stop(audioCtx.currentTime + 0.6);
-        } else if (type === 'success') {
-          // Success celebration chime (C5 -> E5 -> G5 chord)
-          [523.25, 659.25, 783.99].forEach((freq, idx) => {
-            setTimeout(() => {
-              const osc = audioCtx.createOscillator();
-              const gain = audioCtx.createGain();
-              osc.type = 'sine';
-              osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-              gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-              gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
-              osc.connect(gain);
-              gain.connect(audioCtx.destination);
-              osc.start();
-              osc.stop(audioCtx.currentTime + 0.5);
-            }, idx * 120);
-          });
-        }
-      } catch (e) {
-        console.warn('Audio chime warning:', e);
-      }
+      // Audio chime completely silenced per UI specification
     }
 
     function toggleAudioAlerts() {
-      RunnerStore.audioEnabled = !RunnerStore.audioEnabled;
-      const icon = document.getElementById('audio-icon');
-      if (icon) {
-        icon.innerText = RunnerStore.audioEnabled ? 'volume_up' : 'volume_off';
-      }
-      showToast(
-        RunnerStore.audioEnabled ? 'ध्वनि अलर्ट चालू (Sound ON)' : 'ध्वनि अलर्ट बंद (Sound OFF)',
-        RunnerStore.audioEnabled ? 'नए मिशन पर हॉर्न बजेगा' : 'ध्वनि म्यूट कर दी गई है'
-      );
-      if (RunnerStore.audioEnabled) playChime('alert');
+      // Audio chime completely silenced per UI specification
     }
 
     // --- 9.3 API CLIENT WRAPPER (Network-Accurate Heartbeat & Zero False Positives) ---
@@ -1231,11 +1231,12 @@
 
     function handleSendLoginRunnerOtp() {
       const phone = document.getElementById('login-runner-phone')?.value.trim();
+      const isHi = RunnerStore.lang === 'hi';
       if (!phone || phone.length < 10) {
-        showToast('त्रुटि (Error)', 'कृपया 10-अंकीय मोबाइल नंबर दर्ज करें');
+        showToast(isHi ? 'त्रुटि' : 'Error', isHi ? 'कृपया 10-अंकीय मोबाइल नंबर दर्ज करें' : 'Please enter 10-digit mobile number');
         return;
       }
-      showToast('OTP भेजा गया', `सत्यापन कोड 123456 मोबाइल ${phone} पर भेजा गया है`);
+      showToast(isHi ? 'OTP भेजा गया' : 'OTP Sent', isHi ? `सत्यापन कोड 123456 मोबाइल ${phone} पर भेजा गया है` : `Verification code 123456 sent to ${phone}`);
     }
 
     async function handleRunnerLogin() {
@@ -1243,18 +1244,19 @@
       const phone = document.getElementById('login-runner-phone')?.value.trim();
       const otp = document.getElementById('login-runner-otp')?.value.trim();
       const errEl = document.getElementById('login-runner-error');
+      const isHi = RunnerStore.lang === 'hi';
       if (errEl) errEl.classList.add('hidden');
 
       if (!phone || phone.length < 10) {
         if (errEl) {
-          errEl.innerText = 'कृपया 10-अंकीय वैध मोबाइल नंबर दर्ज करें (Enter 10-digit phone)';
+          errEl.innerText = isHi ? 'कृपया 10-अंकीय वैध मोबाइल नंबर दर्ज करें' : 'Please enter valid 10-digit mobile number';
           errEl.classList.remove('hidden');
         }
         return;
       }
       if (!otp || otp.length < 4) {
         if (errEl) {
-          errEl.innerText = 'कृपया 6-अंकीय OTP कोड दर्ज करें (Enter valid OTP)';
+          errEl.innerText = isHi ? 'कृपया 6-अंकीय OTP कोड दर्ज करें' : 'Please enter valid 6-digit OTP';
           errEl.classList.remove('hidden');
         }
         return;
@@ -1303,11 +1305,11 @@
           if (RunnerStore.isOnline) fetchAllRunnerData(false);
         }, 4000);
 
-        showToast('लॉगिन सफल (Login Successful)', `${runner.name} • ड्यूटी में स्वागत है`);
+        showToast(isHi ? 'लॉगिन सफल' : 'Login Successful', isHi ? `${runner.name} • ड्यूटी में स्वागत है` : `${runner.name} • Welcome to shift`);
       } catch (e) {
         console.error('Runner login error:', e);
         if (errEl) {
-          errEl.innerText = e.message || 'लॉगिन विफल (Login failed)';
+          errEl.innerText = e.message || (isHi ? 'लॉगिन विफल' : 'Login failed');
           errEl.classList.remove('hidden');
         }
       }
@@ -1440,11 +1442,12 @@
 
     function handleSendRunnerOtp() {
       const phone = document.getElementById('reg-runner-phone')?.value.trim();
+      const isHi = RunnerStore.lang === 'hi';
       if (!phone || phone.length < 10) {
-        showToast('त्रुटि (Error)', 'कृपया 10-अंकीय मोबाइल नंबर दर्ज करें');
+        showToast(isHi ? 'त्रुटि' : 'Error', isHi ? 'कृपया 10-अंकीय मोबाइल नंबर दर्ज करें' : 'Please enter 10-digit phone number');
         return;
       }
-      showToast('OTP भेजा गया', `सत्यापन कोड 123456 मोबाइल ${phone} पर भेजा गया है`);
+      showToast(isHi ? 'OTP भेजा गया' : 'OTP Sent', isHi ? `सत्यापन कोड 123456 मोबाइल ${phone} पर भेजा गया है` : `Verification code 123456 sent to ${phone}`);
     }
 
     async function submitRunnerRegistration() {
@@ -1458,9 +1461,10 @@
       const idNumber = document.getElementById('reg-runner-id')?.value.trim();
       const photoUrl = document.getElementById('reg-runner-photo')?.value.trim();
       const payoutUpi = document.getElementById('reg-runner-upi')?.value.trim();
+      const isHi = RunnerStore.lang === 'hi';
 
       if (!phone || !otp || !name || !vehicleNumber || !idNumber || !payoutUpi) {
-        showToast('चेतावनी (Notice)', 'कृपया सभी आवश्यक फ़ील्ड भरें (Please fill all fields)');
+        showToast(isHi ? 'चेतावनी' : 'Notice', isHi ? 'कृपया सभी आवश्यक फ़ील्ड भरें' : 'Please fill all required fields');
         return;
       }
 
@@ -1482,7 +1486,7 @@
         });
 
         closeRunnerRegisterModal();
-        showToast('पंजीकरण सफल', res.message);
+        showToast(isHi ? 'पंजीकरण सफल' : 'Registration Successful', res.message);
 
         RunnerStore.runnerId = res.runner_id;
         if (res.token) {
@@ -1533,15 +1537,16 @@
         if (pId) pId.innerText = `${idType} ${idNumber}`;
         if (pUpi) pUpi.innerText = payoutUpi;
       } catch (err) {
-        showToast('त्रुटि', 'Registration failed: ' + err.message);
+        showToast(isHi ? 'त्रुटि' : 'Error', (isHi ? 'पंजीकरण विफल: ' : 'Registration failed: ') + err.message);
       }
     }
 
     async function checkCurrentRunnerApprovalStatus() {
+      const isHi = RunnerStore.lang === 'hi';
       try {
         const res = await runnerApiFetch(`/runner/status/${encodeURIComponent(RunnerStore.runnerId)}`);
         if (res.can_access || res.status === 'approved') {
-          showToast('गाँव मित्र स्वीकृत!', 'सुपर एडमिन द्वारा सत्यापन पूर्ण। मिशन कतार अनलॉक हो गई है।');
+          showToast(isHi ? 'गाँव मित्र स्वीकृत!' : 'Gaon Mitra Approved!', isHi ? 'सुपर एडमिन द्वारा सत्यापन पूर्ण। मिशन कतार अनलॉक हो गई है।' : 'Verification completed by Super Admin. Mission queue unlocked.');
           const pendingView = document.getElementById('runner-pending-view');
           if (pendingView) {
             pendingView.classList.add('hidden');
@@ -1559,14 +1564,15 @@
           }
           await fetchAllRunnerData(true);
         } else {
-          showToast('सत्यापन विचाराधीन', res.message || 'आवेदन अभी सत्यापन हेतु विचाराधीन है।');
+          showToast(isHi ? 'सत्यापन विचाराधीन' : 'Verification Pending', res.message || (isHi ? 'आवेदन अभी सत्यापन हेतु विचाराधीन है।' : 'Application is currently under verification.'));
         }
       } catch (e) {
-        showToast('त्रुटि (Error)', e.message);
+        showToast(isHi ? 'त्रुटि' : 'Error', e.message);
       }
     }
 
     async function switchRunner(runnerId) {
+      const isHi = RunnerStore.lang === 'hi';
       RunnerStore.runnerId = runnerId;
       localStorage.setItem('gaonbazar_runner_id', runnerId);
       const sessStr = localStorage.getItem('gaonbazar_runner_session');
@@ -1578,7 +1584,7 @@
         } catch (e) {}
       }
       await fetchAllRunnerData(true);
-      showToast('रनर बदला गया', `सक्रिय रनर ID: ${runnerId}`);
+      showToast(isHi ? 'रनर बदला गया' : 'Runner Switched', isHi ? `सक्रिय रनर ID: ${runnerId}` : `Active Runner ID: ${runnerId}`);
     }
 
     // --- 9.4 BOOTSTRAP & INITIAL LOAD ---
@@ -1594,10 +1600,11 @@
 
     async function fetchAllRunnerData(showFullFeedback = true) {
       try {
+        const isHi = RunnerStore.lang === 'hi';
         const [profile, missions, ledger] = await Promise.all([
           runnerApiFetch(`/runner/profile?runner_id=${RunnerStore.runnerId}`).catch(() => ({
             runner_id: RunnerStore.runnerId || 'gm_1',
-            name: (RunnerStore.runnerId && RunnerStore.runnerId !== 'gm_1') ? 'रनर सत्यापन विचाराधीन' : 'Kamal Singh (कमल सिंह)',
+            name: (RunnerStore.runnerId && RunnerStore.runnerId !== 'gm_1') ? (isHi ? 'रनर सत्यापन विचाराधीन' : 'Runner Verification Pending') : (isHi ? 'कमल सिंह' : 'Kamal Singh'),
             status: (RunnerStore.runnerId && RunnerStore.runnerId !== 'gm_1') ? 'pending_approval' : 'approved',
             runner_code: '#GM-RAMPUR-07',
             hub_name: 'Rampur Mandi Cluster Hub #RMP-04',
@@ -1745,7 +1752,7 @@
       const container = document.getElementById('missions-container');
       if (!container) return;
 
-      let list = [...RunnerStore.missions];
+      let list = [...(RunnerStore.missions || [])];
 
       if (RunnerStore.missionFilter === 'pickup') {
         list = list.filter(m => m.timeline_stage === 3);
@@ -1753,13 +1760,15 @@
         list = list.filter(m => m.timeline_stage === 4);
       }
 
+      const isHi = RunnerStore.lang === 'hi';
+
       if (list.length === 0) {
         container.innerHTML = `
           <div class="bg-slate-800 rounded-3xl p-8 border border-slate-700 text-center flex flex-col items-center justify-center gap-2">
             <span class="material-symbols-outlined text-[48px] text-slate-600">check_circle</span>
-            <h3 class="text-sm font-black text-white">कोई लंबित मिशन नहीं है (All Caught Up)</h3>
+            <h3 class="text-sm font-black text-white">${isHi ? 'कोई लंबित मिशन नहीं है' : 'No Pending Missions'}</h3>
             <p class="text-xs text-slate-400 max-w-xs">
-              जैसे ही दुकानदार सामान पैक करेगा, नया पिकअप मिशन घंटी के साथ यहाँ दिखाई देगा।
+              ${isHi ? 'जैसे ही दुकानदार सामान पैक करेगा, नया पिकअप मिशन यहाँ दिखाई देगा।' : 'New pickup missions will appear here as soon as stores pack items.'}
             </p>
           </div>
         `;
@@ -1768,7 +1777,7 @@
 
       container.innerHTML = list.map(mission => {
         const isStage3 = mission.timeline_stage === 3;
-        const stageLabel = isStage3 ? 'दुकान से पिकअप बाकी' : 'रास्ते में (In-Transit)';
+        const stageLabel = isStage3 ? (isHi ? 'दुकान से पिकअप बाकी' : 'Pickup Pending') : (isHi ? 'रास्ते में' : 'In-Transit');
         const stageBadgeClass = isStage3 ? 'bg-amber-500/20 text-amber-300 border-amber-500/30' : 'bg-blue-500/20 text-blue-300 border-blue-500/30';
         const dist = typeof mission.distance_km === 'number' ? mission.distance_km : 1.2;
         const etaText = mission.eta_mins || (dist > 5.0 ? '45-60 Mins' : '30 Mins');
@@ -1781,7 +1790,7 @@
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <span class="font-mono font-black text-sm text-white">${mission.id}</span>
-                <span class="text-[10px] bg-slate-700 text-slate-300 px-2 py-0.5 rounded-full font-bold">${mission.items_count} सामान</span>
+                <span class="text-[10px] bg-slate-700 text-slate-300 px-2 py-0.5 rounded-full font-bold">${mission.items_count} ${isHi ? 'सामान' : 'Items'}</span>
                 <span class="text-[10px] bg-slate-700/60 text-slate-300 px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
                   <span class="material-symbols-outlined text-[11px]">schedule</span>
                   <span>${etaText}</span>
@@ -1800,7 +1809,7 @@
               <div class="bg-slate-900/80 rounded-2xl p-2.5 border border-slate-800 flex items-center gap-2">
                 <span class="material-symbols-outlined text-emerald-400 text-[20px] shrink-0">store</span>
                 <div class="min-w-0">
-                  <span class="text-[10px] text-slate-400 block font-medium">पिकअप दुकान</span>
+                  <span class="text-[10px] text-slate-400 block font-medium">${isHi ? 'पिकअप दुकान' : 'Pickup Store'}</span>
                   <span class="font-bold text-white truncate block">${mission.store_name}</span>
                 </div>
               </div>
@@ -1820,13 +1829,13 @@
             <div class="flex items-center justify-between border-t border-slate-700/60 pt-2.5">
               <div class="flex items-center gap-1.5">
                 <span class="text-xs font-black ${mission.payment_mode === 'COD' ? 'text-amber-400' : 'text-emerald-400'}">
-                  ${mission.payment_mode === 'COD' ? `💵 ₹${mission.total_amount} नकद (COD)` : `📱 ऑनलाइन UPI`}
+                  ${mission.payment_mode === 'COD' ? `💵 ₹${mission.total_amount} ${isHi ? 'नकद' : 'COD'}` : (isHi ? '📱 ऑनलाइन भुगतान' : '📱 Online Paid')}
                 </span>
-                <span class="text-[10px] text-purple-400 font-bold ml-1">• +₹${comm} आय</span>
+                <span class="text-[10px] text-purple-400 font-bold ml-1">• +₹${comm} ${isHi ? 'आय' : 'Fee'}</span>
               </div>
 
               <button class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-primary text-white flex items-center gap-1 shadow-sm">
-                <span>${isStage3 ? 'पिकअप करें' : 'लैंडमार्क देखें'}</span>
+                <span>${isStage3 ? (isHi ? 'पिकअप करें' : 'Pickup') : (isHi ? 'लैंडमार्क देखें' : 'View Landmark')}</span>
                 <span class="material-symbols-outlined text-[16px]">chevron_right</span>
               </button>
             </div>
@@ -1861,6 +1870,7 @@
     function renderMissionDetail() {
       const m = RunnerStore.selectedMission;
       if (!m) return;
+      const isHi = RunnerStore.lang === 'hi';
 
       const elOrderId = document.getElementById('detail-order-id');
       const elStageBadge = document.getElementById('detail-stage-badge');
@@ -1889,21 +1899,20 @@
       if (elBtnCallStore) elBtnCallStore.href = `tel:${m.store_phone || '9876543210'}`;
 
       if (elCustName) elCustName.innerText = m.user_name;
-      if (elCustVillage) elCustVillage.innerText = `ग्राम पंचायत: ${m.village}`;
+      if (elCustVillage) elCustVillage.innerText = isHi ? `ग्राम पंचायत: ${m.village}` : `Village: ${m.village}`;
       if (elBtnCallCust) elBtnCallCust.href = `tel:${m.user_phone || '9876543210'}`;
       if (elLandmarkText) elLandmarkText.innerText = m.landmark;
       if (elTotalAmt) elTotalAmt.innerText = `₹${m.total_amount}.00`;
       if (elHighlightAmt) elHighlightAmt.innerText = `(₹${m.total_amount}.00)`;
 
-      const isHi = RunnerStore.lang === 'hi';
       const elVerifyBtnText = document.querySelector('[data-i18n="verify_delivery_btn"]');
       if (elVerifyBtnText) {
-        elVerifyBtnText.innerText = isHi ? `डिलीवरी पूर्ण करें (+₹${comm} आय)` : `Complete Delivery (+₹${comm})`;
+        elVerifyBtnText.innerText = isHi ? `सत्यापित करें व डिलीवरी पूरी करें (+₹${comm} आय)` : `Verify & Complete Delivery (+₹${comm})`;
       }
       if (elPayMode) {
         elPayMode.innerText = m.payment_mode === 'COD' 
-          ? (isHi ? '💵 नकद वसूली (COD)' : '💵 Cash on Delivery (COD)')
-          : (isHi ? '✅ ऑनलाइन भुगतान' : '✅ Online Paid (UPI)');
+          ? (isHi ? '💵 नकद वसूली' : '💵 Cash on Delivery')
+          : (isHi ? '✅ ऑनलाइन भुगतान' : '✅ Online Paid');
         elPayMode.className = `text-xs font-black ${m.payment_mode === 'COD' ? 'text-amber-300' : 'text-emerald-400'}`;
       }
 
@@ -1943,6 +1952,7 @@
     async function handleConfirmPickup() {
       const m = RunnerStore.selectedMission;
       if (!m) return;
+      const isHi = RunnerStore.lang === 'hi';
 
       try {
         const updated = await runnerApiFetch(`/runner/orders/${encodeURIComponent(m.id)}/pickup`, {
@@ -1956,15 +1966,14 @@
         renderMissionDetail();
         renderMissionsQueue();
         updateHeaderAndKPISummary();
-        playChime('alert');
-        showToast('पिकअप पूर्ण!', 'अब ग्राहक के लैंडमार्क की ओर प्रस्थान करें।');
+        showToast(isHi ? 'पिकअप पूर्ण!' : 'Pickup Complete!', isHi ? 'अब ग्राहक के लैंडमार्क की ओर प्रस्थान करें।' : 'Now head towards the customer landmark.');
       } catch (err) {
         // Optimistic fallback
         m.timeline_stage = 4;
         m.status = "Out for Delivery";
         renderMissionDetail();
         renderMissionsQueue();
-        showToast('पिकअप स्थिति अपडेट', 'ऑर्डर रास्ते में दर्ज किया गया');
+        showToast(isHi ? 'पिकअप स्थिति अपडेट' : 'Pickup Updated', isHi ? 'ऑर्डर रास्ते में दर्ज किया गया' : 'Order marked in-transit');
       }
     }
 
@@ -2017,16 +2026,17 @@
     async function handleVerifyHandover() {
       const m = RunnerStore.selectedMission;
       if (!m) return;
+      const isHi = RunnerStore.lang === 'hi';
 
       const otp = getEnteredOtp();
       if (otp.length !== 4) {
-        showToast('त्रुटि (Error)', 'कृपया पूरा 4-अंकीय OTP दर्ज करें (Enter 4-digit OTP)');
+        showToast(isHi ? 'त्रुटि' : 'Error', isHi ? 'कृपया पूरा 4-अंकीय OTP दर्ज करें' : 'Please enter 4-digit OTP');
         return;
       }
 
       const isCodChecked = document.getElementById('cb-cod-confirm')?.checked;
       if (m.payment_mode === 'COD' && !isCodChecked) {
-        showToast('चेतावनी (Notice)', 'कृपया नकद वसूली की पुष्टि चेक करें (Confirm Cash Collection)');
+        showToast(isHi ? 'चेतावनी' : 'Notice', isHi ? 'कृपया नकद वसूली की पुष्टि चेक करें' : 'Please confirm cash collection');
         return;
       }
 
@@ -2039,7 +2049,6 @@
           })
         });
 
-        playChime('success');
         clearOtpInputs();
 
         // Remove from active missions list
@@ -2053,7 +2062,7 @@
         fetchAllRunnerData(false);
 
       } catch (err) {
-        showToast('त्रुटि', err.message || 'OTP सत्यापन असफल: सही कोड दर्ज करें');
+        showToast(isHi ? 'त्रुटि' : 'Error', err.message || (isHi ? 'OTP सत्यापन असफल: सही कोड दर्ज करें' : 'OTP verification failed'));
       }
     }
 
@@ -2061,8 +2070,11 @@
     function openSuccessModal(orderId, codCash) {
       const modal = document.getElementById('modal-delivery-success');
       const sub = document.getElementById('modal-success-sub');
+      const isHi = RunnerStore.lang === 'hi';
       if (sub) {
-        sub.innerText = `ऑर्डर ${orderId} सफलतापूर्वक सौंपा गया। ${codCash > 0 ? `₹${codCash} नकद जमा दर्ज।` : ''}`;
+        sub.innerText = isHi 
+          ? `ऑर्डर ${orderId} सफलतापूर्वक सौंपा गया। ${codCash > 0 ? `₹${codCash} नकद जमा दर्ज।` : ''}`
+          : `Order ${orderId} delivered successfully. ${codCash > 0 ? `₹${codCash} cash collection recorded.` : ''}`;
       }
       if (modal) {
         modal.classList.remove('hidden');
@@ -2252,24 +2264,26 @@
       const ifsc = document.getElementById('runner-bank-ifsc')?.value?.trim().toUpperCase();
       const upi = document.getElementById('runner-bank-upi')?.value?.trim();
 
+      const isHi = RunnerStore.lang === 'hi';
+
       if (!name || name.length < 2) {
-        showRunnerBankError("कृपया खाताधारक का मान्य पूरा नाम दर्ज करें (Minimum 2 characters)");
+        showRunnerBankError(isHi ? "कृपया खाताधारक का मान्य पूरा नाम दर्ज करें" : "Please enter valid account holder name");
         return;
       }
       if (!acc || !/^\d{9,18}$/.test(acc)) {
-        showRunnerBankError("कृपया मान्य 9 से 18 अंकों की बैंक खाता संख्या दर्ज करें");
+        showRunnerBankError(isHi ? "कृपया मान्य 9 से 18 अंकों की बैंक खाता संख्या दर्ज करें" : "Please enter valid 9-18 digit account number");
         return;
       }
       if (acc !== confirmAcc) {
-        showRunnerBankError("दोनों खाता संख्या मेल नहीं खाती हैं (Account numbers do not match)");
+        showRunnerBankError(isHi ? "दोनों खाता संख्या मेल नहीं खाती हैं" : "Account numbers do not match");
         return;
       }
       if (!ifsc || !/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifsc)) {
-        showRunnerBankError("अमान्य IFSC कोड! कृपया 11 अंकों का मान्य कोड दर्ज करें (उदा. PUNB0123400)");
+        showRunnerBankError(isHi ? "अमान्य IFSC कोड! कृपया 11 अंकों का मान्य कोड दर्ज करें" : "Invalid IFSC code! Please enter valid 11-character code");
         return;
       }
       if (!upi || !/^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/.test(upi)) {
-        showRunnerBankError("अमान्य UPI ID! कृपया मान्य VPA दर्ज करें (उदा. kamal.singh@ybl)");
+        showRunnerBankError(isHi ? "अमान्य UPI ID! कृपया मान्य VPA दर्ज करें" : "Invalid UPI ID! Please enter valid VPA");
         return;
       }
 
@@ -2294,14 +2308,14 @@
 
         const data = await res.json();
         if (!res.ok) {
-          throw new Error(data.detail || (Array.isArray(data.detail) ? data.detail[0]?.msg : 'बैंक विवरण सहेजने में विफल'));
+          throw new Error(data.detail || (Array.isArray(data.detail) ? data.detail[0]?.msg : (isHi ? 'बैंक विवरण सहेजने में विफल' : 'Failed to save payout settings')));
         }
 
         if (msgEl) {
           msgEl.className = "p-3 rounded-2xl text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 block";
-          msgEl.innerText = "✓ बैंक व UPI विवरण सफलतापूर्वक सहेजे गए। सुपर एडमिन द्वारा सत्यापन प्रक्रियाधीन है।";
+          msgEl.innerText = isHi ? "✓ बैंक व UPI विवरण सफलतापूर्वक सहेजे गए। सुपर एडमिन द्वारा सत्यापन प्रक्रियाधीन है।" : "✓ Bank & UPI settings saved successfully. Verification pending.";
         }
-        showToast("बैंक विवरण सहेजे गए", "Payout settings updated");
+        showToast(isHi ? "बैंक विवरण सहेजे गए" : "Bank Settings Saved", isHi ? "विवरण अपडेट किए गए" : "Payout settings updated");
 
         document.getElementById('runner-bank-account-number').value = "";
         document.getElementById('runner-bank-confirm-account-number').value = "";
@@ -2324,6 +2338,14 @@
       }
     }
 
+    function onLoginRunnerNameInput(val) {
+      const lower = (val || '').toLowerCase();
+      let mapped = 'gm_1';
+      if (lower.includes('mohan') || lower.includes('मोहन') || lower.includes('gm_2')) mapped = 'gm_2';
+      const sel = document.getElementById('login-runner-id-select');
+      if (sel) sel.value = mapped;
+    }
+
     // --- 9.15 BILINGUAL ENGINE ---
     function toggleLanguage() {
       RunnerStore.lang = RunnerStore.lang === 'hi' ? 'en' : 'hi';
@@ -2334,7 +2356,17 @@
     function applyRunnerLanguageUI() {
       const isHi = RunnerStore.lang === 'hi';
       const langText = document.getElementById('current-lang-text');
-      if (langText) langText.innerText = isHi ? 'English' : 'हिंदी';
+      if (langText) langText.innerText = isHi ? 'हिंदी' : 'English';
+      document.querySelectorAll('.current-lang-text-label').forEach(el => {
+        el.innerText = isHi ? 'हिंदी' : 'English';
+      });
+
+      const runnerInput = document.getElementById('login-runner-name-input');
+      if (runnerInput) {
+        runnerInput.placeholder = isHi ? 'गाँव मित्र का नाम दर्ज करें' : 'Enter runner name';
+        if (runnerInput.value === 'कमल सिंह' && !isHi) runnerInput.value = 'Kamal Singh';
+        else if (runnerInput.value === 'Kamal Singh' && isHi) runnerInput.value = 'कमल सिंह';
+      }
 
       // Apply translations
       const dict = I18N[RunnerStore.lang] || I18N.hi;
@@ -2342,6 +2374,20 @@
         const key = el.getAttribute('data-i18n');
         if (dict[key]) el.innerText = dict[key];
       });
+
+      // Update Filter button texts
+      const fAll = document.getElementById('filter-btn-all');
+      const fPickup = document.getElementById('filter-btn-pickup');
+      const fTransit = document.getElementById('filter-btn-transit');
+      if (fAll) fAll.innerText = dict.filter_all || (isHi ? 'सभी मिशन' : 'All Missions');
+      if (fPickup) fPickup.innerText = dict.filter_pickup || (isHi ? 'पिकअप बाकी' : 'Pickup');
+      if (fTransit) fTransit.innerText = dict.filter_transit || (isHi ? 'रास्ते में' : 'In-Transit');
+
+      // Update runner select options
+      const opt1 = document.querySelector('#login-runner-id-select option[value="gm_1"]');
+      const opt2 = document.querySelector('#login-runner-id-select option[value="gm_2"]');
+      if (opt1) opt1.innerText = isHi ? "कमल सिंह • #GM-RAMPUR-07" : "Kamal Singh • #GM-RAMPUR-07";
+      if (opt2) opt2.innerText = isHi ? "मोहन लाल • #GM-RAMPUR-08" : "Mohan Lal • #GM-RAMPUR-08";
 
       updateHeaderAndKPISummary();
       renderMissionsQueue();

@@ -564,7 +564,6 @@ def _run_runner_device_steps(context, dev_name, device_config, logger):
     check_element_bounds(page, "#runner-name-display", "Runner Name Display", logger)
     check_element_bounds(page, "#runner-badge-code", "Runner Badge Code", logger)
     check_element_bounds(page, "#shift-toggle-btn", "Shift Online/Offline Toggle CTA", logger, min_size=30)
-    check_element_bounds(page, "#audio-toggle-btn", "Audio Alert Chime Button", logger)
     check_element_bounds(page, "#lang-toggle-btn", "Language Switcher Button", logger)
 
     # Bottom Navigation Geometry & Ergonomics Audit

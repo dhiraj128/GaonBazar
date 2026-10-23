@@ -444,7 +444,7 @@ def list_stores(
     Calculates distance and dynamic delivery time:
     <= 5.0 km: 30 Mins | > 5.0 km: 45-60 Mins.
     """
-    stores = db.query(Store).filter(Store.is_open == True).all()
+    stores = db.query(Store).filter(Store.status != "pending_approval", Store.status != "rejected").all()
     results = []
     for s in stores:
         if lat is not None and lng is not None and getattr(s, 'lat', None) and getattr(s, 'lng', None):
