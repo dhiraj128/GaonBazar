@@ -212,7 +212,7 @@
             <span class="material-symbols-outlined text-[18px] sm:text-[22px]">two_wheeler</span>
           </div>
           <div class="flex flex-col min-w-0 justify-center">
-            <span id="runner-name-display" class="text-xs sm:text-sm font-black text-white leading-tight truncate max-w-[105px] sm:max-w-[180px]">कमल सिंह</span>
+            <span id="runner-name-display" data-i18n="runner_profile_name" class="text-xs sm:text-sm font-black text-white leading-tight truncate max-w-[105px] sm:max-w-[180px]">कमल सिंह</span>
             <span id="runner-badge-code" class="text-[9px] font-mono font-bold bg-amber-400/20 text-amber-300 px-2 py-0.5 rounded border border-amber-400/30 w-fit min-h-[20px] flex items-center justify-center mt-0.5 shrink-0">#GM-RAMPUR-07</span>
           </div>
         </div>
@@ -242,7 +242,7 @@
       <div class="flex items-center justify-between gap-2 pt-1 border-t border-slate-800/80 text-xs">
         <span id="runner-hub-display" class="text-[10px] sm:text-[11px] text-slate-400 truncate flex items-center gap-1 min-w-0">
           <span class="material-symbols-outlined text-[12px] text-primary shrink-0">hub</span>
-          <span class="truncate">रामपुर क्लस्टर हब #RMP-04</span>
+          <span class="truncate" id="runner-hub-name-text" data-i18n="runner_hub_name">रामपुर क्लस्टर हब #RMP-04</span>
         </span>
       </div>
 
@@ -702,11 +702,11 @@
           <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-slate-400">credit_card</span>
             <div class="flex flex-col">
-              <span class="font-bold text-white">सहेजा गया खाता: <span id="runner-masked-acc-label" class="font-mono text-emerald-400">••••••••4921</span></span>
+              <span class="font-bold text-white"><span id="lbl-runner-saved-acc" data-i18n="bank_saved_account_lbl">सहेजा गया खाता:</span> <span id="runner-masked-acc-label" class="font-mono text-emerald-400">••••••••4921</span></span>
               <span class="text-[10px] text-slate-400">IFSC: <b id="runner-saved-ifsc-label" class="font-mono text-slate-300">--</b> • UPI: <b id="runner-saved-upi-label" class="font-mono text-slate-300">--</b></span>
             </div>
           </div>
-          <span class="text-[10px] font-bold text-emerald-400 bg-emerald-500/20 border border-emerald-500/30 px-2 py-0.5 rounded-md">सक्रिय</span>
+          <span id="runner-bank-active-badge" class="text-[10px] font-bold text-emerald-400 bg-emerald-500/20 border border-emerald-500/30 px-2 py-0.5 rounded-md" data-i18n="bank_status_active">सक्रिय</span>
         </div>
 
         <!-- Inline Error/Success Message Alert -->
@@ -1077,7 +1077,11 @@
         bank_ph_acc: "9-18 अंकों की खाता संख्या",
         bank_ph_confirm: "खाता संख्या दोबारा दर्ज करें",
         bank_ph_ifsc: "उदा. PUNB0123400",
-        bank_ph_upi: "उदा. kamal.singh@ybl"
+        bank_ph_upi: "उदा. kamal.singh@ybl",
+        runner_profile_name: "कमल सिंह",
+        runner_hub_name: "रामपुर क्लस्टर हब #RMP-04",
+        bank_saved_account_lbl: "सहेजा गया खाता:",
+        bank_status_active: "सक्रिय"
       },
       en: {
         server_offline_msg: "Backend server offline. Unable to connect.",
@@ -1192,7 +1196,11 @@
         bank_ph_acc: "9-18 digit account number",
         bank_ph_confirm: "Re-enter account number",
         bank_ph_ifsc: "e.g. PUNB0123400",
-        bank_ph_upi: "e.g. kamal.singh@ybl"
+        bank_ph_upi: "e.g. kamal.singh@ybl",
+        runner_profile_name: "Kamal Singh",
+        runner_hub_name: "Rampur Cluster Hub",
+        bank_saved_account_lbl: "Saved Account:",
+        bank_status_active: "Active"
       }
     };
 
@@ -1721,12 +1729,29 @@
 
     // --- 9.5 HEADER & KPI SUMMARY UPDATE ---
     function updateHeaderAndKPISummary() {
+      const isHi = RunnerStore.lang === 'hi';
+      const dict = I18N[RunnerStore.lang] || I18N.hi;
+
+      // Header profile & hub text localization
+      const nameDisplay = document.getElementById('runner-name-display');
+      if (nameDisplay) {
+        if (RunnerStore.profile && RunnerStore.profile.name && RunnerStore.runnerId && RunnerStore.runnerId !== 'gm_1') {
+          nameDisplay.innerText = RunnerStore.profile.name;
+        } else {
+          nameDisplay.innerText = dict.runner_profile_name || (isHi ? 'कमल सिंह' : 'Kamal Singh');
+        }
+      }
+
+      const hubDisplayText = document.getElementById('runner-hub-name-text');
+      if (hubDisplayText) {
+        hubDisplayText.innerText = dict.runner_hub_name || (isHi ? 'रामपुर क्लस्टर हब #RMP-04' : 'Rampur Cluster Hub');
+      }
+
       // Header Shift Button
       const shiftBtn = document.getElementById('shift-toggle-btn');
       const shiftDot = document.getElementById('shift-indicator-dot');
       const shiftLabel = document.getElementById('shift-status-label');
       const shiftMobile = document.getElementById('shift-status-mobile');
-      const isHi = RunnerStore.lang === 'hi';
 
       if (shiftBtn && shiftDot) {
         if (RunnerStore.isOnline) {
@@ -2435,6 +2460,12 @@
         if (dStage) dStage.innerText = dict.badge_pickup_pending || (isHi ? 'दुकान से पिकअप बाकी' : 'Pickup Pending');
         if (dPickup) dPickup.innerText = dict.btn_confirm_pickup_action || (isHi ? 'दुकान से सामान लिया' : 'Confirm Pickup');
       }
+
+      const savedAccLbl = document.getElementById('lbl-runner-saved-acc') || document.querySelector('[data-i18n="bank_saved_account_lbl"]');
+      if (savedAccLbl) savedAccLbl.innerText = dict.bank_saved_account_lbl || (isHi ? 'सहेजा गया खाता:' : 'Saved Account:');
+
+      const activeBadge = document.getElementById('runner-bank-active-badge') || document.querySelector('[data-i18n="bank_status_active"]');
+      if (activeBadge) activeBadge.innerText = dict.bank_status_active || (isHi ? 'सक्रिय' : 'Active');
 
       updateHeaderAndKPISummary();
       renderMissionsQueue();
