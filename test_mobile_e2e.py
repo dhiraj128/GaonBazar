@@ -1121,9 +1121,14 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
         "Customer profile is 100% clean of internal risk & cancellation counters"
     )
 
-    # 6. Verify Language Preference Toggle Ergonomics
-    check_human_ux_bounds(page, "#btn-profile-lang-hi", "Profile Language Hindi Button", dev_name, logger)
-    check_human_ux_bounds(page, "#btn-profile-lang-en", "Profile Language English Button", dev_name, logger)
+    # 6. Verify Redundant Language Card Removed & Global Header Switcher Active
+    has_profile_lang_card = page.locator("#profile-lang-card").count() > 0
+    logger.record_test(
+        f"[{dev_name}] Redundant Profile Language Card Deleted",
+        not has_profile_lang_card,
+        "Redundant language preference card cleanly removed from profile screen"
+    )
+    check_human_ux_bounds(page, "#global-lang-btn", "Global Header Language Toggle", dev_name, logger)
 
     # 7. Verify Help & Support Entry Point Card
     check_human_ux_bounds(page, "#btn-open-support", "Open Help & Support Chatbot Button", dev_name, logger)

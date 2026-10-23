@@ -329,45 +329,45 @@
       
       <!-- KPI 1: Active Missions Queue -->
       <div onclick="switchTab('missions')" class="bg-slate-800 rounded-3xl p-3.5 border border-amber-500/30 flex items-center justify-between cursor-pointer hover:border-amber-400 hover:bg-slate-750 transition-all active:scale-98">
-        <div class="flex flex-col">
-          <span class="text-[10px] font-extrabold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-            <span data-i18n="kpi_active_missions">सक्रिय मिशन (Active Missions)</span>
+        <div class="flex flex-col min-w-0 flex-1">
+          <span class="text-[10px] font-extrabold text-amber-400 uppercase tracking-wider flex items-center gap-1.5 truncate">
+            <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse shrink-0"></span>
+            <span data-i18n="kpi_active_missions" class="truncate">सक्रिय मिशन (Active Missions)</span>
           </span>
           <span id="kpi-active-missions" class="text-2xl sm:text-3xl font-black text-white mt-1">0</span>
-          <span class="text-[10px] text-slate-300 font-medium mt-0.5" data-i18n="kpi_pickup_pending">पिकअप व रास्ते में</span>
+          <span class="text-[10px] text-slate-300 font-medium mt-0.5 truncate" data-i18n="kpi_pickup_pending">पिकअप व रास्ते में</span>
         </div>
-        <span class="material-symbols-outlined text-amber-400/60 text-[32px]">local_shipping</span>
+        <span class="material-symbols-outlined text-amber-400/60 text-[32px] shrink-0">local_shipping</span>
       </div>
 
       <!-- KPI 2: Completed Today -->
       <div onclick="switchTab('ledger')" class="bg-slate-800 rounded-3xl p-3.5 border border-emerald-500/30 flex items-center justify-between cursor-pointer hover:border-emerald-400 hover:bg-slate-750 transition-all active:scale-98">
-        <div class="flex flex-col">
-          <span class="text-[10px] font-extrabold text-emerald-400 uppercase tracking-wider" data-i18n="kpi_delivered_today">सफल डिलीवरी (Delivered Today)</span>
+        <div class="flex flex-col min-w-0 flex-1">
+          <span class="text-[10px] font-extrabold text-emerald-400 uppercase tracking-wider truncate" data-i18n="kpi_delivered_today">सफल डिलीवरी (Delivered Today)</span>
           <span id="kpi-completed-today" class="text-2xl sm:text-3xl font-black text-emerald-300 mt-1">0</span>
-          <span class="text-[10px] text-emerald-400/80 font-medium mt-0.5" data-i18n="kpi_verified_handover">OTP सत्यापित</span>
+          <span class="text-[10px] text-emerald-400/80 font-medium mt-0.5 truncate" data-i18n="kpi_verified_handover">OTP सत्यापित</span>
         </div>
-        <span class="material-symbols-outlined text-emerald-400/60 text-[32px]">check_circle</span>
+        <span class="material-symbols-outlined text-emerald-400/60 text-[32px] shrink-0">check_circle</span>
       </div>
 
       <!-- KPI 3: Today's Delivery Earnings (₹20/order) -->
       <div onclick="switchTab('ledger')" class="bg-slate-800 rounded-3xl p-3.5 border border-purple-500/30 flex items-center justify-between cursor-pointer hover:border-purple-400 hover:bg-slate-750 transition-all active:scale-98">
-        <div class="flex flex-col">
-          <span class="text-[10px] font-extrabold text-purple-400 uppercase tracking-wider" data-i18n="kpi_shift_earnings">आज की कमाई (Today's Earnings)</span>
+        <div class="flex flex-col min-w-0 flex-1">
+          <span class="text-[10px] font-extrabold text-purple-400 uppercase tracking-wider truncate" data-i18n="kpi_shift_earnings">आज की कमाई (Today's Earnings)</span>
           <span id="kpi-today-earnings" class="text-2xl sm:text-3xl font-black text-purple-300 mt-1">₹0</span>
-          <span class="text-[10px] text-purple-300/80 font-medium mt-0.5">₹20 प्रति सफल डिलीवरी</span>
+          <span class="text-[10px] text-purple-300/80 font-medium mt-0.5 truncate">₹20 प्रति सफल डिलीवरी</span>
         </div>
-        <span class="material-symbols-outlined text-purple-400/60 text-[32px]">payments</span>
+        <span class="material-symbols-outlined text-purple-400/60 text-[32px] shrink-0">payments</span>
       </div>
 
       <!-- KPI 4: COD Cash in Hand (Owed to Hub) -->
       <div onclick="switchTab('ledger')" class="bg-slate-800 rounded-3xl p-3.5 border border-blue-500/30 flex items-center justify-between cursor-pointer hover:border-blue-400 hover:bg-slate-750 transition-all active:scale-98">
-        <div class="flex flex-col">
-          <span class="text-[10px] font-extrabold text-blue-400 uppercase tracking-wider" data-i18n="kpi_cod_cash">हाथ में नकद (COD in Hand)</span>
+        <div class="flex flex-col min-w-0 flex-1">
+          <span class="text-[10px] font-extrabold text-blue-400 uppercase tracking-wider truncate" data-i18n="kpi_cod_cash">हाथ में नकद (COD in Hand)</span>
           <span id="kpi-cod-cash" class="text-2xl sm:text-3xl font-black text-blue-300 mt-1">₹0</span>
-          <span class="text-[10px] text-blue-300/80 font-medium mt-0.5" data-i18n="kpi_deposit_due">हब में जमा करने योग्य</span>
+          <span class="text-[10px] text-blue-300/80 font-medium mt-0.5 truncate" data-i18n="kpi_deposit_due">हब में जमा करने योग्य</span>
         </div>
-        <span class="material-symbols-outlined text-blue-400/60 text-[32px]">account_balance_wallet</span>
+        <span class="material-symbols-outlined text-blue-400/60 text-[32px] shrink-0">account_balance_wallet</span>
       </div>
 
     </section>
@@ -421,7 +421,7 @@
           </button>
           <div>
             <span class="text-[10px] text-slate-400 uppercase font-bold block" data-i18n="active_mission_label">सक्रिय मिशन</span>
-            <span id="detail-order-id" class="text-sm font-mono font-black text-white">#RUR-0000</span>
+            <span id="detail-order-id" class="text-sm font-mono font-black text-white">--</span>
           </div>
         </div>
         <div class="flex items-center gap-1.5">

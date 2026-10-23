@@ -277,9 +277,9 @@
 
         <div class="flex items-center gap-1.5 shrink-0">
           <!-- Header KYC button -->
-          <button onclick="openVendorRegisterModal()" title="नई ग्रामीण दुकान पंजीकृत करें" class="px-2 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-[11px] font-black flex items-center gap-1 shadow-xs active:scale-95 transition-all">
+          <button onclick="openVendorRegisterModal()" title="नई ग्रामीण दुकान पंजीकृत करें" class="px-2 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-[11px] font-black flex items-center gap-1 shadow-xs active:scale-95 transition-all shrink-0">
             <span class="material-symbols-outlined text-[14px]">add_business</span>
-            <span>+ नई दुकान</span>
+            <span class="hidden min-[380px]:inline">+ नई दुकान</span>
           </button>
 
           <!-- Audio Sound Toggle -->
@@ -307,8 +307,8 @@
   <div id="vendor-toast" class="hidden fixed top-16 left-1/2 transform -translate-x-1/2 z-50 bg-slate-900 text-white px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-3 border border-slate-700 max-w-sm w-11/12">
     <span class="material-symbols-outlined text-primary-fixed text-[22px] animate-bounce" id="toast-icon">notifications_active</span>
     <div class="flex flex-col min-w-0 flex-1">
-      <span id="toast-title" class="text-xs font-bold text-white">नया ऑर्डर! (New Order)</span>
-      <span id="toast-subtitle" class="text-[11px] text-slate-300 truncate">#RUR-9482 प्राप्त हुआ</span>
+      <span id="toast-title" class="text-xs font-bold text-white"></span>
+      <span id="toast-subtitle" class="text-[11px] text-slate-300 truncate"></span>
     </div>
     <button onclick="dismissToast()" class="text-slate-400 hover:text-white p-1">
       <span class="material-symbols-outlined text-[18px]">close</span>
@@ -368,13 +368,13 @@
       
       <!-- KPI 1: New / Action Needed -->
       <div onclick="switchOrderFilter('new')" class="bg-white rounded-3xl p-4 border border-amber-200/80 shadow-xs flex items-center justify-between cursor-pointer hover:border-amber-400 hover:shadow-sm transition-all active:scale-98">
-        <div class="flex flex-col">
-          <span class="text-[11px] font-extrabold text-amber-700 uppercase tracking-wider flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-            <span data-i18n="kpi_new_orders">नए ऑर्डर (New Orders)</span>
+        <div class="flex flex-col min-w-0 flex-1">
+          <span class="text-[10px] sm:text-[11px] font-extrabold text-amber-700 uppercase tracking-wider flex items-center gap-1.5 truncate">
+            <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse shrink-0"></span>
+            <span data-i18n="kpi_new_orders" class="truncate">नए ऑर्डर (New Orders)</span>
           </span>
           <span id="kpi-new-count" class="text-2xl sm:text-3xl font-black text-amber-950 mt-1">0</span>
-          <span class="text-[11px] text-amber-800 font-semibold mt-0.5" data-i18n="kpi_action_needed">तुरंत स्वीकार करें</span>
+          <span class="text-[10px] sm:text-[11px] text-amber-800 font-semibold mt-0.5 truncate" data-i18n="kpi_action_needed">तुरंत स्वीकार करें</span>
         </div>
         <div class="w-11 h-11 rounded-2xl bg-amber-50 text-amber-800 border border-amber-200 flex items-center justify-center shrink-0">
           <span class="material-symbols-outlined text-[24px]">notifications_active</span>
@@ -383,10 +383,10 @@
 
       <!-- KPI 2: In-Progress / Packing -->
       <div onclick="switchOrderFilter('packing')" class="bg-white rounded-3xl p-4 border border-blue-200/80 shadow-xs flex items-center justify-between cursor-pointer hover:border-blue-400 hover:shadow-sm transition-all active:scale-98">
-        <div class="flex flex-col">
-          <span class="text-[11px] font-extrabold text-blue-700 uppercase tracking-wider flex items-center gap-1" data-i18n="kpi_packing">पैकिंग चालू (In Packing)</span>
+        <div class="flex flex-col min-w-0 flex-1">
+          <span class="text-[10px] sm:text-[11px] font-extrabold text-blue-700 uppercase tracking-wider flex items-center gap-1 truncate" data-i18n="kpi_packing">पैकिंग चालू (In Packing)</span>
           <span id="kpi-packing-count" class="text-2xl sm:text-3xl font-black text-blue-950 mt-1">0</span>
-          <span class="text-[11px] text-blue-800 font-semibold mt-0.5" data-i18n="kpi_gathering">सामान तैयार करें</span>
+          <span class="text-[10px] sm:text-[11px] text-blue-800 font-semibold mt-0.5 truncate" data-i18n="kpi_gathering">सामान तैयार करें</span>
         </div>
         <div class="w-11 h-11 rounded-2xl bg-blue-50 text-blue-800 border border-blue-200 flex items-center justify-center shrink-0">
           <span class="material-symbols-outlined text-[24px]">inventory_2</span>
@@ -395,10 +395,10 @@
 
       <!-- KPI 3: Today's Gross Sales -->
       <div onclick="switchMainTab('ledger')" class="bg-white rounded-3xl p-4 border border-emerald-200/80 shadow-xs flex items-center justify-between cursor-pointer hover:border-emerald-400 hover:shadow-sm transition-all active:scale-98">
-        <div class="flex flex-col">
-          <span class="text-[11px] font-extrabold text-primary uppercase tracking-wider flex items-center gap-1" data-i18n="kpi_today_sales">कुल बिक्री (Total Sales)</span>
+        <div class="flex flex-col min-w-0 flex-1">
+          <span class="text-[10px] sm:text-[11px] font-extrabold text-primary uppercase tracking-wider flex items-center gap-1 truncate" data-i18n="kpi_today_sales">कुल बिक्री (Total Sales)</span>
           <span id="kpi-gross-sales" class="text-2xl sm:text-3xl font-black text-slate-900 mt-1">₹0</span>
-          <span id="kpi-orders-count" class="text-[11px] text-slate-500 font-semibold mt-0.5">0 कुल ऑर्डर</span>
+          <span id="kpi-orders-count" class="text-[10px] sm:text-[11px] text-slate-500 font-semibold mt-0.5 truncate">0 कुल ऑर्डर</span>
         </div>
         <div class="w-11 h-11 rounded-2xl bg-emerald-50 text-primary border border-emerald-200 flex items-center justify-center shrink-0">
           <span class="material-symbols-outlined text-[24px]">payments</span>
@@ -407,10 +407,10 @@
 
       <!-- KPI 4: Dukandaar Net Payout -->
       <div onclick="switchMainTab('ledger')" class="bg-white rounded-3xl p-4 border border-purple-200/80 shadow-xs flex items-center justify-between cursor-pointer hover:border-purple-400 hover:shadow-sm transition-all active:scale-98">
-        <div class="flex flex-col">
-          <span class="text-[11px] font-extrabold text-purple-700 uppercase tracking-wider flex items-center gap-1" data-i18n="kpi_net_payout">आपकी कमाई (Net Earnings)</span>
+        <div class="flex flex-col min-w-0 flex-1">
+          <span class="text-[10px] sm:text-[11px] font-extrabold text-purple-700 uppercase tracking-wider flex items-center gap-1 truncate" data-i18n="kpi_net_payout">आपकी कमाई (Net Earnings)</span>
           <span id="kpi-net-payout" class="text-2xl sm:text-3xl font-black text-purple-950 mt-1">₹0</span>
-          <span class="text-[11px] text-purple-800 font-semibold mt-0.5" data-i18n="kpi_after_fee">कमीशन कटने के बाद</span>
+          <span class="text-[10px] sm:text-[11px] text-purple-800 font-semibold mt-0.5 truncate" data-i18n="kpi_after_fee">कमीशन कटने के बाद</span>
         </div>
         <div class="w-11 h-11 rounded-2xl bg-purple-50 text-purple-800 border border-purple-200 flex items-center justify-center shrink-0">
           <span class="material-symbols-outlined text-[24px]">account_balance_wallet</span>
@@ -1594,12 +1594,12 @@
       } else if (isPacked) {
         actionButtons = `
           <div class="mt-3 pt-2 border-t border-slate-100 flex flex-col gap-2">
-            <div class="p-2.5 bg-purple-50 rounded-xl border border-purple-200 flex items-center justify-between text-xs">
-              <div class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-purple-700 text-[18px]">sports_motorsports</span>
-                <span class="font-bold text-purple-900">${isHi ? 'रनर: Mohan Lal (Gaon Mitra #102)' : 'Runner: Mohan Lal (Gaon Mitra #102)'}</span>
+            <div class="p-2.5 bg-purple-50 rounded-xl border border-purple-200 flex items-center justify-between gap-2 text-xs">
+              <div class="flex items-center gap-2 min-w-0 flex-1">
+                <span class="material-symbols-outlined text-purple-700 text-[18px] shrink-0">sports_motorsports</span>
+                <span class="font-bold text-purple-900 truncate">${isHi ? 'रनर: Mohan Lal (Gaon Mitra #102)' : 'Runner: Mohan Lal (Gaon Mitra #102)'}</span>
               </div>
-              <span class="text-[11px] font-bold text-purple-700">+91 9876543220</span>
+              <span class="text-[11px] font-bold text-purple-700 shrink-0">+91 9876543220</span>
             </div>
             <button onclick="handleOrderAction('${order.id}', 'dispatch')" class="scroll-mt-28 w-full min-h-[48px] py-3 rounded-2xl bg-purple-700 hover:bg-purple-800 text-white text-xs sm:text-sm font-black shadow-md active:scale-98 transition-transform flex items-center justify-center gap-2">
               <span class="material-symbols-outlined text-[20px]">local_shipping</span>
@@ -1609,12 +1609,12 @@
         `;
       } else if (isTransit) {
         actionButtons = `
-          <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between">
-            <div class="flex items-center gap-2 text-xs text-primary font-bold">
-              <span class="material-symbols-outlined text-[18px]">two_wheeler</span>
-              <span>${isHi ? 'डिलीवरी रनर रास्ते में है' : 'Delivering to Doorstep'}</span>
+          <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-1.5 text-xs text-primary font-bold min-w-0">
+              <span class="material-symbols-outlined text-[18px] shrink-0">two_wheeler</span>
+              <span class="truncate">${isHi ? 'डिलीवरी रनर रास्ते में है' : 'Delivering to Doorstep'}</span>
             </div>
-            <button onclick="handleOrderAction('${order.id}', 'deliver')" class="px-3 py-1.5 rounded-xl bg-emerald-600 text-white text-xs font-bold">
+            <button onclick="handleOrderAction('${order.id}', 'deliver')" class="px-3 py-1.5 rounded-xl bg-emerald-600 text-white text-xs font-bold shrink-0">
               ${isHi ? 'डिलीवर मार्क करें' : 'Mark Delivered'}
             </button>
           </div>
@@ -1804,8 +1804,8 @@
           </div>
 
           <!-- Stock Toggle Switch (Large Touch Target) -->
-          <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between">
-            <span id="stock-label-${prod.id}" class="text-xs font-bold ${prod.in_stock ? 'text-primary' : 'text-slate-500'}">
+          <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+            <span id="stock-label-${prod.id}" class="text-xs font-bold truncate min-w-0 mr-1 ${prod.in_stock ? 'text-primary' : 'text-slate-500'}">
               ${prod.in_stock ? (isHi ? '● स्टॉक में उपलब्ध' : '● In Stock') : (isHi ? '○ समाप्त' : '○ Out of Stock')}
             </span>
 
@@ -1814,7 +1814,7 @@
               data-product-id="${prod.id}"
               type="button"
               onclick="toggleStockStatus('${prod.id}', ${!prod.in_stock}, event)" 
-              class="touch-manipulation px-3.5 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all select-none active:scale-95 cursor-pointer ${prod.in_stock ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}"
+              class="touch-manipulation px-3.5 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all select-none active:scale-95 cursor-pointer shrink-0 box-border ${prod.in_stock ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}"
             >
               <span class="material-symbols-outlined text-[18px] pointer-events-none">${prod.in_stock ? 'toggle_on' : 'toggle_off'}</span>
               <span class="pointer-events-none">${prod.in_stock ? (isHi ? 'उपलब्ध' : 'In Stock') : (isHi ? 'अनुपलब्ध' : 'Out of Stock')}</span>
