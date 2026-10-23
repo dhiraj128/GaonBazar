@@ -1209,6 +1209,29 @@
           </div>
         </div>
 
+
+        <!-- 3. Saved Payment Methods (Razorpay Route Pre-integration) -->
+        <div id="profile-saved-payments-section" class="space-y-2.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary text-[20px]">credit_card</span>
+              <h3 class="text-xs font-extrabold text-on-surface uppercase tracking-wide" data-i18n="profile_payments_title">सहेजे गए भुगतान माध्यम / Saved Payments</h3>
+            </div>
+            <button id="btn-toggle-add-payment" onclick="openAddPaymentModal()" class="px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-xs font-extrabold flex items-center gap-1 active:scale-95 transition-all">
+              <span class="material-symbols-outlined text-[15px]">add_circle</span>
+              <span data-i18n="btn_add_payment">+ जोड़ें (Add)</span>
+            </button>
+          </div>
+
+          <!-- Saved Payments Dynamic List Container -->
+          <div id="profile-saved-payment-list" class="space-y-2.5">
+            <!-- Dynamic cards or empty state rendered here -->
+            <div class="p-4 bg-white rounded-2xl border border-surface-container-high text-center">
+              <span class="material-symbols-outlined text-slate-300 text-[24px] animate-spin">progress_activity</span>
+            </div>
+          </div>
+        </div>
+
         <!-- 4. Order History List Section -->
         <div id="profile-orders-section" class="space-y-2.5">
           <div class="flex items-center justify-between">
@@ -1377,6 +1400,74 @@
           </a>
         </div>
 
+      </div>
+    </div>
+
+
+    <!-- ======================================================================= -->
+    <!-- MODAL: ADD SAVED PAYMENT METHOD (UPI / CARD)                            -->
+    <!-- ======================================================================= -->
+    <div id="modal-add-payment-method" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+      <div class="bg-white rounded-3xl p-5 shadow-2xl max-w-sm w-full border border-slate-200 flex flex-col gap-3.5">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-[22px]">account_balance_wallet</span>
+            <h3 class="text-sm font-black text-slate-900" data-i18n="modal_add_payment_title">नया भुगतान माध्यम जोड़ें</h3>
+          </div>
+          <button onclick="closeAddPaymentModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:text-slate-800">
+            <span class="material-symbols-outlined text-[16px]">close</span>
+          </button>
+        </div>
+
+        <div class="flex flex-col gap-3 text-xs">
+          <!-- Type selector -->
+          <div>
+            <label class="block font-bold text-slate-700 mb-1.5">भुगतान प्रकार (Method Type)</label>
+            <div class="grid grid-cols-2 gap-2">
+              <button type="button" id="type-opt-upi" onclick="selectPaymentType('upi')" class="py-2 px-3 rounded-xl border-2 border-primary bg-primary/5 text-primary font-bold flex items-center justify-center gap-1.5 transition-all">
+                <span class="material-symbols-outlined text-[18px]">payments</span>
+                <span>UPI ID (VPA)</span>
+              </button>
+              <button type="button" id="type-opt-card" onclick="selectPaymentType('card')" class="py-2 px-3 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold flex items-center justify-center gap-1.5 transition-all">
+                <span class="material-symbols-outlined text-[18px]">credit_card</span>
+                <span>डेबिट / RuPay कार्ड</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Method Title -->
+          <div>
+            <label class="block font-bold text-slate-700 mb-1" id="lbl-payment-title">शीर्षक / बैंक नाम (e.g. Google Pay, SBI Card)</label>
+            <input type="text" id="new-payment-title" placeholder="उदा. Google Pay UPI या HDFC Card" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium focus:outline-primary"/>
+          </div>
+
+          <!-- VPA or Card Number -->
+          <div>
+            <label class="block font-bold text-slate-700 mb-1" id="lbl-payment-val">UPI ID (उदा. yourname@okhdfcbank)</label>
+            <input type="text" id="new-payment-val" placeholder="उदा. 9876543210@paytm" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono font-medium focus:outline-primary"/>
+            <span id="hint-payment-val" class="text-[10px] text-slate-400 mt-0.5 block">1-क्लिक चेकआउट हेतु सुरक्षित Razorpay टोकन बनाया जाएगा।</span>
+          </div>
+
+          <!-- Default Checkbox -->
+          <label class="flex items-center gap-2 cursor-pointer pt-1">
+            <input type="checkbox" id="cb-payment-default" class="w-4 h-4 rounded accent-primary cursor-pointer"/>
+            <span class="font-bold text-slate-700">डिफ़ॉल्ट भुगतान माध्यम बनाएं (Make Default)</span>
+          </label>
+
+          <!-- Error Alert -->
+          <div id="add-payment-error" class="hidden p-2.5 rounded-xl text-[11px] font-bold bg-rose-50 text-rose-800 border border-rose-200"></div>
+
+          <!-- Action Buttons -->
+          <div class="flex items-center gap-2 pt-2">
+            <button type="button" onclick="closeAddPaymentModal()" class="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold hover:bg-slate-50 active:scale-95">
+              रद्द करें
+            </button>
+            <button type="button" id="btn-save-new-payment" onclick="submitNewPaymentMethod()" class="flex-1 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white font-black shadow-md flex items-center justify-center gap-1 active:scale-95">
+              <span class="material-symbols-outlined text-[16px]">check</span>
+              <span>सहेजें (Save)</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -4361,6 +4452,7 @@
 
       // 3. Load order history
       loadUserOrderHistory();
+      loadUserSavedPaymentMethods();
     }
     window.renderProfileView = renderProfileView;
 
@@ -4436,7 +4528,181 @@
     }
     window.loadUserOrderHistory = loadUserOrderHistory;
 
-    function openSupportModal() {
+
+    // =========================================================================
+    // CUSTOMER SAVED PAYMENT METHODS CONTROLLER (Razorpay Route Pre-integration)
+    // =========================================================================
+    let activePaymentAddType = 'upi';
+
+    function openAddPaymentModal() {
+      const modal = document.getElementById('modal-add-payment-method');
+      const err = document.getElementById('add-payment-error');
+      if (err) { err.className = 'hidden'; err.innerText = ''; }
+      document.getElementById('new-payment-title').value = '';
+      document.getElementById('new-payment-val').value = '';
+      document.getElementById('cb-payment-default').checked = false;
+      selectPaymentType('upi');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeAddPaymentModal() {
+      document.getElementById('modal-add-payment-method')?.classList.add('hidden');
+    }
+
+    function selectPaymentType(type) {
+      activePaymentAddType = type;
+      const btnUpi = document.getElementById('type-opt-upi');
+      const btnCard = document.getElementById('type-opt-card');
+      const lblVal = document.getElementById('lbl-payment-val');
+      const inputVal = document.getElementById('new-payment-val');
+
+      if (type === 'upi') {
+        if (btnUpi) btnUpi.className = "py-2 px-3 rounded-xl border-2 border-primary bg-primary/5 text-primary font-bold flex items-center justify-center gap-1.5 transition-all";
+        if (btnCard) btnCard.className = "py-2 px-3 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold flex items-center justify-center gap-1.5 transition-all";
+        if (lblVal) lblVal.innerText = "UPI ID / VPA *";
+        if (inputVal) inputVal.placeholder = "उदा. 9876543210@paytm";
+      } else {
+        if (btnCard) btnCard.className = "py-2 px-3 rounded-xl border-2 border-primary bg-primary/5 text-primary font-bold flex items-center justify-center gap-1.5 transition-all";
+        if (btnUpi) btnUpi.className = "py-2 px-3 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold flex items-center justify-center gap-1.5 transition-all";
+        if (lblVal) lblVal.innerText = "कार्ड नंबर (16 Digits Card Number) *";
+        if (inputVal) inputVal.placeholder = "उदा. 4532 8921 7842 4242";
+      }
+    }
+
+    async function loadUserSavedPaymentMethods() {
+      const container = document.getElementById('profile-saved-payment-list');
+      if (!container) return;
+
+      const isHi = (AppStore.lang === 'hi');
+      const phone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '9876543210';
+
+      try {
+        const methods = await apiFetch(`/user/${phone}/payment-methods`);
+        if (methods && Array.isArray(methods) && methods.length > 0) {
+          container.innerHTML = methods.map(m => {
+            const isUpi = m.method_type === 'upi';
+            const icon = isUpi ? 'payments' : 'credit_card';
+            return `
+              <div class="rounded-2xl bg-white p-3.5 shadow-mobile-card border border-surface-container-high flex items-center justify-between transition-all hover:border-primary/40">
+                <div class="flex items-center gap-3 min-w-0">
+                  <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0 border border-slate-200">
+                    <span class="material-symbols-outlined text-[20px] text-primary">${icon}</span>
+                  </div>
+                  <div class="flex flex-col min-w-0">
+                    <div class="flex items-center gap-1.5">
+                      <span class="text-xs font-black text-slate-900 truncate">${m.title}</span>
+                      ${m.is_default ? '<span class="text-[9px] bg-primary/10 text-primary px-1.5 py-0.2 rounded-full font-extrabold border border-primary/20">Default</span>' : ''}
+                    </div>
+                    <span class="text-[11px] font-mono font-bold text-slate-600 truncate">${m.vpa_or_card}</span>
+                    <span class="text-[9px] text-slate-400 mt-0.5 flex items-center gap-1">
+                      <span class="material-symbols-outlined text-[11px] text-emerald-600">lock</span>
+                      <span>सुरक्षित Razorpay लिंक्ड</span>
+                    </span>
+                  </div>
+                </div>
+
+                <button onclick="deleteSavedPaymentMethod(${m.id})" title="हटाएं (Delete)" class="w-8 h-8 rounded-xl bg-slate-50 hover:bg-red-50 text-slate-400 hover:text-red-600 border border-slate-200 flex items-center justify-center active:scale-95 transition-colors shrink-0">
+                  <span class="material-symbols-outlined text-[16px]">delete</span>
+                </button>
+              </div>
+            `;
+          }).join('');
+          return;
+        }
+      } catch (err) {
+        console.warn('Failed to fetch saved payment methods:', err);
+      }
+
+      // Empty State
+      container.innerHTML = `
+        <div id="profile-payments-empty-state" class="rounded-2xl bg-white p-5 shadow-mobile-card border border-surface-container-high text-center flex flex-col items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-[28px] text-slate-300">credit_card_off</span>
+          <p class="text-xs font-bold text-slate-800">${isHi ? 'कोई सहेजा गया भुगतान माध्यम नहीं है' : 'No saved payment methods'}</p>
+          <p class="text-[11px] text-slate-500">${isHi ? '1-क्लिक चेकआउट के लिए अपना UPI ID या कार्ड जोड़ें।' : 'Add a UPI ID or card for 1-click checkout.'}</p>
+        </div>
+      `;
+    }
+    window.loadUserSavedPaymentMethods = loadUserSavedPaymentMethods;
+
+    async function deleteSavedPaymentMethod(methodId) {
+      const phone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '9876543210';
+      try {
+        const res = await fetch(`${API_BASE}/api/user/${phone}/payment-methods/${methodId}`, {
+          method: 'DELETE'
+        });
+        if (res.ok) {
+          showToast(AppStore.lang === 'hi' ? 'भुगतान माध्यम हटा दिया गया' : 'Payment method removed');
+          loadUserSavedPaymentMethods();
+        }
+      } catch (err) {
+        console.error('Delete payment method error:', err);
+      }
+    }
+    window.deleteSavedPaymentMethod = deleteSavedPaymentMethod;
+
+    async function submitNewPaymentMethod() {
+      const phone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '9876543210';
+      const title = document.getElementById('new-payment-title')?.value?.trim();
+      const val = document.getElementById('new-payment-val')?.value?.trim();
+      const isDefault = document.getElementById('cb-payment-default')?.checked;
+      const errEl = document.getElementById('add-payment-error');
+
+      if (!title || title.length < 2) {
+        showPaymentModalError("कृपया भुगतान माध्यम का नाम लिखें (e.g. Google Pay)");
+        return;
+      }
+
+      if (activePaymentAddType === 'upi') {
+        if (!val || !/^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/.test(val)) {
+          showPaymentModalError("कृपया मान्य UPI ID दर्ज करें (उदा. username@bank)");
+          return;
+        }
+      } else {
+        const cleanCard = (val || '').replace(/[\s\-]/g, '');
+        if (!cleanCard || cleanCard.length < 15 || !/^\d+$/.test(cleanCard)) {
+          showPaymentModalError("कृपया मान्य 15-16 अंकों का कार्ड नंबर दर्ज करें");
+          return;
+        }
+      }
+
+      try {
+        const displayVal = activePaymentAddType === 'card' 
+          ? `•••• •••• •••• ${val.replace(/[\s\-]/g, '').slice(-4)}`
+          : val;
+
+        const res = await fetch(`${API_BASE}/api/user/${phone}/payment-methods`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            method_type: activePaymentAddType,
+            title: title,
+            vpa_or_card: displayVal,
+            is_default: isDefault
+          })
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.detail || 'भुगतान माध्यम सहेजने में विफल');
+        }
+
+        closeAddPaymentModal();
+        showToast(AppStore.lang === 'hi' ? 'नया भुगतान माध्यम जोड़ा गया' : 'Payment method added');
+        loadUserSavedPaymentMethods();
+      } catch (err) {
+        showPaymentModalError(err.message);
+      }
+    }
+
+    function showPaymentModalError(msg) {
+      const errEl = document.getElementById('add-payment-error');
+      if (errEl) {
+        errEl.innerText = `⚠ ${msg}`;
+        errEl.classList.remove('hidden');
+      }
+    }
+
+        function openSupportModal() {
       const modal = document.getElementById('modal-support-chat');
       if (modal) {
         modal.classList.remove('hidden');

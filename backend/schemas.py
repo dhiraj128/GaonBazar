@@ -620,5 +620,113 @@ class UserOrderSummaryDTO(BaseModel):
     created_at: str
 
 
+# --- FinTech & Payout Onboarding Schemas ---
+IFSC_REGEX = re.compile(r"^[A-Z]{4}0[A-Z0-9]{6}$")
+UPI_REGEX = re.compile(r"^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$")
+ACCOUNT_NUM_REGEX = re.compile(r"^\d{9,18}$")
+
+class BankPayoutSettingsRequest(SecureBaseModel):
+    account_holder_name: str = Field(..., min_length=2, max_length=150)
+    account_number: str = Field(..., min_length=9, max_length=18)
+    confirm_account_number: str = Field(..., min_length=9, max_length=18)
+    ifsc_code: str = Field(..., min_length=11, max_length=11)
+    upi_id: str = Field(..., min_length=3, max_length=100)
+
+    @model_validator(mode="after")
+    def validate_payment_details(self):
+        self.account_holder_name = self.account_holder_name.strip()
+        self.account_number = self.account_number.strip()
+        self.confirm_account_number = self.confirm_account_number.strip()
+        self.ifsc_code = self.ifsc_code.strip().upper()
+        self.upi_id = self.upi_id.strip()
+
+        if self.account_number != self.confirm_account_number:
+            raise ValueError("Bank account numbers do not match. Please verify both fields.")
+
+        if not ACCOUNT_NUM_REGEX.match(self.account_number):
+            raise ValueError("Invalid account number. Must contain 9 to 18 numeric digits.")
+
+        if not IFSC_REGEX.match(self.ifsc_code):
+            raise ValueError("Invalid IFSC Code format. Must be 11 characters (e.g. SBIN0001234: 4 letters, '0', 6 alphanumeric).")
+
+        if not UPI_REGEX.match(self.upi_id):
+            raise ValueError("Invalid UPI ID format. Must be a valid VPA (e.g. yourname@bank).")
+
+        return self
+
+
+class BankPayoutSettingsDTO(BaseModel):
+    account_holder_name: Optional[str] = None
+    account_number_masked: Optional[str] = None
+    ifsc_code: Optional[str] = None
+    upi_id: Optional[str] = None
+    verification_status: str = "pending"
+    is_configured: bool = False
+
+
+class CustomerSavedPaymentDTO(BaseModel):
+    id: int
+    user_phone: str
+    method_type: str  # "upi", "card"
+    title: str
+    vpa_or_card: str
+    is_default: bool = False
+    token_id: Optional[str] = None
+    created_at: str
+
+
+class AddCustomerSavedPaymentRequest(SecureBaseModel):
+    method_type: str = Field(..., min_length=3, max_length=10)
+    title: str = Field(..., min_length=2, max_length=100)
+    vpa_or_card: str = Field(..., min_length=3, max_length=100)
+    is_default: Optional[bool] = False
+
+    @model_validator(mode="after")
+    def validate_saved_method(self):
+        self.method_type = self.method_type.strip().lower()
+        self.title = self.title.strip()
+        self.vpa_or_card = self.vpa_or_card.strip()
+
+        if self.method_type not in ("upi", "card"):
+            raise ValueError("method_type must be either 'upi' or 'card'.")
+
+        if self.method_type == "upi":
+            if not UPI_REGEX.match(self.vpa_or_card):
+                raise ValueError("Invalid UPI ID format.")
+        elif self.method_type == "card":
+            # For dummy card or masked card
+            cleaned = re.sub(r"[\s\-]", "", self.vpa_or_card)
+            if not (cleaned.isdigit() and len(cleaned) in (15, 16)) and not "•" in self.vpa_or_card:
+                raise ValueError("Invalid card number format. Must be 15 or 16 digits.")
+
+        return self
+
+
+class AdminPayoutVerificationDTO(BaseModel):
+    entity_type: str  # "vendor" or "runner"
+    entity_id: str
+    entity_name: str
+    phone: Optional[str] = None
+    account_holder_name: Optional[str] = None
+    account_number_masked: Optional[str] = None
+    ifsc_code: Optional[str] = None
+    upi_id: Optional[str] = None
+    verification_status: str = "pending"
+    created_at: Optional[str] = None
+
+
+class AdminPayoutStatusUpdateRequest(SecureBaseModel):
+    status: str = Field(..., min_length=6, max_length=10)
+
+    @model_validator(mode="after")
+    def validate_status(self):
+        s = self.status.strip().lower()
+        if s not in ("pending", "verified", "rejected"):
+            raise ValueError("Status must be 'pending', 'verified', or 'rejected'.")
+        self.status = s
+        return self
+
+
+
 
 

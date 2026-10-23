@@ -630,6 +630,83 @@
           <span>गाँव बाज़ार से सत्यापित दुकान। प्रति ऑर्डर ₹3 प्लेटफ़ॉर्म शुल्क लागू।</span>
         </div>
       </div>
+    
+      <!-- Bank & UPI Payout Settings Module -->
+      <div id="vendor-bank-settings-card" class="bg-white rounded-3xl p-5 border border-slate-200 shadow-xs flex flex-col gap-4 max-w-2xl">
+        <div class="flex items-center justify-between border-b pb-2.5">
+          <h2 class="text-base font-black text-slate-900 flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">account_balance</span>
+            <span data-i18n="bank_settings_title">बैंक खाता एवं UPI सेटिंग्स (Payout Settings)</span>
+          </h2>
+          <span id="vendor-bank-status-badge" class="px-2.5 py-1 rounded-full text-[11px] font-black bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1">
+            <span class="material-symbols-outlined text-[13px]">hourglass_top</span>
+            <span>सत्यापन लंबित (Pending)</span>
+          </span>
+        </div>
+
+        <p class="text-xs text-slate-500 leading-relaxed">
+          गाँव बाज़ार पर हुई सभी बिक्री का भुगतान सीधे आपके इस बैंक खाते या UPI में स्थानांतरित होगा (Razorpay Route लिंक्ड अकाउंट)।
+        </p>
+
+        <!-- Bank Form Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <!-- Account Holder Name -->
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-bold text-slate-700 mb-1">खाताधारक का पूरा नाम (Account Holder Name) *</label>
+            <input type="text" id="vendor-bank-account-name" placeholder="उदा. Ramesh Sharma" class="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl text-xs font-semibold focus:outline-primary"/>
+          </div>
+
+          <!-- Account Number -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">बैंक खाता संख्या (Account Number) *</label>
+            <input type="password" id="vendor-bank-account-number" placeholder="9-18 अंकों की खाता संख्या" class="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl text-xs font-mono font-semibold focus:outline-primary" autocomplete="off"/>
+          </div>
+
+          <!-- Re-enter Account Number -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">पुनः खाता संख्या दर्ज करें (Re-enter Account Number) *</label>
+            <input type="password" id="vendor-bank-confirm-account-number" placeholder="खाता संख्या दोबारा दर्ज करें" class="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl text-xs font-mono font-semibold focus:outline-primary" autocomplete="off"/>
+          </div>
+
+          <!-- IFSC Code -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">बैंक IFSC कोड (IFSC Code) *</label>
+            <input type="text" id="vendor-bank-ifsc" placeholder="उदा. SBIN0001234" maxlength="11" oninput="this.value = this.value.toUpperCase()" class="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl text-xs font-mono font-semibold uppercase focus:outline-primary"/>
+            <span class="text-[10px] text-slate-400 mt-0.5 block">11 अक्षर (4 अक्षर, 0, 6 अल्फ़ान्यूमेरिक)</span>
+          </div>
+
+          <!-- UPI ID -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">UPI ID (VPA) *</label>
+            <input type="text" id="vendor-bank-upi" placeholder="उदा. sharma.kirana@okaxis" class="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl text-xs font-mono font-semibold focus:outline-primary"/>
+            <span class="text-[10px] text-slate-400 mt-0.5 block">तत्काल सेटलमेंट व रिफंड सुरक्षा हेतु</span>
+          </div>
+        </div>
+
+        <!-- Masked Info Card if already configured -->
+        <div id="vendor-bank-masked-info" class="hidden bg-slate-50 border border-slate-200 rounded-2xl p-3 text-xs flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-slate-600">credit_card</span>
+            <div class="flex flex-col">
+              <span class="font-bold text-slate-800">सहेजा गया खाता: <span id="vendor-masked-acc-label" class="font-mono">••••••••1234</span></span>
+              <span class="text-[10px] text-slate-500">IFSC: <b id="vendor-saved-ifsc-label" class="font-mono">--</b> • UPI: <b id="vendor-saved-upi-label" class="font-mono">--</b></span>
+            </div>
+          </div>
+          <span class="text-[10px] font-bold text-primary bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">सक्रिय</span>
+        </div>
+
+        <!-- Inline Error/Success Message Alert -->
+        <div id="vendor-bank-msg" class="hidden p-3 rounded-2xl text-xs font-bold"></div>
+
+        <!-- Save Button CTA -->
+        <div class="flex justify-end pt-1">
+          <button id="btn-save-vendor-bank" onclick="saveVendorPayoutSettings()" class="px-5 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-xs font-extrabold flex items-center gap-2 shadow-sm active:scale-95 transition-all">
+            <span class="material-symbols-outlined text-[18px]">verified</span>
+            <span>बैंक व UPI विवरण सहेजें (Save Payout Settings)</span>
+          </button>
+        </div>
+      </div>
+
     </section>
 
     </div> <!-- Close #vendor-main-content -->
@@ -2073,6 +2150,139 @@
       }
     }
 
+
+    // --- 9.105 VENDOR BANK & UPI PAYOUT SETTINGS ---
+    async function loadVendorPayoutSettings() {
+      try {
+        const storeId = VendorStore.activeStoreId || 'sharma_brothers';
+        const res = await fetch(`${API_BASE}/api/vendor/stores/${storeId}/payout-settings`);
+        if (!res.ok) return;
+        const data = await res.json();
+
+        const nameInput = document.getElementById('vendor-bank-account-name');
+        const ifscInput = document.getElementById('vendor-bank-ifsc');
+        const upiInput = document.getElementById('vendor-bank-upi');
+        const badge = document.getElementById('vendor-bank-status-badge');
+        const maskedCard = document.getElementById('vendor-bank-masked-info');
+        const maskedAccLabel = document.getElementById('vendor-masked-acc-label');
+        const savedIfscLabel = document.getElementById('vendor-saved-ifsc-label');
+        const savedUpiLabel = document.getElementById('vendor-saved-upi-label');
+
+        if (nameInput && data.account_holder_name) nameInput.value = data.account_holder_name;
+        if (ifscInput && data.ifsc_code) ifscInput.value = data.ifsc_code;
+        if (upiInput && data.upi_id) upiInput.value = data.upi_id;
+
+        if (badge) {
+          const status = (data.verification_status || 'pending').toLowerCase();
+          if (status === 'verified') {
+            badge.className = "px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1";
+            badge.innerHTML = `<span class="material-symbols-outlined text-[13px]">verified</span><span>सत्यापित खाता (Verified)</span>`;
+          } else if (status === 'rejected') {
+            badge.className = "px-2.5 py-1 rounded-full text-[11px] font-black bg-rose-100 text-rose-800 border border-rose-300 flex items-center gap-1";
+            badge.innerHTML = `<span class="material-symbols-outlined text-[13px]">cancel</span><span>अस्वीकृत (Rejected)</span>`;
+          } else {
+            badge.className = "px-2.5 py-1 rounded-full text-[11px] font-black bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1";
+            badge.innerHTML = `<span class="material-symbols-outlined text-[13px]">hourglass_top</span><span>सत्यापन लंबित (Pending)</span>`;
+          }
+        }
+
+        if (maskedCard && data.is_configured && data.account_number_masked) {
+          maskedCard.classList.remove('hidden');
+          if (maskedAccLabel) maskedAccLabel.innerText = data.account_number_masked;
+          if (savedIfscLabel) savedIfscLabel.innerText = data.ifsc_code || '--';
+          if (savedUpiLabel) savedUpiLabel.innerText = data.upi_id || '--';
+        }
+      } catch (err) {
+        console.warn('Notice loading vendor payout settings:', err);
+      }
+    }
+
+    async function saveVendorPayoutSettings() {
+      const msgEl = document.getElementById('vendor-bank-msg');
+      const btn = document.getElementById('btn-save-vendor-bank');
+      if (msgEl) {
+        msgEl.className = "hidden";
+        msgEl.innerText = "";
+      }
+
+      const name = document.getElementById('vendor-bank-account-name')?.value?.trim();
+      const acc = document.getElementById('vendor-bank-account-number')?.value?.trim();
+      const confirmAcc = document.getElementById('vendor-bank-confirm-account-number')?.value?.trim();
+      const ifsc = document.getElementById('vendor-bank-ifsc')?.value?.trim().toUpperCase();
+      const upi = document.getElementById('vendor-bank-upi')?.value?.trim();
+
+      if (!name || name.length < 2) {
+        showVendorBankError("कृपया खाताधारक का मान्य पूरा नाम दर्ज करें (Minimum 2 characters)");
+        return;
+      }
+      if (!acc || !/^\d{9,18}$/.test(acc)) {
+        showVendorBankError("कृपया मान्य 9 से 18 अंकों की बैंक खाता संख्या दर्ज करें");
+        return;
+      }
+      if (acc !== confirmAcc) {
+        showVendorBankError("दोनों खाता संख्या मेल नहीं खाती हैं (Account numbers do not match)");
+        return;
+      }
+      if (!ifsc || !/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifsc)) {
+        showVendorBankError("अमान्य IFSC कोड! कृपया 11 अंकों का मान्य कोड दर्ज करें (उदा. SBIN0001234)");
+        return;
+      }
+      if (!upi || !/^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/.test(upi)) {
+        showVendorBankError("अमान्य UPI ID! कृपया मान्य VPA दर्ज करें (उदा. yourname@bank)");
+        return;
+      }
+
+      if (btn) {
+        btn.disabled = true;
+        btn.classList.add('opacity-70');
+      }
+
+      try {
+        const storeId = VendorStore.activeStoreId || 'sharma_brothers';
+        const res = await fetch(`${API_BASE}/api/vendor/stores/${storeId}/payout-settings`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            account_holder_name: name,
+            account_number: acc,
+            confirm_account_number: confirmAcc,
+            ifsc_code: ifsc,
+            upi_id: upi
+          })
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.detail || (Array.isArray(data.detail) ? data.detail[0]?.msg : 'बैंक विवरण सहेजने में विफल'));
+        }
+
+        if (msgEl) {
+          msgEl.className = "p-3 rounded-2xl text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 block";
+          msgEl.innerText = "✓ बैंक व UPI विवरण सफलतापूर्वक सहेजे गए। सुपर एडमिन द्वारा सत्यापन प्रक्रियाधीन है।";
+        }
+        showToast("बैंक विवरण सहेजे गए", "Payout settings updated");
+
+        document.getElementById('vendor-bank-account-number').value = "";
+        document.getElementById('vendor-bank-confirm-account-number').value = "";
+        loadVendorPayoutSettings();
+      } catch (err) {
+        showVendorBankError(err.message);
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.classList.remove('opacity-70');
+        }
+      }
+    }
+
+    function showVendorBankError(msg) {
+      const msgEl = document.getElementById('vendor-bank-msg');
+      if (msgEl) {
+        msgEl.className = "p-3 rounded-2xl text-xs font-bold bg-rose-50 text-rose-800 border border-rose-200 block";
+        msgEl.innerText = `⚠ ${msg}`;
+      }
+    }
+
     // --- 9.11 TAB SWITCHING ---
     function switchMainTab(tabName) {
       window.scrollTo({ top: 0, behavior: 'instant' });
@@ -2108,6 +2318,7 @@
       if (tabName === 'orders') renderOrdersQueue();
       if (tabName === 'inventory') renderInventoryGrid();
       if (tabName === 'ledger') renderLedgerView();
+      if (tabName === 'settings') loadVendorPayoutSettings();
     }
 
     function refreshCurrentWorkspace() {

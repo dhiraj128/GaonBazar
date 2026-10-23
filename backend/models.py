@@ -73,6 +73,10 @@ class Store(Base):
     id_number = Column(String(50), default="XXXX-XXXX-8921")
     photo_url = Column(Text, nullable=True)
     payout_upi = Column(String(100), default="sharma.kirana@okaxis")
+    bank_account_name = Column(String(150), nullable=True, default=None)
+    bank_account_number = Column(String(50), nullable=True, default=None)
+    bank_ifsc = Column(String(20), nullable=True, default=None)
+    bank_verification_status = Column(String(20), default="pending")  # "pending", "verified", "rejected"
     status = Column(String(30), default="approved")  # "approved", "pending_approval", "rejected"
     created_at = Column(DateTime, default=datetime.utcnow)
 
@@ -171,6 +175,10 @@ class Runner(Base):
     vehicle_type = Column(String(50), default="Motorcycle")
     vehicle_number = Column(String(50), default="UP-14-EA-4921")
     payout_upi = Column(String(100), default="kamal.singh@ybl")
+    bank_account_name = Column(String(150), nullable=True, default=None)
+    bank_account_number = Column(String(50), nullable=True, default=None)
+    bank_ifsc = Column(String(20), nullable=True, default=None)
+    bank_verification_status = Column(String(20), default="pending")  # "pending", "verified", "rejected"
     status = Column(String(30), default="approved")  # "approved", "pending_approval", "rejected"
     is_online = Column(Boolean, default=True)
     rating = Column(Float, default=4.9)
@@ -189,5 +197,19 @@ class SupportTicket(Base):
     message = Column(Text, nullable=False)
     status = Column(String(20), default="open")  # "open", "in_progress", "resolved"
     created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class SavedPaymentMethod(Base):
+    __tablename__ = "saved_payment_methods"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    user_phone = Column(String(15), index=True, nullable=False)
+    method_type = Column(String(20), nullable=False)  # "upi", "card"
+    title = Column(String(100), nullable=False)  # e.g. "Google Pay UPI", "HDFC Debit Card"
+    vpa_or_card = Column(String(100), nullable=False)  # e.g. "user@okhdfcbank" or "•••• •••• •••• 4242"
+    is_default = Column(Boolean, default=False)
+    token_id = Column(String(100), nullable=True)  # e.g. "tok_rzp_mock_12345"
+    created_at = Column(DateTime, default=datetime.utcnow)
+
 
 

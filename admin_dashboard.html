@@ -244,6 +244,13 @@
         <span>Ledger & Dues (बहीखाता)</span>
       </button>
 
+      <!-- Tab 6: Bank & Payout Verification -->
+      <button id="admin-tab-btn-bank" onclick="switchTab('bank')" class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-slate-900 text-slate-300 hover:text-white border border-slate-800 transition-all whitespace-nowrap shrink-0 min-h-[38px]">
+        <span class="material-symbols-outlined text-[18px]">account_balance</span>
+        <span>Bank Payout KYC (बैंक सत्यापन)</span>
+        <span id="tab-bank-badge" class="ml-1 text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full font-bold">0</span>
+      </button>
+
       <!-- Tab 5: Account Risk Profile & Cancellation Controls -->
       <button id="admin-tab-btn-risk" onclick="switchTab('risk')" class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-slate-900 text-slate-300 hover:text-white border border-slate-800 transition-all whitespace-nowrap shrink-0 min-h-[38px]">
         <span class="material-symbols-outlined text-[18px]">security</span>
@@ -251,6 +258,52 @@
       </button>
 
     </div>
+
+    <!-- ======================================================================= -->
+    <!-- 9. TAB 6: BANK & PAYOUT KYC VERIFICATION QUEUE                          -->
+    <!-- ======================================================================= -->
+    <section id="tab-bank" class="hidden flex-col gap-4">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+        <div>
+          <h2 class="text-base sm:text-lg font-black text-white flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">account_balance</span>
+            <span>Vendor & Runner Bank Payout KYC Control</span>
+          </h2>
+          <p class="text-xs text-slate-400">Review submitted bank account details, IFSC, and UPI IDs for Razorpay Route Linked Accounts.</p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="fetchPayoutVerifications()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold border border-slate-700 flex items-center gap-1 shadow-sm active:scale-95">
+            <span class="material-symbols-outlined text-[16px]">refresh</span>
+            <span>Refresh</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Bank KYC Table Container -->
+      <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-lg">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-slate-300">
+            <thead class="bg-slate-950 text-slate-400 font-bold border-b border-slate-800 uppercase tracking-wider text-[11px]">
+              <tr>
+                <th class="py-3 px-3.5">Entity / Role</th>
+                <th class="py-3 px-3.5">Account Holder Name</th>
+                <th class="py-3 px-3.5">Masked Account Number</th>
+                <th class="py-3 px-3.5">IFSC Code</th>
+                <th class="py-3 px-3.5">UPI ID (VPA)</th>
+                <th class="py-3 px-3.5">KYC Status</th>
+                <th class="py-3 px-3.5 text-right">Verification Action</th>
+              </tr>
+            </thead>
+            <tbody id="bank-verifications-table-body" class="divide-y divide-slate-800/80">
+              <tr>
+                <td colspan="7" class="py-8 text-center text-slate-500 font-bold">Loading bank payout verifications...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
 
     <!-- ======================================================================= -->
     <!-- 4. TAB 1: VENDOR KYC APPROVAL QUEUE                                     -->
@@ -832,10 +885,115 @@
       }
     }
 
+
+    // --- BANK & PAYOUT KYC VERIFICATION CONTROLLER ---
+    async function fetchPayoutVerifications() {
+      const tbody = document.getElementById('bank-verifications-table-body');
+      const badge = document.getElementById('tab-bank-badge');
+      if (!tbody) return;
+
+      try {
+        const list = await adminFetch('/admin/payout-verifications');
+        if (!list || list.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-500 font-bold">No bank accounts registered yet.</td></tr>`;
+          if (badge) badge.innerText = '0';
+          return;
+        }
+
+        const pendingCount = list.filter(item => (item.verification_status || 'pending').toLowerCase() === 'pending').length;
+        if (badge) {
+          badge.innerText = pendingCount;
+          badge.className = pendingCount > 0 
+            ? "ml-1 text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full font-black border border-amber-500/30"
+            : "ml-1 text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full font-bold";
+        }
+
+        tbody.innerHTML = list.map(item => {
+          const isVendor = item.entity_type === 'vendor';
+          const roleBadge = isVendor 
+            ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">Vendor (दुकान)</span>`
+            : `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Runner (गाँव मित्र)</span>`;
+
+          const status = (item.verification_status || 'pending').toLowerCase();
+          let statusBadge = `<span class="px-2.5 py-1 rounded-full text-[11px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1 w-fit"><span class="material-symbols-outlined text-[13px]">hourglass_top</span><span>Pending</span></span>`;
+          if (status === 'verified') {
+            statusBadge = `<span class="px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1 w-fit"><span class="material-symbols-outlined text-[13px]">verified</span><span>Verified</span></span>`;
+          } else if (status === 'rejected') {
+            statusBadge = `<span class="px-2.5 py-1 rounded-full text-[11px] font-black bg-rose-500/20 text-rose-300 border border-rose-500/40 flex items-center gap-1 w-fit"><span class="material-symbols-outlined text-[13px]">cancel</span><span>Rejected</span></span>`;
+          }
+
+          return `
+            <tr class="hover:bg-slate-800/40 transition-colors">
+              <td class="py-3 px-3.5">
+                <div class="flex flex-col">
+                  <span class="font-black text-white">${item.entity_name}</span>
+                  <div class="flex items-center gap-1.5 mt-0.5">
+                    ${roleBadge}
+                    <span class="text-[10px] text-slate-500 font-mono">#${item.entity_id}</span>
+                  </div>
+                </div>
+              </td>
+              <td class="py-3 px-3.5 font-bold text-slate-200">
+                ${item.account_holder_name || '<span class="text-slate-600 font-normal">Not Provided</span>'}
+              </td>
+              <td class="py-3 px-3.5 font-mono text-slate-300">
+                ${item.account_number_masked || '<span class="text-slate-600 font-sans">--</span>'}
+              </td>
+              <td class="py-3 px-3.5 font-mono font-bold text-slate-200">
+                ${item.ifsc_code || '<span class="text-slate-600 font-sans font-normal">--</span>'}
+              </td>
+              <td class="py-3 px-3.5 font-mono text-slate-300">
+                ${item.upi_id || '<span class="text-slate-600 font-sans">--</span>'}
+              </td>
+              <td class="py-3 px-3.5">
+                ${statusBadge}
+              </td>
+              <td class="py-3 px-3.5 text-right">
+                <div class="flex items-center justify-end gap-1.5">
+                  ${status !== 'verified' ? `
+                    <button onclick="updatePayoutStatus('${item.entity_type}', '${item.entity_id}', 'verified')" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-black shadow-xs active:scale-95 transition-all">
+                      सत्यापित करें (Verify)
+                    </button>
+                  ` : ''}
+                  ${status !== 'rejected' ? `
+                    <button onclick="updatePayoutStatus('${item.entity_type}', '${item.entity_id}', 'rejected')" class="px-2.5 py-1 rounded-lg bg-red-600/80 hover:bg-red-500 text-white text-[11px] font-bold active:scale-95 transition-all">
+                      अस्वीकृत करें (Reject)
+                    </button>
+                  ` : ''}
+                  ${status !== 'pending' ? `
+                    <button onclick="updatePayoutStatus('${item.entity_type}', '${item.entity_id}', 'pending')" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium border border-slate-700 active:scale-95 transition-all" title="Reset to Pending">
+                      लंबित (Reset)
+                    </button>
+                  ` : ''}
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-red-400 font-bold">Failed to load bank verifications: ${err.message}</td></tr>`;
+      }
+    }
+
+    async function updatePayoutStatus(entityType, entityId, newStatus) {
+      try {
+        const res = await fetch(`${API_BASE}/api/admin/payout-verifications/${entityType}/${entityId}/status`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: newStatus })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'Status update failed');
+        fetchPayoutVerifications();
+      } catch (err) {
+        alert(`Error updating verification status: ${err.message}`);
+      }
+    }
+
     // --- TAB SWITCHER ---
     function switchTab(tabId) {
       AdminStore.activeTab = tabId;
-      ['vendors', 'runners', 'orders', 'ledger', 'risk'].forEach(t => {
+      ['vendors', 'runners', 'orders', 'ledger', 'risk', 'bank'].forEach(t => {
         const sec = document.getElementById(`tab-${t}`);
         const btn = document.getElementById(`admin-tab-btn-${t}`);
         if (sec) sec.classList.add('hidden');
@@ -852,6 +1010,9 @@
       }
       if (tabId === 'risk') {
         fetchRiskProfiles();
+      }
+      if (tabId === 'bank') {
+        fetchPayoutVerifications();
       }
     }
 

@@ -67,6 +67,10 @@ def ensure_schema_migrations():
             ("id_number", "VARCHAR(50) DEFAULT 'XXXX-XXXX-8921'"),
             ("photo_url", "TEXT DEFAULT ''"),
             ("payout_upi", "VARCHAR(100) DEFAULT 'sharma.kirana@okaxis'"),
+            ("bank_account_name", "VARCHAR(150)"),
+            ("bank_account_number", "VARCHAR(50)"),
+            ("bank_ifsc", "VARCHAR(20)"),
+            ("bank_verification_status", "VARCHAR(20) DEFAULT 'pending'"),
             ("lat", "FLOAT DEFAULT 29.1350"),
             ("lng", "FLOAT DEFAULT 77.0100"),
             ("created_at", "DATETIME")
@@ -79,6 +83,23 @@ def ensure_schema_migrations():
                     conn.commit()
                 except Exception as e:
                     print(f"Notice adding column {col_name}: {e}")
+
+        # Check runners columns for bank & payout onboarding
+        res_runners = conn.execute(text("PRAGMA table_info(runners)")).fetchall()
+        existing_runner_cols = {r[1] for r in res_runners}
+        runner_cols = [
+            ("bank_account_name", "VARCHAR(150)"),
+            ("bank_account_number", "VARCHAR(50)"),
+            ("bank_ifsc", "VARCHAR(20)"),
+            ("bank_verification_status", "VARCHAR(20) DEFAULT 'pending'")
+        ]
+        for col_name, col_type in runner_cols:
+            if col_name not in existing_runner_cols:
+                try:
+                    conn.execute(text(f"ALTER TABLE runners ADD COLUMN {col_name} {col_type}"))
+                    conn.commit()
+                except Exception as e:
+                    print(f"Notice adding column {col_name} to runners: {e}")
 
         # Check orders columns for split-payment & dynamic revenue fields
         res_orders = conn.execute(text("PRAGMA table_info(orders)")).fetchall()
@@ -165,6 +186,24 @@ def ensure_schema_migrations():
             conn.commit()
         except Exception as e:
             print(f"Notice creating store_categories table: {e}")
+
+        # Ensure saved_payment_methods table exists
+        try:
+            conn.execute(text("""
+                CREATE TABLE IF NOT EXISTS saved_payment_methods (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_phone VARCHAR(15) NOT NULL,
+                    method_type VARCHAR(20) NOT NULL,
+                    title VARCHAR(100) NOT NULL,
+                    vpa_or_card VARCHAR(100) NOT NULL,
+                    is_default BOOLEAN DEFAULT 0,
+                    token_id VARCHAR(100),
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )
+            """))
+            conn.commit()
+        except Exception as e:
+            print(f"Notice creating saved_payment_methods table: {e}")
 
         # Ensure all existing orders have balanced distance-based ledger splits
         try:

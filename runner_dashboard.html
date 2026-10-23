@@ -587,6 +587,10 @@
             <span class="text-[10px] font-bold text-purple-400 uppercase tracking-wider block" data-i18n="ledger_title">दैनिक रनर बहीखाता (Shift Settlement)</span>
             <h2 class="text-sm font-black text-white" id="ledger-runner-name">Kamal Singh • Rampur Hub</h2>
           </div>
+          <button onclick="switchTab('settings')" class="px-3 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-black flex items-center gap-1 active:scale-95 shadow-sm">
+            <span class="material-symbols-outlined text-[16px]">account_balance</span>
+            <span data-i18n="btn_bank_settings">बैंक सेटिंग्स</span>
+          </button>
           <button id="btn-generate-slip" onclick="openDepositSlipModal()" class="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-black flex items-center gap-1 active:scale-95 shadow-sm">
             <span class="material-symbols-outlined text-[16px]">receipt_long</span>
             <span data-i18n="btn_deposit_slip">हब जमा रसीद</span>
@@ -648,6 +652,90 @@
 
     </section>
 
+
+    <!-- ======================================================================= -->
+    <!-- 5.5 TAB 4: RUNNER BANK & UPI SETTINGS (Payout Onboarding)               -->
+    <!-- ======================================================================= -->
+    <section id="tab-settings" class="hidden flex-col gap-3.5">
+      <div class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-md flex flex-col gap-4">
+        
+        <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+          <div class="flex items-center gap-2">
+            <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center">
+              <span class="material-symbols-outlined text-[20px]">account_balance</span>
+            </div>
+            <div>
+              <h2 class="text-sm font-black text-white" data-i18n="runner_bank_title">बैंक खाता व UPI सेटिंग्स (Payout Settings)</h2>
+              <span class="text-[10px] text-slate-400 block" data-i18n="runner_bank_sub">डिलीवरी कमीशन (₹20/ऑर्डर) सीधे आपके बैंक में</span>
+            </div>
+          </div>
+
+          <span id="runner-bank-status-badge" class="px-2.5 py-1 rounded-full text-[11px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center gap-1">
+            <span class="material-symbols-outlined text-[13px]">hourglass_top</span>
+            <span>सत्यापन लंबित (Pending)</span>
+          </span>
+        </div>
+
+        <p class="text-xs text-slate-300 leading-relaxed">
+          गाँव मित्र डिलीवरी कमीशन की दैनिक निकासी Razorpay Route लिंक्ड बैंक खाते या UPI में स्थानांतरित की जाती है।
+        </p>
+
+        <!-- Form fields -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <div class="sm:col-span-2">
+            <label class="block text-slate-300 font-bold mb-1">खाताधारक का नाम (Account Holder Name) *</label>
+            <input type="text" id="runner-bank-account-name" placeholder="उदा. Kamal Singh" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-semibold focus:outline-none focus:border-primary"/>
+          </div>
+
+          <div>
+            <label class="block text-slate-300 font-bold mb-1">बैंक खाता संख्या (Account Number) *</label>
+            <input type="password" id="runner-bank-account-number" placeholder="9-18 अंकों की खाता संख्या" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono font-semibold focus:outline-none focus:border-primary" autocomplete="off"/>
+          </div>
+
+          <div>
+            <label class="block text-slate-300 font-bold mb-1">पुनः खाता संख्या दर्ज करें (Re-enter Account Number) *</label>
+            <input type="password" id="runner-bank-confirm-account-number" placeholder="खाता संख्या दोबारा दर्ज करें" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono font-semibold focus:outline-none focus:border-primary" autocomplete="off"/>
+          </div>
+
+          <div>
+            <label class="block text-slate-300 font-bold mb-1">बैंक IFSC कोड (IFSC Code) *</label>
+            <input type="text" id="runner-bank-ifsc" placeholder="उदा. PUNB0123400" maxlength="11" oninput="this.value = this.value.toUpperCase()" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono font-semibold uppercase focus:outline-none focus:border-primary"/>
+            <span class="text-[10px] text-slate-500 mt-0.5 block">11 अक्षर (4 अक्षर, 0, 6 अल्फ़ान्यूमेरिक)</span>
+          </div>
+
+          <div>
+            <label class="block text-slate-300 font-bold mb-1">UPI ID (VPA) *</label>
+            <input type="text" id="runner-bank-upi" placeholder="उदा. kamal.singh@ybl" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono font-semibold focus:outline-none focus:border-primary"/>
+            <span class="text-[10px] text-slate-500 mt-0.5 block">तत्काल कमीशन क्रेडिट व सेटलमेंट हेतु</span>
+          </div>
+        </div>
+
+        <!-- Masked Info Card if configured -->
+        <div id="runner-bank-masked-info" class="hidden bg-slate-900 border border-slate-700 rounded-2xl p-3 text-xs flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-slate-400">credit_card</span>
+            <div class="flex flex-col">
+              <span class="font-bold text-white">सहेजा गया खाता: <span id="runner-masked-acc-label" class="font-mono text-emerald-400">••••••••4921</span></span>
+              <span class="text-[10px] text-slate-400">IFSC: <b id="runner-saved-ifsc-label" class="font-mono text-slate-300">--</b> • UPI: <b id="runner-saved-upi-label" class="font-mono text-slate-300">--</b></span>
+            </div>
+          </div>
+          <span class="text-[10px] font-bold text-emerald-400 bg-emerald-500/20 border border-emerald-500/30 px-2 py-0.5 rounded-md">सक्रिय</span>
+        </div>
+
+        <!-- Inline Error/Success Message Alert -->
+        <div id="runner-bank-msg" class="hidden p-3 rounded-2xl text-xs font-bold"></div>
+
+        <!-- Submit CTA -->
+        <div class="flex justify-end pt-1">
+          <button id="btn-save-runner-bank" onclick="saveRunnerPayoutSettings()" class="px-5 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-xs font-black flex items-center gap-2 shadow-lg active:scale-95 transition-all">
+            <span class="material-symbols-outlined text-[18px]">verified</span>
+            <span>बैंक व UPI विवरण सहेजें (Save Payout Settings)</span>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
     </div> <!-- Close #runner-main-content -->
   </main>
 
@@ -672,6 +760,13 @@
     <button id="nav-btn-ledger" onclick="switchTab('ledger')" class="flex flex-col items-center gap-1 py-1 px-3 rounded-2xl text-slate-400 font-bold hover:text-slate-200 transition-all">
       <span class="material-symbols-outlined text-[24px]">account_balance_wallet</span>
       <span class="text-[10px] tracking-wide" data-i18n="tab_ledger">बहीखाता (Ledger)</span>
+    </button>
+
+  
+    <!-- Tab 4: Bank & UPI Settings -->
+    <button id="nav-btn-settings" onclick="switchTab('settings')" class="flex flex-col items-center gap-1 py-1 px-3 rounded-2xl text-slate-400 font-bold hover:text-slate-200 transition-all">
+      <span class="material-symbols-outlined text-[24px]">account_balance</span>
+      <span class="text-[10px] tracking-wide" data-i18n="tab_settings">बैंक खाता (Bank)</span>
     </button>
 
   </nav>
@@ -1970,7 +2065,7 @@
       const mainScroll = document.querySelector('main');
       if (mainScroll) mainScroll.scrollTop = 0;
       RunnerStore.activeTab = tabId;
-      ['missions', 'detail', 'ledger'].forEach(t => {
+      ['missions', 'detail', 'ledger', 'settings'].forEach(t => {
         const sec = document.getElementById(`tab-${t}`);
         const btn = document.getElementById(`nav-btn-${t}`);
         if (sec) sec.classList.add('hidden');
@@ -1988,6 +2083,142 @@
 
       if (tabId === 'detail' && RunnerStore.selectedMission) {
         renderMissionDetail();
+      }
+      if (tabId === 'settings') {
+        loadRunnerPayoutSettings();
+      }
+    }
+
+
+    // --- 9.14 RUNNER BANK & UPI PAYOUT SETTINGS ---
+    async function loadRunnerPayoutSettings() {
+      try {
+        const runnerId = RunnerStore.activeRunnerId || 'gm_1';
+        const res = await fetch(`${API_BASE}/api/runner/${runnerId}/payout-settings`);
+        if (!res.ok) return;
+        const data = await res.json();
+
+        const nameInput = document.getElementById('runner-bank-account-name');
+        const ifscInput = document.getElementById('runner-bank-ifsc');
+        const upiInput = document.getElementById('runner-bank-upi');
+        const badge = document.getElementById('runner-bank-status-badge');
+        const maskedCard = document.getElementById('runner-bank-masked-info');
+        const maskedAccLabel = document.getElementById('runner-masked-acc-label');
+        const savedIfscLabel = document.getElementById('runner-saved-ifsc-label');
+        const savedUpiLabel = document.getElementById('runner-saved-upi-label');
+
+        if (nameInput && data.account_holder_name) nameInput.value = data.account_holder_name;
+        if (ifscInput && data.ifsc_code) ifscInput.value = data.ifsc_code;
+        if (upiInput && data.upi_id) upiInput.value = data.upi_id;
+
+        if (badge) {
+          const status = (data.verification_status || 'pending').toLowerCase();
+          if (status === 'verified') {
+            badge.className = "px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1";
+            badge.innerHTML = `<span class="material-symbols-outlined text-[13px]">verified</span><span>सत्यापित खाता (Verified)</span>`;
+          } else if (status === 'rejected') {
+            badge.className = "px-2.5 py-1 rounded-full text-[11px] font-black bg-rose-500/20 text-rose-300 border border-rose-500/40 flex items-center gap-1";
+            badge.innerHTML = `<span class="material-symbols-outlined text-[13px]">cancel</span><span>अस्वीकृत (Rejected)</span>`;
+          } else {
+            badge.className = "px-2.5 py-1 rounded-full text-[11px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center gap-1";
+            badge.innerHTML = `<span class="material-symbols-outlined text-[13px]">hourglass_top</span><span>सत्यापन लंबित (Pending)</span>`;
+          }
+        }
+
+        if (maskedCard && data.is_configured && data.account_number_masked) {
+          maskedCard.classList.remove('hidden');
+          if (maskedAccLabel) maskedAccLabel.innerText = data.account_number_masked;
+          if (savedIfscLabel) savedIfscLabel.innerText = data.ifsc_code || '--';
+          if (savedUpiLabel) savedUpiLabel.innerText = data.upi_id || '--';
+        }
+      } catch (err) {
+        console.warn('Notice loading runner payout settings:', err);
+      }
+    }
+
+    async function saveRunnerPayoutSettings() {
+      const msgEl = document.getElementById('runner-bank-msg');
+      const btn = document.getElementById('btn-save-runner-bank');
+      if (msgEl) {
+        msgEl.className = "hidden";
+        msgEl.innerText = "";
+      }
+
+      const name = document.getElementById('runner-bank-account-name')?.value?.trim();
+      const acc = document.getElementById('runner-bank-account-number')?.value?.trim();
+      const confirmAcc = document.getElementById('runner-bank-confirm-account-number')?.value?.trim();
+      const ifsc = document.getElementById('runner-bank-ifsc')?.value?.trim().toUpperCase();
+      const upi = document.getElementById('runner-bank-upi')?.value?.trim();
+
+      if (!name || name.length < 2) {
+        showRunnerBankError("कृपया खाताधारक का मान्य पूरा नाम दर्ज करें (Minimum 2 characters)");
+        return;
+      }
+      if (!acc || !/^\d{9,18}$/.test(acc)) {
+        showRunnerBankError("कृपया मान्य 9 से 18 अंकों की बैंक खाता संख्या दर्ज करें");
+        return;
+      }
+      if (acc !== confirmAcc) {
+        showRunnerBankError("दोनों खाता संख्या मेल नहीं खाती हैं (Account numbers do not match)");
+        return;
+      }
+      if (!ifsc || !/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifsc)) {
+        showRunnerBankError("अमान्य IFSC कोड! कृपया 11 अंकों का मान्य कोड दर्ज करें (उदा. PUNB0123400)");
+        return;
+      }
+      if (!upi || !/^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/.test(upi)) {
+        showRunnerBankError("अमान्य UPI ID! कृपया मान्य VPA दर्ज करें (उदा. kamal.singh@ybl)");
+        return;
+      }
+
+      if (btn) {
+        btn.disabled = true;
+        btn.classList.add('opacity-70');
+      }
+
+      try {
+        const runnerId = RunnerStore.activeRunnerId || 'gm_1';
+        const res = await fetch(`${API_BASE}/api/runner/${runnerId}/payout-settings`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            account_holder_name: name,
+            account_number: acc,
+            confirm_account_number: confirmAcc,
+            ifsc_code: ifsc,
+            upi_id: upi
+          })
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.detail || (Array.isArray(data.detail) ? data.detail[0]?.msg : 'बैंक विवरण सहेजने में विफल'));
+        }
+
+        if (msgEl) {
+          msgEl.className = "p-3 rounded-2xl text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 block";
+          msgEl.innerText = "✓ बैंक व UPI विवरण सफलतापूर्वक सहेजे गए। सुपर एडमिन द्वारा सत्यापन प्रक्रियाधीन है।";
+        }
+        showToast("बैंक विवरण सहेजे गए", "Payout settings updated");
+
+        document.getElementById('runner-bank-account-number').value = "";
+        document.getElementById('runner-bank-confirm-account-number').value = "";
+        loadRunnerPayoutSettings();
+      } catch (err) {
+        showRunnerBankError(err.message);
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.classList.remove('opacity-70');
+        }
+      }
+    }
+
+    function showRunnerBankError(msg) {
+      const msgEl = document.getElementById('runner-bank-msg');
+      if (msgEl) {
+        msgEl.className = "p-3 rounded-2xl text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30 block";
+        msgEl.innerText = `⚠ ${msg}`;
       }
     }
 

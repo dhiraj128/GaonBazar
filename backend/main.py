@@ -12,7 +12,7 @@ import sentry_sdk
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 
 from .database import engine, Base, get_db, check_database_integrity, ensure_schema_migrations
-from .models import User, OTPRecord, Landmark, Store, Product, Order, OrderItem, Runner, SupportTicket, StoreCategory
+from .models import User, OTPRecord, Landmark, Store, Product, Order, OrderItem, Runner, SupportTicket, StoreCategory, SavedPaymentMethod
 from .schemas import (
     SendOTPRequest, SendOTPResponse,
     VerifyOTPRequest, VerifyOTPResponse, UserProfileDTO, CustomerTrustStatusDTO,
@@ -36,7 +36,10 @@ from .schemas import (
     AdminApprovalActionRequest, AdminGodViewOrderDTO, AdminCommissionLedgerResponse,
     AdminUserRiskProfileDTO,
     SupportChatRequest, SupportChatResponse, SupportTicketRequest, SupportTicketResponse,
-    UserOrderSummaryDTO
+    UserOrderSummaryDTO,
+    BankPayoutSettingsRequest, BankPayoutSettingsDTO,
+    CustomerSavedPaymentDTO, AddCustomerSavedPaymentRequest,
+    AdminPayoutVerificationDTO, AdminPayoutStatusUpdateRequest
 )
 from .seed_data import seed_database
 from .security import (
@@ -1156,6 +1159,123 @@ def get_user_orders(phone: str, db: Session = Depends(get_db)):
     return results
 
 
+def mask_bank_account(acc_num: Optional[str]) -> Optional[str]:
+    """Securely masks bank account numbers for API output (e.g. ••••••••5821)."""
+    if not acc_num:
+        return None
+    acc_clean = str(acc_num).strip()
+    if len(acc_clean) <= 4:
+        return "••••" + acc_clean
+    return "•" * (len(acc_clean) - 4) + acc_clean[-4:]
+
+
+# =============================================================================
+# 4.3 CUSTOMER SAVED PAYMENT METHODS (Razorpay Route Pre-integration)
+# =============================================================================
+
+@app.get("/api/user/{phone}/payment-methods", response_model=List[CustomerSavedPaymentDTO])
+def get_user_payment_methods(phone: str, db: Session = Depends(get_db)):
+    """
+    Returns saved payment methods (UPI IDs and Card tokens) for a customer.
+    Seeds default dummy methods on first access if none exist.
+    """
+    clean_phone = phone.strip()
+    methods = db.query(SavedPaymentMethod).filter(SavedPaymentMethod.user_phone == clean_phone).order_by(SavedPaymentMethod.id.desc()).all()
+
+    # If customer has never had payment methods saved, initialize with dummy options ready for Razorpay
+    if not methods:
+        user = db.query(User).filter(User.phone == clean_phone).first()
+        if user:
+            m1 = SavedPaymentMethod(
+                user_phone=clean_phone,
+                method_type="upi",
+                title="Google Pay UPI",
+                vpa_or_card=f"{clean_phone[-4:]}user@okhdfcbank",
+                is_default=True,
+                token_id=f"tok_rzp_{uuid.uuid4().hex[:8]}"
+            )
+            m2 = SavedPaymentMethod(
+                user_phone=clean_phone,
+                method_type="card",
+                title="HDFC RuPay Debit Card",
+                vpa_or_card="•••• •••• •••• 4242",
+                is_default=False,
+                token_id=f"tok_rzp_{uuid.uuid4().hex[:8]}"
+            )
+            db.add(m1)
+            db.add(m2)
+            db.commit()
+            db.refresh(m1)
+            db.refresh(m2)
+            methods = [m1, m2]
+
+    return [
+        CustomerSavedPaymentDTO(
+            id=m.id,
+            user_phone=m.user_phone,
+            method_type=m.method_type,
+            title=m.title,
+            vpa_or_card=m.vpa_or_card,
+            is_default=bool(m.is_default),
+            token_id=m.token_id,
+            created_at=m.created_at.isoformat() if m.created_at else datetime.utcnow().isoformat()
+        )
+        for m in methods
+    ]
+
+
+@app.post("/api/user/{phone}/payment-methods", response_model=CustomerSavedPaymentDTO)
+def add_user_payment_method(phone: str, payload: AddCustomerSavedPaymentRequest, db: Session = Depends(get_db)):
+    """
+    Adds a new saved payment method (UPI or dummy Card token) for the customer.
+    """
+    clean_phone = phone.strip()
+    if payload.is_default:
+        db.query(SavedPaymentMethod).filter(SavedPaymentMethod.user_phone == clean_phone).update({"is_default": False})
+
+    new_method = SavedPaymentMethod(
+        user_phone=clean_phone,
+        method_type=payload.method_type,
+        title=payload.title,
+        vpa_or_card=payload.vpa_or_card,
+        is_default=bool(payload.is_default),
+        token_id=f"tok_rzp_{uuid.uuid4().hex[:12]}"
+    )
+    db.add(new_method)
+    db.commit()
+    db.refresh(new_method)
+
+    return CustomerSavedPaymentDTO(
+        id=new_method.id,
+        user_phone=new_method.user_phone,
+        method_type=new_method.method_type,
+        title=new_method.title,
+        vpa_or_card=new_method.vpa_or_card,
+        is_default=bool(new_method.is_default),
+        token_id=new_method.token_id,
+        created_at=new_method.created_at.isoformat() if new_method.created_at else datetime.utcnow().isoformat()
+    )
+
+
+@app.delete("/api/user/{phone}/payment-methods/{method_id}")
+def delete_user_payment_method(phone: str, method_id: int, db: Session = Depends(get_db)):
+    """
+    Deletes a saved payment method for the customer.
+    """
+    clean_phone = phone.strip()
+    item = db.query(SavedPaymentMethod).filter(
+        SavedPaymentMethod.id == method_id,
+        SavedPaymentMethod.user_phone == clean_phone
+    ).first()
+
+    if not item:
+        raise HTTPException(status_code=404, detail="Saved payment method not found.")
+
+    db.delete(item)
+    db.commit()
+    return {"success": True, "message": "Saved payment method deleted successfully.", "id": method_id}
+
+
 @app.post("/api/support/chat", response_model=SupportChatResponse)
 def support_chat_endpoint(payload: SupportChatRequest, db: Session = Depends(get_db)):
     """
@@ -1647,6 +1767,59 @@ def get_vendor_ledger(
 
 
 # =============================================================================
+# 6.5 VENDOR PAYOUT & BANK ACCOUNT ONBOARDING ENDPOINTS (Razorpay Route)
+# =============================================================================
+
+@app.get("/api/vendor/stores/{store_id}/payout-settings", response_model=BankPayoutSettingsDTO)
+def get_vendor_payout_settings(store_id: str, db: Session = Depends(get_db)):
+    """
+    Retrieves the vendor's bank and UPI payout settings with sensitive account number masked.
+    """
+    store = db.query(Store).filter(Store.id == store_id).first()
+    if not store:
+        raise HTTPException(status_code=404, detail="Store not found.")
+
+    is_conf = bool(store.bank_account_number and store.bank_ifsc)
+    return BankPayoutSettingsDTO(
+        account_holder_name=store.bank_account_name or store.owner_name or store.name,
+        account_number_masked=mask_bank_account(store.bank_account_number),
+        ifsc_code=store.bank_ifsc,
+        upi_id=store.payout_upi,
+        verification_status=store.bank_verification_status or "pending",
+        is_configured=is_conf
+    )
+
+
+@app.post("/api/vendor/stores/{store_id}/payout-settings")
+def update_vendor_payout_settings(store_id: str, payload: BankPayoutSettingsRequest, db: Session = Depends(get_db)):
+    """
+    Saves and updates the vendor's bank account, IFSC, and UPI details for Razorpay Route payouts.
+    Enforces strict regex validation, confirms account number equality, and resets verification to 'pending'.
+    """
+    store = db.query(Store).filter(Store.id == store_id).first()
+    if not store:
+        raise HTTPException(status_code=404, detail="Store not found.")
+
+    store.bank_account_name = payload.account_holder_name
+    store.bank_account_number = payload.account_number
+    store.bank_ifsc = payload.ifsc_code
+    store.payout_upi = payload.upi_id
+    store.bank_verification_status = "pending"
+    db.commit()
+    db.refresh(store)
+
+    return {
+        "success": True,
+        "message": "Bank & UPI payout details submitted successfully. Verification status is pending.",
+        "verification_status": "pending",
+        "account_holder_name": store.bank_account_name,
+        "account_number_masked": mask_bank_account(store.bank_account_number),
+        "ifsc_code": store.bank_ifsc,
+        "upi_id": store.payout_upi
+    }
+
+
+# =============================================================================
 # 7. GAON MITRA (DELIVERY PARTNER RUNNER) ENDPOINTS
 # =============================================================================
 
@@ -1977,6 +2150,69 @@ def get_runner_ledger(
         distance_covered_km=distance_km,
         recent_deliveries=recent_records
     )
+
+
+# =============================================================================
+# 7.5 RUNNER PAYOUT & BANK ACCOUNT ONBOARDING ENDPOINTS (Razorpay Route)
+# =============================================================================
+
+@app.get("/api/runner/{runner_id}/payout-settings", response_model=BankPayoutSettingsDTO)
+def get_runner_payout_settings(runner_id: str, db: Session = Depends(get_db)):
+    """
+    Retrieves the runner's bank and UPI payout settings with masked account number.
+    """
+    runner = db.query(Runner).filter((Runner.id == runner_id) | (Runner.runner_code == runner_id)).first()
+    if not runner:
+        if runner_id in RUNNER_STATE:
+            p = RUNNER_STATE[runner_id]
+            return BankPayoutSettingsDTO(
+                account_holder_name=p["name"],
+                account_number_masked="••••••••4921",
+                ifsc_code="PUNB0123400",
+                upi_id="kamal.singh@ybl",
+                verification_status="pending",
+                is_configured=True
+            )
+        raise HTTPException(status_code=404, detail="Runner not found.")
+
+    is_conf = bool(runner.bank_account_number and runner.bank_ifsc)
+    return BankPayoutSettingsDTO(
+        account_holder_name=runner.bank_account_name or runner.name,
+        account_number_masked=mask_bank_account(runner.bank_account_number),
+        ifsc_code=runner.bank_ifsc,
+        upi_id=runner.payout_upi,
+        verification_status=runner.bank_verification_status or "pending",
+        is_configured=is_conf
+    )
+
+
+@app.post("/api/runner/{runner_id}/payout-settings")
+def update_runner_payout_settings(runner_id: str, payload: BankPayoutSettingsRequest, db: Session = Depends(get_db)):
+    """
+    Saves and updates the runner's bank account, IFSC, and UPI details for Razorpay Route payouts.
+    Enforces strict regex validation, confirms account number equality, and resets verification to 'pending'.
+    """
+    runner = db.query(Runner).filter((Runner.id == runner_id) | (Runner.runner_code == runner_id)).first()
+    if not runner:
+        raise HTTPException(status_code=404, detail="Runner not found.")
+
+    runner.bank_account_name = payload.account_holder_name
+    runner.bank_account_number = payload.account_number
+    runner.bank_ifsc = payload.ifsc_code
+    runner.payout_upi = payload.upi_id
+    runner.bank_verification_status = "pending"
+    db.commit()
+    db.refresh(runner)
+
+    return {
+        "success": True,
+        "message": "Runner bank & UPI payout details submitted successfully. Verification status is pending.",
+        "verification_status": "pending",
+        "account_holder_name": runner.bank_account_name,
+        "account_number_masked": mask_bank_account(runner.bank_account_number),
+        "ifsc_code": runner.bank_ifsc,
+        "upi_id": runner.payout_upi
+    }
 
 
 # =============================================================================
@@ -2423,5 +2659,94 @@ def get_admin_commission_ledger(db: Session = Depends(get_db)):
         net_platform_profit=round(net_platform_profit, 2),
         recent_transactions=recent_txns
     )
+
+
+# =============================================================================
+# 9. SUPER ADMIN BANK & PAYOUT KYC VERIFICATION ENDPOINTS
+# =============================================================================
+
+@app.get("/api/admin/payout-verifications", response_model=List[AdminPayoutVerificationDTO])
+def get_admin_payout_verifications(db: Session = Depends(get_db)):
+    """
+    Lists all Vendor and Runner bank details and their verification statuses for Super Admin audit.
+    """
+    results = []
+
+    # 1. Stores / Vendors
+    stores = db.query(Store).all()
+    for s in stores:
+        results.append(AdminPayoutVerificationDTO(
+            entity_type="vendor",
+            entity_id=s.id,
+            entity_name=s.name,
+            phone=s.phone,
+            account_holder_name=s.bank_account_name or s.owner_name or s.name,
+            account_number_masked=mask_bank_account(s.bank_account_number),
+            ifsc_code=s.bank_ifsc,
+            upi_id=s.payout_upi,
+            verification_status=s.bank_verification_status or "pending",
+            created_at=s.created_at.isoformat() if s.created_at else None
+        ))
+
+    # 2. Runners / Gaon Mitras
+    runners = db.query(Runner).all()
+    for r in runners:
+        results.append(AdminPayoutVerificationDTO(
+            entity_type="runner",
+            entity_id=r.id,
+            entity_name=r.name,
+            phone=r.phone,
+            account_holder_name=r.bank_account_name or r.name,
+            account_number_masked=mask_bank_account(r.bank_account_number),
+            ifsc_code=r.bank_ifsc,
+            upi_id=r.payout_upi,
+            verification_status=r.bank_verification_status or "pending",
+            created_at=r.created_at.isoformat() if r.created_at else None
+        ))
+
+    return results
+
+
+@app.post("/api/admin/payout-verifications/{entity_type}/{entity_id}/status")
+def update_admin_payout_verification_status(
+    entity_type: str,
+    entity_id: str,
+    payload: AdminPayoutStatusUpdateRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    Allows Super Admin to transition a Vendor or Runner bank verification status
+    between 'pending', 'verified', and 'rejected'.
+    """
+    ent_type = entity_type.strip().lower()
+    if ent_type in ("vendor", "store"):
+        store = db.query(Store).filter(Store.id == entity_id).first()
+        if not store:
+            raise HTTPException(status_code=404, detail="Store not found.")
+        store.bank_verification_status = payload.status
+        db.commit()
+        return {
+            "success": True,
+            "entity_type": "vendor",
+            "entity_id": entity_id,
+            "status": store.bank_verification_status,
+            "message": f"Store bank verification status updated to '{payload.status}'."
+        }
+    elif ent_type == "runner":
+        runner = db.query(Runner).filter((Runner.id == entity_id) | (Runner.runner_code == entity_id)).first()
+        if not runner:
+            raise HTTPException(status_code=404, detail="Runner not found.")
+        runner.bank_verification_status = payload.status
+        db.commit()
+        return {
+            "success": True,
+            "entity_type": "runner",
+            "entity_id": entity_id,
+            "status": runner.bank_verification_status,
+            "message": f"Runner bank verification status updated to '{payload.status}'."
+        }
+    else:
+        raise HTTPException(status_code=400, detail="Invalid entity_type. Must be 'vendor' or 'runner'.")
+
 
 
