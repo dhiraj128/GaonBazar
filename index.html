@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="hi" class="h-full w-full">
 <head>
-  <meta charset="utf-8"/>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛒</text></svg>"/>
+    <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
   <meta name="HandheldFriendly" content="true"/>
   <meta name="MobileOptimized" content="width"/>
@@ -4627,7 +4628,7 @@
     async function deleteSavedPaymentMethod(methodId) {
       const phone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '9876543210';
       try {
-        const res = await fetch(`${API_BASE}/api/user/${phone}/payment-methods/${methodId}`, {
+        const res = await fetch(`${API_BASE}/user/${phone}/payment-methods/${methodId}`, {
           method: 'DELETE'
         });
         if (res.ok) {
@@ -4670,7 +4671,7 @@
           ? `•••• •••• •••• ${val.replace(/[\s\-]/g, '').slice(-4)}`
           : val;
 
-        const res = await fetch(`${API_BASE}/api/user/${phone}/payment-methods`, {
+        const res = await fetch(`${API_BASE}/user/${phone}/payment-methods`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

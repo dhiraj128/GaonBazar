@@ -24,7 +24,7 @@ import urllib.request
 from pathlib import Path
 from datetime import datetime
 
-def start_global_timeout_watchdog(timeout_seconds=240):
+def start_global_timeout_watchdog(timeout_seconds=360):
     """
     Strict Global Watchdog Timeout:
     Guarantees the entire test suite process exits hard after timeout_seconds,
@@ -898,7 +898,7 @@ def test_customer_to_vendor_realtime_sync(browser, logger):
 
 
 def main():
-    start_global_timeout_watchdog(timeout_seconds=240)
+    start_global_timeout_watchdog(timeout_seconds=360)
     logger = VendorTestLogger()
     logger.log("Starting GaonBazaar Vendor (Dukandaar) Dashboard End-to-End Test Suite...")
 

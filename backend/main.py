@@ -4,7 +4,7 @@ import random
 from datetime import datetime, timedelta
 from typing import List, Optional
 from pathlib import Path
-from fastapi import FastAPI, Depends, HTTPException, Query
+from fastapi import FastAPI, Depends, HTTPException, Query, Response
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -162,6 +162,11 @@ def serve_service_worker():
 @app.get("/offline.html", response_class=HTMLResponse)
 def serve_offline_fallback():
     return FileResponse(ROOT_DIR / "offline.html", media_type="text/html")
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+def serve_favicon():
+    return Response(status_code=204)
 
 
 @app.get("/vendor", response_class=HTMLResponse)
@@ -1174,6 +1179,8 @@ def mask_bank_account(acc_num: Optional[str]) -> Optional[str]:
 # =============================================================================
 
 @app.get("/api/user/{phone}/payment-methods", response_model=List[CustomerSavedPaymentDTO])
+@app.get("/user/{phone}/payment-methods", response_model=List[CustomerSavedPaymentDTO])
+@app.get("/api/api/user/{phone}/payment-methods", response_model=List[CustomerSavedPaymentDTO])
 def get_user_payment_methods(phone: str, db: Session = Depends(get_db)):
     """
     Returns saved payment methods (UPI IDs and Card tokens) for a customer.
@@ -1225,6 +1232,8 @@ def get_user_payment_methods(phone: str, db: Session = Depends(get_db)):
 
 
 @app.post("/api/user/{phone}/payment-methods", response_model=CustomerSavedPaymentDTO)
+@app.post("/user/{phone}/payment-methods", response_model=CustomerSavedPaymentDTO)
+@app.post("/api/api/user/{phone}/payment-methods", response_model=CustomerSavedPaymentDTO)
 def add_user_payment_method(phone: str, payload: AddCustomerSavedPaymentRequest, db: Session = Depends(get_db)):
     """
     Adds a new saved payment method (UPI or dummy Card token) for the customer.
@@ -1258,6 +1267,8 @@ def add_user_payment_method(phone: str, payload: AddCustomerSavedPaymentRequest,
 
 
 @app.delete("/api/user/{phone}/payment-methods/{method_id}")
+@app.delete("/user/{phone}/payment-methods/{method_id}")
+@app.delete("/api/api/user/{phone}/payment-methods/{method_id}")
 def delete_user_payment_method(phone: str, method_id: int, db: Session = Depends(get_db)):
     """
     Deletes a saved payment method for the customer.
@@ -1771,6 +1782,8 @@ def get_vendor_ledger(
 # =============================================================================
 
 @app.get("/api/vendor/stores/{store_id}/payout-settings", response_model=BankPayoutSettingsDTO)
+@app.get("/vendor/stores/{store_id}/payout-settings", response_model=BankPayoutSettingsDTO)
+@app.get("/api/api/vendor/stores/{store_id}/payout-settings", response_model=BankPayoutSettingsDTO)
 def get_vendor_payout_settings(store_id: str, db: Session = Depends(get_db)):
     """
     Retrieves the vendor's bank and UPI payout settings with sensitive account number masked.
@@ -1791,6 +1804,8 @@ def get_vendor_payout_settings(store_id: str, db: Session = Depends(get_db)):
 
 
 @app.post("/api/vendor/stores/{store_id}/payout-settings")
+@app.post("/vendor/stores/{store_id}/payout-settings")
+@app.post("/api/api/vendor/stores/{store_id}/payout-settings")
 def update_vendor_payout_settings(store_id: str, payload: BankPayoutSettingsRequest, db: Session = Depends(get_db)):
     """
     Saves and updates the vendor's bank account, IFSC, and UPI details for Razorpay Route payouts.
@@ -2157,6 +2172,8 @@ def get_runner_ledger(
 # =============================================================================
 
 @app.get("/api/runner/{runner_id}/payout-settings", response_model=BankPayoutSettingsDTO)
+@app.get("/runner/{runner_id}/payout-settings", response_model=BankPayoutSettingsDTO)
+@app.get("/api/api/runner/{runner_id}/payout-settings", response_model=BankPayoutSettingsDTO)
 def get_runner_payout_settings(runner_id: str, db: Session = Depends(get_db)):
     """
     Retrieves the runner's bank and UPI payout settings with masked account number.
@@ -2187,6 +2204,8 @@ def get_runner_payout_settings(runner_id: str, db: Session = Depends(get_db)):
 
 
 @app.post("/api/runner/{runner_id}/payout-settings")
+@app.post("/runner/{runner_id}/payout-settings")
+@app.post("/api/api/runner/{runner_id}/payout-settings")
 def update_runner_payout_settings(runner_id: str, payload: BankPayoutSettingsRequest, db: Session = Depends(get_db)):
     """
     Saves and updates the runner's bank account, IFSC, and UPI details for Razorpay Route payouts.
@@ -2666,6 +2685,8 @@ def get_admin_commission_ledger(db: Session = Depends(get_db)):
 # =============================================================================
 
 @app.get("/api/admin/payout-verifications", response_model=List[AdminPayoutVerificationDTO])
+@app.get("/admin/payout-verifications", response_model=List[AdminPayoutVerificationDTO])
+@app.get("/api/api/admin/payout-verifications", response_model=List[AdminPayoutVerificationDTO])
 def get_admin_payout_verifications(db: Session = Depends(get_db)):
     """
     Lists all Vendor and Runner bank details and their verification statuses for Super Admin audit.
@@ -2708,6 +2729,8 @@ def get_admin_payout_verifications(db: Session = Depends(get_db)):
 
 
 @app.post("/api/admin/payout-verifications/{entity_type}/{entity_id}/status")
+@app.post("/admin/payout-verifications/{entity_type}/{entity_id}/status")
+@app.post("/api/api/admin/payout-verifications/{entity_type}/{entity_id}/status")
 def update_admin_payout_verification_status(
     entity_type: str,
     entity_id: str,
