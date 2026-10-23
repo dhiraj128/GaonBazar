@@ -8,6 +8,14 @@ from datetime import datetime, timedelta
 from typing import List, Optional
 from pathlib import Path
 import razorpay
+from dotenv import load_dotenv
+
+# Load environment variables from .env file (checks backend/.env and root .env)
+_backend_dir = Path(__file__).resolve().parent
+_root_dir = _backend_dir.parent
+for _env_file in [_backend_dir / ".env", _root_dir / ".env"]:
+    if _env_file.exists():
+        load_dotenv(dotenv_path=_env_file, override=True)
 from fastapi import FastAPI, Depends, HTTPException, Query, Response, Request
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -132,10 +140,12 @@ app.add_middleware(
 # -----------------------------------------------------------------------------
 # Razorpay FinTech Gateway Configuration (Zero-Trust Security)
 # -----------------------------------------------------------------------------
-RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID", "rzp_test_GBZeroTrust99")
-RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET", "Sec_gb_zero_trust_key_8849")
-RAZORPAY_WEBHOOK_SECRET = os.getenv("RAZORPAY_WEBHOOK_SECRET", "whsec_gb_zero_trust_webhook_9921")
+# Load keys from environment variables (populated from .env via python-dotenv)
+RAZORPAY_KEY_ID = (os.getenv("RAZORPAY_KEY_ID") or "paste_your_key_id_here").strip("\"'")
+RAZORPAY_KEY_SECRET = (os.getenv("RAZORPAY_KEY_SECRET") or "paste_your_key_secret_here").strip("\"'")
+RAZORPAY_WEBHOOK_SECRET = (os.getenv("RAZORPAY_WEBHOOK_SECRET") or "paste_your_webhook_secret_here").strip("\"'")
 
+# Connect Razorpay Python SDK to environment variables
 try:
     razorpay_client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
 except Exception as e:
@@ -1538,7 +1548,13 @@ def create_payment_order(payload: CreatePaymentOrderRequest, db: Session = Depen
 
     # Generate Razorpay Order ID via SDK
     rzp_order_id = None
-    if razorpay_client:
+    is_live_key = (
+        razorpay_client is not None
+        and RAZORPAY_KEY_ID
+        and not RAZORPAY_KEY_ID.startswith("paste_your")
+        and not RAZORPAY_KEY_SECRET.startswith("paste_your")
+    )
+    if is_live_key:
         try:
             rzp_response = razorpay_client.order.create({
                 "amount": amount_in_paise,
@@ -1552,7 +1568,8 @@ def create_payment_order(payload: CreatePaymentOrderRequest, db: Session = Depen
                 }
             })
             rzp_order_id = rzp_response.get("id")
-        except Exception:
+        except Exception as e:
+            print(f"Notice: Razorpay live order creation exception: {e}")
             rzp_order_id = f"order_{uuid.uuid4().hex[:14]}"
     else:
         rzp_order_id = f"order_{uuid.uuid4().hex[:14]}"
