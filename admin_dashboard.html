@@ -70,7 +70,7 @@
   <!-- ========================================================================= -->
   <!-- 0. SERVER DISCONNECTION / OFFLINE BANNER                                  -->
   <!-- ========================================================================= -->
-  <div id="admin-server-offline-banner" class="hidden sticky top-0 z-50 bg-red-600 text-white px-4 py-2 text-xs font-bold flex items-center justify-between shadow-md">
+  <div id="admin-server-offline-banner" class="hidden sticky top-0 z-50 bg-red-600 text-white px-4 py-2.5 text-xs font-bold flex items-center justify-between shadow-lg">
     <div class="flex items-center gap-2">
       <span class="material-symbols-outlined text-[18px]">wifi_off</span>
       <span id="admin-offline-msg" data-i18n="server_offline_msg">सर्वर से संपर्क नहीं हो पा रहा है (पोर्ट 8001)</span>
@@ -98,7 +98,7 @@
               v2.0
             </span>
           </div>
-          <span class="text-[10px] sm:text-xs text-slate-400" data-i18n="app_sub">Hyperlocal Rural Delivery Network</span>
+          <span class="text-[10px] sm:text-xs text-slate-400" data-i18n="app_sub">हाइपरलोकल ग्रामीण डिलीवरी नेटवर्क</span>
         </div>
       </div>
 
@@ -119,19 +119,19 @@
           <span id="admin-current-lang-text">English</span>
         </button>
 
-        <a href="index.html" target="_blank" class="px-2 sm:px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center gap-1 transition-all">
+        <a href="index.html" target="_blank" title="Open Customer App (PWA) in new tab" class="px-2 sm:px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center gap-1 transition-all">
           <span class="material-symbols-outlined text-[15px] text-blue-400">smartphone</span>
-          <span class="hidden sm:inline">Customer App</span>
+          <span class="hidden sm:inline" data-i18n="nav_customer">ग्राहक ऐप</span>
         </a>
 
-        <a href="vendor_dashboard.html" target="_blank" class="px-2 sm:px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center gap-1 transition-all">
+        <a href="vendor_dashboard.html" target="_blank" title="Open Vendor (Dukandaar) Portal in new tab" class="px-2 sm:px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center gap-1 transition-all">
           <span class="material-symbols-outlined text-[15px] text-emerald-400">storefront</span>
-          <span class="hidden sm:inline">Vendor</span>
+          <span class="hidden sm:inline" data-i18n="nav_vendor">दुकानदार</span>
         </a>
 
-        <a href="runner_dashboard.html" target="_blank" class="px-2 sm:px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center gap-1 transition-all">
+        <a href="runner_dashboard.html" target="_blank" title="Open Gaon Mitra (Runner) Portal in new tab" class="px-2 sm:px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center gap-1 transition-all">
           <span class="material-symbols-outlined text-[15px] text-amber-400">two_wheeler</span>
-          <span class="hidden sm:inline">Runner</span>
+          <span class="hidden sm:inline" data-i18n="nav_runner">गाँव मित्र</span>
         </a>
       </div>
 
@@ -162,60 +162,60 @@
       <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 flex flex-col justify-between">
         <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
           <span class="material-symbols-outlined text-[16px] text-emerald-400">currency_rupee</span>
-          <span>Gross Volume</span>
+          <span data-i18n="kpi_gmv">सकल कारोबार</span>
         </span>
         <div id="metric-gmv" class="text-2xl font-black text-white mt-1">₹0.00</div>
-        <span class="text-[10px] text-emerald-400 font-semibold mt-0.5">Total Orders GMV</span>
+        <span class="text-[10px] text-emerald-400 font-semibold mt-0.5" data-i18n="kpi_gmv_sub">कुल ऑर्डर राशि</span>
       </div>
 
       <!-- Metric 2: Platform Profits -->
       <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 flex flex-col justify-between">
         <span class="text-[11px] font-bold text-purple-400 uppercase tracking-wider flex items-center gap-1">
           <span class="material-symbols-outlined text-[16px] text-purple-400">savings</span>
-          <span>Platform Profit</span>
+          <span data-i18n="kpi_profit">प्लेटफ़ॉर्म आय</span>
         </span>
         <div id="metric-profits" class="text-2xl font-black text-purple-300 mt-1">₹0.00</div>
-        <span class="text-[10px] text-purple-400 font-semibold mt-0.5">₹3 / Fulfilled Order</span>
+        <span class="text-[10px] text-purple-400 font-semibold mt-0.5" data-i18n="kpi_profit_sub">₹3 प्रति सफल ऑर्डर</span>
       </div>
 
       <!-- Metric 3: Total Orders -->
       <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 flex flex-col justify-between">
         <span class="text-[11px] font-bold text-blue-400 uppercase tracking-wider flex items-center gap-1">
           <span class="material-symbols-outlined text-[16px] text-blue-400">shopping_bag</span>
-          <span>Total Orders</span>
+          <span data-i18n="kpi_orders">कुल ऑर्डर</span>
         </span>
         <div id="metric-orders" class="text-2xl font-black text-blue-300 mt-1">0</div>
-        <span id="metric-active-orders" class="text-[10px] text-blue-400 font-semibold mt-0.5">0 Active In-Flight</span>
+        <span id="metric-active-orders" class="text-[10px] text-blue-400 font-semibold mt-0.5" data-i18n="kpi_orders_active">0 सक्रिय ऑर्डर</span>
       </div>
 
       <!-- Metric 4: Customers -->
       <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 flex flex-col justify-between">
         <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
           <span class="material-symbols-outlined text-[16px] text-slate-400">groups</span>
-          <span>Customers</span>
+          <span data-i18n="kpi_customers">ग्राहक</span>
         </span>
         <div id="metric-customers" class="text-2xl font-black text-white mt-1">0</div>
-        <span class="text-[10px] text-slate-400 font-semibold mt-0.5">Rural Households</span>
+        <span class="text-[10px] text-slate-400 font-semibold mt-0.5" data-i18n="kpi_customers_sub">ग्रामीण उपभोक्ता</span>
       </div>
 
       <!-- Metric 5: Vendors (Shops) -->
       <div onclick="switchTab('vendors')" class="bg-slate-900 rounded-2xl p-4 border border-amber-500/30 flex flex-col justify-between cursor-pointer hover:border-amber-400 transition-colors">
         <span class="text-[10px] sm:text-[11px] font-bold text-amber-400 uppercase tracking-wider flex items-center justify-between gap-1">
-          <span class="truncate">Dukandaars</span>
+          <span class="truncate" data-i18n="kpi_dukandaars">दुकानदार</span>
           <span id="badge-pending-vendors-count" class="text-[9px] sm:text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded-md font-black border border-amber-500/30 shrink-0">0 Pending</span>
         </span>
         <div id="metric-vendors" class="text-2xl font-black text-white mt-1">0</div>
-        <span class="text-[10px] text-amber-400 font-semibold mt-0.5 truncate">KYC Approval Queue</span>
+        <span class="text-[10px] text-amber-400 font-semibold mt-0.5 truncate" data-i18n="kpi_dukandaars_sub">केवाईसी सत्यापन कतार</span>
       </div>
 
       <!-- Metric 6: Runners (Gaon Mitras) -->
       <div onclick="switchTab('runners')" class="bg-slate-900 rounded-2xl p-4 border border-emerald-500/30 flex flex-col justify-between cursor-pointer hover:border-emerald-400 transition-colors">
         <span class="text-[10px] sm:text-[11px] font-bold text-emerald-400 uppercase tracking-wider flex items-center justify-between gap-1">
-          <span class="truncate">Gaon Mitras</span>
+          <span class="truncate" data-i18n="kpi_gaon_mitras">गाँव मित्र</span>
           <span id="badge-pending-runners-count" class="text-[9px] sm:text-[10px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded-md font-black border border-emerald-500/30 shrink-0">0 Pending</span>
         </span>
         <div id="metric-runners" class="text-2xl font-black text-white mt-1">0</div>
-        <span class="text-[10px] text-emerald-400 font-semibold mt-0.5 truncate">KYC Approval Queue</span>
+        <span class="text-[10px] text-emerald-400 font-semibold mt-0.5 truncate" data-i18n="kpi_gaon_mitras_sub">केवाईसी सत्यापन कतार</span>
       </div>
 
     </section>
@@ -293,13 +293,13 @@
           <table class="w-full text-left text-xs text-slate-300">
             <thead class="bg-slate-950 text-slate-400 font-bold border-b border-slate-800 uppercase tracking-wider text-[11px]">
               <tr>
-                <th class="py-3 px-3.5">Entity / Role</th>
-                <th class="py-3 px-3.5">Account Holder Name</th>
-                <th class="py-3 px-3.5">Masked Account Number</th>
-                <th class="py-3 px-3.5">IFSC Code</th>
-                <th class="py-3 px-3.5">UPI ID (VPA)</th>
-                <th class="py-3 px-3.5">KYC Status</th>
-                <th class="py-3 px-3.5 text-right">Verification Action</th>
+                <th class="py-3 px-3.5" data-i18n="th_entity_role">संस्था / भूमिका</th>
+                <th class="py-3 px-3.5" data-i18n="th_acc_holder">खाताधारक का नाम</th>
+                <th class="py-3 px-3.5" data-i18n="th_masked_acc">खाता संख्या (गोपनीय)</th>
+                <th class="py-3 px-3.5" data-i18n="th_ifsc">IFSC कोड</th>
+                <th class="py-3 px-3.5" data-i18n="th_upi_id">UPI आईडी (VPA)</th>
+                <th class="py-3 px-3.5" data-i18n="th_kyc_status">केवाईसी स्थिति</th>
+                <th class="py-3 px-3.5 text-right" data-i18n="th_action">सत्यापन कार्रवाई</th>
               </tr>
             </thead>
             <tbody id="bank-verifications-table-body" class="divide-y divide-slate-800/80">
@@ -336,11 +336,13 @@
         </div>
       </div>
 
-      <!-- Pending Vendors Cards / Grid Container -->
-      <div id="vendors-approval-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
-        <!-- Rendered dynamically -->
-        <div class="col-span-full bg-slate-900 rounded-3xl p-8 border border-slate-800 text-center text-slate-400 text-xs">
-          Loading vendor applications...
+      <!-- Pending Vendors Cards / Grid Container (Horizontal scroll on narrow viewports) -->
+      <div class="overflow-x-auto pb-3 w-full">
+        <div id="vendors-approval-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 w-full min-w-0">
+          <!-- Rendered dynamically -->
+          <div class="col-span-full bg-slate-900 rounded-3xl p-8 border border-slate-800 text-center text-slate-400 text-xs">
+            Loading vendor applications...
+          </div>
         </div>
       </div>
 
@@ -370,11 +372,13 @@
         </div>
       </div>
 
-      <!-- Pending Runners Cards / Grid Container -->
-      <div id="runners-approval-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
-        <!-- Rendered dynamically -->
-        <div class="col-span-full bg-slate-900 rounded-3xl p-8 border border-slate-800 text-center text-slate-400 text-xs">
-          Loading runner applications...
+      <!-- Pending Runners Cards / Grid Container (Horizontal scroll on narrow viewports) -->
+      <div class="overflow-x-auto pb-3 w-full">
+        <div id="runners-approval-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 w-full min-w-0">
+          <!-- Rendered dynamically -->
+          <div class="col-span-full bg-slate-900 rounded-3xl p-8 border border-slate-800 text-center text-slate-400 text-xs">
+            Loading runner applications...
+          </div>
         </div>
       </div>
 
@@ -389,9 +393,9 @@
         <div>
           <h2 class="text-sm font-black text-white flex items-center gap-2">
             <span class="material-symbols-outlined text-blue-400">visibility</span>
-            <span>लाइव ऑर्डर समग्र दृश्य (Live Order God-View Table)</span>
+            <span data-i18n="tab3_heading">लाइव ऑर्डर समग्र दृश्य</span>
           </h2>
-          <p class="text-xs text-slate-400">Real-time surveillance of orders across all rural lifecycle stages.</p>
+          <p class="text-xs text-slate-400" data-i18n="tab3_sub">ग्रामीण जीवनचक्र के सभी चरणों में ऑर्डर की वास्तविक समय निगरानी।</p>
         </div>
         <span id="godview-count-badge" class="text-xs bg-slate-800 text-slate-300 px-2.5 py-1 rounded-full font-bold">
           0 Orders In-Flight
@@ -402,16 +406,16 @@
         <table class="w-full text-left text-xs">
           <thead>
             <tr class="border-b border-slate-800 text-slate-400 font-bold">
-              <th class="py-2.5 px-3">Order ID</th>
-              <th class="py-2.5 px-3">Date/Time</th>
-              <th class="py-2.5 px-3">Customer</th>
-              <th class="py-2.5 px-3">Village & Landmark</th>
-              <th class="py-2.5 px-3">Store</th>
-              <th class="py-2.5 px-3">Items</th>
-              <th class="py-2.5 px-3">Total Amount</th>
-              <th class="py-2.5 px-3">Payment</th>
-              <th class="py-2.5 px-3">Stage & Status</th>
-              <th class="py-2.5 px-3">Delivery OTP</th>
+              <th class="py-2.5 px-3" data-i18n="th_order_id">ऑर्डर आईडी</th>
+              <th class="py-2.5 px-3" data-i18n="th_datetime">दिनांक/समय</th>
+              <th class="py-2.5 px-3" data-i18n="th_customer">ग्राहक</th>
+              <th class="py-2.5 px-3" data-i18n="th_village_landmark">गाँव व पहचान चिन्ह</th>
+              <th class="py-2.5 px-3" data-i18n="th_store">दुकान</th>
+              <th class="py-2.5 px-3" data-i18n="th_items">सामान</th>
+              <th class="py-2.5 px-3" data-i18n="th_total_amount">कुल राशि</th>
+              <th class="py-2.5 px-3" data-i18n="th_payment">भुगतान माध्यम</th>
+              <th class="py-2.5 px-3" data-i18n="th_stage_status">चरण व स्थिति</th>
+              <th class="py-2.5 px-3" data-i18n="th_delivery_otp">डिलीवरी ओटीपी</th>
             </tr>
           </thead>
           <tbody id="godview-orders-table-body" class="divide-y divide-slate-800 text-slate-300">
@@ -431,53 +435,53 @@
         <div>
           <h2 class="text-sm font-black text-white flex items-center gap-2">
             <span class="material-symbols-outlined text-purple-400">account_balance</span>
-            <span>प्लेटफ़ॉर्म आय व भुगतान बहीखाता (Platform Payout Ledger)</span>
+            <span data-i18n="tab4_heading">प्लेटफ़ॉर्म आय व भुगतान बहीखाता</span>
           </h2>
-          <p class="text-xs text-slate-400">Complete audit trail of ₹3 platform fees, vendor dues, and runner commissions.</p>
+          <p class="text-xs text-slate-400" data-i18n="tab4_sub">₹3 प्लेटफ़ॉर्म शुल्क, विक्रेता देय और रनर कमीशन का पूरा ऑडिट।</p>
         </div>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
         <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800">
-          <span class="text-xs text-slate-400 font-bold block">Gross Revenue Volume</span>
+          <span class="text-xs text-slate-400 font-bold block" data-i18n="ledger_card1_title">सकल राजस्व कारोबार</span>
           <span id="ledger-total-rev" class="text-xl font-black text-white mt-1 block">₹0.00</span>
-          <span class="text-[10px] text-slate-500">All customer payments</span>
+          <span class="text-[10px] text-slate-500" data-i18n="ledger_card1_sub">कुल ग्राहक भुगतान</span>
         </div>
 
         <div class="bg-slate-900 rounded-2xl p-4 border border-purple-500/30">
-          <span class="text-xs text-purple-400 font-bold block">Platform Net Profit</span>
+          <span class="text-xs text-purple-400 font-bold block" data-i18n="ledger_card2_title">प्लेटफ़ॉर्म शुद्ध आय</span>
           <span id="ledger-net-profit" class="text-xl font-black text-purple-300 mt-1 block">₹0.00</span>
-          <span class="text-[10px] text-purple-400">₹3/order handling fee</span>
+          <span class="text-[10px] text-purple-400" data-i18n="ledger_card2_sub">₹3 प्रति ऑर्डर शुल्क</span>
         </div>
 
         <div class="bg-slate-900 rounded-2xl p-4 border border-emerald-500/30">
-          <span class="text-xs text-emerald-400 font-bold block">Vendor Payouts Due</span>
+          <span class="text-xs text-emerald-400 font-bold block" data-i18n="ledger_card3_title">विक्रेता देय भुगतान</span>
           <span id="ledger-vendor-due" class="text-xl font-black text-emerald-300 mt-1 block">₹0.00</span>
-          <span class="text-[10px] text-emerald-400">Subtotal - platform cut</span>
+          <span class="text-[10px] text-emerald-400" data-i18n="ledger_card3_sub">सबटोटल - प्लेटफ़ॉर्म हिस्सा</span>
         </div>
 
         <div class="bg-slate-900 rounded-2xl p-4 border border-blue-500/30">
-          <span class="text-xs text-blue-400 font-bold block">Runner Fees Due</span>
+          <span class="text-xs text-blue-400 font-bold block" data-i18n="ledger_card4_title">रनर देय कमीशन</span>
           <span id="ledger-runner-due" class="text-xl font-black text-blue-300 mt-1 block">₹0.00</span>
-          <span class="text-[10px] text-blue-400">₹20/fulfilled delivery</span>
+          <span class="text-[10px] text-blue-400" data-i18n="ledger_card4_sub">₹20 प्रति सफल डिलीवरी</span>
         </div>
       </div>
 
       <!-- Transaction Log -->
       <div class="bg-slate-900 rounded-3xl p-4 border border-slate-800 shadow-md overflow-x-auto no-scrollbar">
-        <h3 class="text-xs font-black text-white mb-2">Recent Settlement Transactions</h3>
+        <h3 class="text-xs font-black text-white mb-2" data-i18n="tab4_table_title">हालिया लेनदेन बहीखाता</h3>
         <table class="w-full text-left text-xs">
           <thead>
             <tr class="border-b border-slate-800 text-slate-400 font-bold">
-              <th class="py-2 px-3">Order ID</th>
-              <th class="py-2 px-3">Date</th>
-              <th class="py-2 px-3">Customer</th>
-              <th class="py-2 px-3">Store</th>
-              <th class="py-2 px-3">Order Amount</th>
-              <th class="py-2 px-3">Platform Cut (₹3)</th>
-              <th class="py-2 px-3">Vendor Net</th>
-              <th class="py-2 px-3">Runner Fee</th>
-              <th class="py-2 px-3">Status</th>
+              <th class="py-2 px-3" data-i18n="th_order_id">ऑर्डर आईडी</th>
+              <th class="py-2 px-3" data-i18n="th_datetime">दिनांक</th>
+              <th class="py-2 px-3" data-i18n="th_customer">ग्राहक</th>
+              <th class="py-2 px-3" data-i18n="th_store">दुकान</th>
+              <th class="py-2 px-3" data-i18n="th_total_amount">ऑर्डर राशि</th>
+              <th class="py-2 px-3" data-i18n="th_platform_cut">प्लेटफ़ॉर्म शुल्क (₹3)</th>
+              <th class="py-2 px-3" data-i18n="th_vendor_net">दुकानदार हिस्सा</th>
+              <th class="py-2 px-3" data-i18n="th_runner_fee">रनर कमीशन</th>
+              <th class="py-2 px-3" data-i18n="th_status">स्थिति</th>
             </tr>
           </thead>
           <tbody id="ledger-txns-table-body" class="divide-y divide-slate-800 text-slate-300">
@@ -497,14 +501,14 @@
         <div>
           <h2 class="text-sm font-black text-white flex items-center gap-2">
             <span class="material-symbols-outlined text-amber-400">shield</span>
-            <span>Account Risk Profile (आंतरिक खाता जोखिम प्रबंधन)</span>
+            <span data-i18n="tab5_heading">आंतरिक खाता जोखिम प्रबंधन</span>
           </h2>
-          <p class="text-xs text-slate-400">Monitor consecutive cancellations, COD restriction status, and blacklisted accounts (Invisible to Customers).</p>
+          <p class="text-xs text-slate-400" data-i18n="tab5_sub">लगातार रद्दीकरण, सीओडी प्रतिबंध स्थिति और ब्लैकलिस्टेड खातों की निगरानी (ग्राहकों के लिए अदृश्य)।</p>
         </div>
 
         <button onclick="fetchRiskProfiles()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:text-white flex items-center gap-1 border border-slate-700">
           <span class="material-symbols-outlined text-[16px]">refresh</span>
-          <span>Refresh Risk Profiles</span>
+          <span data-i18n="btn_refresh_risk">जोखिम प्रोफाइल रीफ्रेश</span>
         </button>
       </div>
 
@@ -513,12 +517,12 @@
         <table class="w-full text-left text-xs">
           <thead>
             <tr class="border-b border-slate-800 text-slate-400 font-bold">
-              <th class="py-2.5 px-3">Customer Name</th>
-              <th class="py-2.5 px-3">Phone</th>
-              <th class="py-2.5 px-3">Consecutive Cancellations</th>
-              <th class="py-2.5 px-3">COD Permission</th>
-              <th class="py-2.5 px-3">Account Status</th>
-              <th class="py-2.5 px-3">Risk Assessment / Warning Alert</th>
+              <th class="py-2.5 px-3" data-i18n="th_cust_name">ग्राहक का नाम</th>
+              <th class="py-2.5 px-3" data-i18n="th_phone">फ़ोन</th>
+              <th class="py-2.5 px-3" data-i18n="th_consecutive_cancels">लगातार रद्दीकरण</th>
+              <th class="py-2.5 px-3" data-i18n="th_cod_permission">सीओडी अनुमति</th>
+              <th class="py-2.5 px-3" data-i18n="th_account_status">खाता स्थिति</th>
+              <th class="py-2.5 px-3" data-i18n="th_risk_assessment">जोखिम मूल्यांकन</th>
             </tr>
           </thead>
           <tbody id="risk-profiles-table-body" class="divide-y divide-slate-800 text-slate-300">
@@ -528,6 +532,108 @@
       </div>
 
     </section>
+
+    <!-- ======================================================================= -->
+    <!-- DETAILED KYC & FRAUD CONTROL MODAL                                      -->
+    <!-- ======================================================================= -->
+    <div id="modal-admin-kyc-detail" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+      <div class="bg-slate-900 border border-slate-700/80 rounded-3xl max-w-lg w-full p-5 sm:p-6 shadow-2xl relative my-auto flex flex-col gap-4 text-left">
+        <!-- Modal Header -->
+        <div class="flex items-start justify-between gap-3 border-b border-slate-800 pb-3">
+          <div class="flex items-center gap-3">
+            <div id="modal-kyc-avatar-wrap" class="w-12 h-12 rounded-2xl bg-slate-800 border border-slate-700 overflow-hidden flex items-center justify-center shrink-0">
+              <img id="modal-kyc-photo" src="" alt="Photo" class="w-full h-full object-cover hidden">
+              <span id="modal-kyc-icon" class="material-symbols-outlined text-slate-400 text-2xl">person</span>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 id="modal-kyc-title" class="text-base font-black text-white">Application Details</h3>
+                <span id="modal-kyc-status-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold">status</span>
+              </div>
+              <p id="modal-kyc-subtitle" class="text-xs text-slate-400">Loading details...</p>
+            </div>
+          </div>
+          <button onclick="closeAdminKycModal()" class="p-1 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-all">
+            <span class="material-symbols-outlined text-[18px]">close</span>
+          </button>
+        </div>
+
+        <!-- Modal Body (Details) -->
+        <div id="modal-kyc-body" class="flex flex-col gap-3 text-xs">
+          <!-- Phone & Identity Grid -->
+          <div class="grid grid-cols-2 gap-2 bg-slate-950 p-3 rounded-2xl border border-slate-800/80">
+            <div>
+              <span class="text-[10px] text-slate-400 uppercase font-bold block" data-i18n="th_phone">फ़ोन</span>
+              <span id="modal-kyc-phone" class="font-mono font-bold text-white text-xs">--</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 uppercase font-bold block" data-i18n="modal_lbl_id_proof">पहचान प्रमाण (KYC ID)</span>
+              <span id="modal-kyc-id" class="font-mono font-bold text-emerald-400 text-xs">--</span>
+            </div>
+          </div>
+
+          <!-- Vehicle Details (Runner Only) -->
+          <div id="modal-kyc-vehicle-row" class="hidden bg-slate-950 p-3 rounded-2xl border border-slate-800/80">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block" data-i18n="modal_lbl_vehicle">वाहन विवरण</span>
+            <span id="modal-kyc-vehicle" class="font-bold text-white text-xs">--</span>
+          </div>
+
+          <!-- Bank & Payout Information -->
+          <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800/80 flex flex-col gap-2">
+            <div class="flex items-center justify-between border-b border-slate-800/60 pb-1.5">
+              <span class="text-[10px] text-primary uppercase font-bold flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px]">account_balance</span>
+                <span data-i18n="bank_queue_title">बैंक पेआउट विवरण</span>
+              </span>
+              <span id="modal-kyc-bank-status" class="text-[10px] font-bold text-slate-400">Status: --</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <span class="text-[10px] text-slate-500 font-bold block" data-i18n="th_acc_holder">खाताधारक</span>
+                <span id="modal-kyc-bank-name" class="font-medium text-slate-200">--</span>
+              </div>
+              <div>
+                <span class="text-[10px] text-slate-500 font-bold block" data-i18n="modal_lbl_bank_acc">खाता संख्या</span>
+                <span id="modal-kyc-bank-acc" class="font-mono text-slate-200">--</span>
+              </div>
+              <div>
+                <span class="text-[10px] text-slate-500 font-bold block" data-i18n="modal_lbl_ifsc">IFSC कोड</span>
+                <span id="modal-kyc-bank-ifsc" class="font-mono text-slate-200">--</span>
+              </div>
+              <div>
+                <span class="text-[10px] text-slate-500 font-bold block" data-i18n="modal_lbl_upi">UPI आईडी</span>
+                <span id="modal-kyc-bank-upi" class="font-mono text-primary font-bold">--</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Fraud Warning / History if blacklisted -->
+          <div id="modal-kyc-fraud-alert" class="hidden bg-rose-950/40 border border-rose-500/40 p-3 rounded-2xl text-rose-300 text-xs flex items-center gap-2">
+            <span class="material-symbols-outlined text-rose-400 text-lg">warning</span>
+            <span id="modal-kyc-fraud-text">This user has recorded violations or is blacklisted.</span>
+          </div>
+        </div>
+
+        <!-- Action Buttons Footer -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-2 border-t border-slate-800">
+          <button id="btn-modal-ban" onclick="executeModalBan()" class="order-3 sm:order-1 px-3 py-2.5 rounded-xl bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/40 text-xs font-black flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+            <span class="material-symbols-outlined text-[16px]">block</span>
+            <span data-i18n="modal_btn_ban">ब्लॉक / बैन करें</span>
+          </button>
+
+          <div class="order-1 sm:order-2 flex-1 flex items-center gap-2">
+            <button id="btn-modal-reject" onclick="executeModalReject()" class="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-bold flex items-center justify-center gap-1 border border-slate-700 active:scale-95 transition-all">
+              <span class="material-symbols-outlined text-[16px]">close</span>
+              <span data-i18n="modal_btn_reject">अस्वीकार करें</span>
+            </button>
+            <button id="btn-modal-approve" onclick="executeModalApprove()" class="flex-1 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-black flex items-center justify-center gap-1 shadow-md active:scale-95 transition-all">
+              <span class="material-symbols-outlined text-[16px]">check</span>
+              <span data-i18n="modal_btn_approve">सत्यापित करें</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </main>
 
@@ -555,6 +661,21 @@
         system_healthy: "सिस्टम सक्रिय • पोर्ट 8001",
         server_offline_msg: "सर्वर से संपर्क नहीं हो पा रहा है (पोर्ट 8001)",
         server_offline_retry: "पुनः प्रयास",
+        nav_customer: "ग्राहक ऐप",
+        nav_vendor: "दुकानदार",
+        nav_runner: "गाँव मित्र",
+        kpi_gmv: "सकल कारोबार",
+        kpi_gmv_sub: "कुल ऑर्डर राशि",
+        kpi_profit: "प्लेटफ़ॉर्म आय",
+        kpi_profit_sub: "₹3 प्रति सफल ऑर्डर",
+        kpi_orders: "कुल ऑर्डर",
+        kpi_orders_active: "0 सक्रिय ऑर्डर",
+        kpi_customers: "ग्राहक",
+        kpi_customers_sub: "ग्रामीण उपभोक्ता",
+        kpi_dukandaars: "दुकानदार",
+        kpi_dukandaars_sub: "केवाईसी सत्यापन कतार",
+        kpi_gaon_mitras: "गाँव मित्र",
+        kpi_gaon_mitras_sub: "केवाईसी सत्यापन कतार",
         tab_vendors: "दुकानदार सत्यापन कतार",
         tab_runners: "गाँव मित्र सत्यापन कतार",
         tab_orders: "लाइव ऑर्डर समग्र दृश्य",
@@ -569,7 +690,67 @@
         bank_queue_sub: "बैंक खाता, IFSC और UPI सत्यापन",
         pending_only: "केवल लंबित",
         all_records: "सभी रिकॉर्ड",
-        btn_refresh: "रीफ्रेश"
+        btn_refresh: "रीफ्रेश",
+        tab3_heading: "लाइव ऑर्डर समग्र दृश्य",
+        tab3_sub: "ग्रामीण जीवनचक्र के सभी चरणों में ऑर्डर की वास्तविक समय निगरानी।",
+        th_order_id: "ऑर्डर आईडी",
+        th_datetime: "दिनांक/समय",
+        th_customer: "ग्राहक",
+        th_village_landmark: "गाँव व पहचान चिन्ह",
+        th_store: "दुकान",
+        th_items: "सामान",
+        th_total_amount: "कुल राशि",
+        th_payment: "भुगतान माध्यम",
+        th_stage_status: "चरण व स्थिति",
+        th_delivery_otp: "डिलीवरी ओटीपी",
+        tab4_heading: "प्लेटफ़ॉर्म आय व भुगतान बहीखाता",
+        tab4_sub: "₹3 प्लेटफ़ॉर्म शुल्क, विक्रेता देय और रनर कमीशन का पूरा ऑडिट।",
+        ledger_card1_title: "सकल राजस्व कारोबार",
+        ledger_card1_sub: "कुल ग्राहक भुगतान",
+        ledger_card2_title: "प्लेटफ़ॉर्म शुद्ध आय",
+        ledger_card2_sub: "₹3 प्रति ऑर्डर शुल्क",
+        ledger_card3_title: "विक्रेता देय भुगतान",
+        ledger_card3_sub: "सबटोटल - प्लेटफ़ॉर्म हिस्सा",
+        ledger_card4_title: "रनर देय कमीशन",
+        ledger_card4_sub: "₹20 प्रति सफल डिलीवरी",
+        tab4_table_title: "हालिया लेनदेन बहीखाता",
+        th_platform_cut: "प्लेटफ़ॉर्म शुल्क (₹3)",
+        th_vendor_net: "दुकानदार हिस्सा",
+        th_runner_fee: "रनर कमीशन",
+        th_status: "स्थिति",
+        tab5_heading: "आंतरिक खाता जोखिम प्रबंधन",
+        tab5_sub: "लगातार रद्दीकरण, सीओडी प्रतिबंध स्थिति और ब्लैकलिस्टेड खातों की निगरानी (ग्राहकों के लिए अदृश्य)।",
+        btn_refresh_risk: "जोखिम प्रोफाइल रीफ्रेश",
+        th_cust_name: "ग्राहक का नाम",
+        th_phone: "फ़ोन",
+        th_consecutive_cancels: "लगातार रद्दीकरण",
+        th_cod_permission: "सीओडी अनुमति",
+        th_account_status: "खाता स्थिति",
+        th_risk_assessment: "जोखिम मूल्यांकन",
+        th_entity_role: "संस्था / भूमिका",
+        th_acc_holder: "खाताधारक का नाम",
+        th_masked_acc: "खाता संख्या (गोपनीय)",
+        th_ifsc: "IFSC कोड",
+        th_upi_id: "UPI आईडी (VPA)",
+        th_kyc_status: "केवाईसी स्थिति",
+        th_action: "सत्यापन कार्रवाई",
+        modal_vendor_title: "दुकानदार सत्यापन विवरण",
+        modal_runner_title: "गाँव मित्र सत्यापन विवरण",
+        modal_lbl_id_proof: "पहचान प्रमाण (KYC ID)",
+        modal_lbl_bank_acc: "खाता संख्या",
+        modal_lbl_ifsc: "IFSC कोड",
+        modal_lbl_upi: "UPI आईडी",
+        modal_lbl_vehicle: "वाहन विवरण",
+        modal_btn_approve: "सत्यापित करें",
+        modal_btn_reject: "अस्वीकार करें",
+        modal_btn_ban: "ब्लॉक / बैन करें",
+        modal_btn_close: "बंद करें",
+        empty_vendors: "कोई लंबित दुकानदार आवेदन नहीं है",
+        empty_runners: "कोई लंबित गाँव मित्र आवेदन नहीं है",
+        empty_orders: "डेटाबेस में कोई सक्रिय ऑर्डर नहीं है",
+        empty_banks: "अभी तक कोई बैंक खाता पंजीकृत नहीं है।",
+        empty_risk: "कोई पंजीकृत ग्राहक जोखिम प्रोफ़ाइल नहीं मिली।",
+        btn_details: "विवरण"
       },
       en: {
         app_title: "GaonBazaar • Super Admin",
@@ -577,6 +758,21 @@
         system_healthy: "System Healthy • Port 8001",
         server_offline_msg: "Backend Server Offline (Port 8001)",
         server_offline_retry: "Retry",
+        nav_customer: "Customer App",
+        nav_vendor: "Vendor Portal",
+        nav_runner: "Gaon Mitra",
+        kpi_gmv: "Gross Volume",
+        kpi_gmv_sub: "Total Order Volume",
+        kpi_profit: "Platform Revenue",
+        kpi_profit_sub: "₹3 per completed order",
+        kpi_orders: "Total Orders",
+        kpi_orders_active: "0 Active Orders",
+        kpi_customers: "Customers",
+        kpi_customers_sub: "Rural Consumers",
+        kpi_dukandaars: "Vendors",
+        kpi_dukandaars_sub: "Pending KYC Queue",
+        kpi_gaon_mitras: "Gaon Mitras",
+        kpi_gaon_mitras_sub: "Pending KYC Queue",
         tab_vendors: "Pending Vendor KYC Queue",
         tab_runners: "Pending Runner KYC Queue",
         tab_orders: "Live Order God-View Table",
@@ -591,7 +787,67 @@
         bank_queue_sub: "Review submitted bank account details, IFSC, and UPI IDs.",
         pending_only: "Pending Only",
         all_records: "All Records",
-        btn_refresh: "Refresh"
+        btn_refresh: "Refresh",
+        tab3_heading: "Live Order God-View Surveillance",
+        tab3_sub: "Real-time surveillance of orders across all rural lifecycle stages.",
+        th_order_id: "Order ID",
+        th_datetime: "Date/Time",
+        th_customer: "Customer",
+        th_village_landmark: "Village & Landmark",
+        th_store: "Store",
+        th_items: "Items",
+        th_total_amount: "Total Amount",
+        th_payment: "Payment Mode",
+        th_stage_status: "Stage & Status",
+        th_delivery_otp: "Delivery OTP",
+        tab4_heading: "Platform Payout & Commission Ledger",
+        tab4_sub: "Complete audit trail of ₹3 platform fees, vendor dues, and runner commissions.",
+        ledger_card1_title: "Gross Revenue Volume",
+        ledger_card1_sub: "All customer payments",
+        ledger_card2_title: "Platform Net Profit",
+        ledger_card2_sub: "₹3/order handling fee",
+        ledger_card3_title: "Vendor Payouts Due",
+        ledger_card3_sub: "Subtotal - platform cut",
+        ledger_card4_title: "Runner Fees Due",
+        ledger_card4_sub: "₹20/fulfilled delivery",
+        tab4_table_title: "Recent Settlement Transactions",
+        th_platform_cut: "Platform Cut (₹3)",
+        th_vendor_net: "Vendor Net",
+        th_runner_fee: "Runner Fee",
+        th_status: "Status",
+        tab5_heading: "Account Risk Profile Controls",
+        tab5_sub: "Monitor consecutive cancellations, COD restriction status, and blacklisted accounts (Invisible to Customers).",
+        btn_refresh_risk: "Refresh Risk Profiles",
+        th_cust_name: "Customer Name",
+        th_phone: "Phone",
+        th_consecutive_cancels: "Consecutive Cancellations",
+        th_cod_permission: "COD Permission",
+        th_account_status: "Account Status",
+        th_risk_assessment: "Risk Assessment",
+        th_entity_role: "Entity / Role",
+        th_acc_holder: "Account Holder Name",
+        th_masked_acc: "Account Number (Masked)",
+        th_ifsc: "IFSC Code",
+        th_upi_id: "UPI ID (VPA)",
+        th_kyc_status: "KYC Status",
+        th_action: "Verification Action",
+        modal_vendor_title: "Vendor KYC Verification Details",
+        modal_runner_title: "Gaon Mitra KYC Verification Details",
+        modal_lbl_id_proof: "KYC ID Proof",
+        modal_lbl_bank_acc: "Account Number",
+        modal_lbl_ifsc: "IFSC Code",
+        modal_lbl_upi: "UPI ID (VPA)",
+        modal_lbl_vehicle: "Vehicle Details",
+        modal_btn_approve: "Approve Application",
+        modal_btn_reject: "Reject Application",
+        modal_btn_ban: "Block / Ban User (Fraud Control)",
+        modal_btn_close: "Close",
+        empty_vendors: "No pending vendor applications",
+        empty_runners: "No pending runner applications",
+        empty_orders: "No active orders in database",
+        empty_banks: "No bank accounts registered yet.",
+        empty_risk: "No registered customer risk profiles found.",
+        btn_details: "Details"
       }
     };
 
@@ -613,8 +869,11 @@
         if (dict[key]) el.innerText = dict[key];
       });
 
-      if (AdminStore.vendors && AdminStore.vendors.length) renderPendingVendors(AdminStore.vendors);
-      if (AdminStore.runners && AdminStore.runners.length) renderPendingRunners(AdminStore.runners);
+      renderMetricsRibbon();
+      renderVendorsQueue();
+      renderRunnersQueue();
+      renderGodViewOrders();
+      renderCommissionLedger();
     }
 
     async function adminFetch(endpoint, options = {}) {
@@ -708,21 +967,22 @@
     function renderMetricsRibbon() {
       const m = AdminStore.metrics;
       if (!m) return;
+      const isHi = AdminStore.lang === 'hi';
 
       document.getElementById('metric-gmv').innerText = `₹${m.total_gmv}`;
       document.getElementById('metric-profits').innerText = `₹${m.platform_profits}`;
       document.getElementById('metric-orders').innerText = m.total_orders;
-      document.getElementById('metric-active-orders').innerText = `${m.active_orders} Active In-Flight`;
+      document.getElementById('metric-active-orders').innerText = `${m.active_orders} ${isHi ? 'सक्रिय ऑर्डर' : 'Active In-Flight'}`;
       document.getElementById('metric-customers').innerText = m.total_customers;
       document.getElementById('metric-vendors').innerText = m.total_vendors;
       document.getElementById('metric-runners').innerText = m.total_runners;
 
-      document.getElementById('badge-pending-vendors-count').innerText = `${m.pending_vendors} Pending`;
-      document.getElementById('badge-pending-runners-count').innerText = `${m.pending_runners} Pending`;
+      document.getElementById('badge-pending-vendors-count').innerText = `${m.pending_vendors} ${isHi ? 'लंबित' : 'Pending'}`;
+      document.getElementById('badge-pending-runners-count').innerText = `${m.pending_runners} ${isHi ? 'लंबित' : 'Pending'}`;
 
       document.getElementById('tab-vendor-badge').innerText = m.pending_vendors;
       document.getElementById('tab-runner-badge').innerText = m.pending_runners;
-      document.getElementById('godview-count-badge').innerText = `${m.active_orders} Orders In-Flight`;
+      document.getElementById('godview-count-badge').innerText = `${m.active_orders} ${isHi ? 'ऑर्डर सक्रिय' : 'Orders In-Flight'}`;
     }
 
     // --- RENDER VENDORS QUEUE ---
@@ -730,23 +990,25 @@
       const container = document.getElementById('vendors-approval-container');
       if (!container) return;
 
+      const isHi = AdminStore.lang === 'hi';
+      const dict = AdminI18N[AdminStore.lang] || AdminI18N.hi;
       const vendors = AdminStore.vendors;
       if (vendors.length === 0) {
         container.innerHTML = `
           <div class="col-span-full bg-slate-900 rounded-3xl p-8 border border-slate-800 text-center text-slate-400 text-xs">
-            कोई लंबित दुकानदार आवेदन नहीं है (No Pending Vendor Applications)
+            ${dict.empty_vendors}
           </div>
         `;
         return;
       }
 
-      const isHi = AdminStore.lang === 'hi';
       container.innerHTML = vendors.map(v => {
         const isPending = v.status === 'pending_approval';
         const isApproved = v.status === 'approved';
+        const isBanned = v.status === 'banned';
 
         return `
-          <div class="bg-slate-900 rounded-3xl p-4 sm:p-5 border ${isPending ? 'border-amber-500/50 shadow-amber-500/5' : 'border-slate-800'} shadow-md flex flex-col justify-between gap-3">
+          <div onclick="openVendorKycModal('${v.store_id}')" class="cursor-pointer bg-slate-900 hover:bg-slate-900/90 rounded-3xl p-4 sm:p-5 border ${isPending ? 'border-amber-500/50 shadow-amber-500/5' : isBanned ? 'border-rose-500/40 shadow-rose-500/5' : 'border-slate-800'} shadow-md flex flex-col justify-between gap-3 transition-all hover:scale-[1.01]">
             
             <!-- Header: Shop & Category -->
             <div class="flex items-start justify-between gap-2 border-b border-slate-800 pb-3">
@@ -755,7 +1017,7 @@
                 <h3 class="text-sm font-black text-white">${v.name}</h3>
                 <span class="text-xs text-slate-400">${v.owner_name} • ${v.phone}</span>
               </div>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isApproved ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : isPending ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-red-500/20 text-red-300 border border-red-500/30'}">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isApproved ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : isBanned ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30' : isPending ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-red-500/20 text-red-300 border border-red-500/30'}">
                 ${v.status}
               </span>
             </div>
@@ -764,25 +1026,31 @@
             <div class="flex gap-3 text-xs bg-slate-950 p-3 rounded-2xl border border-slate-800">
               <img src="${v.photo_url || 'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=120'}" alt="Shop" class="w-16 h-16 rounded-xl object-cover bg-slate-800 border border-slate-700 shrink-0"/>
               <div class="flex flex-col justify-center min-w-0">
-                <span class="text-slate-400 font-medium">KYC ID: <span class="text-white font-mono font-bold">${v.id_type} ${v.id_number}</span></span>
-                <span class="text-slate-400 font-medium truncate">Payout UPI: <span class="text-primary font-mono font-bold">${v.payout_upi}</span></span>
-                <span class="text-[10px] text-slate-500 mt-1">Applied: ${v.created_at}</span>
+                <span class="text-slate-400 font-medium">${isHi ? 'पहचान ID' : 'KYC ID'}: <span class="text-white font-mono font-bold">${v.id_type} ${v.id_number}</span></span>
+                <span class="text-slate-400 font-medium truncate">${isHi ? 'UPI खाता' : 'Payout UPI'}: <span class="text-primary font-mono font-bold">${v.payout_upi}</span></span>
+                <span class="text-[10px] text-slate-500 mt-1">${isHi ? 'आवेदन तिथि' : 'Applied'}: ${v.created_at}</span>
               </div>
             </div>
 
             <!-- Action Buttons -->
-            <div class="flex items-center gap-2 pt-1">
+            <div class="flex items-center gap-2 pt-1" onclick="event.stopPropagation()">
               ${isPending ? `
-                <button id="btn-approve-vendor-${v.store_id}" data-action="approve" onclick="handleApproveVendor('${v.store_id}')" class="flex-1 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-black flex items-center justify-center gap-1 shadow-md active:scale-95 transition-all">
+                <button id="btn-approve-vendor-${v.store_id}" data-action="approve" onclick="event.stopPropagation(); handleApproveVendor('${v.store_id}')" class="flex-1 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-black flex items-center justify-center gap-1 shadow-md active:scale-95 transition-all">
                   <span class="material-symbols-outlined text-[16px]">check</span>
                   <span>${isHi ? 'स्वीकारें' : 'Approve'}</span>
                 </button>
-                <button id="btn-reject-vendor-${v.store_id}" data-action="reject" onclick="handleRejectVendor('${v.store_id}')" class="flex-1 py-2.5 rounded-xl bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30 text-xs font-black flex items-center justify-center gap-1 active:scale-95 transition-all">
+                <button id="btn-reject-vendor-${v.store_id}" data-action="reject" onclick="event.stopPropagation(); handleRejectVendor('${v.store_id}')" class="flex-1 py-2.5 rounded-xl bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30 text-xs font-black flex items-center justify-center gap-1 active:scale-95 transition-all">
                   <span class="material-symbols-outlined text-[16px]">close</span>
                   <span>${isHi ? 'अस्वीकार' : 'Reject'}</span>
                 </button>
+                <button onclick="event.stopPropagation(); openVendorKycModal('${v.store_id}')" class="px-2.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-bold flex items-center justify-center gap-1 active:scale-95 transition-all" title="${dict.btn_details}">
+                  <span class="material-symbols-outlined text-[16px]">visibility</span>
+                </button>
               ` : `
-                <span class="text-xs font-bold text-slate-400 italic">Status: ${v.status}</span>
+                <button onclick="event.stopPropagation(); openVendorKycModal('${v.store_id}')" class="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold flex items-center justify-center gap-1 border border-slate-700 active:scale-95 transition-all">
+                  <span class="material-symbols-outlined text-[15px]">info</span>
+                  <span>${dict.btn_details} (${v.status})</span>
+                </button>
               `}
             </div>
 
@@ -824,23 +1092,25 @@
       const container = document.getElementById('runners-approval-container');
       if (!container) return;
 
+      const isHi = AdminStore.lang === 'hi';
+      const dict = AdminI18N[AdminStore.lang] || AdminI18N.hi;
       const runners = AdminStore.runners;
       if (runners.length === 0) {
         container.innerHTML = `
           <div class="col-span-full bg-slate-900 rounded-3xl p-8 border border-slate-800 text-center text-slate-400 text-xs">
-            कोई लंबित गाँव मित्र आवेदन नहीं है (No Pending Runner Applications)
+            ${dict.empty_runners}
           </div>
         `;
         return;
       }
 
-      const isHi = AdminStore.lang === 'hi';
       container.innerHTML = runners.map(r => {
         const isPending = r.status === 'pending_approval';
         const isApproved = r.status === 'approved';
+        const isBanned = r.status === 'banned';
 
         return `
-          <div class="bg-slate-900 rounded-3xl p-4 sm:p-5 border ${isPending ? 'border-amber-500/50 shadow-amber-500/5' : 'border-slate-800'} shadow-md flex flex-col justify-between gap-3">
+          <div onclick="openRunnerKycModal('${r.runner_id}')" class="cursor-pointer bg-slate-900 hover:bg-slate-900/90 rounded-3xl p-4 sm:p-5 border ${isPending ? 'border-amber-500/50 shadow-amber-500/5' : isBanned ? 'border-rose-500/40 shadow-rose-500/5' : 'border-slate-800'} shadow-md flex flex-col justify-between gap-3 transition-all hover:scale-[1.01]">
             
             <!-- Header: Runner & Code -->
             <div class="flex items-start justify-between gap-2 border-b border-slate-800 pb-3">
@@ -849,7 +1119,7 @@
                 <h3 class="text-sm font-black text-white">${r.name}</h3>
                 <span class="text-xs text-slate-400">${r.phone} • ${r.hub_name}</span>
               </div>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isApproved ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : isPending ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-red-500/20 text-red-300 border border-red-500/30'}">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isApproved ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : isBanned ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30' : isPending ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-red-500/20 text-red-300 border border-red-500/30'}">
                 ${r.status}
               </span>
             </div>
@@ -858,25 +1128,31 @@
             <div class="flex gap-3 text-xs bg-slate-950 p-3 rounded-2xl border border-slate-800">
               <img src="${r.photo_url || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120'}" alt="Runner" class="w-16 h-16 rounded-xl object-cover bg-slate-800 border border-slate-700 shrink-0"/>
               <div class="flex flex-col justify-center min-w-0">
-                <span class="text-slate-400 font-medium">Vehicle: <span class="text-white font-bold">${r.vehicle_type} (${r.vehicle_number})</span></span>
-                <span class="text-slate-400 font-medium">KYC ID: <span class="text-white font-mono font-bold">${r.id_type} ${r.id_number}</span></span>
-                <span class="text-slate-400 font-medium truncate">Payout UPI: <span class="text-primary font-mono font-bold">${r.payout_upi}</span></span>
+                <span class="text-slate-400 font-medium">${isHi ? 'वाहन' : 'Vehicle'}: <span class="text-white font-bold">${r.vehicle_type} (${r.vehicle_number})</span></span>
+                <span class="text-slate-400 font-medium">${isHi ? 'पहचान ID' : 'KYC ID'}: <span class="text-white font-mono font-bold">${r.id_type} ${r.id_number}</span></span>
+                <span class="text-slate-400 font-medium truncate">${isHi ? 'UPI खाता' : 'Payout UPI'}: <span class="text-primary font-mono font-bold">${r.payout_upi}</span></span>
               </div>
             </div>
 
             <!-- Action Buttons -->
-            <div class="flex items-center gap-2 pt-1">
+            <div class="flex items-center gap-2 pt-1" onclick="event.stopPropagation()">
               ${isPending ? `
-                <button id="btn-approve-runner-${r.runner_id}" data-action="approve" onclick="handleApproveRunner('${r.runner_id}')" class="flex-1 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-black flex items-center justify-center gap-1 shadow-md active:scale-95 transition-all">
+                <button id="btn-approve-runner-${r.runner_id}" data-action="approve" onclick="event.stopPropagation(); handleApproveRunner('${r.runner_id}')" class="flex-1 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-black flex items-center justify-center gap-1 shadow-md active:scale-95 transition-all">
                   <span class="material-symbols-outlined text-[16px]">check</span>
                   <span>${isHi ? 'स्वीकारें' : 'Approve'}</span>
                 </button>
-                <button id="btn-reject-runner-${r.runner_id}" data-action="reject" onclick="handleRejectRunner('${r.runner_id}')" class="flex-1 py-2.5 rounded-xl bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30 text-xs font-black flex items-center justify-center gap-1 active:scale-95 transition-all">
+                <button id="btn-reject-runner-${r.runner_id}" data-action="reject" onclick="event.stopPropagation(); handleRejectRunner('${r.runner_id}')" class="flex-1 py-2.5 rounded-xl bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30 text-xs font-black flex items-center justify-center gap-1 active:scale-95 transition-all">
                   <span class="material-symbols-outlined text-[16px]">close</span>
                   <span>${isHi ? 'अस्वीकार' : 'Reject'}</span>
                 </button>
+                <button onclick="event.stopPropagation(); openRunnerKycModal('${r.runner_id}')" class="px-2.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-bold flex items-center justify-center gap-1 active:scale-95 transition-all" title="${dict.btn_details}">
+                  <span class="material-symbols-outlined text-[16px]">visibility</span>
+                </button>
               ` : `
-                <span class="text-xs font-bold text-slate-400 italic">Status: ${r.status}</span>
+                <button onclick="event.stopPropagation(); openRunnerKycModal('${r.runner_id}')" class="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold flex items-center justify-center gap-1 border border-slate-700 active:scale-95 transition-all">
+                  <span class="material-symbols-outlined text-[15px]">info</span>
+                  <span>${dict.btn_details} (${r.status})</span>
+                </button>
               `}
             </div>
 
@@ -913,14 +1189,190 @@
       renderRunnersQueue();
     }
 
+    // --- DETAILED KYC & FRAUD CONTROL MODAL LOGIC ---
+    let currentModalEntity = { type: null, id: null };
+
+    async function openVendorKycModal(storeId) {
+      currentModalEntity = { type: 'vendor', id: storeId };
+      const isHi = AdminStore.lang === 'hi';
+      const modal = document.getElementById('modal-admin-kyc-detail');
+      if (!modal) return;
+      modal.classList.remove('hidden');
+
+      document.getElementById('modal-kyc-title').innerText = storeId;
+      document.getElementById('modal-kyc-subtitle').innerText = isHi ? 'विवरण लोड हो रहा है...' : 'Loading details...';
+      document.getElementById('modal-kyc-vehicle-row').classList.add('hidden');
+      document.getElementById('modal-kyc-fraud-alert').classList.add('hidden');
+
+      try {
+        const data = await adminFetch(`/admin/vendors/${encodeURIComponent(storeId)}`);
+        populateVendorModalData(data);
+      } catch (err) {
+        const v = (AdminStore.vendors || []).find(x => x.store_id === storeId);
+        if (v) populateVendorModalData(v);
+        else document.getElementById('modal-kyc-subtitle').innerText = err.message;
+      }
+    }
+
+    function populateVendorModalData(v) {
+      const isHi = AdminStore.lang === 'hi';
+      document.getElementById('modal-kyc-title').innerText = v.name || v.store_id;
+      document.getElementById('modal-kyc-subtitle').innerText = `${v.owner_name || 'Owner'} • ${v.store_id}`;
+      
+      const statusBadge = document.getElementById('modal-kyc-status-badge');
+      const st = (v.status || 'pending_approval').toLowerCase();
+      statusBadge.innerText = st;
+      statusBadge.className = `px-2 py-0.5 rounded-full text-[10px] font-bold ${st === 'approved' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : st === 'banned' ? 'bg-rose-500/30 text-rose-300 border border-rose-500/40' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'}`;
+
+      const photoEl = document.getElementById('modal-kyc-photo');
+      const iconEl = document.getElementById('modal-kyc-icon');
+      if (v.photo_url) {
+        photoEl.src = v.photo_url;
+        photoEl.classList.remove('hidden');
+        iconEl.classList.add('hidden');
+      } else {
+        photoEl.classList.add('hidden');
+        iconEl.classList.remove('hidden');
+      }
+
+      document.getElementById('modal-kyc-phone').innerText = v.phone || '--';
+      document.getElementById('modal-kyc-id').innerText = `${v.id_type || 'ID'}: ${v.id_number || '--'}`;
+
+      document.getElementById('modal-kyc-bank-name').innerText = v.bank_account_name || v.owner_name || '--';
+      document.getElementById('modal-kyc-bank-acc').innerText = v.bank_account_number || '--';
+      document.getElementById('modal-kyc-bank-ifsc').innerText = v.bank_ifsc || '--';
+      document.getElementById('modal-kyc-bank-upi').innerText = v.payout_upi || '--';
+      document.getElementById('modal-kyc-bank-status').innerText = `Status: ${v.bank_verification_status || 'verified'}`;
+
+      if (st === 'banned') {
+        const alertBox = document.getElementById('modal-kyc-fraud-alert');
+        alertBox.classList.remove('hidden');
+        document.getElementById('modal-kyc-fraud-text').innerText = isHi 
+          ? 'यह खाता फ्रॉड सुरक्षा नीति के अंतर्गत ब्लैकलिस्ट किया गया है।'
+          : 'This account has been banned & phone blacklisted under zero-trust fraud policy.';
+      }
+    }
+
+    async function openRunnerKycModal(runnerId) {
+      currentModalEntity = { type: 'runner', id: runnerId };
+      const isHi = AdminStore.lang === 'hi';
+      const modal = document.getElementById('modal-admin-kyc-detail');
+      if (!modal) return;
+      modal.classList.remove('hidden');
+
+      document.getElementById('modal-kyc-title').innerText = runnerId;
+      document.getElementById('modal-kyc-subtitle').innerText = isHi ? 'विवरण लोड हो रहा है...' : 'Loading details...';
+      document.getElementById('modal-kyc-vehicle-row').classList.remove('hidden');
+      document.getElementById('modal-kyc-fraud-alert').classList.add('hidden');
+
+      try {
+        const data = await adminFetch(`/admin/runners/${encodeURIComponent(runnerId)}`);
+        populateRunnerModalData(data);
+      } catch (err) {
+        const r = (AdminStore.runners || []).find(x => x.runner_id === runnerId);
+        if (r) populateRunnerModalData(r);
+        else document.getElementById('modal-kyc-subtitle').innerText = err.message;
+      }
+    }
+
+    function populateRunnerModalData(r) {
+      const isHi = AdminStore.lang === 'hi';
+      document.getElementById('modal-kyc-title').innerText = r.name || r.runner_id;
+      document.getElementById('modal-kyc-subtitle').innerText = `${r.runner_code || r.runner_id} • ${r.hub_name || 'Hub'}`;
+
+      const statusBadge = document.getElementById('modal-kyc-status-badge');
+      const st = (r.status || 'pending_approval').toLowerCase();
+      statusBadge.innerText = st;
+      statusBadge.className = `px-2 py-0.5 rounded-full text-[10px] font-bold ${st === 'approved' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : st === 'banned' ? 'bg-rose-500/30 text-rose-300 border border-rose-500/40' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'}`;
+
+      const photoEl = document.getElementById('modal-kyc-photo');
+      const iconEl = document.getElementById('modal-kyc-icon');
+      if (r.photo_url) {
+        photoEl.src = r.photo_url;
+        photoEl.classList.remove('hidden');
+        iconEl.classList.add('hidden');
+      } else {
+        photoEl.classList.add('hidden');
+        iconEl.classList.remove('hidden');
+      }
+
+      document.getElementById('modal-kyc-phone').innerText = r.phone || '--';
+      document.getElementById('modal-kyc-id').innerText = `${r.id_type || 'DL'}: ${r.id_number || '--'}`;
+      document.getElementById('modal-kyc-vehicle').innerText = `${r.vehicle_type || 'Bike'} (${r.vehicle_number || '--'})`;
+
+      document.getElementById('modal-kyc-bank-name').innerText = r.bank_account_name || r.name || '--';
+      document.getElementById('modal-kyc-bank-acc').innerText = r.bank_account_number || '--';
+      document.getElementById('modal-kyc-bank-ifsc').innerText = r.bank_ifsc || '--';
+      document.getElementById('modal-kyc-bank-upi').innerText = r.payout_upi || '--';
+      document.getElementById('modal-kyc-bank-status').innerText = `Status: ${r.bank_verification_status || 'verified'}`;
+
+      if (st === 'banned') {
+        const alertBox = document.getElementById('modal-kyc-fraud-alert');
+        alertBox.classList.remove('hidden');
+        document.getElementById('modal-kyc-fraud-text').innerText = isHi 
+          ? 'यह खाता फ्रॉड सुरक्षा नीति के अंतर्गत ब्लैकलिस्ट किया गया है।'
+          : 'This runner has been banned & phone blacklisted under zero-trust fraud policy.';
+      }
+    }
+
+    async function executeModalApprove() {
+      if (!currentModalEntity.id) return;
+      const { type, id } = currentModalEntity;
+      closeAdminKycModal();
+      if (type === 'vendor') {
+        await handleApproveVendor(id);
+      } else {
+        await handleApproveRunner(id);
+      }
+    }
+
+    async function executeModalReject() {
+      if (!currentModalEntity.id) return;
+      const { type, id } = currentModalEntity;
+      closeAdminKycModal();
+      if (type === 'vendor') {
+        await handleRejectVendor(id);
+      } else {
+        await handleRejectRunner(id);
+      }
+    }
+
+    async function executeModalBan() {
+      if (!currentModalEntity.id) return;
+      const { type, id } = currentModalEntity;
+      const isHi = AdminStore.lang === 'hi';
+      const promptText = isHi 
+        ? "क्या आप निश्चित रूप से इस खाते को फ्रॉड कंट्रोल के तहत ब्लॉक/बैन करना चाहते हैं? इनका फ़ोन नंबर भी हमेशा के लिए ब्लैकलिस्ट हो जाएगा।"
+        : "Are you sure you want to block/ban this account for fraud control? Their phone number will be permanently blacklisted.";
+      if (!confirm(promptText)) return;
+
+      closeAdminKycModal();
+      try {
+        const endpoint = type === 'vendor' ? `/admin/vendors/${encodeURIComponent(id)}/block` : `/admin/runners/${encodeURIComponent(id)}/block`;
+        const res = await adminFetch(endpoint, { method: 'POST' });
+        showToast(isHi ? 'खाता ब्लॉक किया गया' : 'Account Blocked', res.message || 'Account banned & phone blacklisted');
+        await refreshAdminData(false);
+      } catch (err) {
+        showToast(isHi ? 'कार्रवाई विफल' : 'Action Failed', err.message);
+      }
+    }
+
+    function closeAdminKycModal() {
+      const modal = document.getElementById('modal-admin-kyc-detail');
+      if (modal) modal.classList.add('hidden');
+      currentModalEntity = { type: null, id: null };
+    }
+
     // --- RENDER GOD-VIEW ORDERS ---
     function renderGodViewOrders() {
       const body = document.getElementById('godview-orders-table-body');
       if (!body) return;
 
+      const isHi = AdminStore.lang === 'hi';
+      const dict = AdminI18N[AdminStore.lang] || AdminI18N.hi;
       const orders = AdminStore.orders;
       if (orders.length === 0) {
-        body.innerHTML = `<tr><td colspan="10" class="text-center py-6 text-slate-500">No active orders in database</td></tr>`;
+        body.innerHTML = `<tr><td colspan="10" class="text-center py-6 text-slate-500">${dict.empty_orders}</td></tr>`;
         return;
       }
 
@@ -983,10 +1435,13 @@
       const badge = document.getElementById('tab-bank-badge');
       if (!tbody) return;
 
+      const isHi = AdminStore.lang === 'hi';
+      const dict = AdminI18N[AdminStore.lang] || AdminI18N.hi;
+
       try {
         const list = await adminFetch('/admin/payout-verifications');
         if (!list || list.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-500 font-bold">No bank accounts registered yet.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-500 font-bold">${dict.empty_banks}</td></tr>`;
           if (badge) badge.innerText = '0';
           return;
         }
@@ -999,7 +1454,6 @@
             : "ml-1 text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full font-bold";
         }
 
-        const isHi = AdminStore.lang === 'hi';
         tbody.innerHTML = list.map(item => {
           const isVendor = item.entity_type === 'vendor';
           const roleBadge = isVendor 
@@ -1114,33 +1568,36 @@
     async function fetchRiskProfiles() {
       const tbody = document.getElementById('risk-profiles-table-body');
       if (!tbody) return;
+      const isHi = AdminStore.lang === 'hi';
+      const dict = AdminI18N[AdminStore.lang] || AdminI18N.hi;
+
       try {
         const users = await adminFetch('/admin/users/risk-profile');
         if (!users || users.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-slate-500 font-bold">No registered customer risk profiles found.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-slate-500 font-bold">${dict.empty_risk}</td></tr>`;
           return;
         }
 
         tbody.innerHTML = users.map(u => {
           const strikes = u.consecutive_cancellations || 0;
-          let strikeBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-black bg-emerald-500/20 text-emerald-400">0 Strikes (Clean)</span>`;
+          let strikeBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-black bg-emerald-500/20 text-emerald-400">0 ${isHi ? 'स्ट्राइक (सुरक्षित)' : 'Strikes (Clean)'}</span>`;
           if (strikes === 1) {
-            strikeBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-black bg-amber-500/20 text-amber-300">1 Strike (Warning Sent)</span>`;
+            strikeBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-black bg-amber-500/20 text-amber-300">1 ${isHi ? 'स्ट्राइक (चेतावनी)' : 'Strike (Warning Sent)'}</span>`;
           } else if (strikes === 2) {
-            strikeBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-black bg-orange-500/20 text-orange-400">2 Strikes (COD Blocked)</span>`;
+            strikeBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-black bg-orange-500/20 text-orange-400">2 ${isHi ? 'स्ट्राइक (सीओडी ब्लॉक)' : 'Strikes (COD Blocked)'}</span>`;
           } else if (strikes >= 3) {
-            strikeBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-black bg-red-500/20 text-red-400">${strikes} Strikes (Penalty & Blacklist)</span>`;
+            strikeBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-black bg-red-500/20 text-red-400">${strikes} ${isHi ? 'स्ट्राइक (ब्लैकलिस्ट)' : 'Strikes (Penalty & Blacklist)'}</span>`;
           }
 
           const codPill = u.is_cod_blocked 
-            ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-red-500/20 text-red-400">Blocked</span>` 
-            : `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-400">Allowed</span>`;
+            ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-red-500/20 text-red-400">${isHi ? 'प्रतिबंधित' : 'Blocked'}</span>` 
+            : `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-400">${isHi ? 'अनुमति' : 'Allowed'}</span>`;
 
           const accountPill = u.is_blacklisted 
-            ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-red-500/30 text-red-300 border border-red-500/40">Blacklisted</span>` 
-            : `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-400">Active</span>`;
+            ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-red-500/30 text-red-300 border border-red-500/40">${isHi ? 'ब्लैकलिस्टेड' : 'Blacklisted'}</span>` 
+            : `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-400">${isHi ? 'सक्रिय' : 'Active'}</span>`;
 
-          const alertText = u.warning_alert || 'Normal account activity';
+          const alertText = u.warning_alert || (isHi ? 'सामान्य खाता गतिविधि' : 'Normal account activity');
 
           return `
             <tr class="hover:bg-slate-800/40 transition-colors">

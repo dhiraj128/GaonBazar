@@ -331,7 +331,7 @@
         <div class="flex flex-col min-w-0 flex-1">
           <span class="text-[10px] font-extrabold text-amber-400 uppercase tracking-wider flex items-center gap-1.5 truncate">
             <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse shrink-0"></span>
-            <span data-i18n="kpi_active_missions" class="truncate">सक्रिय मिशन (Active Missions)</span>
+            <span data-i18n="kpi_active_missions" class="truncate">सक्रिय मिशन</span>
           </span>
           <span id="kpi-active-missions" class="text-2xl sm:text-3xl font-black text-white mt-1">0</span>
           <span class="text-[10px] text-slate-300 font-medium mt-0.5 truncate" data-i18n="kpi_pickup_pending">पिकअप व रास्ते में</span>
@@ -342,7 +342,7 @@
       <!-- KPI 2: Completed Today -->
       <div onclick="switchTab('ledger')" class="bg-slate-800 rounded-3xl p-3.5 border border-emerald-500/30 flex items-center justify-between cursor-pointer hover:border-emerald-400 hover:bg-slate-750 transition-all active:scale-98">
         <div class="flex flex-col min-w-0 flex-1">
-          <span class="text-[10px] font-extrabold text-emerald-400 uppercase tracking-wider truncate" data-i18n="kpi_delivered_today">सफल डिलीवरी (Delivered Today)</span>
+          <span class="text-[10px] font-extrabold text-emerald-400 uppercase tracking-wider truncate" data-i18n="kpi_delivered_today">सफल डिलीवरी</span>
           <span id="kpi-completed-today" class="text-2xl sm:text-3xl font-black text-emerald-300 mt-1">0</span>
           <span class="text-[10px] text-emerald-400/80 font-medium mt-0.5 truncate" data-i18n="kpi_verified_handover">OTP सत्यापित</span>
         </div>
@@ -352,9 +352,9 @@
       <!-- KPI 3: Today's Delivery Earnings (₹20/order) -->
       <div onclick="switchTab('ledger')" class="bg-slate-800 rounded-3xl p-3.5 border border-purple-500/30 flex items-center justify-between cursor-pointer hover:border-purple-400 hover:bg-slate-750 transition-all active:scale-98">
         <div class="flex flex-col min-w-0 flex-1">
-          <span class="text-[10px] font-extrabold text-purple-400 uppercase tracking-wider truncate" data-i18n="kpi_shift_earnings">आज की कमाई (Today's Earnings)</span>
+          <span class="text-[10px] font-extrabold text-purple-400 uppercase tracking-wider truncate" data-i18n="kpi_shift_earnings">आज की कमाई</span>
           <span id="kpi-today-earnings" class="text-2xl sm:text-3xl font-black text-purple-300 mt-1">₹0</span>
-          <span class="text-[10px] text-purple-300/80 font-medium mt-0.5 truncate">₹20 प्रति सफल डिलीवरी</span>
+          <span class="text-[10px] text-purple-300/80 font-medium mt-0.5 truncate" data-i18n="kpi_per_order_payout">₹20 प्रति सफल डिलीवरी</span>
         </div>
         <span class="material-symbols-outlined text-purple-400/60 text-[32px] shrink-0">payments</span>
       </div>
@@ -362,7 +362,7 @@
       <!-- KPI 4: COD Cash in Hand (Owed to Hub) -->
       <div onclick="switchTab('ledger')" class="bg-slate-800 rounded-3xl p-3.5 border border-blue-500/30 flex items-center justify-between cursor-pointer hover:border-blue-400 hover:bg-slate-750 transition-all active:scale-98">
         <div class="flex flex-col min-w-0 flex-1">
-          <span class="text-[10px] font-extrabold text-blue-400 uppercase tracking-wider truncate" data-i18n="kpi_cod_cash">हाथ में नकद (COD in Hand)</span>
+          <span class="text-[10px] font-extrabold text-blue-400 uppercase tracking-wider truncate" data-i18n="kpi_cod_cash">हाथ में नकद</span>
           <span id="kpi-cod-cash" class="text-2xl sm:text-3xl font-black text-blue-300 mt-1">₹0</span>
           <span class="text-[10px] text-blue-300/80 font-medium mt-0.5 truncate" data-i18n="kpi_deposit_due">हब में जमा करने योग्य</span>
         </div>
@@ -581,44 +581,46 @@
       
       <!-- Ledger Summary Box -->
       <div class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-md flex flex-col gap-3.5">
-        <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-700 pb-3">
           <div>
-            <span class="text-[10px] font-bold text-purple-400 uppercase tracking-wider block" data-i18n="ledger_title">दैनिक रनर बहीखाता (Shift Settlement)</span>
+            <span class="text-[10px] font-bold text-purple-400 uppercase tracking-wider block" data-i18n="ledger_title">दैनिक रनर बहीखाता</span>
             <h2 class="text-sm font-black text-white" id="ledger-runner-name">Kamal Singh • Rampur Hub</h2>
           </div>
-          <button onclick="switchTab('settings')" class="px-3 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-black flex items-center gap-1 active:scale-95 shadow-sm">
-            <span class="material-symbols-outlined text-[16px]">account_balance</span>
-            <span data-i18n="btn_bank_settings">बैंक सेटिंग्स</span>
-          </button>
-          <button id="btn-generate-slip" onclick="openDepositSlipModal()" class="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-black flex items-center gap-1 active:scale-95 shadow-sm">
-            <span class="material-symbols-outlined text-[16px]">receipt_long</span>
-            <span data-i18n="btn_deposit_slip">हब जमा रसीद</span>
-          </button>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between;" class="w-full sm:w-auto">
+            <button onclick="switchTab('settings')" style="flex: 1; min-width: 140px;" class="px-3 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-black flex items-center justify-center gap-1 active:scale-95 shadow-sm min-h-[40px]">
+              <span class="material-symbols-outlined text-[16px]">account_balance</span>
+              <span data-i18n="btn_bank_settings">बैंक सेटिंग्स</span>
+            </button>
+            <button id="btn-generate-slip" onclick="openDepositSlipModal()" style="flex: 1; min-width: 140px;" class="px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-black flex items-center justify-center gap-1 active:scale-95 shadow-sm min-h-[40px]">
+              <span class="material-symbols-outlined text-[16px]">receipt_long</span>
+              <span data-i18n="btn_deposit_slip">हब जमा रसीद</span>
+            </button>
+          </div>
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
           <div class="bg-slate-900 rounded-2xl p-3 border border-slate-800">
-            <span class="text-[10px] font-bold text-slate-400 uppercase block">आज की डिलीवरी</span>
+            <span class="text-[10px] font-bold text-slate-400 uppercase block" data-i18n="ledger_stat_completed">आज की डिलीवरी</span>
             <span id="ledger-completed-count" class="text-xl font-black text-white mt-1 block">0</span>
-            <span class="text-[9px] text-emerald-400">सफल मिशन</span>
+            <span class="text-[9px] text-emerald-400" data-i18n="ledger_stat_completed_sub">सफल मिशन</span>
           </div>
 
           <div class="bg-slate-900 rounded-2xl p-3 border border-slate-800">
-            <span class="text-[10px] font-bold text-purple-400 uppercase block">रनर कुल आय</span>
+            <span class="text-[10px] font-bold text-purple-400 uppercase block" data-i18n="ledger_stat_payout">रनर कुल आय</span>
             <span id="ledger-total-payout" class="text-xl font-black text-purple-300 mt-1 block">₹0.00</span>
-            <span class="text-[9px] text-purple-400">₹20 प्रति डिलीवरी</span>
+            <span class="text-[9px] text-purple-400" data-i18n="ledger_stat_payout_sub">₹20 प्रति डिलीवरी</span>
           </div>
 
           <div class="bg-slate-900 rounded-2xl p-3 border border-slate-800">
-            <span class="text-[10px] font-bold text-blue-400 uppercase block">नकद वसूली (COD)</span>
+            <span class="text-[10px] font-bold text-blue-400 uppercase block" data-i18n="ledger_stat_cod">नकद वसूली (COD)</span>
             <span id="ledger-cod-cash" class="text-xl font-black text-blue-300 mt-1 block">₹0.00</span>
-            <span class="text-[9px] text-blue-400">हब में जमा करें</span>
+            <span class="text-[9px] text-blue-400" data-i18n="ledger_stat_cod_sub">हब में जमा करें</span>
           </div>
 
           <div class="bg-slate-900 rounded-2xl p-3 border border-slate-800">
-            <span class="text-[10px] font-bold text-slate-400 uppercase block">दूरी (कि.मी.)</span>
+            <span class="text-[10px] font-bold text-slate-400 uppercase block" data-i18n="ledger_stat_distance">दूरी (कि.मी.)</span>
             <span id="ledger-distance-km" class="text-xl font-black text-white mt-1 block">0.0 km</span>
-            <span class="text-[9px] text-slate-400">अनुमानित दायरा</span>
+            <span class="text-[9px] text-slate-400" data-i18n="ledger_stat_distance_sub">अनुमानित दायरा</span>
           </div>
         </div>
       </div>
@@ -634,12 +636,12 @@
           <table class="w-full text-left text-xs">
             <thead id="runner-ledger-table-head">
               <tr class="border-b border-slate-700 text-slate-400 font-bold">
-                <th class="py-2 px-2">ऑर्डर आईडी</th>
-                <th class="py-2 px-2">ग्राहक व गाँव</th>
-                <th class="py-2 px-2">लैंडमार्क</th>
-                <th class="py-2 px-2">वसूली</th>
-                <th class="py-2 px-2">रनर आय</th>
-                <th class="py-2 px-2">समय</th>
+                <th class="py-2 px-2" data-i18n="th_order_id">ऑर्डर आईडी</th>
+                <th class="py-2 px-2" data-i18n="th_customer_village">ग्राहक व गाँव</th>
+                <th class="py-2 px-2" data-i18n="th_landmark">लैंडमार्क</th>
+                <th class="py-2 px-2" data-i18n="th_collection">वसूली</th>
+                <th class="py-2 px-2" data-i18n="th_runner_income">रनर आय</th>
+                <th class="py-2 px-2" data-i18n="th_time">समय</th>
               </tr>
             </thead>
             <tbody id="ledger-table-body" class="divide-y divide-slate-700/60 text-slate-300">
@@ -802,7 +804,7 @@
       <div class="flex items-center justify-between border-b border-slate-700 pb-2">
         <h3 class="text-sm font-black text-white flex items-center gap-2">
           <span class="material-symbols-outlined text-blue-400">receipt_long</span>
-          <span>हब नकद जमा रसीद (Hub Cash Deposit Slip)</span>
+          <span data-i18n="deposit_modal_title">हब नकद जमा रसीद</span>
         </h3>
         <button onclick="closeDepositSlipModal()" class="text-slate-400 hover:text-white p-1">
           <span class="material-symbols-outlined text-[18px]">close</span>
@@ -811,29 +813,29 @@
 
       <div class="flex flex-col gap-2 text-xs bg-slate-950 p-3 rounded-2xl border border-slate-800">
         <div class="flex justify-between text-slate-400">
-          <span>रनर का नाम</span>
+          <span data-i18n="deposit_runner">गाँव मित्र</span>
           <span class="text-white font-bold" id="slip-runner-name">Kamal Singh (#GM-RAMPUR-07)</span>
         </div>
         <div class="flex justify-between text-slate-400">
-          <span>क्लस्टर हब</span>
+          <span data-i18n="deposit_hub">क्लस्टर हब</span>
           <span class="text-white font-bold">Rampur Mandi Cluster Hub #RMP-04</span>
         </div>
         <div class="flex justify-between text-slate-400">
-          <span>आज की कुल डिलीवरी</span>
+          <span data-i18n="deposit_deliveries">आज की कुल डिलीवरी</span>
           <span class="text-white font-bold" id="slip-total-orders">0 Orders</span>
         </div>
         <div class="flex justify-between border-t border-slate-800 pt-2 text-slate-300 font-bold">
-          <span>हब को देय नकद (COD Total)</span>
+          <span data-i18n="deposit_total_cod">हब को देय नकद</span>
           <span class="text-blue-400 font-black text-sm" id="slip-cod-amount">₹0.00</span>
         </div>
         <div class="flex justify-between text-emerald-400 font-bold">
-          <span>रनर कुल पारिश्रमिक (+₹20/ऑर्डर)</span>
+          <span data-i18n="deposit_runner_earnings">रनर कुल पारिश्रमिक</span>
           <span class="font-black text-sm" id="slip-earnings-amount">₹0.00</span>
         </div>
       </div>
 
-      <button onclick="closeDepositSlipModal()" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white border border-slate-600">
-        बंद करें (Close)
+      <button onclick="closeDepositSlipModal()" data-i18n="deposit_btn_close" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white border border-slate-600">
+        बंद करें
       </button>
     </div>
   </div>
@@ -1019,7 +1021,30 @@
         bank_lbl_upi: "UPI ID (VPA) *",
         bank_hint_upi: "तत्काल कमीशन क्रेडिट व सेटलमेंट हेतु",
         modal_success_title: "सफल डिलीवरी!",
-        btn_login_submit: "लॉगिन करके ड्यूटी शुरू करें"
+        btn_login_submit: "लॉगिन करके ड्यूटी शुरू करें",
+        kpi_per_order_payout: "₹20 प्रति सफल डिलीवरी",
+        btn_bank_settings: "बैंक सेटिंग्स",
+        ledger_stat_completed: "आज की डिलीवरी",
+        ledger_stat_completed_sub: "सफल मिशन",
+        ledger_stat_payout: "रनर कुल आय",
+        ledger_stat_payout_sub: "₹20 प्रति डिलीवरी",
+        ledger_stat_cod: "नकद वसूली (COD)",
+        ledger_stat_cod_sub: "हब में जमा करें",
+        ledger_stat_distance: "दूरी (कि.मी.)",
+        ledger_stat_distance_sub: "अनुमानित दायरा",
+        th_order_id: "ऑर्डर आईडी",
+        th_customer_village: "ग्राहक व गाँव",
+        th_landmark: "लैंडमार्क",
+        th_collection: "वसूली",
+        th_runner_income: "रनर आय",
+        th_time: "समय",
+        deposit_modal_title: "हब नकद जमा रसीद",
+        deposit_runner: "गाँव मित्र",
+        deposit_hub: "क्लस्टर हब",
+        deposit_deliveries: "आज की कुल डिलीवरी",
+        deposit_total_cod: "हब को देय नकद",
+        deposit_runner_earnings: "रनर कुल पारिश्रमिक",
+        deposit_btn_close: "बंद करें"
       },
       en: {
         server_offline_msg: "Backend Server Offline (Port 8001)",
@@ -1064,7 +1089,30 @@
         bank_lbl_upi: "UPI ID (VPA) *",
         bank_hint_upi: "For instant commission credit and settlement",
         modal_success_title: "Delivery Completed!",
-        btn_login_submit: "Login to Shift"
+        btn_login_submit: "Login to Shift",
+        kpi_per_order_payout: "₹20 / Delivered Order",
+        btn_bank_settings: "Bank Settings",
+        ledger_stat_completed: "Today's Deliveries",
+        ledger_stat_completed_sub: "Completed Missions",
+        ledger_stat_payout: "Runner Earnings",
+        ledger_stat_payout_sub: "₹20 / Delivery",
+        ledger_stat_cod: "COD Cash in Hand",
+        ledger_stat_cod_sub: "Deposit to Hub",
+        ledger_stat_distance: "Distance (km)",
+        ledger_stat_distance_sub: "Estimated Range",
+        th_order_id: "Order ID",
+        th_customer_village: "Customer & Village",
+        th_landmark: "Landmark",
+        th_collection: "Collection",
+        th_runner_income: "Runner Fee",
+        th_time: "Time",
+        deposit_modal_title: "Hub Cash Deposit Slip",
+        deposit_runner: "Gaon Mitra",
+        deposit_hub: "Cluster Hub",
+        deposit_deliveries: "Today's Total Deliveries",
+        deposit_total_cod: "COD Cash Due to Hub",
+        deposit_runner_earnings: "Runner Shift Earnings",
+        deposit_btn_close: "Close"
       }
     };
 
@@ -2050,34 +2098,35 @@
       if (elBadge) elBadge.innerText = `${l.completed_today} Orders`;
 
       if (tableBody) {
+        const isHi = RunnerStore.lang === 'hi';
         const deliveries = l.recent_deliveries || [];
         if (deliveries.length === 0) {
-          tableBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-slate-500">आज अभी तक कोई डिलीवरी पूरी नहीं हुई है</td></tr>`;
+          tableBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-slate-500">${isHi ? 'आज अभी तक कोई डिलीवरी पूरी नहीं हुई है' : 'No deliveries completed yet today'}</td></tr>`;
         } else {
           tableBody.innerHTML = deliveries.map(d => `
             <tr class="runner-ledger-card hover:bg-slate-750 transition-colors">
               <td class="py-2.5 px-3 font-mono font-bold text-white flex justify-between items-center sm:table-cell">
-                <span class="sm:hidden text-slate-400 font-sans font-bold text-[10px]">ऑर्डर आईडी:</span>
+                <span class="sm:hidden text-slate-400 font-sans font-bold text-[10px]">${isHi ? 'ऑर्डर आईडी:' : 'Order ID:'}</span>
                 <span>${d.order_id}</span>
               </td>
               <td class="py-2.5 px-3 font-medium text-slate-200 flex justify-between items-center sm:table-cell">
-                <span class="sm:hidden text-slate-400 font-sans font-bold text-[10px]">ग्राहक:</span>
+                <span class="sm:hidden text-slate-400 font-sans font-bold text-[10px]">${isHi ? 'ग्राहक:' : 'Customer:'}</span>
                 <span>${d.customer_name} <span class="text-slate-400 sm:block text-[10px] ml-1 sm:ml-0">(${d.village})</span></span>
               </td>
               <td class="py-2.5 px-3 text-amber-200 flex justify-between items-center sm:table-cell">
-                <span class="sm:hidden text-slate-400 font-sans font-bold text-[10px]">लैंडमार्क:</span>
+                <span class="sm:hidden text-slate-400 font-sans font-bold text-[10px]">${isHi ? 'लैंडमार्क:' : 'Landmark:'}</span>
                 <span>${d.landmark}</span>
               </td>
               <td class="py-2.5 px-3 font-bold ${d.payment_mode === 'COD' ? 'text-amber-400' : 'text-emerald-400'} flex justify-between items-center sm:table-cell">
-                <span class="sm:hidden text-slate-400 font-sans font-bold text-[10px]">वसूली:</span>
-                <span>${d.payment_mode === 'COD' ? `₹${d.amount} (COD)` : 'UPI'}</span>
+                <span class="sm:hidden text-slate-400 font-sans font-bold text-[10px]">${isHi ? 'वसूली:' : 'Collection:'}</span>
+                <span>${d.payment_mode === 'COD' ? `₹${d.amount} (${isHi ? 'नकद' : 'COD'})` : 'UPI'}</span>
               </td>
               <td class="py-2.5 px-3 font-black text-purple-300 flex justify-between items-center sm:table-cell">
-                <span class="sm:hidden text-slate-400 font-sans font-bold text-[10px]">रनर आय:</span>
+                <span class="sm:hidden text-slate-400 font-sans font-bold text-[10px]">${isHi ? 'रनर आय:' : 'Runner Fee:'}</span>
                 <span>+₹${d.commission}</span>
               </td>
               <td class="py-2.5 px-3 text-slate-400 flex justify-between items-center sm:table-cell">
-                <span class="sm:hidden text-slate-400 font-sans font-bold text-[10px]">समय:</span>
+                <span class="sm:hidden text-slate-400 font-sans font-bold text-[10px]">${isHi ? 'समय:' : 'Time:'}</span>
                 <span>${d.timestamp}</span>
               </td>
             </tr>

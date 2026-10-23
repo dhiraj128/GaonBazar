@@ -1,7 +1,7 @@
 ================================================================================
           GAONBAZAAR VENDOR (DUKANDAAR) DASHBOARD AUTOMATED TEST REPORT
 ================================================================================
-Generated: 2026-10-23 13:30:17
+Generated: 2026-10-23 16:37:32
 Total Audits Executed: 157
 Passed Audits:         157
 Failed Audits:         0
@@ -10,323 +10,323 @@ Total Screenshots:     33
 ================================================================================
 
 DETAILED AUDIT LOGS:
-[2026-10-23 13:26:54] Starting GaonBazaar Vendor (Dukandaar) Dashboard End-to-End Test Suite...
-[2026-10-23 13:26:56]   🚀 Starting GaonBazaar FastAPI backend server in background on port 8001 (no-reload)...
-[2026-10-23 13:26:58]   ✓ GaonBazaar Backend verified ready on http://127.0.0.1:8001/docs (2.77s)
-[2026-10-23 13:27:00] 
+[2026-10-23 16:34:00] Starting GaonBazaar Vendor (Dukandaar) Dashboard End-to-End Test Suite...
+[2026-10-23 16:34:02]   🚀 Starting GaonBazaar FastAPI backend server in background on port 8001 (no-reload)...
+[2026-10-23 16:34:04]   ✓ GaonBazaar Backend verified ready on http://127.0.0.1:8001/docs (2.24s)
+[2026-10-23 16:34:05] 
 ================================================================================
-[2026-10-23 13:27:00] STARTING VENDOR DASHBOARD E2E SIMULATION: Redmi 9A (Small Android 360x800)
-[2026-10-23 13:27:00] Dimensions: 360x800 | DPR: 2.0
-[2026-10-23 13:27:00] ================================================================================
-[2026-10-23 13:27:00] Loading Vendor Portal: http://127.0.0.1:8001/vendor
-[2026-10-23 13:27:02] 
+[2026-10-23 16:34:05] STARTING VENDOR DASHBOARD E2E SIMULATION: Redmi 9A (Small Android 360x800)
+[2026-10-23 16:34:05] Dimensions: 360x800 | DPR: 2.0
+[2026-10-23 16:34:05] ================================================================================
+[2026-10-23 16:34:05] Loading Vendor Portal: http://127.0.0.1:8001/vendor
+[2026-10-23 16:34:07] 
 --- [Redmi 9A (Small Android 360x800)] Step 0: Login Gate Security Enforcement ---
-[2026-10-23 13:27:02]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Vendor Security Login Gate Enforced - Login gate displayed first; main dashboard unmounted before auth
-[2026-10-23 13:27:03]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Redmi_9A_(Small_Android_360x800)_step0_login_gate.png
-[2026-10-23 13:27:04] 
+[2026-10-23 16:34:07]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Vendor Security Login Gate Enforced - Login gate displayed first; main dashboard unmounted before auth
+[2026-10-23 16:34:07]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Redmi_9A_(Small_Android_360x800)_step0_login_gate.png
+[2026-10-23 16:34:08] 
 --- [Redmi 9A (Small Android 360x800)] Step 1: Header, Store Switcher & Operational Controls ---
-[2026-10-23 13:27:05]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Store Badge Code - Visual Geometry & Bounding Box Audit - Box: 62x20px at (50, 8) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:27:06]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Store Switcher Dropdown - Visual Geometry & Bounding Box Audit - Box: 110x26px at (50, 28) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:27:07]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Store Open/Close Toggle CTA - Visual Geometry & Bounding Box Audit - Box: 49x32px at (187, 15) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:27:08]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Language Toggle Button - Visual Geometry & Bounding Box Audit - Box: 72x32px at (240, 15) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:27:09]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Bottom Nav Orders Button - Visual Geometry & Bounding Box Audit - Box: 88x47px at (4, 747) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:27:09]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Bottom Nav Inventory Button - Visual Geometry & Bounding Box Audit - Box: 88x47px at (92, 747) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:27:09]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Bottom Nav Ledger Button - Visual Geometry & Bounding Box Audit - Box: 88x47px at (180, 747) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:27:10]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Bottom Nav Settings Button - Visual Geometry & Bounding Box Audit - Box: 88x47px at (268, 747) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:27:10]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Redmi_9A_(Small_Android_360x800)_step1_initial_dashboard.png
-[2026-10-23 13:27:11]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Store Operational Status Toggle - दुकान चालू -> दुकान बंद
-[2026-10-23 13:27:12] 
+[2026-10-23 16:34:10]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Store Badge Code - Visual Geometry & Bounding Box Audit - Box: 62x20px at (50, 8) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:34:11]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Store Switcher Dropdown - Visual Geometry & Bounding Box Audit - Box: 110x26px at (50, 28) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:34:12]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Store Open/Close Toggle CTA - Visual Geometry & Bounding Box Audit - Box: 49x32px at (187, 15) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:34:13]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Language Toggle Button - Visual Geometry & Bounding Box Audit - Box: 72x32px at (240, 15) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:34:13]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Bottom Nav Orders Button - Visual Geometry & Bounding Box Audit - Box: 88x47px at (4, 747) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:34:14]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Bottom Nav Inventory Button - Visual Geometry & Bounding Box Audit - Box: 88x47px at (92, 747) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:34:14]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Bottom Nav Ledger Button - Visual Geometry & Bounding Box Audit - Box: 88x47px at (180, 747) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:34:15]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Bottom Nav Settings Button - Visual Geometry & Bounding Box Audit - Box: 88x47px at (268, 747) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:34:15]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Redmi_9A_(Small_Android_360x800)_step1_initial_dashboard.png
+[2026-10-23 16:34:16]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Store Operational Status Toggle - दुकान चालू -> दुकान बंद
+[2026-10-23 16:34:17] 
 --- [Redmi 9A (Small Android 360x800)] Step 2: High-Level KPI Summary Tiles ---
-[2026-10-23 13:27:13]   ✓ PASS: [Redmi 9A (Small Android 360x800)] New Orders KPI Card - Visual Geometry & Bounding Box Audit - Box: 84x32px at (29, 150) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:27:14]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Packing in Progress KPI Card - Visual Geometry & Bounding Box Audit - Box: 84x32px at (203, 150) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:27:14]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Gross Sales KPI Card - Visual Geometry & Bounding Box Audit - Box: 84x32px at (29, 264) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:27:15]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Net Payout KPI Card - Visual Geometry & Bounding Box Audit - Box: 84x32px at (203, 264) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:27:15]   ✓ PASS: [Redmi 9A (Small Android 360x800)] KPI Live Counters Populated - New Orders: 505 | Sales: ₹185230
-[2026-10-23 13:27:15] 
+[2026-10-23 16:34:18]   ✓ PASS: [Redmi 9A (Small Android 360x800)] New Orders KPI Card - Visual Geometry & Bounding Box Audit - Box: 84x32px at (29, 150) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:34:19]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Packing in Progress KPI Card - Visual Geometry & Bounding Box Audit - Box: 84x32px at (203, 150) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:34:20]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Gross Sales KPI Card - Visual Geometry & Bounding Box Audit - Box: 84x32px at (29, 264) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:34:21]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Net Payout KPI Card - Visual Geometry & Bounding Box Audit - Box: 84x32px at (203, 264) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:34:21]   ✓ PASS: [Redmi 9A (Small Android 360x800)] KPI Live Counters Populated - New Orders: 511 | Sales: ₹191317
+[2026-10-23 16:34:21] 
 --- [Redmi 9A (Small Android 360x800)] Step 3: Order Lifecycle Progression Workflow ---
-[2026-10-23 13:27:15]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Live Order Cards Rendered in Queue - 799 orders visible
-[2026-10-23 13:27:17]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Order Accept CTA Button - Visual Geometry & Bounding Box Audit - Box: 199x38px at (132, 544) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:27:19]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Redmi_9A_(Small_Android_360x800)_step2_order_accepted.png
-[2026-10-23 13:27:19]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Order Action: Accepted by Vendor - Advanced to Stage 2 (Packing चालू)
-[2026-10-23 13:27:20]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Mark Packed CTA Button - Visual Geometry & Bounding Box Audit - Box: 302x48px at (29, 544) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:27:22]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Redmi_9A_(Small_Android_360x800)_step3_order_packed.png
-[2026-10-23 13:27:22]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Order Action: Packed by Vendor - Advanced to Stage 3 (Waiting for Runner)
-[2026-10-23 13:27:24]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Handover to Runner CTA Button - Visual Geometry & Bounding Box Audit - Box: 302x48px at (29, 592) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:27:26]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Redmi_9A_(Small_Android_360x800)_step4_order_dispatched.png
-[2026-10-23 13:27:26]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Order Action: Handed Over to Gaon Mitra - Advanced to Stage 4 (Out for Delivery)
-[2026-10-23 13:27:26] 
+[2026-10-23 16:34:21]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Live Order Cards Rendered in Queue - 819 orders visible
+[2026-10-23 16:34:23]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Order Accept CTA Button - Visual Geometry & Bounding Box Audit - Box: 199x38px at (132, 544) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:34:26]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Redmi_9A_(Small_Android_360x800)_step2_order_accepted.png
+[2026-10-23 16:34:26]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Order Action: Accepted by Vendor - Advanced to Stage 2 (Packing चालू)
+[2026-10-23 16:34:28]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Mark Packed CTA Button - Visual Geometry & Bounding Box Audit - Box: 302x48px at (29, 544) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:34:32]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Redmi_9A_(Small_Android_360x800)_step3_order_packed.png
+[2026-10-23 16:34:32]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Order Action: Packed by Vendor - Advanced to Stage 3 (Waiting for Runner)
+[2026-10-23 16:34:35]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Handover to Runner CTA Button - Visual Geometry & Bounding Box Audit - Box: 302x48px at (29, 592) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:34:37]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Redmi_9A_(Small_Android_360x800)_step4_order_dispatched.png
+[2026-10-23 16:34:37]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Order Action: Handed Over to Gaon Mitra - Advanced to Stage 4 (Out for Delivery)
+[2026-10-23 16:34:37] 
 --- [Redmi 9A (Small Android 360x800)] Step 4: Inventory Management & Tactile Stock Toggles ---
-[2026-10-23 13:27:28]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Transition to Inventory Workspace Tab
-[2026-10-23 13:27:28]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Inventory Search Bar - Visual Geometry & Bounding Box Audit - Box: 306x34px at (27, 411) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:27:28]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Instant Inventory Search Filter ('Atta') - 164 products matched
-[2026-10-23 13:27:29]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Inventory Products Rendered - 170 products loaded
-[2026-10-23 13:27:29]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Redmi_9A_(Small_Android_360x800)_step5_stock_toggled.png
-[2026-10-23 13:27:29]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Product In-Stock / Out-of-Stock Toggle - toggle_on
+[2026-10-23 16:34:39]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Transition to Inventory Workspace Tab
+[2026-10-23 16:34:39]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Inventory Search Bar - Visual Geometry & Bounding Box Audit - Box: 306x34px at (27, 411) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:34:40]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Instant Inventory Search Filter ('Atta') - 168 products matched
+[2026-10-23 16:34:40]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Inventory Products Rendered - 174 products loaded
+[2026-10-23 16:34:41]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Redmi_9A_(Small_Android_360x800)_step5_stock_toggled.png
+[2026-10-23 16:34:41]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Product In-Stock / Out-of-Stock Toggle - toggle_on
 उपलब्ध -> toggle_off
 अनुपलब्ध
-[2026-10-23 13:27:30] 
+[2026-10-23 16:34:42] 
 --- [Redmi 9A (Small Android 360x800)] Step 5: Add New Inventory Item Modal ---
-[2026-10-23 13:27:31]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Add Product Modal Opened
-[2026-10-23 13:27:32]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Add Product Modal Submitted & Closed
-[2026-10-23 13:27:32] 
+[2026-10-23 16:34:42]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Add Product Modal Opened
+[2026-10-23 16:34:43]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Add Product Modal Submitted & Closed
+[2026-10-23 16:34:43] 
 --- [Redmi 9A (Small Android 360x800)] Step 6: Daily Sales & Earnings Ledger ---
-[2026-10-23 13:27:33]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Transition to Daily Ledger Workspace Tab
-[2026-10-23 13:27:33]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Gross Sales Summary Box - Visual Geometry & Bounding Box Audit - Box: 115x28px at (46, 639) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:27:34]   ✓ PASS: [Redmi 9A (Small Android 360x800)] COD Cash in Hand Box - Visual Geometry & Bounding Box Audit - Box: 115x28px at (199, 639) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:27:34]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Platform Commission Fee Box - Visual Geometry & Bounding Box Audit - Box: 115x28px at (46, 677) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:27:34]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Net Dukandaar Payout Box - Visual Geometry & Bounding Box Audit - Box: 115x28px at (199, 677) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:27:34]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Ledger Financial Breakdown Verified - Gross: ₹185230 | COD: ₹198587 | Net Payout: ₹185230
-[2026-10-23 13:27:34]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Ledger Transaction Table Rows Rendered - 799 orders in ledger table
-[2026-10-23 13:27:35]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Redmi_9A_(Small_Android_360x800)_step6_daily_ledger.png
-[2026-10-23 13:27:35] 
+[2026-10-23 16:34:45]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Transition to Daily Ledger Workspace Tab
+[2026-10-23 16:34:46]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Gross Sales Summary Box - Visual Geometry & Bounding Box Audit - Box: 115x28px at (46, 639) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:34:46]   ✓ PASS: [Redmi 9A (Small Android 360x800)] COD Cash in Hand Box - Visual Geometry & Bounding Box Audit - Box: 115x28px at (199, 639) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:34:46]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Platform Commission Fee Box - Visual Geometry & Bounding Box Audit - Box: 115x28px at (46, 677) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:34:47]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Net Dukandaar Payout Box - Visual Geometry & Bounding Box Audit - Box: 115x28px at (199, 677) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:34:47]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Ledger Financial Breakdown Verified - Gross: ₹191317 | COD: ₹201692 | Net Payout: ₹191317
+[2026-10-23 16:34:47]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Ledger Transaction Table Rows Rendered - 819 orders in ledger table
+[2026-10-23 16:34:47]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Redmi_9A_(Small_Android_360x800)_step6_daily_ledger.png
+[2026-10-23 16:34:47] 
 --- [Redmi 9A (Small Android 360x800)] Step 7: Store Profile & Cluster Settings ---
-[2026-10-23 13:27:35]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Store Profile Details Loaded - Store: Sharma Brothers Kirana
-[2026-10-23 13:27:35]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Redmi_9A_(Small_Android_360x800)_step7_store_profile.png
-[2026-10-23 13:27:35] 
+[2026-10-23 16:34:48]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Store Profile Details Loaded - Store: Sharma Brothers Kirana
+[2026-10-23 16:34:48]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Redmi_9A_(Small_Android_360x800)_step7_store_profile.png
+[2026-10-23 16:34:48] 
 --- [Redmi 9A (Small Android 360x800)] Step 8: Bilingual State Switch (Hindi / English) ---
-[2026-10-23 13:27:36]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Bilingual Toggle to English - Label: translate
+[2026-10-23 16:34:49]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Bilingual Toggle to English - Label: translate
 हिंदी
-[2026-10-23 13:27:37] 
+[2026-10-23 16:34:50] 
 --- [Redmi 9A (Small Android 360x800)] Step 9: Zero Console Errors Audit ---
-[2026-10-23 13:27:37]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Zero JavaScript Console Errors - Clean runtime execution
-[2026-10-23 13:27:37] 
+[2026-10-23 16:34:50]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Zero JavaScript Console Errors - Clean runtime execution
+[2026-10-23 16:34:50] 
 ================================================================================
-[2026-10-23 13:27:37] STARTING VENDOR DASHBOARD E2E SIMULATION: iPhone 16 (Standard iPhone 393x852)
-[2026-10-23 13:27:37] Dimensions: 393x852 | DPR: 3.0
-[2026-10-23 13:27:37] ================================================================================
-[2026-10-23 13:27:37] Loading Vendor Portal: http://127.0.0.1:8001/vendor
-[2026-10-23 13:27:46] 
+[2026-10-23 16:34:50] STARTING VENDOR DASHBOARD E2E SIMULATION: iPhone 16 (Standard iPhone 393x852)
+[2026-10-23 16:34:50] Dimensions: 393x852 | DPR: 3.0
+[2026-10-23 16:34:50] ================================================================================
+[2026-10-23 16:34:50] Loading Vendor Portal: http://127.0.0.1:8001/vendor
+[2026-10-23 16:34:52] 
 --- [iPhone 16 (Standard iPhone 393x852)] Step 0: Login Gate Security Enforcement ---
-[2026-10-23 13:27:46]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Vendor Security Login Gate Enforced - Login gate displayed first; main dashboard unmounted before auth
-[2026-10-23 13:27:47]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/iPhone_16_(Standard_iPhone_393x852)_step0_login_gate.png
-[2026-10-23 13:27:48] 
+[2026-10-23 16:34:52]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Vendor Security Login Gate Enforced - Login gate displayed first; main dashboard unmounted before auth
+[2026-10-23 16:34:52]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/iPhone_16_(Standard_iPhone_393x852)_step0_login_gate.png
+[2026-10-23 16:34:53] 
 --- [iPhone 16 (Standard iPhone 393x852)] Step 1: Header, Store Switcher & Operational Controls ---
-[2026-10-23 13:27:50]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Store Badge Code - Visual Geometry & Bounding Box Audit - Box: 62x20px at (50, 8) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:27:52]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Store Switcher Dropdown - Visual Geometry & Bounding Box Audit - Box: 110x26px at (50, 28) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:27:53]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Store Open/Close Toggle CTA - Visual Geometry & Bounding Box Audit - Box: 49x32px at (220, 15) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:27:54]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Language Toggle Button - Visual Geometry & Bounding Box Audit - Box: 72x32px at (273, 15) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:27:55]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Bottom Nav Orders Button - Visual Geometry & Bounding Box Audit - Box: 96x47px at (4, 799) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:27:55]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Bottom Nav Inventory Button - Visual Geometry & Bounding Box Audit - Box: 96x47px at (100, 799) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:27:56]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Bottom Nav Ledger Button - Visual Geometry & Bounding Box Audit - Box: 96x47px at (197, 799) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:27:57]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Bottom Nav Settings Button - Visual Geometry & Bounding Box Audit - Box: 96x47px at (293, 799) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:27:57]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/iPhone_16_(Standard_iPhone_393x852)_step1_initial_dashboard.png
-[2026-10-23 13:27:58]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Store Operational Status Toggle - दुकान चालू -> दुकान बंद
-[2026-10-23 13:27:59] 
+[2026-10-23 16:34:55]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Store Badge Code - Visual Geometry & Bounding Box Audit - Box: 62x20px at (50, 8) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:34:56]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Store Switcher Dropdown - Visual Geometry & Bounding Box Audit - Box: 110x26px at (50, 28) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:34:57]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Store Open/Close Toggle CTA - Visual Geometry & Bounding Box Audit - Box: 49x32px at (220, 15) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:34:59]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Language Toggle Button - Visual Geometry & Bounding Box Audit - Box: 72x32px at (273, 15) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:34:59]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Bottom Nav Orders Button - Visual Geometry & Bounding Box Audit - Box: 96x47px at (4, 799) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:35:00]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Bottom Nav Inventory Button - Visual Geometry & Bounding Box Audit - Box: 96x47px at (100, 799) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:35:01]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Bottom Nav Ledger Button - Visual Geometry & Bounding Box Audit - Box: 96x47px at (197, 799) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:35:02]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Bottom Nav Settings Button - Visual Geometry & Bounding Box Audit - Box: 96x47px at (293, 799) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:35:02]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/iPhone_16_(Standard_iPhone_393x852)_step1_initial_dashboard.png
+[2026-10-23 16:35:04]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Store Operational Status Toggle - दुकान चालू -> दुकान बंद
+[2026-10-23 16:35:05] 
 --- [iPhone 16 (Standard iPhone 393x852)] Step 2: High-Level KPI Summary Tiles ---
-[2026-10-23 13:28:01]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] New Orders KPI Card - Visual Geometry & Bounding Box Audit - Box: 101x32px at (29, 150) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:28:02]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Packing in Progress KPI Card - Visual Geometry & Bounding Box Audit - Box: 101x32px at (220, 150) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:28:03]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Gross Sales KPI Card - Visual Geometry & Bounding Box Audit - Box: 101x32px at (29, 264) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:28:03]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Net Payout KPI Card - Visual Geometry & Bounding Box Audit - Box: 101x32px at (220, 264) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:28:04]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] KPI Live Counters Populated - New Orders: 504 | Sales: ₹185230
-[2026-10-23 13:28:04] 
+[2026-10-23 16:35:06]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] New Orders KPI Card - Visual Geometry & Bounding Box Audit - Box: 101x32px at (29, 150) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:35:07]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Packing in Progress KPI Card - Visual Geometry & Bounding Box Audit - Box: 101x32px at (220, 150) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:35:08]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Gross Sales KPI Card - Visual Geometry & Bounding Box Audit - Box: 101x32px at (29, 264) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:35:09]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Net Payout KPI Card - Visual Geometry & Bounding Box Audit - Box: 101x32px at (220, 264) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:35:09]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] KPI Live Counters Populated - New Orders: 510 | Sales: ₹191317
+[2026-10-23 16:35:09] 
 --- [iPhone 16 (Standard iPhone 393x852)] Step 3: Order Lifecycle Progression Workflow ---
-[2026-10-23 13:28:04]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Live Order Cards Rendered in Queue - 799 orders visible
-[2026-10-23 13:28:06]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Order Accept CTA Button - Visual Geometry & Bounding Box Audit - Box: 221x38px at (143, 570) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:28:09]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/iPhone_16_(Standard_iPhone_393x852)_step2_order_accepted.png
-[2026-10-23 13:28:09]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Order Action: Accepted by Vendor - Advanced to Stage 2 (Packing चालू)
-[2026-10-23 13:28:12]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Mark Packed CTA Button - Visual Geometry & Bounding Box Audit - Box: 335x48px at (29, 570) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:28:14]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/iPhone_16_(Standard_iPhone_393x852)_step3_order_packed.png
-[2026-10-23 13:28:14]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Order Action: Packed by Vendor - Advanced to Stage 3 (Waiting for Runner)
-[2026-10-23 13:28:17]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Handover to Runner CTA Button - Visual Geometry & Bounding Box Audit - Box: 335x48px at (29, 636) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:28:19]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/iPhone_16_(Standard_iPhone_393x852)_step4_order_dispatched.png
-[2026-10-23 13:28:19]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Order Action: Handed Over to Gaon Mitra - Advanced to Stage 4 (Out for Delivery)
-[2026-10-23 13:28:19] 
+[2026-10-23 16:35:09]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Live Order Cards Rendered in Queue - 819 orders visible
+[2026-10-23 16:35:11]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Order Accept CTA Button - Visual Geometry & Bounding Box Audit - Box: 221x38px at (143, 570) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:35:14]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/iPhone_16_(Standard_iPhone_393x852)_step2_order_accepted.png
+[2026-10-23 16:35:14]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Order Action: Accepted by Vendor - Advanced to Stage 2 (Packing चालू)
+[2026-10-23 16:35:16]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Mark Packed CTA Button - Visual Geometry & Bounding Box Audit - Box: 335x48px at (29, 570) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:35:19]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/iPhone_16_(Standard_iPhone_393x852)_step3_order_packed.png
+[2026-10-23 16:35:19]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Order Action: Packed by Vendor - Advanced to Stage 3 (Waiting for Runner)
+[2026-10-23 16:35:22]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Handover to Runner CTA Button - Visual Geometry & Bounding Box Audit - Box: 335x48px at (29, 636) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:35:24]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/iPhone_16_(Standard_iPhone_393x852)_step4_order_dispatched.png
+[2026-10-23 16:35:24]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Order Action: Handed Over to Gaon Mitra - Advanced to Stage 4 (Out for Delivery)
+[2026-10-23 16:35:24] 
 --- [iPhone 16 (Standard iPhone 393x852)] Step 4: Inventory Management & Tactile Stock Toggles ---
-[2026-10-23 13:28:20]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Transition to Inventory Workspace Tab
-[2026-10-23 13:28:21]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Inventory Search Bar - Visual Geometry & Bounding Box Audit - Box: 339x34px at (27, 411) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:28:21]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Instant Inventory Search Filter ('Atta') - 165 products matched
-[2026-10-23 13:28:22]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Inventory Products Rendered - 171 products loaded
-[2026-10-23 13:28:22]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/iPhone_16_(Standard_iPhone_393x852)_step5_stock_toggled.png
-[2026-10-23 13:28:22]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Product In-Stock / Out-of-Stock Toggle - toggle_on
+[2026-10-23 16:35:26]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Transition to Inventory Workspace Tab
+[2026-10-23 16:35:27]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Inventory Search Bar - Visual Geometry & Bounding Box Audit - Box: 339x34px at (27, 411) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:35:27]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Instant Inventory Search Filter ('Atta') - 169 products matched
+[2026-10-23 16:35:28]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Inventory Products Rendered - 175 products loaded
+[2026-10-23 16:35:29]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/iPhone_16_(Standard_iPhone_393x852)_step5_stock_toggled.png
+[2026-10-23 16:35:29]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Product In-Stock / Out-of-Stock Toggle - toggle_on
 उपलब्ध -> toggle_off
 अनुपलब्ध
-[2026-10-23 13:28:23] 
+[2026-10-23 16:35:30] 
 --- [iPhone 16 (Standard iPhone 393x852)] Step 5: Add New Inventory Item Modal ---
-[2026-10-23 13:28:24]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Add Product Modal Opened
-[2026-10-23 13:28:25]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Add Product Modal Submitted & Closed
-[2026-10-23 13:28:25] 
+[2026-10-23 16:35:30]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Add Product Modal Opened
+[2026-10-23 16:35:31]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Add Product Modal Submitted & Closed
+[2026-10-23 16:35:31] 
 --- [iPhone 16 (Standard iPhone 393x852)] Step 6: Daily Sales & Earnings Ledger ---
-[2026-10-23 13:28:26]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Transition to Daily Ledger Workspace Tab
-[2026-10-23 13:28:26]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Gross Sales Summary Box - Visual Geometry & Bounding Box Audit - Box: 132x28px at (46, 615) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:28:27]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] COD Cash in Hand Box - Visual Geometry & Bounding Box Audit - Box: 132x28px at (216, 615) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:28:27]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Platform Commission Fee Box - Visual Geometry & Bounding Box Audit - Box: 132x28px at (46, 729) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:28:27]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Net Dukandaar Payout Box - Visual Geometry & Bounding Box Audit - Box: 132x28px at (216, 729) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:28:27]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Ledger Financial Breakdown Verified - Gross: ₹185230 | COD: ₹198587 | Net Payout: ₹185230
-[2026-10-23 13:28:27]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Ledger Transaction Table Rows Rendered - 799 orders in ledger table
-[2026-10-23 13:28:27]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/iPhone_16_(Standard_iPhone_393x852)_step6_daily_ledger.png
-[2026-10-23 13:28:27] 
+[2026-10-23 16:35:33]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Transition to Daily Ledger Workspace Tab
+[2026-10-23 16:35:33]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Gross Sales Summary Box - Visual Geometry & Bounding Box Audit - Box: 132x28px at (46, 615) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:35:34]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] COD Cash in Hand Box - Visual Geometry & Bounding Box Audit - Box: 132x28px at (216, 615) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:35:35]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Platform Commission Fee Box - Visual Geometry & Bounding Box Audit - Box: 132x28px at (46, 729) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:35:35]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Net Dukandaar Payout Box - Visual Geometry & Bounding Box Audit - Box: 132x28px at (216, 729) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:35:35]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Ledger Financial Breakdown Verified - Gross: ₹191317 | COD: ₹201692 | Net Payout: ₹191317
+[2026-10-23 16:35:35]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Ledger Transaction Table Rows Rendered - 819 orders in ledger table
+[2026-10-23 16:35:36]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/iPhone_16_(Standard_iPhone_393x852)_step6_daily_ledger.png
+[2026-10-23 16:35:36] 
 --- [iPhone 16 (Standard iPhone 393x852)] Step 7: Store Profile & Cluster Settings ---
-[2026-10-23 13:28:28]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Store Profile Details Loaded - Store: Sharma Brothers Kirana
-[2026-10-23 13:28:29]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/iPhone_16_(Standard_iPhone_393x852)_step7_store_profile.png
-[2026-10-23 13:28:29] 
+[2026-10-23 16:35:36]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Store Profile Details Loaded - Store: Sharma Brothers Kirana
+[2026-10-23 16:35:37]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/iPhone_16_(Standard_iPhone_393x852)_step7_store_profile.png
+[2026-10-23 16:35:37] 
 --- [iPhone 16 (Standard iPhone 393x852)] Step 8: Bilingual State Switch (Hindi / English) ---
-[2026-10-23 13:28:29]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Bilingual Toggle to English - Label: translate
+[2026-10-23 16:35:37]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Bilingual Toggle to English - Label: translate
 हिंदी
-[2026-10-23 13:28:30] 
+[2026-10-23 16:35:38] 
 --- [iPhone 16 (Standard iPhone 393x852)] Step 9: Zero Console Errors Audit ---
-[2026-10-23 13:28:30]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Zero JavaScript Console Errors - Clean runtime execution
-[2026-10-23 13:28:30] 
+[2026-10-23 16:35:38]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Zero JavaScript Console Errors - Clean runtime execution
+[2026-10-23 16:35:38] 
 ================================================================================
-[2026-10-23 13:28:30] STARTING VENDOR DASHBOARD E2E SIMULATION: Nothing Phone 1 (Tall Android 412x915)
-[2026-10-23 13:28:30] Dimensions: 412x915 | DPR: 2.625
-[2026-10-23 13:28:30] ================================================================================
-[2026-10-23 13:28:30] Loading Vendor Portal: http://127.0.0.1:8001/vendor
-[2026-10-23 13:28:34] 
+[2026-10-23 16:35:38] STARTING VENDOR DASHBOARD E2E SIMULATION: Nothing Phone 1 (Tall Android 412x915)
+[2026-10-23 16:35:38] Dimensions: 412x915 | DPR: 2.625
+[2026-10-23 16:35:38] ================================================================================
+[2026-10-23 16:35:38] Loading Vendor Portal: http://127.0.0.1:8001/vendor
+[2026-10-23 16:35:40] 
 --- [Nothing Phone 1 (Tall Android 412x915)] Step 0: Login Gate Security Enforcement ---
-[2026-10-23 13:28:34]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Vendor Security Login Gate Enforced - Login gate displayed first; main dashboard unmounted before auth
-[2026-10-23 13:28:37]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Nothing_Phone_1_(Tall_Android_412x915)_step0_login_gate.png
-[2026-10-23 13:28:38] 
+[2026-10-23 16:35:40]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Vendor Security Login Gate Enforced - Login gate displayed first; main dashboard unmounted before auth
+[2026-10-23 16:35:41]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Nothing_Phone_1_(Tall_Android_412x915)_step0_login_gate.png
+[2026-10-23 16:35:42] 
 --- [Nothing Phone 1 (Tall Android 412x915)] Step 1: Header, Store Switcher & Operational Controls ---
-[2026-10-23 13:28:39]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Store Badge Code - Visual Geometry & Bounding Box Audit - Box: 62x20px at (50, 8) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:28:40]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Store Switcher Dropdown - Visual Geometry & Bounding Box Audit - Box: 110x26px at (50, 28) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:28:41]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Store Open/Close Toggle CTA - Visual Geometry & Bounding Box Audit - Box: 49x32px at (239, 15) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:28:43]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Language Toggle Button - Visual Geometry & Bounding Box Audit - Box: 72x32px at (292, 15) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:28:43]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Bottom Nav Orders Button - Visual Geometry & Bounding Box Audit - Box: 100x47px at (5, 862) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:28:44]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Bottom Nav Inventory Button - Visual Geometry & Bounding Box Audit - Box: 100x47px at (106, 862) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:28:44]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Bottom Nav Ledger Button - Visual Geometry & Bounding Box Audit - Box: 100x47px at (207, 862) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:28:45]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Bottom Nav Settings Button - Visual Geometry & Bounding Box Audit - Box: 100x47px at (308, 862) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:28:46]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Nothing_Phone_1_(Tall_Android_412x915)_step1_initial_dashboard.png
-[2026-10-23 13:28:47]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Store Operational Status Toggle - दुकान चालू -> दुकान बंद
-[2026-10-23 13:28:48] 
+[2026-10-23 16:35:44]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Store Badge Code - Visual Geometry & Bounding Box Audit - Box: 62x20px at (50, 8) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:35:45]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Store Switcher Dropdown - Visual Geometry & Bounding Box Audit - Box: 110x26px at (50, 28) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:35:46]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Store Open/Close Toggle CTA - Visual Geometry & Bounding Box Audit - Box: 49x32px at (239, 15) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:35:47]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Language Toggle Button - Visual Geometry & Bounding Box Audit - Box: 72x32px at (292, 15) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:35:48]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Bottom Nav Orders Button - Visual Geometry & Bounding Box Audit - Box: 100x47px at (5, 862) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:35:48]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Bottom Nav Inventory Button - Visual Geometry & Bounding Box Audit - Box: 100x47px at (106, 862) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:35:49]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Bottom Nav Ledger Button - Visual Geometry & Bounding Box Audit - Box: 100x47px at (207, 862) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:35:50]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Bottom Nav Settings Button - Visual Geometry & Bounding Box Audit - Box: 100x47px at (308, 862) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:35:50]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Nothing_Phone_1_(Tall_Android_412x915)_step1_initial_dashboard.png
+[2026-10-23 16:35:52]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Store Operational Status Toggle - दुकान चालू -> दुकान बंद
+[2026-10-23 16:35:53] 
 --- [Nothing Phone 1 (Tall Android 412x915)] Step 2: High-Level KPI Summary Tiles ---
-[2026-10-23 13:28:49]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] New Orders KPI Card - Visual Geometry & Bounding Box Audit - Box: 110x32px at (29, 150) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:28:50]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Packing in Progress KPI Card - Visual Geometry & Bounding Box Audit - Box: 110x32px at (229, 150) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:28:51]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Gross Sales KPI Card - Visual Geometry & Bounding Box Audit - Box: 110x32px at (29, 264) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:28:52]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Net Payout KPI Card - Visual Geometry & Bounding Box Audit - Box: 110x32px at (229, 264) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:28:52]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] KPI Live Counters Populated - New Orders: 503 | Sales: ₹185230
-[2026-10-23 13:28:52] 
+[2026-10-23 16:35:54]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] New Orders KPI Card - Visual Geometry & Bounding Box Audit - Box: 110x32px at (29, 150) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:35:55]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Packing in Progress KPI Card - Visual Geometry & Bounding Box Audit - Box: 110x32px at (229, 150) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:35:57]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Gross Sales KPI Card - Visual Geometry & Bounding Box Audit - Box: 110x32px at (29, 264) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:35:58]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Net Payout KPI Card - Visual Geometry & Bounding Box Audit - Box: 110x32px at (229, 264) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:35:58]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] KPI Live Counters Populated - New Orders: 509 | Sales: ₹191317
+[2026-10-23 16:35:58] 
 --- [Nothing Phone 1 (Tall Android 412x915)] Step 3: Order Lifecycle Progression Workflow ---
-[2026-10-23 13:28:52]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Live Order Cards Rendered in Queue - 799 orders visible
-[2026-10-23 13:28:54]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Order Accept CTA Button - Visual Geometry & Bounding Box Audit - Box: 233x38px at (150, 601) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:28:57]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Nothing_Phone_1_(Tall_Android_412x915)_step2_order_accepted.png
-[2026-10-23 13:28:57]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Order Action: Accepted by Vendor - Advanced to Stage 2 (Packing चालू)
-[2026-10-23 13:29:00]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Mark Packed CTA Button - Visual Geometry & Bounding Box Audit - Box: 354x48px at (29, 601) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:29:03]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Nothing_Phone_1_(Tall_Android_412x915)_step3_order_packed.png
-[2026-10-23 13:29:03]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Order Action: Packed by Vendor - Advanced to Stage 3 (Waiting for Runner)
-[2026-10-23 13:29:05]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Handover to Runner CTA Button - Visual Geometry & Bounding Box Audit - Box: 354x48px at (29, 649) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:29:07]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Nothing_Phone_1_(Tall_Android_412x915)_step4_order_dispatched.png
-[2026-10-23 13:29:07]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Order Action: Handed Over to Gaon Mitra - Advanced to Stage 4 (Out for Delivery)
-[2026-10-23 13:29:07] 
+[2026-10-23 16:35:58]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Live Order Cards Rendered in Queue - 819 orders visible
+[2026-10-23 16:36:00]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Order Accept CTA Button - Visual Geometry & Bounding Box Audit - Box: 233x38px at (150, 602) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:36:03]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Nothing_Phone_1_(Tall_Android_412x915)_step2_order_accepted.png
+[2026-10-23 16:36:03]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Order Action: Accepted by Vendor - Advanced to Stage 2 (Packing चालू)
+[2026-10-23 16:36:06]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Mark Packed CTA Button - Visual Geometry & Bounding Box Audit - Box: 354x48px at (29, 602) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:36:09]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Nothing_Phone_1_(Tall_Android_412x915)_step3_order_packed.png
+[2026-10-23 16:36:09]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Order Action: Packed by Vendor - Advanced to Stage 3 (Waiting for Runner)
+[2026-10-23 16:36:12]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Handover to Runner CTA Button - Visual Geometry & Bounding Box Audit - Box: 354x48px at (29, 650) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:36:15]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Nothing_Phone_1_(Tall_Android_412x915)_step4_order_dispatched.png
+[2026-10-23 16:36:15]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Order Action: Handed Over to Gaon Mitra - Advanced to Stage 4 (Out for Delivery)
+[2026-10-23 16:36:15] 
 --- [Nothing Phone 1 (Tall Android 412x915)] Step 4: Inventory Management & Tactile Stock Toggles ---
-[2026-10-23 13:29:09]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Transition to Inventory Workspace Tab
-[2026-10-23 13:29:09]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Inventory Search Bar - Visual Geometry & Bounding Box Audit - Box: 358x34px at (27, 411) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:29:09]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Instant Inventory Search Filter ('Atta') - 166 products matched
-[2026-10-23 13:29:10]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Inventory Products Rendered - 172 products loaded
-[2026-10-23 13:29:11]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Nothing_Phone_1_(Tall_Android_412x915)_step5_stock_toggled.png
-[2026-10-23 13:29:11]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Product In-Stock / Out-of-Stock Toggle - toggle_on
+[2026-10-23 16:36:16]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Transition to Inventory Workspace Tab
+[2026-10-23 16:36:16]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Inventory Search Bar - Visual Geometry & Bounding Box Audit - Box: 358x34px at (27, 411) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:36:17]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Instant Inventory Search Filter ('Atta') - 170 products matched
+[2026-10-23 16:36:17]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Inventory Products Rendered - 176 products loaded
+[2026-10-23 16:36:19]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Nothing_Phone_1_(Tall_Android_412x915)_step5_stock_toggled.png
+[2026-10-23 16:36:19]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Product In-Stock / Out-of-Stock Toggle - toggle_on
 उपलब्ध -> toggle_off
 अनुपलब्ध
-[2026-10-23 13:29:12] 
+[2026-10-23 16:36:19] 
 --- [Nothing Phone 1 (Tall Android 412x915)] Step 5: Add New Inventory Item Modal ---
-[2026-10-23 13:29:12]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Add Product Modal Opened
-[2026-10-23 13:29:13]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Add Product Modal Submitted & Closed
-[2026-10-23 13:29:13] 
+[2026-10-23 16:36:20]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Add Product Modal Opened
+[2026-10-23 16:36:21]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Add Product Modal Submitted & Closed
+[2026-10-23 16:36:21] 
 --- [Nothing Phone 1 (Tall Android 412x915)] Step 6: Daily Sales & Earnings Ledger ---
-[2026-10-23 13:29:15]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Transition to Daily Ledger Workspace Tab
-[2026-10-23 13:29:15]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Gross Sales Summary Box - Visual Geometry & Bounding Box Audit - Box: 141x28px at (46, 599) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:29:16]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] COD Cash in Hand Box - Visual Geometry & Bounding Box Audit - Box: 141x28px at (225, 599) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:29:16]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Platform Commission Fee Box - Visual Geometry & Bounding Box Audit - Box: 141x28px at (46, 741) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:29:16]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Net Dukandaar Payout Box - Visual Geometry & Bounding Box Audit - Box: 141x28px at (225, 741) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:29:17]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Ledger Financial Breakdown Verified - Gross: ₹185230 | COD: ₹198587 | Net Payout: ₹185230
-[2026-10-23 13:29:17]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Ledger Transaction Table Rows Rendered - 799 orders in ledger table
-[2026-10-23 13:29:17]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Nothing_Phone_1_(Tall_Android_412x915)_step6_daily_ledger.png
-[2026-10-23 13:29:17] 
+[2026-10-23 16:36:23]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Transition to Daily Ledger Workspace Tab
+[2026-10-23 16:36:23]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Gross Sales Summary Box - Visual Geometry & Bounding Box Audit - Box: 141x28px at (46, 599) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:36:24]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] COD Cash in Hand Box - Visual Geometry & Bounding Box Audit - Box: 141x28px at (225, 599) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:36:24]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Platform Commission Fee Box - Visual Geometry & Bounding Box Audit - Box: 141x28px at (46, 741) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:36:24]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Net Dukandaar Payout Box - Visual Geometry & Bounding Box Audit - Box: 141x28px at (225, 741) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:36:24]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Ledger Financial Breakdown Verified - Gross: ₹191317 | COD: ₹201692 | Net Payout: ₹191317
+[2026-10-23 16:36:24]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Ledger Transaction Table Rows Rendered - 819 orders in ledger table
+[2026-10-23 16:36:25]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Nothing_Phone_1_(Tall_Android_412x915)_step6_daily_ledger.png
+[2026-10-23 16:36:25] 
 --- [Nothing Phone 1 (Tall Android 412x915)] Step 7: Store Profile & Cluster Settings ---
-[2026-10-23 13:29:18]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Store Profile Details Loaded - Store: Sharma Brothers Kirana
-[2026-10-23 13:29:18]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Nothing_Phone_1_(Tall_Android_412x915)_step7_store_profile.png
-[2026-10-23 13:29:18] 
+[2026-10-23 16:36:26]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Store Profile Details Loaded - Store: Sharma Brothers Kirana
+[2026-10-23 16:36:26]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Nothing_Phone_1_(Tall_Android_412x915)_step7_store_profile.png
+[2026-10-23 16:36:26] 
 --- [Nothing Phone 1 (Tall Android 412x915)] Step 8: Bilingual State Switch (Hindi / English) ---
-[2026-10-23 13:29:19]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Bilingual Toggle to English - Label: translate
+[2026-10-23 16:36:27]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Bilingual Toggle to English - Label: translate
 हिंदी
-[2026-10-23 13:29:19] 
+[2026-10-23 16:36:28] 
 --- [Nothing Phone 1 (Tall Android 412x915)] Step 9: Zero Console Errors Audit ---
-[2026-10-23 13:29:19]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Zero JavaScript Console Errors - Clean runtime execution
-[2026-10-23 13:29:19] 
+[2026-10-23 16:36:28]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Zero JavaScript Console Errors - Clean runtime execution
+[2026-10-23 16:36:28] 
 ================================================================================
-[2026-10-23 13:29:19] STARTING VENDOR DASHBOARD E2E SIMULATION: Samsung Galaxy Tab A8 (Tablet View 800x1280)
-[2026-10-23 13:29:19] Dimensions: 800x1280 | DPR: 2.0
-[2026-10-23 13:29:19] ================================================================================
-[2026-10-23 13:29:20] Loading Vendor Portal: http://127.0.0.1:8001/vendor
-[2026-10-23 13:29:22] 
+[2026-10-23 16:36:28] STARTING VENDOR DASHBOARD E2E SIMULATION: Samsung Galaxy Tab A8 (Tablet View 800x1280)
+[2026-10-23 16:36:28] Dimensions: 800x1280 | DPR: 2.0
+[2026-10-23 16:36:28] ================================================================================
+[2026-10-23 16:36:28] Loading Vendor Portal: http://127.0.0.1:8001/vendor
+[2026-10-23 16:36:30] 
 --- [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Step 0: Login Gate Security Enforcement ---
-[2026-10-23 13:29:22]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Vendor Security Login Gate Enforced - Login gate displayed first; main dashboard unmounted before auth
-[2026-10-23 13:29:23]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Samsung_Galaxy_Tab_A8_(Tablet_View_800x1280)_step0_login_gate.png
-[2026-10-23 13:29:24] 
+[2026-10-23 16:36:30]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Vendor Security Login Gate Enforced - Login gate displayed first; main dashboard unmounted before auth
+[2026-10-23 16:36:31]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Samsung_Galaxy_Tab_A8_(Tablet_View_800x1280)_step0_login_gate.png
+[2026-10-23 16:36:32] 
 --- [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Step 1: Header, Store Switcher & Operational Controls ---
-[2026-10-23 13:29:25]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Store Badge Code - Visual Geometry & Bounding Box Audit - Box: 68x20px at (70, 8) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:29:26]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Store Switcher Dropdown - Visual Geometry & Bounding Box Audit - Box: 132x30px at (70, 28) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:29:27]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Store Open/Close Toggle CTA - Visual Geometry & Bounding Box Audit - Box: 30x36px at (619, 15) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:29:28]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Language Toggle Button - Visual Geometry & Bounding Box Audit - Box: 79x36px at (657, 15) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:29:29]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Bottom Nav Orders Button - Visual Geometry & Bounding Box Audit - Box: 100x49px at (62, 1226) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:29:30]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Bottom Nav Inventory Button - Visual Geometry & Bounding Box Audit - Box: 100x49px at (254, 1226) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:29:30]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Bottom Nav Ledger Button - Visual Geometry & Bounding Box Audit - Box: 100x49px at (446, 1226) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:29:31]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Bottom Nav Settings Button - Visual Geometry & Bounding Box Audit - Box: 100x49px at (638, 1226) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:29:31]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Samsung_Galaxy_Tab_A8_(Tablet_View_800x1280)_step1_initial_dashboard.png
-[2026-10-23 13:29:33]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Store Operational Status Toggle - दुकान चालू -> दुकान बंद
-[2026-10-23 13:29:34] 
+[2026-10-23 16:36:34]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Store Badge Code - Visual Geometry & Bounding Box Audit - Box: 68x20px at (70, 8) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:36:35]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Store Switcher Dropdown - Visual Geometry & Bounding Box Audit - Box: 132x30px at (70, 28) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:36:36]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Store Open/Close Toggle CTA - Visual Geometry & Bounding Box Audit - Box: 30x36px at (619, 15) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:36:37]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Language Toggle Button - Visual Geometry & Bounding Box Audit - Box: 79x36px at (657, 15) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:36:38]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Bottom Nav Orders Button - Visual Geometry & Bounding Box Audit - Box: 100x49px at (62, 1226) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:36:39]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Bottom Nav Inventory Button - Visual Geometry & Bounding Box Audit - Box: 100x49px at (254, 1226) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:36:39]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Bottom Nav Ledger Button - Visual Geometry & Bounding Box Audit - Box: 100x49px at (446, 1226) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:36:40]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Bottom Nav Settings Button - Visual Geometry & Bounding Box Audit - Box: 100x49px at (638, 1226) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:36:41]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Samsung_Galaxy_Tab_A8_(Tablet_View_800x1280)_step1_initial_dashboard.png
+[2026-10-23 16:36:42]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Store Operational Status Toggle - दुकान चालू -> दुकान बंद
+[2026-10-23 16:36:44] 
 --- [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Step 2: High-Level KPI Summary Tiles ---
-[2026-10-23 13:29:34]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] New Orders KPI Card - Visual Geometry & Bounding Box Audit - Box: 294x36px at (37, 168) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:29:35]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Packing in Progress KPI Card - Visual Geometry & Bounding Box Audit - Box: 294x36px at (425, 168) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:29:37]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Gross Sales KPI Card - Visual Geometry & Bounding Box Audit - Box: 294x36px at (37, 293) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:29:38]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Net Payout KPI Card - Visual Geometry & Bounding Box Audit - Box: 294x36px at (425, 293) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:29:38]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] KPI Live Counters Populated - New Orders: 502 | Sales: ₹185230
-[2026-10-23 13:29:38] 
+[2026-10-23 16:36:45]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] New Orders KPI Card - Visual Geometry & Bounding Box Audit - Box: 294x36px at (37, 168) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:36:46]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Packing in Progress KPI Card - Visual Geometry & Bounding Box Audit - Box: 294x36px at (425, 168) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:36:48]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Gross Sales KPI Card - Visual Geometry & Bounding Box Audit - Box: 294x36px at (37, 293) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:36:49]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Net Payout KPI Card - Visual Geometry & Bounding Box Audit - Box: 294x36px at (425, 293) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:36:49]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] KPI Live Counters Populated - New Orders: 508 | Sales: ₹191317
+[2026-10-23 16:36:49] 
 --- [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Step 3: Order Lifecycle Progression Workflow ---
-[2026-10-23 13:29:38]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Live Order Cards Rendered in Queue - 799 orders visible
-[2026-10-23 13:29:40]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Order Accept CTA Button - Visual Geometry & Bounding Box Audit - Box: 218x38px at (541, 788) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:29:43]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Samsung_Galaxy_Tab_A8_(Tablet_View_800x1280)_step2_order_accepted.png
-[2026-10-23 13:29:43]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Order Action: Accepted by Vendor - Advanced to Stage 2 (Packing चालू)
-[2026-10-23 13:29:45]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Mark Packed CTA Button - Visual Geometry & Bounding Box Audit - Box: 331x48px at (428, 788) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:29:48]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Samsung_Galaxy_Tab_A8_(Tablet_View_800x1280)_step3_order_packed.png
-[2026-10-23 13:29:48]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Order Action: Packed by Vendor - Advanced to Stage 3 (Waiting for Runner)
-[2026-10-23 13:29:51]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Handover to Runner CTA Button - Visual Geometry & Bounding Box Audit - Box: 331x48px at (428, 855) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:29:54]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Samsung_Galaxy_Tab_A8_(Tablet_View_800x1280)_step4_order_dispatched.png
-[2026-10-23 13:29:54]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Order Action: Handed Over to Gaon Mitra - Advanced to Stage 4 (Out for Delivery)
-[2026-10-23 13:29:54] 
+[2026-10-23 16:36:49]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Live Order Cards Rendered in Queue - 819 orders visible
+[2026-10-23 16:36:52]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Order Accept CTA Button - Visual Geometry & Bounding Box Audit - Box: 218x38px at (154, 788) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:36:56]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Samsung_Galaxy_Tab_A8_(Tablet_View_800x1280)_step2_order_accepted.png
+[2026-10-23 16:36:56]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Order Action: Accepted by Vendor - Advanced to Stage 2 (Packing चालू)
+[2026-10-23 16:36:58]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Mark Packed CTA Button - Visual Geometry & Bounding Box Audit - Box: 331x48px at (41, 788) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:37:02]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Samsung_Galaxy_Tab_A8_(Tablet_View_800x1280)_step3_order_packed.png
+[2026-10-23 16:37:02]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Order Action: Packed by Vendor - Advanced to Stage 3 (Waiting for Runner)
+[2026-10-23 16:37:04]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Handover to Runner CTA Button - Visual Geometry & Bounding Box Audit - Box: 331x48px at (41, 854) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:37:07]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Samsung_Galaxy_Tab_A8_(Tablet_View_800x1280)_step4_order_dispatched.png
+[2026-10-23 16:37:07]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Order Action: Handed Over to Gaon Mitra - Advanced to Stage 4 (Out for Delivery)
+[2026-10-23 16:37:07] 
 --- [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Step 4: Inventory Management & Tactile Stock Toggles ---
-[2026-10-23 13:29:55]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Transition to Inventory Workspace Tab
-[2026-10-23 13:29:56]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Inventory Search Bar - Visual Geometry & Bounding Box Audit - Box: 562x38px at (35, 446) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:29:56]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Instant Inventory Search Filter ('Atta') - 167 products matched
-[2026-10-23 13:29:57]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Inventory Products Rendered - 173 products loaded
-[2026-10-23 13:29:58]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Samsung_Galaxy_Tab_A8_(Tablet_View_800x1280)_step5_stock_toggled.png
-[2026-10-23 13:29:58]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Product In-Stock / Out-of-Stock Toggle - toggle_on
-उपलब्ध -> toggle_off
-अनुपलब्ध
-[2026-10-23 13:29:59] 
+[2026-10-23 16:37:09]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Transition to Inventory Workspace Tab
+[2026-10-23 16:37:10]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Inventory Search Bar - Visual Geometry & Bounding Box Audit - Box: 562x38px at (35, 446) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:37:10]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Instant Inventory Search Filter ('Atta') - 171 products matched
+[2026-10-23 16:37:11]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Inventory Products Rendered - 177 products loaded
+[2026-10-23 16:37:12]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Samsung_Galaxy_Tab_A8_(Tablet_View_800x1280)_step5_stock_toggled.png
+[2026-10-23 16:37:12]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Product In-Stock / Out-of-Stock Toggle - toggle_off
+अनुपलब्ध -> toggle_on
+उपलब्ध
+[2026-10-23 16:37:13] 
 --- [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Step 5: Add New Inventory Item Modal ---
-[2026-10-23 13:29:59]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Add Product Modal Opened
-[2026-10-23 13:30:00]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Add Product Modal Submitted & Closed
-[2026-10-23 13:30:00] 
+[2026-10-23 16:37:13]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Add Product Modal Opened
+[2026-10-23 16:37:14]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Add Product Modal Submitted & Closed
+[2026-10-23 16:37:14] 
 --- [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Step 6: Daily Sales & Earnings Ledger ---
-[2026-10-23 13:30:02]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Transition to Daily Ledger Workspace Tab
-[2026-10-23 13:30:02]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Gross Sales Summary Box - Visual Geometry & Bounding Box Audit - Box: 145x32px at (54, 565) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:30:02]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] COD Cash in Hand Box - Visual Geometry & Bounding Box Audit - Box: 145x32px at (237, 565) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:30:02]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Platform Commission Fee Box - Visual Geometry & Bounding Box Audit - Box: 145x32px at (419, 589) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:30:03]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Net Dukandaar Payout Box - Visual Geometry & Bounding Box Audit - Box: 145x32px at (602, 589) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-23 13:30:03]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Ledger Financial Breakdown Verified - Gross: ₹185230 | COD: ₹198587 | Net Payout: ₹185230
-[2026-10-23 13:30:03]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Ledger Transaction Table Rows Rendered - 799 orders in ledger table
-[2026-10-23 13:30:03]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Samsung_Galaxy_Tab_A8_(Tablet_View_800x1280)_step6_daily_ledger.png
-[2026-10-23 13:30:03] 
+[2026-10-23 16:37:15]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Transition to Daily Ledger Workspace Tab
+[2026-10-23 16:37:16]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Gross Sales Summary Box - Visual Geometry & Bounding Box Audit - Box: 145x32px at (54, 565) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:37:17]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] COD Cash in Hand Box - Visual Geometry & Bounding Box Audit - Box: 145x32px at (237, 565) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:37:17]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Platform Commission Fee Box - Visual Geometry & Bounding Box Audit - Box: 145x32px at (419, 589) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:37:17]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Net Dukandaar Payout Box - Visual Geometry & Bounding Box Audit - Box: 145x32px at (602, 589) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-23 16:37:17]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Ledger Financial Breakdown Verified - Gross: ₹191317 | COD: ₹201692 | Net Payout: ₹191317
+[2026-10-23 16:37:17]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Ledger Transaction Table Rows Rendered - 819 orders in ledger table
+[2026-10-23 16:37:18]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Samsung_Galaxy_Tab_A8_(Tablet_View_800x1280)_step6_daily_ledger.png
+[2026-10-23 16:37:18] 
 --- [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Step 7: Store Profile & Cluster Settings ---
-[2026-10-23 13:30:04]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Store Profile Details Loaded - Store: Sharma Brothers Kirana
-[2026-10-23 13:30:04]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Samsung_Galaxy_Tab_A8_(Tablet_View_800x1280)_step7_store_profile.png
-[2026-10-23 13:30:04] 
+[2026-10-23 16:37:19]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Store Profile Details Loaded - Store: Sharma Brothers Kirana
+[2026-10-23 16:37:19]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/Samsung_Galaxy_Tab_A8_(Tablet_View_800x1280)_step7_store_profile.png
+[2026-10-23 16:37:19] 
 --- [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Step 8: Bilingual State Switch (Hindi / English) ---
-[2026-10-23 13:30:05]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Bilingual Toggle to English - Label: translate
+[2026-10-23 16:37:20]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Bilingual Toggle to English - Label: translate
 हिंदी
-[2026-10-23 13:30:06] 
+[2026-10-23 16:37:21] 
 --- [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Step 9: Zero Console Errors Audit ---
-[2026-10-23 13:30:06]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Zero JavaScript Console Errors - Clean runtime execution
-[2026-10-23 13:30:06] 
+[2026-10-23 16:37:21]   ✓ PASS: [Samsung Galaxy Tab A8 (Tablet View 800x1280)] Zero JavaScript Console Errors - Clean runtime execution
+[2026-10-23 16:37:21] 
 ================================================================================
-[2026-10-23 13:30:06] REAL-TIME CUSTOMER -> VENDOR SYNC END-TO-END TEST
-[2026-10-23 13:30:06] ================================================================================
-[2026-10-23 13:30:11]   📦 Placing a new customer order via /api/orders/checkout...
-[2026-10-23 13:30:11]   ✓ Order placed successfully: #RUR-5992 (Total: ₹363.0)
-[2026-10-23 13:30:11]   ⏳ Waiting for Vendor Dashboard to sync and display #RUR-5992...
-[2026-10-23 13:30:17]   ✓ PASS: Customer-to-Vendor Real-Time Order Sync - Order #RUR-5992 appeared live in Vendor Queue without page reload!
-[2026-10-23 13:30:17]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/step8_customer_vendor_live_synced.png
-[2026-10-23 13:30:17]   ✓ Playwright browser closed cleanly.
+[2026-10-23 16:37:21] REAL-TIME CUSTOMER -> VENDOR SYNC END-TO-END TEST
+[2026-10-23 16:37:21] ================================================================================
+[2026-10-23 16:37:25]   📦 Placing a new customer order via /api/orders/checkout...
+[2026-10-23 16:37:25]   ✓ Order placed successfully: #RUR-8674 (Total: ₹363.0)
+[2026-10-23 16:37:25]   ⏳ Waiting for Vendor Dashboard to sync and display #RUR-8674...
+[2026-10-23 16:37:31]   ✓ PASS: Customer-to-Vendor Real-Time Order Sync - Order #RUR-8674 appeared live in Vendor Queue without page reload!
+[2026-10-23 16:37:32]   📸 [SCREENSHOT CAPTURED]: screenshots/vendor/step8_customer_vendor_live_synced.png
+[2026-10-23 16:37:32]   ✓ Playwright browser closed cleanly.
 
 ================================================================================
 END OF VENDOR TEST REPORT - 100% HEALTHY

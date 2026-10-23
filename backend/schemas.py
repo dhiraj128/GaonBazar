@@ -528,6 +528,51 @@ class AdminPendingRunnerDTO(BaseModel):
     created_at: str
 
 
+class AdminVendorDetailDTO(BaseModel):
+    store_id: str
+    name: str
+    owner_name: str
+    phone: str
+    category: str
+    store_type: Optional[str] = "kirana"
+    id_type: str
+    id_number: str
+    photo_url: Optional[str] = None
+    payout_upi: str
+    bank_account_name: Optional[str] = None
+    bank_account_number: Optional[str] = None
+    bank_ifsc: Optional[str] = None
+    bank_verification_status: Optional[str] = "pending"
+    status: str
+    is_open: bool
+    total_orders: Optional[int] = 0
+    rating: Optional[float] = None
+    created_at: str
+
+
+class AdminRunnerDetailDTO(BaseModel):
+    runner_id: str
+    name: str
+    phone: str
+    runner_code: str
+    hub_name: str
+    vehicle_type: str
+    vehicle_number: str
+    id_type: str
+    id_number: str
+    photo_url: Optional[str] = None
+    payout_upi: str
+    bank_account_name: Optional[str] = None
+    bank_account_number: Optional[str] = None
+    bank_ifsc: Optional[str] = None
+    bank_verification_status: Optional[str] = "pending"
+    status: str
+    is_online: bool
+    rating: Optional[float] = 4.9
+    total_completed_missions: Optional[int] = 0
+    created_at: str
+
+
 class AdminApprovalActionRequest(SecureBaseModel):
     reason: Optional[str] = None
 

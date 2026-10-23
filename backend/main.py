@@ -45,6 +45,7 @@ from .schemas import (
     VendorRegisterRequest, VendorRegisterResponse, VendorStatusCheckResponse,
     RunnerRegisterRequest, RunnerRegisterResponse, RunnerStatusCheckResponse,
     AdminMetricsResponse, AdminPendingVendorDTO, AdminPendingRunnerDTO,
+    AdminVendorDetailDTO, AdminRunnerDetailDTO,
     AdminApprovalActionRequest, AdminGodViewOrderDTO, AdminCommissionLedgerResponse,
     AdminUserRiskProfileDTO,
     SupportChatRequest, SupportChatResponse, SupportTicketRequest, SupportTicketResponse,
@@ -3016,6 +3017,7 @@ def check_runner_status(runner_id: str, db: Session = Depends(get_db)):
 # =============================================================================
 
 @app.get("/api/admin/metrics", response_model=AdminMetricsResponse)
+@app.get("/admin/metrics", response_model=AdminMetricsResponse)
 def get_admin_metrics(db: Session = Depends(get_db)):
     """
     Returns global ecosystem metrics across orders, GMV, platform profits,
@@ -3023,7 +3025,7 @@ def get_admin_metrics(db: Session = Depends(get_db)):
     """
     orders = db.query(Order).all()
     total_gmv = sum(o.total_amount for o in orders)
-    platform_profits = sum(float(getattr(o, 'admin_profit', None) or 13.0) for o in orders)
+    platform_profits = sum(float(getattr(o, 'admin_profit', None) or 0.0) for o in orders)
     active_orders = len([o for o in orders if o.timeline_stage in [1, 2, 3, 4]])
     delivered_orders = len([o for o in orders if o.timeline_stage == 5])
 
@@ -3045,7 +3047,7 @@ def get_admin_metrics(db: Session = Depends(get_db)):
         total_orders=len(orders),
         active_orders=active_orders,
         delivered_orders=delivered_orders,
-        total_customers=max(total_customers, 1),
+        total_customers=total_customers,
         total_vendors=total_vendors,
         approved_vendors=approved_vendors,
         pending_vendors=pending_vendors,
@@ -3056,6 +3058,7 @@ def get_admin_metrics(db: Session = Depends(get_db)):
 
 
 @app.get("/api/admin/pending-vendors", response_model=List[AdminPendingVendorDTO])
+@app.get("/admin/pending-vendors", response_model=List[AdminPendingVendorDTO])
 def list_pending_vendors(status: Optional[str] = "pending_approval", db: Session = Depends(get_db)):
     """
     Lists vendors filtered by approval status (default: pending_approval).
@@ -3083,7 +3086,39 @@ def list_pending_vendors(status: Optional[str] = "pending_approval", db: Session
     ]
 
 
+@app.get("/api/admin/vendors/{store_id}", response_model=AdminVendorDetailDTO)
+@app.get("/admin/vendors/{store_id}", response_model=AdminVendorDetailDTO)
+def get_admin_vendor_detail(store_id: str, db: Session = Depends(get_db)):
+    """Returns detailed information for a specific vendor including bank KYC and fraud status."""
+    store = db.query(Store).filter(Store.id == store_id).first()
+    if not store:
+        raise HTTPException(status_code=404, detail="Store not found")
+
+    return AdminVendorDetailDTO(
+        store_id=store.id,
+        name=store.name,
+        owner_name=store.owner_name or "Ramesh Sharma",
+        phone=store.phone or "N/A",
+        category=store.category or "kirana",
+        store_type=store.store_type or "kirana",
+        id_type=store.id_type or "Aadhar",
+        id_number=store.id_number or "XXXX-XXXX-8921",
+        photo_url=store.photo_url or "https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=400",
+        payout_upi=store.payout_upi or (store.bank_ifsc and f"{store.phone}@upi") or "sharma.kirana@okaxis",
+        bank_account_name=store.bank_account_name,
+        bank_account_number=mask_bank_account(store.bank_account_number),
+        bank_ifsc=store.bank_ifsc,
+        bank_verification_status=store.bank_verification_status or "pending",
+        status=store.status,
+        is_open=bool(store.is_open),
+        total_orders=store.total_orders or 0,
+        rating=store.rating,
+        created_at=store.created_at.strftime("%Y-%m-%d %H:%M") if store.created_at else datetime.utcnow().strftime("%Y-%m-%d %H:%M")
+    )
+
+
 @app.post("/api/admin/vendors/{store_id}/approve")
+@app.post("/admin/vendors/{store_id}/approve")
 def approve_vendor(store_id: str, db: Session = Depends(get_db)):
     """Approves a vendor KYC application, granting live store access."""
     store = db.query(Store).filter(Store.id == store_id).first()
@@ -3097,6 +3132,7 @@ def approve_vendor(store_id: str, db: Session = Depends(get_db)):
 
 
 @app.post("/api/admin/vendors/{store_id}/reject")
+@app.post("/admin/vendors/{store_id}/reject")
 def reject_vendor(store_id: str, payload: Optional[AdminApprovalActionRequest] = None, db: Session = Depends(get_db)):
     """Rejects a vendor application."""
     store = db.query(Store).filter(Store.id == store_id).first()
@@ -3109,7 +3145,32 @@ def reject_vendor(store_id: str, payload: Optional[AdminApprovalActionRequest] =
     return {"success": True, "store_id": store_id, "status": "rejected", "message": f"दुकान {store.name} आवेदन अस्वीकृत।"}
 
 
+@app.post("/api/admin/vendors/{store_id}/block")
+@app.post("/admin/vendors/{store_id}/block")
+@app.post("/api/admin/vendors/{store_id}/ban")
+@app.post("/admin/vendors/{store_id}/ban")
+def block_vendor(store_id: str, db: Session = Depends(get_db)):
+    """Fraud Control: Blocks/bans a vendor and blacklists any associated user account."""
+    store = db.query(Store).filter(Store.id == store_id).first()
+    if not store:
+        raise HTTPException(status_code=404, detail="Store not found")
+
+    store.status = "banned"
+    store.is_open = False
+
+    # Blacklist associated user account if phone exists
+    if store.phone:
+        user = db.query(User).filter(User.phone == store.phone).first()
+        if user:
+            user.is_blacklisted = True
+            user.warning_alert = "Store account banned for fraudulent activity"
+
+    db.commit()
+    return {"success": True, "store_id": store_id, "status": "banned", "message": f"दुकान {store.name} को ब्लॉक/बैन किया गया (फ्रॉड कंट्रोल)।"}
+
+
 @app.get("/api/admin/pending-runners", response_model=List[AdminPendingRunnerDTO])
+@app.get("/admin/pending-runners", response_model=List[AdminPendingRunnerDTO])
 def list_pending_runners(status: Optional[str] = "pending_approval", db: Session = Depends(get_db)):
     """
     Lists runners filtered by approval status (default: pending_approval).
@@ -3139,7 +3200,40 @@ def list_pending_runners(status: Optional[str] = "pending_approval", db: Session
     ]
 
 
+@app.get("/api/admin/runners/{runner_id}", response_model=AdminRunnerDetailDTO)
+@app.get("/admin/runners/{runner_id}", response_model=AdminRunnerDetailDTO)
+def get_admin_runner_detail(runner_id: str, db: Session = Depends(get_db)):
+    """Returns detailed information for a specific Gaon Mitra runner including bank KYC and fraud status."""
+    runner = db.query(Runner).filter(Runner.id == runner_id).first()
+    if not runner:
+        raise HTTPException(status_code=404, detail="Runner not found")
+
+    return AdminRunnerDetailDTO(
+        runner_id=runner.id,
+        name=runner.name,
+        phone=runner.phone,
+        runner_code=runner.runner_code,
+        hub_name=runner.hub_name or "Rampur Mandi Cluster Hub #RMP-04",
+        vehicle_type=runner.vehicle_type or "Motorcycle",
+        vehicle_number=runner.vehicle_number or "UP-14-EA-4921",
+        id_type=runner.id_type or "Aadhar",
+        id_number=runner.id_number or "XXXX-XXXX-4821",
+        photo_url=runner.photo_url or "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400",
+        payout_upi=runner.payout_upi or "kamal.singh@ybl",
+        bank_account_name=runner.bank_account_name,
+        bank_account_number=mask_bank_account(runner.bank_account_number),
+        bank_ifsc=runner.bank_ifsc,
+        bank_verification_status=runner.bank_verification_status or "pending",
+        status=runner.status,
+        is_online=bool(runner.is_online),
+        rating=runner.rating or 4.9,
+        total_completed_missions=runner.total_completed_missions or 0,
+        created_at=runner.created_at.strftime("%Y-%m-%d %H:%M") if runner.created_at else datetime.utcnow().strftime("%Y-%m-%d %H:%M")
+    )
+
+
 @app.post("/api/admin/runners/{runner_id}/approve")
+@app.post("/admin/runners/{runner_id}/approve")
 def approve_runner(runner_id: str, db: Session = Depends(get_db)):
     """Approves a Gaon Mitra runner KYC application, unlocking mission queue."""
     runner = db.query(Runner).filter(Runner.id == runner_id).first()
@@ -3153,6 +3247,7 @@ def approve_runner(runner_id: str, db: Session = Depends(get_db)):
 
 
 @app.post("/api/admin/runners/{runner_id}/reject")
+@app.post("/admin/runners/{runner_id}/reject")
 def reject_runner(runner_id: str, payload: Optional[AdminApprovalActionRequest] = None, db: Session = Depends(get_db)):
     """Rejects a runner application."""
     runner = db.query(Runner).filter(Runner.id == runner_id).first()
@@ -3163,6 +3258,30 @@ def reject_runner(runner_id: str, payload: Optional[AdminApprovalActionRequest] 
     runner.is_online = False
     db.commit()
     return {"success": True, "runner_id": runner_id, "status": "rejected", "message": f"गाँव मित्र {runner.name} आवेदन अस्वीकृत।"}
+
+
+@app.post("/api/admin/runners/{runner_id}/block")
+@app.post("/admin/runners/{runner_id}/block")
+@app.post("/api/admin/runners/{runner_id}/ban")
+@app.post("/admin/runners/{runner_id}/ban")
+def block_runner(runner_id: str, db: Session = Depends(get_db)):
+    """Fraud Control: Blocks/bans a runner and blacklists any associated user account."""
+    runner = db.query(Runner).filter(Runner.id == runner_id).first()
+    if not runner:
+        raise HTTPException(status_code=404, detail="Runner not found")
+
+    runner.status = "banned"
+    runner.is_online = False
+
+    # Blacklist associated user account if phone exists
+    if runner.phone:
+        user = db.query(User).filter(User.phone == runner.phone).first()
+        if user:
+            user.is_blacklisted = True
+            user.warning_alert = "Runner account banned for fraudulent activity"
+
+    db.commit()
+    return {"success": True, "runner_id": runner_id, "status": "banned", "message": f"गाँव मित्र {runner.name} को ब्लॉक/बैन किया गया (फ्रॉड कंट्रोल)।"}
 
 
 @app.get("/api/admin/orders/god-view", response_model=List[AdminGodViewOrderDTO])
