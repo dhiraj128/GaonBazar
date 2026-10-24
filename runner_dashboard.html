@@ -468,8 +468,8 @@
       <!-- ===================================================================== -->
       <div class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-md flex flex-col gap-3.5">
         
-        <div class="flex items-start justify-between gap-2 border-b border-slate-700/80 pb-3">
-          <div class="flex items-center gap-2.5">
+        <div class="flex flex-col gap-3 border-b border-slate-700/80 pb-3">
+          <div class="flex items-center gap-2.5 min-w-0">
             <div class="w-10 h-10 rounded-2xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center shrink-0">
               <span class="material-symbols-outlined text-[24px]">person_pin_circle</span>
             </div>
@@ -481,12 +481,12 @@
           </div>
 
           <!-- 1-Tap Call & Map Navigation CTAs -->
-          <div class="flex items-center gap-1.5 shrink-0">
-            <a id="btn-call-customer" href="tel:9876543210" class="min-h-[44px] px-3 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-black flex items-center gap-1 shadow-sm active:scale-95 transition-all shrink-0 cursor-pointer">
+          <div class="grid grid-cols-2 gap-2 w-full">
+            <a id="btn-call-customer" href="#" class="min-w-0 min-h-[44px] px-2 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-[11px] sm:text-xs font-black flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-all cursor-pointer text-center">
               <span class="material-symbols-outlined text-[18px]">call</span>
               <span data-i18n="call_customer_btn">कॉल करें</span>
             </a>
-            <a id="btn-navigate-map" href="#" onclick="openRunnerMapNavigation(event)" target="_blank" rel="noopener noreferrer" class="min-h-[44px] px-3 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black flex items-center gap-1 shadow-sm active:scale-95 transition-all shrink-0 cursor-pointer" title="Navigate via Google Maps">
+            <a id="btn-navigate-map" href="#" onclick="openRunnerMapNavigation(event)" target="_blank" rel="noopener noreferrer" class="min-w-0 min-h-[44px] px-2 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] sm:text-xs font-black flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-all cursor-pointer text-center" title="Navigate via Google Maps">
               <span class="material-symbols-outlined text-[18px]">navigation</span>
               <span data-i18n="navigate_map_btn">Navigate via Map</span>
             </a>
@@ -2011,8 +2011,8 @@
         const lat = mission.customer_lat || mission.lat;
         const lng = mission.customer_lng || mission.lng;
         const navUrl = (lat && lng) 
-          ? `https://maps.google.com/?q=${lat},${lng}` 
-          : `https://maps.google.com/?q=${encodeURIComponent((mission.village || '') + ' ' + (mission.landmark || ''))}`;
+          ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(lat + "," + lng)}&travelmode=driving` 
+          : `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(((mission.village || "") + " " + (mission.landmark || "")).trim())}&travelmode=driving`;
 
         return `
           <div onclick="selectMission('${mission.id}')" class="bg-slate-800 rounded-3xl p-4 sm:p-5 border ${isStage3 ? 'border-amber-500/40' : 'border-slate-700'} shadow-md flex flex-col gap-3 cursor-pointer hover:border-primary transition-all active:scale-99">
@@ -2142,22 +2142,24 @@
 
       if (elCustName) elCustName.innerText = m.user_name;
       if (elCustVillage) elCustVillage.innerText = isHi ? `ग्राम पंचायत: ${m.village}` : `Village: ${m.village}`;
-      if (elBtnCallCust) elBtnCallCust.href = `tel:${m.user_phone || '9876543210'}`;
+      if (elBtnCallCust) { const phone = String(m.user_phone || '').replace(/[^0-9+]/g, ''); elBtnCallCust.href = phone ? `tel:${phone}` : '#'; elBtnCallCust.setAttribute('aria-disabled', phone ? 'false' : 'true'); }
       if (elLandmarkText) elLandmarkText.innerText = m.landmark;
 
-      // Exact GPS Coordinates & "Navigate via Map" Routing
+      // Maps Directions links require an actual order destination, never sample coordinates.
       const elBtnNavMap = document.getElementById('btn-navigate-map');
       const elCoordsContainer = document.getElementById('runner-coords-container');
       const elCoordsText = document.getElementById('runner-coords-text');
-      const destLat = m.customer_lat || m.lat || 26.1209;
-      const destLng = m.customer_lng || m.lng || 85.3647;
-      const navUrl = `https://maps.google.com/?q=${destLat},${destLng}`;
+      const destLat = Number(m.customer_lat ?? m.lat);
+      const destLng = Number(m.customer_lng ?? m.lng);
+      const hasCoords = Number.isFinite(destLat) && Number.isFinite(destLng) && Math.abs(destLat) <= 90 && Math.abs(destLng) <= 180 && !(destLat === 0 && destLng === 0);
+      const addressText = [m.landmark, m.village].filter(Boolean).join(', ').trim();
+      const destination = hasCoords ? `${destLat},${destLng}` : addressText;
+      const navUrl = destination ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}&travelmode=driving` : '';
       if (elBtnNavMap) {
-        elBtnNavMap.href = navUrl;
-        elBtnNavMap.setAttribute('onclick', 'openRunnerMapNavigation(event)');
+        elBtnNavMap.href = navUrl || '#';
+        elBtnNavMap.setAttribute('aria-disabled', navUrl ? 'false' : 'true');
         elBtnNavMap.onclick = function(event) {
-          if (event) { try { event.preventDefault(); } catch(e){} try { event.stopPropagation(); } catch(e){} }
-          window.open('https://maps.google.com/?q=' + destLat + ',' + destLng, '_blank');
+          if (!navUrl) { event.preventDefault(); showToast(isHi ? 'ग्राहक का पता उपलब्ध नहीं है' : 'Customer address unavailable'); }
         };
       }
       if (elCoordsContainer && elCoordsText) {
@@ -2634,16 +2636,20 @@
       if (sel) sel.value = mapped;
     }
 
-    // --- 9.145 RUNNER MAP NAVIGATION HANDLER ---
+    // --- Runner map navigation is driven by the selected mission, without dummy coordinates.
     function openRunnerMapNavigation(event) {
-      if (event) {
-        try { event.preventDefault(); } catch (e) {}
-        try { event.stopPropagation(); } catch (e) {}
-      }
       const m = RunnerStore.selectedMission;
-      const destLat = (m && (m.customer_lat || m.lat)) || 26.1209;
-      const destLng = (m && (m.customer_lng || m.lng)) || 85.3647;
-      window.open('https://maps.google.com/?q=' + destLat + ',' + destLng, '_blank');
+      const lat = Number(m?.customer_lat ?? m?.lat);
+      const lng = Number(m?.customer_lng ?? m?.lng);
+      const coordsValid = m && Number.isFinite(lat) && Number.isFinite(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180 && !(lat === 0 && lng === 0);
+      const address = m ? [m.landmark, m.village].filter(Boolean).join(', ').trim() : '';
+      const destination = coordsValid ? `${lat},${lng}` : address;
+      if (event) { event.preventDefault(); event.stopPropagation(); }
+      if (!destination) {
+        showToast(RunnerStore.lang === 'hi' ? 'ग्राहक का पता उपलब्ध नहीं है' : 'Customer address unavailable');
+        return;
+      }
+      window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}&travelmode=driving`, '_blank', 'noopener,noreferrer');
     }
     window.openRunnerMapNavigation = openRunnerMapNavigation;
 
