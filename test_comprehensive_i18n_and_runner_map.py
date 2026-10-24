@@ -52,13 +52,17 @@ async def test_all():
             }""")
 
             await page.evaluate("""() => {
+                RunnerStore.selectedMission = {
+                    id: 'TEST-ROUTE', customer_lat: 26.1234, customer_lng: 85.3456,
+                    village: 'Muzaffarpur', landmark: 'Test delivery landmark'
+                };
                 const btn = document.getElementById('btn-navigate-map');
                 if (btn) btn.click();
             }""")
             print(f"  Intercepted window.open calls: {intercepted_urls}")
             assert len(intercepted_urls) > 0, "Assertion failed: window.open was not triggered by #btn-navigate-map"
             nav_url, target = intercepted_urls[0]
-            assert "maps.google.com/?q=" in nav_url, f"Assertion failed: nav_url {nav_url} does not contain maps.google.com/?q="
+            assert "google.com/maps/dir/?api=1&destination=26.1234%2C85.3456" in nav_url, f"Unexpected directions URL: {nav_url}"
             assert target == "_blank", f"Assertion failed: target {target} != _blank"
             print("  ✓ PASS: Runner Map Navigation cleanly redirects to Google Maps with exact coordinates!")
 
