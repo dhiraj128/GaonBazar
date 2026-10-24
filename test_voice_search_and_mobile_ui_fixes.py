@@ -50,7 +50,7 @@ def main():
             page.wait_for_timeout(350)
             assert page.locator("#sidebar-drawer").is_visible(), "Side drawer (#sidebar-drawer) failed to open!"
             assert page.locator("#sidebar-overlay").is_visible(), "Sidebar dark overlay (#sidebar-overlay) failed to appear!"
-            assert page.locator("#global-lang-btn").is_visible(), "Language toggle (#global-lang-btn) inside side drawer missing!"
+            assert page.locator("#header-lang-btn").is_visible(), "Language toggle (#header-lang-btn) in header missing!"
             
             # Close Side Drawer via close button
             page.click("#btn-close-sidebar")

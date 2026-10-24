@@ -205,44 +205,44 @@
   <!-- ========================================================================= -->
   <!-- 2. NATIVE TOP APP BAR & SHIFT STATUS (Mobile-First Android Minimal)       -->
   <!-- ========================================================================= -->
-  <header id="runner-header" class="hidden sticky top-0 z-40 shrink-0 bg-slate-950/95 backdrop-blur-md border-b border-slate-800 shadow-md px-3 py-2.5 sm:px-5">
-    <div class="max-w-4xl mx-auto flex items-center justify-between gap-2">
+  <header id="runner-header" class="hidden sticky top-0 z-40 shrink-0 bg-slate-950/95 backdrop-blur-md border-b border-slate-800 shadow-md px-2 py-2 sm:px-5 sm:py-2.5">
+    <div class="max-w-4xl mx-auto flex items-center justify-between gap-1 sm:gap-2">
       
       <!-- Identity & Cluster Context (Page Title) -->
-      <div class="flex items-center gap-2 min-w-0">
-        <div class="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center shrink-0 shadow-xs">
-          <span class="material-symbols-outlined text-[22px]">two_wheeler</span>
+      <div class="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1 overflow-hidden">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center shrink-0 shadow-xs">
+          <span class="material-symbols-outlined text-[20px] sm:text-[22px]">two_wheeler</span>
         </div>
-        <div class="flex flex-col min-w-0 justify-center">
-          <div class="flex items-center gap-1.5">
-            <span id="runner-name-display" data-i18n="runner_profile_name" class="text-xs sm:text-sm font-black text-white leading-tight truncate max-w-[110px] sm:max-w-[180px]">कमल सिंह</span>
-            <span id="runner-badge-code" class="text-[9px] font-mono font-bold bg-amber-400/20 text-amber-300 px-2 py-0.5 rounded border border-amber-400/30 w-fit min-h-[20px] flex items-center justify-center shrink-0">#GM-RAMPUR-07</span>
+        <div class="flex flex-col min-w-0 flex-1 justify-center overflow-hidden">
+          <div class="flex items-center gap-1 min-w-0 flex-1 overflow-hidden">
+            <span id="runner-name-display" data-i18n="runner_profile_name" class="text-xs sm:text-sm font-black text-white leading-tight truncate whitespace-nowrap min-w-[50px] max-w-[100px] sm:max-w-[180px] shrink-0">कमल सिंह</span>
+            <span id="runner-badge-code" class="text-[8.5px] sm:text-[9px] font-mono font-bold bg-amber-400/20 text-amber-300 px-1.5 py-0.5 rounded border border-amber-400/30 w-fit min-h-[18px] flex items-center justify-center shrink-0 whitespace-nowrap">#GM-RAMPUR-07</span>
           </div>
-          <span id="runner-hub-display" class="text-[10px] sm:text-[11px] text-slate-400 truncate flex items-center gap-1 min-w-0 mt-0.5">
-            <span class="material-symbols-outlined text-[12px] text-primary shrink-0">hub</span>
+          <span id="runner-hub-display" class="text-[10px] sm:text-[11px] text-slate-400 truncate flex items-center gap-0.5 sm:gap-1 min-w-0 mt-0.5">
+            <span class="material-symbols-outlined text-[11px] sm:text-[12px] text-primary shrink-0">hub</span>
             <span class="truncate" id="runner-hub-name-text" data-i18n="runner_hub_name">रामपुर क्लस्टर हब #RMP-04</span>
           </span>
         </div>
       </div>
 
       <!-- Action Items: Shift Status, Language, Logout (Min 44x44px Touch Targets) -->
-      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+      <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
         <!-- Duty Shift Online / Offline Toggle -->
-        <button id="shift-toggle-btn" onclick="toggleRunnerShift()" aria-label="Toggle Shift" class="px-2.5 py-1.5 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 border transition-all bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-xs active:scale-95 min-h-[44px] min-w-[44px] shrink-0 cursor-pointer" title="Shift Toggle">
-          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" id="shift-indicator-dot"></span>
+        <button id="shift-toggle-btn" onclick="toggleRunnerShift()" aria-label="Toggle Shift" class="px-2 py-1.5 rounded-xl text-xs font-black flex items-center justify-center gap-1 border transition-all bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-xs active:scale-95 min-h-[44px] min-w-[40px] shrink-0 cursor-pointer" title="Shift Toggle">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" id="shift-indicator-dot"></span>
           <span id="shift-status-label" class="hidden sm:inline">ड्यूटी चालू</span>
           <span id="shift-status-mobile" class="sm:hidden text-xs font-black">चालू</span>
         </button>
 
         <!-- Language Switcher Pill -->
-        <button id="lang-toggle-btn" onclick="toggleLanguage()" aria-label="Toggle Language" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center justify-center gap-1 min-h-[44px] min-w-[44px] active:scale-95 shrink-0 cursor-pointer" title="Language">
-          <span class="material-symbols-outlined text-[18px]">translate</span>
+        <button id="lang-toggle-btn" onclick="toggleLanguage()" aria-label="Toggle Language" class="px-2 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center justify-center gap-1 min-h-[44px] min-w-[40px] active:scale-95 shrink-0 cursor-pointer" title="Language">
+          <span class="material-symbols-outlined text-[17px] shrink-0">translate</span>
           <span id="current-lang-text">English</span>
         </button>
 
         <!-- Runner Logout CTA -->
-        <button id="btn-runner-logout" onclick="handleRunnerLogout()" title="लॉगआउट" aria-label="Logout" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-800/50 flex items-center justify-center transition-colors active:scale-95 shrink-0 cursor-pointer">
-          <span class="material-symbols-outlined text-[20px]">logout</span>
+        <button id="btn-runner-logout" onclick="handleRunnerLogout()" title="लॉगआउट" aria-label="Logout" class="w-9 h-9 sm:w-11 sm:h-11 min-w-[36px] sm:min-w-[44px] min-h-[36px] sm:min-h-[44px] rounded-xl bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-800/50 flex items-center justify-center transition-colors active:scale-95 shrink-0 cursor-pointer">
+          <span class="material-symbols-outlined text-[19px] sm:text-[20px]">logout</span>
         </button>
       </div>
 

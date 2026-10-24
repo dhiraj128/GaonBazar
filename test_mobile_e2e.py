@@ -531,28 +531,20 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     inspect_viewport_and_layout(page, f"[{dev_name}] Phase 1.1 Login", logger)
     capture_human_ux_screenshot(page, dev_name, "step1_01_login_initial", logger)
 
-    # Check Hamburger Menu Button and Open Side Drawer to access Language Toggle
+    # Check Hamburger Menu Button and Header Language Toggle Pill
     check_human_ux_bounds(page, "#btn-open-sidebar", "Hamburger Menu Button", dev_name, logger)
-    page.click("#btn-open-sidebar")
-    page.wait_for_timeout(350)
+    check_human_ux_bounds(page, "#header-lang-btn", "Header Language Toggle Pill", dev_name, logger)
 
-    # Human-like Bounds Check on Language Toggle Pill inside Drawer
-    check_human_ux_bounds(page, "#global-lang-btn", "Language Toggle Pill", dev_name, logger)
-
-    initial_lang = page.inner_text("#global-lang-label").strip()
-    page.click("#global-lang-btn")
+    initial_lang = page.evaluate("AppStore.lang")
+    page.click("#header-lang-btn")
     page.wait_for_timeout(300)
-    switched_lang = page.inner_text("#global-lang-label").strip()
+    switched_lang = page.evaluate("AppStore.lang")
     logger.record_test(f"[{dev_name}] Bilingual Toggle (Instant State Switch)", initial_lang != switched_lang, f"{initial_lang} -> {switched_lang}")
     capture_human_ux_screenshot(page, dev_name, "step1_02_bilingual_toggle_en", logger)
 
-    if switched_lang != "हिंदी":
-        page.click("#global-lang-btn")
+    if switched_lang != "hi":
+        page.click("#header-lang-btn")
         page.wait_for_timeout(300)
-
-    # Close side drawer via close button
-    page.click("#btn-close-sidebar")
-    page.wait_for_timeout(350)
 
     # Check Phone Input & Disabled Send OTP Button Bounds
     check_human_ux_bounds(page, "#p1-phone-input", "Phone Number Input Field", dev_name, logger)
@@ -1144,7 +1136,6 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     check_human_ux_bounds(page, "#drawer-orders-btn", "Side Drawer Orders Option", dev_name, logger)
     check_human_ux_bounds(page, "#drawer-payments-btn", "Side Drawer Payments Option", dev_name, logger)
     check_human_ux_bounds(page, "#drawer-support-btn", "Side Drawer Support Option", dev_name, logger)
-    check_human_ux_bounds(page, "#global-lang-btn", "Side Drawer Language Toggle", dev_name, logger)
 
     # 4. Navigate to Profile View via Side Drawer
     page.click("#drawer-account-btn")
