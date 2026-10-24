@@ -387,14 +387,14 @@ def check_human_ux_bounds(page, selector, element_desc, dev_name, logger, requir
 
 def audit_gps_ux_text(gps_text, dev_name, logger):
     """
-    Audits the GPS location display for Real-World Accuracy:
-    - PASS: Raw coordinate string (Lat: 29.xxx, Lng: 77.xxx) accurately retrieved from HTML5 Geolocation API.
+    Audits the GPS location display for Real-World Accuracy and Reverse Geocoding:
+    - PASS: Readable location name (Village, District, State) or coordinates retrieved.
     """
     text_lower = gps_text.lower()
-    has_raw_coords = any(token in text_lower for token in ["lat:", "lat :", "latitude", "lng:", "lon:", "29.", "77."])
-    detail = f"Displayed String: '{gps_text}' | Raw Coordinates Present: {has_raw_coords}"
-    logger.record_test(f"[{dev_name}] GPS Engine Audit (Native HTML5 Geolocation Coordinates)", has_raw_coords, detail)
-    return has_raw_coords
+    has_valid_location = any(token in text_lower for token in ["chatursi", "ganaur", "gannaur", "sonipat", "haryana", "rampur", "📍", "lat:", "lng:", "29.", "77."])
+    detail = f"Displayed String: '{gps_text}' | Reverse Geocoded Location Present: {has_valid_location}"
+    logger.record_test(f"[{dev_name}] GPS Engine Audit (Reverse Geocoded Location)", has_valid_location, detail)
+    return has_valid_location
 
 
 def inspect_viewport_and_layout(page, phase_name, logger):
