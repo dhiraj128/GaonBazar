@@ -660,7 +660,7 @@
           <div class="relative flex items-center bg-surface-container-low rounded-xl border border-surface-container-high focus-within:border-primary">
             <span class="material-symbols-outlined text-outline absolute left-3 text-[18px]">location_city</span>
             <input 
-              id="p1-district-input" 
+              id="p1-district-input" oninput="this.dataset.userEdited='true'" 
               type="text" 
               placeholder="जैसे: सोनीपत या गनौर" 
               data-i18n-ph="p1_district_ph" 
@@ -676,7 +676,7 @@
           <div class="relative flex items-center bg-surface-container-low rounded-xl border border-surface-container-high focus-within:border-primary">
             <span class="material-symbols-outlined text-outline absolute left-3 text-[18px]">home_pin</span>
             <input 
-              id="p1-village-input" 
+              id="p1-village-input" oninput="this.dataset.userEdited='true'" 
               type="text" 
               placeholder="जैसे: रामपुर" 
               data-i18n-ph="p1_village_ph" 
@@ -5095,11 +5095,11 @@
         const loc = await reverseGeocodeCoords(lat, lng);
         const { village, district, state, granular } = loc;
 
-        if (distInput) {
+        if (distInput && !distInput.dataset.userEdited) {
           distInput.value = district || '';
           distInput.dispatchEvent(new Event('input', { bubbles: true }));
         }
-        if (villInput) {
+        if (villInput && !villInput.dataset.userEdited) {
           villInput.value = village || '';
           villInput.dispatchEvent(new Event('input', { bubbles: true }));
         }

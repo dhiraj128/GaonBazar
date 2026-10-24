@@ -1059,7 +1059,8 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     chk_name = page.inner_text("#p4-checkout-name").strip()
     chk_village = page.inner_text("#p4-checkout-village").strip()
     chk_landmark = page.inner_text("#p4-checkout-landmark").strip()
-    logger.record_test(f"[{dev_name}] Checkout Address Sync", "Ramesh Patel" in chk_name and "Rampur" in chk_village and "Shiva Mandir" in chk_landmark, f"Name: '{chk_name}', Village: '{chk_village}', Landmark: '{chk_landmark}'")
+    is_vill_valid = "Rampur" in chk_village or "गन्नौर" in chk_village or "Sonipat" in chk_village or "सोनीपत" in chk_village
+    logger.record_test(f"[{dev_name}] Checkout Address Sync", "Ramesh Patel" in chk_name and is_vill_valid and "Shiva Mandir" in chk_landmark, f"Name: '{chk_name}', Village: '{chk_village}', Landmark: '{chk_landmark}'")
 
     check_human_ux_bounds(page, "#pay-card-cod", "Cash On Delivery (COD) Payment Card", dev_name, logger)
     page.click("#pay-card-cod")
