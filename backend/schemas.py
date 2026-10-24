@@ -640,6 +640,7 @@ class SupportTicketRequest(SecureBaseModel):
     message: str = Field(..., min_length=1)
     order_id: Optional[str] = None
     category: Optional[str] = "general"
+    subject: Optional[str] = None
 
 
 class SupportTicketResponse(BaseModel):
@@ -648,6 +649,35 @@ class SupportTicketResponse(BaseModel):
     status: str
     message: str
     created_at: str
+
+
+class CommerceAssistantRequest(SecureBaseModel):
+    query: str = Field(..., min_length=1)
+    store_id: Optional[str] = None
+    lang: Optional[str] = "en"
+
+
+class CommerceAssistantItemDTO(BaseModel):
+    id: str
+    name_en: str
+    name_hi: str
+    category: str
+    weight: str
+    price: float
+    mrp: float
+    icon: str
+    store_id: str
+    store_name: Optional[str] = "Sharma Brothers Kirana"
+    matched_keyword: Optional[str] = None
+    requested_qty: int = 1
+
+
+class CommerceAssistantResponse(BaseModel):
+    query: str
+    parsed_items: List[str]
+    products: List[CommerceAssistantItemDTO]
+    message: str
+    found_count: int
 
 
 class UserOrderSummaryDTO(BaseModel):

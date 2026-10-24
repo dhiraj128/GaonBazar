@@ -1,4 +1,5 @@
 import os
+import re
 import uuid
 import random
 import json
@@ -49,6 +50,7 @@ from .schemas import (
     AdminApprovalActionRequest, AdminGodViewOrderDTO, AdminCommissionLedgerResponse,
     AdminUserRiskProfileDTO,
     SupportChatRequest, SupportChatResponse, SupportTicketRequest, SupportTicketResponse,
+    CommerceAssistantRequest, CommerceAssistantItemDTO, CommerceAssistantResponse,
     UserOrderSummaryDTO,
     BankPayoutSettingsRequest, BankPayoutSettingsDTO,
     CustomerSavedPaymentDTO, AddCustomerSavedPaymentRequest,
@@ -2041,6 +2043,137 @@ def create_support_ticket(payload: SupportTicketRequest, db: Session = Depends(g
         status=ticket.status,
         message="Your support ticket has been registered. Our village support coordinator will resolve it shortly.",
         created_at=ticket.created_at.isoformat() if ticket.created_at else datetime.utcnow().isoformat()
+    )
+
+
+@app.get("/api/support/tickets")
+def list_support_tickets(user_phone: Optional[str] = None, db: Session = Depends(get_db)):
+    """
+    Returns customer support complaints and grievance tickets for self-service portal.
+    """
+    query = db.query(SupportTicket)
+    if user_phone:
+        query = query.filter(SupportTicket.user_phone == user_phone)
+    tickets = query.order_by(SupportTicket.created_at.desc()).limit(20).all()
+    return [
+        {
+            "ticket_id": t.ticket_id,
+            "user_phone": t.user_phone,
+            "order_id": t.order_id,
+            "category": t.category,
+            "message": t.message,
+            "status": t.status,
+            "created_at": t.created_at.isoformat() if t.created_at else datetime.utcnow().isoformat()
+        }
+        for t in tickets
+    ]
+
+
+@app.post("/api/ai/commerce-assistant", response_model=CommerceAssistantResponse)
+def commerce_ai_assistant_endpoint(payload: CommerceAssistantRequest, db: Session = Depends(get_db)):
+    """
+    Smart AI backend for Commerce Shopping Assistant:
+    - Parses multi-item voice/text queries (e.g. 'I want 1kg Aata and 1 packet Milk')
+    - Searches real village store inventory in database
+    - Returns structured product cards for 1-tap cart addition
+    """
+    raw_query = payload.query.strip()
+    query_lower = raw_query.lower()
+    lang = (payload.lang or "en").lower()
+
+    # 1. Clean prefixes
+    clean = re.sub(r"^(i want|please give me|give me|i need|mujhe chahiye|chahiye|add|order|bhejo)\s+", "", query_lower)
+    clean = re.sub(r"\s+(chahiye|dena|bhejo)$", "", clean)
+
+    # 2. Split multi-item phrases by conjunctions
+    split_parts = re.split(r"\s*(?:and|aur|और|\+|\&|,)\s*", clean)
+    parsed_items = [p.strip() for p in split_parts if p.strip()]
+    if not parsed_items:
+        parsed_items = [clean]
+
+    # Keyword synonyms mapped to target categories / search terms
+    synonyms = {
+        "aata": ["atta", "aata", "gehu", "chakki", "flour"],
+        "atta": ["atta", "aata", "chakki"],
+        "milk": ["milk", "doodh", "dudh", "taaza", "amul"],
+        "doodh": ["milk", "doodh", "taaza"],
+        "oil": ["oil", "tel", "mustard", "sarson"],
+        "tel": ["oil", "tel", "mustard", "sarson"],
+        "salt": ["salt", "namak", "tata"],
+        "namak": ["salt", "namak", "tata"],
+        "tea": ["tea", "chai", "red label", "chay"],
+        "chai": ["tea", "chai", "red label"],
+        "ghee": ["ghee", "desi ghee", "cow ghee"],
+        "sugar": ["sugar", "chini", "cheeni", "madhur"],
+        "chini": ["sugar", "chini", "cheeni"],
+        "rice": ["rice", "chawal", "basmati", "daawat"],
+        "chawal": ["rice", "chawal", "basmati"],
+        "mirch": ["mirch", "deggi", "chilli", "spices"],
+        "biscuit": ["parle", "biscuit", "biscuits"],
+        "soap": ["dettol", "soap", "sabun"]
+    }
+
+    matched_products = []
+    seen_ids = set()
+
+    all_products = db.query(Product).filter(Product.in_stock == True).all()
+
+    for item_part in parsed_items:
+        qty_match = re.search(r"(\d+)\s*(kg|g|l|ml|packet|packets|kilo|litre|litres)?", item_part)
+        req_qty = int(qty_match.group(1)) if qty_match and int(qty_match.group(1)) > 0 else 1
+
+        matched_for_part = []
+        found_kw = None
+        for key, syn_list in synonyms.items():
+            if any(syn in item_part for syn in syn_list):
+                found_kw = key
+                for p in all_products:
+                    p_text = f"{p.name_en} {p.name_hi} {p.category}".lower()
+                    if any(syn in p_text for syn in syn_list) and p.id not in seen_ids:
+                        matched_for_part.append((p, req_qty, found_kw))
+                        seen_ids.add(p.id)
+                        if len(matched_for_part) >= 2:
+                            break
+                break
+
+        if not matched_for_part:
+            words = [w for w in re.findall(r"\w+", item_part) if len(w) > 2 and not re.match(r"^\d+(kg|g|l|ml)?$", w) and w not in ["want", "packet", "packets", "kilo", "litre", "litres", "need", "give"]]
+            for w in words:
+                for p in all_products:
+                    if p.id not in seen_ids and (w in p.name_en.lower() or w in p.name_hi.lower() or w in p.category.lower()):
+                        matched_for_part.append((p, req_qty, w))
+                        seen_ids.add(p.id)
+                        if len(matched_for_part) >= 2:
+                            break
+
+        for prod, q, kw in matched_for_part:
+            store_name = prod.store.name if prod.store else "Sharma Brothers Kirana"
+            matched_products.append(CommerceAssistantItemDTO(
+                id=prod.id,
+                name_en=prod.name_en,
+                name_hi=prod.name_hi,
+                category=prod.category,
+                weight=prod.weight,
+                price=prod.price,
+                mrp=prod.mrp,
+                icon=prod.icon or "shopping_bag",
+                store_id=prod.store_id,
+                store_name=store_name,
+                matched_keyword=kw,
+                requested_qty=q
+            ))
+
+    if lang == "hi":
+        msg = f"आपके अनुरोध '{raw_query}' के लिए {len(matched_products)} सामान मिले। कार्ट में जोड़ने के लिए बटन दबाएं:"
+    else:
+        msg = f"Found {len(matched_products)} matching items for '{raw_query}'. Tap 'Add to Cart' to add them to your basket:"
+
+    return CommerceAssistantResponse(
+        query=raw_query,
+        parsed_items=parsed_items,
+        products=matched_products,
+        message=msg,
+        found_count=len(matched_products)
     )
 
 
