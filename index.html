@@ -8469,24 +8469,27 @@
     }
     window.syncCommerceCartBar = syncCommerceCartBar;
 
+    // Genuine speech-recognition lifecycle: never claim listening before onstart.
+    let commerceVoiceHadError = false;
+    function setCommerceVoiceStatus(message, transcript) {
+      const status = document.getElementById('commerce-ai-status-text');
+      const transcriptEl = document.getElementById('commerce-ai-transcript');
+      if (status) { status.innerText = message; status.setAttribute('role', 'status'); status.setAttribute('aria-live', 'polite'); }
+      if (transcriptEl && transcript !== undefined) transcriptEl.innerText = transcript;
+    }
+
     function toggleCommerceVoiceRecognition() {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const statusText = document.getElementById('commerce-ai-status-text');
-      const transcriptEl = document.getElementById('commerce-ai-transcript');
-      const micBtn = document.getElementById('commerce-ai-mic-btn');
-      const ring1 = document.getElementById('commerce-mic-pulse-ring');
-      const ring2 = document.getElementById('commerce-mic-pulse-ring-2');
-      const isHi = (AppStore.lang === 'hi');
+      const isHi = AppStore.lang === 'hi';
+      const input = document.getElementById('commerce-ai-input');
 
       if (!SpeechRecognition) {
-        if (statusText) statusText.innerText = isHi ? 'माइक समर्थित नहीं है - नीचे लिखें' : 'Mic not supported on browser - please type below';
-        const input = document.getElementById('commerce-ai-input');
+        setCommerceVoiceStatus(isHi ? 'इस ब्राउज़र में वॉइस सर्च उपलब्ध नहीं है। नीचे टाइप करें।' : 'Voice search is unavailable in this browser. Please type below.');
         if (input) input.focus();
         return;
       }
-
       if (activeCommerceRecognition) {
-        try { activeCommerceRecognition.stop(); } catch (e) {}
+        try { activeCommerceRecognition.abort(); } catch (_) {}
         resetCommerceVoiceUI();
         return;
       }
@@ -8494,78 +8497,87 @@
       try {
         const recognition = new SpeechRecognition();
         activeCommerceRecognition = recognition;
+        commerceVoiceHadError = false;
         recognition.lang = isHi ? 'hi-IN' : 'en-IN';
         recognition.continuous = false;
         recognition.interimResults = true;
+        setCommerceVoiceStatus(isHi ? 'माइक्रोफ़ोन शुरू हो रहा है…' : 'Starting microphone…');
 
-        if (ring1) ring1.classList.remove('hidden');
-        if (ring2) ring2.classList.remove('hidden');
-        if (micBtn) {
-          micBtn.classList.remove('bg-gradient-to-tr', 'from-primary', 'to-emerald-600');
-          micBtn.classList.add('bg-red-500', 'animate-pulse');
-        }
-        if (statusText) statusText.innerText = isHi ? 'सुन रहा हूँ... बोलिए (उदा. 1 किलो आटा और 1 पैकेट दूध)' : 'Listening... Speak items (e.g. 1kg Aata and 1 packet Milk)';
-        if (transcriptEl) transcriptEl.innerText = isHi ? 'सुन रहा हूँ...' : 'Listening...';
-
+        recognition.onstart = function() {
+          if (activeCommerceRecognition !== recognition) return;
+          const ring1 = document.getElementById('commerce-mic-pulse-ring');
+          const ring2 = document.getElementById('commerce-mic-pulse-ring-2');
+          const micBtn = document.getElementById('commerce-ai-mic-btn');
+          if (ring1) ring1.classList.remove('hidden');
+          if (ring2) ring2.classList.remove('hidden');
+          if (micBtn) {
+            micBtn.classList.remove('bg-gradient-to-tr', 'from-primary', 'to-emerald-600');
+            micBtn.classList.add('bg-red-500', 'animate-pulse');
+          }
+          setCommerceVoiceStatus(isHi ? 'सुन रहा है… अब बोलें' : 'Listening… speak now', isHi ? 'बोलना शुरू करें…' : 'Speak now…');
+        };
         recognition.onresult = function(event) {
-          let currentTranscript = '';
-          let isFinalTranscript = false;
-
-          for (let i = 0; i < event.results.length; ++i) {
-            currentTranscript += event.results[i][0].transcript;
-            if (event.results[i].isFinal) {
-              isFinalTranscript = true;
-            }
+          if (activeCommerceRecognition !== recognition) return;
+          let transcript = '';
+          let final = false;
+          for (let i = 0; i < event.results.length; i++) {
+            transcript += event.results[i][0].transcript + ' ';
+            if (event.results[i].isFinal) final = true;
           }
-          if (transcriptEl && currentTranscript) {
-            transcriptEl.innerText = `"${currentTranscript}"`;
+          transcript = transcript.trim();
+          if (transcript) {
+            setCommerceVoiceStatus(isHi ? 'आपने कहा:' : 'You said:', transcript);
+            if (input) input.value = transcript;
           }
-          const input = document.getElementById('commerce-ai-input');
-          if (input && currentTranscript) {
-            input.value = currentTranscript;
-          }
-
-          if (isFinalTranscript && currentTranscript.trim().length > 0) {
-            try { recognition.stop(); } catch (e) {}
-            resetCommerceVoiceUI();
-            processCommerceAiQuery(currentTranscript.trim());
+          if (final && transcript) {
+            recognition.stop();
+            processCommerceAiQuery(transcript);
           }
         };
-
-        recognition.onerror = function(err) {
-          console.warn('Commerce SpeechRecognition error:', err);
-          resetCommerceVoiceUI();
+        recognition.onerror = function(event) {
+          if (activeCommerceRecognition !== recognition) return;
+          commerceVoiceHadError = true;
+          const error = event.error || 'unknown';
+          let msg;
+          if (error === 'not-allowed' || error === 'service-not-allowed') {
+            msg = isHi ? 'माइक की अनुमति नहीं है। ब्राउज़र की साइट सेटिंग्स में माइक्रोफ़ोन Allow करें या नीचे टाइप करें।'
+                       : 'Microphone blocked. Allow microphone access in this site\'s browser settings, or type below.';
+          } else if (error === 'no-speech') {
+            msg = isHi ? 'आवाज़ नहीं मिली। फिर कोशिश करें या टाइप करें।' : 'No speech detected. Try again or type below.';
+          } else if (error === 'network') {
+            msg = isHi ? 'वॉइस सेवा का नेटवर्क उपलब्ध नहीं है। नीचे टाइप करें।' : 'Voice service unavailable on this network. Please type below.';
+          } else {
+            msg = isHi ? 'आवाज़ पहचानने में समस्या हुई। नीचे टाइप करें।' : 'Voice recognition failed. Please type below.';
+          }
+          resetCommerceVoiceUI(true);
+          setCommerceVoiceStatus(msg);
+          if (input) input.focus();
         };
-
         recognition.onend = function() {
-          resetCommerceVoiceUI();
+          if (activeCommerceRecognition !== recognition) return;
+          resetCommerceVoiceUI(commerceVoiceHadError);
         };
-
         recognition.start();
-      } catch (err) {
-        console.error('Failed to start speech recognition:', err);
-        resetCommerceVoiceUI();
+      } catch (error) {
+        resetCommerceVoiceUI(true);
+        setCommerceVoiceStatus(isHi ? 'माइक शुरू नहीं हुआ। अनुमति जांचें या टाइप करें।' : 'Microphone could not start. Check permissions or type below.');
+        if (input) input.focus();
       }
     }
     window.toggleCommerceVoiceRecognition = toggleCommerceVoiceRecognition;
 
-    function resetCommerceVoiceUI() {
+    function resetCommerceVoiceUI(preserveStatus = false) {
       activeCommerceRecognition = null;
       const ring1 = document.getElementById('commerce-mic-pulse-ring');
       const ring2 = document.getElementById('commerce-mic-pulse-ring-2');
       const micBtn = document.getElementById('commerce-ai-mic-btn');
-      const statusText = document.getElementById('commerce-ai-status-text');
-      const isHi = (AppStore.lang === 'hi');
-
       if (ring1) ring1.classList.add('hidden');
       if (ring2) ring2.classList.add('hidden');
       if (micBtn) {
         micBtn.classList.remove('bg-red-500', 'animate-pulse');
         micBtn.classList.add('bg-gradient-to-tr', 'from-primary', 'to-emerald-600');
       }
-      if (statusText) {
-        statusText.innerText = isHi ? 'सामान बोलने के लिए माइक दबाएं' : 'Tap mic to speak your grocery items';
-      }
+      if (!preserveStatus) setCommerceVoiceStatus(AppStore.lang === 'hi' ? 'सामान बोलने के लिए माइक दबाएं' : 'Tap mic to speak your grocery items');
     }
     window.resetCommerceVoiceUI = resetCommerceVoiceUI;
 
