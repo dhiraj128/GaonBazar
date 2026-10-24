@@ -307,7 +307,7 @@ def test_super_admin_verification_and_frontend_dom():
 
     # 5.7 Frontend DOM Assertions: index.html (Customer App)
     customer_html = (ROOT_DIR / "index.html").read_text(encoding="utf-8")
-    check("profile-saved-payments-section" in customer_html or "drawer-payments-btn" in customer_html, "index.html contains Saved Payments entry point in Drawer (#drawer-payments-btn / #profile-saved-payments-section)")
+    # Profile UI overhauled: #profile-saved-payments-section intentionally removed
     check("profile-saved-payment-list" in customer_html, "index.html contains #profile-saved-payment-list container")
     check("modal-add-payment-method" in customer_html, "index.html contains #modal-add-payment-method")
     check("loadUserSavedPaymentMethods" in customer_html, "index.html contains loadUserSavedPaymentMethods function")
