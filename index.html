@@ -72,42 +72,36 @@
 
   <style>
     /* Strict Mobile-first responsive optimization */
-    html, body {
+    html {
       width: 100%;
-      min-height: 100%;
+      height: 100%;
+      height: 100dvh;
       margin: 0;
       padding: 0;
       overflow-x: hidden;
       background-color: #f9f9ff;
+    }
+    body {
+      width: 100%;
+      min-height: 100%;
+      min-height: 100dvh;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      background-color: #f9f9ff;
+      font-family: 'Plus Jakarta Sans', 'Noto Sans Devanagari', sans-serif;
     }
     * {
       -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
       box-sizing: border-box;
     }
-    html, body {
+    #app-root {
       height: 100%;
       height: 100dvh;
-      width: 100%;
-      margin: 0;
-      padding: 0;
-      overflow-x: hidden;
-      background-color: #f9f9ff;
-      overscroll-behavior: none;
-      overscroll-behavior-y: none;
-    }
-    body {
-      overscroll-behavior: none;
-      overscroll-behavior-y: none;
-      font-family: 'Plus Jakarta Sans', 'Noto Sans Devanagari', sans-serif;
-    }
-    #app-root {
-      height: 100vh;
-      height: 100dvh;
       max-height: 100dvh;
-      min-height: 100dvh;
-      overscroll-behavior: none;
-      overscroll-behavior-y: none;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
     }
     .pb-safe {
       padding-bottom: max(env(safe-area-inset-bottom, 16px), 16px);
@@ -123,19 +117,21 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
-    /* Screen transition animations & Smooth Native Scrolling */
-    main {
-      -webkit-overflow-scrolling: touch;
-      overscroll-behavior: none;
-      overscroll-behavior-y: none;
-      touch-action: pan-y;
+    /* Main scrollable content container rules (critical to prevent scroll-chaining freezes) */
+    main, #main-content-container {
+      overflow-y: auto !important;
+      height: 100% !important;
+      -webkit-overflow-scrolling: touch !important;
+      overscroll-behavior-y: contain !important;
+      touch-action: pan-y !important;
     }
     .screen-view {
       transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       width: 100%;
+      height: 100%;
+      overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      overscroll-behavior: none;
-      overscroll-behavior-y: none;
+      overscroll-behavior-y: contain;
       touch-action: pan-y;
     }
     .screen-view.hidden {
@@ -217,6 +213,22 @@
           <span class="text-slate-300 mx-0.5 font-normal">|</span>
           <span id="header-lang-en" class="text-slate-400 font-medium">EN</span>
         </span>
+      </button>
+
+      <!-- Notification Bell SVG Icon with Red Unread Dot Badge (min 44x44px touch target) -->
+      <button 
+        id="header-notifications-btn" 
+        onclick="openNotificationsModal()" 
+        type="button" 
+        aria-label="Alerts and Notifications" 
+        title="Notifications" 
+        class="relative w-11 h-11 min-w-[44px] min-h-[44px] rounded-full text-slate-800 hover:bg-slate-100 active:scale-90 transition-all flex items-center justify-center shrink-0 cursor-pointer shadow-2xs border border-slate-200/70 bg-slate-50/60"
+      >
+        <svg class="w-6 h-6 text-slate-700 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+        </svg>
+        <!-- Small Red Unread Dot / Badge -->
+        <span id="header-notif-dot" class="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white ring-1 ring-rose-500/30"></span>
       </button>
 
       <!-- Shopping Cart Icon (with active count badge, min 44x44px touch target) -->
@@ -364,7 +376,7 @@
     <!-- ========================================================================= -->
     <!-- MAIN SCREEN ROUTER VIEWPORT CONTAINER                                     -->
     <!-- ========================================================================= -->
-    <main class="flex-1 w-full min-h-0 h-full relative bg-surface flex flex-col pb-safe overflow-y-auto">
+    <main id="main-content-container" class="flex-1 w-full min-h-0 h-full relative bg-surface flex flex-col pb-safe overflow-y-auto overscroll-contain">
 
       <!-- ===================================================================== -->
       <!-- PHASE 1.1: PHONE LOGIN & SEPARATE AUTH INTENTIONS (SIGN IN / SIGN UP) -->
@@ -2115,6 +2127,76 @@
     </main>
 
     <!-- ========================================================================= -->
+    <!-- NOTIFICATIONS & ALERTS MODAL / BOTTOM SHEET                               -->
+    <!-- Dismissable on backdrop tap outside (onclick on overlay)                 -->
+    <!-- ========================================================================= -->
+    <div id="modal-notifications" onclick="if(event.target === this) closeNotificationsModal()" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex flex-col justify-end sm:justify-center items-center p-0 sm:p-4 transition-opacity duration-300" aria-label="Notifications Center">
+      <div onclick="event.stopPropagation()" class="w-full max-w-md bg-white rounded-t-[28px] sm:rounded-3xl shadow-2xl flex flex-col max-h-[85vh] overflow-hidden border-t sm:border border-slate-200 animate-in slide-in-from-bottom duration-300">
+        <!-- Modal Header -->
+        <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between shrink-0 bg-slate-50/80">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold">
+              <span class="material-symbols-outlined text-[20px]">notifications_active</span>
+            </div>
+            <div>
+              <h3 class="text-sm font-black text-slate-900 leading-tight" data-i18n="notif_modal_title">सूचनाएं एवं अलर्ट</h3>
+              <p class="text-[11px] text-slate-500 font-medium" data-i18n="notif_modal_sub">ताज़ा ऑफ़र और ऑर्डर अपडेट</p>
+            </div>
+          </div>
+          <button onclick="closeNotificationsModal()" aria-label="Close notifications" class="w-9 h-9 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 active:scale-90 transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[20px]">close</span>
+          </button>
+        </div>
+
+        <!-- Notification List -->
+        <div class="p-4 overflow-y-auto space-y-3 flex-1">
+          <!-- Notification Card 1: Promo -->
+          <div class="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 flex items-start gap-3">
+            <span class="text-xl shrink-0">🎉</span>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between gap-1 mb-0.5">
+                <span class="text-xs font-black text-emerald-950" data-i18n="notif_card1_title">स्वागत ऑफ़र - ₹10 छूट!</span>
+                <span class="text-[10px] text-emerald-700 font-semibold shrink-0" data-i18n="notif_card1_time">अभी</span>
+              </div>
+              <p class="text-[11px] text-emerald-800 leading-relaxed font-medium" data-i18n="notif_card1_desc">₹299 से अधिक के पहले ऑर्डर पर ₹10 डिलीवरी छूट स्वतः लागू होगी।</p>
+            </div>
+          </div>
+
+          <!-- Notification Card 2: Runner Tracking -->
+          <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-start gap-3">
+            <span class="text-xl shrink-0">📍</span>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between gap-1 mb-0.5">
+                <span class="text-xs font-black text-slate-900" data-i18n="notif_card2_title">गाँव-गाँव डिलीवरी सेवा</span>
+                <span class="text-[10px] text-slate-400 font-semibold shrink-0" data-i18n="notif_card2_time">आज</span>
+              </div>
+              <p class="text-[11px] text-slate-600 leading-relaxed font-medium" data-i18n="notif_card2_desc">50+ पंचायतों में डिलीवरी पार्टनर सक्रिय हैं। अपने घर तक सीधा सामान मंगाएं।</p>
+            </div>
+          </div>
+
+          <!-- Notification Card 3: Fresh Mandi Kirana -->
+          <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-start gap-3">
+            <span class="text-xl shrink-0">🌾</span>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between gap-1 mb-0.5">
+                <span class="text-xs font-black text-slate-900" data-i18n="notif_card3_title">ताज़ा आटा, तेल व किराना</span>
+                <span class="text-[10px] text-slate-400 font-semibold shrink-0" data-i18n="notif_card3_time">1 दिन पहले</span>
+              </div>
+              <p class="text-[11px] text-slate-600 leading-relaxed font-medium" data-i18n="notif_card3_desc">स्थानीय भरोसेमंद दुकानों से शुद्ध देसी उत्पाद उपलब्ध हैं।</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer / Mark Read CTA -->
+        <div class="p-4 border-t border-slate-100 bg-slate-50/50 flex gap-2">
+          <button onclick="markAllNotificationsRead()" class="flex-1 min-h-[44px] py-2.5 px-4 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-bold transition-all active:scale-98 shadow-xs cursor-pointer" data-i18n="notif_btn_mark_read">
+            सभी पढ़ लिए
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
     <!-- HELP & SUPPORT AI CHATBOT & ESCALATION MODAL (Sleek Native Bottom Sheet)  -->
     <!-- Dismissable on backdrop tap outside (onclick on overlay)                 -->
     <!-- ========================================================================= -->
@@ -3019,7 +3101,19 @@
         support_opt_runner: "Runner / Delivery Conduct / गाँव मित्र से जुड़ी शिकायत",
         support_opt_other: "Other Inquiry / अन्य समस्या",
         about_made_for_val: "ग्रामीण भारत (Rural India)",
-        toast_default_msg: "\"कृपया अपना मोबाइल नंबर दर्ज करें\""
+        toast_default_msg: "\"कृपया अपना मोबाइल नंबर दर्ज करें\"",
+        notif_modal_title: "सूचनाएं एवं अलर्ट",
+        notif_modal_sub: "ताज़ा ऑफ़र और ऑर्डर अपडेट",
+        notif_card1_title: "स्वागत ऑफ़र - ₹10 छूट!",
+        notif_card1_time: "अभी",
+        notif_card1_desc: "₹299 से अधिक के पहले ऑर्डर पर ₹10 डिलीवरी छूट स्वतः लागू होगी।",
+        notif_card2_title: "गाँव-गाँव डिलीवरी सेवा",
+        notif_card2_time: "आज",
+        notif_card2_desc: "50+ पंचायतों में डिलीवरी पार्टनर सक्रिय हैं। अपने घर तक सीधा सामान मंगाएं।",
+        notif_card3_title: "ताज़ा आटा, तेल व किराना",
+        notif_card3_time: "1 दिन पहले",
+        notif_card3_desc: "स्थानीय भरोसेमंद दुकानों से शुद्ध देसी उत्पाद उपलब्ध हैं।",
+        notif_btn_mark_read: "सभी पढ़ लिए"
       },
       en: {
         header_sub: "",
@@ -3395,7 +3489,19 @@
         support_opt_runner: "Runner / Delivery Partner Conduct",
         support_opt_other: "Other Inquiry",
         about_made_for_val: "Rural India",
-        toast_default_msg: "\"Please enter your mobile number\""
+        toast_default_msg: "\"Please enter your mobile number\"",
+        notif_modal_title: "Notifications & Alerts",
+        notif_modal_sub: "Latest offers & order updates",
+        notif_card1_title: "Welcome Offer - ₹10 Off!",
+        notif_card1_time: "Now",
+        notif_card1_desc: "Flat ₹10 delivery discount applied automatically on your first order over ₹299.",
+        notif_card2_title: "Village Delivery Active",
+        notif_card2_time: "Today",
+        notif_card2_desc: "Delivery partners active across 50+ village clusters for doorstep drops.",
+        notif_card3_title: "Fresh Kirana & Mandi",
+        notif_card3_time: "1 day ago",
+        notif_card3_desc: "Pure flour, mustard oil, and household supplies available from verified shops.",
+        notif_btn_mark_read: "Mark all as Read"
       }
     };
     const translations = i18nDictionary;
@@ -3570,6 +3676,25 @@
     // (sidebars, bottom sheets, modals) instead of exiting the web app.
     // Also manages dynamic scroll locking so body never freezes.
     // =========================================================================
+    function centralizedNavigate(pageName, type = 'page', options = {}) {
+      if (!pageName) return;
+      const stateObj = {
+        page: pageName,
+        type: type,
+        timestamp: Date.now(),
+        ...options
+      };
+      try {
+        if (window.history && window.history.pushState) {
+          window.history.pushState(stateObj, '', '');
+        }
+      } catch (e) {
+        console.warn('centralizedNavigate error:', e);
+      }
+    }
+    window.centralizedNavigate = centralizedNavigate;
+    window.appNavigate = centralizedNavigate;
+
     (function initNativeOverlayBackRouter() {
       const overlayStack = [];
       let isProgrammaticBack = false;
@@ -3592,18 +3717,15 @@
         overlayStack.push({ id: overlayId, close: closeCallback });
         historyPushedCount++;
         window.syncBodyScrollLock();
-        try {
-          window.history.pushState({ gaonbazar_overlay: overlayId, timestamp: Date.now() }, '');
-        } catch (e) {
-          console.warn('History pushState error:', e);
-        }
+        centralizedNavigate(overlayId, 'modal', { gaonbazar_overlay: overlayId });
       };
 
-      // Set initial history state for root view
+      // Set initial history state for root view (guards against accidental app exit on first edge swipe)
       if (window.history && window.history.replaceState) {
         try {
-          if (!window.history.state || !window.history.state.gaonbazar_phase) {
-            window.history.replaceState({ gaonbazar_phase: 'dashboard', timestamp: Date.now() }, '');
+          if (!window.history.state || !window.history.state.page) {
+            window.history.replaceState({ page: 'root', gaonbazar_phase: 'dashboard', timestamp: Date.now() }, '');
+            window.history.pushState({ page: 'dashboard', gaonbazar_phase: 'dashboard', timestamp: Date.now() }, '');
           }
         } catch (e) {
           console.warn('Initial replaceState error:', e);
@@ -3641,6 +3763,9 @@
         if (historyPushedCount > 0) {
           historyPushedCount--;
         }
+
+        // 1. Intercept back swipe / button when an overlay/modal is open:
+        // Close the active modal cleanly WITHOUT exiting the app
         if (overlayStack.length > 0) {
           const topOverlay = overlayStack.pop();
           if (topOverlay && typeof topOverlay.close === 'function') {
@@ -3650,17 +3775,58 @@
           return;
         }
 
-        // View-level navigation back swipe handling (smoothly navigate back without exiting app)
-        window.syncBodyScrollLock();
-        const targetPhase = event.state && event.state.gaonbazar_phase;
-        if (targetPhase && typeof navigateToPhase === 'function') {
-          navigateToPhase(targetPhase, true /* isFromPopstate */);
-        } else if (typeof AppStore !== 'undefined' && AppStore.currentPhase && AppStore.currentPhase !== 'dashboard') {
-          if (typeof navigateBack === 'function') {
-            navigateBack();
-          } else if (typeof navigateToPhase === 'function') {
-            navigateToPhase('dashboard', true);
+        // Check fallback DOM modal selectors in case any modal opened outside stack
+        const modalList = [
+          'modal-notifications', 'modal-support-chat', 'modal-terms-conditions',
+          'modal-privacy-policy', 'modal-about-us', 'modal-delete-account',
+          'modal-add-payment-method'
+        ];
+        // Check sidebar drawer specifically (opened via translate-x-0)
+        const drawerEl = document.getElementById('sidebar-drawer');
+        if (drawerEl && drawerEl.classList.contains('translate-x-0')) {
+          if (typeof closeSidebarDrawer === 'function') closeSidebarDrawer(true);
+          window.syncBodyScrollLock();
+          return;
+        }
+
+        for (const mId of modalList) {
+          const el = document.getElementById(mId);
+          if (el && el.classList.contains('flex') && !el.classList.contains('hidden')) {
+            if (mId === 'modal-notifications' && typeof closeNotificationsModal === 'function') {
+              closeNotificationsModal(true);
+            } else {
+              el.classList.remove('flex');
+              el.classList.add('hidden');
+            }
+            window.syncBodyScrollLock();
+            return;
           }
+        }
+
+        // 2. Revert to previous DOM view cleanly WITHOUT exiting the app
+        window.syncBodyScrollLock();
+        const state = event.state;
+        const targetPhase = (state && (state.page || state.gaonbazar_phase));
+
+        if (targetPhase && targetPhase !== 'root' && targetPhase !== AppStore.currentPhase && typeof navigateToPhase === 'function') {
+          navigateToPhase(targetPhase, true /* isFromPopstate */);
+        } else if (AppStore.historyStack && AppStore.historyStack.length > 0) {
+          const prev = AppStore.historyStack.pop();
+          if (prev && prev !== AppStore.currentPhase && typeof navigateToPhase === 'function') {
+            navigateToPhase(prev, true /* isFromPopstate */);
+          } else if (typeof navigateToPhase === 'function') {
+            navigateToPhase('dashboard', true /* isFromPopstate */);
+          }
+        } else if (typeof AppStore !== 'undefined' && AppStore.currentPhase && AppStore.currentPhase !== 'dashboard') {
+          if (typeof navigateToPhase === 'function') {
+            navigateToPhase('dashboard', true /* isFromPopstate */);
+          }
+        } else {
+          // User is on root view (dashboard): keep them on dashboard and re-arm state
+          // so an edge swipe NEVER closes the PWA completely
+          try {
+            window.history.pushState({ page: 'dashboard', gaonbazar_phase: 'dashboard' }, '', '');
+          } catch (e) {}
         }
       });
 
@@ -3668,6 +3834,40 @@
         return overlayStack.map(o => o.id);
       };
     })();
+
+    // --- NOTIFICATIONS MODAL & BADGE LOGIC ---
+    function openNotificationsModal() {
+      const modal = document.getElementById('modal-notifications');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        if (window.pushOverlayHistory) {
+          window.pushOverlayHistory('modal-notifications', function(fromPop) {
+            closeNotificationsModal(fromPop);
+          });
+        }
+      }
+    }
+    window.openNotificationsModal = openNotificationsModal;
+
+    function closeNotificationsModal(isFromPopstate) {
+      const modal = document.getElementById('modal-notifications');
+      if (modal) {
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
+        if (window.closeOverlayHistory) {
+          window.closeOverlayHistory('modal-notifications', isFromPopstate);
+        }
+      }
+    }
+    window.closeNotificationsModal = closeNotificationsModal;
+
+    function markAllNotificationsRead() {
+      const dot = document.getElementById('header-notif-dot');
+      if (dot) dot.classList.add('hidden');
+      closeNotificationsModal();
+    }
+    window.markAllNotificationsRead = markAllNotificationsRead;
 
     // --- NATIVE SIDE DRAWER NAVIGATION & TERMS MODAL LOGIC ---
     function openSidebarDrawer() {
@@ -4249,16 +4449,14 @@
           }
         } else {
           AppStore.historyStack.push(AppStore.currentPhase);
-          if (window.history && (window.history.pushState || window.history.replaceState)) {
+          if (openOverlays.length > 0) {
             try {
-              if (openOverlays.length > 0) {
-                window.history.replaceState({ gaonbazar_phase: cleanPhase, timestamp: Date.now() }, '');
-              } else {
-                window.history.pushState({ gaonbazar_phase: cleanPhase, timestamp: Date.now() }, '');
-              }
+              window.history.replaceState({ page: cleanPhase, gaonbazar_phase: cleanPhase, timestamp: Date.now() }, '');
             } catch (e) {
-              console.warn('History pushState error:', e);
+              console.warn('History replaceState error:', e);
             }
+          } else {
+            centralizedNavigate(cleanPhase, 'page', { gaonbazar_phase: cleanPhase });
           }
         }
       }

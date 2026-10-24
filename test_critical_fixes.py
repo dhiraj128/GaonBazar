@@ -174,7 +174,7 @@ async def run_tests():
             };
         }""")
         record("Main Container Has Native Smooth Scrolling Styles", 
-               main_styles["overscrollBehaviorY"] == "none", 
+               main_styles["overscrollBehaviorY"] in ["contain", "none"], 
                f"overscrollBehaviorY={main_styles['overscrollBehaviorY']}, touchAction={main_styles['touchAction']}")
 
         await browser.close()
