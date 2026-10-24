@@ -74,7 +74,139 @@
     };
   </script>
 
+  <!-- Immediate Theme Engine Early-Boot (Zero Flash of Unstyled Content) -->
+  <script>
+    (function() {
+      try {
+        const saved = localStorage.getItem('gaonbazar_theme') || localStorage.getItem('gaonbazar_customer_theme') || 'system';
+        const isDark = saved === 'dark' || (saved === 'system' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+          document.documentElement.classList.remove('light');
+        } else {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.classList.add('light');
+        }
+      } catch(e) {}
+    })();
+  </script>
+
   <style>
+    /* ======================================================== */
+    /* THEME SYSTEM STYLES (Light / Dark / System)              */
+    /* ======================================================== */
+    html.dark {
+      color-scheme: dark;
+      background-color: #0b1120 !important;
+    }
+    html.dark body {
+      background-color: #0b1120 !important;
+      color: #f1f5f9 !important;
+    }
+    html.dark #app-root {
+      background-color: #0b1120 !important;
+      color: #f1f5f9 !important;
+    }
+    html.dark #main-content-container,
+    html.dark .bg-surface {
+      background-color: #0b1120 !important;
+      color: #f1f5f9 !important;
+    }
+    html.dark .bg-white,
+    html.dark .bg-surface-card {
+      background-color: #1e293b !important;
+      color: #f8fafc !important;
+    }
+    html.dark .bg-slate-50,
+    html.dark .bg-slate-100,
+    html.dark .bg-surface-container-low,
+    html.dark .bg-surface-container {
+      background-color: #0f172a !important;
+    }
+    html.dark .bg-slate-100\/80,
+    html.dark .bg-slate-50\/90 {
+      background-color: #1e293b !important;
+    }
+    html.dark .border-slate-200,
+    html.dark .border-slate-100,
+    html.dark .border-slate-300,
+    html.dark .border-slate-200\/90,
+    html.dark .border-surface-container-high,
+    html.dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+    html.dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
+      border-color: #334155 !important;
+    }
+    html.dark .text-slate-900,
+    html.dark .text-slate-800,
+    html.dark .text-on-surface {
+      color: #f8fafc !important;
+    }
+    html.dark .text-slate-700 {
+      color: #e2e8f0 !important;
+    }
+    html.dark .text-slate-600,
+    html.dark .text-slate-500,
+    html.dark .text-on-surface-variant {
+      color: #94a3b8 !important;
+    }
+    html.dark .text-slate-400 {
+      color: #64748b !important;
+    }
+    html.dark #customer-header,
+    html.dark #customer-bottom-nav,
+    html.dark #sidebar-drawer {
+      background-color: #0f172a !important;
+      border-color: #1e293b !important;
+    }
+    html.dark input:not([type="checkbox"]):not([type="radio"]),
+    html.dark select,
+    html.dark textarea {
+      background-color: #0f172a !important;
+      color: #f8fafc !important;
+      border-color: #334155 !important;
+    }
+    html.dark input::placeholder,
+    html.dark textarea::placeholder {
+      color: #64748b !important;
+    }
+    html.dark #otp-modal-container > div,
+    html.dark #add-payment-modal > div,
+    html.dark #voice-search-modal-container > div,
+    html.dark #cart-slide-tray,
+    html.dark #order-tracking-modal > div {
+      background-color: #1e293b !important;
+      color: #f8fafc !important;
+      border-color: #334155 !important;
+    }
+    html.dark .theme-segmented-container {
+      background-color: #0f172a !important;
+      border: 1px solid #334155 !important;
+    }
+    html.dark .theme-icon-badge {
+      background-color: rgba(245, 158, 11, 0.15) !important;
+      border-color: rgba(245, 158, 11, 0.3) !important;
+      color: #fbbf24 !important;
+    }
+    html.dark .bg-emerald-50 {
+      background-color: rgba(6, 78, 59, 0.4) !important;
+      color: #34d399 !important;
+    }
+    html.dark .bg-amber-50 {
+      background-color: rgba(120, 53, 15, 0.4) !important;
+      color: #fbbf24 !important;
+    }
+    html.dark .bg-red-50 {
+      background-color: rgba(127, 29, 29, 0.4) !important;
+      color: #f87171 !important;
+    }
+    html.dark .bg-blue-50 {
+      background-color: rgba(30, 58, 138, 0.4) !important;
+      color: #60a5fa !important;
+    }
+    html.dark .bg-purple-50 {
+      background-color: rgba(88, 28, 135, 0.4) !important;
+      color: #c084fc !important;
+    }
     /* Strict Mobile-first responsive optimization */
     html {
       width: 100%;
@@ -1581,6 +1713,52 @@
           <h3 class="text-xs font-black text-slate-500 uppercase tracking-wider px-1" data-i18n="profile_sec_settings">सेटिंग्स एवं प्राथमिकताएं (Settings & Preferences)</h3>
 
           <div class="rounded-3xl bg-white shadow-mobile-card border border-surface-container-high divide-y divide-slate-100 overflow-hidden">
+            <!-- Theme Selector Row (Light / Dark / System) -->
+            <div id="profile-row-theme" class="p-4 flex flex-col gap-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3.5">
+                  <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 border border-amber-100 theme-icon-badge">
+                    <span class="material-symbols-outlined text-[22px]" id="theme-header-icon">palette</span>
+                  </div>
+                  <div>
+                    <span class="text-xs font-black text-slate-900 block" data-i18n="profile_row_theme">थीम / रंग रूप (Theme)</span>
+                    <span id="profile-current-theme-badge" class="text-[11px] text-slate-500 font-bold block" data-i18n="profile_theme_badge">सिस्टम (System)</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- 3 Segmented Theme Pills -->
+              <div class="grid grid-cols-3 gap-1.5 bg-slate-100 p-1 rounded-2xl theme-segmented-container">
+                <button 
+                  id="btn-theme-light" 
+                  type="button" 
+                  onclick="setAppTheme('light')"
+                  class="h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-1 transition-all text-slate-700 hover:bg-white/60 cursor-pointer"
+                >
+                  <span class="material-symbols-outlined text-[16px]">light_mode</span>
+                  <span data-i18n="theme_opt_light">हल्का (Light)</span>
+                </button>
+                <button 
+                  id="btn-theme-dark" 
+                  type="button" 
+                  onclick="setAppTheme('dark')"
+                  class="h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-1 transition-all text-slate-700 hover:bg-white/60 cursor-pointer"
+                >
+                  <span class="material-symbols-outlined text-[16px]">dark_mode</span>
+                  <span data-i18n="theme_opt_dark">गहरा (Dark)</span>
+                </button>
+                <button 
+                  id="btn-theme-system" 
+                  type="button" 
+                  onclick="setAppTheme('system')"
+                  class="h-10 rounded-xl font-black text-xs flex items-center justify-center gap-1 transition-all bg-primary text-white shadow-xs cursor-pointer"
+                >
+                  <span class="material-symbols-outlined text-[16px]">settings_suggest</span>
+                  <span data-i18n="theme_opt_system">सिस्टम (System)</span>
+                </button>
+              </div>
+            </div>
+
             <!-- Language Selector Row -->
             <div class="p-4 flex flex-col gap-3">
               <div class="flex items-center justify-between">
@@ -2932,6 +3110,11 @@
         profile_row_payments_sub: "UPI ID, डेबिट व क्रेडिट कार्ड",
         profile_badge_manage: "प्रबंधित करें",
         profile_sec_settings: "सेटिंग्स एवं प्राथमिकताएं",
+        profile_row_theme: "थीम / रंग रूप",
+        profile_theme_badge: "सिस्टम (System)",
+        theme_opt_light: "हल्का (Light)",
+        theme_opt_dark: "गहरा (Dark)",
+        theme_opt_system: "सिस्टम (System)",
         profile_row_lang: "ऐप की भाषा",
         profile_sec_notifications: "सूचनाएं",
         profile_sec_notifications_sub: "ऑर्डर अपडेट व अलर्ट्स प्राथमिकताएं",
@@ -3321,6 +3504,11 @@
         profile_row_payments_sub: "UPI IDs, Debit & Credit Cards",
         profile_badge_manage: "Manage",
         profile_sec_settings: "Settings & Preferences",
+        profile_row_theme: "Theme & Display",
+        profile_theme_badge: "System",
+        theme_opt_light: "Light",
+        theme_opt_dark: "Dark",
+        theme_opt_system: "System",
         profile_row_lang: "App Language",
         profile_sec_notifications: "Notifications",
         profile_sec_notifications_sub: "Order updates & alert preferences",
@@ -4120,6 +4308,84 @@
     }
     window.confirmDeleteAccount = confirmDeleteAccount;
 
+
+    // --- THEME ENGINE (Light / Dark / System) ---
+    function getAppTheme() {
+      return localStorage.getItem('gaonbazar_theme') || localStorage.getItem('gaonbazar_customer_theme') || 'system';
+    }
+
+    function setAppTheme(themeName) {
+      if (!['light', 'dark', 'system'].includes(themeName)) return;
+      localStorage.setItem('gaonbazar_theme', themeName);
+      localStorage.setItem('gaonbazar_customer_theme', themeName);
+      applyAppTheme(themeName);
+    }
+    window.setAppTheme = setAppTheme;
+    window.getAppTheme = getAppTheme;
+
+    function applyAppTheme(themeName) {
+      const mode = themeName || getAppTheme();
+      let isDark = false;
+      if (mode === 'dark') {
+        isDark = true;
+      } else if (mode === 'system') {
+        isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      }
+
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('light');
+        const metaTheme = document.querySelector('meta[name="theme-color"]');
+        if (metaTheme) metaTheme.setAttribute('content', '#0b1120');
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.add('light');
+        const metaTheme = document.querySelector('meta[name="theme-color"]');
+        if (metaTheme) metaTheme.setAttribute('content', '#006b2c');
+      }
+
+      updateThemeSelectorUI(mode);
+    }
+    window.applyAppTheme = applyAppTheme;
+
+    function updateThemeSelectorUI(activeMode) {
+      const mode = activeMode || getAppTheme();
+      const btnLight = document.getElementById('btn-theme-light');
+      const btnDark = document.getElementById('btn-theme-dark');
+      const btnSystem = document.getElementById('btn-theme-system');
+      const badge = document.getElementById('profile-current-theme-badge');
+      const isHi = (typeof AppStore !== 'undefined' && AppStore && AppStore.lang === 'hi') || document.documentElement.lang === 'hi';
+
+      const activeClass = "h-10 rounded-xl font-black text-xs flex items-center justify-center gap-1 transition-all bg-primary text-white shadow-xs cursor-pointer";
+      const inactiveClass = "h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-1 transition-all bg-transparent text-slate-700 hover:bg-white/60 cursor-pointer";
+
+      if (btnLight) btnLight.className = (mode === 'light') ? activeClass : inactiveClass;
+      if (btnDark) btnDark.className = (mode === 'dark') ? activeClass : inactiveClass;
+      if (btnSystem) btnSystem.className = (mode === 'system') ? activeClass : inactiveClass;
+
+      if (badge) {
+        if (mode === 'light') badge.innerText = isHi ? "हल्का (Light)" : "Light";
+        else if (mode === 'dark') badge.innerText = isHi ? "गहरा (Dark)" : "Dark";
+        else badge.innerText = isHi ? "सिस्टम (System)" : "System";
+      }
+    }
+    window.updateThemeSelectorUI = updateThemeSelectorUI;
+
+    function initAppTheme() {
+      applyAppTheme(getAppTheme());
+      if (window.matchMedia) {
+        const mql = window.matchMedia('(prefers-color-scheme: dark)');
+        const handler = () => {
+          if (getAppTheme() === 'system') {
+            applyAppTheme('system');
+          }
+        };
+        if (mql.addEventListener) mql.addEventListener('change', handler);
+        else if (mql.addListener) mql.addListener(handler);
+      }
+    }
+    window.initAppTheme = initAppTheme;
+
     // --- 4. BILINGUAL TRANSLATION ENGINE ---
     window.toggleGlobalLanguage = function(forceLang) {
       if (forceLang === 'en' || forceLang === 'hi') {
@@ -4142,6 +4408,7 @@
     }
 
     window.applyBilingualState = function() {
+      if (typeof updateThemeSelectorUI === 'function') updateThemeSelectorUI();
       const lang = AppStore.lang || 'hi';
       document.documentElement.lang = lang;
       const dict = i18nDictionary[lang] || i18nDictionary['hi'];
@@ -8919,6 +9186,7 @@
 
     // --- 13. APP BOOTSTRAP INITIALIZATION ---
     window.addEventListener('DOMContentLoaded', () => {
+      if (typeof initAppTheme === 'function') initAppTheme();
       // Render initial catalog & cart
       renderProductCatalog();
       window.applyBilingualState();

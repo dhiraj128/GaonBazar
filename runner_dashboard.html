@@ -1,10 +1,26 @@
 <!DOCTYPE html>
-<html lang="hi" class="h-full bg-slate-900 text-slate-100">
+<html lang="hi" class="h-full">
 <head>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛒</text></svg>"/>
     <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
   <title data-i18n="page_title_runner">गाँव मित्र • डिलीवरी पार्टनर डैशबोर्ड</title>
+
+  <script>
+    (function() {
+      try {
+        const saved = localStorage.getItem('gaonbazar_runner_theme') || localStorage.getItem('gaonbazar_theme') || 'system';
+        const isDark = saved === 'dark' || (saved === 'system' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+          document.documentElement.classList.remove('light');
+        } else {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.classList.add('light');
+        }
+      } catch(e) {}
+    })();
+  </script>
 
   <!-- Google Fonts: Plus Jakarta Sans & Noto Sans Devanagari -->
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -42,6 +58,104 @@
   </script>
 
   <style>
+    /* ======================================================== */
+    /* RUNNER THEME SYSTEM STYLES (Genuine Light & Dark Modes) */
+    /* ======================================================== */
+    html.light {
+      color-scheme: light;
+      background-color: #f8fafc !important;
+      color: #0f172a !important;
+    }
+    html.light body {
+      background-color: #f8fafc !important;
+      color: #0f172a !important;
+    }
+    html.light .bg-slate-900,
+    html.light .bg-slate-950 {
+      background-color: #f1f5f9 !important;
+      color: #0f172a !important;
+    }
+    html.light .bg-slate-800,
+    html.light .bg-slate-800\/80,
+    html.light .bg-slate-800\/90 {
+      background-color: #ffffff !important;
+      border-color: #e2e8f0 !important;
+      color: #0f172a !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06) !important;
+    }
+    html.light #runner-header,
+    html.light #runner-bottom-nav {
+      background-color: #ffffff !important;
+      border-color: #e2e8f0 !important;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05) !important;
+    }
+    html.light .text-white,
+    html.light .text-slate-100,
+    html.light .text-slate-200 {
+      color: #0f172a !important;
+    }
+    html.light .text-slate-300,
+    html.light .text-slate-400 {
+      color: #475569 !important;
+    }
+    html.light .text-slate-500 {
+      color: #64748b !important;
+    }
+    html.light .border-slate-800,
+    html.light .border-slate-700 {
+      border-color: #e2e8f0 !important;
+    }
+    html.light input:not([type="checkbox"]),
+    html.light select,
+    html.light textarea {
+      background-color: #ffffff !important;
+      color: #0f172a !important;
+      border-color: #cbd5e1 !important;
+    }
+    html.light input::placeholder,
+    html.light textarea::placeholder {
+      color: #94a3b8 !important;
+    }
+    html.light #runner-login-gate {
+      background-color: #f8fafc !important;
+    }
+    html.light #runner-login-gate > div {
+      background-color: #ffffff !important;
+      border-color: #e2e8f0 !important;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
+    }
+    html.light #modal-delivery-success > div,
+    html.light #modal-order-detail > div,
+    html.light #modal-otp-verify > div {
+      background-color: #ffffff !important;
+      border-color: #e2e8f0 !important;
+      color: #0f172a !important;
+    }
+    html.light .runner-ledger-card {
+      background-color: #ffffff !important;
+      border-color: #e2e8f0 !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
+    }
+    html.light .runner-ledger-card td {
+      border-bottom: 1px dashed #e2e8f0 !important;
+    }
+    html.light .runner-theme-segment {
+      background-color: #f1f5f9 !important;
+      border: 1px solid #e2e8f0 !important;
+    }
+    html.dark .runner-theme-segment {
+      background-color: #0f172a !important;
+      border: 1px solid #334155 !important;
+    }
+    html.light #runner-pending-view {
+      background-color: #ffffff !important;
+      border-color: #f59e0b !important;
+    }
+    html.light #runner-pending-view .bg-slate-950 {
+      background-color: #fef3c7 !important;
+      color: #78350f !important;
+    }
+
     .hidden {
       display: none !important;
     }
@@ -653,6 +767,38 @@
     <!-- 5.5 TAB 4: RUNNER BANK & UPI SETTINGS (Payout Onboarding)               -->
     <!-- ======================================================================= -->
     <section id="tab-settings" class="hidden flex-col gap-3.5">
+      <!-- Runner Theme Selection Card (Light / Dark / System) -->
+      <div id="runner-theme-settings-card" class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-md flex flex-col gap-3.5">
+        <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+          <div class="flex items-center gap-2">
+            <div class="w-9 h-9 rounded-xl bg-purple-500/20 text-purple-400 border border-purple-500/40 flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-[20px]">palette</span>
+            </div>
+            <div>
+              <h2 class="text-sm font-black text-white" data-i18n="runner_theme_title">थीम / रंग रूप (Theme)</h2>
+              <span class="text-[10px] text-slate-400 block" data-i18n="runner_theme_sub">हल्का, गहरा या डिवाइस के अनुसार</span>
+            </div>
+          </div>
+          <span id="runner-theme-badge" class="px-2.5 py-1 rounded-full text-[11px] font-black bg-purple-500/20 text-purple-300 border border-purple-500/40">सिस्टम (System)</span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 bg-slate-900 p-1.5 rounded-2xl runner-theme-segment">
+          <button id="btn-runner-theme-light" type="button" onclick="setRunnerTheme('light')" class="min-h-[44px] rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all text-slate-300 hover:bg-slate-800/80 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">light_mode</span>
+            <span data-i18n="theme_opt_light">हल्का (Light)</span>
+          </button>
+          <button id="btn-runner-theme-dark" type="button" onclick="setRunnerTheme('dark')" class="min-h-[44px] rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all text-slate-300 hover:bg-slate-800/80 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">dark_mode</span>
+            <span data-i18n="theme_opt_dark">गहरा (Dark)</span>
+          </button>
+          <button id="btn-runner-theme-system" type="button" onclick="setRunnerTheme('system')" class="min-h-[44px] rounded-xl font-black text-xs flex items-center justify-center gap-1.5 transition-all bg-primary text-white shadow-xs cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">settings_suggest</span>
+            <span data-i18n="theme_opt_system">सिस्टम (System)</span>
+          </button>
+        </div>
+      </div>
+
+
       <div class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-md flex flex-col gap-4">
         
         <div class="flex flex-wrap items-center justify-between gap-2.5 border-b border-slate-700 pb-3">
@@ -1087,6 +1233,11 @@
         tab_detail: "लैंडमार्क",
         tab_ledger: "बहीखाता",
         tab_settings: "बैंक खाता",
+        runner_theme_title: "थीम / रंग रूप",
+        runner_theme_sub: "हल्का, गहरा या डिवाइस के अनुसार",
+        theme_opt_light: "हल्का (Light)",
+        theme_opt_dark: "गहरा (Dark)",
+        theme_opt_system: "सिस्टम (System)",
         runner_bank_title: "बैंक खाता व UPI सेटिंग्स",
         runner_bank_sub: "डिलीवरी कमीशन (₹20/ऑर्डर) सीधे आपके बैंक में",
         runner_bank_desc: "गाँव मित्र डिलीवरी कमीशन की दैनिक निकासी Razorpay Route लिंक्ड बैंक खाते या UPI में स्थानांतरित की जाती है।",
@@ -1240,6 +1391,11 @@
         tab_detail: "Landmark",
         tab_ledger: "Ledger",
         tab_settings: "Bank & UPI",
+        runner_theme_title: "Theme & Display",
+        runner_theme_sub: "Light, Dark, or System",
+        theme_opt_light: "Light",
+        theme_opt_dark: "Dark",
+        theme_opt_system: "System",
         runner_bank_title: "Bank Account & UPI Settings",
         runner_bank_sub: "Delivery commission (₹20/order) directly into your bank",
         runner_bank_desc: "Daily Gaon Mitra delivery payout settlement is routed to your verified linked bank or UPI ID.",
@@ -2652,6 +2808,84 @@
     }
     window.openRunnerMapNavigation = openRunnerMapNavigation;
 
+    
+    // --- RUNNER THEME ENGINE (Light / Dark / System) ---
+    function getRunnerTheme() {
+      return localStorage.getItem('gaonbazar_runner_theme') || localStorage.getItem('gaonbazar_theme') || 'system';
+    }
+
+    function setRunnerTheme(themeName) {
+      if (!['light', 'dark', 'system'].includes(themeName)) return;
+      localStorage.setItem('gaonbazar_runner_theme', themeName);
+      localStorage.setItem('gaonbazar_theme', themeName);
+      applyRunnerTheme(themeName);
+    }
+    window.setRunnerTheme = setRunnerTheme;
+    window.getRunnerTheme = getRunnerTheme;
+
+    function applyRunnerTheme(themeName) {
+      const mode = themeName || getRunnerTheme();
+      let isDark = false;
+      if (mode === 'dark') {
+        isDark = true;
+      } else if (mode === 'system') {
+        isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      }
+
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('light');
+        const metaTheme = document.querySelector('meta[name="theme-color"]');
+        if (metaTheme) metaTheme.setAttribute('content', '#0f172a');
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.add('light');
+        const metaTheme = document.querySelector('meta[name="theme-color"]');
+        if (metaTheme) metaTheme.setAttribute('content', '#16a34a');
+      }
+
+      updateRunnerThemeUI(mode);
+    }
+    window.applyRunnerTheme = applyRunnerTheme;
+
+    function updateRunnerThemeUI(activeMode) {
+      const mode = activeMode || getRunnerTheme();
+      const btnLight = document.getElementById('btn-runner-theme-light');
+      const btnDark = document.getElementById('btn-runner-theme-dark');
+      const btnSystem = document.getElementById('btn-runner-theme-system');
+      const badge = document.getElementById('runner-theme-badge');
+      const isHi = (typeof RunnerStore !== 'undefined' && RunnerStore && RunnerStore.lang === 'hi') || document.documentElement.lang === 'hi';
+
+      const activeClass = "min-h-[44px] rounded-xl font-black text-xs flex items-center justify-center gap-1.5 transition-all bg-primary text-white shadow-xs cursor-pointer";
+      const inactiveClass = "min-h-[44px] rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all text-slate-400 hover:bg-slate-800/80 cursor-pointer";
+
+      if (btnLight) btnLight.className = (mode === 'light') ? activeClass : inactiveClass;
+      if (btnDark) btnDark.className = (mode === 'dark') ? activeClass : inactiveClass;
+      if (btnSystem) btnSystem.className = (mode === 'system') ? activeClass : inactiveClass;
+
+      if (badge) {
+        if (mode === 'light') badge.innerText = isHi ? "हल्का (Light)" : "Light";
+        else if (mode === 'dark') badge.innerText = isHi ? "गहरा (Dark)" : "Dark";
+        else badge.innerText = isHi ? "सिस्टम (System)" : "System";
+      }
+    }
+    window.updateRunnerThemeUI = updateRunnerThemeUI;
+
+    function initRunnerTheme() {
+      applyRunnerTheme(getRunnerTheme());
+      if (window.matchMedia) {
+        const mql = window.matchMedia('(prefers-color-scheme: dark)');
+        const handler = () => {
+          if (getRunnerTheme() === 'system') {
+            applyRunnerTheme('system');
+          }
+        };
+        if (mql.addEventListener) mql.addEventListener('change', handler);
+        else if (mql.addListener) mql.addListener(handler);
+      }
+    }
+    window.initRunnerTheme = initRunnerTheme;
+
     // --- 9.15 BILINGUAL ENGINE ---
     function toggleLanguage() {
       RunnerStore.lang = RunnerStore.lang === 'hi' ? 'en' : 'hi';
@@ -2660,6 +2894,7 @@
     }
 
     function applyRunnerLanguageUI() {
+      if (typeof updateRunnerThemeUI === 'function') updateRunnerThemeUI();
       const isHi = RunnerStore.lang === 'hi';
       const dict = I18N[RunnerStore.lang] || I18N.hi;
 
@@ -2809,7 +3044,10 @@
     }
 
     // Boot
-    window.addEventListener('DOMContentLoaded', initRunnerApp);
+    window.addEventListener('DOMContentLoaded', () => {
+      if (typeof initRunnerTheme === 'function') initRunnerTheme();
+      initRunnerApp();
+    });
 
     // Global Scroll Delegator to ensure window.scrollTo / window.scrollBy always target the main scroll container
     (function() {
