@@ -177,14 +177,14 @@
   <div id="app-root" class="w-full h-full min-h-[100dvh] flex flex-col bg-surface relative">
 
     <!-- App Global Sticky Header (Native Top App Bar - Blinkit Centered Standard) -->
-    <header id="customer-header" class="w-full max-w-full h-14 min-h-[56px] bg-white border-b border-slate-200/90 shadow-2xs px-3.5 flex items-center gap-2 z-40 shrink-0">
+    <header id="customer-header" class="w-full max-w-full h-14 min-h-[56px] bg-white border-b border-slate-200/90 shadow-2xs px-2 flex items-center gap-1 z-40 shrink-0 overflow-x-hidden">
       <!-- Clean Hamburger Menu Icon on the Left (min 44x44px touch target) - ONLY ON HOME -->
-      <button id="btn-open-sidebar" onclick="openSidebarDrawer()" aria-label="Open navigation menu" class="w-11 h-11 min-w-[44px] min-h-[44px] -ml-1 rounded-full text-slate-800 hover:bg-slate-100 active:scale-90 transition-all flex items-center justify-center shrink-0 cursor-pointer">
+      <button id="btn-open-sidebar" onclick="openSidebarDrawer()" aria-label="Open navigation menu" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full text-slate-800 hover:bg-slate-100 active:scale-90 transition-all flex items-center justify-center shrink-0 cursor-pointer">
         <span class="material-symbols-outlined text-[26px] inline-block select-none leading-none">menu</span>
       </button>
 
       <!-- Native Android Left Arrow (Back Button) - REPLACES HAMBURGER WHEN NAVIGATED AWAY -->
-      <button id="global-nav-back" onclick="navigateBack()" aria-label="Go Back" class="hidden w-11 h-11 min-w-[44px] min-h-[44px] -ml-1 rounded-full text-slate-800 hover:bg-slate-100 active:scale-90 transition-all flex items-center justify-center shrink-0 cursor-pointer">
+      <button id="global-nav-back" onclick="navigateBack()" aria-label="Go Back" class="hidden w-11 h-11 min-w-[44px] min-h-[44px] rounded-full text-slate-800 hover:bg-slate-100 active:scale-90 transition-all flex items-center justify-center shrink-0 cursor-pointer">
         <span class="material-symbols-outlined text-[24px] inline-block select-none leading-none">arrow_back</span>
       </button>
 
@@ -590,7 +590,7 @@
       <!-- ===================================================================== -->
       <!-- DELIVERY LOCATION SETUP (Gated at Checkout Phase)                     -->
       <!-- ===================================================================== -->
-      <section id="view-p1-landmark" class="screen-view hidden flex-col w-full px-4 pt-4 pb-28 flex-1 min-h-0 space-y-4">
+      <section id="view-p1-landmark" class="screen-view hidden flex-col w-full px-4 pt-4 pb-52 flex-1 min-h-0 space-y-4">
         <div>
           <div class="flex items-center justify-between mb-1.5">
             <span class="text-xs font-bold text-primary uppercase" data-i18n="p1_lm_step">डिलीवरी पता सेटअप</span>
@@ -635,49 +635,6 @@
             <span id="p1-locate-text" data-i18n="p1_locate_btn" class="truncate text-center font-bold">वर्तमान लोकेशन लें</span>
           </button>
 
-          <!-- Interactive GPS Delivery Map & Accurate Doorstep Confirmation -->
-          <div id="p1-map-preview-container" class="hidden flex-col gap-2.5 pt-1 transition-all duration-300">
-            <div class="flex items-center justify-between gap-2 flex-wrap">
-              <span id="p1-doorstep-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-900 border border-amber-300 font-extrabold text-[11px] shadow-2xs">
-                <span id="p1-doorstep-badge-text" data-i18n="p1_doorstep_pinned">📍 स्थान चुनें (पिन खींचें)</span>
-              </span>
-              <span id="p1-coords-display" class="font-mono text-[10px] text-slate-500 font-bold tracking-tight"></span>
-            </div>
-
-            <!-- Interactive Mobile Map (Pinch to zoom, pan, draggable pin, zoom buttons) -->
-            <div class="relative w-full h-64 rounded-2xl overflow-hidden border border-slate-300 shadow-sm bg-slate-100">
-              <div id="p1-leaflet-map" class="w-full h-full" style="touch-action: pan-x pan-y pinch-zoom;"></div>
-              
-              <!-- Floating Recenter Button -->
-              <button 
-                id="p1-map-recenter-btn" 
-                onclick="recenterMapToGps()" 
-                type="button" 
-                class="absolute bottom-3 right-3 z-[400] bg-white/95 hover:bg-white text-slate-800 text-xs font-bold py-1.5 px-3 rounded-full shadow-md border border-slate-200 flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer"
-                title="Recenter to detected GPS coordinates"
-              >
-                <span class="material-symbols-outlined text-[16px] text-primary">my_location</span>
-                <span id="p1-recenter-text">GPS पर जाएं</span>
-              </button>
-            </div>
-
-            <!-- Honest Accuracy Indicator -->
-            <div id="p1-gps-accuracy-indicator" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 text-slate-700 border border-slate-200 text-[11px] font-bold">
-              <span class="material-symbols-outlined text-[16px] text-slate-500 shrink-0">info</span>
-              <span id="p1-gps-accuracy-text">GPS Accuracy: Detecting...</span>
-            </div>
-
-            <!-- Explicit Confirmation CTA Button -->
-            <button 
-              id="p1-confirm-location-btn" 
-              onclick="confirmPinnedLocation()" 
-              type="button" 
-              class="w-full min-h-[46px] py-2.5 px-4 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-bold shadow-md flex items-center justify-center gap-2 active:scale-98 transition-all cursor-pointer"
-            >
-              <span class="material-symbols-outlined text-[18px]">verified</span>
-              <span id="p1-confirm-location-text">✅ इस सटीक पते की पुष्टि करें (Confirm Doorstep)</span>
-            </button>
-          </div>
         </div>
 
         <!-- 3. Open Text Address Inputs: District / Tehsil -->
@@ -765,7 +722,51 @@
           <span id="p1-lm-err" class="hidden text-[10px] text-error font-bold" data-i18n="p1_lm_err">कम से कम 10 अक्षर आवश्यक हैं</span>
         </div>
 
-        <!-- Sticky Bottom Action CTA Tray (Fixed & Accessible) -->
+        <!-- 6. Interactive Leaflet Delivery Map & Accurate Doorstep Confirmation -->
+        <div id="p1-map-preview-container" class="hidden bg-white rounded-2xl p-4 shadow-mobile-card border border-surface-container-high flex-col gap-3 transition-all duration-300">
+          <div class="flex items-center justify-between gap-2 flex-wrap">
+            <span id="p1-doorstep-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-900 border border-amber-300 font-extrabold text-[11px] shadow-2xs">
+              <span id="p1-doorstep-badge-text" data-i18n="p1_doorstep_pinned">📍 स्थान चुनें (पिन खींचें)</span>
+            </span>
+            <span id="p1-coords-display" class="font-mono text-[10px] text-slate-500 font-bold tracking-tight"></span>
+          </div>
+
+          <!-- Interactive Mobile Map (Pinch to zoom, pan, draggable pin, zoom buttons) -->
+          <div class="relative w-full h-56 rounded-2xl overflow-hidden border border-slate-300 shadow-sm bg-slate-100">
+            <div id="p1-leaflet-map" class="w-full h-full" style="touch-action: pan-x pan-y pinch-zoom;"></div>
+            
+            <!-- Floating Recenter Button -->
+            <button 
+              id="p1-map-recenter-btn" 
+              onclick="recenterMapToGps()" 
+              type="button" 
+              class="absolute bottom-3 right-3 z-[400] bg-white/95 hover:bg-white text-slate-800 text-xs font-bold py-1.5 px-3 rounded-full shadow-md border border-slate-200 flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer"
+              title="Recenter to detected GPS coordinates"
+            >
+              <span class="material-symbols-outlined text-[16px] text-primary">my_location</span>
+              <span id="p1-recenter-text">GPS पर जाएं</span>
+            </button>
+          </div>
+
+          <!-- Honest Accuracy Indicator -->
+          <div id="p1-gps-accuracy-indicator" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 text-slate-700 border border-slate-200 text-[11px] font-bold">
+            <span class="material-symbols-outlined text-[16px] text-slate-500 shrink-0">info</span>
+            <span id="p1-gps-accuracy-text">GPS Accuracy: Detecting...</span>
+          </div>
+
+          <!-- Explicit Confirmation CTA Button -->
+          <button 
+            id="p1-confirm-location-btn" 
+            onclick="confirmPinnedLocation()" 
+            type="button" 
+            class="w-full min-h-[46px] py-2.5 px-4 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-bold shadow-md flex items-center justify-center gap-2 active:scale-98 transition-all cursor-pointer"
+          >
+            <span class="material-symbols-outlined text-[18px]">verified</span>
+            <span id="p1-confirm-location-text">✅ इस सटीक पते की पुष्टि करें (Confirm Doorstep)</span>
+          </button>
+        </div>
+
+                <!-- Sticky Bottom Action CTA Tray (Fixed & Accessible) -->
         <div class="fixed bottom-0 left-0 right-0 w-full z-50 bg-white border-t border-surface-container-high px-4 py-3 pb-safe shadow-sticky-bar">
           <button id="p1-save-landmark-btn" onclick="submitLandmarkSetup()" class="w-full h-[52px] rounded-xl bg-primary text-white text-base font-bold shadow-md flex items-center justify-center gap-2 active:scale-98 transition-all">
             <span data-i18n="p1_save_proceed_btn">पता सहेजें और आगे बढ़ें</span>
@@ -5064,6 +5065,13 @@
         });
 
         if (btnText) btnText.innerText = isHi ? 'स्थान का नाम पता कर रहे हैं...' : 'Fetching Address...';
+
+        // Provide immediate visual confirmation of coordinates while reverse geocoding
+        if (badge) {
+          badge.innerHTML = `<span class="text-on-surface font-semibold">📍 GPS: ${lat.toFixed(4)}, ${lng.toFixed(4)}</span>`;
+          badge.classList.remove('text-on-surface-variant', 'text-rose-500');
+          badge.classList.add('text-primary', 'font-bold');
+        }
 
         // 1. Fetch Real Reverse Geocoded Location from exact device coordinates
         const loc = await reverseGeocodeCoords(lat, lng);

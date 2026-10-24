@@ -222,17 +222,21 @@ def check_human_ux_bounds(page, selector, element_desc, dev_name, logger, requir
 
     if not require_sticky:
         try:
-            locator.scroll_into_view_if_needed(timeout=2500)
-            page.wait_for_timeout(100)
+            locator.evaluate("(el) => { if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ block: 'center', inline: 'nearest' }); }")
+            page.wait_for_timeout(200)
         except Exception:
-            pass
+            try:
+                locator.scroll_into_view_if_needed(timeout=2500)
+                page.wait_for_timeout(100)
+            except Exception:
+                pass
 
     try:
         audit = locator.evaluate("""(el) => {
             if (!el) return { valid: false, error: 'Element null' };
 
             // Clearance scroll if overlapping sticky bars
-            const scrollContainer = document.querySelector('.screen-view.active') || document.querySelector('main') || document.scrollingElement || window;
+            const scrollContainer = document.getElementById('main-content-container') || document.querySelector('main') || document.querySelector('.screen-view.active') || document.scrollingElement || window;
             const doScroll = (delta) => {
                 if (scrollContainer && typeof scrollContainer.scrollBy === 'function') {
                     scrollContainer.scrollBy(0, delta);
@@ -1014,7 +1018,10 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     # Native HTML5 Geolocation Detection
     check_human_ux_bounds(page, "#p1-locate-btn", "Locate Me GPS Button", dev_name, logger)
     page.click("#p1-locate-btn")
-    page.wait_for_timeout(900)
+    try:
+        page.wait_for_function("() => !document.getElementById('p1-gps-badge').innerText.includes('कनेक्ट')", timeout=4000)
+    except Exception:
+        page.wait_for_timeout(1500)
 
     gps_badge_text = page.inner_text("#p1-gps-badge").strip()
     audit_gps_ux_text(gps_badge_text, dev_name, logger)
