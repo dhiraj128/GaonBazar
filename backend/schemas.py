@@ -37,7 +37,7 @@ class SendOTPRequest(SecureBaseModel):
 class SendOTPResponse(BaseModel):
     success: bool
     message: str
-    otp: str
+    otp: Optional[str] = None
 
 class VerifyOTPRequest(SecureBaseModel):
     phone: str = Field(..., min_length=10, max_length=15)

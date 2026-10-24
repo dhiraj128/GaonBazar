@@ -161,6 +161,16 @@ def ensure_schema_migrations():
             except Exception as e:
                 print(f"Notice adding column district to landmarks: {e}")
 
+        # Check otp_records columns for attempts counter
+        res_otp = conn.execute(text("PRAGMA table_info(otp_records)")).fetchall()
+        existing_otp_cols = {r[1] for r in res_otp}
+        if "attempts" not in existing_otp_cols:
+            try:
+                conn.execute(text("ALTER TABLE otp_records ADD COLUMN attempts INTEGER DEFAULT 0"))
+                conn.commit()
+            except Exception as e:
+                print(f"Notice adding column attempts to otp_records: {e}")
+
         # Ensure support_tickets table exists
         try:
             conn.execute(text("""

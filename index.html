@@ -582,6 +582,12 @@
           </div>
         </div>
 
+        <!-- OTP Verification Error Alert Banner -->
+        <div id="p1-otp-error" class="hidden bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl p-3.5 text-xs font-bold flex items-center gap-2 shadow-2xs">
+          <span class="material-symbols-outlined text-[20px] text-rose-600 shrink-0">error</span>
+          <span id="p1-otp-error-text">अमान्य या समाप्त OTP कोड। कृपया दोबारा प्रयास करें।</span>
+        </div>
+
         <button id="p1-verify-otp-btn" onclick="submitVerifyOtp()" class="w-full min-h-[52px] py-3.5 px-6 rounded-2xl bg-secondary hover:bg-secondary/90 text-white text-base font-bold shadow-lg flex items-center justify-center gap-2 active:scale-98 transition-all">
           <span data-i18n="p1_otp_verify_btn">सत्यापित करें और आगे बढ़ें</span>
           <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
@@ -3574,12 +3580,13 @@
 
     async function apiFetch(endpoint, options = {}) {
       const url = `${API_BASE}${endpoint}`;
+      const token = AppStore.sessionToken || (typeof localStorage !== 'undefined' ? (localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_authToken')) : null);
       const headers = {
         'Content-Type': 'application/json',
         ...(options.headers || {})
       };
-      if (AppStore.sessionToken) {
-        headers['Authorization'] = `Bearer ${AppStore.sessionToken}`;
+      if (token && !headers['Authorization']) {
+        headers['Authorization'] = `Bearer ${token}`;
       }
 
       try {
@@ -4634,25 +4641,30 @@
       btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span><span>Sending OTP...</span>';
       btn.disabled = true;
 
+      // Reset any previous OTP error banner
+      const errBox = document.getElementById('p1-otp-error');
+      if (errBox) errBox.classList.add('hidden');
+
       try {
-        const data = await apiFetch('/auth/send-otp', {
+        await apiFetch('/auth/send-otp', {
           method: 'POST',
           body: JSON.stringify({ phone: phoneVal })
         });
-        if (data && data.otp) {
-          AppStore.latestOtp = data.otp;
-        }
+        showAudioToast("SMS Sent", AppStore.lang === 'en' ? `Verification OTP sent to +91 ${phoneVal}` : `सत्यापन कोड +91 ${phoneVal} पर भेजा गया`);
       } catch (err) {
-        console.warn('Backend send-otp fallback:', err);
-        AppStore.latestOtp = '582941';
+        console.warn('Backend send-otp notice:', err);
+        showAudioToast("Notice", err.message || (AppStore.lang === 'en' ? 'Unable to reach SMS gateway.' : 'OTP भेजने में समस्या। कृपया पुनः प्रयास करें।'));
       } finally {
         btn.disabled = false;
         btn.innerHTML = '<span class="material-symbols-outlined text-[20px]">send_to_mobile</span><span>' + i18nDictionary[AppStore.lang].p1_send_otp_btn + '</span><span class="material-symbols-outlined text-[18px]">arrow_forward</span>';
         document.getElementById('p1-otp-phone-lbl').innerText = `+91 ${AppStore.user.phone.substring(0, 5)} ${AppStore.user.phone.substring(5)}`;
         navigateToPhase('otp');
         startOtpCountdownTimer();
-        // Auto-fill WebOTP code
-        setTimeout(() => autoFillOtp(AppStore.latestOtp || "582941"), 600);
+        // Clear cells and focus first cell
+        const cells = document.querySelectorAll('.otp-cell');
+        cells.forEach(c => c.value = '');
+        const firstCell = document.querySelector('.otp-cell[data-idx="0"]');
+        if (firstCell) setTimeout(() => firstCell.focus(), 300);
       }
     }
 
@@ -4726,17 +4738,35 @@
           verifyBtn.disabled = false;
           verifyBtn.removeAttribute('disabled');
           verifyBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        } else {
+          verifyBtn.disabled = true;
+          verifyBtn.setAttribute('disabled', 'true');
+          verifyBtn.classList.add('opacity-50', 'cursor-not-allowed');
         }
       }
     }
 
     async function submitVerifyOtp() {
       let fullCode = '';
-      document.querySelectorAll('.otp-cell').forEach(c => fullCode += c.value);
+      document.querySelectorAll('.otp-cell').forEach(c => fullCode += (c.value || '').trim());
+      const isHi = (AppStore.lang === 'hi');
+      const errBox = document.getElementById('p1-otp-error');
+      const errText = document.getElementById('p1-otp-error-text');
+
+      if (errBox) errBox.classList.add('hidden');
+
+      if (fullCode.length !== 6) {
+        if (errBox && errText) {
+          errText.innerText = isHi ? "कृपया 6-अंकीय OTP कोड दर्ज करें" : "Please enter the complete 6-digit OTP code";
+          errBox.classList.remove('hidden');
+        }
+        return;
+      }
+
       const verifyBtn = document.getElementById('p1-verify-otp-btn');
       if (verifyBtn) {
         verifyBtn.disabled = true;
-        verifyBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span><span>Verifying...</span>';
+        verifyBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span><span>' + (isHi ? 'सत्यापित हो रहा है...' : 'Verifying...') + '</span>';
       }
 
       try {
@@ -4744,37 +4774,49 @@
           method: 'POST',
           body: JSON.stringify({
             phone: AppStore.user.phone,
-            otp: fullCode || AppStore.latestOtp || '582941'
+            otp: fullCode
           })
         });
-        if (res && res.session_token) {
-          AppStore.sessionToken = res.session_token;
-          if (res.user) {
-            if (res.user.name) AppStore.user.name = res.user.name;
-            if (res.user.district) AppStore.user.district = res.user.district;
-            if (res.user.village) AppStore.user.village = res.user.village;
-            if (res.user.landmark) AppStore.user.landmark = res.user.landmark;
-          }
+
+        if (!res || !res.session_token) {
+          throw new Error(isHi ? "सत्यापन विफल: अमान्य सर्वर प्रतिक्रिया" : "Verification failed: Invalid server response");
         }
-      } catch (err) {
-        console.warn('Backend verify fallback:', err);
-      } finally {
-        if (verifyBtn) {
-          verifyBtn.disabled = false;
-          const vText = (i18nDictionary[AppStore.lang] || i18nDictionary['hi']).p1_otp_verify_btn;
-          verifyBtn.innerHTML = '<span data-i18n="p1_otp_verify_btn">' + vText + '</span><span class="material-symbols-outlined text-[18px]">arrow_forward</span>';
+
+        // Authenticated customer session established
+        AppStore.sessionToken = res.session_token;
+        if (res.user) {
+          if (res.user.name) AppStore.user.name = res.user.name;
+          if (res.user.district) AppStore.user.district = res.user.district;
+          if (res.user.village) AppStore.user.village = res.user.village;
+          if (res.user.landmark) AppStore.user.landmark = res.user.landmark;
         }
-        if (!AppStore.sessionToken) {
-          AppStore.sessionToken = 'cust_jwt_' + Date.now();
-        }
+
         localStorage.setItem('authToken', AppStore.sessionToken);
         localStorage.setItem('gaonbazar_authToken', AppStore.sessionToken);
         localStorage.setItem('gaonbazar_user', JSON.stringify(AppStore.user));
         savePersistentState();
 
-        // Immediate transition to Main Dashboard (Phase 2) - No early friction
+        // Successful authentication: navigate to Main Dashboard
         navigateToPhase('dashboard');
         loadStoresFromBackend();
+      } catch (err) {
+        console.warn('Backend verify error:', err);
+        // Security: NEVER fabricate fake JWT! Never navigate to dashboard on error!
+        if (errBox && errText) {
+          errText.innerText = err.message || (isHi ? "अमान्य या समाप्त OTP कोड। कृपया पुनः प्रयास करें।" : "Invalid or expired OTP code. Please try again.");
+          errBox.classList.remove('hidden');
+        }
+        // Clear cells and focus first cell
+        const cells = document.querySelectorAll('.otp-cell');
+        cells.forEach(c => c.value = '');
+        const firstCell = document.querySelector('.otp-cell[data-idx="0"]');
+        if (firstCell) firstCell.focus();
+      } finally {
+        if (verifyBtn) {
+          const vText = (i18nDictionary[AppStore.lang] || i18nDictionary['hi']).p1_otp_verify_btn;
+          verifyBtn.innerHTML = '<span data-i18n="p1_otp_verify_btn">' + vText + '</span><span class="material-symbols-outlined text-[18px]">arrow_forward</span>';
+          checkOtpAutoAdvance();
+        }
       }
     }
 
@@ -6947,7 +6989,8 @@
       }
 
       // 2. If no orderId in session or fetch failed, check user's active orders in SQLite DB
-      if (AppStore.user && AppStore.user.phone) {
+      const currentToken = AppStore.sessionToken || (typeof localStorage !== 'undefined' ? (localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_authToken')) : null);
+      if (AppStore.user && AppStore.user.phone && currentToken) {
         try {
           const encPhone = encodeURIComponent(AppStore.user.phone);
           const userOrders = await apiFetch(`/user/${encPhone}/orders`);
@@ -7299,8 +7342,11 @@
       const container = document.getElementById('profile-order-history-list');
       if (!container) return;
 
+      const currentToken = AppStore.sessionToken || (typeof localStorage !== 'undefined' ? (localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_authToken')) : null);
+      const phone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '';
+      if (!currentToken || !phone) return;
+
       const isHi = (AppStore.lang === 'hi');
-      const phone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '9876543210';
 
       try {
         const orders = await apiFetch(`/user/${phone}/orders`);
@@ -7539,9 +7585,8 @@
       }
 
       try {
-        const res = await fetch(`${API_BASE}/user/${phone}/payment-methods`, {
+        await apiFetch(`/user/${phone}/payment-methods`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             method_type: 'upi',
             title: title,
@@ -7549,11 +7594,6 @@
             is_default: isDefault
           })
         });
-
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error(data.detail || (isHi ? 'भुगतान माध्यम सहेजने में विफल' : 'Failed to save payment method'));
-        }
 
         closeAddPaymentModal();
         showToast(isHi ? 'नया भुगतान माध्यम सफलतापूर्वक जोड़ा गया' : 'Payment method added successfully');
@@ -7597,9 +7637,8 @@
       const maskedCard = `•••• •••• •••• ${cardNum.slice(-4)}`;
 
       try {
-        const res = await fetch(`${API_BASE}/user/${phone}/payment-methods`, {
+        await apiFetch(`/user/${phone}/payment-methods`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             method_type: 'card',
             title: title,
@@ -7607,11 +7646,6 @@
             is_default: isDefault
           })
         });
-
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error(data.detail || (isHi ? 'कार्ड सहेजने में विफल' : 'Failed to save card'));
-        }
 
         closeAddPaymentModal();
         showToast(isHi ? 'कार्ड सफलतापूर्वक सहेजा गया' : 'Card saved successfully');
@@ -7636,9 +7670,12 @@
       const container = document.getElementById('profile-saved-payment-list');
       if (!container) return;
 
+      const currentToken = AppStore.sessionToken || (typeof localStorage !== 'undefined' ? (localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_authToken')) : null);
+      const phone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '';
+      if (!currentToken || !phone) return;
+
       const isHi = (AppStore.lang === 'hi');
       const dict = (window.translations && window.translations[AppStore.lang]) ? window.translations[AppStore.lang] : {};
-      const phone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '9876543210';
 
       const defaultBadgeText = dict.profile_default_badge || (isHi ? 'डिफ़ॉल्ट' : 'Default');
       const secureTokenText = dict.profile_secure_token || (isHi ? 'सुरक्षित Razorpay लिंक्ड' : 'Secured by Razorpay');
@@ -7696,15 +7733,14 @@
 
     async function deleteSavedPaymentMethod(methodId) {
       const isHi = (AppStore.lang === 'hi');
-      const phone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '9876543210';
+      const phone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '';
+      if (!phone) return;
       try {
-        const res = await fetch(`${API_BASE}/user/${phone}/payment-methods/${methodId}`, {
+        await apiFetch(`/user/${phone}/payment-methods/${methodId}`, {
           method: 'DELETE'
         });
-        if (res.ok) {
-          showToast(isHi ? 'भुगतान माध्यम हटा दिया गया' : 'Payment method removed');
-          loadUserSavedPaymentMethods();
-        }
+        showToast(isHi ? 'भुगतान माध्यम हटा दिया गया' : 'Payment method removed');
+        loadUserSavedPaymentMethods();
       } catch (err) {
         console.error('Delete payment method error:', err);
       }
