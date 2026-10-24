@@ -654,10 +654,14 @@
               class="w-full h-11 pl-10 pr-3 rounded-xl bg-transparent text-xs font-bold text-on-surface focus:outline-none"
             />
           </div>
-          <!-- Compatibility elements for legacy queries -->
+          <!-- Hidden form inputs for delivery pinpointing & GPS coordinates -->
           <input id="p1-village-search-input" type="hidden" />
           <input id="p1-latitude-input" type="hidden" name="latitude" />
           <input id="p1-longitude-input" type="hidden" name="longitude" />
+          <input id="latitude" type="hidden" name="latitude" />
+          <input id="longitude" type="hidden" name="longitude" />
+          <input id="p1-lat-input" type="hidden" name="lat" />
+          <input id="p1-lng-input" type="hidden" name="lng" />
           <select id="p1-village-select" class="hidden"></select>
           <span id="p1-village-err" class="hidden text-[10px] text-error font-bold" data-i18n="p1_village_err">कृपया गाँव या पंचायत का नाम दर्ज करें</span>
         </div>
@@ -3972,7 +3976,7 @@
       // If GPS location was previously detected, keep button label & badge localized
       const btnLocate = document.getElementById('p1-locate-text');
       if (btnLocate && AppStore.user && AppStore.user.gps) {
-        const placeName = AppStore.user.village || AppStore.user.district;
+        const placeName = AppStore.user.granular || AppStore.user.village || AppStore.user.district;
         if (placeName) {
           btnLocate.innerText = (lang === 'hi') ? `📍 ${placeName} पहचाना गया` : `📍 ${placeName} Detected`;
         } else {
@@ -3981,12 +3985,13 @@
       }
       const gpsBadge = document.getElementById('p1-gps-badge');
       if (gpsBadge && AppStore.user && AppStore.user.gps) {
-        if (AppStore.user.village && AppStore.user.district) {
-          gpsBadge.innerText = `📍 ${AppStore.user.village}, ${AppStore.user.district}` + (AppStore.user.state ? ` (${AppStore.user.state})` : '');
+        const topLoc = AppStore.user.granular || AppStore.user.village;
+        if (topLoc && AppStore.user.district && topLoc.trim().toLowerCase() !== AppStore.user.district.trim().toLowerCase()) {
+          gpsBadge.innerText = `📍 ${topLoc}, ${AppStore.user.district}` + (AppStore.user.state ? ` (${AppStore.user.state})` : '');
+        } else if (topLoc) {
+          gpsBadge.innerText = `📍 ${topLoc}` + (AppStore.user.state ? ` (${AppStore.user.state})` : '');
         } else if (AppStore.user.district) {
           gpsBadge.innerText = `📍 ${AppStore.user.district}` + (AppStore.user.state ? ` (${AppStore.user.state})` : '');
-        } else if (AppStore.user.village) {
-          gpsBadge.innerText = `📍 ${AppStore.user.village}` + (AppStore.user.state ? ` (${AppStore.user.state})` : '');
         }
       }
 
@@ -4458,23 +4463,35 @@
         // 1. For "District / Tehsil" field: extract address.state_district OR address.county OR address.district
         const district = addr.state_district || addr.county || addr.district || addr.subdistrict || addr.tehsil || addr.city || '';
 
-        // 2. For "Village / Gram Panchayat" field: STRICTLY prioritize granular rural data:
-        // address.village OR address.hamlet OR address.neighbourhood OR address.suburb OR address.town.
-        // Do NOT duplicate the district name into the village field.
-        let village = addr.village || addr.hamlet || addr.neighbourhood || addr.suburb || addr.town || addr.city_district || '';
+        // 2. Granular location: STRICTLY prioritize granular local data over broad city/district:
+        // Prioritize: address.village, address.suburb, address.neighbourhood, address.road, etc.
+        const granular = addr.village || 
+                         addr.hamlet || 
+                         addr.suburb || 
+                         addr.neighbourhood || 
+                         addr.road || 
+                         addr.residential || 
+                         addr.isolated_dwelling || 
+                         addr.allotments || 
+                         addr.farm || 
+                         addr.town || 
+                         addr.city_district || 
+                         '';
 
-        // If village duplicates the district name, clear it so user can type it manually
+        // 3. For "Village / Gram Panchayat" field:
+        // Prioritize granular rural data. If village duplicates district name, clear it so user can type manually.
+        let village = granular;
         if (village && district && village.trim().toLowerCase() === district.trim().toLowerCase()) {
           village = '';
         }
 
         const state = addr.state || '';
 
-        return { village, district, state };
+        return { village, district, state, granular, rawAddress: addr };
       } catch (err) {
         if (timeoutId) clearTimeout(timeoutId);
         console.warn("Reverse geocoding fetch error:", err);
-        return { village: '', district: '', state: '' };
+        return { village: '', district: '', state: '', granular: '' };
       }
     }
     window.reverseGeocodeCoords = reverseGeocodeCoords;
@@ -4498,16 +4515,21 @@
         AppStore.user.latitude = lat;
         AppStore.user.longitude = lng;
 
-        const latInput = document.getElementById('p1-latitude-input');
-        const lngInput = document.getElementById('p1-longitude-input');
-        if (latInput) latInput.value = lat;
-        if (lngInput) lngInput.value = lng;
+        // Save raw coordinates into hidden form inputs for delivery runner pinpointing
+        ['p1-latitude-input', 'latitude', 'p1-lat-input'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.value = lat;
+        });
+        ['p1-longitude-input', 'longitude', 'p1-lng-input'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.value = lng;
+        });
 
         if (btnText) btnText.innerText = isHi ? 'स्थान का नाम पता कर रहे हैं...' : 'Fetching Address...';
 
         // 1. Fetch Real Reverse Geocoded Location from exact device coordinates
         const loc = await reverseGeocodeCoords(lat, lng);
-        const { village, district, state } = loc;
+        const { village, district, state, granular } = loc;
 
         // 2. Auto-fill the "District / Tehsil" and "Village / Gram Panchayat" inputs
         if (distInput) {
@@ -4526,18 +4548,21 @@
         if (village) document.getElementById('p1-village-err')?.classList.add('hidden');
 
         // Update reactive state
+        const granularName = granular || village || district;
+        AppStore.user.granular = granularName || '';
         AppStore.user.district = district || '';
         AppStore.user.village = village || '';
         AppStore.user.state = state || '';
 
-        // 3. Update GPS Badge with readable location (NO raw coordinates!)
+        // 3. Update GPS Subtitle Badge with readable location (NO raw coordinates!)
+        // Prioritizes granular location (village, suburb, neighbourhood, road) over generic district
         if (badge) {
-          if (village && district) {
-            badge.innerText = `📍 ${village}, ${district}` + (state ? ` (${state})` : '');
+          if (granular && district && granular.trim().toLowerCase() !== district.trim().toLowerCase()) {
+            badge.innerText = `📍 ${granular}, ${district}` + (state ? ` (${state})` : '');
+          } else if (granular) {
+            badge.innerText = `📍 ${granular}` + (state ? ` (${state})` : '');
           } else if (district) {
             badge.innerText = `📍 ${district}` + (state ? ` (${state})` : '');
-          } else if (village) {
-            badge.innerText = `📍 ${village}` + (state ? ` (${state})` : '');
           } else {
             badge.innerText = isHi ? '📍 लोकेशन पहचानी गई' : '📍 Location Detected';
           }
@@ -4545,12 +4570,11 @@
           badge.classList.add('text-primary', 'font-bold');
         }
 
-        // 4. Update GPS Button UI to elegantly show the fetched location name
-        // Status text stays centered inside the green button without overflowing
+        // 4. Update GPS Button UI to elegantly show the most granular location name
+        // (prioritizes village, suburb, neighbourhood, or road over broad city)
         if (btnText) {
-          const locName = village || district;
-          if (locName) {
-            btnText.innerText = isHi ? `📍 ${locName} पहचाना गया` : `📍 ${locName} Detected`;
+          if (granularName) {
+            btnText.innerText = isHi ? `📍 ${granularName} पहचाना गया` : `📍 ${granularName} Detected`;
           } else {
             btnText.innerText = isHi ? '📍 लोकेशन पहचानी गई' : '📍 Location Detected';
           }
@@ -8242,6 +8266,20 @@
           if (savedUser) {
             const parsed = JSON.parse(savedUser);
             AppStore.user = { ...AppStore.user, ...parsed };
+            const lat = AppStore.user.latitude || (AppStore.user.gps ? AppStore.user.gps.lat : null);
+            const lng = AppStore.user.longitude || (AppStore.user.gps ? AppStore.user.gps.lng : null);
+            if (lat) {
+              ['p1-latitude-input', 'latitude', 'p1-lat-input'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = lat;
+              });
+            }
+            if (lng) {
+              ['p1-longitude-input', 'longitude', 'p1-lng-input'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = lng;
+              });
+            }
           }
         } catch (e) {
           console.warn('Could not restore user from localStorage', e);
