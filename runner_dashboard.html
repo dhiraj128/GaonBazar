@@ -4,7 +4,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛒</text></svg>"/>
     <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
-  <title>गाँव मित्र • डिलीवरी पार्टनर डैशबोर्ड</title>
+  <title data-i18n="page_title_runner">गाँव मित्र • डिलीवरी पार्टनर डैशबोर्ड</title>
 
   <!-- Google Fonts: Plus Jakarta Sans & Noto Sans Devanagari -->
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -143,7 +143,7 @@
         </div>
         <button type="button" onclick="toggleLanguage()" class="min-h-[44px] px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center gap-1 active:scale-95 shrink-0 cursor-pointer" title="Language">
           <span class="material-symbols-outlined text-[16px]">translate</span>
-          <span class="current-lang-text-label">हिंदी</span>
+          <span class="current-lang-text-label" data-i18n="lang_name">हिंदी</span>
         </button>
       </div>
 
@@ -230,8 +230,8 @@
         <!-- Duty Shift Online / Offline Toggle -->
         <button id="shift-toggle-btn" onclick="toggleRunnerShift()" aria-label="Toggle Shift" class="px-2 py-1.5 rounded-xl text-xs font-black flex items-center justify-center gap-1 border transition-all bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-xs active:scale-95 min-h-[44px] min-w-[40px] shrink-0 cursor-pointer" title="Shift Toggle">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" id="shift-indicator-dot"></span>
-          <span id="shift-status-label" class="hidden sm:inline">ड्यूटी चालू</span>
-          <span id="shift-status-mobile" class="sm:hidden text-xs font-black">चालू</span>
+          <span id="shift-status-label" class="hidden sm:inline" data-i18n="shift_status_label">ड्यूटी चालू</span>
+          <span id="shift-status-mobile" class="sm:hidden text-xs font-black" data-i18n="shift_status_mobile">चालू</span>
         </button>
 
         <!-- Language Switcher Pill -->
@@ -253,8 +253,8 @@
   <div id="runner-toast" class="hidden fixed top-28 sm:top-24 left-1/2 transform -translate-x-1/2 z-50 bg-slate-950 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-amber-500/50 max-w-sm w-11/12 animate-bounce">
     <span class="material-symbols-outlined text-amber-400 text-[24px]" id="toast-icon">notifications_active</span>
     <div class="flex flex-col min-w-0 flex-1">
-      <span id="toast-title" class="text-xs font-black text-amber-300">नया डिलीवरी मिशन!</span>
-      <span id="toast-subtitle" class="text-[11px] text-slate-200 truncate">दुकान से पिकअप उपलब्ध है</span>
+      <span id="toast-title" class="text-xs font-black text-amber-300" data-i18n="toast_new_mission_title">नया डिलीवरी मिशन!</span>
+      <span id="toast-subtitle" class="text-[11px] text-slate-200 truncate" data-i18n="toast_new_mission_sub">दुकान से पिकअप उपलब्ध है</span>
     </div>
     <button onclick="dismissToast()" aria-label="Close notification" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center text-slate-400 hover:text-white active:scale-90 cursor-pointer">
       <span class="material-symbols-outlined text-[18px]">close</span>
@@ -272,23 +272,23 @@
         <span class="material-symbols-outlined text-[36px] animate-pulse">hourglass_top</span>
       </div>
 
-      <span class="px-3 py-1 rounded-full text-xs font-black bg-amber-500/20 text-amber-300 border border-amber-500/30 mb-2">
+      <span class="px-3 py-1 rounded-full text-xs font-black bg-amber-500/20 text-amber-300 border border-amber-500/30 mb-2" data-i18n="pending_status_badge">
         सत्यापन प्रक्रियाधीन
       </span>
 
-      <h2 class="text-xl font-black text-white mb-1" id="pending-runner-name">सोनू कुमार</h2>
-      <p class="text-xs text-slate-400 mb-4" id="pending-runner-code">गाँव मित्र कोड: #GM-RAMPUR-99</p>
+      <h2 class="text-xl font-black text-white mb-1" id="pending-runner-name" data-i18n="pending_runner_name">सोनू कुमार</h2>
+      <p class="text-xs text-slate-400 mb-4" id="pending-runner-code" data-i18n="pending_runner_code">गाँव मित्र कोड: #GM-RAMPUR-99</p>
 
       <div class="w-full bg-slate-950 rounded-2xl p-4 border border-amber-500/30 text-left text-xs text-slate-300 mb-5 flex flex-col gap-2">
         <div class="flex items-center gap-2 font-bold text-amber-400">
           <span class="material-symbols-outlined text-[18px]">verified_user</span>
-          <span>सुरक्षा एवं प्रामाणिकता सूचना</span>
+          <span data-i18n="pending_security_title">सुरक्षा एवं प्रामाणिकता सूचना</span>
         </div>
-        <p class="text-[11px] leading-relaxed text-slate-400">
+        <p class="text-[11px] leading-relaxed text-slate-400" data-i18n="pending_security_desc">
           गाँव बाज़ार में डिलीवरी पार्टनर बनने के लिए आपका आवेदन सुपर एडमिन द्वारा सत्यापन हेतु विचाराधीन है। वाहन दस्तावेज़ व पहचान पत्र के सत्यापन के बाद ही डिलीवरी मिशन आवंटित किए जाएंगे।
         </p>
         <div class="pt-2 border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between text-[11px] gap-1">
-          <span class="text-slate-400">पहचान पत्र: <b id="pending-runner-id-badge" class="text-white font-mono">XXXX-XXXX-7788</b></span>
+          <span class="text-slate-400"><span data-i18n="pending_id_label">पहचान पत्र:</span> <b id="pending-runner-id-badge" class="text-white font-mono">XXXX-XXXX-7788</b></span>
           <span class="text-slate-400">UPI ID: <b id="pending-runner-upi-badge" class="text-primary font-mono">sonu@paytm</b></span>
         </div>
       </div>
@@ -387,7 +387,7 @@
         <!-- Rendered dynamically via JavaScript -->
         <div class="bg-slate-800 rounded-3xl p-8 border border-slate-700 text-center flex flex-col items-center justify-center gap-2">
           <span class="material-symbols-outlined text-[42px] text-slate-600 animate-spin">sync</span>
-          <p class="text-sm font-bold text-slate-300">मिशन सूची लोड हो रही है...</p>
+          <p class="text-sm font-bold text-slate-300" data-i18n="loading_missions">मिशन सूची लोड हो रही है...</p>
         </div>
       </div>
 
@@ -475,8 +475,8 @@
             </div>
             <div>
               <span class="text-[10px] font-bold text-blue-400 uppercase tracking-wider block" data-i18n="step2_delivery_dest">चरण 2: ग्राहक डिलीवरी स्थल</span>
-              <h3 id="detail-customer-name" class="text-sm font-black text-white leading-tight">रमेश पटेल</h3>
-              <span id="detail-customer-village" class="text-xs text-slate-400">ग्राम पंचायत रामपुर</span>
+              <h3 id="detail-customer-name" class="text-sm font-black text-white leading-tight" data-i18n="detail_customer_default_name">रमेश पटेल</h3>
+              <span id="detail-customer-village" class="text-xs text-slate-400" data-i18n="detail_customer_default_village">ग्राम पंचायत रामपुर</span>
             </div>
           </div>
 
@@ -486,7 +486,7 @@
               <span class="material-symbols-outlined text-[18px]">call</span>
               <span data-i18n="call_customer_btn">कॉल करें</span>
             </a>
-            <a id="btn-navigate-map" href="#" target="_blank" rel="noopener noreferrer" class="min-h-[44px] px-3 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black flex items-center gap-1 shadow-sm active:scale-95 transition-all shrink-0 cursor-pointer" title="Navigate via Google Maps">
+            <a id="btn-navigate-map" href="#" onclick="openRunnerMapNavigation(event)" target="_blank" rel="noopener noreferrer" class="min-h-[44px] px-3 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black flex items-center gap-1 shadow-sm active:scale-95 transition-all shrink-0 cursor-pointer" title="Navigate via Google Maps">
               <span class="material-symbols-outlined text-[18px]">navigation</span>
               <span data-i18n="navigate_map_btn">Navigate via Map</span>
             </a>
@@ -521,7 +521,7 @@
             <span class="material-symbols-outlined text-amber-400 text-[24px]">payments</span>
             <div>
               <span class="text-[10px] text-slate-400 font-bold uppercase block" data-i18n="lbl_payment_method">भुगतान विधि</span>
-              <span id="detail-payment-mode-label" class="text-xs font-black text-amber-300">💵 नकद वसूली</span>
+              <span id="detail-payment-mode-label" class="text-xs font-black text-amber-300" data-i18n="detail_paymode_cod">💵 नकद वसूली</span>
             </div>
           </div>
           <div class="text-right">
@@ -779,7 +779,7 @@
         <span class="material-symbols-outlined text-[36px]">celebration</span>
       </div>
       <h3 class="text-base font-black text-white" data-i18n="modal_success_title">सफल डिलीवरी!</h3>
-      <p id="modal-success-sub" class="text-xs text-slate-300">
+      <p id="modal-success-sub" class="text-xs text-slate-300" data-i18n="modal_success_sub">
         ऑर्डर सफलतापूर्वक ग्राहक के लैंडमार्क पर सौंपा गया।
       </p>
 
@@ -901,16 +901,16 @@
         <!-- Vehicle Type & Vehicle Number -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <div>
-            <label class="font-bold text-slate-300 block mb-1">वाहन का प्रकार *</label>
+            <label class="font-bold text-slate-300 block mb-1" data-i18n="reg_lbl_veh_type">वाहन का प्रकार *</label>
             <select id="reg-runner-vehicle-type" class="w-full px-3 py-2 text-xs font-semibold rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-primary outline-none">
-              <option value="Motorcycle">मोटरसाइकिल</option>
-              <option value="Scooter">स्कूटर</option>
-              <option value="Bicycle">साइकिल</option>
-              <option value="E-Rickshaw">ई-रिक्शा</option>
+              <option value="Motorcycle" data-i18n="opt_motorcycle">मोटरसाइकिल</option>
+              <option value="Scooter" data-i18n="opt_scooter">स्कूटर</option>
+              <option value="Bicycle" data-i18n="opt_bicycle">साइकिल</option>
+              <option value="E-Rickshaw" data-i18n="opt_erickshaw">ई-रिक्शा</option>
             </select>
           </div>
           <div>
-            <label class="font-bold text-slate-300 block mb-1">वाहन नंबर *</label>
+            <label class="font-bold text-slate-300 block mb-1" data-i18n="reg_lbl_veh_num">वाहन नंबर *</label>
             <input type="text" id="reg-runner-vehicle" placeholder="उदा. UP-14-BZ-3312" value="UP-14-BZ-3312" class="w-full px-3 py-2 text-xs font-mono font-bold rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-primary outline-none" />
           </div>
         </div>
@@ -918,41 +918,41 @@
         <!-- KYC Document: Type & Number -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
           <div class="sm:col-span-1">
-            <label class="font-bold text-slate-300 block mb-1">पहचान पत्र प्रकार *</label>
+            <label class="font-bold text-slate-300 block mb-1" data-i18n="reg_lbl_id_type">पहचान पत्र प्रकार *</label>
             <select id="reg-runner-id-type" class="w-full px-3 py-2 text-xs font-semibold rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-primary outline-none">
-              <option value="Aadhar">आधार कार्ड</option>
-              <option value="Driving License">ड्राइविंग लाइसेंस</option>
-              <option value="Voter ID">वोटर कार्ड</option>
+              <option value="Aadhar" data-i18n="opt_aadhaar">आधार कार्ड</option>
+              <option value="Driving License" data-i18n="opt_dl">ड्राइविंग लाइसेंस</option>
+              <option value="Voter ID" data-i18n="opt_voter">वोटर कार्ड</option>
             </select>
           </div>
           <div class="sm:col-span-2">
-            <label class="font-bold text-slate-300 block mb-1">पहचान पत्र संख्या *</label>
+            <label class="font-bold text-slate-300 block mb-1" data-i18n="reg_lbl_id_num">पहचान पत्र संख्या *</label>
             <input type="text" id="reg-runner-id" placeholder="उदा. 4433-2211-7788" value="4433-2211-7788" class="w-full px-3 py-2 text-xs font-mono font-bold rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-primary outline-none" />
           </div>
         </div>
 
         <!-- Selfie / Vehicle Photo URL -->
         <div>
-          <label class="font-bold text-slate-300 block mb-1">फोटो / सेल्फ़ी लिंक *</label>
+          <label class="font-bold text-slate-300 block mb-1" data-i18n="reg_lbl_photo">फोटो / सेल्फ़ी लिंक *</label>
           <input type="url" id="reg-runner-photo" placeholder="https://..." value="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400" class="w-full px-3 py-2 text-xs font-mono rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-primary outline-none" />
         </div>
 
         <!-- Payout UPI ID -->
         <div>
-          <label class="font-bold text-slate-300 block mb-1">दैनिक डिलीवरी पारिश्रमिक UPI ID *</label>
+          <label class="font-bold text-slate-300 block mb-1" data-i18n="reg_lbl_payout_upi">दैनिक डिलीवरी पारिश्रमिक UPI ID *</label>
           <input type="text" id="reg-runner-upi" placeholder="उदा. sonu.kumar@paytm" value="sonu.kumar@paytm" class="w-full px-3 py-2 text-xs font-mono font-bold rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-primary outline-none" />
-          <span class="text-[10px] text-slate-400 mt-0.5 block">प्रत्येक सफल डिलीवरी का ₹20 पारिश्रमिक सीधे इस UPI में अंतरित होगा।</span>
+          <span class="text-[10px] text-slate-400 mt-0.5 block" data-i18n="reg_hint_payout_upi">प्रत्येक सफल डिलीवरी का ₹20 पारिश्रमिक सीधे इस UPI में अंतरित होगा।</span>
         </div>
       </div>
 
       <!-- Submit CTA Button -->
       <div class="pt-2 border-t border-slate-800 flex items-center justify-end gap-2.5">
-        <button type="button" onclick="closeRunnerRegisterModal()" class="min-h-[44px] px-4 py-2 rounded-xl border border-slate-700 text-slate-300 text-xs font-bold hover:bg-slate-800 active:scale-95 transition-all cursor-pointer">
+        <button type="button" onclick="closeRunnerRegisterModal()" class="min-h-[44px] px-4 py-2 rounded-xl border border-slate-700 text-slate-300 text-xs font-bold hover:bg-slate-800 active:scale-95 transition-all cursor-pointer" data-i18n="btn_cancel">
           रद्द करें
         </button>
         <button type="button" id="btn-submit-runner-register" onclick="submitRunnerRegistration()" class="min-h-[44px] px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-black shadow-md active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer">
           <span class="material-symbols-outlined text-[18px]">send</span>
-          <span>सत्यापन हेतु भेजें</span>
+          <span data-i18n="btn_submit_reg">सत्यापन हेतु भेजें</span>
         </button>
       </div>
     </div>
@@ -1170,7 +1170,41 @@
         runner_profile_name: "कमल सिंह",
         runner_hub_name: "रामपुर क्लस्टर हब #RMP-04",
         bank_saved_account_lbl: "सहेजा गया खाता:",
-        bank_status_active: "सक्रिय"
+        bank_status_active: "सक्रिय",
+        shift_status_label: "ड्यूटी चालू",
+        shift_status_mobile: "चालू",
+        toast_new_mission_title: "नया डिलीवरी मिशन!",
+        toast_new_mission_sub: "दुकान से पिकअप उपलब्ध है",
+        pending_status_badge: "सत्यापन प्रक्रियाधीन",
+        pending_runner_name: "सोनू कुमार",
+        pending_runner_code: "गाँव मित्र कोड: #GM-RAMPUR-99",
+        pending_security_title: "सुरक्षा एवं प्रामाणिकता सूचना",
+        pending_security_desc: "गाँव बाज़ार में डिलीवरी पार्टनर बनने के लिए आपका आवेदन सुपर एडमिन द्वारा सत्यापन हेतु विचाराधीन है। वाहन दस्तावेज़ व पहचान पत्र के सत्यापन के बाद ही डिलीवरी मिशन आवंटित किए जाएंगे।",
+        pending_id_label: "पहचान पत्र:",
+        loading_missions: "मिशन सूची लोड हो रही है...",
+        detail_customer_default_name: "रमेश पटेल",
+        detail_customer_default_village: "ग्राम पंचायत रामपुर",
+        detail_paymode_cod: "💵 नकद वसूली",
+        modal_success_sub: "ऑर्डर सफलतापूर्वक ग्राहक के लैंडमार्क पर सौंपा गया।",
+        reg_lbl_veh_type: "वाहन का प्रकार *",
+        opt_motorcycle: "मोटरसाइकिल",
+        opt_scooter: "स्कूटर",
+        opt_bicycle: "साइकिल",
+        opt_erickshaw: "ई-रिक्शा",
+        reg_lbl_veh_num: "वाहन नंबर *",
+        reg_lbl_id_type: "पहचान पत्र प्रकार *",
+        opt_aadhaar: "आधार कार्ड",
+        opt_dl: "ड्राइविंग लाइसेंस",
+        opt_voter: "वोटर कार्ड",
+        reg_lbl_id_num: "पहचान पत्र संख्या *",
+        reg_lbl_photo: "फोटो / सेल्फ़ी लिंक *",
+        reg_lbl_payout_upi: "दैनिक डिलीवरी पारिश्रमिक UPI ID *",
+        reg_hint_payout_upi: "प्रत्येक सफल डिलीवरी का ₹20 पारिश्रमिक सीधे इस UPI में अंतरित होगा।",
+        btn_cancel: "रद्द करें",
+        btn_submit_reg: "सत्यापन हेतु भेजें",
+        page_title_runner: "गाँव मित्र • डिलीवरी पार्टनर डैशबोर्ड",
+        navigate_map_btn: "Navigate via Map",
+        lang_name: "हिंदी"
       },
       en: {
         server_offline_msg: "Backend server offline. Unable to connect.",
@@ -1289,7 +1323,41 @@
         runner_profile_name: "Kamal Singh",
         runner_hub_name: "Rampur Cluster Hub",
         bank_saved_account_lbl: "Saved Account:",
-        bank_status_active: "Active"
+        bank_status_active: "Active",
+        shift_status_label: "Duty Online",
+        shift_status_mobile: "Online",
+        toast_new_mission_title: "New Delivery Mission!",
+        toast_new_mission_sub: "Pickup available from store",
+        pending_status_badge: "Verification In Progress",
+        pending_runner_name: "Sonu Kumar",
+        pending_runner_code: "Runner Code: #GM-RAMPUR-99",
+        pending_security_title: "Security & Verification Notice",
+        pending_security_desc: "To become a delivery partner on GaonBazaar, your application is under review by the super admin. Missions will be assigned after vehicle and ID verification.",
+        pending_id_label: "ID Proof:",
+        loading_missions: "Loading missions list...",
+        detail_customer_default_name: "Ramesh Patel",
+        detail_customer_default_village: "Gram Panchayat Rampur",
+        detail_paymode_cod: "💵 Cash on Delivery",
+        modal_success_sub: "Order successfully handed over at customer landmark.",
+        reg_lbl_veh_type: "Vehicle Type *",
+        opt_motorcycle: "Motorcycle",
+        opt_scooter: "Scooter",
+        opt_bicycle: "Bicycle",
+        opt_erickshaw: "E-Rickshaw",
+        reg_lbl_veh_num: "Vehicle Number *",
+        reg_lbl_id_type: "ID Proof Type *",
+        opt_aadhaar: "Aadhaar Card",
+        opt_dl: "Driving License",
+        opt_voter: "Voter ID",
+        reg_lbl_id_num: "ID Document Number *",
+        reg_lbl_photo: "Photo / Selfie Link *",
+        reg_lbl_payout_upi: "Daily Delivery Payout UPI ID *",
+        reg_hint_payout_upi: "₹20 earnings per delivery will be transferred directly to this UPI.",
+        btn_cancel: "Cancel",
+        btn_submit_reg: "Submit for Verification",
+        page_title_runner: "GaonMitra • Delivery Partner Dashboard",
+        navigate_map_btn: "Navigate via Map",
+        lang_name: "English"
       }
     };
 
@@ -2081,18 +2149,21 @@
       const elBtnNavMap = document.getElementById('btn-navigate-map');
       const elCoordsContainer = document.getElementById('runner-coords-container');
       const elCoordsText = document.getElementById('runner-coords-text');
-      const lat = m.customer_lat || m.lat;
-      const lng = m.customer_lng || m.lng;
-      const navUrl = (lat && lng) 
-        ? `https://maps.google.com/?q=${lat},${lng}` 
-        : `https://maps.google.com/?q=${encodeURIComponent((m.village || '') + ' ' + (m.landmark || ''))}`;
+      const destLat = m.customer_lat || m.lat || 26.1209;
+      const destLng = m.customer_lng || m.lng || 85.3647;
+      const navUrl = `https://maps.google.com/?q=${destLat},${destLng}`;
       if (elBtnNavMap) {
         elBtnNavMap.href = navUrl;
+        elBtnNavMap.setAttribute('onclick', 'openRunnerMapNavigation(event)');
+        elBtnNavMap.onclick = function(event) {
+          if (event) { try { event.preventDefault(); } catch(e){} try { event.stopPropagation(); } catch(e){} }
+          window.open('https://maps.google.com/?q=' + destLat + ',' + destLng, '_blank');
+        };
       }
       if (elCoordsContainer && elCoordsText) {
-        if (lat && lng) {
-          const latStr = typeof lat === 'number' ? lat.toFixed(5) : lat;
-          const lngStr = typeof lng === 'number' ? lng.toFixed(5) : lng;
+        if (m.customer_lat || m.lat) {
+          const latStr = typeof destLat === 'number' ? destLat.toFixed(5) : destLat;
+          const lngStr = typeof destLng === 'number' ? destLng.toFixed(5) : destLng;
           elCoordsText.innerText = `GPS: ${latStr}, ${lngStr}`;
           elCoordsContainer.classList.remove('hidden');
         } else {
@@ -2563,6 +2634,19 @@
       if (sel) sel.value = mapped;
     }
 
+    // --- 9.145 RUNNER MAP NAVIGATION HANDLER ---
+    function openRunnerMapNavigation(event) {
+      if (event) {
+        try { event.preventDefault(); } catch (e) {}
+        try { event.stopPropagation(); } catch (e) {}
+      }
+      const m = RunnerStore.selectedMission;
+      const destLat = (m && (m.customer_lat || m.lat)) || 26.1209;
+      const destLng = (m && (m.customer_lng || m.lng)) || 85.3647;
+      window.open('https://maps.google.com/?q=' + destLat + ',' + destLng, '_blank');
+    }
+    window.openRunnerMapNavigation = openRunnerMapNavigation;
+
     // --- 9.15 BILINGUAL ENGINE ---
     function toggleLanguage() {
       RunnerStore.lang = RunnerStore.lang === 'hi' ? 'en' : 'hi';
@@ -2572,6 +2656,12 @@
 
     function applyRunnerLanguageUI() {
       const isHi = RunnerStore.lang === 'hi';
+      const dict = I18N[RunnerStore.lang] || I18N.hi;
+
+      if (dict && dict.page_title_runner) {
+        document.title = dict.page_title_runner;
+      }
+
       const langText = document.getElementById('current-lang-text');
       if (langText) langText.innerText = isHi ? 'हिंदी' : 'English';
       document.querySelectorAll('.current-lang-text-label').forEach(el => {
@@ -2585,8 +2675,7 @@
         else if (runnerInput.value === 'Kamal Singh' && isHi) runnerInput.value = 'कमल सिंह';
       }
 
-      // Apply translations
-      const dict = I18N[RunnerStore.lang] || I18N.hi;
+      // Apply translations to all data-i18n elements
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (dict[key]) el.innerText = dict[key];
@@ -2604,6 +2693,53 @@
       if (fPickup) fPickup.innerText = dict.filter_pickup || (isHi ? 'पिकअप बाकी' : 'Pickup');
       if (fTransit) fTransit.innerText = dict.filter_transit || (isHi ? 'रास्ते में' : 'In-Transit');
 
+      // Update Shift status button labels
+      const shiftLabel = document.getElementById('shift-status-label');
+      const shiftMobile = document.getElementById('shift-status-mobile');
+      if (shiftLabel && shiftMobile) {
+        if (RunnerStore.isOnline) {
+          shiftLabel.innerText = isHi ? "ड्यूटी चालू" : "Duty Online";
+          shiftMobile.innerText = isHi ? "चालू" : "Online";
+        } else {
+          shiftLabel.innerText = isHi ? "ड्यूटी बंद" : "Duty Offline";
+          shiftMobile.innerText = isHi ? "बंद" : "Offline";
+        }
+      }
+
+      // Update runner registration select options
+      const vehSel = document.getElementById('reg-runner-vehicle-type');
+      if (vehSel && vehSel.options) {
+        const vehNames = isHi ? {
+          Motorcycle: 'मोटरसाइकिल',
+          Scooter: 'स्कूटर',
+          Bicycle: 'साइकिल',
+          'E-Rickshaw': 'ई-रिक्शा'
+        } : {
+          Motorcycle: 'Motorcycle',
+          Scooter: 'Scooter',
+          Bicycle: 'Bicycle',
+          'E-Rickshaw': 'E-Rickshaw'
+        };
+        Array.from(vehSel.options).forEach(opt => {
+          if (vehNames[opt.value]) opt.text = vehNames[opt.value];
+        });
+      }
+      const idSel = document.getElementById('reg-runner-id-type');
+      if (idSel && idSel.options) {
+        const idNames = isHi ? {
+          Aadhar: 'आधार कार्ड',
+          'Driving License': 'ड्राइविंग लाइसेंस',
+          'Voter ID': 'वोटर कार्ड'
+        } : {
+          Aadhar: 'Aadhaar Card',
+          'Driving License': 'Driving License',
+          'Voter ID': 'Voter ID'
+        };
+        Array.from(idSel.options).forEach(opt => {
+          if (idNames[opt.value]) opt.text = idNames[opt.value];
+        });
+      }
+
       // Update runner select options
       const opt1 = document.querySelector('#login-runner-id-select option[value="gm_1"]');
       const opt2 = document.querySelector('#login-runner-id-select option[value="gm_2"]');
@@ -2613,8 +2749,15 @@
       if (!RunnerStore.selectedMission) {
         const dStage = document.getElementById('detail-stage-badge');
         const dPickup = document.getElementById('btn-pickup-text');
+        const dCustName = document.getElementById('detail-customer-name');
+        const dCustVillage = document.getElementById('detail-customer-village');
+        const dPayMode = document.getElementById('detail-payment-mode-label');
+
         if (dStage) dStage.innerText = dict.badge_pickup_pending || (isHi ? 'दुकान से पिकअप बाकी' : 'Pickup Pending');
         if (dPickup) dPickup.innerText = dict.btn_confirm_pickup_action || (isHi ? 'दुकान से सामान लिया' : 'Confirm Pickup');
+        if (dCustName) dCustName.innerText = isHi ? 'रमेश पटेल' : 'Ramesh Patel';
+        if (dCustVillage) dCustVillage.innerText = isHi ? 'ग्राम पंचायत रामपुर' : 'Gram Panchayat Rampur';
+        if (dPayMode) dPayMode.innerText = isHi ? '💵 नकद वसूली' : '💵 Cash on Delivery';
       }
 
       const savedAccLbl = document.getElementById('lbl-runner-saved-acc') || document.querySelector('[data-i18n="bank_saved_account_lbl"]');

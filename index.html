@@ -9,7 +9,7 @@
   <meta name="theme-color" content="#006b2c"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
-  <title>GaonBazaar • गांव बाज़ार (Hyperlocal Rural Delivery)</title>
+  <title data-i18n="page_title_app">GaonBazaar • गांव बाज़ार (Hyperlocal Rural Delivery)</title>
 
   <!-- Google Typography & Material Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -261,7 +261,7 @@
             <span class="material-symbols-outlined text-[26px]">account_circle</span>
           </div>
           <div class="flex flex-col min-w-0 flex-1">
-            <span id="drawer-user-name" class="font-extrabold text-sm text-white truncate">अतिथि ग्राहक</span>
+            <span id="drawer-user-name" class="font-extrabold text-sm text-white truncate" data-i18n="drawer_guest_user">अतिथि ग्राहक</span>
             <span id="drawer-user-phone" class="text-xs text-white/80 font-mono font-medium truncate">+91 98765 43210</span>
           </div>
           <span class="material-symbols-outlined text-white/70 text-[20px]">chevron_right</span>
@@ -398,7 +398,7 @@
               class="flex-1 min-h-[44px] py-2.5 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 bg-white text-primary shadow-xs active:scale-95 cursor-pointer"
             >
               <span class="material-symbols-outlined text-[16px]">login</span>
-              <span id="auth-tab-signin-text">लॉगिन करें</span>
+              <span id="auth-tab-signin-text" data-i18n="auth_tab_signin">लॉगिन करें</span>
             </button>
             <button 
               id="auth-tab-signup" 
@@ -407,7 +407,7 @@
               class="flex-1 min-h-[44px] py-2.5 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 text-on-surface-variant hover:text-on-surface active:scale-95 cursor-pointer"
             >
               <span class="material-symbols-outlined text-[16px]">person_add</span>
-              <span id="auth-tab-signup-text">नया खाता बनाएं</span>
+              <span id="auth-tab-signup-text" data-i18n="auth_tab_signup">नया खाता बनाएं</span>
             </button>
           </div>
 
@@ -415,8 +415,8 @@
           <div id="auth-mode-banner" class="p-3.5 rounded-xl bg-primary-fixed/20 border border-primary/20 flex items-start gap-2.5">
             <span id="auth-mode-icon" class="material-symbols-outlined text-primary text-[18px] shrink-0 mt-0.5">verified_user</span>
             <div class="flex flex-col text-xs">
-              <strong id="auth-mode-title" class="font-extrabold text-primary">मौजूदा ग्राहक लॉगिन</strong>
-              <span id="auth-mode-desc" class="text-on-surface-variant text-[11px] mt-0.5">अपना पंजीकृत मोबाइल नंबर भरें और सहेजे गए पते पर तुरंत ऑर्डर करें।</span>
+              <strong id="auth-mode-title" class="font-extrabold text-primary" data-i18n="auth_mode_signin_title">मौजूदा ग्राहक लॉगिन</strong>
+              <span id="auth-mode-desc" class="text-on-surface-variant text-[11px] mt-0.5" data-i18n="auth_mode_signin_desc">अपना पंजीकृत मोबाइल नंबर भरें और सहेजे गए पते पर तुरंत ऑर्डर करें।</span>
             </div>
           </div>
 
@@ -471,7 +471,7 @@
                 <span class="text-[10px] text-on-secondary-fixed-variant" data-i18n="p1_audio_sub">निर्देश सुनने के लिए दबाएं</span>
               </div>
             </div>
-            <span class="text-[10px] font-bold text-secondary bg-white px-2 py-0.5 rounded-full shadow-xs shrink-0 inline-flex items-center justify-center box-border">सहायता</span>
+            <span class="text-[10px] font-bold text-secondary bg-white px-2 py-0.5 rounded-full shadow-xs shrink-0 inline-flex items-center justify-center box-border" data-i18n="p1_audio_badge">सहायता</span>
           </div>
 
           <!-- Send OTP Button -->
@@ -565,7 +565,7 @@
           </div>
 
           <div class="flex items-center justify-between mt-4 text-xs">
-            <span class="text-on-surface-variant font-medium">पुनः भेजने का समय: <strong id="p1-countdown">0:24s</strong></span>
+            <span class="text-on-surface-variant font-medium"><span data-i18n="p1_resend_time_prefix">पुनः भेजने का समय:</span> <strong id="p1-countdown">0:24s</strong></span>
             <button id="p1-resend-btn" disabled onclick="resendOtpCode()" class="min-h-[44px] px-3 py-2 rounded-lg text-outline opacity-50 font-bold inline-flex items-center justify-center active:scale-95 transition-all cursor-pointer" data-i18n="p1_otp_resend">पुनः कोड भेजें</button>
           </div>
         </div>
@@ -787,37 +787,37 @@
               <div class="w-11 h-11 rounded-xl bg-primary-fixed/30 text-primary flex items-center justify-center mb-1.5">
                 <span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">shopping_basket</span>
               </div>
-              <span class="text-xs font-bold text-on-surface text-center leading-tight truncate max-w-full block" id="cat-lbl-kirana">किराना व राशन</span>
+              <span class="text-xs font-bold text-on-surface text-center leading-tight truncate max-w-full block" id="cat-lbl-kirana" data-i18n="cat_kirana">किराना व राशन</span>
             </div>
             <div onclick="selectCategory('medicines')" class="btn-tactile p-3 rounded-2xl bg-white shadow-xs border border-surface-container-high flex flex-col items-center text-center cursor-pointer hover:border-primary">
               <div class="w-11 h-11 rounded-xl bg-error-container/40 text-error flex items-center justify-center mb-1.5">
                 <span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">medication</span>
               </div>
-              <span class="text-xs font-bold text-on-surface text-center leading-tight truncate max-w-full block" id="cat-lbl-medicines">दवाइयाँ</span>
+              <span class="text-xs font-bold text-on-surface text-center leading-tight truncate max-w-full block" id="cat-lbl-medicines" data-i18n="cat_medicines">दवाइयाँ</span>
             </div>
             <div onclick="selectCategory('agri')" class="btn-tactile p-3 rounded-2xl bg-white shadow-xs border border-surface-container-high flex flex-col items-center text-center cursor-pointer hover:border-primary">
               <div class="w-11 h-11 rounded-xl bg-primary-fixed/20 text-primary flex items-center justify-center mb-1.5">
                 <span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">potted_plant</span>
               </div>
-              <span class="text-xs font-bold text-on-surface text-center leading-tight truncate max-w-full block" id="cat-lbl-agri">बीज व खाद</span>
+              <span class="text-xs font-bold text-on-surface text-center leading-tight truncate max-w-full block" id="cat-lbl-agri" data-i18n="cat_agri">बीज व खाद</span>
             </div>
             <div onclick="selectCategory('dairy')" class="btn-tactile p-3 rounded-2xl bg-white shadow-xs border border-surface-container-high flex flex-col items-center text-center cursor-pointer hover:border-primary">
               <div class="w-11 h-11 rounded-xl bg-tertiary-fixed text-tertiary flex items-center justify-center mb-1.5">
                 <span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">water_drop</span>
               </div>
-              <span class="text-xs font-bold text-on-surface text-center leading-tight truncate max-w-full block" id="cat-lbl-dairy">दूध व घी</span>
+              <span class="text-xs font-bold text-on-surface text-center leading-tight truncate max-w-full block" id="cat-lbl-dairy" data-i18n="cat_dairy">दूध व घी</span>
             </div>
             <div onclick="selectCategory('tools')" class="btn-tactile p-3 rounded-2xl bg-white shadow-xs border border-surface-container-high flex flex-col items-center text-center cursor-pointer hover:border-primary">
               <div class="w-11 h-11 rounded-xl bg-secondary-fixed text-secondary flex items-center justify-center mb-1.5">
                 <span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">bolt</span>
               </div>
-              <span class="text-xs font-bold text-on-surface text-center leading-tight truncate max-w-full block" id="cat-lbl-tools">बिजली व औज़ार</span>
+              <span class="text-xs font-bold text-on-surface text-center leading-tight truncate max-w-full block" id="cat-lbl-tools" data-i18n="cat_tools">बिजली व औज़ार</span>
             </div>
             <div onclick="selectCategory('sabzi')" class="btn-tactile p-3 rounded-2xl bg-white shadow-xs border border-surface-container-high flex flex-col items-center text-center cursor-pointer hover:border-primary">
               <div class="w-11 h-11 rounded-xl bg-primary-container/20 text-primary flex items-center justify-center mb-1.5">
                 <span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">nutrition</span>
               </div>
-              <span class="text-xs font-bold text-on-surface text-center leading-tight truncate max-w-full block" id="cat-lbl-sabzi">ताज़ी सब्ज़ियाँ</span>
+              <span class="text-xs font-bold text-on-surface text-center leading-tight truncate max-w-full block" id="cat-lbl-sabzi" data-i18n="cat_sabzi">ताज़ी सब्ज़ियाँ</span>
             </div>
           </div>
         </div>
@@ -868,7 +868,7 @@
         <!-- Category Horizontal Filter Tabs (Sticky & Dynamic) -->
         <div id="p3-category-tabs-sticky-wrapper" class="sticky top-0 z-30 bg-surface/95 backdrop-blur-md -mx-4 px-4 py-2 border-b border-surface-container/60 shadow-xs mb-3">
           <div id="p3-category-tabs-container" class="flex items-center gap-2 overflow-x-auto no-scrollbar touch-pan-x">
-            <button onclick="filterCatalogCategory('all', this)" class="cat-pill active h-8 px-4 rounded-full bg-primary text-white font-bold text-xs shrink-0">सभी</button>
+            <button onclick="filterCatalogCategory('all', this)" class="cat-pill active h-8 px-4 rounded-full bg-primary text-white font-bold text-xs shrink-0" data-i18n="cat_all">सभी</button>
           </div>
         </div>
 
@@ -881,7 +881,7 @@
         <aside id="p3-cart-bar" class="hidden fixed bottom-0 left-0 right-0 w-full z-50 bg-white border-t border-surface-container-high px-4 py-3 pb-safe shadow-sticky-bar">
           <div class="w-full bg-secondary text-white rounded-xl p-3 shadow-md flex items-center justify-between gap-2">
             <div class="flex flex-col pl-1 leading-tight">
-              <span id="p3-bar-count-total" class="text-sm font-extrabold">1 सामान • ₹210</span>
+              <span id="p3-bar-count-total" class="text-sm font-extrabold" data-i18n="p3_cart_bar_initial">1 सामान • ₹210</span>
               <span id="p3-bar-sub" class="text-[10px] text-secondary-fixed font-bold">₹10 Off Delivery over ₹299</span>
             </div>
             <button onclick="navigateToPhase('cart')" class="h-10 px-4 bg-white text-secondary rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm active:scale-95">
@@ -918,10 +918,10 @@
           <!-- Dynamic Delivery Fee Tier Banner & Delivery Discount Incentive -->
           <div class="bg-primary/5 rounded-2xl p-4 shadow-xs border border-primary/20">
             <div class="flex items-center justify-between text-xs font-bold text-primary mb-1">
-              <span id="p4-delivery-qualify-text">🛵 गाँव मित्र डिलीवरी शुल्क: ₹15</span>
+              <span id="p4-delivery-qualify-text" data-i18n="p4_delivery_qualify_initial">🛵 गाँव मित्र डिलीवरी शुल्क: ₹15</span>
               <span id="p4-delivery-tier-tag" class="text-[10px] bg-primary/15 text-primary px-2.5 py-0.5 rounded-full font-bold inline-flex items-center justify-center shrink-0 box-border">0-2 km • 30 Mins</span>
             </div>
-            <p id="p4-delivery-tier-sub" class="text-[11px] text-on-surface-variant mt-0.5">
+            <p id="p4-delivery-tier-sub" class="text-[11px] text-on-surface-variant mt-0.5" data-i18n="p4_delivery_tier_sub">
               ₹299 से अधिक के ऑर्डर पर ₹10 डिलीवरी छूट (₹10 Off Delivery over ₹299)
             </p>
           </div>
@@ -930,7 +930,7 @@
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-1.5">
               <h3 class="text-xs font-extrabold text-on-surface uppercase" data-i18n="p4_items_title">थैले का सामान</h3>
-              <span id="p4-cart-count-pill" class="text-[10px] font-bold bg-surface-container-high px-2.5 py-0.5 rounded-full inline-flex items-center justify-center shrink-0 box-border">0 सामान</span>
+              <span id="p4-cart-count-pill" class="text-[10px] font-bold bg-surface-container-high px-2.5 py-0.5 rounded-full inline-flex items-center justify-center shrink-0 box-border" data-i18n="p4_cart_count_pill_initial">0 सामान</span>
             </div>
             <button onclick="clearFullCart()" class="min-h-[44px] min-w-[44px] px-2.5 py-1.5 rounded-xl text-error font-bold text-xs flex items-center gap-1 active:scale-95 transition-all cursor-pointer">
               <span class="material-symbols-outlined text-[16px]">delete_sweep</span>
@@ -1008,8 +1008,8 @@
           </div>
           <button id="p4-btn-proceed" onclick="navigateToPhase('checkout')" class="w-full h-[52px] rounded-xl bg-primary text-white text-base font-bold shadow-md flex items-center justify-between px-4 active:scale-98 transition-all">
             <div class="flex flex-col text-left leading-tight">
-              <span id="p4-checkout-btn-price" class="text-sm font-black">कुल ₹0.00</span>
-              <span id="p4-checkout-btn-sub" class="text-[10px] text-primary-fixed font-semibold">पता चुनें और भुगतान करें</span>
+              <span id="p4-checkout-btn-price" class="text-sm font-black" data-i18n="p4_checkout_price_initial">कुल ₹0.00</span>
+              <span id="p4-checkout-btn-sub" class="text-[10px] text-primary-fixed font-semibold" data-i18n="p4_checkout_sub">पता चुनें और भुगतान करें</span>
             </div>
             <div class="flex items-center gap-1">
               <span data-i18n="p4_proceed_btn">आगे बढ़ें</span>
@@ -1030,7 +1030,7 @@
               <span class="material-symbols-outlined text-primary text-[18px]">pin_drop</span>
               <span data-i18n="p4_dest_title">डिलीवरी का पता</span>
             </div>
-            <button onclick="navigateToPhase('landmark')" class="min-h-[44px] px-3 py-1.5 rounded-lg inline-flex items-center text-xs text-secondary font-bold active:scale-95 transition-all cursor-pointer">बदलें</button>
+            <button onclick="navigateToPhase('landmark')" class="min-h-[44px] px-3 py-1.5 rounded-lg inline-flex items-center text-xs text-secondary font-bold active:scale-95 transition-all cursor-pointer" data-i18n="p4_btn_change">बदलें</button>
           </div>
           <div class="mt-3 text-xs">
             <div class="flex items-center gap-2 mb-1">
@@ -1040,7 +1040,7 @@
             <p id="p4-checkout-village" class="text-on-surface-variant font-medium" data-i18n="p4_checkout_village_lbl">गाँव</p>
             <div class="mt-2.5 p-2.5 bg-secondary-fixed/50 rounded-xl border border-secondary/20 text-xs">
               <span class="font-bold text-secondary block text-[10px] uppercase" data-i18n="p4_checkout_landmark_lbl">पहचान चिन्ह:</span>
-              <p id="p4-checkout-landmark" class="font-bold text-on-secondary-fixed leading-tight mt-0.5">पहचान चिन्ह</p>
+              <p id="p4-checkout-landmark" class="font-bold text-on-secondary-fixed leading-tight mt-0.5" data-i18n="p4_checkout_landmark_val">पहचान चिन्ह</p>
             </div>
           </div>
         </div>
@@ -1244,10 +1244,10 @@
           </div>
 
           <!-- Bilingual Titles -->
-          <h1 id="offline-title-hi" class="text-xl font-black text-slate-900 mb-1 leading-snug">इंटरनेट कनेक्शन उपलब्ध नहीं है</h1>
+          <h1 id="offline-title-hi" class="text-xl font-black text-slate-900 mb-1 leading-snug" data-i18n="offline_title">इंटरनेट कनेक्शन उपलब्ध नहीं है</h1>
           <h2 id="offline-title-en" class="text-sm font-semibold text-slate-500 mb-4">No Internet Connection</h2>
 
-          <p class="text-xs text-slate-700 leading-relaxed mb-2">
+          <p class="text-xs text-slate-700 leading-relaxed mb-2" data-i18n="offline_desc">
             लगता है आपका ग्रामीण नेटवर्क अस्थायी रूप से बंद है। चिंता न करें, आपकी कार्ट और स्थानीय डिलीवरी डेटा सुरक्षित है।
           </p>
           <p class="text-[11px] text-slate-500 leading-relaxed mb-5">
@@ -1323,7 +1323,7 @@
               </div>
               <div class="min-w-0 flex-1">
                 <div class="flex items-center gap-1.5">
-                  <h2 id="profile-user-name" class="text-lg font-black text-slate-900 leading-tight truncate">रमेश पटेल</h2>
+                  <h2 id="profile-user-name" class="text-lg font-black text-slate-900 leading-tight truncate" data-i18n="profile_user_default_name">रमेश पटेल</h2>
                 </div>
                 <div class="flex items-center gap-2 mt-1">
                   <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-200/80 px-2 py-0.5 rounded-full text-[10px] font-black">
@@ -1459,9 +1459,9 @@
                 <div class="flex flex-col min-w-0">
                   <span class="text-xs font-black text-slate-900 truncate" data-i18n="profile_row_addresses">सहेजे गए पते (Saved Addresses)</span>
                   <div class="text-[11px] text-slate-500 truncate flex items-center gap-1 mt-0.5">
-                    <span id="profile-user-village" class="font-bold text-slate-700">गाँव चुनें</span>
+                    <span id="profile-user-village" class="font-bold text-slate-700" data-i18n="profile_lbl_select_village">गाँव चुनें</span>
                     <span class="text-slate-300">•</span>
-                    <span id="profile-user-landmark" class="truncate">पहचान चिन्ह सेट करें</span>
+                    <span id="profile-user-landmark" class="truncate" data-i18n="profile_lbl_set_landmark">पहचान चिन्ह सेट करें</span>
                   </div>
                 </div>
               </div>
@@ -1506,7 +1506,7 @@
                   </div>
                   <div>
                     <span class="text-xs font-black text-slate-900 block" data-i18n="profile_row_lang">ऐप की भाषा (App Language)</span>
-                    <span id="profile-current-lang-badge" class="text-[11px] text-slate-500 font-bold block">हिंदी / English</span>
+                    <span id="profile-current-lang-badge" class="text-[11px] text-slate-500 font-bold block" data-i18n="profile_lang_badge">हिंदी / English</span>
                   </div>
                 </div>
               </div>
@@ -1520,7 +1520,7 @@
                   class="h-10 rounded-xl font-black text-xs flex items-center justify-center gap-1.5 transition-all bg-primary text-white shadow-xs cursor-pointer"
                 >
                   <span>🇮🇳</span>
-                  <span>हिंदी (Hindi)</span>
+                  <span data-i18n="profile_opt_hindi">हिंदी (Hindi)</span>
                 </button>
                 <button 
                   id="btn-profile-lang-en" 
@@ -1958,12 +1958,12 @@
                 required
                 class="w-full h-11 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-primary/30 text-slate-800"
               >
-                <option value="delivery_delay">Delivery Delay / डिलीवरी में देरी</option>
-                <option value="damaged_item">Damaged or Expired Product / खराब सामान</option>
-                <option value="missing_item">Missing Items in Order / सामान छूटा हुआ</option>
-                <option value="refund_payment">Payment or Refund Issue / भुगतान या रिफंड</option>
-                <option value="runner_conduct">Runner / Delivery Conduct / गाँव मित्र से जुड़ी शिकायत</option>
-                <option value="other">Other Inquiry / अन्य समस्या</option>
+                <option value="delivery_delay" data-i18n="support_opt_delay">Delivery Delay / डिलीवरी में देरी</option>
+                <option value="damaged_item" data-i18n="support_opt_damaged">Damaged or Expired Product / खराब सामान</option>
+                <option value="missing_item" data-i18n="support_opt_missing">Missing Items in Order / सामान छूटा हुआ</option>
+                <option value="refund_payment" data-i18n="support_opt_refund">Payment or Refund Issue / भुगतान या रिफंड</option>
+                <option value="runner_conduct" data-i18n="support_opt_runner">Runner / Delivery Conduct / गाँव मित्र से जुड़ी शिकायत</option>
+                <option value="other" data-i18n="support_opt_other">Other Inquiry / अन्य समस्या</option>
               </select>
             </div>
 
@@ -2268,7 +2268,7 @@
         <div class="p-3 bg-slate-50 rounded-2xl border border-slate-100 space-y-1.5 text-[11px] text-slate-600">
           <div class="flex items-center justify-between">
             <span class="font-bold text-slate-700" data-i18n="about_made_for">निर्मित:</span>
-            <span class="font-black text-primary">ग्रामीण भारत (Rural India)</span>
+            <span class="font-black text-primary" data-i18n="about_made_for_val">ग्रामीण भारत (Rural India)</span>
           </div>
           <div class="flex items-center justify-between">
             <span class="font-bold text-slate-700" data-i18n="about_tech_engine">तकनीक:</span>
@@ -2539,7 +2539,7 @@
         <span class="material-symbols-outlined text-primary-fixed animate-pulse text-[22px]">volume_up</span>
         <div class="flex flex-col">
           <span id="toast-title" class="text-xs font-bold" data-i18n="toast_title">आवाज़ निर्देश</span>
-          <span id="toast-msg" class="text-[10px] text-slate-300">"कृपया अपना मोबाइल नंबर दर्ज करें"</span>
+          <span id="toast-msg" class="text-[10px] text-slate-300" data-i18n="toast_default_msg">"कृपया अपना मोबाइल नंबर दर्ज करें"</span>
         </div>
       </div>
       <button onclick="closeAudioToast()" aria-label="Close Toast" class="pointer-events-auto w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full text-slate-400 hover:text-white active:scale-90 cursor-pointer">
@@ -2942,7 +2942,45 @@
         ticket_upload_label: "फोटो या बिल संलग्न करें (वैकल्पिक)",
         ticket_choose_file: "फोटो चुनें",
         ticket_submit_btn: "शिकायत टिकट दर्ज करें",
-        ticket_history_heading: "पूर्व दर्ज शिकायतें एवं स्थिति"
+        ticket_history_heading: "पूर्व दर्ज शिकायतें एवं स्थिति",
+        page_title_app: "GaonBazaar • गांव बाज़ार (Hyperlocal Rural Delivery)",
+        drawer_guest_user: "अतिथि ग्राहक",
+        auth_tab_signin: "लॉगिन करें",
+        auth_tab_signup: "नया खाता बनाएं",
+        auth_mode_signin_title: "मौजूदा ग्राहक लॉगिन",
+        auth_mode_signin_desc: "अपना पंजीकृत मोबाइल नंबर भरें और सहेजे गए पते पर तुरंत ऑर्डर करें।",
+        p1_audio_badge: "सहायता",
+        p1_resend_time_prefix: "पुनः भेजने का समय:",
+        cat_kirana: "किराना व राशन",
+        cat_medicines: "दवाइयाँ",
+        cat_agri: "बीज व खाद",
+        cat_dairy: "दूध व घी",
+        cat_tools: "बिजली व औज़ार",
+        cat_sabzi: "ताज़ी सब्ज़ियाँ",
+        cat_all: "सभी",
+        p3_cart_bar_initial: "1 सामान • ₹210",
+        p4_delivery_qualify_initial: "🛵 गाँव मित्र डिलीवरी शुल्क: ₹15",
+        p4_delivery_tier_sub: "₹299 से अधिक के ऑर्डर पर ₹10 डिलीवरी छूट (₹10 Off Delivery over ₹299)",
+        p4_cart_count_pill_initial: "0 सामान",
+        p4_checkout_price_initial: "कुल ₹0.00",
+        p4_checkout_sub: "पता चुनें और भुगतान करें",
+        p4_btn_change: "बदलें",
+        p4_checkout_landmark_val: "पहचान चिन्ह",
+        offline_title: "इंटरनेट कनेक्शन उपलब्ध नहीं है",
+        offline_desc: "लगता है आपका ग्रामीण नेटवर्क अस्थायी रूप से बंद है। चिंता न करें, आपकी कार्ट और स्थानीय डिलीवरी डेटा सुरक्षित है।",
+        profile_user_default_name: "रमेश पटेल",
+        profile_lbl_select_village: "गाँव चुनें",
+        profile_lbl_set_landmark: "पहचान चिन्ह सेट करें",
+        profile_lang_badge: "हिंदी / English",
+        profile_opt_hindi: "हिंदी (Hindi)",
+        support_opt_delay: "Delivery Delay / डिलीवरी में देरी",
+        support_opt_damaged: "Damaged or Expired Product / खराब सामान",
+        support_opt_missing: "Missing Items in Order / सामान छूटा हुआ",
+        support_opt_refund: "Payment or Refund Issue / भुगतान या रिफंड",
+        support_opt_runner: "Runner / Delivery Conduct / गाँव मित्र से जुड़ी शिकायत",
+        support_opt_other: "Other Inquiry / अन्य समस्या",
+        about_made_for_val: "ग्रामीण भारत (Rural India)",
+        toast_default_msg: "\"कृपया अपना मोबाइल नंबर दर्ज करें\""
       },
       en: {
         header_sub: "",
@@ -3278,7 +3316,45 @@
         ticket_upload_label: "Attach Photo / Bill (Optional)",
         ticket_choose_file: "Choose Photo",
         ticket_submit_btn: "Submit Grievance Ticket",
-        ticket_history_heading: "Past Complaints & Status"
+        ticket_history_heading: "Past Complaints & Status",
+        page_title_app: "GaonBazaar • Hyperlocal Rural Delivery",
+        drawer_guest_user: "Guest Customer",
+        auth_tab_signin: "Sign In",
+        auth_tab_signup: "Sign Up",
+        auth_mode_signin_title: "Existing Customer Sign In",
+        auth_mode_signin_desc: "Enter your registered mobile number to access saved landmarks & orders.",
+        p1_audio_badge: "Help",
+        p1_resend_time_prefix: "Resend in:",
+        cat_kirana: "Daily Kirana",
+        cat_medicines: "Medicines",
+        cat_agri: "Agri & Seeds",
+        cat_dairy: "Dairy & Ghee",
+        cat_tools: "Tools & Hardware",
+        cat_sabzi: "Fresh Veggies",
+        cat_all: "All",
+        p3_cart_bar_initial: "1 item • ₹210",
+        p4_delivery_qualify_initial: "🛵 Delivery Partner Fee: ₹15",
+        p4_delivery_tier_sub: "₹10 Off Delivery over ₹299",
+        p4_cart_count_pill_initial: "0 items",
+        p4_checkout_price_initial: "Total ₹0.00",
+        p4_checkout_sub: "Select Address & Pay",
+        p4_btn_change: "Change",
+        p4_checkout_landmark_val: "Landmark",
+        offline_title: "No Internet Connection",
+        offline_desc: "Your rural network connection seems temporarily offline. Don't worry, your cart and local delivery data are safe.",
+        profile_user_default_name: "Ramesh Patel",
+        profile_lbl_select_village: "Select Village",
+        profile_lbl_set_landmark: "Set Landmark",
+        profile_lang_badge: "English / Hindi",
+        profile_opt_hindi: "Hindi",
+        support_opt_delay: "Delivery Delay",
+        support_opt_damaged: "Damaged or Expired Product",
+        support_opt_missing: "Missing Items in Order",
+        support_opt_refund: "Payment or Refund Issue",
+        support_opt_runner: "Runner / Delivery Partner Conduct",
+        support_opt_other: "Other Inquiry",
+        about_made_for_val: "Rural India",
+        toast_default_msg: "\"Please enter your mobile number\""
       }
     };
     const translations = i18nDictionary;
@@ -3792,6 +3868,10 @@
       document.documentElement.lang = lang;
       const dict = i18nDictionary[lang] || i18nDictionary['hi'];
 
+      if (dict && dict.page_title_app) {
+        document.title = dict.page_title_app;
+      }
+
       // Update Header Subtitle
       const headerSub = document.getElementById('header-subtitle');
       if (headerSub && dict.header_sub) headerSub.innerText = dict.header_sub;
@@ -4005,6 +4085,29 @@
         } else {
           hint.innerText = (lang === 'hi') ? '10 अंकों का फोन नंबर भरें' : 'Enter 10-digit mobile number';
         }
+      }
+
+      // Update Support ticket dropdown options
+      const supportCatSelect = document.getElementById('ticket-category');
+      if (supportCatSelect && supportCatSelect.options) {
+        const supportLabels = (lang === 'hi') ? {
+          delivery_delay: "Delivery Delay / डिलीवरी में देरी",
+          damaged_item: "Damaged or Expired Product / खराब सामान",
+          missing_item: "Missing Items in Order / सामान छूटा हुआ",
+          refund_payment: "Payment or Refund Issue / भुगतान या रिफंड",
+          runner_conduct: "Runner / Delivery Conduct / गाँव मित्र से जुड़ी शिकायत",
+          other: "Other Inquiry / अन्य समस्या"
+        } : {
+          delivery_delay: "Delivery Delay",
+          damaged_item: "Damaged or Expired Product",
+          missing_item: "Missing Items in Order",
+          refund_payment: "Payment or Refund Issue",
+          runner_conduct: "Runner / Delivery Conduct Issue",
+          other: "Other Inquiry"
+        };
+        Array.from(supportCatSelect.options).forEach(opt => {
+          if (supportLabels[opt.value]) opt.text = supportLabels[opt.value];
+        });
       }
 
       // Update dynamic elements safely

@@ -7,7 +7,7 @@
   <meta name="HandheldFriendly" content="true"/>
   <meta name="MobileOptimized" content="width"/>
   <meta name="theme-color" content="#006b2c"/>
-  <title>गांव बाज़ार • दुकानदार पोर्टल</title>
+  <title data-i18n="page_title_vendor">गांव बाज़ार • दुकानदार पोर्टल</title>
 
   <!-- Typography & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -168,7 +168,7 @@
         </div>
         <button type="button" onclick="toggleLanguage()" class="min-h-[44px] px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 text-xs font-bold flex items-center gap-1 active:scale-95 shrink-0 cursor-pointer" title="Language">
           <span class="material-symbols-outlined text-[16px]">translate</span>
-          <span class="current-lang-text-label">हिंदी</span>
+          <span class="current-lang-text-label" data-i18n="lang_name">हिंदी</span>
         </button>
       </div>
 
@@ -258,8 +258,8 @@
         <!-- Shop Open/Close Toggle CTA -->
         <button id="store-open-btn" onclick="toggleStoreOpenStatus()" aria-label="Toggle Store Status" class="px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 border transition-all bg-emerald-50 text-emerald-800 border-emerald-300 min-h-[44px] min-w-[44px] active:scale-95 shrink-0 cursor-pointer">
           <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" id="open-indicator-dot"></span>
-          <span id="open-status-label" class="hidden sm:inline">चालू</span>
-          <span id="open-status-mobile-label" class="sm:hidden text-xs font-black">चालू</span>
+          <span id="open-status-label" class="hidden sm:inline" data-i18n="store_open_short">चालू</span>
+          <span id="open-status-mobile-label" class="sm:hidden text-xs font-black" data-i18n="store_open_short">चालू</span>
         </button>
 
         <!-- Language Switcher Pill -->
@@ -300,23 +300,23 @@
         <span class="material-symbols-outlined text-[36px] animate-pulse">hourglass_top</span>
       </div>
 
-      <span class="px-3 py-1 rounded-full text-xs font-black bg-amber-100 text-amber-800 border border-amber-300 mb-2" id="pending-vendor-status-badge">
+      <span class="px-3 py-1 rounded-full text-xs font-black bg-amber-100 text-amber-800 border border-amber-300 mb-2" id="pending-vendor-status-badge" data-i18n="pending_verification_badge">
         सत्यापन प्रक्रियाधीन
       </span>
 
-      <h2 class="text-xl font-black text-slate-900 mb-1" id="pending-vendor-shop-name">वर्मा किराना स्टोर</h2>
-      <p class="text-xs text-slate-500 mb-4" id="pending-vendor-owner-info">दुकानदार: राजेश वर्मा • ID: #VND-NEW</p>
+      <h2 class="text-xl font-black text-slate-900 mb-1" id="pending-vendor-shop-name" data-i18n="pending_vendor_shop_name">वर्मा किराना स्टोर</h2>
+      <p class="text-xs text-slate-500 mb-4" id="pending-vendor-owner-info" data-i18n="pending_vendor_owner_info">दुकानदार: राजेश वर्मा • ID: #VND-NEW</p>
 
       <div class="w-full bg-amber-50 rounded-2xl p-4 border border-amber-200 text-left text-xs text-amber-950 mb-5 flex flex-col gap-2">
         <div class="flex items-center gap-2 font-bold text-amber-900">
           <span class="material-symbols-outlined text-[18px]">verified_user</span>
-          <span>सुरक्षा एवं प्रामाणिकता सूचना</span>
+          <span data-i18n="security_notice_title">सुरक्षा एवं प्रामाणिकता सूचना</span>
         </div>
-        <p class="text-[11px] leading-relaxed text-amber-900/90">
+        <p class="text-[11px] leading-relaxed text-amber-900/90" data-i18n="security_notice_desc">
           गाँव बाज़ार सहकारी नेटवर्क में ग्रामीण उपभोक्ताओं की सुरक्षा हेतु सभी नई दुकानों का भौतिक व दस्तावेज़ी सत्यापन अनिवार्य है। आपकी दुकान की जानकारी सुपर एडमिन द्वारा सत्यापन हेतु विचाराधीन है।
         </p>
         <div class="pt-2 border-t border-amber-200/60 flex flex-col sm:flex-row items-start sm:items-center justify-between text-[11px] gap-1">
-          <span class="text-slate-600">दस्तावेज़ संख्या: <b id="pending-vendor-id-badge" class="text-slate-800 font-mono">XXXX-XXXX-9988</b></span>
+          <span class="text-slate-600"><span data-i18n="lbl_doc_number">दस्तावेज़ संख्या:</span> <b id="pending-vendor-id-badge" class="text-slate-800 font-mono">XXXX-XXXX-9988</b></span>
           <span class="text-slate-600">UPI ID: <b id="pending-vendor-upi-badge" class="text-slate-800 font-mono">verma@okhdfc</b></span>
         </div>
       </div>
@@ -326,7 +326,7 @@
           <span class="material-symbols-outlined text-[18px]">refresh</span>
           <span data-i18n="btn_check_status">स्वीकृति स्थिति जांचें</span>
         </button>
-        <button onclick="switchStore('sharma_brothers')" class="w-full sm:w-auto px-4 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all whitespace-nowrap">
+        <button onclick="switchStore('sharma_brothers')" class="w-full sm:w-auto px-4 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all whitespace-nowrap" data-i18n="btn_switch_sharma">
           शर्मा ब्रदर्स पर स्विच करें
         </button>
       </div>
@@ -372,7 +372,7 @@
         <div class="flex flex-col min-w-0 flex-1">
           <span class="text-[10px] sm:text-[11px] font-extrabold text-primary uppercase tracking-wider flex items-center gap-1 truncate" data-i18n="kpi_today_sales">कुल बिक्री</span>
           <span id="kpi-gross-sales" class="text-2xl sm:text-3xl font-black text-slate-900 mt-1">₹0</span>
-          <span id="kpi-orders-count" class="text-[10px] sm:text-[11px] text-slate-500 font-semibold mt-0.5 truncate">0 कुल ऑर्डर</span>
+          <span id="kpi-orders-count" class="text-[10px] sm:text-[11px] text-slate-500 font-semibold mt-0.5 truncate" data-i18n="kpi_orders_label">0 कुल ऑर्डर</span>
         </div>
         <div class="w-11 h-11 rounded-2xl bg-emerald-50 text-primary border border-emerald-200 flex items-center justify-center shrink-0">
           <span class="material-symbols-outlined text-[24px]">payments</span>
@@ -491,7 +491,7 @@
             <p class="text-xs text-slate-500" data-i18n="ledger_sub">गाँव बाज़ार से आपकी सीधी कमाई एवं नकद वसूली का हिसाब</p>
           </div>
           <div class="flex items-center gap-2">
-            <span class="text-xs font-bold text-slate-600" id="ledger-date-pill">तारीख: 2026-10-21</span>
+            <span class="text-xs font-bold text-slate-600" id="ledger-date-pill"><span data-i18n="ledger_date_prefix">तारीख:</span> <span id="ledger-date-val">2026-10-21</span></span>
             <button onclick="window.print()" class="min-h-[44px] px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center gap-1.5 active:scale-95 cursor-pointer">
               <span class="material-symbols-outlined text-[16px]">print</span>
               <span data-i18n="btn_print">प्रिंट</span>
@@ -504,25 +504,25 @@
           <div class="bg-slate-50 rounded-2xl p-3 border border-slate-200">
             <span class="text-[11px] font-bold text-slate-500 uppercase" data-i18n="ledger_stat_sales">कुल बिक्री</span>
             <div id="ledger-gross-sales" class="text-xl sm:text-2xl font-black text-slate-900 mt-1">₹0.00</div>
-            <span class="text-[10px] text-slate-400">सामान का कुल मूल्य</span>
+            <span class="text-[10px] text-slate-400" data-i18n="ledger_stat_sales_sub">सामान का कुल मूल्य</span>
           </div>
 
           <div class="bg-emerald-50 rounded-2xl p-3 border border-emerald-200">
             <span class="text-[11px] font-bold text-primary uppercase" data-i18n="ledger_stat_cod">हाथ में नकद</span>
             <div id="ledger-cod-collected" class="text-xl sm:text-2xl font-black text-emerald-900 mt-1">₹0.00</div>
-            <span class="text-[10px] text-emerald-700">रनर से प्राप्त नकद</span>
+            <span class="text-[10px] text-emerald-700" data-i18n="ledger_stat_cod_sub">रनर से प्राप्त नकद</span>
           </div>
 
           <div class="bg-amber-50 rounded-2xl p-3 border border-amber-200">
             <span class="text-[11px] font-bold text-amber-800 uppercase" data-i18n="ledger_stat_fee">प्लेटफ़ॉर्म शुल्क</span>
             <div id="ledger-platform-fee" class="text-xl sm:text-2xl font-black text-amber-900 mt-1">₹0.00</div>
-            <span class="text-[10px] text-amber-700">₹3 प्रति सफल डिलीवरी</span>
+            <span class="text-[10px] text-amber-700" data-i18n="ledger_stat_fee_sub">₹3 प्रति सफल डिलीवरी</span>
           </div>
 
           <div class="bg-purple-50 rounded-2xl p-3 border border-purple-200">
             <span class="text-[11px] font-bold text-purple-800 uppercase" data-i18n="ledger_stat_earnings">आपकी कमाई</span>
             <div id="ledger-net-payout" class="text-xl sm:text-2xl font-black text-purple-900 mt-1">₹0.00</div>
-            <span class="text-[10px] text-purple-700">खाते में अंतरण राशि</span>
+            <span class="text-[10px] text-purple-700" data-i18n="ledger_stat_earnings_sub">खाते में अंतरण राशि</span>
           </div>
         </div>
 
@@ -539,13 +539,13 @@
           <table class="w-full text-left text-xs">
             <thead id="ledger-table-head">
               <tr class="border-b border-slate-200 text-slate-500 font-bold">
-                <th class="py-2 px-2">ऑर्डर आईडी</th>
-                <th class="py-2 px-2">ग्राहक</th>
-                <th class="py-2 px-2">गाँव व लैंडमार्क</th>
-                <th class="py-2 px-2">सामान</th>
-                <th class="py-2 px-2">भुगतान</th>
-                <th class="py-2 px-2">रकम</th>
-                <th class="py-2 px-2">स्थिति</th>
+                <th class="py-2 px-2" data-i18n="th_order_id">ऑर्डर आईडी</th>
+                <th class="py-2 px-2" data-i18n="th_customer">ग्राहक</th>
+                <th class="py-2 px-2" data-i18n="th_village_landmark">गाँव व लैंडमार्क</th>
+                <th class="py-2 px-2" data-i18n="th_items">सामान</th>
+                <th class="py-2 px-2" data-i18n="th_payment">भुगतान</th>
+                <th class="py-2 px-2" data-i18n="th_amount">रकम</th>
+                <th class="py-2 px-2" data-i18n="th_status">स्थिति</th>
               </tr>
             </thead>
             <tbody id="ledger-table-body" class="divide-y divide-slate-100">
@@ -579,17 +579,17 @@
           </div>
 
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">दुकानदार का फ़ोन</label>
+            <label class="block text-xs font-bold text-slate-600 mb-1" data-i18n="store_phone">दुकानदार का फ़ोन</label>
             <input type="text" id="setting-store-phone" class="w-full p-2.5 bg-slate-50 border rounded-xl text-xs font-medium" readonly/>
           </div>
 
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">मंडी क्लस्टर हब</label>
+            <label class="block text-xs font-bold text-slate-600 mb-1" data-i18n="store_mandi_hub">मंडी क्लस्टर हब</label>
             <input type="text" value="Rampur Mandi Cluster Hub #RMP-04" class="w-full p-2.5 bg-slate-50 border rounded-xl text-xs font-medium" readonly/>
           </div>
 
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">दुकान खुलने का समय</label>
+            <label class="block text-xs font-bold text-slate-600 mb-1" data-i18n="store_timings">दुकान खुलने का समय</label>
             <input type="text" value="सुबह 07:00 AM - रात्रि 09:30 PM" class="w-full p-2.5 bg-slate-50 border rounded-xl text-xs font-medium" readonly/>
           </div>
 
@@ -601,7 +601,7 @@
 
         <div class="bg-emerald-50 rounded-2xl p-3 border border-emerald-200 text-xs text-emerald-900 flex items-center gap-2">
           <span class="material-symbols-outlined text-primary text-[20px]">verified</span>
-          <span>गाँव बाज़ार से सत्यापित दुकान। प्रति ऑर्डर ₹3 प्लेटफ़ॉर्म शुल्क लागू।</span>
+          <span data-i18n="store_verified_note">गाँव बाज़ार से सत्यापित दुकान। प्रति ऑर्डर ₹3 प्लेटफ़ॉर्म शुल्क लागू।</span>
         </div>
       </div>
     
@@ -662,11 +662,11 @@
           <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-slate-600">credit_card</span>
             <div class="flex flex-col">
-              <span class="font-bold text-slate-800">सहेजा गया खाता: <span id="vendor-masked-acc-label" class="font-mono">••••••••1234</span></span>
+              <span class="font-bold text-slate-800"><span data-i18n="bank_saved_account_lbl">सहेजा गया खाता:</span> <span id="vendor-masked-acc-label" class="font-mono">••••••••1234</span></span>
               <span class="text-[10px] text-slate-500">IFSC: <b id="vendor-saved-ifsc-label" class="font-mono">--</b> • UPI: <b id="vendor-saved-upi-label" class="font-mono">--</b></span>
             </div>
           </div>
-          <span class="text-[10px] font-bold text-primary bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">सक्रिय</span>
+          <span class="text-[10px] font-bold text-primary bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200" data-i18n="bank_status_active">सक्रिय</span>
         </div>
 
         <!-- Inline Error/Success Message Alert -->
@@ -1110,7 +1110,35 @@
         bank_ph_acc: "9-18 अंकों की खाता संख्या",
         bank_ph_confirm: "खाता संख्या दोबारा दर्ज करें",
         bank_ph_ifsc: "उदा. SBIN0001234",
-        bank_ph_upi: "उदा. sharma.kirana@okaxis"
+        bank_ph_upi: "उदा. sharma.kirana@okaxis",
+        lang_name: "हिंदी",
+        page_title_vendor: "गांव बाज़ार • दुकानदार पोर्टल",
+        pending_verification_badge: "सत्यापन प्रक्रियाधीन",
+        pending_vendor_shop_name: "वर्मा किराना स्टोर",
+        pending_vendor_owner_info: "दुकानदार: राजेश वर्मा • ID: #VND-NEW",
+        security_notice_title: "सुरक्षा एवं प्रामाणिकता सूचना",
+        security_notice_desc: "गाँव बाज़ार सहकारी नेटवर्क में ग्रामीण उपभोक्ताओं की सुरक्षा हेतु सभी नई दुकानों का भौतिक व दस्तावेज़ी सत्यापन अनिवार्य है। आपकी दुकान की जानकारी सुपर एडमिन द्वारा सत्यापन हेतु विचाराधीन है।",
+        lbl_doc_number: "दस्तावेज़ संख्या:",
+        btn_switch_sharma: "शर्मा ब्रदर्स पर स्विच करें",
+        kpi_orders_label: "0 कुल ऑर्डर",
+        ledger_date_prefix: "तारीख:",
+        ledger_stat_sales_sub: "सामान का कुल मूल्य",
+        ledger_stat_cod_sub: "रनर से प्राप्त नकद",
+        ledger_stat_fee_sub: "₹3 प्रति सफल डिलीवरी",
+        ledger_stat_earnings_sub: "खाते में अंतरण राशि",
+        th_order_id: "ऑर्डर आईडी",
+        th_customer: "ग्राहक",
+        th_village_landmark: "गाँव व लैंडमार्क",
+        th_items: "सामान",
+        th_payment: "भुगतान",
+        th_amount: "रकम",
+        th_status: "स्थिति",
+        store_phone: "दुकानदार का फ़ोन",
+        store_mandi_hub: "मंडी क्लस्टर हब",
+        store_timings: "दुकान खुलने का समय",
+        store_verified_note: "गाँव बाज़ार से सत्यापित दुकान। प्रति ऑर्डर ₹3 प्लेटफ़ॉर्म शुल्क लागू।",
+        bank_saved_account_lbl: "सहेजा गया खाता:",
+        bank_status_active: "सक्रिय"
       },
       en: {
         server_offline_msg: "Backend server offline. Unable to connect.",
@@ -1226,7 +1254,35 @@
         bank_ph_acc: "9-18 digit account number",
         bank_ph_confirm: "Re-enter account number",
         bank_ph_ifsc: "e.g. SBIN0001234",
-        bank_ph_upi: "e.g. sharma.kirana@okaxis"
+        bank_ph_upi: "e.g. sharma.kirana@okaxis",
+        lang_name: "English",
+        page_title_vendor: "GaonBazaar • Vendor Portal",
+        pending_verification_badge: "Verification In Progress",
+        pending_vendor_shop_name: "Verma Kirana Store",
+        pending_vendor_owner_info: "Shopkeeper: Rajesh Verma • ID: #VND-NEW",
+        security_notice_title: "Security & Verification Notice",
+        security_notice_desc: "To protect rural consumers in the GaonBazaar network, physical and document verification is mandatory for all new shops. Your application is under super admin review.",
+        lbl_doc_number: "Document Number:",
+        btn_switch_sharma: "Switch to Sharma Brothers",
+        kpi_orders_label: "0 Total Orders",
+        ledger_date_prefix: "Date:",
+        ledger_stat_sales_sub: "Total order value",
+        ledger_stat_cod_sub: "Cash collected by runner",
+        ledger_stat_fee_sub: "₹3 per successful delivery",
+        ledger_stat_earnings_sub: "Transferred to bank account",
+        th_order_id: "Order ID",
+        th_customer: "Customer",
+        th_village_landmark: "Village & Landmark",
+        th_items: "Items",
+        th_payment: "Payment",
+        th_amount: "Amount",
+        th_status: "Status",
+        store_phone: "Shopkeeper Phone",
+        store_mandi_hub: "Mandi Cluster Hub",
+        store_timings: "Store Timings",
+        store_verified_note: "Verified store on GaonBazaar. ₹3 platform fee applies per order.",
+        bank_saved_account_lbl: "Saved Account:",
+        bank_status_active: "Active"
       }
     };
 
@@ -1844,8 +1900,9 @@
       if (elNavBadge) elNavBadge.innerText = orders.length;
 
       if (ledger) {
+        const isHi = VendorStore.lang === 'hi';
         if (elGross) elGross.innerText = `₹${ledger.gross_sales}`;
-        if (elOrders) elOrders.innerText = `${ledger.total_orders} कुल ऑर्डर`;
+        if (elOrders) elOrders.innerText = `${ledger.total_orders} ${isHi ? 'कुल ऑर्डर' : 'Total Orders'}`;
         if (elNet) elNet.innerText = `₹${ledger.net_dukandaar_payout}`;
       }
     }
@@ -2665,6 +2722,12 @@
 
     function updateLanguageUI() {
       const isHi = VendorStore.lang === 'hi';
+      const dict = I18N[VendorStore.lang] || I18N.hi;
+
+      if (dict && dict.page_title_vendor) {
+        document.title = dict.page_title_vendor;
+      }
+
       const langText = document.getElementById('current-lang-text');
       if (langText) langText.innerText = isHi ? 'हिंदी' : 'English';
       document.querySelectorAll('.current-lang-text-label').forEach(el => {
@@ -2678,7 +2741,6 @@
         else if (shopInput.value === 'Sharma Brothers Kirana' && isHi) shopInput.value = 'शर्मा ब्रदर्स किराना';
       }
 
-      const dict = I18N[VendorStore.lang] || I18N.hi;
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (dict[key]) el.innerText = dict[key];
