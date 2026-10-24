@@ -353,9 +353,9 @@
           <span id="current-lang-text">English</span>
         </button>
 
-        <!-- Runner Logout CTA -->
-        <button id="btn-runner-logout" onclick="handleRunnerLogout()" title="लॉगआउट" aria-label="Logout" class="w-9 h-9 sm:w-11 sm:h-11 min-w-[36px] sm:min-w-[44px] min-h-[36px] sm:min-h-[44px] rounded-xl bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-800/50 flex items-center justify-center transition-colors active:scale-95 shrink-0 cursor-pointer">
-          <span class="material-symbols-outlined text-[19px] sm:text-[20px]">logout</span>
+        <!-- Settings entry; logout lives inside Settings, not the cramped header -->
+        <button id="btn-runner-header-settings" type="button" onclick="switchTab('settings')" title="Settings" aria-label="Settings" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center justify-center active:scale-95 shrink-0">
+          <span class="material-symbols-outlined text-[20px]">settings</span>
         </button>
       </div>
 
@@ -594,14 +594,14 @@
           </div>
 
           <!-- 1-Tap Call & Map Navigation CTAs -->
-          <div class="grid grid-cols-2 gap-2 w-full">
-            <a id="btn-call-customer" href="#" class="min-w-0 min-h-[44px] px-2 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-[11px] sm:text-xs font-black flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-all cursor-pointer text-center">
+          <div class="grid grid-cols-1 min-[355px]:grid-cols-2 gap-2 w-full min-w-0">
+            <a id="btn-call-customer" href="#" class="min-w-0 w-full min-h-[44px] px-2 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-[11px] sm:text-xs font-black flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-all cursor-pointer text-center">
               <span class="material-symbols-outlined text-[18px]">call</span>
               <span data-i18n="call_customer_btn">कॉल करें</span>
             </a>
-            <a id="btn-navigate-map" href="#" onclick="openRunnerMapNavigation(event)" target="_blank" rel="noopener noreferrer" class="min-w-0 min-h-[44px] px-2 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] sm:text-xs font-black flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-all cursor-pointer text-center" title="Navigate via Google Maps">
+            <a id="btn-navigate-map" href="#" onclick="openRunnerMapNavigation(event)" target="_blank" rel="noopener noreferrer" class="min-w-0 w-full min-h-[44px] px-2 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] sm:text-xs font-black flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-all cursor-pointer text-center" title="Navigate via Google Maps">
               <span class="material-symbols-outlined text-[18px]">navigation</span>
-              <span data-i18n="navigate_map_btn">Navigate via Map</span>
+              <span class="min-w-0 text-center leading-tight break-words" data-i18n="navigate_map_btn">Navigate via Map</span>
             </a>
           </div>
         </div>
@@ -767,6 +767,9 @@
     <!-- 5.5 TAB 4: RUNNER BANK & UPI SETTINGS (Payout Onboarding)               -->
     <!-- ======================================================================= -->
     <section id="tab-settings" class="hidden flex-col gap-3.5">
+      <button id="btn-runner-logout" type="button" onclick="handleRunnerLogout()" class="w-full min-h-[48px] rounded-2xl border border-red-400/40 text-red-400 font-bold flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined">logout</span><span data-i18n="logout_label">Log out</span>
+      </button>
       <!-- Runner Theme Selection Card (Light / Dark / System) -->
       <div id="runner-theme-settings-card" class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-md flex flex-col gap-3.5">
         <div class="flex items-center justify-between border-b border-slate-700 pb-3">
