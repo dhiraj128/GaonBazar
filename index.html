@@ -181,40 +181,47 @@
   <div id="app-root" class="w-full h-[100dvh] max-h-[100dvh] flex flex-col bg-surface relative overflow-hidden">
 
     <!-- App Global Sticky Header (Native Top App Bar - Blinkit Centered Standard) -->
-    <header id="customer-header" class="w-full max-w-full h-14 min-h-[56px] bg-white border-b border-slate-200/90 shadow-2xs px-3.5 flex items-center justify-between gap-2 z-40 shrink-0">
-      <div class="flex items-center gap-2 min-w-0">
-        <!-- Clean Hamburger Menu Icon on the Left (min 44x44px touch target) - ONLY ON HOME -->
-        <button id="btn-open-sidebar" onclick="openSidebarDrawer()" aria-label="Open navigation menu" class="w-11 h-11 -ml-1 rounded-full text-slate-800 hover:bg-slate-100 active:scale-90 transition-all flex items-center justify-center shrink-0 cursor-pointer">
-          <span class="material-symbols-outlined text-[26px] inline-block select-none leading-none">menu</span>
-        </button>
+    <header id="customer-header" class="w-full max-w-full h-14 min-h-[56px] bg-white border-b border-slate-200/90 shadow-2xs px-3.5 flex items-center gap-2 z-40 shrink-0">
+      <!-- Clean Hamburger Menu Icon on the Left (min 44x44px touch target) - ONLY ON HOME -->
+      <button id="btn-open-sidebar" onclick="openSidebarDrawer()" aria-label="Open navigation menu" class="w-11 h-11 min-w-[44px] min-h-[44px] -ml-1 rounded-full text-slate-800 hover:bg-slate-100 active:scale-90 transition-all flex items-center justify-center shrink-0 cursor-pointer">
+        <span class="material-symbols-outlined text-[26px] inline-block select-none leading-none">menu</span>
+      </button>
 
-        <!-- Native Android Left Arrow (Back Button) - REPLACES HAMBURGER WHEN NAVIGATED AWAY -->
-        <button id="global-nav-back" onclick="navigateBack()" aria-label="Go Back" class="hidden w-11 h-11 -ml-1 rounded-full text-slate-800 hover:bg-slate-100 active:scale-90 transition-all flex items-center justify-center shrink-0 cursor-pointer">
-          <span class="material-symbols-outlined text-[24px] inline-block select-none leading-none">arrow_back</span>
-        </button>
+      <!-- Native Android Left Arrow (Back Button) - REPLACES HAMBURGER WHEN NAVIGATED AWAY -->
+      <button id="global-nav-back" onclick="navigateBack()" aria-label="Go Back" class="hidden w-11 h-11 min-w-[44px] min-h-[44px] -ml-1 rounded-full text-slate-800 hover:bg-slate-100 active:scale-90 transition-all flex items-center justify-center shrink-0 cursor-pointer">
+        <span class="material-symbols-outlined text-[24px] inline-block select-none leading-none">arrow_back</span>
+      </button>
 
-        <!-- "GaonBazaar" text & logo perfectly centered vertically -->
-        <div class="flex items-center gap-2 min-w-0 shrink">
-          <div class="w-8 h-8 rounded-xl bg-primary flex items-center justify-center text-white shadow-xs shrink-0">
-            <span class="material-symbols-outlined text-[19px] inline-block select-none leading-none">storefront</span>
-          </div>
-          <span class="font-black text-lg text-primary tracking-tight font-sans truncate leading-none">GaonBazaar</span>
-          <span id="header-subtitle" class="hidden"></span>
-        </div>
-      </div>
+      <!-- Compact App Logo (Icon only, no text) - min 44x44px touch target -->
+      <button id="header-logo-icon" onclick="navigateToPhase('dashboard')" aria-label="GaonBazaar Home" title="GaonBazaar" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-gradient-to-tr from-primary to-emerald-600 flex items-center justify-center text-white shadow-xs shrink-0 cursor-pointer active:scale-95 transition-transform">
+        <span class="material-symbols-outlined text-[24px] inline-block select-none leading-none">storefront</span>
+      </button>
+      <span class="sr-only">GaonBazaar</span>
+      <span id="header-subtitle" class="hidden"></span>
 
-      <!-- Right Side: Cart icon + Blinkit-Style User Profile Avatar right next to it -->
-      <div class="flex items-center gap-1.5 shrink-0">
-        <button id="header-cart-icon" onclick="navigateToPhase('cart')" aria-label="View Cart" class="relative w-11 h-11 rounded-full text-slate-800 hover:bg-slate-100 active:scale-90 transition-all flex items-center justify-center shrink-0 cursor-pointer">
-          <span class="material-symbols-outlined text-[24px] inline-block select-none leading-none">shopping_cart</span>
-          <span id="header-cart-badge" class="absolute top-1 right-1 min-w-[18px] h-[18px] px-1 bg-secondary text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-white shadow-xs">0</span>
-        </button>
+      <!-- [Spacer / Flex-grow] -->
+      <div class="flex-1 min-w-0" aria-hidden="true"></div>
 
-        <!-- Blinkit-Style User Profile Avatar Icon right next to Cart -->
-        <button id="header-user-icon" onclick="navigateToPhase('profile')" aria-label="My Account" title="My Account" class="w-10 h-10 rounded-full bg-emerald-50 hover:bg-emerald-100 text-primary border border-emerald-200/90 active:scale-90 transition-all flex items-center justify-center shrink-0 cursor-pointer shadow-2xs">
-          <span id="header-user-avatar-initial" class="font-black text-sm uppercase">र</span>
-        </button>
-      </div>
+      <!-- Compact Language Toggle ("HI | EN" pill, min 44x44px touch target) -->
+      <button id="header-lang-btn" onclick="window.toggleGlobalLanguage()" type="button" aria-label="Language Toggle" title="Switch Language (भाषा बदलें)" class="h-11 min-h-[44px] min-w-[44px] px-2.5 rounded-full border border-slate-200/90 bg-slate-50 hover:bg-slate-100 active:scale-95 transition-all flex items-center justify-center gap-1 cursor-pointer select-none shrink-0 shadow-2xs">
+        <span class="material-symbols-outlined text-primary text-[17px] leading-none pointer-events-none">translate</span>
+        <span id="header-lang-label" class="text-xs font-black tracking-tight leading-none pointer-events-none flex items-center">
+          <span id="header-lang-hi" class="text-primary font-black">HI</span>
+          <span class="text-slate-300 mx-0.5 font-normal">|</span>
+          <span id="header-lang-en" class="text-slate-400 font-medium">EN</span>
+        </span>
+      </button>
+
+      <!-- Shopping Cart Icon (with active count badge, min 44x44px touch target) -->
+      <button id="header-cart-icon" onclick="navigateToPhase('cart')" aria-label="View Cart" class="relative w-11 h-11 min-w-[44px] min-h-[44px] rounded-full text-slate-800 hover:bg-slate-100 active:scale-90 transition-all flex items-center justify-center shrink-0 cursor-pointer">
+        <span class="material-symbols-outlined text-[24px] inline-block select-none leading-none">shopping_cart</span>
+        <span id="header-cart-badge" class="absolute top-1 right-1 min-w-[18px] h-[18px] px-1 bg-secondary text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-white shadow-xs">0</span>
+      </button>
+
+      <!-- Blinkit-Style User Profile Avatar Icon right next to Cart (min 44x44px touch target) -->
+      <button id="header-user-icon" onclick="navigateToPhase('profile')" aria-label="My Account" title="My Account" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-emerald-50 hover:bg-emerald-100 text-primary border border-emerald-200/90 active:scale-90 transition-all flex items-center justify-center shrink-0 cursor-pointer shadow-2xs">
+        <span id="header-user-avatar-initial" class="font-black text-sm uppercase">र</span>
+      </button>
     </header>
 
     <!-- ========================================================================= -->
@@ -3779,6 +3786,23 @@
       const langLbl = document.getElementById('global-lang-label');
       if (langLbl) {
         langLbl.innerText = dict.lang_btn; // 'हिंदी' for hi, 'English' for en
+      }
+
+      // Update Header Compact Language Toggle ("HI | EN" pill)
+      const hiEl = document.getElementById('header-lang-hi');
+      const enEl = document.getElementById('header-lang-en');
+      if (hiEl && enEl) {
+        if (lang === 'hi') {
+          hiEl.className = 'text-primary font-black';
+          enEl.className = 'text-slate-400 font-medium';
+        } else {
+          hiEl.className = 'text-slate-400 font-medium';
+          enEl.className = 'text-primary font-black';
+        }
+      }
+      const headerLangBtn = document.getElementById('header-lang-btn');
+      if (headerLangBtn) {
+        headerLangBtn.setAttribute('aria-label', lang === 'hi' ? 'Switch to English' : 'हिंदी में बदलें');
       }
 
       // Update all data-i18n elements
