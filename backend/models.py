@@ -30,6 +30,7 @@ class OTPRecord(Base):
     phone = Column(String(15), index=True, nullable=False)
     otp_code = Column(String(10), nullable=False)
     is_verified = Column(Boolean, default=False)
+    attempts = Column(Integer, default=0)
     created_at = Column(DateTime, default=datetime.utcnow)
     expires_at = Column(DateTime, nullable=True)
 

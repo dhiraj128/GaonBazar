@@ -312,6 +312,58 @@ def verify_runner_access(
     return payload
 
 
+def require_customer_token(payload: Optional[Dict[str, Any]] = Depends(get_current_token_payload)) -> Dict[str, Any]:
+    """Requires a valid Customer JWT token (or Admin)."""
+    if not payload:
+        raise HTTPException(
+            status_code=401,
+            detail="Customer authentication required. Please provide a valid Bearer token.",
+            headers={"WWW-Authenticate": "Bearer"}
+        )
+    if payload.get("role") not in ["customer", "admin"]:
+        raise HTTPException(status_code=403, detail="Forbidden: Customer privileges required")
+    return payload
+
+
+def verify_customer_access(
+    phone: str,
+    payload: Optional[Dict[str, Any]] = Depends(get_current_token_payload)
+) -> Dict[str, Any]:
+    """
+    Enforces customer authentication and strict account-level tenant isolation:
+    A customer can ONLY access their own profile, orders, landmarks, and saved payment methods.
+    Unauthenticated requests -> 401 Unauthorized
+    Cross-account access -> 403 Forbidden
+    """
+    if not payload:
+        raise HTTPException(
+            status_code=401,
+            detail="Customer authentication required. Please log in with a valid Bearer token.",
+            headers={"WWW-Authenticate": "Bearer"}
+        )
+
+    role = payload.get("role")
+    token_phone = payload.get("phone")
+
+    # Super admin has oversight access
+    if role == "admin":
+        return payload
+
+    if role != "customer":
+        raise HTTPException(status_code=403, detail="Forbidden: Customer privileges required")
+
+    req_phone = phone.strip().replace("+91", "").lstrip("0")
+    tok_phone = str(token_phone or "").strip().replace("+91", "").lstrip("0")
+
+    if tok_phone and req_phone and tok_phone != req_phone:
+        raise HTTPException(
+            status_code=403,
+            detail=f"Access Denied: Token for phone '{token_phone}' cannot access account for '{phone}'"
+        )
+
+    return payload
+
+
 # -----------------------------------------------------------------------------
 # 5. IN-MEMORY SLIDING WINDOW RATE LIMITER (ANTI-SPAM / ANTI-FLOODING)
 # -----------------------------------------------------------------------------

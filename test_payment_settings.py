@@ -26,6 +26,7 @@ sys.path.insert(0, str(ROOT_DIR))
 from backend.main import app, mask_bank_account
 from backend.database import SessionLocal, ensure_schema_migrations
 from backend.models import Store, Runner, SavedPaymentMethod, User
+from backend.security import issue_user_token
 
 client = TestClient(app)
 
@@ -193,9 +194,11 @@ def test_customer_saved_payment_methods():
     print("\n[SUITE 4/5]: Customer Saved Payment Methods (My Account / Razorpay Token Ready)")
 
     phone = "9876543210"
+    token = issue_user_token(user_id=1, phone=phone)
+    auth_headers = {"Authorization": f"Bearer {token}"}
     
     # 4.1 GET initial list
-    res_get = client.get(f"/api/user/{phone}/payment-methods")
+    res_get = client.get(f"/api/user/{phone}/payment-methods", headers=auth_headers)
     check(res_get.status_code == 200, "Customer GET payment methods returns 200")
     methods = res_get.json()
     check(isinstance(methods, list), "Returns a JSON list of payment methods")
@@ -208,7 +211,7 @@ def test_customer_saved_payment_methods():
         "vpa_or_card": "patel@apl",
         "is_default": False
     }
-    res_add_upi = client.post(f"/api/user/{phone}/payment-methods", json=new_upi)
+    res_add_upi = client.post(f"/api/user/{phone}/payment-methods", json=new_upi, headers=auth_headers)
     check(res_add_upi.status_code == 200, "Added new UPI payment method (Status 200)")
     created_upi = res_add_upi.json()
     check(created_upi.get("title") == "Amazon Pay UPI", "Title saved correctly")
@@ -223,19 +226,19 @@ def test_customer_saved_payment_methods():
         "vpa_or_card": "•••• •••• •••• 9921",
         "is_default": True
     }
-    res_add_card = client.post(f"/api/user/{phone}/payment-methods", json=new_card)
+    res_add_card = client.post(f"/api/user/{phone}/payment-methods", json=new_card, headers=auth_headers)
     check(res_add_card.status_code == 200, "Added new Card payment method (Status 200)")
     created_card = res_add_card.json()
     check(created_card.get("is_default") is True, "Card set as default")
     card_id = created_card.get("id")
 
     # 4.4 Delete method
-    res_del = client.delete(f"/api/user/{phone}/payment-methods/{upi_id}")
+    res_del = client.delete(f"/api/user/{phone}/payment-methods/{upi_id}", headers=auth_headers)
     check(res_del.status_code == 200, f"Deleted payment method {upi_id} (Status 200)")
     check(res_del.json().get("success") is True, "Delete returned success=True")
 
     # Verify deleted item is not in list
-    res_get_after = client.get(f"/api/user/{phone}/payment-methods")
+    res_get_after = client.get(f"/api/user/{phone}/payment-methods", headers=auth_headers)
     ids_after = [m["id"] for m in res_get_after.json()]
     check(upi_id not in ids_after, f"Deleted ID {upi_id} absent from refreshed list")
     check(card_id in ids_after, f"Retained Card ID {card_id} present in list")

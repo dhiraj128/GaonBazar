@@ -2,6 +2,7 @@ import os
 import re
 import uuid
 import random
+import secrets
 import json
 import hmac
 import hashlib
@@ -66,11 +67,14 @@ from .security import (
     issue_runner_token,
     issue_admin_token,
     decode_jwt_token,
+    get_current_token_payload,
     verify_vendor_access,
     verify_runner_access,
+    verify_customer_access,
     require_vendor_token,
     require_runner_token,
     require_admin_token,
+    require_customer_token,
     require_authenticated_user,
     enforce_otp_rate_limit,
     enforce_checkout_rate_limit,
@@ -313,82 +317,120 @@ def debug_sentry_test():
 @app.post("/api/auth/send-otp", response_model=SendOTPResponse, dependencies=[Depends(enforce_otp_rate_limit)])
 def send_otp(payload: SendOTPRequest, db: Session = Depends(get_db)):
     """
-    Generates a 6-digit OTP code, persists it to SQLite DB, and returns it.
+    Generates a secure 6-digit OTP code, persists single-use record to DB with 5-minute TTL.
     Strictly rate-limited to 5 requests / min to prevent SMS flooding and budget drain.
-    Predictable dev code: if phone starts with 98765, allows 582941 for QA automation.
+    In production mode: generates random code and NEVER echoes OTP in API response.
+    In dev/test mode: allows predictable test code 582941 for phone 9876543210.
     """
     phone = payload.phone.strip()
-    if len(phone) < 10:
-        raise HTTPException(status_code=400, detail="Invalid phone number: Must be 10 digits")
+    clean_digits = "".join(filter(str.isdigit, phone))
+    if len(clean_digits) < 10:
+        raise HTTPException(status_code=400, detail="Invalid phone number: Must be at least 10 digits")
 
-    # Generate 6-digit OTP (deterministic 582941 for standard QA flow, or random)
-    otp_code = "582941" if phone == "9876543210" else f"{random.randint(100000, 999999)}"
+    is_production = os.getenv("ENVIRONMENT", "").lower() == "production"
+    is_test_phone = (phone == "9876543210" or clean_digits == "9876543210") and not is_production
+
+    if is_test_phone:
+        otp_code = "582941"
+    else:
+        # Cryptographically secure random 6-digit code
+        otp_code = f"{secrets.randbelow(900000) + 100000}"
+
+    # Invalidate any prior unverified OTPs for this phone to guarantee single-use latest
+    db.query(OTPRecord).filter(
+        OTPRecord.phone == phone,
+        OTPRecord.is_verified == False
+    ).update({"is_verified": True})
 
     otp_record = OTPRecord(
         phone=phone,
         otp_code=otp_code,
         is_verified=False,
+        attempts=0,
         created_at=datetime.utcnow(),
-        expires_at=datetime.utcnow() + timedelta(minutes=10)
+        expires_at=datetime.utcnow() + timedelta(minutes=5)
     )
     db.add(otp_record)
     db.commit()
 
+    # Never echo OTP in production! Echo only in non-production/test environments for automated QA
+    echo_otp = otp_code if (not is_production and (is_test_phone or os.getenv("ALLOW_TEST_OTP", "0") == "1")) else None
+
     return SendOTPResponse(
         success=True,
         message=f"OTP sent to +91 {phone}",
-        otp=otp_code
+        otp=echo_otp
     )
 
 
 @app.post("/api/auth/verify", response_model=VerifyOTPResponse)
 def verify_otp(payload: VerifyOTPRequest, db: Session = Depends(get_db)):
     """
-    Validates the 6-digit OTP against SQLite DB. Creates or retrieves User record
-    and returns a signed RFC 7519 JSON Web Token (JWT).
+    Validates the 6-digit OTP against DB. Enforces:
+    1. Single-use (is_verified == False)
+    2. Expiration (5-minute TTL)
+    3. Max attempt limit (5 failed attempts per OTP code)
+    4. Issues authentic signed RFC 7519 JWT upon successful validation.
     """
     phone = payload.phone.strip()
     entered_otp = payload.otp.strip()
 
-    # Find matching unexpired OTP record (or allow 582941 in dev mode)
+    if len(entered_otp) != 6 or not entered_otp.isdigit():
+        raise HTTPException(status_code=400, detail="Invalid OTP: Must be a 6-digit code")
+
+    # Find the latest unverified OTP record for this phone
     otp_record = (
         db.query(OTPRecord)
-        .filter(OTPRecord.phone == phone, OTPRecord.otp_code == entered_otp)
+        .filter(OTPRecord.phone == phone, OTPRecord.is_verified == False)
         .order_by(OTPRecord.created_at.desc())
         .first()
     )
 
-    if not otp_record and entered_otp != "582941":
-        raise HTTPException(status_code=400, detail="Invalid or expired OTP code")
+    if not otp_record:
+        raise HTTPException(status_code=400, detail="Invalid or expired OTP code. Please request a new code.")
 
-    if otp_record:
-        otp_record.is_verified = True
-        db.commit()
+    # Check expiration (5-minute TTL)
+    now = datetime.utcnow()
+    if otp_record.expires_at and now > otp_record.expires_at:
+        raise HTTPException(status_code=400, detail="OTP code has expired. Please request a new code.")
+
+    # Check attempt threshold
+    attempts = getattr(otp_record, "attempts", 0) or 0
+    if attempts >= 5:
+        raise HTTPException(status_code=400, detail="Too many failed attempts. This OTP has been invalidated.")
+
+    # Verify matching code
+    if otp_record.otp_code != entered_otp:
+        if hasattr(otp_record, "attempts"):
+            otp_record.attempts = attempts + 1
+            db.commit()
+        raise HTTPException(status_code=400, detail="Invalid OTP code. Please check and try again.")
+
+    # Mark OTP as verified (Single-Use enforcement)
+    otp_record.is_verified = True
+    db.commit()
 
     # Get or create User
     user = db.query(User).filter(User.phone == phone).first()
-    user_id_val = user.id if user else random.randint(1000, 9999)
-    session_token = issue_user_token(
-        user_id=user_id_val,
-        phone=phone,
-        name=user.name if (user and user.name) else "Customer"
-    )
-
     if not user:
         user = User(
             phone=phone,
             name=None,
             lang="hi",
-            session_token=session_token,
             created_at=datetime.utcnow()
         )
         db.add(user)
         db.commit()
         db.refresh(user)
-    else:
-        user.session_token = session_token
-        db.commit()
-        db.refresh(user)
+
+    session_token = issue_user_token(
+        user_id=user.id,
+        phone=phone,
+        name=user.name if (user and user.name) else "Customer"
+    )
+    user.session_token = session_token
+    db.commit()
+    db.refresh(user)
 
     # Fetch latest landmark if any
     latest_lm = db.query(Landmark).filter(Landmark.phone == phone).order_by(Landmark.created_at.desc()).first()
@@ -420,14 +462,30 @@ def verify_otp(payload: VerifyOTPRequest, db: Session = Depends(get_db)):
 # =============================================================================
 
 @app.post("/api/user/landmark", response_model=SaveLandmarkResponse)
-def save_user_landmark(payload: SaveLandmarkRequest, db: Session = Depends(get_db)):
+def save_user_landmark(
+    payload: SaveLandmarkRequest,
+    db: Session = Depends(get_db),
+    auth: Optional[Dict[str, Any]] = Depends(get_current_token_payload)
+):
     """
     Saves user's GPS coordinates, Panchayat/Village, and rural landmark text
-    (validating minimum 10 characters length) into the SQLite database.
+    (validating minimum 10 characters length) into the database.
+    Enforces customer authorization when token is provided.
     """
     landmark_text = payload.landmark.strip()
     if len(landmark_text) < 10:
         raise HTTPException(status_code=400, detail="Landmark text must be at least 10 characters for rural delivery")
+
+    # Enforce customer account boundary: caller cannot modify location for another phone
+    if auth:
+        if auth.get("role") != "admin":
+            tok_phone = str(auth.get("phone") or "").strip().replace("+91", "").lstrip("0")
+            req_phone = str(payload.phone or "").strip().replace("+91", "").lstrip("0")
+            if tok_phone and req_phone and tok_phone != req_phone:
+                raise HTTPException(
+                    status_code=403,
+                    detail=f"Access Denied: You cannot modify landmark data for another customer ({payload.phone})"
+                )
 
     # Update or create user
     user = db.query(User).filter(User.phone == payload.phone).first()
@@ -1194,9 +1252,10 @@ def cancel_order_endpoint(
 
 
 @app.get("/api/user/{phone}/trust-status", response_model=CustomerTrustStatusDTO)
-def get_user_trust_status(phone: str, db: Session = Depends(get_db)):
+def get_user_trust_status(phone: str, db: Session = Depends(get_db), auth: Dict[str, Any] = Depends(verify_customer_access)):
     """
     Returns the real-time Trust Score, strike status, warning notification, and allowed payment modes for a user.
+    Protected by Customer JWT with phone-level data isolation.
     """
     user = db.query(User).filter(User.phone == phone).first()
     if not user:
@@ -1243,9 +1302,10 @@ def get_user_trust_status(phone: str, db: Session = Depends(get_db)):
 # =============================================================================
 
 @app.get("/api/user/{phone}/orders", response_model=List[UserOrderSummaryDTO])
-def get_user_orders(phone: str, db: Session = Depends(get_db)):
+def get_user_orders(phone: str, db: Session = Depends(get_db), auth: Dict[str, Any] = Depends(verify_customer_access)):
     """
     Returns full order history for a customer phone number.
+    Protected by Customer JWT with phone-level data isolation.
     Used by the 'My Account' & Profile screen.
     """
     orders = db.query(Order).filter(Order.user_phone == phone).order_by(Order.created_at.desc()).all()
@@ -1286,9 +1346,10 @@ def mask_bank_account(acc_num: Optional[str]) -> Optional[str]:
 @app.get("/api/user/{phone}/payment-methods", response_model=List[CustomerSavedPaymentDTO])
 @app.get("/user/{phone}/payment-methods", response_model=List[CustomerSavedPaymentDTO])
 @app.get("/api/api/user/{phone}/payment-methods", response_model=List[CustomerSavedPaymentDTO])
-def get_user_payment_methods(phone: str, db: Session = Depends(get_db)):
+def get_user_payment_methods(phone: str, db: Session = Depends(get_db), auth: Dict[str, Any] = Depends(verify_customer_access)):
     """
     Returns saved payment methods (UPI IDs and Card tokens) for a customer.
+    Protected by Customer JWT with phone-level data isolation.
     Seeds default dummy methods on first access if none exist.
     """
     clean_phone = phone.strip()
@@ -1339,9 +1400,10 @@ def get_user_payment_methods(phone: str, db: Session = Depends(get_db)):
 @app.post("/api/user/{phone}/payment-methods", response_model=CustomerSavedPaymentDTO)
 @app.post("/user/{phone}/payment-methods", response_model=CustomerSavedPaymentDTO)
 @app.post("/api/api/user/{phone}/payment-methods", response_model=CustomerSavedPaymentDTO)
-def add_user_payment_method(phone: str, payload: AddCustomerSavedPaymentRequest, db: Session = Depends(get_db)):
+def add_user_payment_method(phone: str, payload: AddCustomerSavedPaymentRequest, db: Session = Depends(get_db), auth: Dict[str, Any] = Depends(verify_customer_access)):
     """
     Adds a new saved payment method (UPI or dummy Card token) for the customer.
+    Protected by Customer JWT with phone-level data isolation.
     """
     clean_phone = phone.strip()
     if payload.is_default:
@@ -1374,9 +1436,10 @@ def add_user_payment_method(phone: str, payload: AddCustomerSavedPaymentRequest,
 @app.delete("/api/user/{phone}/payment-methods/{method_id}")
 @app.delete("/user/{phone}/payment-methods/{method_id}")
 @app.delete("/api/api/user/{phone}/payment-methods/{method_id}")
-def delete_user_payment_method(phone: str, method_id: int, db: Session = Depends(get_db)):
+def delete_user_payment_method(phone: str, method_id: int, db: Session = Depends(get_db), auth: Dict[str, Any] = Depends(verify_customer_access)):
     """
     Deletes a saved payment method for the customer.
+    Protected by Customer JWT with phone-level data isolation.
     """
     clean_phone = phone.strip()
     item = db.query(SavedPaymentMethod).filter(
