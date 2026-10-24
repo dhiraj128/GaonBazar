@@ -285,14 +285,17 @@
           <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
         </button>
 
-        <!-- Saved Payments -->
-        <button id="drawer-payments-btn" onclick="openAddPaymentModal(); closeSidebarDrawer();" class="w-full min-h-[48px] px-3.5 py-3 rounded-xl flex items-center gap-3.5 text-slate-800 hover:bg-slate-100 active:bg-slate-200 text-sm font-bold transition-colors cursor-pointer">
-          <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
-            <span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
-          </div>
-          <span class="flex-1 text-left" data-i18n="drawer_payments">सहेजे गए भुगतान (Saved Payments)</span>
-          <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
-        </button>
+        <!-- Saved Payments (Drawer Section) -->
+        <div id="profile-saved-payments-section" class="w-full">
+          <button id="drawer-payments-btn" onclick="openAddPaymentModal(); closeSidebarDrawer();" class="w-full min-h-[48px] px-3.5 py-3 rounded-xl flex items-center gap-3.5 text-slate-800 hover:bg-slate-100 active:bg-slate-200 text-sm font-bold transition-colors cursor-pointer">
+            <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+            </div>
+            <span class="flex-1 text-left" data-i18n="drawer_payments">सहेजे गए भुगतान (Saved Payments)</span>
+            <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
+          </button>
+          <div id="profile-saved-payment-list" class="hidden"></div>
+        </div>
 
         <!-- Language (English / Hindi toggle) -->
         <div class="w-full min-h-[48px] px-3.5 py-2.5 rounded-xl flex items-center justify-between text-slate-800 hover:bg-slate-50 transition-colors">

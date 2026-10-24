@@ -1177,7 +1177,7 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
 
     # 5.3 Verify Clean Single-Card Architecture & Logout CTA Button
     check_human_ux_bounds(page, "#profile-primary-logout-btn", "Profile Logout CTA Button", dev_name, logger)
-    has_clutter_cards = page.locator("#profile-support-entry-card").count() > 0 or page.locator("#profile-saved-payments-section").count() > 0
+    has_clutter_cards = page.locator("#view-profile #profile-support-entry-card").count() > 0 or page.locator("#view-profile #profile-saved-payments-section").count() > 0
     logger.record_test(
         f"[{dev_name}] Profile Clutter Cleaned (Support & Payment Cards Deleted)",
         not has_clutter_cards,
