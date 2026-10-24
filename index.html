@@ -815,6 +815,15 @@
               class="w-full h-11 pl-10 pr-3 rounded-xl bg-transparent text-xs font-bold text-on-surface focus:outline-none"
             />
           </div>
+          <!-- Suggested Local Village Chips (One-tap village selection) -->
+          <div class="flex flex-wrap items-center gap-1.5 pt-1">
+            <span class="text-[10px] text-slate-400 font-bold" data-i18n="p1_quick_villages">आस-पास के गाँव:</span>
+            <button type="button" onclick="selectVillageChip('चतुर्सी')" class="px-2.5 py-1 rounded-full bg-surface-container text-[11px] font-bold text-slate-700 hover:bg-primary hover:text-white transition-all cursor-pointer">चतुर्सी</button>
+            <button type="button" onclick="selectVillageChip('मीनपुर')" class="px-2.5 py-1 rounded-full bg-surface-container text-[11px] font-bold text-slate-700 hover:bg-primary hover:text-white transition-all cursor-pointer">मीनपुर</button>
+            <button type="button" onclick="selectVillageChip('रामपुर')" class="px-2.5 py-1 rounded-full bg-surface-container text-[11px] font-bold text-slate-700 hover:bg-primary hover:text-white transition-all cursor-pointer">रामपुर</button>
+            <button type="button" onclick="selectVillageChip('कांटी')" class="px-2.5 py-1 rounded-full bg-surface-container text-[11px] font-bold text-slate-700 hover:bg-primary hover:text-white transition-all cursor-pointer">कांटी</button>
+            <button type="button" onclick="selectVillageChip('मोतीपुर')" class="px-2.5 py-1 rounded-full bg-surface-container text-[11px] font-bold text-slate-700 hover:bg-primary hover:text-white transition-all cursor-pointer">मोतीपुर</button>
+          </div>
           <!-- Hidden form inputs for delivery pinpointing & GPS coordinates -->
           <input id="p1-village-search-input" type="hidden" />
           <input id="p1-latitude-input" type="hidden" name="latitude" />
@@ -5119,18 +5128,105 @@
       }
     }
 
-    function simulateVoiceInputName() {
+        // Genuine browser speech transcription (no hardcoded fake strings)
+    function startNameVoiceInput() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const isHi = (AppStore && AppStore.lang === 'hi');
       const nameInput = document.getElementById('p1-name-input');
       const micLbl = document.getElementById('p1-name-mic-lbl');
-      if (micLbl) micLbl.innerText = 'Listening...';
-      setTimeout(() => {
-        if (nameInput) {
-          nameInput.value = AppStore.lang === 'hi' ? 'रमेश कुमार पटेल' : 'Ramesh Kumar Patel';
-          AppStore.user.name = nameInput.value;
-        }
+
+      if (!SpeechRecognition) {
+        if (micLbl) micLbl.innerText = isHi ? 'माइक उपलब्ध नहीं' : 'Mic unavailable';
+        if (nameInput) nameInput.focus();
+        return;
+      }
+      try {
+        const recognition = new SpeechRecognition();
+        recognition.lang = isHi ? 'hi-IN' : 'en-IN';
+        recognition.interimResults = false;
+        if (micLbl) micLbl.innerText = isHi ? 'बोलिए...' : 'Listening...';
+        recognition.onresult = (e) => {
+          if (e.results && e.results[0] && e.results[0][0]) {
+            const transcript = e.results[0][0].transcript.trim();
+            if (nameInput && transcript) {
+              nameInput.value = transcript;
+              if (AppStore && AppStore.user) AppStore.user.name = transcript;
+            }
+          }
+          if (micLbl) micLbl.innerText = 'Speak 🎙️';
+        };
+        recognition.onerror = () => {
+          if (micLbl) micLbl.innerText = isHi ? 'टाइप करें' : 'Type below';
+          if (nameInput) nameInput.focus();
+        };
+        recognition.onend = () => {
+          if (micLbl && micLbl.innerText.includes('Listening')) micLbl.innerText = 'Speak 🎙️';
+        };
+        recognition.start();
+      } catch (err) {
         if (micLbl) micLbl.innerText = 'Speak 🎙️';
-      }, 1000);
+        if (nameInput) nameInput.focus();
+      }
     }
+    window.startNameVoiceInput = startNameVoiceInput;
+    window.simulateVoiceInputName = startNameVoiceInput;
+
+    function startLandmarkVoiceInput() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const isHi = (AppStore && AppStore.lang === 'hi');
+      const btnText = document.getElementById('p1-voice-lm-btn');
+      const status = document.getElementById('p1-voice-lm-status');
+      const textarea = document.getElementById('p1-landmark-text');
+
+      if (!SpeechRecognition) {
+        if (status) status.innerText = isHi ? 'माइक उपलब्ध नहीं है। नीचे टाइप करें।' : 'Voice search unavailable. Please type.';
+        if (textarea) textarea.focus();
+        return;
+      }
+      try {
+        const recognition = new SpeechRecognition();
+        recognition.lang = isHi ? 'hi-IN' : 'en-IN';
+        recognition.interimResults = false;
+        if (btnText) btnText.innerText = isHi ? 'सुन रहा हूँ...' : 'Listening...';
+        if (status) status.innerText = isHi ? 'स्पष्ट बोलिए...' : 'Speak clearly...';
+        recognition.onresult = (e) => {
+          if (e.results && e.results[0] && e.results[0][0]) {
+            const transcript = e.results[0][0].transcript.trim();
+            if (textarea && transcript) {
+              textarea.value = (textarea.value.trim() ? textarea.value.trim() + ', ' : '') + transcript;
+              onLandmarkChange(textarea);
+            }
+          }
+          if (btnText) btnText.innerText = isHi ? 'माइक 🎙️' : 'Voice 🎙️';
+          if (status) status.innerText = isHi ? 'पहचान चिन्ह दर्ज हुआ' : 'Landmark added';
+        };
+        recognition.onerror = () => {
+          if (btnText) btnText.innerText = isHi ? 'माइक 🎙️' : 'Voice 🎙️';
+          if (status) status.innerText = isHi ? 'कृपया नीचे टाइप करें' : 'Please type below';
+          if (textarea) textarea.focus();
+        };
+        recognition.start();
+      } catch (err) {
+        if (btnText) btnText.innerText = 'Voice 🎙️';
+        if (textarea) textarea.focus();
+      }
+    }
+    window.startLandmarkVoiceInput = startLandmarkVoiceInput;
+    window.toggleVoiceLandmarkRecord = startLandmarkVoiceInput;
+
+    function selectVillageChip(name) {
+      const vInput = document.getElementById('p1-village-input');
+      if (vInput) {
+        vInput.value = name;
+        vInput.dataset.userEdited = 'true';
+        vInput.dispatchEvent(new Event('input', { bubbles: true }));
+        document.getElementById('p1-village-err')?.classList.add('hidden');
+      }
+      if (typeof AppStore !== 'undefined' && AppStore.user) {
+        AppStore.user.village = name;
+      }
+    }
+    window.selectVillageChip = selectVillageChip;
 
     // --- 7.1 NATIVE HTML5 GEOLOCATION & REVERSE GEOCODING ENGINE ---
     async function reverseGeocodeCoords(lat, lng) {
@@ -5176,6 +5272,10 @@
         if (village && district && village.trim().toLowerCase() === district.trim().toLowerCase()) {
           village = '';
         }
+        // Do not assign broad district as a village
+        if (village && (village.toLowerCase().includes('muzaffarpur') || village.toLowerCase().includes('मुजफ्फरपुर'))) {
+          village = '';
+        }
 
         const state = addr.state || '';
 
@@ -5208,7 +5308,7 @@
             zoomControl: true,
             scrollWheelZoom: true,
             tap: false,
-            attributionControl: false
+            attributionControl: true
           });
 
           L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -5278,14 +5378,26 @@
         badgeText.innerText = isHi ? '📍 पिन समायोजित (पुष्टि आवश्यक)' : '📍 Pin Adjusted (Tap Confirm Below)';
       }
 
-      // Reverse geocode new position to update village/landmark
+      // Invalidate customer doorstep confirmation since the pin has moved
+      if (AppStore.user && AppStore.user.gps) {
+        AppStore.user.gps.confirmed = false;
+      }
+      if (badge && badgeText) {
+        badge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-900 border border-amber-300 font-extrabold text-[11px] shadow-2xs';
+        badgeText.innerText = isHi ? '📍 पिन समायोजित (पुष्टि आवश्यक)' : '📍 Pin Adjusted (Tap Confirm Below)';
+      }
+
+      // Reverse geocode new position but STRICTLY preserve user's manually entered village
       try {
         const loc = await reverseGeocodeCoords(newLat, newLng);
-        if (loc.district && document.getElementById('p1-district-input')) {
-          document.getElementById('p1-district-input').value = loc.district;
+        const distEl = document.getElementById('p1-district-input');
+        if (distEl && !distEl.dataset.userEdited && loc.district) {
+          distEl.value = loc.district;
         }
-        if (loc.village && document.getElementById('p1-village-input')) {
-          document.getElementById('p1-village-input').value = loc.village;
+        const villEl = document.getElementById('p1-village-input');
+        // NEVER overwrite user-edited or already chosen village name
+        if (villEl && !villEl.dataset.userEdited && !villEl.value.trim() && loc.village) {
+          villEl.value = loc.village;
         }
       } catch (e) {}
     }
@@ -5364,6 +5476,13 @@
 
         if (btnText) btnText.innerText = isHi ? 'स्थान का नाम पता कर रहे हैं...' : 'Fetching Address...';
 
+        // Provide immediate visual confirmation of coordinates & display map instantly
+        initOrUpdateLeafletMap(lat, lng, acc);
+        const coordsDisplay = document.getElementById('p1-coords-display');
+        if (coordsDisplay) {
+          coordsDisplay.innerText = `${lat.toFixed(5)}°N, ${lng.toFixed(5)}°E (±${Math.round(acc)}m)`;
+        }
+
         // Provide immediate visual confirmation of coordinates while reverse geocoding
         if (badge) {
           badge.innerHTML = `<span class="text-on-surface font-semibold">📍 GPS: ${lat.toFixed(4)}, ${lng.toFixed(4)}</span>`;
@@ -5408,14 +5527,6 @@
           btnText.innerHTML = `<span>📍 ${granularName ? `${granularName} ${suffix}` : (isHi ? 'लोकेशन पहचानी गई' : 'Location Detected')}</span>`;
         }
 
-        // Initialize or update interactive Leaflet Map
-        initOrUpdateLeafletMap(lat, lng, acc);
-
-        const coordsDisplay = document.getElementById('p1-coords-display');
-        if (coordsDisplay) {
-          coordsDisplay.innerText = `${lat.toFixed(5)}°N, ${lng.toFixed(5)}°E`;
-        }
-
         // Honest Accuracy Indicator (never claims exact doorstep before customer confirmation)
         const accIndicator = document.getElementById('p1-gps-accuracy-indicator');
         const accText = document.getElementById('p1-gps-accuracy-text');
@@ -5448,35 +5559,82 @@
           return;
         }
 
-        // Real Native HTML5 Geolocation API - triggers native "Allow Location Permission" popup
+        // STAGED RURAL POSITIONING:
+        // Tier 1: Fast Approximate / Cached Location (5s timeout, 5 min cache)
+        // Works reliably on rural mobile networks & cellular towers even without instant satellite lock
+        let gotTier1 = false;
+
+        const tryTier2Refinement = () => {
+          if (btnText && gotTier1) {
+            btnText.innerHTML = `<span>⏳ ${isHi ? 'GPS सटीक कर रहे हैं...' : 'Refining Accuracy...'}</span>`;
+          }
+          navigator.geolocation.getCurrentPosition(
+            async (pos) => {
+              const lat = pos.coords.latitude;
+              const lng = pos.coords.longitude;
+              const acc = pos.coords.accuracy || 10;
+              await applyLocationResult(lat, lng, acc);
+              resolve();
+            },
+            (err) => {
+              console.warn("Tier 2 GPS refinement error or timeout:", err);
+              // If Tier 1 approximate location was already received, do NOT display failure!
+              if (!gotTier1) {
+                let errMsg = isHi ? '⚠️ GPS अनुमति नहीं मिली' : '⚠️ GPS Permission Denied';
+                if (err && err.code === 2) {
+                  errMsg = isHi ? '⚠️ GPS सिग्नल अनुपलब्ध - नीचे गाँव लिखें' : '⚠️ GPS Signal Unavailable - enter village';
+                } else if (err && err.code === 3) {
+                  errMsg = isHi ? '⚠️ GPS समय समाप्त - नीचे गाँव लिखें या पिन रखें' : '⚠️ GPS Timeout - enter village or pin';
+                }
+                if (btnText) btnText.innerText = isHi ? '📍 फिर से प्रयास करें' : '📍 Retry GPS';
+                if (badge) {
+                  badge.innerText = errMsg;
+                  badge.classList.remove('text-primary');
+                  badge.classList.add('text-rose-500');
+                }
+              }
+              resolve();
+            },
+            {
+              enableHighAccuracy: true,
+              timeout: 15000,
+              maximumAge: 0
+            }
+          );
+        };
+
+        // Execute Tier 1 fast approximate detection
         navigator.geolocation.getCurrentPosition(
           async (pos) => {
+            gotTier1 = true;
             const lat = pos.coords.latitude;
             const lng = pos.coords.longitude;
-            const acc = pos.coords.accuracy || 10;
+            const acc = pos.coords.accuracy || 100;
             await applyLocationResult(lat, lng, acc);
-            resolve();
+            // Seamlessly trigger Tier 2 high-accuracy refinement in background
+            tryTier2Refinement();
           },
           (err) => {
-            console.warn("Geolocation API error or permission denied:", err);
-            let errMsg = isHi ? '⚠️ GPS अनुमति नहीं मिली' : '⚠️ GPS Permission Denied';
-            if (err && err.code === 2) {
-              errMsg = isHi ? '⚠️ GPS सिग्नल अनुपलब्ध' : '⚠️ GPS Signal Unavailable';
-            } else if (err && err.code === 3) {
-              errMsg = isHi ? '⚠️ GPS समय समाप्त' : '⚠️ GPS Timeout';
+            console.warn("Tier 1 approximate geolocation error:", err);
+            if (err && err.code === 1) {
+              // Permission Denied
+              const errMsg = isHi ? '⚠️ GPS अनुमति नहीं मिली - नीचे गाँव लिखें' : '⚠️ GPS Permission Denied - enter village below';
+              if (btnText) btnText.innerText = isHi ? '📍 अनुमति दें या गाँव लिखें' : '📍 Allow Permission or Enter Village';
+              if (badge) {
+                badge.innerText = errMsg;
+                badge.classList.remove('text-primary');
+                badge.classList.add('text-rose-500');
+              }
+              resolve();
+              return;
             }
-            if (btnText) btnText.innerText = isHi ? '📍 फिर से प्रयास करें' : '📍 Retry GPS';
-            if (badge) {
-              badge.innerText = errMsg;
-              badge.classList.remove('text-primary');
-              badge.classList.add('text-rose-500');
-            }
-            resolve();
+            // For signal unavailable or timeout, attempt Tier 2 directly
+            tryTier2Refinement();
           },
           {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 0
+            enableHighAccuracy: false,
+            timeout: 5000,
+            maximumAge: 300000
           }
         );
       });
@@ -5537,22 +5695,6 @@
       textarea.focus();
     }
     window.appendChipLandmark = appendChipLandmark;
-
-    function toggleVoiceLandmarkRecord() {
-      const btnText = document.getElementById('p1-voice-lm-btn');
-      const status = document.getElementById('p1-voice-lm-status');
-      const textarea = document.getElementById('p1-landmark-text');
-      if (btnText) btnText.innerText = 'Recording...';
-      if (status) status.innerText = 'Speak clearly in Hindi';
-      setTimeout(() => {
-        if (btnText) btnText.innerText = 'Voice Note Saved ✓';
-        if (status) status.innerText = 'Audio note attached (0:04)';
-        if (textarea && !textarea.value.trim()) {
-          textarea.value = 'शिव मंदिर के पीछे, नीम का बड़ा पेड़ (Audio note attached)';
-          onLandmarkChange(textarea);
-        }
-      }, 1500);
-    }
 
     async function submitLandmarkSetup() {
       const nameInput = document.getElementById('p1-name-input');
@@ -7043,21 +7185,18 @@
             rzp.open();
             return;
           } else {
-            // Simulated fallback mode if external Checkout.js script blocked
             hidePaymentProcessingModal();
-            const simulatedData = {
-              order_id: rzpOrderData.order_id,
-              delivery_otp: '4821',
-              timeline_stage: 1,
-              distance_km: dist,
-              eta_mins: dist > 5.0 ? '45-60 Mins' : '30 Mins',
-              total_amount: rzpOrderData.amount,
-              payment_mode: 'ONLINE',
-              payment_status: 'PENDING'
-            };
-            AppStore.activeOrderData = simulatedData;
-            populateTrackingUI(simulatedData);
-            navigateToPhase('tracking');
+            const ordText = (i18nDictionary[AppStore.lang] || i18nDictionary['hi']).p4_place_order_btn;
+            btn.disabled = false;
+            btn.innerHTML = '<span class="material-symbols-outlined text-[20px]">shopping_bag</span><span id="place-order-text" data-i18n="p4_place_order_btn">' + ordText + '</span><span class="material-symbols-outlined text-[18px]">arrow_forward</span>';
+            const payFailMsg = (AppStore.lang === 'hi')
+              ? 'ऑनलाइन पेमेंट गेटवे लोड नहीं हो सका। कृपया कैश ऑन डिलीवरी (COD) चुनें।'
+              : 'Online payment gateway unavailable. Please select Cash on Delivery (COD).';
+            if (typeof showAudioToast === 'function') {
+              showAudioToast('Payment Gateway Unavailable', payFailMsg);
+            } else {
+              alert(payFailMsg);
+            }
             return;
           }
         } catch (payErr) {
