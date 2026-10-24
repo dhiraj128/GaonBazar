@@ -903,7 +903,8 @@ def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
             break
     else:
         order_id = f"#RUR-{random.randint(10000, 99999)}"
-    delivery_otp = "4821"  # Default test delivery OTP for reliable QA, can also be random
+    fixed_otp = os.getenv("GAONBAZAR_FIXED_OTP")
+    delivery_otp = fixed_otp if fixed_otp else f"{secrets.randbelow(9000) + 1000}"
 
     # Fetch user if exists
     user = db.query(User).filter(User.phone == payload.user_phone).first()
@@ -1647,7 +1648,7 @@ def create_payment_order(payload: CreatePaymentOrderRequest, db: Session = Depen
             payment_status="PENDING",
             status="Order Placed",
             timeline_stage=1,
-            delivery_otp="4821",
+            delivery_otp=os.getenv("GAONBAZAR_FIXED_OTP") or f"{secrets.randbelow(9000) + 1000}",
             created_at=datetime.utcnow()
         )
         db.add(order)
@@ -2453,7 +2454,8 @@ def get_vendor_orders(
 def update_vendor_order_status(
     order_id: str,
     payload: UpdateOrderStatusRequest,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    auth_vendor: dict = Depends(require_vendor_token)
 ):
     """
     Updates order timeline stage in the shared SQLite database.
@@ -2468,6 +2470,15 @@ def update_vendor_order_status(
     order = db.query(Order).filter(Order.id.in_(candidate_ids)).first()
     if not order:
         raise HTTPException(status_code=404, detail=f"Order {order_id} not found")
+
+    # Enforce strict multi-tenant store isolation
+    if auth_vendor.get("role") != "admin":
+        vendor_store_id = auth_vendor.get("store_id")
+        if vendor_store_id and order.store_id and vendor_store_id != order.store_id:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Access Denied: Vendor '{vendor_store_id}' cannot modify order '{order.id}' belonging to store '{order.store_id}'"
+            )
 
     stage_names = {
         1: "Order Placed",
@@ -2520,7 +2531,8 @@ def update_vendor_order_status(
 def vendor_quick_action(
     order_id: str,
     action: str = Query(..., pattern="^(accept|pack|dispatch|deliver|cancel)$"),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    auth_vendor: dict = Depends(require_vendor_token)
 ):
     """
     Quick one-tap action buttons for touch screens:
@@ -2534,6 +2546,15 @@ def vendor_quick_action(
     order = db.query(Order).filter(Order.id.in_(candidate_ids)).first()
     if not order:
         raise HTTPException(status_code=404, detail=f"Order {order_id} not found")
+
+    # Enforce strict multi-tenant store isolation
+    if auth_vendor.get("role") != "admin":
+        vendor_store_id = auth_vendor.get("store_id")
+        if vendor_store_id and order.store_id and vendor_store_id != order.store_id:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Access Denied: Vendor '{vendor_store_id}' cannot modify order '{order.id}' belonging to store '{order.store_id}'"
+            )
 
     action_map = {
         "accept": (2, "Vendor Accepted"),
@@ -2597,7 +2618,8 @@ def get_vendor_products(
 def update_product_stock(
     product_id: str,
     payload: UpdateStockRequest,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    auth_vendor: dict = Depends(require_vendor_token)
 ):
     """
     Toggles product in_stock state (In-Stock / Out-of-Stock) and optional price update.
@@ -2606,6 +2628,15 @@ def update_product_stock(
     product = db.query(Product).filter(Product.id == product_id).first()
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
+
+    # Enforce strict multi-tenant store isolation
+    if auth_vendor.get("role") != "admin":
+        vendor_store_id = auth_vendor.get("store_id")
+        if vendor_store_id and product.store_id and vendor_store_id != product.store_id:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Access Denied: Vendor '{vendor_store_id}' cannot modify product '{product.id}' belonging to store '{product.store_id}'"
+            )
 
     product.in_stock = payload.in_stock
     if payload.price is not None and payload.price > 0:
@@ -2620,9 +2651,19 @@ def update_product_stock(
 def add_vendor_product(
     payload: AddProductRequest,
     store_id: str = Query(...),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    auth_vendor: dict = Depends(require_vendor_token)
 ):
     """Adds a new local product to the shop's inventory."""
+    # Enforce strict multi-tenant store isolation
+    if auth_vendor.get("role") != "admin":
+        vendor_store_id = auth_vendor.get("store_id")
+        if vendor_store_id and vendor_store_id != store_id:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Access Denied: Vendor '{vendor_store_id}' cannot add products to store '{store_id}'"
+            )
+
     prod_id = f"item_v_{uuid.uuid4().hex[:8]}"
     new_prod = Product(
         id=prod_id,
@@ -2928,7 +2969,7 @@ def get_runner_missions(
                 commission=m_commission,
                 status=ord_obj.status,
                 timeline_stage=ord_obj.timeline_stage,
-                delivery_otp=ord_obj.delivery_otp,
+                delivery_otp=None,  # Delivery OTP held securely by customer only
                 distance_km=m_dist,
                 eta_mins=m_eta,
                 created_at=ord_obj.created_at.isoformat()
@@ -2938,7 +2979,7 @@ def get_runner_missions(
 
 
 @app.post("/api/runner/orders/{order_id}/pickup", response_model=RunnerMissionDTO)
-def confirm_runner_pickup(order_id: str, db: Session = Depends(get_db)):
+def confirm_runner_pickup(order_id: str, db: Session = Depends(get_db), auth_runner: dict = Depends(require_runner_token)):
     """
     Runner confirms physical package pickup from the village store.
     Advances order from Stage 3 (Packed) -> Stage 4 (Out for Delivery).
@@ -2947,6 +2988,17 @@ def confirm_runner_pickup(order_id: str, db: Session = Depends(get_db)):
     order = db.query(Order).filter(Order.id.in_(candidate_ids)).first()
     if not order:
         raise HTTPException(status_code=404, detail=f"Order {order_id} not found")
+
+    if order.timeline_stage >= 4:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Order {order_id} has already been picked up (Stage {order.timeline_stage}: {order.status})"
+        )
+    if order.timeline_stage < 3:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Order {order_id} is not yet packed and ready for pickup (Current Stage {order.timeline_stage}: {order.status})"
+        )
 
     order.timeline_stage = 4
     order.status = "Out for Delivery"
@@ -2982,7 +3034,7 @@ def confirm_runner_pickup(order_id: str, db: Session = Depends(get_db)):
         commission=20.0,
         status=order.status,
         timeline_stage=order.timeline_stage,
-        delivery_otp=order.delivery_otp,
+        delivery_otp=None,
         created_at=order.created_at.isoformat()
     )
 
@@ -2991,7 +3043,8 @@ def confirm_runner_pickup(order_id: str, db: Session = Depends(get_db)):
 def verify_doorstep_otp(
     order_id: str,
     payload: RunnerVerifyOTPRequest,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    auth_runner: dict = Depends(require_runner_token)
 ):
     """
     Validates the 4-digit doorstep delivery OTP provided by the rural customer.
@@ -3002,6 +3055,17 @@ def verify_doorstep_otp(
     order = db.query(Order).filter(Order.id.in_(candidate_ids)).first()
     if not order:
         raise HTTPException(status_code=404, detail=f"Order {order_id} not found")
+
+    if order.timeline_stage == 5:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Order {order_id} has already been delivered."
+        )
+    if order.timeline_stage < 4:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Order {order_id} is not out for delivery yet (Current Stage {order.timeline_stage}: {order.status})"
+        )
 
     # Validate OTP string
     if payload.otp.strip() != order.delivery_otp.strip():

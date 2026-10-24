@@ -141,6 +141,54 @@ def test_rbac_and_data_isolation():
     )
     record_check("Cross-Runner Access Denial (Runner Isolation)", res_runner_cross.status_code == 403, f"Status: {res_runner_cross.status_code}")
 
+    # 2.6 Cross-Vendor Order Action Denial (Vendor A cannot modify Vendor B's order)
+    import urllib.parse
+    from backend.database import get_db
+    from backend.models import Order
+    db = next(get_db())
+    test_ord = db.query(Order).filter(Order.store_id == "apna_dairy").first()
+    if not test_ord:
+        test_ord = Order(
+            id="#SEC-TEST-ORDER-1",
+            user_phone="9876543210",
+            user_name="Security Test User",
+            village="Rampur",
+            landmark="Test Landmark",
+            store_id="apna_dairy",
+            store_name="Apna Dairy",
+            subtotal=100.0,
+            total_amount=115.0,
+            payment_mode="COD",
+            status="Order Placed",
+            timeline_stage=1,
+            delivery_otp="9999"
+        )
+        db.add(test_ord)
+        db.commit()
+
+    enc_order_id = urllib.parse.quote(test_ord.id)
+    res_cross_action = client.post(
+        f"/api/vendor/orders/{enc_order_id}/quick-action?action=accept",
+        headers={"Authorization": f"Bearer {vendor_sharma_token}", "X-Test-Client": "strict_security_audit"}
+    )
+    record_check("Cross-Vendor Order Quick-Action Denial", res_cross_action.status_code == 403, f"Status: {res_cross_action.status_code}")
+
+    # 2.7 Cross-Vendor Product Creation Denial (Vendor A cannot add product to Vendor B's store)
+    res_cross_add_prod = client.post(
+        "/api/vendor/products?store_id=apna_dairy",
+        json={"name_en": "Hacked Milk", "name_hi": "दूध", "category": "dairy", "weight": "1L", "price": 50.0, "mrp": 60.0},
+        headers={"Authorization": f"Bearer {vendor_sharma_token}", "X-Test-Client": "strict_security_audit"}
+    )
+    record_check("Cross-Vendor Product Creation Denial", res_cross_add_prod.status_code == 403, f"Status: {res_cross_add_prod.status_code}")
+
+    # 2.8 Stage-locked Runner Pickup (Cannot pick up Stage 1 order)
+    res_invalid_pickup = client.post(
+        f"/api/runner/orders/{enc_order_id}/pickup",
+        headers={"Authorization": f"Bearer {runner_token}", "X-Test-Client": "strict_security_audit"}
+    )
+    record_check("Stage-Locked Runner Pickup Defense (Non-Packed Rejection)", res_invalid_pickup.status_code == 400, f"Status: {res_invalid_pickup.status_code}")
+    db.close()
+
 
 def test_rate_limiting():
     print("\n[SECURITY AUDIT 3/5]: Anti-Spam & Anti-Flooding Rate Limiting")

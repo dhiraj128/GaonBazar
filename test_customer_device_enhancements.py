@@ -18,7 +18,43 @@ if sys.stdout.encoding != 'utf-8':
     except Exception:
         pass
 
+import os
+import subprocess
+import urllib.request
+from pathlib import Path
 from playwright.sync_api import sync_playwright
+
+BASE_DIR = Path(__file__).resolve().parent
+
+def ensure_server():
+    try:
+        req = urllib.request.Request("http://127.0.0.1:8001/docs")
+        with urllib.request.urlopen(req, timeout=1.0) as res:
+            if res.status == 200:
+                return None
+    except Exception:
+        pass
+
+    server_env = os.environ.copy()
+    server_env["TEST_MODE"] = "1"
+    server_env["CI"] = "1"
+    proc = subprocess.Popen(
+        [sys.executable, "run_server.py", "8001", "--no-reload"],
+        cwd=str(BASE_DIR),
+        env=server_env,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
+    )
+    for _ in range(30):
+        time.sleep(0.3)
+        try:
+            req = urllib.request.Request("http://127.0.0.1:8001/docs")
+            with urllib.request.urlopen(req, timeout=1.0) as res:
+                if res.status == 200:
+                    return proc
+        except Exception:
+            pass
+    return proc
 
 BASE_URL = "http://127.0.0.1:8001"
 
@@ -304,30 +340,40 @@ def main():
     print("GAONBAZAR CUSTOMER MOBILE ENHANCEMENTS VERIFICATION SUITE")
     print("=" * 80)
 
-    with sync_playwright() as p:
-        # Launch Chromium with mobile Android viewport and touch support
-        browser = p.chromium.launch(headless=True)
-        context = browser.new_context(
-            viewport={"width": 412, "height": 915},
-            user_agent="Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36",
-            has_touch=True,
-            is_mobile=True,
-            permissions=["geolocation"]
-        )
-        context.set_geolocation({"latitude": 26.1209, "longitude": 85.3647, "accuracy": 45})
-        page = context.new_page()
+    server_proc = ensure_server()
 
-        try:
-            test_suite_1_scrolling_architecture(page)
-            test_suite_2_android_back_router(page)
-            test_suite_3_interactive_leaflet_map(page)
-            test_suite_4_voice_search(page)
-            test_suite_5_commerce_ai(page)
-            print("\n" + "=" * 80)
-            print("ALL 5 ENHANCEMENT SUITES PASSED CLEANLY ON MOBILE VIEWPORT!")
-            print("=" * 80)
-        finally:
-            browser.close()
+    try:
+        with sync_playwright() as p:
+            # Launch Chromium with mobile Android viewport and touch support
+            browser = p.chromium.launch(headless=True)
+            context = browser.new_context(
+                viewport={"width": 412, "height": 915},
+                user_agent="Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36",
+                has_touch=True,
+                is_mobile=True,
+                permissions=["geolocation"]
+            )
+            context.set_geolocation({"latitude": 26.1209, "longitude": 85.3647, "accuracy": 45})
+            page = context.new_page()
+    
+            try:
+                test_suite_1_scrolling_architecture(page)
+                test_suite_2_android_back_router(page)
+                test_suite_3_interactive_leaflet_map(page)
+                test_suite_4_voice_search(page)
+                test_suite_5_commerce_ai(page)
+                print("\n" + "=" * 80)
+                print("ALL 5 ENHANCEMENT SUITES PASSED CLEANLY ON MOBILE VIEWPORT!")
+                print("=" * 80)
+            finally:
+                browser.close()
+    finally:
+        if server_proc:
+            try:
+                server_proc.terminate()
+                server_proc.wait(timeout=2.0)
+            except Exception:
+                pass
 
 if __name__ == "__main__":
     main()

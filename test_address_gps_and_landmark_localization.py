@@ -125,7 +125,7 @@ def run_tests():
         check("Chip 4 Hindi: 'चौपाल'", "चौपाल" in chip_choupal_hi, f"Text: '{chip_choupal_hi}'")
 
         # Click chip in Hindi
-        page.click("#p1-chip-tank")
+        page.eval_on_selector("#p1-chip-tank", "el => el.click()")
         page.wait_for_timeout(200)
         lm_val_hi = page.input_value("#p1-landmark-text")
         check("Clicking Chip in HI appends Hindi Landmark", "पानी की टंकी" in lm_val_hi, f"Value: '{lm_val_hi}'")

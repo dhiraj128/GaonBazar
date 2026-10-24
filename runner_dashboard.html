@@ -98,13 +98,12 @@
       width: 100%;
       margin: 0;
       padding: 0;
-      overscroll-behavior: none;
-      overscroll-behavior-y: none;
+      overscroll-behavior-y: contain;
     }
     main {
       -webkit-overflow-scrolling: touch;
-      overscroll-behavior: none;
-      overscroll-behavior-y: none;
+      overscroll-behavior-y: contain;
+      touch-action: pan-y;
     }
   </style>
 </head>

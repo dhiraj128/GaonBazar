@@ -386,7 +386,7 @@
     <!-- ========================================================================= -->
     <!-- MAIN SCREEN ROUTER VIEWPORT CONTAINER                                     -->
     <!-- ========================================================================= -->
-    <main id="main-content-container" class="flex-1 w-full min-h-0 h-full relative bg-surface flex flex-col pb-safe overflow-y-auto overscroll-contain">
+    <main id="main-content-container" class="flex-1 w-full min-h-0 h-full relative bg-surface flex flex-col pb-safe overflow-y-auto overscroll-contain scroll-pb-28">
 
       <!-- ===================================================================== -->
       <!-- PHASE 1.1: PHONE LOGIN & SEPARATE AUTH INTENTIONS (SIGN IN / SIGN UP) -->
@@ -1561,6 +1561,17 @@
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- =================================================================== -->
+        <!-- PAST ORDERS / ORDER HISTORY                                         -->
+        <!-- =================================================================== -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between px-1">
+            <h3 class="text-xs font-black text-slate-500 uppercase tracking-wider" data-i18n="profile_sec_orders">पिछले ऑर्डर (Past Orders)</h3>
+            <span class="text-[11px] text-primary font-bold cursor-pointer" onclick="loadUserOrderHistory()" data-i18n="profile_refresh_orders">रिफ्रेश</span>
+          </div>
+          <div id="profile-order-history-list" class="space-y-3"></div>
         </div>
 
         <!-- =================================================================== -->
@@ -4324,11 +4335,13 @@
       const btnLocate = document.getElementById('p1-locate-text');
       if (btnLocate && AppStore.user && AppStore.user.gps) {
         const placeName = AppStore.user.granular || AppStore.user.village || AppStore.user.district;
-        const doorstepTxt = '✅ Exact Doorstep Pinned';
-        if (placeName) {
-          btnLocate.innerHTML = `<span>📍 ${placeName}</span> <span class="font-extrabold text-emerald-200 ml-1">• ${doorstepTxt}</span>`;
+        const isHi = (lang === 'hi');
+        const suffix = isHi ? 'पहचाना गया' : 'Detected';
+        if (AppStore.user.gps.confirmed) {
+          const confText = isHi ? 'सटीक स्थान पुष्ट' : 'Doorstep Confirmed';
+          btnLocate.innerHTML = `<span>📍 ${placeName ? `${placeName} • ` : ''}✅ ${confText}</span>`;
         } else {
-          btnLocate.innerHTML = `<span>📍 ${doorstepTxt}</span>`;
+          btnLocate.innerHTML = `<span>📍 ${placeName ? `${placeName} ${suffix}` : (isHi ? 'लोकेशन पहचानी गई' : 'Location Detected')}</span>`;
         }
       }
       const gpsBadge = document.getElementById('p1-gps-badge');
@@ -5124,7 +5137,8 @@
         }
 
         if (btnText) {
-          btnText.innerHTML = `<span>📍 ${granularName || (isHi ? 'लोकेशन मिल गई' : 'Location Found')}</span>`;
+          const suffix = isHi ? 'पहचाना गया' : 'Detected';
+          btnText.innerHTML = `<span>📍 ${granularName ? `${granularName} ${suffix}` : (isHi ? 'लोकेशन पहचानी गई' : 'Location Detected')}</span>`;
         }
 
         // Initialize or update interactive Leaflet Map
@@ -6720,14 +6734,14 @@
                 }
 
                 AppStore.orderId = rzpOrderData.order_id;
-                AppStore.deliveryOtp = rzpOrderData.delivery_otp || '4821';
+                AppStore.deliveryOtp = rzpOrderData.delivery_otp || '';
                 AppStore.orderTimelineStage = 1;
                 AppStore.distanceKm = dist;
                 AppStore.etaMins = dist > 5.0 ? '45-60 Mins' : '30 Mins';
 
                 const orderDetails = {
                   order_id: rzpOrderData.order_id,
-                  delivery_otp: rzpOrderData.delivery_otp || '4821',
+                  delivery_otp: rzpOrderData.delivery_otp || '',
                   timeline_stage: 1,
                   distance_km: dist,
                   eta_mins: dist > 5.0 ? '45-60 Mins' : '30 Mins',
@@ -7056,7 +7070,7 @@
       const dict = i18nDictionary[AppStore.lang] || i18nDictionary['hi'];
 
       AppStore.orderId = orderData.order_id;
-      AppStore.deliveryOtp = orderData.delivery_otp || '4821';
+      AppStore.deliveryOtp = orderData.delivery_otp || '';
       AppStore.orderTimelineStage = orderData.timeline_stage || 4;
       AppStore.activeOrderData = orderData;
 
@@ -7501,11 +7515,21 @@
       const container = document.getElementById('profile-order-history-list');
       if (!container) return;
 
+      const isHi = (AppStore.lang === 'hi');
       const currentToken = AppStore.sessionToken || (typeof localStorage !== 'undefined' ? (localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_authToken')) : null);
       const phone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '';
-      if (!currentToken || !phone) return;
-
-      const isHi = (AppStore.lang === 'hi');
+      if (!currentToken || !phone) {
+        container.innerHTML = `
+          <div class="rounded-3xl bg-white p-6 text-center border border-surface-container-high shadow-mobile-card space-y-2">
+            <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
+              <span class="material-symbols-outlined text-2xl">receipt_long</span>
+            </div>
+            <p class="text-xs font-bold text-slate-700 font-hindi">${isHi ? 'कोई पिछला ऑर्डर नहीं मिला' : 'No past orders found'}</p>
+            <p class="text-[11px] text-slate-400 font-hindi">${isHi ? 'जब आप ऑर्डर करेंगे, तो वह यहाँ दिखाई देगा।' : 'Your past orders will appear here once placed.'}</p>
+          </div>
+        `;
+        return;
+      }
 
       try {
         const orders = await apiFetch(`/user/${phone}/orders`);
@@ -8826,7 +8850,7 @@
           phase: "Phase 5: Live Order Tracking 5-Stage Timeline",
           test: () => {
             const stage = AppStore.orderTimelineStage;
-            const hasDeliveryOtp = AppStore.deliveryOtp === '4821';
+            const hasDeliveryOtp = Boolean(AppStore.deliveryOtp && /^\d{4}$/.test(String(AppStore.deliveryOtp)));
             return stage >= 1 && stage <= 5 && hasDeliveryOtp;
           },
           detail: "5-stage color-coded tracker & safe delivery verification OTP active"
