@@ -120,7 +120,9 @@ def ensure_schema_migrations():
             ("razorpay_payment_id", "VARCHAR(100)"),
             ("razorpay_signature", "VARCHAR(255)"),
             ("split_payout_status", "VARCHAR(30) DEFAULT 'unprocessed'"),
-            ("paid_at", "DATETIME")
+            ("paid_at", "DATETIME"),
+            ("customer_lat", "FLOAT"),
+            ("customer_lng", "FLOAT")
         ]
         for col_name, col_type in order_cols:
             if col_name not in existing_order_cols:

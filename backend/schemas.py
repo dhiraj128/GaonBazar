@@ -362,6 +362,8 @@ class RunnerMissionDTO(BaseModel):
     user_phone: str
     village: str
     landmark: str
+    customer_lat: Optional[float] = None
+    customer_lng: Optional[float] = None
     items: List[RunnerMissionItemDTO]
     items_count: int
     payment_mode: str

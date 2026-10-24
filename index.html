@@ -162,9 +162,16 @@
       box-shadow: 0 0 0 4px rgba(0, 107, 44, 0.2);
     }
     /* Guaranteed clearance for sticky bottom CTAs and floating navbars across all devices */
-    html, body, main, .screen-view {
+    html, body, #app-root, main, .screen-view {
       scroll-padding-bottom: 120px;
       scroll-padding-top: 75px;
+      -webkit-overflow-scrolling: touch;
+    }
+    main, .screen-view {
+      overflow-y: auto;
+      overscroll-behavior-y: none;
+      touch-action: pan-y;
+      -webkit-overflow-scrolling: touch;
     }
     #p1-landmark-text, textarea, input, .shadow-mobile-card, [onclick*="sharma_brothers"] {
       scroll-margin-bottom: 120px;
@@ -178,7 +185,7 @@
   <!-- ========================================================================= -->
   <!-- ROOT FULL-WIDTH MOBILE APP CONTAINER (100% of mobile emulator/device)    -->
   <!-- ========================================================================= -->
-  <div id="app-root" class="w-full h-[100dvh] max-h-[100dvh] flex flex-col bg-surface relative overflow-hidden">
+  <div id="app-root" class="w-full h-full min-h-[100dvh] flex flex-col bg-surface relative">
 
     <!-- App Global Sticky Header (Native Top App Bar - Blinkit Centered Standard) -->
     <header id="customer-header" class="w-full max-w-full h-14 min-h-[56px] bg-white border-b border-slate-200/90 shadow-2xs px-3.5 flex items-center gap-2 z-40 shrink-0">
@@ -357,7 +364,7 @@
     <!-- ========================================================================= -->
     <!-- MAIN SCREEN ROUTER VIEWPORT CONTAINER                                     -->
     <!-- ========================================================================= -->
-    <main class="flex-1 w-full min-h-0 relative bg-surface flex flex-col pb-safe">
+    <main class="flex-1 w-full min-h-0 h-full relative bg-surface flex flex-col pb-safe overflow-y-auto">
 
       <!-- ===================================================================== -->
       <!-- PHASE 1.1: PHONE LOGIN & SEPARATE AUTH INTENTIONS (SIGN IN / SIGN UP) -->
@@ -649,6 +656,8 @@
           </div>
           <!-- Compatibility elements for legacy queries -->
           <input id="p1-village-search-input" type="hidden" />
+          <input id="p1-latitude-input" type="hidden" name="latitude" />
+          <input id="p1-longitude-input" type="hidden" name="longitude" />
           <select id="p1-village-select" class="hidden"></select>
           <span id="p1-village-err" class="hidden text-[10px] text-error font-bold" data-i18n="p1_village_err">कृपया गाँव या पंचायत का नाम दर्ज करें</span>
         </div>
@@ -3469,10 +3478,23 @@
         }
       };
 
+      // Set initial history state for root view
+      if (window.history && window.history.replaceState) {
+        try {
+          if (!window.history.state || !window.history.state.gaonbazar_phase) {
+            window.history.replaceState({ gaonbazar_phase: 'dashboard', timestamp: Date.now() }, '');
+          }
+        } catch (e) {
+          console.warn('Initial replaceState error:', e);
+        }
+      }
+
       window.closeOverlayHistory = function(overlayId, isFromPopstate) {
         const idx = overlayStack.findIndex(item => item.id === overlayId);
         if (idx !== -1) {
           overlayStack.splice(idx, 1);
+        } else {
+          return;
         }
         window.syncBodyScrollLock();
         if (!isFromPopstate) {
@@ -3509,11 +3531,14 @@
 
         // View-level navigation back swipe handling (smoothly navigate back without exiting app)
         window.syncBodyScrollLock();
-        if (typeof AppStore !== 'undefined' && AppStore.currentPhase && AppStore.currentPhase !== 'dashboard') {
+        const targetPhase = event.state && event.state.gaonbazar_phase;
+        if (targetPhase && typeof navigateToPhase === 'function') {
+          navigateToPhase(targetPhase, true /* isFromPopstate */);
+        } else if (typeof AppStore !== 'undefined' && AppStore.currentPhase && AppStore.currentPhase !== 'dashboard') {
           if (typeof navigateBack === 'function') {
             navigateBack();
           } else if (typeof navigateToPhase === 'function') {
-            navigateToPhase('dashboard');
+            navigateToPhase('dashboard', true);
           }
         }
       });
@@ -3996,7 +4021,7 @@
       window.showView(target);
     }
 
-    function navigateToPhase(phaseName) {
+    function navigateToPhase(phaseName, isFromPopstate) {
       if (!phaseName) return;
       if (typeof closeAudioToast === 'function') closeAudioToast();
 
@@ -4052,9 +4077,32 @@
         }
       }
 
-      // Push history
+      // Check if any overlay is active and needs closing without duplicate back
+      const openOverlays = (typeof window.getActiveOverlayStack === 'function') ? window.getActiveOverlayStack() : [];
+      if (openOverlays.includes('sidebar-drawer') && typeof closeSidebarDrawer === 'function') {
+        closeSidebarDrawer(true);
+      }
+
+      // Push browser history for native edge-swipe / hardware back gesture
       if (AppStore.currentPhase && AppStore.currentPhase !== cleanPhase) {
-        AppStore.historyStack.push(AppStore.currentPhase);
+        if (isFromPopstate) {
+          if (AppStore.historyStack.length > 0 && AppStore.historyStack[AppStore.historyStack.length - 1] === cleanPhase) {
+            AppStore.historyStack.pop();
+          }
+        } else {
+          AppStore.historyStack.push(AppStore.currentPhase);
+          if (window.history && (window.history.pushState || window.history.replaceState)) {
+            try {
+              if (openOverlays.length > 0) {
+                window.history.replaceState({ gaonbazar_phase: cleanPhase, timestamp: Date.now() }, '');
+              } else {
+                window.history.pushState({ gaonbazar_phase: cleanPhase, timestamp: Date.now() }, '');
+              }
+            } catch (e) {
+              console.warn('History pushState error:', e);
+            }
+          }
+        }
       }
       AppStore.currentPhase = cleanPhase;
 
@@ -4168,14 +4216,31 @@
     window.navigateToPhase = navigateToPhase;
 
     function navigateBack() {
+      const activeOverlays = (typeof window.getActiveOverlayStack === 'function') ? window.getActiveOverlayStack() : [];
+      if (activeOverlays.length > 0) {
+        try {
+          window.history.back();
+        } catch (e) {
+          const topId = activeOverlays[activeOverlays.length - 1];
+          if (typeof window.closeOverlayHistory === 'function') window.closeOverlayHistory(topId, true);
+        }
+        return;
+      }
+
+      if (window.history && window.history.length > 1 && AppStore.historyStack.length > 0) {
+        try {
+          window.history.back();
+          return;
+        } catch (e) {
+          console.warn('History back error, fallback to memory stack:', e);
+        }
+      }
+
       if (AppStore.historyStack.length > 0) {
         const prev = AppStore.historyStack.pop();
-        // Route back
-        navigateToPhase(prev);
-        // Pop duplicate added by navigateToPhase
-        AppStore.historyStack.pop();
+        navigateToPhase(prev, true);
       } else {
-        navigateToPhase('dashboard');
+        navigateToPhase('dashboard', true);
       }
     }
 
@@ -4430,6 +4495,13 @@
 
       const applyLocationResult = async (lat, lng, acc) => {
         AppStore.user.gps = { lat, lng, accuracy: acc };
+        AppStore.user.latitude = lat;
+        AppStore.user.longitude = lng;
+
+        const latInput = document.getElementById('p1-latitude-input');
+        const lngInput = document.getElementById('p1-longitude-input');
+        if (latInput) latInput.value = lat;
+        if (lngInput) lngInput.value = lng;
 
         if (btnText) btnText.innerText = isHi ? 'स्थान का नाम पता कर रहे हैं...' : 'Fetching Address...';
 
@@ -4682,6 +4754,9 @@
       }
 
       try {
+        const latVal = (AppStore.user.gps ? AppStore.user.gps.lat : null) || parseFloat(document.getElementById('p1-latitude-input')?.value || '') || null;
+        const lngVal = (AppStore.user.gps ? AppStore.user.gps.lng : null) || parseFloat(document.getElementById('p1-longitude-input')?.value || '') || null;
+
         await apiFetch('/user/landmark', {
           method: 'POST',
           body: JSON.stringify({
@@ -4690,8 +4765,8 @@
             district: distVal,
             village: villVal,
             landmark: lmVal,
-            lat: AppStore.user.gps ? AppStore.user.gps.lat : 29.1324,
-            lng: AppStore.user.gps ? AppStore.user.gps.lng : 77.0125,
+            lat: latVal,
+            lng: lngVal,
             accuracy: AppStore.user.gps ? AppStore.user.gps.accuracy : 10.0
           })
         });
@@ -5962,8 +6037,8 @@
         store_id: AppStore.activeStoreId || (cartItems[0] && cartItems[0].store_id) || 'sharma_brothers',
         payment_mode: AppStore.paymentMode || 'COD',
         distance_km: dist,
-        customer_lat: AppStore.user.gps ? AppStore.user.gps.lat : 29.1324,
-        customer_lng: AppStore.user.gps ? AppStore.user.gps.lng : 77.0125,
+        customer_lat: (AppStore.user.gps ? AppStore.user.gps.lat : null) || parseFloat(document.getElementById('p1-latitude-input')?.value || '') || null,
+        customer_lng: (AppStore.user.gps ? AppStore.user.gps.lng : null) || parseFloat(document.getElementById('p1-longitude-input')?.value || '') || null,
         items: cartItems.map(i => ({
           id: i.id,
           name: i.name_en,

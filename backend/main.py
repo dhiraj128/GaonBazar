@@ -797,6 +797,14 @@ def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
     # Fetch user if exists
     user = db.query(User).filter(User.phone == payload.user_phone).first()
 
+    cust_lat = payload.customer_lat
+    cust_lng = payload.customer_lng
+    if cust_lat is None or cust_lng is None:
+        user_lm = db.query(Landmark).filter(Landmark.phone == payload.user_phone).order_by(Landmark.id.desc()).first()
+        if user_lm and user_lm.lat and user_lm.lng:
+            cust_lat = user_lm.lat
+            cust_lng = user_lm.lng
+
     order = Order(
         id=order_id,
         user_id=user.id if user else None,
@@ -804,6 +812,8 @@ def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
         user_name=payload.user_name,
         village=payload.village,
         landmark=payload.landmark,
+        customer_lat=cust_lat,
+        customer_lng=cust_lng,
         store_id=payload.store_id,
         store_name=store_name,
         subtotal=subtotal,
@@ -2746,6 +2756,14 @@ def get_runner_missions(
         m_eta = getattr(ord_obj, 'eta_mins', None) or ("45-60 Mins" if m_dist > 5.0 else "30 Mins")
         m_commission = float(getattr(ord_obj, 'runner_payout', None) or (30.0 if m_dist > 5.0 else (15.0 if m_dist > 2.0 else 10.0)))
 
+        c_lat = getattr(ord_obj, 'customer_lat', None)
+        c_lng = getattr(ord_obj, 'customer_lng', None)
+        if c_lat is None or c_lng is None:
+            user_lm = db.query(Landmark).filter(Landmark.phone == ord_obj.user_phone).order_by(Landmark.id.desc()).first()
+            if user_lm and user_lm.lat and user_lm.lng:
+                c_lat = user_lm.lat
+                c_lng = user_lm.lng
+
         results.append(
             RunnerMissionDTO(
                 id=ord_obj.id,
@@ -2756,6 +2774,8 @@ def get_runner_missions(
                 user_phone=ord_obj.user_phone,
                 village=ord_obj.village,
                 landmark=ord_obj.landmark,
+                customer_lat=c_lat,
+                customer_lng=c_lng,
                 items=items_dto,
                 items_count=len(items_dto),
                 payment_mode=ord_obj.payment_mode,

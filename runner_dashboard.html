@@ -480,11 +480,17 @@
             </div>
           </div>
 
-          <!-- 1-Tap Call Customer CTA -->
-          <a id="btn-call-customer" href="tel:9876543210" class="min-h-[44px] px-3.5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-black flex items-center gap-1.5 shadow-sm active:scale-95 transition-all shrink-0 cursor-pointer">
-            <span class="material-symbols-outlined text-[18px]">call</span>
-            <span data-i18n="call_customer_btn">ग्राहक को कॉल करें</span>
-          </a>
+          <!-- 1-Tap Call & Map Navigation CTAs -->
+          <div class="flex items-center gap-1.5 shrink-0">
+            <a id="btn-call-customer" href="tel:9876543210" class="min-h-[44px] px-3 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-black flex items-center gap-1 shadow-sm active:scale-95 transition-all shrink-0 cursor-pointer">
+              <span class="material-symbols-outlined text-[18px]">call</span>
+              <span data-i18n="call_customer_btn">कॉल करें</span>
+            </a>
+            <a id="btn-navigate-map" href="#" target="_blank" rel="noopener noreferrer" class="min-h-[44px] px-3 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black flex items-center gap-1 shadow-sm active:scale-95 transition-all shrink-0 cursor-pointer" title="Navigate via Google Maps">
+              <span class="material-symbols-outlined text-[18px]">navigation</span>
+              <span data-i18n="navigate_map_btn">Navigate via Map</span>
+            </a>
+          </div>
         </div>
 
         <!-- OUTDOOR HIGH-CONTRAST RURAL LANDMARK SPOTLIGHT BOX -->
@@ -499,6 +505,10 @@
             <p id="runner-landmark-text" class="text-base sm:text-lg font-black text-slate-950 leading-snug mt-0.5">
               Near Shiva Mandir, Opp. Blue Water Tank, Khasra 42
             </p>
+            <div id="runner-coords-container" class="hidden mt-1.5 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-emerald-800 text-white text-[10.5px] font-mono font-bold w-fit">
+              <span class="material-symbols-outlined text-[13px]">pin_drop</span>
+              <span id="runner-coords-text">Exact GPS</span>
+            </div>
             <span class="text-[11px] text-amber-800 font-bold mt-1" data-i18n="landmark_box_sub">
               ✓ स्थानीय ग्रामीण मील का पत्थर • धूप में स्पष्ट दिखाई देने योग्य
             </span>
@@ -1930,6 +1940,11 @@
         const dist = typeof mission.distance_km === 'number' ? mission.distance_km : 1.2;
         const etaText = mission.eta_mins || (dist > 5.0 ? '45-60 Mins' : '30 Mins');
         const comm = typeof mission.commission === 'number' ? mission.commission : (dist > 5.0 ? 30 : (dist > 2.0 ? 15 : 10));
+        const lat = mission.customer_lat || mission.lat;
+        const lng = mission.customer_lng || mission.lng;
+        const navUrl = (lat && lng) 
+          ? `https://maps.google.com/?q=${lat},${lng}` 
+          : `https://maps.google.com/?q=${encodeURIComponent((mission.village || '') + ' ' + (mission.landmark || ''))}`;
 
         return `
           <div onclick="selectMission('${mission.id}')" class="bg-slate-800 rounded-3xl p-4 sm:p-5 border ${isStage3 ? 'border-amber-500/40' : 'border-slate-700'} shadow-md flex flex-col gap-3 cursor-pointer hover:border-primary transition-all active:scale-99">
@@ -1963,12 +1978,18 @@
               </div>
 
               <!-- Customer & Landmark Info -->
-              <div class="bg-slate-900/80 rounded-2xl p-2.5 border border-slate-800 flex items-center gap-2">
-                <span class="material-symbols-outlined text-amber-400 text-[20px] shrink-0">flag</span>
-                <div class="min-w-0">
-                  <span class="text-[10px] text-slate-400 block font-medium">${mission.village}</span>
-                  <span class="font-bold text-amber-200 truncate block">${mission.landmark}</span>
+              <div class="bg-slate-900/80 rounded-2xl p-2.5 border border-slate-800 flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2 min-w-0 flex-1">
+                  <span class="material-symbols-outlined text-amber-400 text-[20px] shrink-0">flag</span>
+                  <div class="min-w-0">
+                    <span class="text-[10px] text-slate-400 block font-medium">${mission.village}</span>
+                    <span class="font-bold text-amber-200 truncate block">${mission.landmark}</span>
+                  </div>
                 </div>
+                <a href="${navUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="px-2.5 py-1.5 rounded-xl bg-emerald-600/90 hover:bg-emerald-500 text-white text-[11px] font-black flex items-center gap-1 shrink-0 active:scale-95 shadow-xs" title="Open Map">
+                  <span class="material-symbols-outlined text-[15px]">navigation</span>
+                  <span>Map</span>
+                </a>
               </div>
 
             </div>
@@ -2055,6 +2076,30 @@
       if (elCustVillage) elCustVillage.innerText = isHi ? `ग्राम पंचायत: ${m.village}` : `Village: ${m.village}`;
       if (elBtnCallCust) elBtnCallCust.href = `tel:${m.user_phone || '9876543210'}`;
       if (elLandmarkText) elLandmarkText.innerText = m.landmark;
+
+      // Exact GPS Coordinates & "Navigate via Map" Routing
+      const elBtnNavMap = document.getElementById('btn-navigate-map');
+      const elCoordsContainer = document.getElementById('runner-coords-container');
+      const elCoordsText = document.getElementById('runner-coords-text');
+      const lat = m.customer_lat || m.lat;
+      const lng = m.customer_lng || m.lng;
+      const navUrl = (lat && lng) 
+        ? `https://maps.google.com/?q=${lat},${lng}` 
+        : `https://maps.google.com/?q=${encodeURIComponent((m.village || '') + ' ' + (m.landmark || ''))}`;
+      if (elBtnNavMap) {
+        elBtnNavMap.href = navUrl;
+      }
+      if (elCoordsContainer && elCoordsText) {
+        if (lat && lng) {
+          const latStr = typeof lat === 'number' ? lat.toFixed(5) : lat;
+          const lngStr = typeof lng === 'number' ? lng.toFixed(5) : lng;
+          elCoordsText.innerText = `GPS: ${latStr}, ${lngStr}`;
+          elCoordsContainer.classList.remove('hidden');
+        } else {
+          elCoordsContainer.classList.add('hidden');
+        }
+      }
+
       if (elTotalAmt) elTotalAmt.innerText = `₹${m.total_amount}.00`;
       if (elHighlightAmt) elHighlightAmt.innerText = `(₹${m.total_amount}.00)`;
 
