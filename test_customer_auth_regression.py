@@ -63,7 +63,12 @@ def run_customer_auth_regression_suite():
     db = SessionLocal()
     phone_a = "9876500001"
     phone_b = "9876500002"
+    phone_exp = "9876500003"
     qa_phone = "9876543210"
+
+    # Ensure isolated test state by purging previous test fixtures
+    db.query(OTPRecord).filter(OTPRecord.phone.in_([phone_a, phone_b, phone_exp])).delete(synchronize_session=False)
+    db.commit()
 
     try:
         # =====================================================================

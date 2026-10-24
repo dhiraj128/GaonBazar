@@ -465,12 +465,12 @@ def verify_otp(payload: VerifyOTPRequest, db: Session = Depends(get_db)):
 def save_user_landmark(
     payload: SaveLandmarkRequest,
     db: Session = Depends(get_db),
-    auth: Dict[str, Any] = Depends(require_customer_token)
+    auth: Optional[Dict[str, Any]] = Depends(get_current_token_payload)
 ):
     """
     Saves user's GPS coordinates, Panchayat/Village, and rural landmark text
     (validating minimum 10 characters length) into the database.
-    Requires authenticated customer or admin token, and strictly enforces account boundary.
+    Enforces customer authorization and account boundary when token is present.
     """
     landmark_text = payload.landmark.strip()
     if len(landmark_text) < 10:
@@ -481,13 +481,14 @@ def save_user_landmark(
         raise HTTPException(status_code=400, detail="Valid customer phone number required")
 
     # Enforce customer account boundary: caller cannot modify location for another phone
-    if auth.get("role") != "admin":
-        tok_phone = str(auth.get("phone") or "").strip().replace("+91", "").lstrip("0")
-        if not tok_phone or tok_phone != req_phone:
-            raise HTTPException(
-                status_code=403,
-                detail=f"Access Denied: You cannot modify landmark data for another customer ({payload.phone})"
-            )
+    if auth:
+        if auth.get("role") != "admin":
+            tok_phone = str(auth.get("phone") or "").strip().replace("+91", "").lstrip("0")
+            if not tok_phone or tok_phone != req_phone:
+                raise HTTPException(
+                    status_code=403,
+                    detail=f"Access Denied: You cannot modify landmark data for another customer ({payload.phone})"
+                )
 
     # Update or create user
     user = db.query(User).filter(User.phone == payload.phone).first()
