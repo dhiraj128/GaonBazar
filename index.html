@@ -623,6 +623,43 @@
             <span class="material-symbols-outlined text-[18px] shrink-0">near_me</span>
             <span id="p1-locate-text" data-i18n="p1_locate_btn" class="truncate text-center font-bold">वर्तमान लोकेशन लें</span>
           </button>
+
+          <!-- Mini-Map Visual Confirmation & Accuracy Indicator (Injected on GPS Success) -->
+          <div id="p1-map-preview-container" class="hidden flex-col gap-2 pt-1 transition-all duration-300">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+              <span id="p1-doorstep-badge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 font-extrabold text-[11px] shadow-2xs">
+                <span id="p1-doorstep-badge-text" data-i18n="p1_doorstep_pinned">✅ Exact Doorstep Pinned</span>
+              </span>
+              <span id="p1-coords-display" class="font-mono text-[10px] text-slate-500 font-bold tracking-tight"></span>
+            </div>
+
+            <!-- Mini Map Frame with Centered Pin -->
+            <div class="relative w-full h-36 rounded-xl overflow-hidden border border-emerald-500/40 shadow-xs bg-slate-100">
+              <iframe 
+                id="p1-osm-map-iframe" 
+                title="Exact Delivery Location Mini-Map" 
+                class="w-full h-full border-0 pointer-events-none" 
+                loading="lazy" 
+                scrolling="no"
+                src="about:blank"
+              ></iframe>
+              <!-- Center Pin Overlay on Map Center to visually guarantee exact doorstep pin -->
+              <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div class="relative flex items-center justify-center">
+                  <span class="animate-ping absolute inline-flex h-7 w-7 rounded-full bg-emerald-500 opacity-30"></span>
+                  <div class="relative z-10 w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center shadow-md border-2 border-white">
+                    <span class="material-symbols-outlined text-[16px]">location_on</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Accuracy Indicator -->
+            <div id="p1-gps-accuracy-indicator" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-bold">
+              <span class="material-symbols-outlined text-[15px] text-emerald-600 shrink-0">verified</span>
+              <span id="p1-gps-accuracy-text" data-i18n="p1_gps_acc_high">GPS Accuracy: High (Targeting exact location)</span>
+            </div>
+          </div>
         </div>
 
         <!-- 3. Open Text Address Inputs: District / Tehsil -->
@@ -2645,6 +2682,8 @@
         p1_gps_title: "वर्तमान GPS लोकेशन इस्तेमाल करें",
         p1_gps_badge: "GPS सेट नहीं है",
         p1_locate_btn: "वर्तमान लोकेशन लें",
+        p1_doorstep_pinned: "✅ Exact Doorstep Pinned",
+        p1_gps_acc_high: "GPS Accuracy: High (Targeting exact location)",
         p1_district_label: "जिला या तहसील *",
         p1_district_ph: "जैसे: सोनीपत या गनौर",
         p1_district_err: "कृपया जिला या तहसील दर्ज करें",
@@ -3019,6 +3058,8 @@
         p1_gps_title: "Use Current GPS Location",
         p1_gps_badge: "GPS not set",
         p1_locate_btn: "Use Location",
+        p1_doorstep_pinned: "✅ Exact Doorstep Pinned",
+        p1_gps_acc_high: "GPS Accuracy: High (Targeting exact location)",
         p1_district_label: "District / Tehsil *",
         p1_district_ph: "e.g., Sonipat / Ganaur",
         p1_district_err: "Please enter district or tehsil",
@@ -4057,22 +4098,31 @@
       const btnLocate = document.getElementById('p1-locate-text');
       if (btnLocate && AppStore.user && AppStore.user.gps) {
         const placeName = AppStore.user.granular || AppStore.user.village || AppStore.user.district;
+        const doorstepTxt = '✅ Exact Doorstep Pinned';
         if (placeName) {
-          btnLocate.innerText = (lang === 'hi') ? `📍 ${placeName} पहचाना गया` : `📍 ${placeName} Detected`;
+          btnLocate.innerHTML = `<span>📍 ${placeName}</span> <span class="font-extrabold text-emerald-200 ml-1">• ${doorstepTxt}</span>`;
         } else {
-          btnLocate.innerText = (lang === 'hi') ? '📍 लोकेशन पहचानी गई' : '📍 Location Detected';
+          btnLocate.innerHTML = `<span>📍 ${doorstepTxt}</span>`;
         }
       }
       const gpsBadge = document.getElementById('p1-gps-badge');
       if (gpsBadge && AppStore.user && AppStore.user.gps) {
         const topLoc = AppStore.user.granular || AppStore.user.village;
+        let locText = '';
         if (topLoc && AppStore.user.district && topLoc.trim().toLowerCase() !== AppStore.user.district.trim().toLowerCase()) {
-          gpsBadge.innerText = `📍 ${topLoc}, ${AppStore.user.district}` + (AppStore.user.state ? ` (${AppStore.user.state})` : '');
+          locText = `${topLoc}, ${AppStore.user.district}`;
         } else if (topLoc) {
-          gpsBadge.innerText = `📍 ${topLoc}` + (AppStore.user.state ? ` (${AppStore.user.state})` : '');
+          locText = topLoc;
         } else if (AppStore.user.district) {
-          gpsBadge.innerText = `📍 ${AppStore.user.district}` + (AppStore.user.state ? ` (${AppStore.user.state})` : '');
+          locText = AppStore.user.district;
+        } else {
+          locText = (lang === 'hi') ? 'लोकेशन पहचानी गई' : 'Location Detected';
         }
+        if (AppStore.user.state) locText += ` (${AppStore.user.state})`;
+        const doorstepBadge = '✅ Exact Doorstep Pinned';
+        gpsBadge.innerHTML = `<span class="text-on-surface font-semibold">📍 ${locText}</span> <span class="inline-flex items-center gap-1 text-emerald-700 font-extrabold ml-1 bg-emerald-100/90 px-2 py-0.5 rounded-full text-[10px] border border-emerald-300">${doorstepBadge}</span>`;
+        gpsBadge.classList.remove('text-on-surface-variant', 'text-rose-500');
+        gpsBadge.classList.add('text-primary', 'font-bold');
       }
 
       // Update phone hint if visible based on current state
@@ -4657,29 +4707,77 @@
         AppStore.user.village = village || '';
         AppStore.user.state = state || '';
 
-        // 3. Update GPS Subtitle Badge with readable location (NO raw coordinates!)
-        // Prioritizes granular location (village, suburb, neighbourhood, road) over generic district
+        // 3. Update GPS Subtitle Badge with readable location AND bold confirmation badge: "✅ Exact Doorstep Pinned"
+        let locText = '';
+        if (granular && district && granular.trim().toLowerCase() !== district.trim().toLowerCase()) {
+          locText = `${granular}, ${district}`;
+        } else if (granular) {
+          locText = granular;
+        } else if (district) {
+          locText = district;
+        } else {
+          locText = isHi ? 'लोकेशन पहचानी गई' : 'Location Detected';
+        }
+        if (state) locText += ` (${state})`;
+
+        const doorstepConfirmation = '✅ Exact Doorstep Pinned';
         if (badge) {
-          if (granular && district && granular.trim().toLowerCase() !== district.trim().toLowerCase()) {
-            badge.innerText = `📍 ${granular}, ${district}` + (state ? ` (${state})` : '');
-          } else if (granular) {
-            badge.innerText = `📍 ${granular}` + (state ? ` (${state})` : '');
-          } else if (district) {
-            badge.innerText = `📍 ${district}` + (state ? ` (${state})` : '');
-          } else {
-            badge.innerText = isHi ? '📍 लोकेशन पहचानी गई' : '📍 Location Detected';
-          }
+          badge.innerHTML = `<span class="text-on-surface font-semibold">📍 ${locText}</span> <span class="inline-flex items-center gap-1 text-emerald-700 font-extrabold ml-1 bg-emerald-100/90 px-2 py-0.5 rounded-full text-[10px] border border-emerald-300">${doorstepConfirmation}</span>`;
           badge.classList.remove('text-on-surface-variant', 'text-rose-500');
           badge.classList.add('text-primary', 'font-bold');
         }
 
-        // 4. Update GPS Button UI to elegantly show the most granular location name
-        // (prioritizes village, suburb, neighbourhood, or road over broad city)
+        // 4. Update GPS Button UI to show granular location AND confirmation badge
         if (btnText) {
           if (granularName) {
-            btnText.innerText = isHi ? `📍 ${granularName} पहचाना गया` : `📍 ${granularName} Detected`;
+            btnText.innerHTML = `<span>📍 ${granularName}</span> <span class="font-extrabold text-emerald-200 ml-1">• ${doorstepConfirmation}</span>`;
           } else {
-            btnText.innerText = isHi ? '📍 लोकेशन पहचानी गई' : '📍 Location Detected';
+            btnText.innerHTML = `<span>📍 ${doorstepConfirmation}</span>`;
+          }
+        }
+
+        // 5. MINI-MAP VISUAL CONFIRMATION: Injected directly below GPS button, centered on exact coords
+        const mapContainer = document.getElementById('p1-map-preview-container');
+        const mapIframe = document.getElementById('p1-osm-map-iframe');
+        const coordsDisplay = document.getElementById('p1-coords-display');
+        const doorstepBadgeText = document.getElementById('p1-doorstep-badge-text');
+
+        if (doorstepBadgeText) {
+          doorstepBadgeText.innerText = doorstepConfirmation;
+        }
+
+        if (coordsDisplay) {
+          coordsDisplay.innerText = `${lat.toFixed(5)}°N, ${lng.toFixed(5)}°E`;
+        }
+
+        if (mapIframe) {
+          const delta = 0.0025;
+          const minLon = (lng - delta).toFixed(5);
+          const minLat = (lat - delta).toFixed(5);
+          const maxLon = (lng + delta).toFixed(5);
+          const maxLat = (lat + delta).toFixed(5);
+          const osmEmbedUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${minLon}%2C${minLat}%2C${maxLon}%2C${maxLat}&layer=mapnik&marker=${lat.toFixed(5)}%2C${lng.toFixed(5)}`;
+          if (mapIframe.src !== osmEmbedUrl) {
+            mapIframe.src = osmEmbedUrl;
+          }
+        }
+
+        if (mapContainer) {
+          mapContainer.classList.remove('hidden');
+          mapContainer.classList.add('flex');
+        }
+
+        // 6. ACCURACY INDICATOR: Display small green indicator under map reading "GPS Accuracy: High (Targeting exact location)" when accuracy < 100m
+        const accIndicator = document.getElementById('p1-gps-accuracy-indicator');
+        const accText = document.getElementById('p1-gps-accuracy-text');
+        if (accIndicator && accText) {
+          accIndicator.classList.remove('hidden');
+          if (acc < 100) {
+            accIndicator.className = 'flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-300 text-[11px] font-bold shadow-2xs';
+            accText.innerText = 'GPS Accuracy: High (Targeting exact location)';
+          } else {
+            accIndicator.className = 'flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-300 text-[11px] font-bold shadow-2xs';
+            accText.innerText = `GPS Accuracy: Moderate (±${Math.round(acc)}m)`;
           }
         }
       };
