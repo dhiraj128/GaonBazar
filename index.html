@@ -99,6 +99,23 @@
       -webkit-tap-highlight-color: transparent;
       box-sizing: border-box;
     }
+    .material-symbols-outlined {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      vertical-align: middle;
+      max-width: 1.2em;
+      max-height: 1.2em;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    #p1-leaflet-map {
+      isolation: isolate;
+      z-index: 0;
+    }
+    .leaflet-pane, .leaflet-top, .leaflet-bottom, .leaflet-control {
+      z-index: 10 !important;
+    }
     #app-root {
       height: 100%;
       height: 100dvh;
@@ -177,7 +194,7 @@
   <div id="app-root" class="w-full h-full min-h-[100dvh] flex flex-col bg-surface relative">
 
     <!-- App Global Sticky Header (Native Top App Bar - Blinkit Centered Standard) -->
-    <header id="customer-header" class="w-full max-w-full h-14 min-h-[56px] bg-white border-b border-slate-200/90 shadow-2xs px-2 flex items-center gap-1 z-40 shrink-0 overflow-x-hidden">
+    <header id="customer-header" class="w-full max-w-full h-14 min-h-[56px] bg-white border-b border-slate-200/90 shadow-2xs px-1.5 sm:px-2 flex items-center gap-0.5 sm:gap-1 z-40 shrink-0 overflow-x-hidden">
       <!-- Clean Hamburger Menu Icon on the Left (min 44x44px touch target) - ONLY ON HOME -->
       <button id="btn-open-sidebar" onclick="openSidebarDrawer()" aria-label="Open navigation menu" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full text-slate-800 hover:bg-slate-100 active:scale-90 transition-all flex items-center justify-center shrink-0 cursor-pointer">
         <span class="material-symbols-outlined text-[26px] inline-block select-none leading-none">menu</span>
@@ -199,7 +216,7 @@
       <div class="flex-1 min-w-0" aria-hidden="true"></div>
 
       <!-- Compact Language Toggle ("HI | EN" pill, min 44x44px touch target) -->
-      <button id="header-lang-btn" onclick="window.toggleGlobalLanguage()" type="button" aria-label="Language Toggle" title="Switch Language (भाषा बदलें)" class="h-11 min-h-[44px] min-w-[44px] px-2.5 rounded-full border border-slate-200/90 bg-slate-50 hover:bg-slate-100 active:scale-95 transition-all flex items-center justify-center gap-1 cursor-pointer select-none shrink-0 shadow-2xs">
+      <button id="header-lang-btn" onclick="window.toggleGlobalLanguage()" type="button" aria-label="Language Toggle" title="Switch Language (भाषा बदलें)" class="h-11 min-h-[44px] min-w-[44px] px-2 rounded-full border border-slate-200/90 bg-slate-50 hover:bg-slate-100 active:scale-95 transition-all flex items-center justify-center gap-1 cursor-pointer select-none shrink-0 shadow-2xs">
         <span class="material-symbols-outlined text-primary text-[17px] leading-none pointer-events-none">translate</span>
         <span id="header-lang-label" class="text-xs font-black tracking-tight leading-none pointer-events-none flex items-center">
           <span id="header-lang-hi" class="text-primary font-black">HI</span>
@@ -226,7 +243,7 @@
 
       <!-- Shopping Cart Icon (with active count badge, min 44x44px touch target) -->
       <button id="header-cart-icon" onclick="navigateToPhase('cart')" aria-label="View Cart" class="relative w-11 h-11 min-w-[44px] min-h-[44px] rounded-full text-slate-800 hover:bg-slate-100 active:scale-90 transition-all flex items-center justify-center shrink-0 cursor-pointer">
-        <span class="material-symbols-outlined text-[24px] inline-block select-none leading-none">shopping_cart</span>
+        <span class="material-symbols-outlined text-[24px] inline-flex items-center justify-center w-6 h-6 max-w-[24px] max-h-[24px] overflow-hidden select-none leading-none">shopping_cart</span>
         <span id="header-cart-badge" class="absolute top-1 right-1 min-w-[18px] h-[18px] px-1 bg-secondary text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-white shadow-xs">0</span>
       </button>
 
@@ -767,7 +784,7 @@
         </div>
 
                 <!-- Sticky Bottom Action CTA Tray (Fixed & Accessible) -->
-        <div class="fixed bottom-0 left-0 right-0 w-full z-50 bg-white border-t border-surface-container-high px-4 py-3 pb-safe shadow-sticky-bar">
+        <div class="fixed bottom-0 left-0 right-0 w-full z-[2000] bg-white border-t border-surface-container-high px-4 py-3 pb-safe shadow-sticky-bar">
           <button id="p1-save-landmark-btn" onclick="submitLandmarkSetup()" class="w-full h-[52px] rounded-xl bg-primary text-white text-base font-bold shadow-md flex items-center justify-center gap-2 active:scale-98 transition-all">
             <span data-i18n="p1_save_proceed_btn">पता सहेजें और आगे बढ़ें</span>
             <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
@@ -1163,7 +1180,7 @@
       <!-- ===================================================================== -->
       <!-- PHASE 5: LIVE ORDER TRACKING (Order Placed -> Delivered)              -->
       <!-- ===================================================================== -->
-      <section id="view-p5-tracking" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 sm:pb-32 flex-1 min-h-0 space-y-4">
+      <section id="view-p5-tracking" class="screen-view hidden flex-col w-full px-4 pt-3 pb-48 sm:pb-52 flex-1 min-h-0 space-y-4">
         <!-- 1. EMPTY STATE CONTAINER (Visible when NO active order exists) -->
         <div id="p5-tracking-empty-state" class="w-full bg-white rounded-3xl p-6 text-center shadow-mobile-card border border-surface-container-high flex flex-col items-center justify-center my-auto py-12">
           <div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-4 text-primary">
@@ -1282,12 +1299,12 @@
           </div>
 
           <!-- Back to Home / Enter Market Button -->
-          <button id="p5-back-home-btn" onclick="navigateToPhase('dashboard')" class="w-full min-h-[52px] rounded-2xl bg-primary hover:bg-primary-dark text-white text-base font-extrabold shadow-md flex items-center justify-center gap-2 active:scale-98 transition-all">
+          <button id="p5-back-home-btn" onclick="navigateToPhase('dashboard')" class="w-full min-h-[52px] rounded-2xl bg-primary hover:bg-primary-dark text-white text-base font-extrabold shadow-md flex items-center justify-center gap-2 active:scale-98 transition-all mb-12 sm:mb-16">
             <span class="material-symbols-outlined text-[20px]">storefront</span>
             <span data-i18n="p5_back_home_btn">मुख्य बाज़ार पर वापस जाएँ</span>
           </button>
         </div>
-      </section></section>
+      </section>
 
       <!-- ===================================================================== -->
       <!-- PHASE 6: CUSTOM OFFLINE FALLBACK SCREEN                               -->
@@ -4910,7 +4927,8 @@
             zoom: 17,
             zoomControl: true,
             scrollWheelZoom: true,
-            tap: false
+            tap: false,
+            attributionControl: false
           });
 
           L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {

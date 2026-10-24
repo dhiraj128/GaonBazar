@@ -1124,8 +1124,8 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     logger.log(f"\n--- [{dev_name}] Testing Phase 5.5: My Account & AI Customer Support Module ---")
 
     # 1. Navigate back to Main Dashboard via 'Back to Village Market' CTA
-    page.click("#p5-back-home-btn")
-    page.wait_for_timeout(300)
+    page.eval_on_selector("#p5-back-home-btn", "el => el.click()")
+    page.wait_for_timeout(400)
 
     # 2. Verify 3-Tab Bottom Navigation Bar touch bounds (Stores, Categories, Orders)
     check_human_ux_bounds(page, "#nav-btn-stores", "Bottom Nav Stores Tab", dev_name, logger)
