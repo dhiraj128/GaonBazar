@@ -465,27 +465,29 @@ def verify_otp(payload: VerifyOTPRequest, db: Session = Depends(get_db)):
 def save_user_landmark(
     payload: SaveLandmarkRequest,
     db: Session = Depends(get_db),
-    auth: Optional[Dict[str, Any]] = Depends(get_current_token_payload)
+    auth: Dict[str, Any] = Depends(require_customer_token)
 ):
     """
     Saves user's GPS coordinates, Panchayat/Village, and rural landmark text
     (validating minimum 10 characters length) into the database.
-    Enforces customer authorization when token is provided.
+    Requires authenticated customer or admin token, and strictly enforces account boundary.
     """
     landmark_text = payload.landmark.strip()
     if len(landmark_text) < 10:
         raise HTTPException(status_code=400, detail="Landmark text must be at least 10 characters for rural delivery")
 
+    req_phone = str(payload.phone or "").strip().replace("+91", "").lstrip("0")
+    if not req_phone or len(req_phone) < 10:
+        raise HTTPException(status_code=400, detail="Valid customer phone number required")
+
     # Enforce customer account boundary: caller cannot modify location for another phone
-    if auth:
-        if auth.get("role") != "admin":
-            tok_phone = str(auth.get("phone") or "").strip().replace("+91", "").lstrip("0")
-            req_phone = str(payload.phone or "").strip().replace("+91", "").lstrip("0")
-            if tok_phone and req_phone and tok_phone != req_phone:
-                raise HTTPException(
-                    status_code=403,
-                    detail=f"Access Denied: You cannot modify landmark data for another customer ({payload.phone})"
-                )
+    if auth.get("role") != "admin":
+        tok_phone = str(auth.get("phone") or "").strip().replace("+91", "").lstrip("0")
+        if not tok_phone or tok_phone != req_phone:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Access Denied: You cannot modify landmark data for another customer ({payload.phone})"
+            )
 
     # Update or create user
     user = db.query(User).filter(User.phone == payload.phone).first()
@@ -2209,41 +2211,70 @@ def commerce_ai_assistant_endpoint(payload: CommerceAssistantRequest, db: Sessio
     clean = re.sub(r"\s+(chahiye|dena|bhejo)$", "", clean)
 
     # 2. Split multi-item phrases by conjunctions
-    split_parts = re.split(r"\s*(?:and|aur|और|\+|\&|,)\s*", clean)
+    split_parts = re.split(r"\s*(?:and|aur|और|तथा|साथ में|\+|\&|,)\s*", clean)
     parsed_items = [p.strip() for p in split_parts if p.strip()]
     if not parsed_items:
         parsed_items = [clean]
 
-    # Keyword synonyms mapped to target categories / search terms
+    # Word-to-number mapping for bilingual Hindi/English speech inputs
+    word_to_num = {
+        "ek": 1, "एक": 1, "one": 1,
+        "do": 2, "दो": 2, "two": 2,
+        "teen": 3, "तीन": 3, "three": 3,
+        "char": 4, "चार": 4, "four": 4,
+        "panch": 5, "पांच": 5, "five": 5,
+        "chhe": 6, "छह": 6, "six": 6,
+        "aadha": 1, "आधा": 1, "half": 1
+    }
+
+    # Comprehensive synonyms dictionary covering rural FMCG, grocery, spices, and dairy
     synonyms = {
-        "aata": ["atta", "aata", "gehu", "chakki", "flour"],
-        "atta": ["atta", "aata", "chakki"],
-        "milk": ["milk", "doodh", "dudh", "taaza", "amul"],
-        "doodh": ["milk", "doodh", "taaza"],
-        "oil": ["oil", "tel", "mustard", "sarson"],
-        "tel": ["oil", "tel", "mustard", "sarson"],
-        "salt": ["salt", "namak", "tata"],
-        "namak": ["salt", "namak", "tata"],
-        "tea": ["tea", "chai", "red label", "chay"],
-        "chai": ["tea", "chai", "red label"],
-        "ghee": ["ghee", "desi ghee", "cow ghee"],
-        "sugar": ["sugar", "chini", "cheeni", "madhur"],
-        "chini": ["sugar", "chini", "cheeni"],
-        "rice": ["rice", "chawal", "basmati", "daawat"],
-        "chawal": ["rice", "chawal", "basmati"],
-        "mirch": ["mirch", "deggi", "chilli", "spices"],
-        "biscuit": ["parle", "biscuit", "biscuits"],
-        "soap": ["dettol", "soap", "sabun"]
+        "aata": ["atta", "aata", "gehu", "chakki", "flour", "maida", "आटा"],
+        "atta": ["atta", "aata", "chakki", "flour", "आटा"],
+        "besan": ["besan", "gram flour", "chana besan", "बेसन"],
+        "dal": ["dal", "daal", "arhar", "moong", "chana", "masoor", "toor", "urad", "pulses", "दाल"],
+        "daal": ["dal", "daal", "arhar", "moong", "chana", "masoor", "pulses", "दाल"],
+        "milk": ["milk", "doodh", "dudh", "taaza", "amul", "sudha", "paneer", "dahi", "दूध"],
+        "doodh": ["milk", "doodh", "taaza", "amul", "sudha", "दूध"],
+        "oil": ["oil", "tel", "mustard", "sarson", "refined", "fortune", "dhara", "तेल"],
+        "tel": ["oil", "tel", "mustard", "sarson", "refined", "fortune", "तेल"],
+        "salt": ["salt", "namak", "tata", "sendha", "नमक"],
+        "namak": ["salt", "namak", "tata", "नमक"],
+        "tea": ["tea", "chai", "red label", "taj mahal", "chay", "चाय"],
+        "chai": ["tea", "chai", "red label", "taj mahal", "चाय"],
+        "ghee": ["ghee", "desi ghee", "cow ghee", "amul ghee", "घी"],
+        "sugar": ["sugar", "chini", "cheeni", "shakkar", "madhur", "चीनी", "शक्कर"],
+        "chini": ["sugar", "chini", "cheeni", "shakkar", "madhur", "चीनी"],
+        "rice": ["rice", "chawal", "basmati", "daawat", "kolam", "चावल"],
+        "chawal": ["rice", "chawal", "basmati", "daawat", "चावल"],
+        "spices": ["mirch", "deggi", "chilli", "haldi", "turmeric", "dhaniya", "coriander", "masala", "spices", "मसाला"],
+        "masala": ["masala", "haldi", "mirch", "dhaniya", "garam masala", "spices", "मसाला"],
+        "biscuit": ["parle", "biscuit", "biscuits", "marie", "rusk", "cookies", "बिस्कुट"],
+        "soap": ["dettol", "soap", "sabun", "surf", "detergent", "rin", "wheel", "tide", "साबुन"]
     }
 
     matched_products = []
     seen_ids = set()
 
-    all_products = db.query(Product).filter(Product.in_stock == True).all()
+    # Query in-stock products with optional store scope restriction
+    store_filter = payload.store_id.strip() if payload.store_id else None
+    if store_filter:
+        store_prods = db.query(Product).filter(Product.in_stock == True, Product.store_id == store_filter).all()
+        all_products = store_prods if len(store_prods) > 0 else db.query(Product).filter(Product.in_stock == True).all()
+    else:
+        all_products = db.query(Product).filter(Product.in_stock == True).all()
 
     for item_part in parsed_items:
-        qty_match = re.search(r"(\d+)\s*(kg|g|l|ml|packet|packets|kilo|litre|litres)?", item_part)
-        req_qty = int(qty_match.group(1)) if qty_match and int(qty_match.group(1)) > 0 else 1
+        # Extract numeric quantity or Hindi word quantity
+        req_qty = 1
+        qty_num_match = re.search(r"(\d+)\s*(kg|g|l|ml|packet|packets|kilo|litre|litres|पैकेट|लीटर|किलो)?", item_part)
+        if qty_num_match and int(qty_num_match.group(1)) > 0:
+            req_qty = int(qty_num_match.group(1))
+        else:
+            for w, n in word_to_num.items():
+                if re.search(rf"\b{w}\b", item_part):
+                    req_qty = n
+                    break
 
         matched_for_part = []
         found_kw = None
