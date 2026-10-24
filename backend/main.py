@@ -19,6 +19,7 @@ for _env_file in [_root_dir / ".env", _backend_dir / ".env"]:
         load_dotenv(dotenv_path=_env_file, override=False)
 from fastapi import FastAPI, Depends, HTTPException, Query, Response, Request
 from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 import sentry_sdk
@@ -169,21 +170,35 @@ def on_startup():
         db.close()
 
 
+# Helper to safely locate frontend HTML dashboard templates across environments
+def _resolve_html_path(filename: str) -> Path:
+    candidates = [
+        ROOT_DIR / filename,
+        Path.cwd() / filename,
+        Path(__file__).resolve().parent.parent / filename,
+        Path(__file__).resolve().parent / filename,
+    ]
+    for p in candidates:
+        if p.exists() and p.is_file():
+            return p
+    return ROOT_DIR / filename
+
+
 # Static frontend & Service Worker routes for Offline-First Architecture
 @app.get("/", response_class=HTMLResponse)
 def serve_root():
-    return FileResponse(ROOT_DIR / "index.html", media_type="text/html")
+    return FileResponse(_resolve_html_path("index.html"), media_type="text/html")
 
 
 @app.get("/index.html", response_class=HTMLResponse)
 def serve_index():
-    return FileResponse(ROOT_DIR / "index.html", media_type="text/html")
+    return FileResponse(_resolve_html_path("index.html"), media_type="text/html")
 
 
 @app.get("/sw.js")
 def serve_service_worker():
     return FileResponse(
-        ROOT_DIR / "sw.js",
+        _resolve_html_path("sw.js"),
         media_type="application/javascript",
         headers={
             "Service-Worker-Allowed": "/",
@@ -194,7 +209,22 @@ def serve_service_worker():
 
 @app.get("/offline.html", response_class=HTMLResponse)
 def serve_offline_fallback():
-    return FileResponse(ROOT_DIR / "offline.html", media_type="text/html")
+    return FileResponse(_resolve_html_path("offline.html"), media_type="text/html")
+
+
+@app.get("/manifest.json")
+def serve_manifest():
+    manifest_file = _resolve_html_path("manifest.json")
+    if manifest_file.exists():
+        return FileResponse(manifest_file, media_type="application/manifest+json")
+    return {
+        "name": "GaonBazaar",
+        "short_name": "GaonBazaar",
+        "start_url": "/",
+        "display": "standalone",
+        "background_color": "#006b2c",
+        "theme_color": "#006b2c"
+    }
 
 
 @app.get("/favicon.ico", include_in_schema=False)
@@ -202,34 +232,54 @@ def serve_favicon():
     return Response(status_code=204)
 
 
+# Dedicated frontend routes for Vendor Portal (Web & Android APK)
 @app.get("/vendor", response_class=HTMLResponse)
+@app.get("/vendor/", response_class=HTMLResponse)
 def serve_vendor_portal():
-    return FileResponse(ROOT_DIR / "vendor_dashboard.html", media_type="text/html")
+    return FileResponse(_resolve_html_path("vendor_dashboard.html"), media_type="text/html")
 
 
 @app.get("/vendor_dashboard.html", response_class=HTMLResponse)
 def serve_vendor_dashboard():
-    return FileResponse(ROOT_DIR / "vendor_dashboard.html", media_type="text/html")
+    return FileResponse(_resolve_html_path("vendor_dashboard.html"), media_type="text/html")
 
 
+# Dedicated frontend routes for Runner Portal (Web & Android APK)
 @app.get("/runner", response_class=HTMLResponse)
+@app.get("/runner/", response_class=HTMLResponse)
 def serve_runner_portal():
-    return FileResponse(ROOT_DIR / "runner_dashboard.html", media_type="text/html")
+    return FileResponse(_resolve_html_path("runner_dashboard.html"), media_type="text/html")
 
 
 @app.get("/runner_dashboard.html", response_class=HTMLResponse)
 def serve_runner_dashboard():
-    return FileResponse(ROOT_DIR / "runner_dashboard.html", media_type="text/html")
+    return FileResponse(_resolve_html_path("runner_dashboard.html"), media_type="text/html")
 
 
+# Dedicated frontend routes for Super Admin Portal
 @app.get("/admin", response_class=HTMLResponse)
+@app.get("/admin/", response_class=HTMLResponse)
 def serve_admin_portal():
-    return FileResponse(ROOT_DIR / "admin_dashboard.html", media_type="text/html")
+    return FileResponse(_resolve_html_path("admin_dashboard.html"), media_type="text/html")
 
 
 @app.get("/admin_dashboard.html", response_class=HTMLResponse)
 def serve_admin_dashboard():
-    return FileResponse(ROOT_DIR / "admin_dashboard.html", media_type="text/html")
+    return FileResponse(_resolve_html_path("admin_dashboard.html"), media_type="text/html")
+
+
+# Mount static assets directories (CSS, JS, Images, Icons)
+STATIC_DIR = ROOT_DIR / "static"
+STATIC_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+
+ASSETS_DIR = ROOT_DIR / "assets"
+ASSETS_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/assets", StaticFiles(directory=str(ASSETS_DIR)), name="assets")
+
+SCREENSHOTS_DIR = ROOT_DIR / "screenshots"
+if SCREENSHOTS_DIR.exists():
+    app.mount("/screenshots", StaticFiles(directory=str(SCREENSHOTS_DIR)), name="screenshots")
 
 
 @app.get("/health")
@@ -3657,6 +3707,25 @@ def update_admin_payout_verification_status(
         }
     else:
         raise HTTPException(status_code=400, detail="Invalid entity_type. Must be 'vendor' or 'runner'.")
+
+
+# Static file extension handler for root-level assets (CSS, JS, Images, Icons, Audio, Fonts, WebManifest)
+@app.get("/{filename:path}", include_in_schema=False)
+def serve_root_static_file(filename: str):
+    STATIC_EXTENSIONS = {
+        ".css", ".js", ".mjs", ".png", ".jpg", ".jpeg", ".gif", 
+        ".svg", ".ico", ".webp", ".woff", ".woff2", ".ttf", 
+        ".eot", ".mp3", ".wav", ".ogg", ".json", ".webmanifest"
+    }
+    target_path = (ROOT_DIR / filename).resolve()
+    try:
+        target_path.relative_to(ROOT_DIR)
+    except ValueError:
+        raise HTTPException(status_code=403, detail="Forbidden")
+
+    if target_path.suffix.lower() in STATIC_EXTENSIONS and target_path.is_file():
+        return FileResponse(target_path)
+    raise HTTPException(status_code=404, detail="Not found")
 
 
 
