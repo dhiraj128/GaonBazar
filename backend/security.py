@@ -27,8 +27,8 @@ from starlette.responses import Response
 JWT_SECRET = os.getenv("JWT_SECRET", "gb-bankgrade-production-secret-9a8b7c6d5e4f3a2b1c-2026")
 JWT_ALGORITHM = "HS256"
 DEFAULT_EXPIRATION_DAYS = 30
-TEST_MODE = os.getenv("TEST_MODE", "0") == "1"
-CI_MODE = os.getenv("CI", "0") == "1"
+TEST_MODE = os.getenv("TEST_MODE", "0").lower() in ("1", "true", "yes")
+CI_MODE = os.getenv("CI", "0").lower() in ("1", "true", "yes")
 
 
 # -----------------------------------------------------------------------------
