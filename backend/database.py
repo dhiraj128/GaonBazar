@@ -2,10 +2,17 @@ from sqlalchemy import create_engine, event
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from pathlib import Path
+import os
 
 # Database path: backend/gaonbazar.db
 BASE_DIR = Path(__file__).resolve().parent
-DATABASE_URL = f"sqlite:///{BASE_DIR / 'gaonbazar.db'}"
+# Isolate preview data from the committed/live SQLite database.
+# This preview uses an intentionally disposable, fresh demo database.
+DATABASE_URL = (
+    "sqlite:////tmp/gaonbazar_staging_20261025.db"
+    if os.getenv("GAONBAZAR_PREVIEW_MODE") == "1"
+    else f"sqlite:///{BASE_DIR / 'gaonbazar.db'}"
+)
 
 engine = create_engine(
     DATABASE_URL,
