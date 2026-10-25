@@ -361,7 +361,7 @@
       <span id="header-subtitle" class="hidden"></span>
 
       <!-- Delivery Village Pill with Down Arrow (Opens Address / GPS Sheet) -->
-      <button id="header-delivery-pill" onclick="navigateToPhase('landmark')" type="button" aria-label="Select delivery village" class="flex items-center gap-1 px-1.5 sm:px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold max-w-[85px] sm:max-w-[200px] truncate border border-slate-200 shadow-2xs active:scale-95 transition-all cursor-pointer">
+      <button id="header-delivery-pill" onclick="navigateToPhase('landmark')" type="button" aria-label="Select delivery village" class="flex items-center gap-1 px-2 sm:px-2.5 py-1.5 min-h-[36px] rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold max-w-[95px] sm:max-w-[200px] truncate border border-slate-200 shadow-2xs active:scale-95 transition-all cursor-pointer">
         <span class="material-symbols-outlined text-[15px] text-primary shrink-0">location_on</span>
         <span id="header-delivery-village-name" class="truncate text-[11px] font-extrabold">रामपुर</span>
         <span class="material-symbols-outlined text-[13px] text-slate-400 shrink-0">expand_more</span>
@@ -8063,12 +8063,37 @@
           : (isHi ? 'ऑनलाइन यूपीआई' : 'Online UPI Paid');
       }
 
-      // 3. Runner details
+      // 3. Runner details & Call Delivery Partner Action Card
       const runnerSub = document.getElementById('p5-runner-sub');
-      if (runnerSub) {
-        runnerSub.innerText = isHi 
-          ? 'मोहन लाल (GM-102) • सीधे आपकी चौपाल की ओर' 
-          : 'Mohan Lal (GM-102) • En route to your doorstep';
+      const callRunnerCard = document.getElementById('p5-call-runner-card');
+      const btnCallRunner = document.getElementById('btn-call-runner');
+      const currentStage = Number(orderData.timeline_stage || AppStore.orderTimelineStage || 1);
+
+      if (currentStage >= 5 || orderData.status === 'Delivered') {
+        if (runnerSub) {
+          runnerSub.innerText = isHi 
+            ? 'ऑर्डर सफलतापूर्वक डिलीवर हो गया ✓' 
+            : 'Order delivered successfully ✓';
+        }
+        if (callRunnerCard) callRunnerCard.classList.add('hidden');
+      } else if (currentStage >= 3) {
+        const rName = orderData.runner_name || (isHi ? 'गाँव मित्र' : 'Gaon Mitra');
+        if (runnerSub) {
+          runnerSub.innerText = isHi 
+            ? `${rName} • सीधे आपकी चौपाल की ओर` 
+            : `${rName} • En route to your doorstep`;
+        }
+        if (callRunnerCard) callRunnerCard.classList.remove('hidden');
+        if (btnCallRunner && orderData.runner_phone) {
+          btnCallRunner.href = `tel:${orderData.runner_phone}`;
+        }
+      } else {
+        if (runnerSub) {
+          runnerSub.innerText = isHi 
+            ? 'ऑर्डर तैयार हो रहा है • डिलीवरी पार्टनर खोजा जा रहा है...' 
+            : 'Order preparing • Assigning delivery partner...';
+        }
+        if (callRunnerCard) callRunnerCard.classList.add('hidden');
       }
 
       // 4. Delivery OTP (4 digits)
