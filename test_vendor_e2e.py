@@ -561,10 +561,17 @@ def _run_vendor_device_steps(context, dev_name, device_config, logger):
     # 1. Header & Store Profile Audit
     # -------------------------------------------------------------------------
     logger.log(f"\n--- [{dev_name}] Step 1: Header, Store Switcher & Operational Controls ---")
-    check_element_bounds(page, "#store-badge-code", "Store Badge Code", logger)
-    check_element_bounds(page, "#store-switcher-select", "Store Switcher Dropdown", logger)
+    # Mobile-first header intentionally hides the internal store code and keeps
+    # store/language preferences inside Settings, rather than an overcrowded bar.
+    check_element_bounds(page, "#vendor-header-shop-name", "Current Store Name", logger)
     check_element_bounds(page, "#store-open-btn", "Store Open/Close Toggle CTA", logger)
-    check_element_bounds(page, "#lang-toggle-btn", "Language Toggle Button", logger)
+    check_element_bounds(page, "#btn-vendor-header-settings", "Header Settings Shortcut", logger)
+    page.click("#btn-vendor-header-settings")
+    page.wait_for_timeout(250)
+    check_element_bounds(page, "#store-switcher-select", "Store Switcher in Settings", logger)
+    check_element_bounds(page, "#lang-toggle-btn", "Language Control in Settings", logger)
+    page.click("#nav-btn-orders")
+    page.wait_for_timeout(250)
 
     # Bottom Navigation Geometry & Ergonomics Audit
     check_element_bounds(page, "#nav-btn-orders", "Bottom Nav Orders Button", logger, require_sticky=True)
@@ -595,8 +602,13 @@ def _run_vendor_device_steps(context, dev_name, device_config, logger):
     logger.log(f"\n--- [{dev_name}] Step 2: High-Level KPI Summary Tiles ---")
     check_element_bounds(page, "#kpi-new-count", "New Orders KPI Card", logger)
     check_element_bounds(page, "#kpi-packing-count", "Packing in Progress KPI Card", logger)
+    # Financial figures remain accessible in Earnings/Ledger, not the mobile order queue.
+    page.click("#nav-btn-ledger")
+    page.wait_for_timeout(250)
     check_element_bounds(page, "#kpi-gross-sales", "Gross Sales KPI Card", logger)
     check_element_bounds(page, "#kpi-net-payout", "Net Payout KPI Card", logger)
+    page.click("#nav-btn-orders")
+    page.wait_for_timeout(250)
 
     new_count_text = page.inner_text("#kpi-new-count").strip()
     gross_sales_text = page.inner_text("#kpi-gross-sales").strip()
