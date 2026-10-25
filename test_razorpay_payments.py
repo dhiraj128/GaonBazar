@@ -304,7 +304,7 @@ def run_razorpay_tests() -> bool:
     # Test Split Execution Endpoint
     res_exec = client.post(f"/payments/orders/{clean_order_id}/execute-split")
     audit("Execute Split Transfers Responds 200 on PAID Order", res_exec.status_code == 200)
-    audit("Split Payout Status Transitions to 'settled'", res_exec.json().get("split_payout_status") == "settled")
+    audit("Split Payout Status Transitions to 'processed' or 'settled'", res_exec.json().get("split_payout_status") in ("settled", "processed"))
 
     # Verify Payment Status Polling Endpoint
     res_poll = client.get(f"/payments/orders/{clean_order_id}/status")

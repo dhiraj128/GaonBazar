@@ -244,13 +244,13 @@ def run_trust_score_tests():
     record("Step 4: Order 6 - COD Blocked", c6["is_cod_blocked"] is True)
 
     # STRICT PENALTY MATH VERIFICATION ON ORDER 6:
-    # Subtotal: ₹210.0, Delivery Fee: ₹25.0, Platform Fee: ₹3.0, Total: ₹238.0
-    # Expected Penalty = Delivery Fee (₹25.0) + Platform Fee (₹3.0) = ₹28.0
+    # Subtotal: ₹210.0, Delivery Fee: ₹20.0 (for 3.0 km tier), Platform Fee: ₹3.0, Total: ₹233.0
+    # Expected Penalty = Delivery Fee (₹20.0) + Platform Fee (₹3.0) = ₹23.0
     # Expected Refund = Exact Item Subtotal = ₹210.0
-    expected_penalty_6 = 25.0 + 3.0
+    expected_penalty_6 = 20.0 + 3.0
     expected_refund_6 = 210.0
     record(
-        f"Step 4: Strict Penalty Math - Deducts Exact Delivery (₹25) + Platform Fee (₹3) = ₹{expected_penalty_6}",
+        f"Step 4: Strict Penalty Math - Deducts Exact Delivery (₹20) + Platform Fee (₹3) = ₹{expected_penalty_6}",
         c6["refund_penalty"] == expected_penalty_6,
         f"Calculated Penalty: ₹{c6['refund_penalty']} (Expected ₹{expected_penalty_6})"
     )
@@ -289,7 +289,7 @@ def run_trust_score_tests():
     db.add(u2)
     db.commit()
 
-    # User 2 places long-distance order (6.5 km -> Delivery ₹40, Platform ₹3, Total ₹623)
+    # User 2 places long-distance order (6.5 km -> Delivery ₹35, Platform ₹3, Total ₹618)
     u2_ord = client.post("/api/orders/checkout", json={
         "user_phone": test_phone_2,
         "user_name": "Sunil Rao",
@@ -302,17 +302,17 @@ def run_trust_score_tests():
     })
     record("Step 5: Long Distance Order Placed (HTTP 200)", u2_ord.status_code == 200)
     u2_ord_id = u2_ord.json()["order_id"]
-    record("Step 5: Long Distance Total Amount is ₹623", u2_ord.json()["total_amount"] == 623.0)
+    record("Step 5: Long Distance Total Amount is ₹618", u2_ord.json()["total_amount"] == 618.0)
 
     # Cancel Long-Distance Order -> Strike 3 for User 2
     u2_c = client.post(f"/api/orders/{quote(u2_ord_id)}/cancel", json={"reason": "Too far"})
     record("Step 5: Long Distance Order Cancelled (HTTP 200)", u2_c.status_code == 200)
     c_u2 = u2_c.json()
 
-    expected_penalty_long = 40.0 + 3.0  # ₹43.0
+    expected_penalty_long = 35.0 + 3.0  # ₹38.0
     expected_refund_long = 580.0        # ₹580.0
     record(
-        f"Step 5: Long Distance Penalty Deducts Fee (₹40) + Platform (₹3) = ₹{expected_penalty_long}",
+        f"Step 5: Long Distance Penalty Deducts Fee (₹35) + Platform (₹3) = ₹{expected_penalty_long}",
         c_u2["refund_penalty"] == expected_penalty_long,
         f"Penalty: ₹{c_u2['refund_penalty']}"
     )

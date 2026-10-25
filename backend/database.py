@@ -191,7 +191,10 @@ def ensure_schema_migrations():
             ("paid_at", "DATETIME"),
             ("customer_lat", "FLOAT"),
             ("customer_lng", "FLOAT"),
-            ("runner_id", "VARCHAR(50)")
+            ("runner_id", "VARCHAR(50)"),
+            ("distance_type", "VARCHAR(50) DEFAULT 'road_routing_estimate'"),
+            ("vendor_transfer_id", "VARCHAR(100)"),
+            ("runner_transfer_id", "VARCHAR(100)")
         ]
         for col_name, col_type in order_cols:
             if col_name not in existing_order_cols:
@@ -200,6 +203,25 @@ def ensure_schema_migrations():
                     conn.commit()
                 except Exception as e:
                     print(f"Notice adding column {col_name} to orders: {e}")
+
+        
+        # Check payment_transactions columns
+        res_pt = conn.execute(text("PRAGMA table_info(payment_transactions)")).fetchall()
+        existing_pt_cols = {r[1] for r in res_pt}
+        pt_cols = [
+            ("vendor_transfer_id", "VARCHAR(100)"),
+            ("runner_transfer_id", "VARCHAR(100)"),
+            ("settlement_id", "VARCHAR(100)"),
+            ("settled_at", "DATETIME"),
+            ("failure_reason", "TEXT")
+        ]
+        for col_name, col_type in pt_cols:
+            if col_name not in existing_pt_cols:
+                try:
+                    conn.execute(text(f"ALTER TABLE payment_transactions ADD COLUMN {col_name} {col_type}"))
+                    conn.commit()
+                except Exception as e:
+                    print(f"Notice adding column {col_name} to payment_transactions: {e}")
 
         # Check users columns for 3-strike customer trust score
         res_users = conn.execute(text("PRAGMA table_info(users)")).fetchall()

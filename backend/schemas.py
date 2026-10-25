@@ -870,3 +870,46 @@ class SplitPayoutDetailsDTO(BaseModel):
 
 
 
+
+
+# =============================================================================
+# REAL IN-APP & BACKEND-BACKED NOTIFICATIONS SCHEMAS
+# =============================================================================
+
+class NotificationDTO(BaseModel):
+    id: str
+    user_id: Optional[str] = None
+    user_role: str
+    order_id: Optional[str] = None
+    title: str
+    title_hi: str
+    message: str
+    message_hi: str
+    notification_type: str
+    is_read: bool
+    created_at: str
+
+
+class NotificationListResponse(BaseModel):
+    success: bool
+    notifications: List[NotificationDTO]
+    unread_count: int
+    total_count: int
+
+
+class UnreadCountResponse(BaseModel):
+    unread_count: int
+
+
+class NotificationMarkReadResponse(BaseModel):
+    success: bool
+    message: str
+    notification_id: Optional[str] = None
+    is_read: bool = True
+
+
+class WebPushSubscriptionRequest(BaseModel):
+    user_id: Optional[str] = None
+    user_role: str
+    endpoint: str
+    keys: Dict[str, str] = Field(default_factory=dict)

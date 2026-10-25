@@ -137,6 +137,7 @@ class Order(Base):
     runner_payout = Column(Float, default=0.0)
     admin_profit = Column(Float, default=13.0)
     distance_km = Column(Float, default=1.5)
+    distance_type = Column(String(50), default="road_routing_estimate")
     eta_mins = Column(String(50), default="30 Mins")
     payment_mode = Column(String(20), default="COD")
     status = Column(String(50), default="Order Placed")
@@ -150,6 +151,8 @@ class Order(Base):
     razorpay_payment_id = Column(String(100), nullable=True)
     razorpay_signature = Column(String(255), nullable=True)
     split_payout_status = Column(String(30), default="unprocessed")  # "unprocessed", "prepared", "settled"
+    vendor_transfer_id = Column(String(100), nullable=True)
+    runner_transfer_id = Column(String(100), nullable=True)
     paid_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
@@ -245,7 +248,12 @@ class PaymentTransaction(Base):
     runner_split_amount = Column(Float, default=0.0)
     admin_platform_fee = Column(Float, default=3.0)
     admin_margin = Column(Float, default=0.0)
-    route_transfer_status = Column(String(30), default="prepared")  # "prepared", "settled"
+    route_transfer_status = Column(String(30), default="prepared")  # "prepared", "settled", "failed"
+    vendor_transfer_id = Column(String(100), nullable=True)
+    runner_transfer_id = Column(String(100), nullable=True)
+    settlement_id = Column(String(100), nullable=True)
+    settled_at = Column(DateTime, nullable=True)
+    failure_reason = Column(Text, nullable=True)
 
     created_at = Column(DateTime, default=datetime.utcnow)
 
@@ -254,3 +262,19 @@ class PaymentTransaction(Base):
 
 
 
+
+
+class Notification(Base):
+    __tablename__ = "notifications"
+
+    id = Column(String(50), primary_key=True, index=True)  # e.g. "ntf_..."
+    user_id = Column(String(50), nullable=True, index=True)  # phone, store_id, runner_id, or "admin"
+    user_role = Column(String(20), index=True, nullable=False)  # "customer", "vendor", "runner", "admin"
+    order_id = Column(String(50), nullable=True, index=True)
+    title = Column(String(200), nullable=False)
+    title_hi = Column(String(200), nullable=False)
+    message = Column(Text, nullable=False)
+    message_hi = Column(Text, nullable=False)
+    notification_type = Column(String(50), nullable=False)  # "order_placed", "order_packed", etc.
+    is_read = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
