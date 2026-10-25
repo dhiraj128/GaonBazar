@@ -527,9 +527,10 @@ def main():
         if server_proc:
             try:
                 server_proc.terminate()
+                server_proc.wait(timeout=3)
             except Exception:
                 pass
-        kill_port_processes([8001])
+            kill_port_processes([8001])
 
     success = logger.summary()
     if not success:

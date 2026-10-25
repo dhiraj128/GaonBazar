@@ -215,6 +215,7 @@
       margin: 0;
       padding: 0;
       overflow-x: hidden;
+      overscroll-behavior-y: none;
       background-color: #f9f9ff;
     }
     body {
@@ -224,6 +225,7 @@
       margin: 0;
       padding: 0;
       overflow-x: hidden;
+      overscroll-behavior-y: none;
       background-color: #f9f9ff;
       font-family: 'Plus Jakarta Sans', 'Noto Sans Devanagari', sans-serif;
     }
@@ -244,6 +246,18 @@
     #p1-leaflet-map {
       isolation: isolate;
       z-index: 0;
+      touch-action: none !important;
+    }
+    .leaflet-control-zoom a {
+      width: 38px !important;
+      height: 38px !important;
+      line-height: 38px !important;
+      font-size: 18px !important;
+      font-weight: bold !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      touch-action: manipulation !important;
     }
     .leaflet-pane, .leaflet-top, .leaflet-bottom, .leaflet-control {
       z-index: 10 !important;
@@ -280,8 +294,9 @@
       overflow-y: auto !important;
       overflow-x: hidden !important;
       -webkit-overflow-scrolling: touch !important;
-      overscroll-behavior-y: contain !important;
-      touch-action: pan-y !important;
+      overscroll-behavior-y: auto !important;
+      /* Do not restrict pinch or mobile gestures on descendant Leaflet maps. */
+      touch-action: auto !important;
       scroll-padding-bottom: 120px;
       scroll-padding-top: 75px;
     }
@@ -290,6 +305,7 @@
       width: 100%;
       min-height: 100%;
       overflow: visible !important;
+      overscroll-behavior-y: none;
       display: none;
     }
     .screen-view.hidden {
@@ -318,7 +334,7 @@
   </style>
 </head>
 
-<body class="w-full h-full min-h-[100dvh] bg-surface text-on-surface antialiased flex flex-col m-0 p-0 overflow-x-hidden select-none">
+<body class="w-full h-full min-h-[100dvh] bg-surface text-on-surface antialiased flex flex-col m-0 p-0 overflow-x-hidden">
 
   <!-- ========================================================================= -->
   <!-- ROOT FULL-WIDTH MOBILE APP CONTAINER (100% of mobile emulator/device)    -->
@@ -434,6 +450,15 @@
           <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
         </button>
 
+        <!-- Discoverable appearance settings; no extra crowded header control. -->
+        <button id="drawer-appearance-btn" type="button" onclick="openCustomerAppearanceSettings()" class="w-full min-h-[48px] px-3.5 py-3 rounded-xl flex items-center gap-3.5 text-slate-800 hover:bg-slate-100 active:bg-slate-200 text-sm font-bold transition-colors cursor-pointer">
+          <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[20px]">dark_mode</span>
+          </div>
+          <span class="flex-1 text-left" data-i18n="profile_row_theme">Theme &amp; Display / थीम</span>
+          <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
+        </button>
+
         <!-- Cart / थैला -->
         <button id="drawer-cart-btn" onclick="navigateToPhase('cart'); closeSidebarDrawer();" class="w-full min-h-[48px] px-3.5 py-3 rounded-xl flex items-center gap-3.5 text-slate-800 hover:bg-slate-100 active:bg-slate-200 text-sm font-bold transition-colors cursor-pointer">
           <div class="w-9 h-9 rounded-xl bg-emerald-50 text-primary flex items-center justify-center shrink-0">
@@ -518,7 +543,7 @@
     <!-- ========================================================================= -->
     <!-- MAIN SCREEN ROUTER VIEWPORT CONTAINER                                     -->
     <!-- ========================================================================= -->
-    <main id="main-content-container" class="flex-1 w-full min-h-0 h-full relative bg-surface flex flex-col pb-safe overflow-y-auto overscroll-contain scroll-pb-28">
+    <main id="main-content-container" class="flex-1 w-full min-h-0 relative bg-surface flex flex-col pb-safe overflow-y-auto scroll-pb-28">
 
       <!-- ===================================================================== -->
       <!-- PHASE 1.1: PHONE LOGIN & SEPARATE AUTH INTENTIONS (SIGN IN / SIGN UP) -->
@@ -898,7 +923,7 @@
 
           <!-- Interactive Mobile Map (Pinch to zoom, pan, draggable pin, zoom buttons) -->
           <div class="relative w-full h-56 rounded-2xl overflow-hidden border border-slate-300 shadow-sm bg-slate-100">
-            <div id="p1-leaflet-map" class="w-full h-full" style="touch-action: pan-x pan-y pinch-zoom;"></div>
+            <div id="p1-leaflet-map" class="w-full h-full"></div>
             
             <!-- Floating Recenter Button -->
             <button 
@@ -2319,41 +2344,42 @@
 
       </section>
 
-      <!-- ===================================================================== -->
-      <!-- CUSTOMER BOTTOM NAVIGATION (Strictly 4-Tab: Stores, Categories, AI Assistant, Orders) -->
-      <!-- ===================================================================== -->
-      <nav id="customer-bottom-nav" class="hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-3 sm:px-6 py-2 pb-safe flex items-center justify-around shadow-sticky-bar max-w-full">
-        
-        <!-- Tab 1: Home / Stores -->
-        <button id="nav-btn-stores" onclick="navigateToPhase('dashboard')" class="flex-1 flex flex-col items-center justify-center min-h-[48px] py-1 text-primary font-black transition-all active:scale-95 cursor-pointer">
-          <span class="material-symbols-outlined text-[24px]">storefront</span>
-          <span id="nav-lbl-stores" class="text-[10.5px] font-bold tracking-wide mt-0.5 font-sans" data-i18n="nav_stores">दुकानें</span>
-        </button>
-
-        <!-- Tab 2: Categories -->
-        <button id="nav-btn-categories" onclick="navigateToPhase('dashboard'); setTimeout(() => document.getElementById('p2-categories-container')?.scrollIntoView({behavior: 'smooth'}), 100)" class="flex-1 flex flex-col items-center justify-center min-h-[48px] py-1 text-slate-500 hover:text-slate-800 font-bold transition-all active:scale-95 cursor-pointer">
-          <span class="material-symbols-outlined text-[24px]">category</span>
-          <span id="nav-lbl-categories" class="text-[10.5px] font-bold tracking-wide mt-0.5 font-sans" data-i18n="nav_categories">श्रेणियाँ</span>
-        </button>
-
-        <!-- Tab 3: AI Assistant (Voice-First Shopping) -->
-        <button id="nav-btn-ai" onclick="navigateToPhase('ai-commerce')" class="flex-1 flex flex-col items-center justify-center min-h-[48px] py-1 text-slate-500 hover:text-slate-800 font-bold transition-all active:scale-95 cursor-pointer">
-          <div class="relative flex items-center justify-center">
-            <span class="material-symbols-outlined text-[24px]">mic</span>
-            <span class="absolute -top-1 -right-2 w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-          </div>
-          <span id="nav-lbl-ai" class="text-[10.5px] font-bold tracking-wide mt-0.5 font-sans" data-i18n="nav_ai_assistant">AI सहायक</span>
-        </button>
-
-        <!-- Tab 4: Orders / Track -->
-        <button id="nav-btn-orders" onclick="navigateToPhase('tracking')" class="flex-1 flex flex-col items-center justify-center min-h-[48px] py-1 text-slate-500 hover:text-slate-800 font-bold transition-all active:scale-95 cursor-pointer">
-          <span class="material-symbols-outlined text-[24px]">receipt_long</span>
-          <span id="nav-lbl-orders" class="text-[10.5px] font-bold tracking-wide mt-0.5 font-sans" data-i18n="nav_orders">ऑर्डर</span>
-        </button>
-
-      </nav>
-
     </main>
+
+    <!-- ===================================================================== -->
+    <!-- CUSTOMER BOTTOM NAVIGATION (Strictly 4-Tab: Stores, Categories, AI Assistant, Orders) -->
+    <!-- Positioned outside main scroll owner as direct child of #app-root -->
+    <!-- ===================================================================== -->
+    <nav id="customer-bottom-nav" class="hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-3 sm:px-6 py-2 pb-safe flex items-center justify-around shadow-sticky-bar max-w-full">
+      
+      <!-- Tab 1: Home / Stores -->
+      <button id="nav-btn-stores" onclick="navigateToPhase('dashboard')" class="flex-1 flex flex-col items-center justify-center min-h-[48px] py-1 text-primary font-black transition-all active:scale-95 cursor-pointer">
+        <span class="material-symbols-outlined text-[24px]">storefront</span>
+        <span id="nav-lbl-stores" class="text-[10.5px] font-bold tracking-wide mt-0.5 font-sans" data-i18n="nav_stores">दुकानें</span>
+      </button>
+
+      <!-- Tab 2: Categories -->
+      <button id="nav-btn-categories" onclick="navigateToPhase('dashboard'); setTimeout(() => document.getElementById('p2-categories-container')?.scrollIntoView({behavior: 'smooth'}), 100)" class="flex-1 flex flex-col items-center justify-center min-h-[48px] py-1 text-slate-500 hover:text-slate-800 font-bold transition-all active:scale-95 cursor-pointer">
+        <span class="material-symbols-outlined text-[24px]">category</span>
+        <span id="nav-lbl-categories" class="text-[10.5px] font-bold tracking-wide mt-0.5 font-sans" data-i18n="nav_categories">श्रेणियाँ</span>
+      </button>
+
+      <!-- Tab 3: AI Assistant (Voice-First Shopping) -->
+      <button id="nav-btn-ai" onclick="navigateToPhase('ai-commerce')" class="flex-1 flex flex-col items-center justify-center min-h-[48px] py-1 text-slate-500 hover:text-slate-800 font-bold transition-all active:scale-95 cursor-pointer">
+        <div class="relative flex items-center justify-center">
+          <span class="material-symbols-outlined text-[24px]">mic</span>
+          <span class="absolute -top-1 -right-2 w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+        </div>
+        <span id="nav-lbl-ai" class="text-[10.5px] font-bold tracking-wide mt-0.5 font-sans" data-i18n="nav_ai_assistant">AI सहायक</span>
+      </button>
+
+      <!-- Tab 4: Orders / Track -->
+      <button id="nav-btn-orders" onclick="navigateToPhase('tracking')" class="flex-1 flex flex-col items-center justify-center min-h-[48px] py-1 text-slate-500 hover:text-slate-800 font-bold transition-all active:scale-95 cursor-pointer">
+        <span class="material-symbols-outlined text-[24px]">receipt_long</span>
+        <span id="nav-lbl-orders" class="text-[10.5px] font-bold tracking-wide mt-0.5 font-sans" data-i18n="nav_orders">ऑर्डर</span>
+      </button>
+
+    </nav>
 
     <!-- ========================================================================= -->
     <!-- NOTIFICATIONS & ALERTS MODAL / BOTTOM SHEET                               -->
@@ -3943,14 +3969,12 @@
       let historyPushedCount = 0;
 
       window.syncBodyScrollLock = function() {
-        // Guarantee clean body scroll unlock without residual scroll freezes
-        if (overlayStack.length > 0) {
-          document.body.classList.add('overflow-hidden');
-          document.documentElement.classList.add('overflow-hidden');
-        } else {
-          document.body.classList.remove('overflow-hidden');
-          document.documentElement.classList.remove('overflow-hidden');
-        }
+        // Main is the actual vertical scroll owner. Locking document root can
+        // swallow Android touch gestures after a modal or sidebar closes.
+        // The overlay itself captures taps; never leave a global scroll lock.
+        document.body.classList.remove('overflow-hidden');
+        document.documentElement.classList.remove('overflow-hidden');
+        document.body.dataset.overlayOpen = overlayStack.length ? 'true' : 'false';
       };
 
       window.pushOverlayHistory = function(overlayId, closeCallback) {
@@ -3969,7 +3993,7 @@
       if (window.history && window.history.replaceState) {
         try {
           if (!window.history.state || !window.history.state.page) {
-            window.history.replaceState({ page: 'dashboard', gaonbazar_phase: 'dashboard', timestamp: Date.now() }, '');
+            window.history.replaceState({ page: AppStore.currentPhase || 'login', gaonbazar_phase: AppStore.currentPhase || 'login', timestamp: Date.now() }, '');
           }
         } catch (e) {
           console.warn('Initial replaceState error:', e);
@@ -4050,7 +4074,18 @@
         // 2. Revert to previous DOM view cleanly
         window.syncBodyScrollLock();
         const state = event.state;
-        const targetPhase = (state && (state.page || state.gaonbazar_phase));
+        let targetPhase = (state && (state.page || state.gaonbazar_phase));
+
+        const isAuthenticated = !!(AppStore.sessionToken || (typeof localStorage !== 'undefined' && (localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_authToken'))));
+        if (isAuthenticated) {
+          // An authenticated customer must never be thrown back to pre-auth login or OTP screens
+          if (targetPhase === 'login' || targetPhase === 'otp') {
+            targetPhase = 'dashboard';
+          }
+          if (AppStore.historyStack && AppStore.historyStack.length > 0) {
+            AppStore.historyStack = AppStore.historyStack.filter(p => p !== 'login' && p !== 'otp');
+          }
+        }
 
         if (targetPhase && targetPhase !== AppStore.currentPhase && typeof navigateToPhase === 'function') {
           navigateToPhase(targetPhase, true /* isFromPopstate */);
@@ -4164,6 +4199,21 @@
       }
     }
     window.openSidebarDrawer = openSidebarDrawer;
+
+    function openCustomerAppearanceSettings() {
+      const drawer = document.getElementById('sidebar-drawer');
+      if (drawer && drawer.classList.contains('translate-x-0')) closeSidebarDrawer(true);
+      navigateToPhase('profile');
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        const main = document.getElementById('main-content-container');
+        const settings = document.getElementById('profile-row-theme');
+        if (main && settings) {
+          const targetTop = settings.getBoundingClientRect().top - main.getBoundingClientRect().top + main.scrollTop - 16;
+          main.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
+        }
+      }));
+    }
+    window.openCustomerAppearanceSettings = openCustomerAppearanceSettings;
 
     function closeSidebarDrawer(isFromPopstate) {
       const overlay = document.getElementById('sidebar-overlay');
@@ -4641,8 +4691,13 @@
           locText = (lang === 'hi') ? 'लोकेशन पहचानी गई' : 'Location Detected';
         }
         if (AppStore.user.state) locText += ` (${AppStore.user.state})`;
-        const doorstepBadge = '✅ Exact Doorstep Pinned';
-        gpsBadge.innerHTML = `<span class="text-on-surface font-semibold">📍 ${locText}</span> <span class="inline-flex items-center gap-1 text-emerald-700 font-extrabold ml-1 bg-emerald-100/90 px-2 py-0.5 rounded-full text-[10px] border border-emerald-300">${doorstepBadge}</span>`;
+        if (AppStore.user.gps.confirmed) {
+          const doorstepBadge = (lang === 'hi') ? '✅ सटीक स्थान पुष्ट' : '✅ Exact Doorstep Confirmed';
+          gpsBadge.innerHTML = `<span class="text-on-surface font-semibold">📍 ${locText}</span> <span class="inline-flex items-center gap-1 text-emerald-700 font-extrabold ml-1 bg-emerald-100/90 px-2 py-0.5 rounded-full text-[10px] border border-emerald-300">${doorstepBadge}</span>`;
+        } else {
+          const pendingBadge = (lang === 'hi') ? '📍 पिन पुष्टि प्रतीक्षित' : '📍 Pin Confirmation Needed';
+          gpsBadge.innerHTML = `<span class="text-on-surface font-semibold">📍 ${locText}</span> <span class="inline-flex items-center gap-1 text-amber-700 font-medium ml-1 bg-amber-50 px-2 py-0.5 rounded-full text-[10px] border border-amber-300">${pendingBadge}</span>`;
+        }
         gpsBadge.classList.remove('text-on-surface-variant', 'text-rose-500');
         gpsBadge.classList.add('text-primary', 'font-bold');
       }
@@ -4905,6 +4960,11 @@
         return;
       }
 
+      const isAuthenticated = !!(AppStore.sessionToken || (typeof localStorage !== 'undefined' && (localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_authToken'))));
+      if (isAuthenticated && AppStore.historyStack && AppStore.historyStack.length > 0) {
+        AppStore.historyStack = AppStore.historyStack.filter(p => p !== 'login' && p !== 'otp');
+      }
+
       if (window.history && window.history.length > 1 && AppStore.historyStack.length > 0) {
         try {
           window.history.back();
@@ -4914,7 +4974,7 @@
         }
       }
 
-      if (AppStore.historyStack.length > 0) {
+      if (AppStore.historyStack && AppStore.historyStack.length > 0) {
         const prev = AppStore.historyStack.pop();
         navigateToPhase(prev, true);
       } else {
@@ -5114,8 +5174,16 @@
         localStorage.setItem('gaonbazar_user', JSON.stringify(AppStore.user));
         savePersistentState();
 
-        // Successful authentication: navigate to Main Dashboard
-        navigateToPhase('dashboard');
+        // Reset history stack so back button never kicks customer back to login/OTP
+        AppStore.historyStack = [];
+        try {
+          window.history.replaceState({ page: 'dashboard', gaonbazar_phase: 'dashboard', timestamp: Date.now() }, '');
+        } catch (e) {
+          console.warn('History replaceState error:', e);
+        }
+
+        // Successful authentication: navigate to Main Dashboard as root view
+        navigateToPhase('dashboard', true);
         loadStoresFromBackend();
       } catch (err) {
         console.warn('Backend verify error:', err);
@@ -5317,7 +5385,9 @@
             zoom: 17,
             zoomControl: true,
             scrollWheelZoom: true,
-            tap: false,
+            touchZoom: true,
+            doubleClickZoom: true,
+            dragging: true,
             attributionControl: true
           });
 
@@ -5363,6 +5433,8 @@
       AppStore.user.gps.lat = newLat;
       AppStore.user.gps.lng = newLng;
       AppStore.user.gps.confirmed = false;
+      // Higher-accuracy GPS callbacks must never override a manually moved pin.
+      AppStore.user.gps.manuallyAdjusted = true;
       AppStore.user.latitude = newLat;
       AppStore.user.longitude = newLng;
 
@@ -5442,6 +5514,12 @@
         badge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 font-extrabold text-[11px] shadow-2xs';
         badgeText.innerText = isHi ? '✅ सटीक स्थान ग्राहक द्वारा पुष्ट' : '✅ Exact Doorstep Confirmed by You';
       }
+      const topBadge = document.getElementById('p1-gps-badge');
+      if (topBadge) {
+        const placeName = AppStore.user.granular || AppStore.user.village || AppStore.user.district || '';
+        const confBadge = isHi ? '✅ सटीक स्थान पुष्ट' : '✅ Exact Doorstep Confirmed';
+        topBadge.innerHTML = `<span class="text-on-surface font-semibold">📍 ${placeName}</span> <span class="inline-flex items-center gap-1 text-emerald-700 font-extrabold ml-1 bg-emerald-100/90 px-2 py-0.5 rounded-full text-[10px] border border-emerald-300">${confBadge}</span>`;
+      }
       const coordsDisplay = document.getElementById('p1-coords-display');
       if (coordsDisplay) {
         coordsDisplay.innerText = `${AppStore.user.gps.lat.toFixed(5)}°N, ${AppStore.user.gps.lng.toFixed(5)}°E (Confirmed)`;
@@ -5461,6 +5539,7 @@
       const villInput = document.getElementById('p1-village-input');
       const isHi = (AppStore.lang === 'hi');
 
+      if (AppStore.user.gps) AppStore.user.gps.manuallyAdjusted = false;
       if (btnText) btnText.innerText = isHi ? 'लोकेशन खोज रहे हैं...' : 'Detecting GPS...';
       if (badge) {
         badge.innerText = isHi ? 'सैटेलाइट से कनेक्ट हो रहे हैं...' : 'Connecting to GPS...';
@@ -5469,6 +5548,8 @@
       }
 
       const applyLocationResult = async (lat, lng, acc) => {
+        // A late GPS refinement must not erase the doorstep the user selected.
+        if (AppStore.user.gps && AppStore.user.gps.manuallyAdjusted) return;
         AppStore.detectedGps = { lat, lng, accuracy: acc };
         AppStore.user.gps = { lat, lng, accuracy: acc, confirmed: false };
         AppStore.user.latitude = lat;
@@ -5504,22 +5585,24 @@
         const loc = await reverseGeocodeCoords(lat, lng);
         const { village, district, state, granular } = loc;
 
-        if (distInput && !distInput.dataset.userEdited) {
-          distInput.value = district || '';
-          distInput.dispatchEvent(new Event('input', { bubbles: true }));
-        }
-        if (villInput && !villInput.dataset.userEdited) {
-          villInput.value = village || '';
-          villInput.dispatchEvent(new Event('input', { bubbles: true }));
-        }
+        // Geocoder suggestions must never masquerade as user edits.
+        // An input event would set dataset.userEdited via the inline handler.
+        if (distInput && !distInput.dataset.userEdited && district) distInput.value = district;
+        if (villInput && !villInput.dataset.userEdited && village) villInput.value = village;
 
-        if (district) document.getElementById('p1-district-err')?.classList.add('hidden');
-        if (village) document.getElementById('p1-village-err')?.classList.add('hidden');
+        const resolvedDistrict = (distInput && distInput.dataset.userEdited)
+          ? distInput.value.trim() : (district || AppStore.user.district || '');
+        const resolvedVillage = (villInput && villInput.dataset.userEdited)
+          ? villInput.value.trim() : (village || AppStore.user.village || '');
 
-        const granularName = granular || village || district;
+        if (resolvedDistrict) document.getElementById('p1-district-err')?.classList.add('hidden');
+        if (resolvedVillage) document.getElementById('p1-village-err')?.classList.add('hidden');
+
+        const granularName = (villInput && villInput.dataset.userEdited)
+          ? resolvedVillage : (granular || village || district);
         AppStore.user.granular = granularName || '';
-        AppStore.user.district = district || '';
-        AppStore.user.village = village || '';
+        AppStore.user.district = resolvedDistrict;
+        AppStore.user.village = resolvedVillage;
         AppStore.user.state = state || '';
 
         // Update GPS Status Text honestly
@@ -6289,13 +6372,18 @@
           resetInactivityTimer();
           let interimTranscript = '';
           let finalTranscript = '';
+          const startIndex = (typeof event.resultIndex === 'number') ? event.resultIndex : 0;
 
-          for (let i = event.resultIndex; i < event.results.length; ++i) {
+          for (let i = startIndex; i < (event.results ? event.results.length : 0); ++i) {
             const res = event.results[i];
-            if (res.isFinal) {
-              finalTranscript += res[0].transcript;
+            const text = (res && res[0] && res[0].transcript) ? res[0].transcript : '';
+            if (res && res.isFinal) {
+              finalTranscript += text;
+            } else if (res && res.isFinal === false) {
+              interimTranscript += text;
             } else {
-              interimTranscript += res[0].transcript;
+              // In simple speech events without isFinal flag, treat as direct transcript
+              finalTranscript += text;
             }
           }
 
@@ -6375,36 +6463,101 @@
         return;
       }
 
+      // Extract tokens / words from query, stripping conversational stop-words
+      const stopWords = new Set([
+        'mujhe', 'chahiye', 'chaho', 'dena', 'de', 'do', 'bhejo', 'lao', 'aur', 'tatha', 'ek', 'do', 'teen', 'char', 'panch',
+        'kilo', 'kg', 'gram', 'gm', 'liter', 'litre', 'l', 'packet', 'pkt', 'ka', 'ke', 'ki', 'ko', 'mein', 'se', 'par',
+        'i', 'want', 'need', 'give', 'me', 'please', 'a', 'an', 'the', 'of', 'in', 'and', 'with', 'for', 'send', 'to',
+        'मुझे', 'चाहिए', 'देना', 'दे', 'दो', 'भेजो', 'लाओ', 'और', 'एक', 'दो', 'तीन', 'चार', 'पाँच',
+        'किलो', 'ग्राम', 'लीटर', 'पैकेट', 'का', 'के', 'की', 'को', 'में', 'से', 'दुकान'
+      ]);
+
+      const tokens = q
+        .replace(/[^\w\u0900-\u097F\s]/gi, ' ')
+        .split(/\s+/)
+        .filter(t => t.length > 1 && !stopWords.has(t));
+
+      // Domain-specific synonym dictionary for bilingual rural commerce
+      const synonyms = {
+        oil: ['oil', 'tel', 'mustard', 'sarson', 'refined', 'fortune', 'dhara', 'तेल', 'सरसों'],
+        tel: ['oil', 'tel', 'mustard', 'sarson', 'refined', 'fortune', 'तेल', 'सरसों'],
+        sarson: ['oil', 'tel', 'mustard', 'sarson', 'तेल', 'सरसों'],
+        atta: ['atta', 'aata', 'gehu', 'chakki', 'flour', 'maida', 'ashirvaad', 'आटा', 'गेहूं', 'मैदा'],
+        aata: ['atta', 'aata', 'gehu', 'chakki', 'flour', 'maida', 'ashirvaad', 'आटा', 'गेहूं', 'मैदा'],
+        sugar: ['sugar', 'chini', 'cheeni', 'shakkar', 'madhur', 'चीनी', 'शक्कर'],
+        chini: ['sugar', 'chini', 'cheeni', 'shakkar', 'madhur', 'चीनी', 'शक्कर'],
+        rice: ['rice', 'chawal', 'basmati', 'daawat', 'kolam', 'चावल', 'बासमती'],
+        chawal: ['rice', 'chawal', 'basmati', 'daawat', 'kolam', 'चावल', 'बासमती'],
+        milk: ['milk', 'doodh', 'dudh', 'taaza', 'amul', 'sudha', 'paneer', 'dahi', 'ghee', 'दूध', 'दही', 'पनीर', 'घी'],
+        doodh: ['milk', 'doodh', 'dudh', 'taaza', 'amul', 'sudha', 'paneer', 'dahi', 'ghee', 'दूध', 'दही', 'पनीर', 'घी'],
+        ghee: ['ghee', 'amul', 'desi ghee', 'sudha', 'घी'],
+        tea: ['tea', 'chai', 'chay', 'red label', 'taj mahal', 'taaza', 'चाय', 'पत्ती'],
+        chai: ['tea', 'chai', 'chay', 'red label', 'taj mahal', 'taaza', 'चाय', 'पत्ती'],
+        dal: ['dal', 'daal', 'arhar', 'moong', 'chana', 'toor', 'urad', 'masoor', 'pulses', 'दाल', 'चना', 'मूंग'],
+        spices: ['mirch', 'haldi', 'dhaniya', 'masala', 'jeera', 'chilli', 'turmeric', 'coriander', 'मसाला', 'मिर्च', 'हल्दी', 'धनिया', 'जीरा'],
+        masala: ['mirch', 'haldi', 'dhaniya', 'masala', 'jeera', 'chilli', 'turmeric', 'coriander', 'मसाला', 'मिर्च', 'हल्दी', 'धनिया', 'जीरा'],
+        salt: ['salt', 'namak', 'tata', 'sendha', 'नमक'],
+        namak: ['salt', 'namak', 'tata', 'sendha', 'नमक'],
+        soap: ['soap', 'sabun', 'surf', 'detergent', 'rin', 'wheel', 'tide', 'dettol', 'lux', 'lifebuoy', 'साबुन', 'सर्फ'],
+        sabun: ['soap', 'sabun', 'surf', 'detergent', 'rin', 'wheel', 'tide', 'dettol', 'lux', 'lifebuoy', 'साबुन', 'सर्फ'],
+        medicine: ['medicine', 'dawa', 'tablet', 'capsule', 'syrup', 'paracetamol', 'pharma', 'aushadhi', 'दवा', 'दवाई', 'गोली'],
+        dawa: ['medicine', 'dawa', 'tablet', 'capsule', 'syrup', 'paracetamol', 'pharma', 'aushadhi', 'दवा', 'दवाई', 'गोली'],
+        seed: ['seed', 'beej', 'kisan', 'khad', 'fertilizer', 'urea', 'dap', 'बीज', 'खाद', 'यूरिया'],
+        beej: ['seed', 'beej', 'kisan', 'khad', 'fertilizer', 'urea', 'dap', 'बीज', 'खाद', 'यूरिया'],
+        khad: ['seed', 'beej', 'kisan', 'khad', 'fertilizer', 'urea', 'dap', 'बीज', 'खाद', 'यूरिया']
+      };
+
+      const expandedKeywords = new Set();
+      tokens.forEach(t => {
+        expandedKeywords.add(t);
+        Object.keys(synonyms).forEach(key => {
+          if (t.includes(key) || key.includes(t)) {
+            synonyms[key].forEach(syn => expandedKeywords.add(syn.toLowerCase()));
+          } else if (synonyms[key].some(syn => syn.toLowerCase() === t || syn.toLowerCase().includes(t) || t.includes(syn.toLowerCase()))) {
+            synonyms[key].forEach(syn => expandedKeywords.add(syn.toLowerCase()));
+          }
+        });
+      });
+
       // 1. Find matching products in AppStore.catalog
-      const matchingProducts = AppStore.catalog.filter(item => {
+      const matchingProducts = (AppStore.catalog || []).filter(item => {
         const nameHi = (item.name_hi || '').toLowerCase();
         const nameEn = (item.name_en || '').toLowerCase();
         const cat = (item.cat || '').toLowerCase();
-        return nameHi.includes(q) || nameEn.includes(q) || cat.includes(q) ||
-               (q.includes('sugar') && (nameEn.includes('sugar') || nameHi.includes('चीनी'))) ||
-               (q.includes('चीनी') && (nameEn.includes('sugar') || nameHi.includes('चीनी'))) ||
-               ((q.includes('atta') || q.includes('aata')) && (nameEn.includes('atta') || nameHi.includes('आटा') || nameEn.includes('flour'))) ||
-               (q.includes('आटा') && (nameEn.includes('atta') || nameHi.includes('आटा') || nameEn.includes('flour'))) ||
-               ((q.includes('chawal') || q.includes('rice')) && (nameEn.includes('rice') || nameHi.includes('चावल'))) ||
-               (q.includes('चावल') && (nameEn.includes('rice') || nameHi.includes('चावल')));
+
+        if (nameHi.includes(q) || nameEn.includes(q) || cat.includes(q)) return true;
+
+        for (const token of tokens) {
+          if (nameHi.includes(token) || nameEn.includes(token) || cat.includes(token)) return true;
+        }
+
+        for (const kw of expandedKeywords) {
+          if (nameHi.includes(kw) || nameEn.includes(kw) || cat.includes(kw)) return true;
+        }
+
+        return false;
       });
 
       // 2. Identify stores that sell these products or match the query directly
       const matchingStoreIds = new Set();
-      if (matchingProducts.some(p => ['atta', 'oil', 'spices', 'tea', 'kirana'].includes(p.cat) || p.id.startsWith('item_'))) {
+      if (matchingProducts.some(p => ['atta', 'oil', 'spices', 'tea', 'kirana', 'rice', 'sugar', 'salt'].includes(p.cat) || p.store_id === 'sharma_brothers' || p.id.startsWith('item_'))) {
         matchingStoreIds.add('sharma_brothers');
       }
-      if (q.includes('sharma') || q.includes('शर्मा') || q.includes('kirana') || q.includes('किराना')) {
-        matchingStoreIds.add('sharma_brothers');
+      if (matchingProducts.some(p => ['dairy', 'milk'].includes(p.cat) || p.store_id === 'apna_dairy' || p.id.startsWith('item_d'))) {
+        matchingStoreIds.add('apna_dairy');
       }
-      if (q.includes('kisan') || q.includes('किसान') || q.includes('खाद') || q.includes('fertilizer') || q.includes('seed') || q.includes('बीज')) {
-        matchingStoreIds.add('kisan_seva');
-      }
-      if (q.includes('dawa') || q.includes('दवा') || q.includes('medicine') || q.includes('pharma') || q.includes('aushadhi')) {
+      if (matchingProducts.some(p => ['pharma', 'medicine'].includes(p.cat) || p.store_id === 'rampur_dawa' || p.id.startsWith('item_m'))) {
         matchingStoreIds.add('rampur_dawa');
       }
-      if (q.includes('dairy') || q.includes('डेयरी') || q.includes('दूध') || q.includes('milk') || q.includes('paneer') || q.includes('पनीर')) {
-        matchingStoreIds.add('apna_dairy');
+      if (matchingProducts.some(p => ['agri', 'seed', 'fertilizer'].includes(p.cat) || p.store_id === 'kisan_seva' || p.id.startsWith('item_k'))) {
+        matchingStoreIds.add('kisan_seva');
+      }
+
+      for (const kw of expandedKeywords) {
+        if (['sharma', 'शर्मा', 'kirana', 'किराना', 'groceries', 'ration', 'राशन'].some(s => kw.includes(s) || s.includes(kw))) matchingStoreIds.add('sharma_brothers');
+        if (['kisan', 'किसान', 'खाद', 'fertilizer', 'seed', 'बीज', 'urea', 'यूरिया', 'dap'].some(s => kw.includes(s) || s.includes(kw))) matchingStoreIds.add('kisan_seva');
+        if (['dawa', 'दवा', 'दवाई', 'medicine', 'pharma', 'aushadhi', 'औषधि'].some(s => kw.includes(s) || s.includes(kw))) matchingStoreIds.add('rampur_dawa');
+        if (['dairy', 'डेयरी', 'दूध', 'milk', 'paneer', 'पनीर', 'curd', 'dahi', 'दही', 'ghee', 'घी'].some(s => kw.includes(s) || s.includes(kw))) matchingStoreIds.add('apna_dairy');
       }
 
       // Filter store cards on the dashboard
@@ -8783,18 +8936,16 @@
       // 1. First, attempt backend AI NLP parsing via FastAPI endpoint
       let backendLoaded = false;
       try {
-        const aiResp = await fetch('/api/ai/commerce-assistant', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            query: query,
-            lang: AppStore.lang || 'en',
-            store_id: AppStore.activeStoreId || null
-          })
-        });
-        if (aiResp.ok) {
-          const aiData = await aiResp.json();
-          if (Array.isArray(aiData.products) && aiData.products.length > 0) {
+        if (typeof apiFetch === 'function') {
+          const aiData = await apiFetch('/ai/commerce-assistant', {
+            method: 'POST',
+            body: JSON.stringify({
+              query: query,
+              lang: AppStore.lang || 'en',
+              store_id: AppStore.activeStoreId || null
+            })
+          });
+          if (aiData && Array.isArray(aiData.products) && aiData.products.length > 0) {
             backendLoaded = true;
             aiData.products.forEach(p => {
               let existing = catalog.find(i => i.id === p.id);
@@ -9380,7 +9531,9 @@
         } catch (e) {
           console.warn('Could not restore user from localStorage', e);
         }
-        navigateToPhase('dashboard');
+        // Restored sessions must not add a phantom login history entry.
+        navigateToPhase('dashboard', true);
+        window.history.replaceState({ page: 'dashboard', gaonbazar_phase: 'dashboard', timestamp: Date.now() }, '');
       }
 
       // Check auto-test query
@@ -9439,7 +9592,7 @@
       const origScrollBy = window.scrollBy.bind(window);
 
       function getActiveScrollContainer() {
-        return document.querySelector('.screen-view.active') ||
+        return document.getElementById('main-content-container') ||
                document.querySelector('main.overflow-y-auto') ||
                document.querySelector('main') ||
                document.documentElement ||
@@ -9461,6 +9614,54 @@
           container.scrollBy(...args);
         }
       };
+
+      // Transparently delegate scrollTo, scrollBy, and scrollTop on all .screen-view children
+      // to the single scroll owner (#main-content-container) without creating nested scroll contexts.
+      function setupScreenViewScrollDelegation() {
+        const parentMain = getActiveScrollContainer();
+        if (!parentMain) return;
+        document.querySelectorAll('.screen-view').forEach(view => {
+          if (view._hasScrollDelegation) return;
+          view._hasScrollDelegation = true;
+          view.scrollTo = function(...args) {
+            parentMain.scrollTo(...args);
+          };
+          view.scrollBy = function(...args) {
+            parentMain.scrollBy(...args);
+          };
+          try {
+            Object.defineProperty(view, 'scrollTop', {
+              get: function() {
+                return parentMain.scrollTop;
+              },
+              set: function(val) {
+                parentMain.scrollTop = val;
+              },
+              configurable: true
+            });
+            Object.defineProperty(view, 'scrollHeight', {
+              get: function() {
+                return parentMain.scrollHeight;
+              },
+              configurable: true
+            });
+            Object.defineProperty(view, 'clientHeight', {
+              get: function() {
+                return parentMain.clientHeight;
+              },
+              configurable: true
+            });
+          } catch (e) {
+            console.warn('ScrollTop delegation notice:', e);
+          }
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupScreenViewScrollDelegation);
+      } else {
+        setupScreenViewScrollDelegation();
+      }
     })();
   </script>
 </body>

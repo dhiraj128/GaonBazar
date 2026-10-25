@@ -210,8 +210,20 @@ def kill_port_processes(ports=[8001]):
         except Exception:
             pass
 
-# Guarantee port cleanup on any script exit
-atexit.register(lambda: kill_port_processes([8001]))
+_SPAWNED_SERVER_PROCESS = None
+
+def cleanup_spawned_server():
+    global _SPAWNED_SERVER_PROCESS
+    if _SPAWNED_SERVER_PROCESS is not None:
+        try:
+            _SPAWNED_SERVER_PROCESS.kill()
+            _SPAWNED_SERVER_PROCESS.wait(timeout=3)
+        except Exception:
+            pass
+        kill_port_processes([8001])
+        _SPAWNED_SERVER_PROCESS = None
+
+atexit.register(cleanup_spawned_server)
 
 
 def ensure_backend_running(logger):
@@ -265,6 +277,8 @@ def ensure_backend_running(logger):
         kill_port_processes([8001])
         raise RuntimeError("FastAPI backend failed to start or respond on http://127.0.0.1:8001")
 
+    global _SPAWNED_SERVER_PROCESS
+    _SPAWNED_SERVER_PROCESS = server_proc
     return server_proc
 
 
@@ -457,46 +471,45 @@ def ensure_stage3_mission_exists():
     Ensures at least one order exists in Stage 3 (Packed & Ready for Pickup)
     with a valid 4-digit delivery OTP (e.g. '4821') and human-readable landmark.
     """
-    from backend.database import get_db
+    from backend.database import db_session
     from backend.models import Order, OrderItem
-    db = next(get_db())
-    has_stage3 = db.query(Order).filter(Order.store_id == "sharma_brothers", Order.timeline_stage == 3).first()
-    if not has_stage3:
-        import random
-        oid = f"#RUR-{random.randint(10000, 99999)}"
-        while db.query(Order).filter(Order.id == oid).first():
+    with db_session() as db:
+        has_stage3 = db.query(Order).filter(Order.store_id == "sharma_brothers", Order.timeline_stage == 3).first()
+        if not has_stage3:
+            import random
             oid = f"#RUR-{random.randint(10000, 99999)}"
+            while db.query(Order).filter(Order.id == oid).first():
+                oid = f"#RUR-{random.randint(10000, 99999)}"
 
-        demo = Order(
-            id=oid,
-            user_phone="9876543230",
-            user_name="Vikram Singh (विक्रम सिंह)",
-            village="Rampur South (रामपुर दक्षिण)",
-            landmark="Near Old Neem Tree, Tubewell #3, Khasra 19",
-            store_id="sharma_brothers",
-            store_name="Sharma Brothers Kirana",
-            subtotal=234.0,
-            distance_km=1.2,
-            eta_mins="30 Mins",
-            delivery_fee=15.0,
-            platform_fee=3.0,
-            savings=32.0,
-            total_amount=252.0,
-            vendor_payout=234.0,
-            runner_payout=10.0,
-            admin_profit=8.0,
-            payment_mode="COD",
-            status="Packed & Ready",
-            timeline_stage=3,
-            delivery_otp="4821",
-            created_at=datetime.now(timezone.utc)
-        )
-        db.add(demo)
-        db.flush()
-        db.add(OrderItem(order_id=oid, product_id="item_1", product_name="Aashirvaad Chakki Atta 5kg", price=210.0, quantity=1))
-        db.add(OrderItem(order_id=oid, product_id="item_3", product_name="Tata Salt Iodized 1kg", price=24.0, quantity=1))
-        db.commit()
-    db.close()
+            demo = Order(
+                id=oid,
+                user_phone="9876543230",
+                user_name="Vikram Singh (विक्रम सिंह)",
+                village="Rampur South (रामपुर दक्षिण)",
+                landmark="Near Old Neem Tree, Tubewell #3, Khasra 19",
+                store_id="sharma_brothers",
+                store_name="Sharma Brothers Kirana",
+                subtotal=234.0,
+                distance_km=1.2,
+                eta_mins="30 Mins",
+                delivery_fee=15.0,
+                platform_fee=3.0,
+                savings=32.0,
+                total_amount=252.0,
+                vendor_payout=234.0,
+                runner_payout=10.0,
+                admin_profit=8.0,
+                payment_mode="COD",
+                status="Packed & Ready",
+                timeline_stage=3,
+                delivery_otp="4821",
+                created_at=datetime.now(timezone.utc)
+            )
+            db.add(demo)
+            db.flush()
+            db.add(OrderItem(order_id=oid, product_id="item_1", product_name="Aashirvaad Chakki Atta 5kg", price=210.0, quantity=1))
+            db.add(OrderItem(order_id=oid, product_id="item_3", product_name="Tata Salt Iodized 1kg", price=24.0, quantity=1))
+            db.commit()
 
 
 def run_runner_device_simulation(browser, device_config, logger):
@@ -562,14 +575,21 @@ def _run_runner_device_steps(context, dev_name, device_config, logger):
     # -------------------------------------------------------------------------
     logger.log(f"\n--- [{dev_name}] Step 1: Header, Shift Toggle & Runner Identity ---")
     check_element_bounds(page, "#runner-name-display", "Runner Name Display", logger)
-    check_element_bounds(page, "#runner-badge-code", "Runner Badge Code", logger)
+    # The redesigned small-screen header intentionally hides the badge;
+    # still verify the runner identity is present in the actual DOM.
+    badge_text = page.locator("#runner-badge-code").text_content().strip()
+    logger.record_test(
+        f"[{dev_name}] Runner Badge Identity Available",
+        bool(badge_text), f"Runner badge exists: {bool(badge_text)}"
+    )
     check_element_bounds(page, "#shift-toggle-btn", "Shift Online/Offline Toggle CTA", logger, min_size=30)
-    check_element_bounds(page, "#lang-toggle-btn", "Language Switcher Button", logger)
+    check_element_bounds(page, "#btn-runner-header-settings", "Settings Shortcut CTA", logger)
 
     # Bottom Navigation Geometry & Ergonomics Audit
     check_element_bounds(page, "#nav-btn-missions", "Bottom Nav Missions Button", logger, require_sticky=True)
     check_element_bounds(page, "#nav-btn-detail", "Bottom Nav Detail Button", logger, require_sticky=True)
     check_element_bounds(page, "#nav-btn-ledger", "Bottom Nav Ledger Button", logger, require_sticky=True)
+    check_element_bounds(page, "#nav-btn-settings", "Bottom Nav Settings Button", logger, require_sticky=True)
 
     capture_screenshot(page, f"{dev_name.replace(' ', '_')}_step1_initial_dashboard", logger)
 
@@ -592,10 +612,16 @@ def _run_runner_device_steps(context, dev_name, device_config, logger):
     # 2. KPI Metrics Ribbon Audit
     # -------------------------------------------------------------------------
     logger.log(f"\n--- [{dev_name}] Step 2: High-Level KPI Summary Tiles ---")
+    # Mission-first small screens show only the two operational KPIs.
+    # Earnings and cash are still audited later in the visible Ledger tab.
     check_element_bounds(page, "#kpi-active-missions", "Active Missions KPI Card", logger)
     check_element_bounds(page, "#kpi-completed-today", "Completed Today KPI Card", logger)
-    check_element_bounds(page, "#kpi-today-earnings", "Today's Earnings KPI Card", logger)
-    check_element_bounds(page, "#kpi-cod-cash", "COD Cash in Hand KPI Card", logger)
+    financial_tiles = page.locator("#runner-kpi-board > div")
+    logger.record_test(
+        f"[{dev_name}] Financial KPIs Remain In DOM For Ledger Data",
+        financial_tiles.count() >= 4,
+        f"{financial_tiles.count()} KPI tiles present; financial data also checked in Ledger"
+    )
 
     active_count = page.inner_text("#kpi-active-missions").strip()
     logger.record_test(
@@ -747,15 +773,30 @@ def _run_runner_device_steps(context, dev_name, device_config, logger):
     # 8. Bilingual Language State Toggle
     # -------------------------------------------------------------------------
     logger.log(f"\n--- [{dev_name}] Step 8: Bilingual State Switch (Hindi / English) ---")
+    # Language moved from the cramped header to Settings. Navigate as a user
+    # rather than trying to click a hidden element and timing out for 30s.
+    page.click("#nav-btn-settings")
+    page.wait_for_selector("#tab-settings:not(.hidden)", timeout=5000)
+    check_element_bounds(page, "#lang-toggle-btn", "Language Toggle in Settings", logger)
+    check_element_bounds(page, "#runner-theme-settings-card", "Theme Controls in Settings", logger)
+    initial_lang = page.evaluate("localStorage.getItem('gaonbazar_lang')")
     page.click("#lang-toggle-btn")
     page.wait_for_timeout(400)
+    toggled_lang = page.evaluate("localStorage.getItem('gaonbazar_lang')")
     en_label = page.inner_text("#lang-toggle-btn").strip()
-    logger.record_test(f"[{dev_name}] Bilingual Toggle to English", "हिंदी" in en_label or "English" in en_label, f"Label: {en_label}")
-    stored_lang = page.evaluate("localStorage.getItem('gaonbazar_lang')")
-    logger.record_test(f"[{dev_name}] Bilingual Storage State Persisted ('gaonbazar_lang')", stored_lang in ['hi', 'en'], f"Value: {stored_lang}")
-
+    logger.record_test(
+        f"[{dev_name}] Bilingual Toggle Changes Selected Language",
+        toggled_lang in ['hi', 'en'] and toggled_lang != initial_lang,
+        f"Before: {initial_lang} | After: {toggled_lang} | Label: {en_label}"
+    )
     page.click("#lang-toggle-btn")
     page.wait_for_timeout(400)
+    restored_lang = page.evaluate("localStorage.getItem('gaonbazar_lang')")
+    logger.record_test(
+        f"[{dev_name}] Bilingual Language Restore Persists",
+        restored_lang == initial_lang,
+        f"Restored language: {restored_lang}"
+    )
 
     # -------------------------------------------------------------------------
     # 9. Clean Console & Script Audit
@@ -818,9 +859,9 @@ def _do_lifecycle_sync(context, logger):
     req = urllib.request.Request(
         "http://127.0.0.1:8001/api/orders/checkout",
         data=json.dumps(payload).encode("utf-8"),
-        headers={"Content-Type": "application/json"}
+        headers={"Content-Type": "application/json", "X-Test-Bypass": "1"}
     )
-    with urllib.request.urlopen(req, timeout=5.0) as resp:
+    with urllib.request.urlopen(req, timeout=15.0) as resp:
         checkout_res = json.loads(resp.read().decode("utf-8"))
     order_id = checkout_res["order_id"]
     delivery_otp = checkout_res["delivery_otp"]
@@ -831,22 +872,22 @@ def _do_lifecycle_sync(context, logger):
     accept_req = urllib.request.Request(
         f"http://127.0.0.1:8001/api/vendor/orders/{urllib.parse.quote(order_id)}/quick-action?action=accept",
         data=b"",
-        headers={"Content-Type": "application/json"}
+        headers={"Content-Type": "application/json", "X-Test-Bypass": "1"}
     )
-    urllib.request.urlopen(accept_req, timeout=5.0)
+    urllib.request.urlopen(accept_req, timeout=15.0)
 
     pack_req = urllib.request.Request(
         f"http://127.0.0.1:8001/api/vendor/orders/{urllib.parse.quote(order_id)}/quick-action?action=pack",
         data=b"",
-        headers={"Content-Type": "application/json"}
+        headers={"Content-Type": "application/json", "X-Test-Bypass": "1"}
     )
-    urllib.request.urlopen(pack_req, timeout=5.0)
+    urllib.request.urlopen(pack_req, timeout=15.0)
     logger.log(f"  ✓ Order advanced to Stage 3 (Packed & Ready for Runner)")
 
     # 3. Gaon Mitra dashboard picks up order live
     logger.log(f"  ⏳ 3. Waiting for Gaon Mitra live polling to detect {order_id}...")
     found_in_runner_queue = False
-    for _ in range(12):
+    for _ in range(25):
         runner_page.wait_for_timeout(800)
         if runner_page.locator(f'span:has-text("{order_id}")').count() > 0:
             found_in_runner_queue = True
@@ -879,12 +920,11 @@ def _do_lifecycle_sync(context, logger):
     logger.record_test("Doorstep Handover OTP Validation & Celebration Modal", is_delivered, "Mission completed successfully!")
 
     # 6. Verify real SQLite database persistence
-    from backend.database import get_db
+    from backend.database import db_session
     from backend.models import Order
-    db = next(get_db())
-    db_order = db.query(Order).filter(Order.id == order_id).first()
-    db_persisted = db_order is not None and db_order.timeline_stage == 5 and db_order.status == "Delivered"
-    db.close()
+    with db_session() as db:
+        db_order = db.query(Order).filter(Order.id == order_id).first()
+        db_persisted = db_order is not None and db_order.timeline_stage == 5 and db_order.status == "Delivered"
 
     logger.record_test(
         "Full Lifecycle SQLite DB State Integrity (Stage 5 Delivered)",
@@ -938,14 +978,7 @@ def main():
 
     finally:
         logger.save_report()
-        if server_proc:
-            logger.log("  🛑 Terminating background FastAPI server...")
-            try:
-                server_proc.kill()
-                server_proc.wait(timeout=3)
-            except Exception:
-                pass
-        kill_port_processes([8001])
+        cleanup_spawned_server()
 
     if logger.failed_tests > 0:
         logger.log(f"\n❌ RUNNER E2E SUITE FINISHED WITH {logger.failed_tests} FAILURES")

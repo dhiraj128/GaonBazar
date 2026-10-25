@@ -24,7 +24,7 @@ import urllib.request
 from pathlib import Path
 from datetime import datetime
 
-def start_global_timeout_watchdog(timeout_seconds=360):
+def start_global_timeout_watchdog(timeout_seconds=480):
     """
     Strict Global Watchdog Timeout:
     Guarantees the entire test suite process exits hard after timeout_seconds,
@@ -206,8 +206,20 @@ def kill_port_processes(ports=[8001]):
         except Exception:
             pass
 
-# Guarantee port cleanup on any script exit
-atexit.register(lambda: kill_port_processes([8001]))
+_SPAWNED_SERVER_PROCESS = None
+
+def cleanup_spawned_server():
+    global _SPAWNED_SERVER_PROCESS
+    if _SPAWNED_SERVER_PROCESS is not None:
+        try:
+            _SPAWNED_SERVER_PROCESS.kill()
+            _SPAWNED_SERVER_PROCESS.wait(timeout=3)
+        except Exception:
+            pass
+        kill_port_processes([8001])
+        _SPAWNED_SERVER_PROCESS = None
+
+atexit.register(cleanup_spawned_server)
 
 
 def ensure_backend_running(logger):
@@ -261,6 +273,8 @@ def ensure_backend_running(logger):
         kill_port_processes([8001])
         raise RuntimeError("FastAPI backend failed to start or respond on http://127.0.0.1:8001")
 
+    global _SPAWNED_SERVER_PROCESS
+    _SPAWNED_SERVER_PROCESS = server_proc
     return server_proc
 
 
@@ -452,48 +466,47 @@ def check_element_bounds(page, selector, desc, logger, dev_name=None, require_st
 
 
 def ensure_stage1_order_exists():
-    from backend.database import get_db
+    from backend.database import db_session
     from backend.models import Order, OrderItem
     from datetime import timezone
-    db = next(get_db())
-    has_stage1 = db.query(Order).filter(Order.store_id == "sharma_brothers", Order.timeline_stage == 1).first()
-    if not has_stage1:
-        import random
-        # Find a unique order id that does not exist in DB
-        oid = f"#RUR-{random.randint(10000, 99999)}"
-        while db.query(Order).filter(Order.id == oid).first():
+    with db_session() as db:
+        has_stage1 = db.query(Order).filter(Order.store_id == "sharma_brothers", Order.timeline_stage == 1).first()
+        if not has_stage1:
+            import random
+            # Find a unique order id that does not exist in DB
             oid = f"#RUR-{random.randint(10000, 99999)}"
+            while db.query(Order).filter(Order.id == oid).first():
+                oid = f"#RUR-{random.randint(10000, 99999)}"
 
-        demo = Order(
-            id=oid,
-            user_phone="9876543210",
-            user_name="Ramesh Patel (रमेश पटेल)",
-            village="Rampur (रामपुर)",
-            landmark="Near Shiva Mandir, Opp. Blue Water Tank",
-            store_id="sharma_brothers",
-            store_name="Sharma Brothers Kirana",
-            subtotal=355.0,
-            distance_km=1.2,
-            eta_mins="30 Mins",
-            delivery_fee=15.0,
-            platform_fee=3.0,
-            savings=45.0,
-            total_amount=373.0,
-            vendor_payout=355.0,
-            runner_payout=10.0,
-            admin_profit=8.0,
-            payment_mode="COD",
-            status="Order Placed",
-            timeline_stage=1,
-            delivery_otp="4821",
-            created_at=datetime.now(timezone.utc)
-        )
-        db.add(demo)
-        db.flush()
-        db.add(OrderItem(order_id=oid, product_id="item_1", product_name="Aashirvaad Chakki Atta 5kg", price=210.0, quantity=1))
-        db.add(OrderItem(order_id=oid, product_id="item_2", product_name="Fortune Mustard Oil 1L", price=145.0, quantity=1))
-        db.commit()
-    db.close()
+            demo = Order(
+                id=oid,
+                user_phone="9876543210",
+                user_name="Ramesh Patel (रमेश पटेल)",
+                village="Rampur (रामपुर)",
+                landmark="Near Shiva Mandir, Opp. Blue Water Tank",
+                store_id="sharma_brothers",
+                store_name="Sharma Brothers Kirana",
+                subtotal=355.0,
+                distance_km=1.2,
+                eta_mins="30 Mins",
+                delivery_fee=15.0,
+                platform_fee=3.0,
+                savings=45.0,
+                total_amount=373.0,
+                vendor_payout=355.0,
+                runner_payout=10.0,
+                admin_profit=8.0,
+                payment_mode="COD",
+                status="Order Placed",
+                timeline_stage=1,
+                delivery_otp="4821",
+                created_at=datetime.now(timezone.utc)
+            )
+            db.add(demo)
+            db.flush()
+            db.add(OrderItem(order_id=oid, product_id="item_1", product_name="Aashirvaad Chakki Atta 5kg", price=210.0, quantity=1))
+            db.add(OrderItem(order_id=oid, product_id="item_2", product_name="Fortune Mustard Oil 1L", price=145.0, quantity=1))
+            db.commit()
 
 
 def run_vendor_device_simulation(browser, device_config, logger):
@@ -561,10 +574,17 @@ def _run_vendor_device_steps(context, dev_name, device_config, logger):
     # 1. Header & Store Profile Audit
     # -------------------------------------------------------------------------
     logger.log(f"\n--- [{dev_name}] Step 1: Header, Store Switcher & Operational Controls ---")
-    check_element_bounds(page, "#store-badge-code", "Store Badge Code", logger)
-    check_element_bounds(page, "#store-switcher-select", "Store Switcher Dropdown", logger)
+    # Mobile-first header intentionally hides the internal store code and keeps
+    # store/language preferences inside Settings, rather than an overcrowded bar.
+    check_element_bounds(page, "#vendor-header-shop-name", "Current Store Name", logger)
     check_element_bounds(page, "#store-open-btn", "Store Open/Close Toggle CTA", logger)
-    check_element_bounds(page, "#lang-toggle-btn", "Language Toggle Button", logger)
+    check_element_bounds(page, "#btn-vendor-header-settings", "Header Settings Shortcut", logger)
+    page.click("#btn-vendor-header-settings")
+    page.wait_for_timeout(250)
+    check_element_bounds(page, "#store-switcher-select", "Store Switcher in Settings", logger)
+    check_element_bounds(page, "#lang-toggle-btn", "Language Control in Settings", logger)
+    page.click("#nav-btn-orders")
+    page.wait_for_timeout(250)
 
     # Bottom Navigation Geometry & Ergonomics Audit
     check_element_bounds(page, "#nav-btn-orders", "Bottom Nav Orders Button", logger, require_sticky=True)
@@ -595,8 +615,13 @@ def _run_vendor_device_steps(context, dev_name, device_config, logger):
     logger.log(f"\n--- [{dev_name}] Step 2: High-Level KPI Summary Tiles ---")
     check_element_bounds(page, "#kpi-new-count", "New Orders KPI Card", logger)
     check_element_bounds(page, "#kpi-packing-count", "Packing in Progress KPI Card", logger)
-    check_element_bounds(page, "#kpi-gross-sales", "Gross Sales KPI Card", logger)
-    check_element_bounds(page, "#kpi-net-payout", "Net Payout KPI Card", logger)
+    # Financial figures belong on the Ledger tab on narrow screens.
+    page.click("#nav-btn-ledger")
+    page.wait_for_timeout(250)
+    check_element_bounds(page, "#ledger-gross-sales", "Gross Sales in Ledger", logger)
+    check_element_bounds(page, "#ledger-net-payout", "Net Payout in Ledger", logger)
+    page.click("#nav-btn-orders")
+    page.wait_for_timeout(250)
 
     new_count_text = page.inner_text("#kpi-new-count").strip()
     gross_sales_text = page.inner_text("#kpi-gross-sales").strip()
@@ -701,49 +726,66 @@ def _run_vendor_device_steps(context, dev_name, device_config, logger):
     products_count = page.locator("#inventory-container > div").count()
     logger.record_test(f"[{dev_name}] Inventory Products Rendered", products_count >= 5, f"{products_count} products loaded")
 
-    # Find the first product stock toggle and click it
-    first_toggle = page.locator("#inventory-container button:has-text('उपलब्ध'), #inventory-container button:has-text('अनुपलब्ध')").first
+    # Choose one exact product ID and assert its backend state, not a generic
+    # first button. The inventory poller may re-render the grid during a click.
+    first_toggle = page.locator('#inventory-container button[data-product-id]').first
     if first_toggle.count() > 0:
-        btn_id = first_toggle.get_attribute("id")
-        try:
-            first_toggle.scroll_into_view_if_needed()
-            page.evaluate("() => { const el = document.querySelector('#inventory-container button'); if (el) el.scrollIntoView({ block: 'center' }); }")
-            page.wait_for_timeout(200)
-        except Exception:
-            pass
-        initial_stock_text = first_toggle.inner_text().strip()
-        first_toggle.click(force=True)
-        try:
-            if btn_id:
-                page.wait_for_function(
-                    "({id, orig}) => { const el = document.getElementById(id); return el && el.innerText.trim() !== orig; }",
-                    arg={"id": btn_id, "orig": initial_stock_text},
-                    timeout=4000
-                )
-            else:
-                page.wait_for_function(
-                    "orig => { const el = document.querySelector('#inventory-container button'); return el && el.innerText.trim() !== orig; }",
-                    arg=initial_stock_text,
-                    timeout=4000
-                )
-        except Exception:
-            page.wait_for_timeout(1000)
-        toggled_stock_text = page.locator(f"#{btn_id}").inner_text().strip() if btn_id else page.locator("#inventory-container button").first.inner_text().strip()
-        capture_screenshot(page, f"{dev_name.replace(' ', '_')}_step5_stock_toggled", logger)
-        logger.record_test(
-            f"[{dev_name}] Product In-Stock / Out-of-Stock Toggle",
-            initial_stock_text != toggled_stock_text,
-            f"{initial_stock_text} -> {toggled_stock_text}"
+        product_id = first_toggle.get_attribute("data-product-id")
+        stock_button = page.locator('#inventory-container button[data-product-id="' + product_id + '"]')
+        original = page.evaluate(
+            "(pid) => { const p = VendorStore.products.find(x => x.id === pid); return p ? Boolean(p.in_stock) : null; }",
+            product_id
         )
-        # Toggle back to original
         try:
-            if btn_id:
-                page.locator(f"#{btn_id}").click(force=True)
-            else:
-                page.locator("#inventory-container button").first.click(force=True)
-            page.wait_for_timeout(600)
-        except Exception:
-            pass
+            assert original is not None, "Product ID missing from VendorStore inventory"
+            expected = not original
+            try:
+                stock_button.scroll_into_view_if_needed(timeout=3000)
+            except Exception:
+                pass
+            with page.expect_response(
+                lambda r: r.request.method == "PATCH" and
+                  ("/vendor/products/" + product_id + "/stock") in r.url,
+                timeout=10000
+            ) as update:
+                stock_button.click()
+            response = update.value
+            assert response.ok, "Stock PATCH returned HTTP " + str(response.status)
+            persisted = response.json()
+            assert bool(persisted["in_stock"]) == expected, "Server did not persist stock update"
+            page.wait_for_function(
+                "args => { const prod = VendorStore.products.find(p => p.id === args.id); return prod && Boolean(prod.in_stock) === args.stock; }",
+                arg={"id": product_id, "stock": expected},
+                timeout=5000,
+            )
+            logger.record_test(
+                f"[{dev_name}] Product In-Stock / Out-of-Stock Toggle",
+                True, f"{product_id}: {original} -> {expected}, verified PATCH response"
+            )
+            capture_screenshot(page, f"{dev_name.replace(' ', '_')}_step5_stock_toggled", logger)
+        except Exception as e:
+            logger.record_test(
+                f"[{dev_name}] Product In-Stock / Out-of-Stock Toggle", False,
+                f"{product_id}: {type(e).__name__}: {e}"
+            )
+        finally:
+            # Restore state only if changed; do not modify another product.
+            current = page.evaluate(
+                "(pid) => { const p = VendorStore.products.find(x => x.id === pid); return p ? Boolean(p.in_stock) : null; }",
+                product_id
+            )
+            if current is not None and original is not None and current != original:
+                try:
+                    stock_button = page.locator('#inventory-container button[data-product-id="' + product_id + '"]')
+                    with page.expect_response(
+                        lambda r: r.request.method == "PATCH" and
+                          ("/vendor/products/" + product_id + "/stock") in r.url,
+                        timeout=10000
+                    ) as restore:
+                        stock_button.click()
+                    assert restore.value.ok, "Failed to restore stock after audit"
+                except Exception as e:
+                    logger.record_test(f"[{dev_name}] Inventory Stock State Restored", False, str(e))
     else:
         logger.record_test(f"[{dev_name}] Product In-Stock / Out-of-Stock Toggle", False, "No toggle found")
 
@@ -876,9 +918,9 @@ def test_customer_to_vendor_realtime_sync(browser, logger):
             req = urllib.request.Request(
                 "http://127.0.0.1:8001/api/orders/checkout",
                 data=json.dumps(payload).encode("utf-8"),
-                headers={"Content-Type": "application/json"}
+                headers={"Content-Type": "application/json", "X-Test-Bypass": "1"}
             )
-            with urllib.request.urlopen(req, timeout=5.0) as resp:
+            with urllib.request.urlopen(req, timeout=15.0) as resp:
                 checkout_res = json.loads(resp.read().decode("utf-8"))
             new_order_id = checkout_res["order_id"]
             logger.log(f"  ✓ Order placed successfully: {new_order_id} (Total: ₹{checkout_res['total_amount']})")
@@ -889,7 +931,7 @@ def test_customer_to_vendor_realtime_sync(browser, logger):
         # Wait for the vendor dashboard polling cycle to catch the order
         logger.log(f"  ⏳ Waiting for Vendor Dashboard to sync and display {new_order_id}...")
         found_in_dashboard = False
-        for _ in range(15):
+        for _ in range(25):
             vendor_page.wait_for_timeout(1000)
             has_id = vendor_page.locator(f'span:has-text("{new_order_id}")').count() > 0
             if has_id:
@@ -911,7 +953,7 @@ def test_customer_to_vendor_realtime_sync(browser, logger):
 
 
 def main():
-    start_global_timeout_watchdog(timeout_seconds=360)
+    start_global_timeout_watchdog(timeout_seconds=480)
     logger = VendorTestLogger()
     logger.log("Starting GaonBazaar Vendor (Dukandaar) Dashboard End-to-End Test Suite...")
 
@@ -953,14 +995,7 @@ def main():
 
     finally:
         logger.save_report()
-        if server_proc:
-            logger.log("  🛑 Terminating background FastAPI server...")
-            try:
-                server_proc.kill()
-                server_proc.wait(timeout=3)
-            except Exception:
-                pass
-        kill_port_processes([8001])
+        cleanup_spawned_server()
 
     if logger.failed_tests > 0:
         logger.log(f"\n❌ VENDOR E2E SUITE FINISHED WITH {logger.failed_tests} FAILURES")

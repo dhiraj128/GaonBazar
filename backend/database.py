@@ -1,39 +1,101 @@
-from sqlalchemy import create_engine, event
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+"""GaonBazaar database connection configuration.
+
+Set DATABASE_URL in Render to a *separately provisioned and migrated* PostgreSQL
+database. Existing SQLite data is NOT automatically transferred by this switch.
+"""
+import os
 from pathlib import Path
 import os
 
-# Database path: backend/gaonbazar.db
+from sqlalchemy import create_engine, event, text
+from sqlalchemy.orm import declarative_base, sessionmaker
+
 BASE_DIR = Path(__file__).resolve().parent
-# Isolate preview data from the committed/live SQLite database.
-# This preview uses an intentionally disposable, fresh demo database.
-DATABASE_URL = (
-    "sqlite:////tmp/gaonbazar_staging_20261025.db"
-    if os.getenv("GAONBAZAR_PREVIEW_MODE") == "1"
-    else f"sqlite:///{BASE_DIR / 'gaonbazar.db'}"
-)
+# Isolate preview data from committed and live databases when running in preview mode.
+if os.getenv("GAONBAZAR_PREVIEW_MODE") == "1":
+    _local_sqlite_url = "sqlite:////tmp/gaonbazar_staging_20261025.db"
+else:
+    _local_sqlite_url = f"sqlite:///{BASE_DIR / 'gaonbazar.db'}"
+_supplied_url = (os.getenv("DATABASE_URL") or "").strip()
+if _supplied_url.startswith("postgres://"):
+    # Normalize legacy provider URLs for SQLAlchemy 2.x.
+    DATABASE_URL = "postgresql://" + _supplied_url[len("postgres://"):]
+else:
+    DATABASE_URL = _supplied_url or _local_sqlite_url
 
-engine = create_engine(
-    DATABASE_URL,
-    connect_args={"check_same_thread": False, "timeout": 30.0}
-)
+if not DATABASE_URL.startswith(("sqlite:", "postgresql:")):
+    raise RuntimeError("DATABASE_URL must be a PostgreSQL or SQLite SQLAlchemy URL")
 
-@event.listens_for(engine, "connect")
-def set_sqlite_pragma(dbapi_connection, connection_record):
-    cursor = dbapi_connection.cursor()
-    cursor.execute("PRAGMA journal_mode=WAL")
-    cursor.execute("PRAGMA busy_timeout=30000")
-    cursor.execute("PRAGMA synchronous=NORMAL")
-    cursor.close()
+IS_SQLITE = DATABASE_URL.startswith("sqlite:")
+IS_POSTGRES = DATABASE_URL.startswith("postgresql:")
+if os.getenv("GAONBAZAR_REQUIRE_POSTGRES") == "1" and not IS_POSTGRES:
+    raise RuntimeError("GAONBAZAR_REQUIRE_POSTGRES=1, but PostgreSQL DATABASE_URL is missing")
+
+if IS_SQLITE:
+    # SQLite remains the zero-configuration local/test backend only.
+    # Configured connection pool with generous limits and pre-ping to eliminate
+    # "QueuePool limit of size 5 overflow 10 reached" during concurrent Playwright audits and background tasks.
+    engine = create_engine(
+        DATABASE_URL,
+        connect_args={"check_same_thread": False, "timeout": 60.0},
+        pool_pre_ping=True,
+        pool_size=20,
+        max_overflow=40,
+        pool_timeout=60,
+        pool_recycle=1800,
+    )
+
+    @event.listens_for(engine, "connect")
+    def set_sqlite_pragma(dbapi_connection, connection_record):
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA journal_mode=WAL")
+        cursor.execute("PRAGMA busy_timeout=30000")
+        cursor.execute("PRAGMA synchronous=NORMAL")
+        cursor.close()
+else:
+    # Persistent FastAPI service; pool configured for Supabase session pooler (5432) or direct PostgreSQL.
+    # Generous pool sizing (10 pool + 15 overflow) prevents connection starvation under concurrent orders.
+    # Secrets belong in Render environment variables, never client-side JS.
+    engine = create_engine(
+        DATABASE_URL,
+        pool_pre_ping=True,
+        pool_size=10,
+        max_overflow=15,
+        pool_recycle=1800,
+        pool_timeout=30,
+        connect_args={"connect_timeout": 15, "sslmode": "require"}
+        if os.getenv("GAONBAZAR_DB_SSL", "require") == "require" else {"connect_timeout": 15},
+    )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
+
+from contextlib import contextmanager
+
+@contextmanager
+def db_session():
+    """
+    Guaranteed session lifecycle context manager for background tasks, scripts, and startups:
+    with db_session() as db:
+        db.query(...)
+    Guarantees session rollback on error and proper close() back to QueuePool upon exit.
+    """
+    db = SessionLocal()
+    try:
+        yield db
+    except Exception:
+        db.rollback()
+        raise
+    finally:
+        db.close()
 
 def get_db():
     db = SessionLocal()
     try:
         yield db
+    except Exception:
+        db.rollback()
+        raise
     finally:
         db.close()
 
@@ -44,15 +106,14 @@ def check_database_integrity() -> bool:
     the SQLite database is intact and not corrupted before accepting orders.
     Returns True if healthy; raises RuntimeError if corruption is detected.
     """
-    from sqlalchemy import text
+    # Postgres has no SQLite PRAGMA. Validate that the configured DB responds.
     with engine.connect() as conn:
-        result = conn.execute(text("PRAGMA integrity_check")).fetchall()
-        rows = [row[0] for row in result]
-        if rows == ["ok"]:
-            return True
-        else:
-            error_details = "; ".join(rows)
-            raise RuntimeError(f"Database integrity check failed: {error_details}")
+        if IS_POSTGRES:
+            return conn.execute(text("SELECT 1")).scalar_one() == 1
+        rows = [row[0] for row in conn.execute(text("PRAGMA integrity_check")).fetchall()]
+        if rows != ["ok"]:
+            raise RuntimeError("Database integrity check failed: " + "; ".join(rows))
+        return True
 
 
 def ensure_schema_migrations():
@@ -60,7 +121,11 @@ def ensure_schema_migrations():
     Safely adds any missing columns to existing SQLite tables
     (e.g. stores onboarding and KYC columns) without data loss.
     """
-    from sqlalchemy import text
+    # This legacy helper issues SQLite-only PRAGMAs/DDL.
+    # PostgreSQL schema must be created/migrated using reviewed SQL migrations;
+    # do not attempt automatic SQLite ALTER TABLE / financial backfills there.
+    if IS_POSTGRES:
+        return
     with engine.connect() as conn:
         # Check stores columns
         res = conn.execute(text("PRAGMA table_info(stores)")).fetchall()

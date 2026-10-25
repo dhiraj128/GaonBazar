@@ -26,7 +26,7 @@ from sqlalchemy.orm import Session
 import sentry_sdk
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 
-from .database import engine, Base, get_db, check_database_integrity, ensure_schema_migrations
+from .database import engine, Base, get_db, check_database_integrity, ensure_schema_migrations, db_session
 from .models import User, OTPRecord, Landmark, Store, Product, Order, OrderItem, Runner, SupportTicket, StoreCategory, SavedPaymentMethod, PaymentTransaction
 from .schemas import (
     SendOTPRequest, SendOTPResponse,
@@ -196,11 +196,14 @@ def on_startup():
     check_database_integrity()
     ensure_schema_migrations()
     Base.metadata.create_all(bind=engine)
-    db = next(get_db())
-    try:
-        seed_database(db)
-    finally:
-        db.close()
+    # Never insert or overwrite demo shops, catalog prices or runner records in
+    # PostgreSQL production. Seed only when explicitly requested in an isolated
+    # environment; SQLite local development retains legacy demo behavior.
+    if os.getenv("GAONBAZAR_SEED_DEMO") == "1" or (
+        engine.dialect.name == "sqlite" and os.getenv("GAONBAZAR_SEED_DEMO", "1") == "1"
+    ):
+        with db_session() as db:
+            seed_database(db)
 
 
 # Helper to safely locate frontend HTML dashboard templates across environments

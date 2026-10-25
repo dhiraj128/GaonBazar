@@ -180,8 +180,20 @@ def kill_port_processes(ports=[8001]):
         except Exception:
             pass
 
-# Guarantee port cleanup on any script exit
-atexit.register(lambda: kill_port_processes([8001]))
+_SPAWNED_SERVER_PROCESS = None
+
+def cleanup_spawned_server():
+    global _SPAWNED_SERVER_PROCESS
+    if _SPAWNED_SERVER_PROCESS is not None:
+        try:
+            _SPAWNED_SERVER_PROCESS.kill()
+            _SPAWNED_SERVER_PROCESS.wait(timeout=3)
+        except Exception:
+            pass
+        kill_port_processes([8001])
+        _SPAWNED_SERVER_PROCESS = None
+
+atexit.register(cleanup_spawned_server)
 
 
 def ensure_backend_running(logger):
@@ -236,6 +248,8 @@ def ensure_backend_running(logger):
     else:
         logger.log("  ✓ Backend server healthy and responding on http://127.0.0.1:8001")
 
+    global _SPAWNED_SERVER_PROCESS
+    _SPAWNED_SERVER_PROCESS = server_proc
     return server_proc
 
 
@@ -412,7 +426,12 @@ def _run_admin_e2e_steps(browser, logger, contexts):
     admin_page.set_default_navigation_timeout(15000)
 
     admin_page.goto("http://127.0.0.1:8001/admin", wait_until="domcontentloaded", timeout=15000)
-    admin_page.wait_for_timeout(1200)
+    # Wait for async initial data fetch to populate DOM metrics & queues
+    try:
+        admin_page.wait_for_function('() => document.getElementById("metric-gmv") && document.getElementById("metric-gmv").innerText !== "₹0.00"', timeout=8000)
+    except Exception:
+        pass
+    admin_page.wait_for_timeout(500)
 
     # Verify Global Metrics Ribbon
     gmv_text = admin_page.locator("#metric-gmv").text_content()
@@ -430,7 +449,10 @@ def _run_admin_e2e_steps(browser, logger, contexts):
 
     # Tab 1: Vendor KYC Approvals
     logger.log("\n[STEP 3.1]: Reviewing and Approving Vendor KYC...")
-    admin_page.wait_for_timeout(500)
+    try:
+        admin_page.locator(f'text="{v_shop}"').first.wait_for(state="visible", timeout=8000)
+    except Exception:
+        pass
     vendor_card_found = admin_page.locator(f'text="{v_shop}"').count() > 0
     logger.record_test(
         "Pending Vendor Appears in Admin KYC Queue",
@@ -642,14 +664,7 @@ def main():
                         logger.log(f"  ⚠️ Warning closing browser: {b_err}")
     finally:
         logger.save_report()
-        if server_proc:
-            logger.log("  🛑 Terminating background FastAPI server...")
-            try:
-                server_proc.kill()
-                server_proc.wait(timeout=3)
-            except Exception:
-                pass
-        kill_port_processes([8001])
+        cleanup_spawned_server()
 
     if logger.failed_tests > 0:
         logger.log(f"\n❌ E2E SUITE FINISHED WITH {logger.failed_tests} FAILURES")
