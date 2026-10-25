@@ -602,11 +602,11 @@ def _run_vendor_device_steps(context, dev_name, device_config, logger):
     logger.log(f"\n--- [{dev_name}] Step 2: High-Level KPI Summary Tiles ---")
     check_element_bounds(page, "#kpi-new-count", "New Orders KPI Card", logger)
     check_element_bounds(page, "#kpi-packing-count", "Packing in Progress KPI Card", logger)
-    # Financial figures remain accessible in Earnings/Ledger, not the mobile order queue.
+    # Financial figures belong on the Ledger tab on narrow screens.
     page.click("#nav-btn-ledger")
     page.wait_for_timeout(250)
-    check_element_bounds(page, "#kpi-gross-sales", "Gross Sales KPI Card", logger)
-    check_element_bounds(page, "#kpi-net-payout", "Net Payout KPI Card", logger)
+    check_element_bounds(page, "#ledger-gross-sales", "Gross Sales in Ledger", logger)
+    check_element_bounds(page, "#ledger-net-payout", "Net Payout in Ledger", logger)
     page.click("#nav-btn-orders")
     page.wait_for_timeout(250)
 
