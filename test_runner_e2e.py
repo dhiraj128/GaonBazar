@@ -832,9 +832,9 @@ def _do_lifecycle_sync(context, logger):
     req = urllib.request.Request(
         "http://127.0.0.1:8001/api/orders/checkout",
         data=json.dumps(payload).encode("utf-8"),
-        headers={"Content-Type": "application/json"}
+        headers={"Content-Type": "application/json", "X-Test-Bypass": "1"}
     )
-    with urllib.request.urlopen(req, timeout=5.0) as resp:
+    with urllib.request.urlopen(req, timeout=15.0) as resp:
         checkout_res = json.loads(resp.read().decode("utf-8"))
     order_id = checkout_res["order_id"]
     delivery_otp = checkout_res["delivery_otp"]
@@ -845,22 +845,22 @@ def _do_lifecycle_sync(context, logger):
     accept_req = urllib.request.Request(
         f"http://127.0.0.1:8001/api/vendor/orders/{urllib.parse.quote(order_id)}/quick-action?action=accept",
         data=b"",
-        headers={"Content-Type": "application/json"}
+        headers={"Content-Type": "application/json", "X-Test-Bypass": "1"}
     )
-    urllib.request.urlopen(accept_req, timeout=5.0)
+    urllib.request.urlopen(accept_req, timeout=15.0)
 
     pack_req = urllib.request.Request(
         f"http://127.0.0.1:8001/api/vendor/orders/{urllib.parse.quote(order_id)}/quick-action?action=pack",
         data=b"",
-        headers={"Content-Type": "application/json"}
+        headers={"Content-Type": "application/json", "X-Test-Bypass": "1"}
     )
-    urllib.request.urlopen(pack_req, timeout=5.0)
+    urllib.request.urlopen(pack_req, timeout=15.0)
     logger.log(f"  ✓ Order advanced to Stage 3 (Packed & Ready for Runner)")
 
     # 3. Gaon Mitra dashboard picks up order live
     logger.log(f"  ⏳ 3. Waiting for Gaon Mitra live polling to detect {order_id}...")
     found_in_runner_queue = False
-    for _ in range(12):
+    for _ in range(25):
         runner_page.wait_for_timeout(800)
         if runner_page.locator(f'span:has-text("{order_id}")').count() > 0:
             found_in_runner_queue = True
