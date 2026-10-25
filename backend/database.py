@@ -1,24 +1,60 @@
-from sqlalchemy import create_engine, event
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+"""GaonBazaar database connection configuration.
+
+Set DATABASE_URL in Render to a *separately provisioned and migrated* PostgreSQL
+database. Existing SQLite data is NOT automatically transferred by this switch.
+"""
+import os
 from pathlib import Path
 
-# Database path: backend/gaonbazar.db
+from sqlalchemy import create_engine, event, text
+from sqlalchemy.orm import declarative_base, sessionmaker
+
 BASE_DIR = Path(__file__).resolve().parent
-DATABASE_URL = f"sqlite:///{BASE_DIR / 'gaonbazar.db'}"
+_local_sqlite_url = f"sqlite:///{BASE_DIR / 'gaonbazar.db'}"
+_supplied_url = (os.getenv("DATABASE_URL") or "").strip()
 
-engine = create_engine(
-    DATABASE_URL,
-    connect_args={"check_same_thread": False, "timeout": 30.0}
-)
+if _supplied_url.startswith("postgres://"):
+    # Normalize legacy provider URLs for SQLAlchemy 2.x.
+    DATABASE_URL = "postgresql://" + _supplied_url[len("postgres://"):]
+else:
+    DATABASE_URL = _supplied_url or _local_sqlite_url
 
-@event.listens_for(engine, "connect")
-def set_sqlite_pragma(dbapi_connection, connection_record):
-    cursor = dbapi_connection.cursor()
-    cursor.execute("PRAGMA journal_mode=WAL")
-    cursor.execute("PRAGMA busy_timeout=30000")
-    cursor.execute("PRAGMA synchronous=NORMAL")
-    cursor.close()
+if not DATABASE_URL.startswith(("sqlite:", "postgresql:")):
+    raise RuntimeError("DATABASE_URL must be a PostgreSQL or SQLite SQLAlchemy URL")
+
+IS_SQLITE = DATABASE_URL.startswith("sqlite:")
+IS_POSTGRES = DATABASE_URL.startswith("postgresql:")
+if os.getenv("GAONBAZAR_REQUIRE_POSTGRES") == "1" and not IS_POSTGRES:
+    raise RuntimeError("GAONBAZAR_REQUIRE_POSTGRES=1, but PostgreSQL DATABASE_URL is missing")
+
+if IS_SQLITE:
+    # SQLite remains the zero-configuration local/test backend only.
+    engine = create_engine(
+        DATABASE_URL, connect_args={"check_same_thread": False, "timeout": 30.0},
+        pool_pre_ping=True,
+    )
+
+    @event.listens_for(engine, "connect")
+    def set_sqlite_pragma(dbapi_connection, connection_record):
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA journal_mode=WAL")
+        cursor.execute("PRAGMA busy_timeout=30000")
+        cursor.execute("PRAGMA synchronous=NORMAL")
+        cursor.close()
+else:
+    # Persistent FastAPI service; modest pool for free-tier/Postgres pooler limits.
+    # Use the Supabase session pooler (5432) where direct IPv6 is unavailable.
+    # Secrets belong in Render environment variables, never client-side JS.
+    engine = create_engine(
+        DATABASE_URL,
+        pool_pre_ping=True,
+        pool_size=3,
+        max_overflow=2,
+        pool_recycle=1800,
+        pool_timeout=15,
+        connect_args={"connect_timeout": 10, "sslmode": "require"}
+        if os.getenv("GAONBAZAR_DB_SSL", "require") == "require" else {"connect_timeout": 10},
+    )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
@@ -37,15 +73,14 @@ def check_database_integrity() -> bool:
     the SQLite database is intact and not corrupted before accepting orders.
     Returns True if healthy; raises RuntimeError if corruption is detected.
     """
-    from sqlalchemy import text
+    # Postgres has no SQLite PRAGMA. Validate that the configured DB responds.
     with engine.connect() as conn:
-        result = conn.execute(text("PRAGMA integrity_check")).fetchall()
-        rows = [row[0] for row in result]
-        if rows == ["ok"]:
-            return True
-        else:
-            error_details = "; ".join(rows)
-            raise RuntimeError(f"Database integrity check failed: {error_details}")
+        if IS_POSTGRES:
+            return conn.execute(text("SELECT 1")).scalar_one() == 1
+        rows = [row[0] for row in conn.execute(text("PRAGMA integrity_check")).fetchall()]
+        if rows != ["ok"]:
+            raise RuntimeError("Database integrity check failed: " + "; ".join(rows))
+        return True
 
 
 def ensure_schema_migrations():
@@ -53,7 +88,11 @@ def ensure_schema_migrations():
     Safely adds any missing columns to existing SQLite tables
     (e.g. stores onboarding and KYC columns) without data loss.
     """
-    from sqlalchemy import text
+    # This legacy helper issues SQLite-only PRAGMAs/DDL.
+    # PostgreSQL schema must be created/migrated using reviewed SQL migrations;
+    # do not attempt automatic SQLite ALTER TABLE / financial backfills there.
+    if IS_POSTGRES:
+        return
     with engine.connect() as conn:
         # Check stores columns
         res = conn.execute(text("PRAGMA table_info(stores)")).fetchall()
