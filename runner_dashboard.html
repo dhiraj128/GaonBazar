@@ -219,6 +219,37 @@
       overscroll-behavior-y: contain;
       touch-action: pan-y;
     }
+
+    /* Mobile mission-first shell: eliminate compressed desktop dashboard density. */
+    @media (max-width: 640px) {
+      #runner-header { padding: 7px 12px !important; }
+      #runner-header > div { gap: 9px !important; }
+      #runner-header #runner-badge-code,
+      #runner-header #runner-hub-display { display: none !important; }
+      #runner-header #runner-name-display { max-width: min(40vw, 165px); min-width: 0; font-size: 13px; }
+      #runner-header #shift-toggle-btn,
+      #runner-header #btn-runner-header-settings { min-width: 44px !important; min-height: 44px !important; padding: 0 8px !important; border-radius: 12px !important; }
+      main { padding: 12px !important; padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px)) !important; gap: 12px !important; }
+      #runner-main-content { gap: 11px !important; }
+      #runner-kpi-board { gap: 8px !important; }
+      #runner-kpi-board > div { min-width: 0; min-height: 78px; padding: 11px !important; border-radius: 17px !important; }
+      #runner-kpi-board > div > .material-symbols-outlined { display: none !important; }
+      #runner-kpi-board [id^="kpi-"] { font-size: 22px !important; line-height: 1.1 !important; }
+      #runner-main-content[data-active-tab="missions"] #runner-kpi-board > :nth-child(n+3) { display: none !important; }
+      #runner-main-content[data-active-tab="detail"] #runner-kpi-board,
+      #runner-main-content[data-active-tab="settings"] #runner-kpi-board { display: none !important; }
+      #tab-detail, #tab-missions, #tab-ledger, #tab-settings { gap: 10px !important; }
+      #tab-detail > .rounded-3xl, #tab-missions .rounded-3xl { border-radius: 18px !important; padding: 13px !important; }
+      #tab-detail #runner-pickup-heading { min-width: 0; }
+      #tab-detail #detail-store-name, #tab-detail #detail-customer-name { overflow-wrap: anywhere; }
+      #tab-detail #btn-call-store { min-height: 44px; justify-content: center; width: 100%; }
+      #tab-detail #btn-call-customer, #tab-detail #btn-navigate-map { min-height: 46px; line-height: 1.25; }
+      #tab-detail #runner-landmark-box { border-radius: 14px; padding: 11px !important; }
+      #tab-detail #runner-landmark-text { font-size: 14px !important; line-height: 1.4; }
+      #runner-bottom-nav { padding-top: 4px !important; padding-bottom: max(5px, env(safe-area-inset-bottom, 0px)) !important; }
+      #runner-bottom-nav button { min-height: 48px !important; border-radius: 14px !important; }
+      #runner-preferences-card { border-radius: 18px !important; }
+    }
   </style>
 </head>
 
@@ -347,11 +378,7 @@
           <span id="shift-status-mobile" class="sm:hidden text-xs font-black" data-i18n="shift_status_mobile">चालू</span>
         </button>
 
-        <!-- Language Switcher Pill -->
-        <button id="lang-toggle-btn" onclick="toggleLanguage()" aria-label="Toggle Language" class="px-2 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center justify-center gap-1 min-h-[44px] min-w-[40px] active:scale-95 shrink-0 cursor-pointer" title="Language">
-          <span class="material-symbols-outlined text-[17px] shrink-0">translate</span>
-          <span id="current-lang-text">English</span>
-        </button>
+
 
         <!-- Settings entry; logout lives inside Settings, not the cramped header -->
         <button id="btn-runner-header-settings" type="button" onclick="switchTab('settings')" title="Settings" aria-label="Settings" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center justify-center active:scale-95 shrink-0">
@@ -418,12 +445,12 @@
     </div>
 
     <!-- Active Runner Dashboard Content (Hidden if pending_approval) -->
-    <div id="runner-main-content" class="flex flex-col gap-3.5">
+    <div id="runner-main-content" data-active-tab="missions" class="flex flex-col gap-3.5">
 
     <!-- ======================================================================= -->
     <!-- 2. HIGH-LEVEL KPI SUMMARY BAR (Decluttered & Outdoor-Readable)          -->
     <!-- ======================================================================= -->
-    <section class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <section id="runner-kpi-board" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
       
       <!-- KPI 1: Active Missions Queue -->
       <div onclick="switchTab('missions')" class="bg-slate-800 rounded-3xl p-3.5 border border-amber-500/30 flex items-center justify-between cursor-pointer hover:border-amber-400 hover:bg-slate-750 transition-all active:scale-98">
@@ -538,7 +565,7 @@
       <!-- ===================================================================== -->
       <div class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-md flex flex-col gap-3.5">
         
-        <div class="flex items-start justify-between gap-2 border-b border-slate-700/80 pb-3">
+        <div id="runner-pickup-heading" class="flex flex-col gap-2.5 border-b border-slate-700/80 pb-3">
           <div class="flex items-center gap-2.5">
             <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0">
               <span class="material-symbols-outlined text-[24px]">store</span>
@@ -550,7 +577,7 @@
             </div>
           </div>
 
-          <!-- 1-Tap Call Dukandaar CTA -->
+          <!-- One clear store-call action below the shop identity -->
           <a id="btn-call-store" href="tel:9876543210" class="min-h-[44px] px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black flex items-center gap-1.5 shadow-sm active:scale-95 transition-all shrink-0 cursor-pointer">
             <span class="material-symbols-outlined text-[18px]">call</span>
             <span data-i18n="call_dukandaar_btn">दुकानदार को कॉल करें</span>
@@ -767,6 +794,17 @@
     <!-- 5.5 TAB 4: RUNNER BANK & UPI SETTINGS (Payout Onboarding)               -->
     <!-- ======================================================================= -->
     <section id="tab-settings" class="hidden flex-col gap-3.5">
+      <div id="runner-preferences-card" class="bg-slate-800 border border-slate-700 rounded-2xl p-4 flex flex-col gap-3">
+        <div class="flex items-center justify-between gap-3">
+          <span class="text-xs font-bold text-slate-200" data-i18n="lang_label">App language</span>
+        <button id="lang-toggle-btn" onclick="toggleLanguage()" aria-label="Toggle Language" class="px-2 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center justify-center gap-1 min-h-[44px] min-w-[40px] active:scale-95 shrink-0 cursor-pointer" title="Language">
+          <span class="material-symbols-outlined text-[17px] shrink-0">translate</span>
+          <span id="current-lang-text">English</span>
+        </button>
+        </div>
+        <div class="text-xs font-medium text-slate-400" data-i18n="runner_theme_sub">Display and device appearance options are below.</div>
+      </div>
+
       <button id="btn-runner-logout" type="button" onclick="handleRunnerLogout()" class="w-full min-h-[48px] rounded-2xl border border-red-400/40 text-red-400 font-bold flex items-center justify-center gap-2">
         <span class="material-symbols-outlined">logout</span><span data-i18n="logout_label">Log out</span>
       </button>
@@ -898,7 +936,7 @@
     <!-- Tab 2: Mission Detail & Landmark -->
     <button id="nav-btn-detail" onclick="switchTab('detail')" class="flex-1 min-w-0 max-w-[90px] flex flex-col items-center justify-center py-1.5 px-2 rounded-2xl text-slate-400 font-bold transition-all min-h-[48px] active:scale-95 cursor-pointer">
       <span class="material-symbols-outlined text-[24px]">explore</span>
-      <span class="text-[10px] tracking-wide truncate max-w-full font-sans mt-0.5" data-i18n="tab_detail">लैंडमार्क</span>
+      <span class="text-[10px] tracking-wide truncate max-w-full font-sans mt-0.5" data-i18n="tab_detail">डिलीवरी</span>
     </button>
 
     <!-- Tab 3: Shift Earnings & Ledger -->
@@ -910,7 +948,7 @@
     <!-- Tab 4: Bank & UPI Settings -->
     <button id="nav-btn-settings" onclick="switchTab('settings')" class="flex-1 min-w-0 max-w-[90px] flex flex-col items-center justify-center py-1.5 px-2 rounded-2xl text-slate-400 font-bold transition-all min-h-[48px] active:scale-95 cursor-pointer">
       <span class="material-symbols-outlined text-[24px]">account_balance</span>
-      <span class="text-[10px] tracking-wide truncate max-w-full font-sans mt-0.5" data-i18n="tab_settings">बैंक खाता</span>
+      <span class="text-[10px] tracking-wide truncate max-w-full font-sans mt-0.5" data-i18n="tab_settings">सेटिंग्स</span>
     </button>
 
   </nav>
@@ -1233,9 +1271,9 @@
         btn_deposit_slip: "हब जमा रसीद",
         recent_deliveries_title: "आज की पूरी हुई डिलीवरी सूची",
         tab_missions: "मिशन",
-        tab_detail: "लैंडमार्क",
+        tab_detail: "डिलीवरी",
         tab_ledger: "बहीखाता",
-        tab_settings: "बैंक खाता",
+        tab_settings: "सेटिंग्स",
         runner_theme_title: "थीम / रंग रूप",
         runner_theme_sub: "हल्का, गहरा या डिवाइस के अनुसार",
         theme_opt_light: "हल्का (Light)",
@@ -1391,9 +1429,9 @@
         btn_deposit_slip: "Hub Deposit Slip",
         recent_deliveries_title: "Today's Completed Deliveries",
         tab_missions: "Missions",
-        tab_detail: "Landmark",
+        tab_detail: "Delivery",
         tab_ledger: "Ledger",
-        tab_settings: "Bank & UPI",
+        tab_settings: "Settings",
         runner_theme_title: "Theme & Display",
         runner_theme_sub: "Light, Dark, or System",
         theme_opt_light: "Light",
@@ -2626,6 +2664,7 @@
       const mainScroll = document.querySelector('main');
       if (mainScroll) mainScroll.scrollTop = 0;
       RunnerStore.activeTab = tabId;
+      document.getElementById('runner-main-content')?.setAttribute('data-active-tab', tabId);
       ['missions', 'detail', 'ledger', 'settings'].forEach(t => {
         const sec = document.getElementById(`tab-${t}`);
         const btn = document.getElementById(`nav-btn-${t}`);
