@@ -227,6 +227,9 @@ def test_rate_limiting():
             "landmark": "Near Mandir Complex",
             "store_id": "sharma_brothers",
             "payment_mode": "COD",
+            "customer_lat": 29.1350,
+            "customer_lng": 77.0100,
+            "distance_km": 1.2,
             "items": [{"id": "item_1", "name": "Atta", "price": 210.0, "qty": 1}]
         }
         r = client.post(
