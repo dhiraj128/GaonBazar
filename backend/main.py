@@ -115,11 +115,40 @@ ensure_schema_migrations()
 # Initialize database schema tables once
 Base.metadata.create_all(bind=engine)
 
+# Password-protect the entire preview. It uses disposable demo data, never production records.
+from fastapi.responses import PlainTextResponse
+import base64 as _preview_b64
+import hmac as _preview_hmac
+
 app = FastAPI(
     title="GaonBazaar Hyperlocal Rural Delivery API",
     description="Production-ready FastAPI backend with SQLite & Sentry for GaonBazaar Customer App",
     version="1.0.0"
 )
+
+@app.middleware("http")
+async def preview_access_guard(request: Request, call_next):
+    if os.getenv("GAONBAZAR_PREVIEW_MODE") != "1":
+        return await call_next(request)
+    expected = os.getenv("GAONBAZAR_PREVIEW_PASSWORD", "")
+    if not expected:
+        return PlainTextResponse("Preview disabled: missing access password", status_code=503)
+    auth = request.headers.get("Authorization", "")
+    valid = False
+    if auth.startswith("Basic "):
+        try:
+            supplied = _preview_b64.b64decode(auth[6:], validate=True).decode("utf-8")
+            username, password = supplied.split(":", 1)
+            valid = _preview_hmac.compare_digest(username, "preview") and _preview_hmac.compare_digest(password, expected)
+        except (ValueError, UnicodeError):
+            valid = False
+    if not valid:
+        return PlainTextResponse("Protected GaonBazar development preview", status_code=401,
+                                 headers={"WWW-Authenticate": 'Basic realm="GaonBazar Preview"',
+                                          "Cache-Control": "no-store"})
+    response = await call_next(request)
+    response.headers["Cache-Control"] = "no-store"
+    return response
 
 # 1. Bank-Grade Security Headers (Helmet-style)
 app.add_middleware(SecurityHeadersMiddleware)
