@@ -206,9 +206,15 @@ def audit_container_scrolling(page, container_selector, test_label, logger, scre
         f"scrollHeight={geom['scrollHeight']}px, clientHeight={geom['clientHeight']}px, overflowY={geom['overflowY']}"
     )
 
+    def safe_shot(p):
+        try:
+            page.screenshot(path=str(p))
+        except Exception:
+            pass
+
     # Capture top screenshot
     top_pic = SCREENSHOTS_DIR / f"{screenshot_prefix}_top.png"
-    page.screenshot(path=str(top_pic))
+    safe_shot(top_pic)
 
     # 2. Test window.scrollTo delegation
     max_scroll = max(0, geom['scrollHeight'] - geom['clientHeight'])
@@ -238,7 +244,7 @@ def audit_container_scrolling(page, container_selector, test_label, logger, scre
 
     # Capture mid-scroll screenshot
     mid_pic = SCREENSHOTS_DIR / f"{screenshot_prefix}_mid.png"
-    page.screenshot(path=str(mid_pic))
+    safe_shot(mid_pic)
 
     # 4. Test Scroll To Bottom
     page.evaluate(f"""() => {{
@@ -266,7 +272,7 @@ def audit_container_scrolling(page, container_selector, test_label, logger, scre
 
     # Capture bottom screenshot
     bot_pic = SCREENSHOTS_DIR / f"{screenshot_prefix}_bottom.png"
-    page.screenshot(path=str(bot_pic))
+    safe_shot(bot_pic)
 
     # Scroll back up to reset
     page.evaluate(f"() => document.querySelector('{container_selector}').scrollTo({{ top: 0, behavior: 'instant' }})")
@@ -388,6 +394,7 @@ def run_vendor_app_scroll_tests(browser, device, logger):
             page.wait_for_timeout(1000)
 
         page.wait_for_selector("main.overflow-y-auto", timeout=5000)
+        page.wait_for_timeout(1500)
 
         audit_container_scrolling(
             page,
@@ -431,6 +438,7 @@ def run_runner_app_scroll_tests(browser, device, logger):
             page.wait_for_timeout(1000)
 
         page.wait_for_selector("main.overflow-y-auto", timeout=5000)
+        page.wait_for_timeout(1500)
 
         audit_container_scrolling(
             page,
@@ -467,6 +475,7 @@ def run_admin_app_scroll_tests(browser, device, logger):
         page.wait_for_timeout(1000)
 
         page.wait_for_selector("main.overflow-y-auto", timeout=5000)
+        page.wait_for_timeout(1500)
 
         # Audit Vendor Queue Scroll
         audit_container_scrolling(

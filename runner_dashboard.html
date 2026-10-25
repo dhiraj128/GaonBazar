@@ -231,13 +231,9 @@
       #runner-header #btn-runner-header-settings { min-width: 44px !important; min-height: 44px !important; padding: 0 8px !important; border-radius: 12px !important; }
       main { padding: 12px !important; padding-bottom: calc(112px + env(safe-area-inset-bottom, 0px)) !important; gap: 12px !important; }
       #runner-main-content { gap: 11px !important; }
-      #runner-kpi-board { gap: 8px !important; }
-      #runner-kpi-board > div { min-width: 0; min-height: 78px; padding: 11px !important; border-radius: 17px !important; }
-      #runner-kpi-board > div > .material-symbols-outlined { display: none !important; }
-      #runner-kpi-board [id^="kpi-"] { font-size: 22px !important; line-height: 1.1 !important; }
-      #runner-main-content[data-active-tab="missions"] #runner-kpi-board > :nth-child(n+3) { display: none !important; }
-      #runner-main-content[data-active-tab="detail"] #runner-kpi-board,
-      #runner-main-content[data-active-tab="settings"] #runner-kpi-board { display: none !important; }
+            #runner-kpi-board { gap: 8px !important; }
+      #runner-kpi-board > div { min-width: 0; min-height: 58px; padding: 8px 10px !important; border-radius: 14px !important; }
+      #runner-kpi-board [id^="kpi-"] { font-size: 18px !important; line-height: 1.1 !important; }
       #tab-detail, #tab-missions, #tab-ledger, #tab-settings { gap: 10px !important; }
       #tab-detail > .rounded-3xl, #tab-missions .rounded-3xl { border-radius: 18px !important; padding: 13px !important; }
       #tab-detail #runner-pickup-heading { min-width: 0; }
@@ -312,9 +308,9 @@
       <!-- Mobile Phone -->
       <div>
         <label class="text-[11px] font-bold text-slate-400 block mb-1" data-i18n="lbl_runner_phone">पंजीकृत मोबाइल नंबर *</label>
-        <div class="flex gap-2">
-          <input type="tel" id="login-runner-phone" placeholder="9876543220" value="9876543220" class="flex-1 px-3.5 py-3 text-sm font-bold rounded-xl border border-slate-700 bg-slate-800 text-white focus:border-amber-400 outline-none" />
-          <button type="button" id="btn-send-login-runner-otp" onclick="handleSendLoginRunnerOtp()" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs sm:text-sm font-bold whitespace-nowrap active:scale-95 transition-all shadow-sm cursor-pointer" data-i18n="btn_send_otp">
+        <div class="flex gap-1.5 sm:gap-2">
+          <input type="tel" id="login-runner-phone" placeholder="9876543220" value="9876543220" class="flex-1 min-w-0 px-3 py-2.5 sm:px-3.5 sm:py-3 text-xs sm:text-sm font-bold rounded-xl border border-slate-700 bg-slate-800 text-white focus:border-amber-400 outline-none" />
+          <button type="button" id="btn-send-login-runner-otp" onclick="handleSendLoginRunnerOtp()" class="min-h-[44px] px-2.5 sm:px-4 py-2.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs sm:text-sm font-bold whitespace-nowrap active:scale-95 transition-all shadow-sm cursor-pointer shrink-0" data-i18n="btn_send_otp">
             OTP भेजें
           </button>
         </div>
@@ -351,39 +347,30 @@
   <!-- ========================================================================= -->
   <!-- 2. NATIVE TOP APP BAR & SHIFT STATUS (Mobile-First Android Minimal)       -->
   <!-- ========================================================================= -->
-  <header id="runner-header" class="hidden sticky top-0 z-40 shrink-0 bg-slate-950/95 backdrop-blur-md border-b border-slate-800 shadow-md px-2 py-2 sm:px-5 sm:py-2.5">
-    <div class="max-w-4xl mx-auto flex items-center justify-between gap-1 sm:gap-2">
+  <header id="runner-header" class="hidden sticky top-0 z-40 shrink-0 bg-slate-950/95 backdrop-blur-md border-b border-slate-800 shadow-md px-3 sm:px-5 h-14 sm:h-16 flex items-center">
+    <div class="max-w-4xl w-full mx-auto flex items-center justify-between gap-2">
       
-      <!-- Identity & Cluster Context (Page Title) -->
-      <div class="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1 overflow-hidden">
-        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center shrink-0 shadow-xs">
+      <!-- Identity: Runner Name (Compact, Truncated 56-64px Bar) -->
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center shrink-0 shadow-xs">
           <span class="material-symbols-outlined text-[20px] sm:text-[22px]">two_wheeler</span>
         </div>
-        <div class="flex flex-col min-w-0 flex-1 justify-center overflow-hidden">
-          <div class="flex items-center gap-1 min-w-0 flex-1 overflow-hidden">
-            <span id="runner-name-display" data-i18n="runner_profile_name" class="text-xs sm:text-sm font-black text-white leading-tight truncate whitespace-nowrap min-w-[50px] max-w-[100px] sm:max-w-[180px] shrink-0">कमल सिंह</span>
-            <span id="runner-badge-code" class="text-[8.5px] sm:text-[9px] font-mono font-bold bg-amber-400/20 text-amber-300 px-1.5 py-0.5 rounded border border-amber-400/30 w-fit min-h-[18px] flex items-center justify-center shrink-0 whitespace-nowrap">#GM-RAMPUR-07</span>
-          </div>
-          <span id="runner-hub-display" class="text-[10px] sm:text-[11px] text-slate-400 truncate flex items-center gap-0.5 sm:gap-1 min-w-0 mt-0.5">
-            <span class="material-symbols-outlined text-[11px] sm:text-[12px] text-primary shrink-0">hub</span>
-            <span class="truncate" id="runner-hub-name-text" data-i18n="runner_hub_name">रामपुर क्लस्टर हब #RMP-04</span>
-          </span>
+        <div class="flex flex-col min-w-0 justify-center">
+          <span id="runner-name-display" data-i18n="runner_profile_name" class="text-sm sm:text-base font-black text-white leading-tight truncate block max-w-[170px] sm:max-w-[280px]">कमल सिंह</span>
+          <span class="text-[10px] text-slate-400 font-medium truncate sm:hidden">गाँव मित्र डिलीवरी</span>
         </div>
       </div>
 
-      <!-- Action Items: Shift Status, Language, Logout (Min 44x44px Touch Targets) -->
-      <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
+      <!-- Action Items: Shift Status & Settings Shortcut (Min 44x44px Touch Targets) -->
+      <div class="flex items-center gap-2 shrink-0">
         <!-- Duty Shift Online / Offline Toggle -->
-        <button id="shift-toggle-btn" onclick="toggleRunnerShift()" aria-label="Toggle Shift" class="px-2 py-1.5 rounded-xl text-xs font-black flex items-center justify-center gap-1 border transition-all bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-xs active:scale-95 min-h-[44px] min-w-[40px] shrink-0 cursor-pointer" title="Shift Toggle">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" id="shift-indicator-dot"></span>
+        <button id="shift-toggle-btn" onclick="toggleRunnerShift()" aria-label="Toggle Shift" class="px-2.5 py-1.5 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 border transition-all bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-xs active:scale-95 min-h-[44px] min-w-[44px] shrink-0 cursor-pointer" title="Shift Toggle">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0" id="shift-indicator-dot"></span>
           <span id="shift-status-label" class="hidden sm:inline" data-i18n="shift_status_label">ड्यूटी चालू</span>
           <span id="shift-status-mobile" class="sm:hidden text-xs font-black" data-i18n="shift_status_mobile">चालू</span>
         </button>
 
-
-
-        <!-- Settings entry; logout lives inside Settings, not the cramped header -->
-        <button id="btn-runner-header-settings" type="button" onclick="switchTab('settings')" title="Settings" aria-label="Settings" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center justify-center active:scale-95 shrink-0">
+        <button id="btn-runner-header-settings" type="button" onclick="switchTab('settings')" title="Settings" aria-label="Settings" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center justify-center active:scale-95 shrink-0 cursor-pointer">
           <span class="material-symbols-outlined text-[20px]">settings</span>
         </button>
       </div>
@@ -452,57 +439,59 @@
     <!-- ======================================================================= -->
     <!-- 2. HIGH-LEVEL KPI SUMMARY BAR (Decluttered & Outdoor-Readable)          -->
     <!-- ======================================================================= -->
-    <section id="runner-kpi-board" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-      
-      <!-- KPI 1: Active Missions Queue -->
-      <div onclick="switchTab('missions')" class="bg-slate-800 rounded-3xl p-3.5 border border-amber-500/30 flex items-center justify-between cursor-pointer hover:border-amber-400 hover:bg-slate-750 transition-all active:scale-98">
-        <div class="flex flex-col min-w-0 flex-1">
-          <span class="text-[10px] font-extrabold text-amber-400 uppercase tracking-wider flex items-center gap-1.5 truncate">
-            <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse shrink-0"></span>
-            <span data-i18n="kpi_active_missions" class="truncate">सक्रिय मिशन</span>
-          </span>
-          <span id="kpi-active-missions" class="text-2xl sm:text-3xl font-black text-white mt-1">0</span>
-          <span class="text-[10px] text-slate-300 font-medium mt-0.5 truncate" data-i18n="kpi_pickup_pending">पिकअप व रास्ते में</span>
-        </div>
-        <span class="material-symbols-outlined text-amber-400/60 text-[32px] shrink-0">local_shipping</span>
-      </div>
-
-      <!-- KPI 2: Completed Today -->
-      <div onclick="switchTab('ledger')" class="bg-slate-800 rounded-3xl p-3.5 border border-emerald-500/30 flex items-center justify-between cursor-pointer hover:border-emerald-400 hover:bg-slate-750 transition-all active:scale-98">
-        <div class="flex flex-col min-w-0 flex-1">
-          <span class="text-[10px] font-extrabold text-emerald-400 uppercase tracking-wider truncate" data-i18n="kpi_delivered_today">सफल डिलीवरी</span>
-          <span id="kpi-completed-today" class="text-2xl sm:text-3xl font-black text-emerald-300 mt-1">0</span>
-          <span class="text-[10px] text-emerald-400/80 font-medium mt-0.5 truncate" data-i18n="kpi_verified_handover">OTP सत्यापित</span>
-        </div>
-        <span class="material-symbols-outlined text-emerald-400/60 text-[32px] shrink-0">check_circle</span>
-      </div>
-
-      <!-- KPI 3: Today's Delivery Earnings (₹20/order) -->
-      <div onclick="switchTab('ledger')" class="bg-slate-800 rounded-3xl p-3.5 border border-purple-500/30 flex items-center justify-between cursor-pointer hover:border-purple-400 hover:bg-slate-750 transition-all active:scale-98">
-        <div class="flex flex-col min-w-0 flex-1">
-          <span class="text-[10px] font-extrabold text-purple-400 uppercase tracking-wider truncate" data-i18n="kpi_shift_earnings">आज की कमाई</span>
-          <span id="kpi-today-earnings" class="text-2xl sm:text-3xl font-black text-purple-300 mt-1">₹0</span>
-          <span class="text-[10px] text-purple-300/80 font-medium mt-0.5 truncate" data-i18n="kpi_per_order_payout">₹20 प्रति सफल डिलीवरी</span>
-        </div>
-        <span class="material-symbols-outlined text-purple-400/60 text-[32px] shrink-0">payments</span>
-      </div>
-
-      <!-- KPI 4: COD Cash in Hand (Owed to Hub) -->
-      <div onclick="switchTab('ledger')" class="bg-slate-800 rounded-3xl p-3.5 border border-blue-500/30 flex items-center justify-between cursor-pointer hover:border-blue-400 hover:bg-slate-750 transition-all active:scale-98">
-        <div class="flex flex-col min-w-0 flex-1">
-          <span class="text-[10px] font-extrabold text-blue-400 uppercase tracking-wider truncate" data-i18n="kpi_cod_cash">हाथ में नकद</span>
-          <span id="kpi-cod-cash" class="text-2xl sm:text-3xl font-black text-blue-300 mt-1">₹0</span>
-          <span class="text-[10px] text-blue-300/80 font-medium mt-0.5 truncate" data-i18n="kpi_deposit_due">हब में जमा करने योग्य</span>
-        </div>
-        <span class="material-symbols-outlined text-blue-400/60 text-[32px] shrink-0">account_balance_wallet</span>
-      </div>
-
-    </section>
+    
 
     <!-- ======================================================================= -->
     <!-- 3. TAB 1: ACTIVE MISSIONS QUEUE                                         -->
     <!-- ======================================================================= -->
     <section id="tab-missions" class="flex flex-col gap-3">
+      <!-- HIGH-LEVEL KPI SUMMARY BAR (Compact, Clean & Outdoor High-Contrast) -->
+      <section id="runner-kpi-board" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
+        
+        <!-- KPI 1: Active Missions Queue -->
+        <div onclick="switchTab('missions')" class="bg-slate-800 rounded-2xl p-2.5 sm:p-3 border border-amber-500/30 flex items-center justify-between cursor-pointer hover:border-amber-400 transition-all active:scale-98">
+          <div class="flex flex-col min-w-0 flex-1">
+            <span class="text-[10px] font-extrabold text-amber-400 uppercase tracking-wider flex items-center gap-1.5 truncate">
+              <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse shrink-0"></span>
+              <span data-i18n="kpi_active_missions" class="truncate">सक्रिय मिशन</span>
+            </span>
+            <span id="kpi-active-missions" class="text-xl sm:text-2xl font-black text-white mt-0.5">0</span>
+            <span class="text-[10px] text-slate-300 font-medium truncate" data-i18n="kpi_pickup_pending">पिकअप व रास्ते में</span>
+          </div>
+          <span class="material-symbols-outlined text-amber-400 text-[24px] shrink-0">local_shipping</span>
+        </div>
+
+        <!-- KPI 2: Completed Today -->
+        <div onclick="switchTab('ledger')" class="bg-slate-800 rounded-2xl p-2.5 sm:p-3 border border-emerald-500/30 flex items-center justify-between cursor-pointer hover:border-emerald-400 transition-all active:scale-98">
+          <div class="flex flex-col min-w-0 flex-1">
+            <span class="text-[10px] font-extrabold text-emerald-400 uppercase tracking-wider truncate" data-i18n="kpi_delivered_today">सफल डिलीवरी</span>
+            <span id="kpi-completed-today" class="text-xl sm:text-2xl font-black text-emerald-300 mt-0.5">0</span>
+            <span class="text-[10px] text-emerald-400/80 font-medium truncate" data-i18n="kpi_verified_handover">OTP सत्यापित</span>
+          </div>
+          <span class="material-symbols-outlined text-emerald-400 text-[24px] shrink-0">check_circle</span>
+        </div>
+
+        <!-- KPI 3: Today's Delivery Earnings -->
+        <div onclick="switchTab('ledger')" class="bg-slate-800 rounded-2xl p-2.5 sm:p-3 border border-purple-500/30 flex items-center justify-between cursor-pointer hover:border-purple-400 transition-all active:scale-98">
+          <div class="flex flex-col min-w-0 flex-1">
+            <span class="text-[10px] font-extrabold text-purple-400 uppercase tracking-wider truncate" data-i18n="kpi_shift_earnings">आज की कमाई</span>
+            <span id="kpi-today-earnings" class="text-xl sm:text-2xl font-black text-purple-300 mt-0.5">₹0</span>
+            <span class="text-[10px] text-purple-300/80 font-medium truncate" data-i18n="kpi_per_order_payout">₹20 प्रति डिलीवरी</span>
+          </div>
+          <span class="material-symbols-outlined text-purple-400 text-[24px] shrink-0">payments</span>
+        </div>
+
+        <!-- KPI 4: COD Cash in Hand -->
+        <div onclick="switchTab('ledger')" class="bg-slate-800 rounded-2xl p-2.5 sm:p-3 border border-blue-500/30 flex items-center justify-between cursor-pointer hover:border-blue-400 transition-all active:scale-98">
+          <div class="flex flex-col min-w-0 flex-1">
+            <span class="text-[10px] font-extrabold text-blue-400 uppercase tracking-wider truncate" data-i18n="kpi_cod_cash">हाथ में नकद</span>
+            <span id="kpi-cod-cash" class="text-xl sm:text-2xl font-black text-blue-300 mt-0.5">₹0</span>
+            <span class="text-[10px] text-blue-300/80 font-medium truncate" data-i18n="kpi_deposit_due">हब में जमा करें</span>
+          </div>
+          <span class="material-symbols-outlined text-blue-400 text-[24px] shrink-0">account_balance_wallet</span>
+        </div>
+
+      </section>
       
       <!-- Filter Bar & Refresh Indicator -->
       <div class="flex items-center justify-between gap-2 flex-wrap">
@@ -796,130 +785,107 @@
     <!-- ======================================================================= -->
     <!-- 5.5 TAB 4: RUNNER BANK & UPI SETTINGS (Payout Onboarding)               -->
     <!-- ======================================================================= -->
-    <section id="tab-settings" class="hidden flex-col gap-3.5">
-      <div id="runner-preferences-card" class="bg-slate-800 border border-slate-700 rounded-2xl p-4 flex flex-col gap-3">
-        <div class="flex items-center justify-between gap-3">
-          <span class="text-xs font-bold text-slate-200" data-i18n="lang_label">App language</span>
-        <button id="lang-toggle-btn" onclick="toggleLanguage()" aria-label="Toggle Language" class="px-2 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center justify-center gap-1 min-h-[44px] min-w-[40px] active:scale-95 shrink-0 cursor-pointer" title="Language">
-          <span class="material-symbols-outlined text-[17px] shrink-0">translate</span>
-          <span id="current-lang-text">English</span>
-        </button>
-        </div>
-        <div class="text-xs font-medium text-slate-400" data-i18n="runner_theme_sub">Display and device appearance options are below.</div>
-      </div>
-
-      <button id="btn-runner-logout" type="button" onclick="handleRunnerLogout()" class="w-full min-h-[48px] rounded-2xl border border-red-400/40 text-red-400 font-bold flex items-center justify-center gap-2">
-        <span class="material-symbols-outlined">logout</span><span data-i18n="logout_label">Log out</span>
-      </button>
-      <!-- Runner Theme Selection Card (Light / Dark / System) -->
-      <div id="runner-theme-settings-card" class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-md flex flex-col gap-3.5">
+    <section id="tab-settings" class="hidden flex-col gap-4">
+      
+      <!-- Runner Profile & Hub Location Card -->
+      <div class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-md flex flex-col gap-4 max-w-2xl">
         <div class="flex items-center justify-between border-b border-slate-700 pb-3">
-          <div class="flex items-center gap-2">
-            <div class="w-9 h-9 rounded-xl bg-purple-500/20 text-purple-400 border border-purple-500/40 flex items-center justify-center shrink-0">
-              <span class="material-symbols-outlined text-[20px]">palette</span>
+          <div class="flex items-center gap-2.5">
+            <div class="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-[24px]">sports_motorsports</span>
             </div>
             <div>
-              <h2 class="text-sm font-black text-white" data-i18n="runner_theme_title">थीम / रंग रूप (Theme)</h2>
-              <span class="text-[10px] text-slate-400 block" data-i18n="runner_theme_sub">हल्का, गहरा या डिवाइस के अनुसार</span>
+              <h2 class="text-sm sm:text-base font-black text-white" data-i18n="runner_settings_title">गाँव मित्र प्रोफ़ाइल</h2>
+              <span id="runner-hub-display" class="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5">
+                <span class="material-symbols-outlined text-[13px] text-primary">hub</span>
+                <span id="runner-hub-name-text" data-i18n="runner_hub_name">रामपुर क्लस्टर हब #RMP-04</span>
+              </span>
             </div>
           </div>
-          <span id="runner-theme-badge" class="px-2.5 py-1 rounded-full text-[11px] font-black bg-purple-500/20 text-purple-300 border border-purple-500/40">सिस्टम (System)</span>
+          <span id="runner-badge-code" class="text-[10px] font-mono font-bold bg-amber-400/20 text-amber-300 px-2 py-0.5 rounded-md border border-amber-400/30 min-h-[22px] flex items-center justify-center shrink-0">#GM-RAMPUR-07</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <div>
+            <label class="block text-slate-400 font-bold mb-1" data-i18n="lbl_runner_name">डिलिवरी पार्टनर का नाम</label>
+            <input type="text" value="कमल सिंह" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-medium" readonly/>
+          </div>
+          <div>
+            <label class="block text-slate-400 font-bold mb-1" data-i18n="lbl_runner_phone">पंजीकृत फ़ोन</label>
+            <input type="text" value="+91 9876543210" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-medium" readonly/>
+          </div>
+          <div>
+            <label class="block text-slate-400 font-bold mb-1" data-i18n="lbl_runner_vehicle">वाहन प्रकार</label>
+            <input type="text" value="Hero Splendor Plus (UP-32-AB-1234)" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-medium" readonly/>
+          </div>
+          <div>
+            <label class="block text-slate-400 font-bold mb-1" data-i18n="lbl_assigned_panchayats">आवंटित पंचायतें</label>
+            <input type="text" value="रामपुर, बिशनपुर, कल्याणपुर" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-medium" readonly/>
+          </div>
+        </div>
+
+        <div class="bg-amber-500/10 rounded-2xl p-3 border border-amber-500/20 text-xs text-amber-300 flex items-center gap-2">
+          <span class="material-symbols-outlined text-[20px] text-amber-400">verified</span>
+          <span data-i18n="runner_verified_note">सत्यापित गाँव मित्र। प्रति सफल डोरस्टेप डिलीवरी ₹20 भुगतान।</span>
+        </div>
+      </div>
+
+      <!-- Language & Preferences Card -->
+      <div id="runner-preferences-card" class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-md flex flex-col gap-3.5 max-w-2xl">
+        <h2 class="text-sm font-black text-white flex items-center gap-2 border-b border-slate-700 pb-2">
+          <span class="material-symbols-outlined text-primary text-[20px]">tune</span>
+          <span data-i18n="runner_pref_title">प्राथमिकताएं</span>
+        </h2>
+
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <span class="text-xs font-bold text-white block" data-i18n="profile_row_lang">ऐप की भाषा (Language)</span>
+            <span class="text-[11px] text-slate-400">हिंदी / English</span>
+          </div>
+          <button id="lang-toggle-btn" onclick="toggleLanguage()" aria-label="Toggle Language" class="px-3 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold flex items-center justify-center gap-1.5 min-h-[44px] min-w-[44px] active:scale-95 shrink-0 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">translate</span>
+            <span id="current-lang-text">English</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Theme Selection Card (Light / Dark / System) -->
+      <div id="runner-theme-settings-card" class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-md flex flex-col gap-3.5 max-w-2xl">
+        <div class="flex items-center justify-between border-b border-slate-700 pb-2">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-[20px]">palette</span>
+            <div>
+              <h2 class="text-sm font-black text-white" data-i18n="runner_theme_title">थीम / रंग रूप (Theme)</h2>
+              <span class="text-[11px] text-slate-400 block" data-i18n="runner_theme_sub">हल्का, गहरा या डिवाइस के अनुसार</span>
+            </div>
+          </div>
+          <span id="runner-theme-badge" class="px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">सिस्टम</span>
         </div>
 
         <div class="grid grid-cols-3 gap-2 bg-slate-900 p-1.5 rounded-2xl runner-theme-segment">
-          <button id="btn-runner-theme-light" type="button" onclick="setRunnerTheme('light')" class="min-h-[44px] rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all text-slate-300 hover:bg-slate-800/80 cursor-pointer">
+          <button id="btn-runner-theme-light" type="button" onclick="setRunnerTheme('light')" class="min-h-[44px] rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all text-slate-300 hover:bg-slate-800 cursor-pointer">
             <span class="material-symbols-outlined text-[18px]">light_mode</span>
-            <span data-i18n="theme_opt_light">हल्का (Light)</span>
+            <span data-i18n="theme_opt_light">हल्का</span>
           </button>
-          <button id="btn-runner-theme-dark" type="button" onclick="setRunnerTheme('dark')" class="min-h-[44px] rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all text-slate-300 hover:bg-slate-800/80 cursor-pointer">
+          <button id="btn-runner-theme-dark" type="button" onclick="setRunnerTheme('dark')" class="min-h-[44px] rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all text-slate-300 hover:bg-slate-800 cursor-pointer">
             <span class="material-symbols-outlined text-[18px]">dark_mode</span>
-            <span data-i18n="theme_opt_dark">गहरा (Dark)</span>
+            <span data-i18n="theme_opt_dark">गहरा</span>
           </button>
           <button id="btn-runner-theme-system" type="button" onclick="setRunnerTheme('system')" class="min-h-[44px] rounded-xl font-black text-xs flex items-center justify-center gap-1.5 transition-all bg-primary text-white shadow-xs cursor-pointer">
             <span class="material-symbols-outlined text-[18px]">settings_suggest</span>
-            <span data-i18n="theme_opt_system">सिस्टम (System)</span>
+            <span data-i18n="theme_opt_system">सिस्टम</span>
           </button>
         </div>
       </div>
 
-
-      <div class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-md flex flex-col gap-4">
-        
-        <div class="flex flex-wrap items-center justify-between gap-2.5 border-b border-slate-700 pb-3">
-          <div class="flex items-center gap-2">
-            <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center shrink-0">
-              <span class="material-symbols-outlined text-[20px]">account_balance</span>
-            </div>
-            <div>
-              <h2 class="text-sm font-black text-white" data-i18n="runner_bank_title">बैंक खाता व UPI सेटिंग्स</h2>
-              <span class="text-[10px] text-slate-400 block" data-i18n="runner_bank_sub">डिलीवरी कमीशन (₹20/ऑर्डर) सीधे आपके बैंक में</span>
-            </div>
-          </div>
-
-          <span id="runner-bank-status-badge" class="px-2.5 py-1 rounded-full text-[11px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center gap-1 shrink-0">
-            <span class="material-symbols-outlined text-[13px]">hourglass_top</span>
-            <span data-i18n="bank_status_pending">सत्यापन लंबित</span>
-          </span>
-        </div>
-
-        <p class="text-xs text-slate-300 leading-relaxed" data-i18n="runner_bank_desc">
-          गाँव मित्र डिलीवरी कमीशन की दैनिक निकासी Razorpay Route लिंक्ड बैंक खाते या UPI में स्थानांतरित की जाती है।
-        </p>
-
-        <!-- Form fields -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-          <div class="sm:col-span-2">
-            <label class="block text-slate-300 font-bold mb-1" data-i18n="bank_lbl_name">खाताधारक का नाम *</label>
-            <input type="text" id="runner-bank-account-name" data-i18n-ph="bank_ph_name" placeholder="उदा. Kamal Singh" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-semibold focus:outline-none focus:border-primary"/>
-          </div>
-
-          <div>
-            <label class="block text-slate-300 font-bold mb-1" data-i18n="bank_lbl_acc">बैंक खाता संख्या *</label>
-            <input type="password" id="runner-bank-account-number" data-i18n-ph="bank_ph_acc" placeholder="9-18 अंकों की खाता संख्या" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono font-semibold focus:outline-none focus:border-primary" autocomplete="off"/>
-          </div>
-
-          <div>
-            <label class="block text-slate-300 font-bold mb-1" data-i18n="bank_lbl_confirm">पुनः खाता संख्या दर्ज करें *</label>
-            <input type="password" id="runner-bank-confirm-account-number" data-i18n-ph="bank_ph_confirm" placeholder="खाता संख्या दोबारा दर्ज करें" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono font-semibold focus:outline-none focus:border-primary" autocomplete="off"/>
-          </div>
-
-          <div>
-            <label class="block text-slate-300 font-bold mb-1" data-i18n="bank_lbl_ifsc">बैंक IFSC कोड *</label>
-            <input type="text" id="runner-bank-ifsc" data-i18n-ph="bank_ph_ifsc" placeholder="उदा. PUNB0123400" maxlength="11" oninput="this.value = this.value.toUpperCase()" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono font-semibold uppercase focus:outline-none focus:border-primary"/>
-            <span class="text-[10px] text-slate-500 mt-0.5 block" data-i18n="bank_hint_ifsc">11 अक्षर (4 अक्षर, 0, 6 अल्फ़ान्यूमेरिक)</span>
-          </div>
-
-          <div>
-            <label class="block text-slate-300 font-bold mb-1" data-i18n="bank_lbl_upi">UPI ID (VPA) *</label>
-            <input type="text" id="runner-bank-upi" data-i18n-ph="bank_ph_upi" placeholder="उदा. kamal.singh@ybl" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono font-semibold focus:outline-none focus:border-primary"/>
-            <span class="text-[10px] text-slate-500 mt-0.5 block" data-i18n="bank_hint_upi">तत्काल कमीशन क्रेडिट व सेटलमेंट हेतु</span>
-          </div>
-        </div>
-
-        <!-- Masked Info Card if configured -->
-        <div id="runner-bank-masked-info" class="hidden bg-slate-900 border border-slate-700 rounded-2xl p-3 text-xs flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-slate-400">credit_card</span>
-            <div class="flex flex-col">
-              <span class="font-bold text-white"><span id="lbl-runner-saved-acc" data-i18n="bank_saved_account_lbl">सहेजा गया खाता:</span> <span id="runner-masked-acc-label" class="font-mono text-emerald-400">••••••••4921</span></span>
-              <span class="text-[10px] text-slate-400">IFSC: <b id="runner-saved-ifsc-label" class="font-mono text-slate-300">--</b> • UPI: <b id="runner-saved-upi-label" class="font-mono text-slate-300">--</b></span>
-            </div>
-          </div>
-          <span id="runner-bank-active-badge" class="text-[10px] font-bold text-emerald-400 bg-emerald-500/20 border border-emerald-500/30 px-2 py-0.5 rounded-md" data-i18n="bank_status_active">सक्रिय</span>
-        </div>
-
-        <!-- Inline Error/Success Message Alert -->
-        <div id="runner-bank-msg" class="hidden p-3 rounded-2xl text-xs font-bold"></div>
-
-        <!-- Submit CTA -->
-        <div class="flex justify-end pt-1">
-          <button id="btn-save-runner-bank" onclick="saveRunnerPayoutSettings()" class="min-h-[48px] px-6 py-3 bg-primary hover:bg-primary-dark text-white rounded-xl text-xs font-black flex items-center gap-2 shadow-lg active:scale-95 transition-all cursor-pointer">
-            <span class="material-symbols-outlined text-[18px]">verified</span>
-            <span data-i18n="btn_save_runner_bank">बैंक व UPI विवरण सहेजें</span>
-          </button>
-        </div>
-
+      <!-- Polite Logout Action -->
+      <div class="pt-2 pb-6 max-w-2xl">
+        <button id="btn-runner-logout" type="button" onclick="handleRunnerLogout()" class="min-h-[48px] w-full rounded-2xl border border-red-500/40 bg-red-500/10 hover:bg-red-500/20 text-red-300 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-2xs transition-all active:scale-98 cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">logout</span>
+          <span data-i18n="logout_label">लॉगआउट करें (Log out)</span>
+        </button>
       </div>
+
     </section>
 
     </div> <!-- Close #runner-main-content -->

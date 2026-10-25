@@ -2466,6 +2466,13 @@ def get_vendor_orders(
             )
             for it in ord_obj.items
         ]
+        runner_obj = None
+        r_id = getattr(ord_obj, "runner_id", None)
+        if r_id:
+            runner_obj = db.query(Runner).filter(Runner.id == r_id).first()
+        elif ord_obj.timeline_stage >= 3:
+            runner_obj = db.query(Runner).filter(Runner.is_online == True).first()
+
         results.append(
             VendorOrderDTO(
                 id=ord_obj.id,
@@ -2484,6 +2491,9 @@ def get_vendor_orders(
                 status=ord_obj.status,
                 timeline_stage=ord_obj.timeline_stage,
                 delivery_otp=ord_obj.delivery_otp,
+                runner_id=runner_obj.id if runner_obj else None,
+                runner_name=runner_obj.name if runner_obj else None,
+                runner_phone=runner_obj.phone if runner_obj else None,
                 created_at=ord_obj.created_at.isoformat(),
                 items=items_dto
             )
@@ -2529,6 +2539,14 @@ def update_vendor_order_status(
         5: "Delivered"
     }
 
+    # Enforce delivery restriction: Vendors cannot mark orders delivered.
+    # Delivery must be verified by the authorized Runner via customer doorstep OTP.
+    if payload.stage >= 5 and auth_vendor.get("role") != "admin":
+        raise HTTPException(
+            status_code=403,
+            detail="Access Denied: Vendors cannot mark orders as Delivered. Delivery must be verified through the authorized Runner OTP handover workflow."
+        )
+
     order.timeline_stage = payload.stage
     order.status = stage_names.get(payload.stage, "Processing")
     if payload.stage == 5:
@@ -2546,6 +2564,13 @@ def update_vendor_order_status(
         )
         for it in order.items
     ]
+    runner_obj = None
+    r_id = getattr(order, "runner_id", None)
+    if r_id:
+        runner_obj = db.query(Runner).filter(Runner.id == r_id).first()
+    elif order.timeline_stage >= 3:
+        runner_obj = db.query(Runner).filter(Runner.is_online == True).first()
+
     return VendorOrderDTO(
         id=order.id,
         user_name=order.user_name,
@@ -2563,6 +2588,9 @@ def update_vendor_order_status(
         status=order.status,
         timeline_stage=order.timeline_stage,
         delivery_otp=order.delivery_otp,
+        runner_id=runner_obj.id if runner_obj else None,
+        runner_name=runner_obj.name if runner_obj else None,
+        runner_phone=runner_obj.phone if runner_obj else None,
         created_at=order.created_at.isoformat(),
         items=items_dto
     )

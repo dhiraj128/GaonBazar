@@ -354,11 +354,18 @@
       </button>
 
       <!-- Compact App Logo (Icon only, no text) - min 44x44px touch target -->
-      <button id="header-logo-icon" onclick="navigateToPhase('dashboard')" aria-label="GaonBazaar Home" title="GaonBazaar" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-gradient-to-tr from-primary to-emerald-600 flex items-center justify-center text-white shadow-xs shrink-0 cursor-pointer active:scale-95 transition-transform">
+      <button id="header-logo-icon" onclick="navigateToPhase('dashboard')" aria-label="GaonBazaar Home" title="GaonBazaar" class="hidden min-[380px]:flex w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-gradient-to-tr from-primary to-emerald-600 items-center justify-center text-white shadow-xs shrink-0 cursor-pointer active:scale-95 transition-transform">
         <span class="material-symbols-outlined text-[24px] inline-block select-none leading-none">storefront</span>
       </button>
       <span class="sr-only">GaonBazaar</span>
       <span id="header-subtitle" class="hidden"></span>
+
+      <!-- Delivery Village Pill with Down Arrow (Opens Address / GPS Sheet) -->
+      <button id="header-delivery-pill" onclick="navigateToPhase('landmark')" type="button" aria-label="Select delivery village" class="flex items-center gap-1 px-1.5 sm:px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold max-w-[85px] sm:max-w-[200px] truncate border border-slate-200 shadow-2xs active:scale-95 transition-all cursor-pointer">
+        <span class="material-symbols-outlined text-[15px] text-primary shrink-0">location_on</span>
+        <span id="header-delivery-village-name" class="truncate text-[11px] font-extrabold">रामपुर</span>
+        <span class="material-symbols-outlined text-[13px] text-slate-400 shrink-0">expand_more</span>
+      </button>
 
       <!-- [Spacer / Flex-grow] -->
       <div class="flex-1 min-w-0" aria-hidden="true"></div>
@@ -5839,6 +5846,8 @@
       AppStore.user.name = nameVal;
       AppStore.user.district = distVal;
       AppStore.user.village = villVal;
+      const headVill = document.getElementById('header-delivery-village-name');
+      if (headVill) headVill.innerText = villVal || 'स्थान चुनें';
       AppStore.user.landmark = lmVal;
 
       // Keep hidden fallback inputs in sync for backward compatibility

@@ -123,6 +123,7 @@ class Order(Base):
     landmark = Column(Text, nullable=False)
     customer_lat = Column(Float, nullable=True)
     customer_lng = Column(Float, nullable=True)
+    runner_id = Column(String(50), ForeignKey("runners.id"), nullable=True)
     store_id = Column(String(50), ForeignKey("stores.id"), nullable=False)
     store_name = Column(String(100), nullable=False)
     subtotal = Column(Float, nullable=False)
