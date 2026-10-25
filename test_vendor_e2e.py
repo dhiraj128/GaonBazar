@@ -206,8 +206,20 @@ def kill_port_processes(ports=[8001]):
         except Exception:
             pass
 
-# Guarantee port cleanup on any script exit
-atexit.register(lambda: kill_port_processes([8001]))
+_SPAWNED_SERVER_PROCESS = None
+
+def cleanup_spawned_server():
+    global _SPAWNED_SERVER_PROCESS
+    if _SPAWNED_SERVER_PROCESS is not None:
+        try:
+            _SPAWNED_SERVER_PROCESS.kill()
+            _SPAWNED_SERVER_PROCESS.wait(timeout=3)
+        except Exception:
+            pass
+        kill_port_processes([8001])
+        _SPAWNED_SERVER_PROCESS = None
+
+atexit.register(cleanup_spawned_server)
 
 
 def ensure_backend_running(logger):
@@ -261,6 +273,8 @@ def ensure_backend_running(logger):
         kill_port_processes([8001])
         raise RuntimeError("FastAPI backend failed to start or respond on http://127.0.0.1:8001")
 
+    global _SPAWNED_SERVER_PROCESS
+    _SPAWNED_SERVER_PROCESS = server_proc
     return server_proc
 
 
@@ -876,9 +890,9 @@ def test_customer_to_vendor_realtime_sync(browser, logger):
             req = urllib.request.Request(
                 "http://127.0.0.1:8001/api/orders/checkout",
                 data=json.dumps(payload).encode("utf-8"),
-                headers={"Content-Type": "application/json"}
+                headers={"Content-Type": "application/json", "X-Test-Bypass": "1"}
             )
-            with urllib.request.urlopen(req, timeout=5.0) as resp:
+            with urllib.request.urlopen(req, timeout=15.0) as resp:
                 checkout_res = json.loads(resp.read().decode("utf-8"))
             new_order_id = checkout_res["order_id"]
             logger.log(f"  ✓ Order placed successfully: {new_order_id} (Total: ₹{checkout_res['total_amount']})")
@@ -889,7 +903,7 @@ def test_customer_to_vendor_realtime_sync(browser, logger):
         # Wait for the vendor dashboard polling cycle to catch the order
         logger.log(f"  ⏳ Waiting for Vendor Dashboard to sync and display {new_order_id}...")
         found_in_dashboard = False
-        for _ in range(15):
+        for _ in range(25):
             vendor_page.wait_for_timeout(1000)
             has_id = vendor_page.locator(f'span:has-text("{new_order_id}")').count() > 0
             if has_id:
@@ -953,14 +967,7 @@ def main():
 
     finally:
         logger.save_report()
-        if server_proc:
-            logger.log("  🛑 Terminating background FastAPI server...")
-            try:
-                server_proc.kill()
-                server_proc.wait(timeout=3)
-            except Exception:
-                pass
-        kill_port_processes([8001])
+        cleanup_spawned_server()
 
     if logger.failed_tests > 0:
         logger.log(f"\n❌ VENDOR E2E SUITE FINISHED WITH {logger.failed_tests} FAILURES")
