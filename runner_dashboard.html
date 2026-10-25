@@ -2001,6 +2001,11 @@
       const savedLang = localStorage.getItem('gaonbazar_lang');
       if (savedLang === 'hi' || savedLang === 'en') {
         RunnerStore.lang = savedLang;
+      } else {
+        // Persist the actual initial language before the user changes it.
+        // Without this, a first-time user sees Hindi but has no saved
+        // preference; switching to English and back cannot restore storage.
+        localStorage.setItem('gaonbazar_lang', RunnerStore.lang);
       }
       applyRunnerLanguageUI();
       await checkRunnerSession();
