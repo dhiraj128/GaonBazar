@@ -1,6 +1,6 @@
 ================================================================================
 GAONBAZAAR SUPER ADMIN & ONBOARDING E2E TEST REPORT
-Generated: 2026-10-25 22:48:55
+Generated: 2026-10-25 23:07:22
 Total Tests Executed: 18
 Passed: 18
 Failed: 0
@@ -29,73 +29,73 @@ CAPTURED SCREENSHOT EVIDENCE:
 ================================================================================
 
 DETAILED AUDIT LOGS:
-[2026-10-25 22:48:23] ================================================================================
-[2026-10-25 22:48:23] Starting GaonBazaar Super Admin & Rural Onboarding E2E Verification Suite...
-[2026-10-25 22:48:23] ================================================================================
-[2026-10-25 22:48:24]   🚀 Starting GaonBazaar FastAPI backend server in background on port 8001 (no-reload)...
-[2026-10-25 22:48:27]   ✓ Backend server healthy and responding on http://127.0.0.1:8001
-[2026-10-25 22:48:28] 
+[2026-10-25 23:06:31] ================================================================================
+[2026-10-25 23:06:31] Starting GaonBazaar Super Admin & Rural Onboarding E2E Verification Suite...
+[2026-10-25 23:06:31] ================================================================================
+[2026-10-25 23:06:32]   🚀 Starting GaonBazaar FastAPI backend server in background on port 8001 (no-reload)...
+[2026-10-25 23:06:35]   ✓ Backend server healthy and responding on http://127.0.0.1:8001
+[2026-10-25 23:06:36] 
 ================================================================================
-[2026-10-25 22:48:28] STARTING FULL SUPER ADMIN & ONBOARDING END-TO-END FLOW
-[2026-10-25 22:48:28] ================================================================================
-[2026-10-25 22:48:28] 
+[2026-10-25 23:06:36] STARTING FULL SUPER ADMIN & ONBOARDING END-TO-END FLOW
+[2026-10-25 23:06:36] ================================================================================
+[2026-10-25 23:06:36] 
 [STEP 1]: Vendor Registration & Pending Approval Security Lock
-[2026-10-25 22:48:30]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/01_vendor_initial.png
-[2026-10-25 22:48:31]   ✓ PASS: Vendor Onboarding Modal Open - Modal displayed with KYC fields
-[2026-10-25 22:48:32]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/02_vendor_registration_form.png
-[2026-10-25 22:48:33]   ✓ PASS: Vendor Security Lock Gate Active - Shop Gupta Kirana Store #8708 locked with 'Pending Super Admin Approval' view
-[2026-10-25 22:48:33]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/03_vendor_pending_lock.png
-[2026-10-25 22:48:34]   ✓ PASS: Vendor Pending Status Enforcement - Dashboard remains locked before admin approval
-[2026-10-25 22:48:34] 
+[2026-10-25 23:06:38]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/01_vendor_initial.png
+[2026-10-25 23:06:39]   ✓ PASS: Vendor Onboarding Modal Open - Modal displayed with KYC fields
+[2026-10-25 23:06:40]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/02_vendor_registration_form.png
+[2026-10-25 23:06:41]   ✓ PASS: Vendor Security Lock Gate Active - Shop Gupta Kirana Store #9796 locked with 'Pending Super Admin Approval' view
+[2026-10-25 23:06:41]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/03_vendor_pending_lock.png
+[2026-10-25 23:06:42]   ✓ PASS: Vendor Pending Status Enforcement - Dashboard remains locked before admin approval
+[2026-10-25 23:06:42] 
 [STEP 2]: Runner Registration & Pending Approval Security Lock
-[2026-10-25 22:48:36]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/04_runner_initial.png
-[2026-10-25 22:48:37]   ✓ PASS: Runner Onboarding Modal Open - Modal displayed with Gaon Mitra KYC fields
-[2026-10-25 22:48:38]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/05_runner_registration_form.png
-[2026-10-25 22:48:39]   ✓ PASS: Runner Security Lock Gate Active - Runner Vikram Yadav (विक्रम #8708) locked with 'Gaon Mitra KYC Under Review' view
-[2026-10-25 22:48:39]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/06_runner_pending_lock.png
-[2026-10-25 22:48:40]   ✓ PASS: Runner Pending Status Enforcement - Runner mission queue remains locked before admin approval
-[2026-10-25 22:48:40] 
+[2026-10-25 23:06:51]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/04_runner_initial.png
+[2026-10-25 23:06:52]   ✓ PASS: Runner Onboarding Modal Open - Modal displayed with Gaon Mitra KYC fields
+[2026-10-25 23:06:53]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/05_runner_registration_form.png
+[2026-10-25 23:06:54]   ✓ PASS: Runner Security Lock Gate Active - Runner Vikram Yadav (विक्रम #9796) locked with 'Gaon Mitra KYC Under Review' view
+[2026-10-25 23:06:54]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/06_runner_pending_lock.png
+[2026-10-25 23:06:55]   ✓ PASS: Runner Pending Status Enforcement - Runner mission queue remains locked before admin approval
+[2026-10-25 23:06:55] 
 [STEP 3]: Super Admin Control Center - Metrics & KYC Approvals
-[2026-10-25 22:48:42]   📊 Global Ecosystem Metrics: GMV=₹25324, Total Vendors=45, Runners=39
-[2026-10-25 22:48:42]   ✓ PASS: Super Admin Ecosystem Metrics Loaded - GMV: ₹25324, Pending Vendors: 6 लंबित
-[2026-10-25 22:48:44]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/07_admin_dashboard_metrics.png
-[2026-10-25 22:48:44] 
+[2026-10-25 23:06:56]   📊 Global Ecosystem Metrics: GMV=₹34839, Total Vendors=46, Runners=40
+[2026-10-25 23:06:56]   ✓ PASS: Super Admin Ecosystem Metrics Loaded - GMV: ₹34839, Pending Vendors: 6 लंबित
+[2026-10-25 23:06:57]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/07_admin_dashboard_metrics.png
+[2026-10-25 23:06:57] 
 [STEP 3.1]: Reviewing and Approving Vendor KYC...
-[2026-10-25 22:48:44]   ✓ PASS: Pending Vendor Appears in Admin KYC Queue - Store Gupta Kirana Store #8708 listed with photo, Aadhar ID, and payout UPI
-[2026-10-25 22:48:44]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/08_admin_vendor_kyc_queue.png
-[2026-10-25 22:48:45]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/09_admin_vendor_approved.png
-[2026-10-25 22:48:45]   ✓ PASS: Super Admin Vendor Approval Action - Successfully approved vendor Gupta Kirana Store #8708
-[2026-10-25 22:48:45] 
+[2026-10-25 23:06:57]   ✓ PASS: Pending Vendor Appears in Admin KYC Queue - Store Gupta Kirana Store #9796 listed with photo, Aadhar ID, and payout UPI
+[2026-10-25 23:06:57]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/08_admin_vendor_kyc_queue.png
+[2026-10-25 23:06:58]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/09_admin_vendor_approved.png
+[2026-10-25 23:06:58]   ✓ PASS: Super Admin Vendor Approval Action - Successfully approved vendor Gupta Kirana Store #9796
+[2026-10-25 23:06:58] 
 [STEP 3.2]: Reviewing and Approving Runner KYC...
-[2026-10-25 22:48:46]   ✓ PASS: Pending Runner Appears in Admin KYC Queue - Gaon Mitra Vikram Yadav (विक्रम #8708) listed with vehicle UP-14-CW-8708
-[2026-10-25 22:48:46]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/10_admin_runner_kyc_queue.png
-[2026-10-25 22:48:47]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/11_admin_runner_approved.png
-[2026-10-25 22:48:47]   ✓ PASS: Super Admin Runner Approval Action - Successfully approved Gaon Mitra Vikram Yadav (विक्रम #8708)
-[2026-10-25 22:48:47] 
+[2026-10-25 23:06:59]   ✓ PASS: Pending Runner Appears in Admin KYC Queue - Gaon Mitra Vikram Yadav (विक्रम #9796) listed with vehicle UP-14-CW-9796
+[2026-10-25 23:06:59]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/10_admin_runner_kyc_queue.png
+[2026-10-25 23:07:01]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/11_admin_runner_approved.png
+[2026-10-25 23:07:01]   ✓ PASS: Super Admin Runner Approval Action - Successfully approved Gaon Mitra Vikram Yadav (विक्रम #9796)
+[2026-10-25 23:07:01] 
 [STEP 3.3]: Inspecting Live Order God-View...
-[2026-10-25 22:48:48]   ✓ PASS: Live Order God-View Table Inspection - God-View table rendered 106 real-time customer orders with delivery OTPs
-[2026-10-25 22:48:48]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/12_admin_god_view_orders.png
-[2026-10-25 22:48:48] 
+[2026-10-25 23:07:02]   ✓ PASS: Live Order God-View Table Inspection - God-View table rendered 144 real-time customer orders with delivery OTPs
+[2026-10-25 23:07:02]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/12_admin_god_view_orders.png
+[2026-10-25 23:07:02] 
 [STEP 3.4]: Inspecting Commission & Payout Ledger...
-[2026-10-25 22:48:49]   💰 Ledger Audit: Revenue=₹25324, Net Profit=₹1128, Vendor Due=₹2276, Runner Due=₹85
-[2026-10-25 22:48:49]   ✓ PASS: Commission & Payout Ledger Inspection - Settlement ledger active with 20 transactions; ₹3 fee / order tracked
-[2026-10-25 22:48:49]   ✓ PASS: Distance-Based Ledger Balance Sheet Invariance - Ledger verified with 20 transactions: Invariance (Platform Cut + Vendor Net + Runner Fee == Total) held for all orders
-[2026-10-25 22:48:49]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/13_admin_commission_ledger.png
-[2026-10-25 22:48:49] 
+[2026-10-25 23:07:03]   💰 Ledger Audit: Revenue=₹34839, Net Profit=₹1512, Vendor Due=₹3807, Runner Due=₹140
+[2026-10-25 23:07:03]   ✓ PASS: Commission & Payout Ledger Inspection - Settlement ledger active with 20 transactions; ₹3 fee / order tracked
+[2026-10-25 23:07:03]   ✓ PASS: Distance-Based Ledger Balance Sheet Invariance - Ledger verified with 20 transactions: Invariance (Platform Cut + Vendor Net + Runner Fee == Total) held for all orders
+[2026-10-25 23:07:03]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/13_admin_commission_ledger.png
+[2026-10-25 23:07:03] 
 [STEP 3.4.5]: Inspecting Account Risk Profile & Cancellation Controls...
-[2026-10-25 22:48:50]   ✓ PASS: Super Admin Account Risk Profile Inspection - Account Risk Profile tab loaded; consecutive cancellations and COD restrictions visible to Admin only
-[2026-10-25 22:48:50]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/13_02_admin_risk_profiles.png
-[2026-10-25 22:48:50] 
+[2026-10-25 23:07:04]   ✓ PASS: Super Admin Account Risk Profile Inspection - Account Risk Profile tab loaded; consecutive cancellations and COD restrictions visible to Admin only
+[2026-10-25 23:07:04]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/13_02_admin_risk_profiles.png
+[2026-10-25 23:07:04] 
 [STEP 3.5]: Inspecting Super Admin on Tablet Viewport (800x1280)...
-[2026-10-25 22:48:52]   ✓ PASS: Super Admin Tablet Viewport Responsive Layout (800x1280) - Tablet GMV: ₹25324 | Responsive tabs & controls intact
-[2026-10-25 22:48:52]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/13b_admin_tablet_viewport_800x1280.png
-[2026-10-25 22:48:52] 
+[2026-10-25 23:07:06]   ✓ PASS: Super Admin Tablet Viewport Responsive Layout (800x1280) - Tablet GMV: ₹34839 | Responsive tabs & controls intact
+[2026-10-25 23:07:19]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/13b_admin_tablet_viewport_800x1280.png
+[2026-10-25 23:07:19] 
 [STEP 4]: Verifying Dashboards Dynamically Unlock After Admin Approval
-[2026-10-25 22:48:53]   ✓ PASS: Vendor Dashboard Unlocked Post-Approval - Vendor Gupta Kirana Store #8708 now has full operational access to live order queue & inventory!
-[2026-10-25 22:48:54]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/14_vendor_dashboard_unlocked.png
-[2026-10-25 22:48:55]   ✓ PASS: Runner Dashboard Unlocked Post-Approval - Gaon Mitra Vikram Yadav (विक्रम #8708) now has full access to active delivery missions & shift toggle!
-[2026-10-25 22:48:55]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/15_runner_dashboard_unlocked.png
-[2026-10-25 22:48:55]   ✓ Playwright browser closed cleanly.
+[2026-10-25 23:07:21]   ✓ PASS: Vendor Dashboard Unlocked Post-Approval - Vendor Gupta Kirana Store #9796 now has full operational access to live order queue & inventory!
+[2026-10-25 23:07:21]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/14_vendor_dashboard_unlocked.png
+[2026-10-25 23:07:22]   ✓ PASS: Runner Dashboard Unlocked Post-Approval - Gaon Mitra Vikram Yadav (विक्रम #9796) now has full access to active delivery missions & shift toggle!
+[2026-10-25 23:07:22]   📸 [SCREENSHOT CAPTURED]: screenshots/admin/15_runner_dashboard_unlocked.png
+[2026-10-25 23:07:22]   ✓ Playwright browser closed cleanly.
 
 ================================================================================
 END OF ADMIN TEST REPORT - 100% HEALTHY

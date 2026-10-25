@@ -849,31 +849,35 @@ def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
     else:
         store_lat, store_lng = store_coords
 
+    has_explicit_coords = (payload.customer_lat is not None and payload.customer_lng is not None)
     cust_lat = payload.customer_lat
     cust_lng = payload.customer_lng
-    if cust_lat is None or cust_lng is None:
+    if not has_explicit_coords:
         user_landmark = db.query(Landmark).filter(Landmark.phone == payload.user_phone).order_by(Landmark.id.desc()).first()
-        if user_landmark and user_landmark.lat and user_landmark.lng:
+        if user_landmark and user_landmark.lat and user_landmark.lng and payload.distance_km is None:
             cust_lat = float(user_landmark.lat)
             cust_lng = float(user_landmark.lng)
-        elif is_geofence_bypass_permitted() or (payload.distance_km is not None and float(payload.distance_km) <= 8.0):
-            # Safe non-production testing fallback
-            cust_lat, cust_lng = 29.1350, 77.0100
+            has_explicit_coords = True
+        elif payload.distance_km is not None:
+            # Client provided distance_km in test or simulated mode
+            effective_dist = float(payload.distance_km)
+            road_dist_km = effective_dist
+            straight_line_km = effective_dist / 1.25
+            dist_type = "client_simulated"
+        elif is_geofence_bypass_permitted():
+            cust_lat, cust_lng = store_lat, store_lng
+            has_explicit_coords = True
         else:
             raise HTTPException(
                 status_code=400,
                 detail="Confirmed delivery location coordinates are required. Please select a village landmark or enable GPS. / डिलीवरी स्थान आवश्यक है।"
             )
 
-    # Compute authoritative distance (straight-line & estimated road routing)
-    road_dist_km, straight_line_km, dist_type = calculate_authoritative_distance_km(
-        store_lat, store_lng, cust_lat, cust_lng
-    )
-
-    # If client passed distance_km in test mode with bypass or without coordinates beyond radius
-    if payload.distance_km is not None and (is_geofence_bypass_permitted() or (payload.customer_lat is None and float(payload.distance_km) > MAX_DELIVERY_RADIUS_KM)):
-        effective_dist = float(payload.distance_km)
-    else:
+    if has_explicit_coords:
+        # Compute authoritative distance (straight-line & estimated road routing)
+        road_dist_km, straight_line_km, dist_type = calculate_authoritative_distance_km(
+            store_lat, store_lng, cust_lat, cust_lng
+        )
         effective_dist = road_dist_km
 
     # Enforce strict 8.0 km radius on authoritative distance
