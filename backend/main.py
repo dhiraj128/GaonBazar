@@ -2309,20 +2309,32 @@ def commerce_ai_assistant_endpoint(payload: CommerceAssistantRequest, db: Sessio
         req_mod_qty = 1
 
     # ADD TO CART INTENT
-    add_match = re.search(r"^(?:add|daalo|daal do|jodo|jod do|put)\s+(.+?)\s+(?:in|into|to)\s+(?:my\s+)?cart", query_lower) or \
-                re.search(r"^(.+?)\s+(?:cart\s+mein\s+(?:add|daal do|daalo|jod do|jodo|shamil karo|daal))", query_lower) or \
+    add_match = re.search(r"^(?:add|daalo|daal do|daal|jodo|jod do|put)\s+(.+?)(?:\s+(?:in|into|to)\s+(?:my\s+)?cart|\s+cart\s+mein)?$", query_lower) or \
+                re.search(r"^(.+?)\s+(?:cart\s+mein\s+(?:add|daal do|daalo|daal|jod do|jodo|shamil karo))", query_lower) or \
+                re.search(r"^(.+?)\s+(?:add\s*karo|daal\s*do|daalo|jod\s*do|jodo|shamil\s*karo)$", query_lower) or \
+                re.search(r"^(?:mujhe|humko)?\s*(\d+|ek|do|teen|char|panch|chhe|one|two|three|four|five|six)\s*(kg|kilo|l|litre|packet|packets|g|gram|ग्राम|किलो|लीटर|पैकेट)?\s+(.+?)\s*(?:chahiye|daal do|daalo|add karo)$", query_lower) or \
                 re.search(r"^add\s+(.+)$", query_lower)
     if add_match and intent == "search":
         intent = "add_to_cart"
-        full_spec = add_match.group(1).strip()
-        qty_match = re.search(r"(\d+|ek|do|teen|char|panch|one|two|three|four|five)\s*(kg|kilo|l|litre|packet|packets|g|gram)?\s+(.+)", full_spec)
-        if qty_match:
-            raw_qty = qty_match.group(1).strip()
-            target_subject = qty_match.group(3).strip()
-            req_add_qty = word_to_num.get(raw_qty, int(raw_qty) if raw_qty.isdigit() else 1)
+        if re.match(r"^(?:mujhe|humko)?\s*(\d+|ek|do|teen|char|panch|chhe|one|two|three|four|five|six)", query_lower):
+            m_qty = re.search(r"^(?:mujhe|humko)?\s*(\d+|ek|do|teen|char|panch|chhe|one|two|three|four|five|six)\s*(kg|kilo|l|litre|packet|packets|g|gram|ग्राम|किलो|लीटर|पैकेट)?\s+(.+?)\s*(?:chahiye|daal do|daalo|add karo)$", query_lower)
+            if m_qty:
+                raw_qty = m_qty.group(1).strip()
+                req_add_qty = word_to_num.get(raw_qty, int(raw_qty) if raw_qty.isdigit() else 1)
+                target_subject = m_qty.group(3).strip()
+            else:
+                req_add_qty = 1
+                target_subject = add_match.group(1).strip()
         else:
-            req_add_qty = 1
-            target_subject = full_spec
+            full_spec = add_match.group(1).strip()
+            qty_match = re.search(r"(\d+|ek|do|teen|char|panch|chhe|one|two|three|four|five|six)\s*(kg|kilo|l|litre|packet|packets|g|gram|ग्राम|किलो|लीटर|पैकेट)?\s+(.+)", full_spec)
+            if qty_match:
+                raw_qty = qty_match.group(1).strip()
+                target_subject = qty_match.group(3).strip()
+                req_add_qty = word_to_num.get(raw_qty, int(raw_qty) if raw_qty.isdigit() else 1)
+            else:
+                req_add_qty = 1
+                target_subject = full_spec
         target_subject = re.sub(r"\b(to\s+my\s+cart|to\s+cart|in\s+cart|cart\s+mein|cart)\b", "", target_subject).strip()
     else:
         req_add_qty = 1
@@ -2366,7 +2378,8 @@ def commerce_ai_assistant_endpoint(payload: CommerceAssistantRequest, db: Sessio
         "chawal": ["rice", "chawal", "basmati", "daawat", "kolam", "चावल"],
         "spices": ["mirch", "deggi", "chilli", "haldi", "turmeric", "dhaniya", "coriander", "masala", "spices", "मसाला"],
         "masala": ["masala", "haldi", "mirch", "dhaniya", "garam masala", "spices", "मसाला"],
-        "biscuit": ["parle", "biscuit", "biscuits", "marie", "rusk", "cookies", "बिस्कुट"],
+        "biscuit": ["parle", "parle-g", "biscuit", "biscuits", "marie", "rusk", "cookies", "बिस्कुट", "बिस्किट"],
+        "surf": ["surf", "surf excel", "detergent", "powder", "सर्फ", "डिटर्जेंट"],
         "soap": ["dettol", "soap", "sabun", "surf", "detergent", "rin", "wheel", "tide", "साबुन"]
     }
 
