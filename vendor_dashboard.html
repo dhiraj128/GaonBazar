@@ -369,6 +369,12 @@
           <span id="open-status-mobile-label" class="sm:hidden text-xs font-black" data-i18n="store_open_short">चालू</span>
         </button>
 
+        <!-- Notifications Shortcut -->
+        <button id="btn-vendor-header-notifs" type="button" onclick="openVendorNotificationsModal()" title="Notifications" aria-label="Notifications" class="relative w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 flex items-center justify-center active:scale-95 shrink-0 cursor-pointer">
+          <span class="material-symbols-outlined text-[20px]">notifications</span>
+          <span id="vendor-notif-dot" class="hidden absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-red-600 rounded-full border-2 border-white"></span>
+        </button>
+
         <button id="btn-vendor-header-settings" type="button" onclick="switchMainTab('settings')" title="Settings" aria-label="Settings" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 flex items-center justify-center active:scale-95 shrink-0 cursor-pointer">
           <span class="material-symbols-outlined text-[20px]">settings</span>
         </button>
@@ -851,6 +857,30 @@
     </section>
 
     </div> <!-- Close #vendor-main-content -->
+  
+  <!-- ========================================================================= -->
+  <!-- VENDOR NOTIFICATIONS MODAL                                                -->
+  <!-- ========================================================================= -->
+  <div id="vendor-notifications-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white text-slate-900 rounded-3xl max-w-lg w-full max-h-[85vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-xl">notifications</span>
+          <h3 class="font-bold text-sm sm:text-base">दुकानदार सूचनाएं (Notifications)</h3>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="markAllVendorNotifsRead()" class="text-[11px] font-bold text-primary hover:underline px-2 py-1">सभी पढ़े गए</button>
+          <button onclick="closeVendorNotificationsModal()" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-100 text-slate-500">
+            <span class="material-symbols-outlined text-lg">close</span>
+          </button>
+        </div>
+      </div>
+      <div id="vendor-notifs-list" class="p-4 overflow-y-auto flex-1 flex flex-col gap-2.5 min-h-[220px]">
+        <!-- Dynamic notifications list -->
+      </div>
+    </div>
+  </div>
+
   </main>
 
   <!-- ========================================================================= -->
@@ -2026,7 +2056,96 @@
     }
 
     // --- 9.5 FETCH ALL VENDOR DATA (Real-Time Sync) ---
+    
+    // --- VENDOR REAL NOTIFICATIONS ENGINE ---
+    let vendorToastedIds = new Set();
+    async function fetchVendorNotifications() {
+      if (!VendorStore.currentStoreId) return;
+      try {
+        const res = await fetch(`/api/notifications?role=vendor&user_id=${encodeURIComponent(VendorStore.currentStoreId)}`, {
+          headers: VendorStore.token ? { 'Authorization': `Bearer ${VendorStore.token}` } : {}
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        const notifs = data.notifications || [];
+        const dot = document.getElementById('vendor-notif-dot');
+        if (dot) {
+          if (data.unread_count > 0) dot.classList.remove('hidden');
+          else dot.classList.add('hidden');
+        }
+        
+        const isHi = VendorStore.lang === 'hi';
+        notifs.forEach(n => {
+          if (!n.is_read && !vendorToastedIds.has(n.id)) {
+            vendorToastedIds.add(n.id);
+            const title = isHi && n.title_hi ? n.title_hi : n.title;
+            const msg = isHi && n.message_hi ? n.message_hi : n.message;
+            showToast(title, msg);
+          }
+        });
+
+        renderVendorNotifsList(notifs);
+      } catch (err) {
+        console.warn('[Vendor Notification Sync]:', err);
+      }
+    }
+
+    function renderVendorNotifsList(notifs) {
+      const container = document.getElementById('vendor-notifs-list');
+      if (!container) return;
+      const isHi = VendorStore.lang === 'hi';
+      if (!notifs || notifs.length === 0) {
+        container.innerHTML = `<div class="py-12 text-center text-slate-400 text-xs">${isHi ? 'कोई नई सूचना नहीं है' : 'No notifications yet'}</div>`;
+        return;
+      }
+      container.innerHTML = notifs.map(n => `
+        <div onclick="markVendorNotifRead('${n.id}')" class="p-3 rounded-2xl border ${n.is_read ? 'bg-slate-50 border-slate-200/80 text-slate-600' : 'bg-primary-50/50 border-primary-200 text-slate-900'} cursor-pointer hover:border-primary-400 transition-all flex flex-col gap-1">
+          <div class="flex items-center justify-between text-[11px] font-bold">
+            <span class="${n.is_read ? 'text-slate-700' : 'text-primary font-black'}">${isHi && n.title_hi ? n.title_hi : n.title}</span>
+            ${!n.is_read ? '<span class="w-2 h-2 rounded-full bg-primary shrink-0"></span>' : ''}
+          </div>
+          <p class="text-xs ${n.is_read ? 'text-slate-500' : 'text-slate-800'} leading-relaxed">${isHi && n.message_hi ? n.message_hi : n.message}</p>
+          <span class="text-[10px] text-slate-400 self-end">${new Date(n.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+        </div>
+      `).join('');
+    }
+
+    async function markVendorNotifRead(id) {
+      try {
+        await fetch(`/api/notifications/${encodeURIComponent(id)}/read`, {
+          method: 'PATCH',
+          headers: VendorStore.token ? { 'Authorization': `Bearer ${VendorStore.token}` } : {}
+        });
+        fetchVendorNotifications();
+      } catch (e) {}
+    }
+
+    async function markAllVendorNotifsRead() {
+      if (!VendorStore.currentStoreId) return;
+      try {
+        await fetch(`/api/notifications/mark-all-read?role=vendor&user_id=${encodeURIComponent(VendorStore.currentStoreId)}`, {
+          method: 'POST',
+          headers: VendorStore.token ? { 'Authorization': `Bearer ${VendorStore.token}` } : {}
+        });
+        fetchVendorNotifications();
+      } catch (e) {}
+    }
+
+    function openVendorNotificationsModal() {
+      const modal = document.getElementById('vendor-notifications-modal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        fetchVendorNotifications();
+      }
+    }
+
+    function closeVendorNotificationsModal() {
+      const modal = document.getElementById('vendor-notifications-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
     async function fetchAllVendorData(forceFullRender = false) {
+      fetchVendorNotifications();
       if (VendorStore.storeData && VendorStore.storeData.status === 'pending_approval') {
         return;
       }

@@ -26,7 +26,10 @@ sys.path.insert(0, str(ROOT_DIR))
 from backend.main import app, mask_bank_account
 from backend.database import SessionLocal, ensure_schema_migrations
 from backend.models import Store, Runner, SavedPaymentMethod, User
-from backend.security import issue_user_token
+from backend.security import issue_user_token, issue_vendor_token, issue_runner_token
+
+VENDOR_AUTH = {"Authorization": f"Bearer {issue_vendor_token('sharma_brothers', '9876543211')}"}
+RUNNER_AUTH = {"Authorization": f"Bearer {issue_runner_token('gm_1', '9876543220')}"}
 
 client = TestClient(app)
 
@@ -58,7 +61,7 @@ def test_ifsc_and_upi_validation_engine():
         "SBIN 001234"        # space
     ]
     for bad_ifsc in bad_ifsc_list:
-        res = client.post("/api/vendor/stores/sharma_brothers/payout-settings", json={
+        res = client.post("/api/vendor/stores/sharma_brothers/payout-settings", headers=VENDOR_AUTH, json={
             "account_holder_name": "Ramesh Sharma",
             "account_number": "123456789012",
             "confirm_account_number": "123456789012",
@@ -77,7 +80,7 @@ def test_ifsc_and_upi_validation_engine():
         "sharma kirana@upi"  # space
     ]
     for bad_upi in bad_upi_list:
-        res = client.post("/api/vendor/stores/sharma_brothers/payout-settings", json={
+        res = client.post("/api/vendor/stores/sharma_brothers/payout-settings", headers=VENDOR_AUTH, json={
             "account_holder_name": "Ramesh Sharma",
             "account_number": "123456789012",
             "confirm_account_number": "123456789012",
@@ -87,7 +90,7 @@ def test_ifsc_and_upi_validation_engine():
         check(res.status_code == 422, f"Rejected invalid UPI '{bad_upi}' (Status 422)")
 
     # 1.3 Account number mismatch
-    res_mismatch = client.post("/api/vendor/stores/sharma_brothers/payout-settings", json={
+    res_mismatch = client.post("/api/vendor/stores/sharma_brothers/payout-settings", headers=VENDOR_AUTH, json={
         "account_holder_name": "Ramesh Sharma",
         "account_number": "123456789012",
         "confirm_account_number": "987654321098",
@@ -97,7 +100,7 @@ def test_ifsc_and_upi_validation_engine():
     check(res_mismatch.status_code == 422, "Rejected mismatched account numbers (Status 422)")
 
     # 1.4 Invalid non-numeric account number
-    res_non_num = client.post("/api/vendor/stores/sharma_brothers/payout-settings", json={
+    res_non_num = client.post("/api/vendor/stores/sharma_brothers/payout-settings", headers=VENDOR_AUTH, json={
         "account_holder_name": "Ramesh Sharma",
         "account_number": "12345ABC9012",
         "confirm_account_number": "12345ABC9012",
@@ -123,7 +126,7 @@ def test_vendor_payout_settings_lifecycle():
         "ifsc_code": "HDFC0000240",
         "upi_id": "sharma.kirana@okhdfcbank"
     }
-    res = client.post("/api/vendor/stores/sharma_brothers/payout-settings", json=payload)
+    res = client.post("/api/vendor/stores/sharma_brothers/payout-settings", headers=VENDOR_AUTH, json=payload)
     check(res.status_code == 200, "Vendor payout settings saved successfully (Status 200)")
     data = res.json()
     check(data.get("success") is True, "Response contains success=True")
@@ -145,7 +148,7 @@ def test_vendor_payout_settings_lifecycle():
         db.close()
 
     # GET endpoint retrieval
-    get_res = client.get("/api/vendor/stores/sharma_brothers/payout-settings")
+    get_res = client.get("/api/vendor/stores/sharma_brothers/payout-settings", headers=VENDOR_AUTH)
     check(get_res.status_code == 200, "Vendor GET payout settings returns 200")
     get_data = get_res.json()
     check(get_data.get("account_number_masked") == "••••••••••7890", "GET returns masked account number")
@@ -163,7 +166,7 @@ def test_runner_payout_settings_lifecycle():
         "ifsc_code": "PUNB0123400",
         "upi_id": "kamal.singh@ybl"
     }
-    res = client.post("/api/runner/gm_1/payout-settings", json=payload)
+    res = client.post("/api/runner/gm_1/payout-settings", headers=RUNNER_AUTH, json=payload)
     check(res.status_code == 200, "Runner payout settings saved successfully (Status 200)")
     data = res.json()
     check(data.get("success") is True, "Response contains success=True")
@@ -183,7 +186,7 @@ def test_runner_payout_settings_lifecycle():
         db.close()
 
     # GET endpoint retrieval
-    get_res = client.get("/api/runner/gm_1/payout-settings")
+    get_res = client.get("/api/runner/gm_1/payout-settings", headers=RUNNER_AUTH)
     check(get_res.status_code == 200, "Runner GET payout settings returns 200")
     get_data = get_res.json()
     check(get_data.get("account_number_masked") == "••••••••••6102", "GET returns masked account number")
@@ -267,7 +270,7 @@ def test_super_admin_verification_and_frontend_dom():
     check(res_verify_v.json().get("status") == "verified", "Vendor verification status transitioned to 'verified'")
 
     # Confirm Vendor query reflects 'verified'
-    v_status_check = client.get("/api/vendor/stores/sharma_brothers/payout-settings").json()
+    v_status_check = client.get("/api/vendor/stores/sharma_brothers/payout-settings", headers=VENDOR_AUTH).json()
     check(v_status_check.get("verification_status") == "verified", "Vendor GET reflects 'verified' status immediately")
 
     # 5.3 Super Admin transitions Runner to 'verified'
@@ -276,13 +279,13 @@ def test_super_admin_verification_and_frontend_dom():
     check(res_verify_r.json().get("status") == "verified", "Runner verification status transitioned to 'verified'")
 
     # Confirm Runner query reflects 'verified'
-    r_status_check = client.get("/api/runner/gm_1/payout-settings").json()
+    r_status_check = client.get("/api/runner/gm_1/payout-settings", headers=RUNNER_AUTH).json()
     check(r_status_check.get("verification_status") == "verified", "Runner GET reflects 'verified' status immediately")
 
     # 5.4 Super Admin transitions Runner to 'rejected'
     res_reject_r = client.post("/api/admin/payout-verifications/runner/gm_1/status", json={"status": "rejected"})
     check(res_reject_r.status_code == 200, "Super Admin rejected Runner bank verification (Status 200)")
-    r_rejected_check = client.get("/api/runner/gm_1/payout-settings").json()
+    r_rejected_check = client.get("/api/runner/gm_1/payout-settings", headers=RUNNER_AUTH).json()
     check(r_rejected_check.get("verification_status") == "rejected", "Runner GET reflects 'rejected' status")
 
     # 5.5 Frontend DOM Assertions: vendor_dashboard.html

@@ -259,6 +259,12 @@
       </button>
 
       <!-- Tab 5: Account Risk Profile & Cancellation Controls -->
+            <!-- Tab 7: System Notifications & Alerts -->
+      <button id="admin-tab-btn-notifications" onclick="switchTab('notifications')" class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-slate-900 text-slate-300 hover:text-white border border-slate-800 transition-all whitespace-nowrap shrink-0 min-h-[38px]">
+        <span class="material-symbols-outlined text-[18px]">notifications</span>
+        <span data-i18n="tab_notifications">सिस्टम अलर्ट व सूचनाएं</span>
+        <span id="tab-notif-badge" class="ml-1 text-[10px] bg-red-600 text-white px-2 py-0.5 rounded-full font-bold hidden">0</span>
+      </button>
       <button id="admin-tab-btn-risk" onclick="switchTab('risk')" class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-slate-900 text-slate-300 hover:text-white border border-slate-800 transition-all whitespace-nowrap shrink-0 min-h-[38px]">
         <span class="material-symbols-outlined text-[18px]">security</span>
         <span data-i18n="tab_risk">आंतरिक खाता जोखिम प्रबंधन</span>
@@ -634,6 +640,37 @@
         </div>
       </div>
     </div>
+
+  
+    <!-- ======================================================================= -->
+    <!-- 8. REAL SYSTEM NOTIFICATIONS & ALERTS TAB                               -->
+    <!-- ======================================================================= -->
+    <section id="tab-notifications" class="hidden mt-10 shrink-0 flex-col gap-6 p-4 sm:p-6 bg-slate-900/60 rounded-3xl border border-slate-800/80 shadow-lg" style="margin-top: 40px;">
+      <div class="flex flex-wrap items-center justify-between gap-2.5">
+        <div>
+          <h2 class="text-lg font-black text-white flex items-center gap-2">
+            <span class="material-symbols-outlined text-amber-400">notifications</span>
+            <span>सिस्टम अलर्ट व वास्तविक सूचनाएं (Live Notifications)</span>
+          </h2>
+          <p class="text-xs text-slate-400 mt-0.5">रीयल-टाइम ग्रामीण ऑर्डर, व्यापारी आवेदन व भुगतान सूचनाएं</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="markAllAdminNotifsRead()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 border border-slate-700 transition-all cursor-pointer">
+            सभी पढ़े गए मार्क करें
+          </button>
+          <button onclick="fetchAdminNotifications()" class="px-3 py-1.5 rounded-xl bg-primary/20 hover:bg-primary/30 text-xs font-bold text-primary-fixed border border-primary/40 transition-all flex items-center gap-1 cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">refresh</span>
+            रीफ़्रेश
+          </button>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-950/40">
+        <div id="admin-notifs-container" class="divide-y divide-slate-800/60 min-h-[160px]">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+    </section>
 
   </main>
 
@@ -1551,7 +1588,7 @@
     // --- TAB SWITCHER ---
     function switchTab(tabId) {
       AdminStore.activeTab = tabId;
-      ['vendors', 'runners', 'orders', 'ledger', 'risk', 'bank'].forEach(t => {
+      ['vendors', 'runners', 'orders', 'ledger', 'risk', 'bank', 'notifications'].forEach(t => {
         const sec = document.getElementById(`tab-${t}`);
         const btn = document.getElementById(`admin-tab-btn-${t}`);
         if (sec) sec.classList.add('hidden');
@@ -1571,6 +1608,9 @@
       }
       if (tabId === 'bank') {
         fetchPayoutVerifications();
+      }
+      if (tabId === 'notifications') {
+        fetchAdminNotifications();
       }
     }
 
