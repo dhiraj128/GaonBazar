@@ -562,14 +562,21 @@ def _run_runner_device_steps(context, dev_name, device_config, logger):
     # -------------------------------------------------------------------------
     logger.log(f"\n--- [{dev_name}] Step 1: Header, Shift Toggle & Runner Identity ---")
     check_element_bounds(page, "#runner-name-display", "Runner Name Display", logger)
-    check_element_bounds(page, "#runner-badge-code", "Runner Badge Code", logger)
+    # The redesigned small-screen header intentionally hides the badge;
+    # still verify the runner identity is present in the actual DOM.
+    badge_text = page.locator("#runner-badge-code").text_content().strip()
+    logger.record_test(
+        f"[{dev_name}] Runner Badge Identity Available",
+        bool(badge_text), f"Runner badge exists: {bool(badge_text)}"
+    )
     check_element_bounds(page, "#shift-toggle-btn", "Shift Online/Offline Toggle CTA", logger, min_size=30)
-    check_element_bounds(page, "#lang-toggle-btn", "Language Switcher Button", logger)
+    check_element_bounds(page, "#btn-runner-header-settings", "Settings Shortcut CTA", logger)
 
     # Bottom Navigation Geometry & Ergonomics Audit
     check_element_bounds(page, "#nav-btn-missions", "Bottom Nav Missions Button", logger, require_sticky=True)
     check_element_bounds(page, "#nav-btn-detail", "Bottom Nav Detail Button", logger, require_sticky=True)
     check_element_bounds(page, "#nav-btn-ledger", "Bottom Nav Ledger Button", logger, require_sticky=True)
+    check_element_bounds(page, "#nav-btn-settings", "Bottom Nav Settings Button", logger, require_sticky=True)
 
     capture_screenshot(page, f"{dev_name.replace(' ', '_')}_step1_initial_dashboard", logger)
 
@@ -592,10 +599,16 @@ def _run_runner_device_steps(context, dev_name, device_config, logger):
     # 2. KPI Metrics Ribbon Audit
     # -------------------------------------------------------------------------
     logger.log(f"\n--- [{dev_name}] Step 2: High-Level KPI Summary Tiles ---")
+    # Mission-first small screens show only the two operational KPIs.
+    # Earnings and cash are still audited later in the visible Ledger tab.
     check_element_bounds(page, "#kpi-active-missions", "Active Missions KPI Card", logger)
     check_element_bounds(page, "#kpi-completed-today", "Completed Today KPI Card", logger)
-    check_element_bounds(page, "#kpi-today-earnings", "Today's Earnings KPI Card", logger)
-    check_element_bounds(page, "#kpi-cod-cash", "COD Cash in Hand KPI Card", logger)
+    financial_tiles = page.locator("#runner-kpi-board > div")
+    logger.record_test(
+        f"[{dev_name}] Financial KPIs Remain In DOM For Ledger Data",
+        financial_tiles.count() >= 4,
+        f"{financial_tiles.count()} KPI tiles present; financial data also checked in Ledger"
+    )
 
     active_count = page.inner_text("#kpi-active-missions").strip()
     logger.record_test(
@@ -747,15 +760,30 @@ def _run_runner_device_steps(context, dev_name, device_config, logger):
     # 8. Bilingual Language State Toggle
     # -------------------------------------------------------------------------
     logger.log(f"\n--- [{dev_name}] Step 8: Bilingual State Switch (Hindi / English) ---")
+    # Language moved from the cramped header to Settings. Navigate as a user
+    # rather than trying to click a hidden element and timing out for 30s.
+    page.click("#nav-btn-settings")
+    page.wait_for_selector("#tab-settings:not(.hidden)", timeout=5000)
+    check_element_bounds(page, "#lang-toggle-btn", "Language Toggle in Settings", logger)
+    check_element_bounds(page, "#runner-theme-settings-card", "Theme Controls in Settings", logger)
+    initial_lang = page.evaluate("localStorage.getItem('gaonbazar_lang')")
     page.click("#lang-toggle-btn")
     page.wait_for_timeout(400)
+    toggled_lang = page.evaluate("localStorage.getItem('gaonbazar_lang')")
     en_label = page.inner_text("#lang-toggle-btn").strip()
-    logger.record_test(f"[{dev_name}] Bilingual Toggle to English", "हिंदी" in en_label or "English" in en_label, f"Label: {en_label}")
-    stored_lang = page.evaluate("localStorage.getItem('gaonbazar_lang')")
-    logger.record_test(f"[{dev_name}] Bilingual Storage State Persisted ('gaonbazar_lang')", stored_lang in ['hi', 'en'], f"Value: {stored_lang}")
-
+    logger.record_test(
+        f"[{dev_name}] Bilingual Toggle Changes Selected Language",
+        toggled_lang in ['hi', 'en'] and toggled_lang != initial_lang,
+        f"Before: {initial_lang} | After: {toggled_lang} | Label: {en_label}"
+    )
     page.click("#lang-toggle-btn")
     page.wait_for_timeout(400)
+    restored_lang = page.evaluate("localStorage.getItem('gaonbazar_lang')")
+    logger.record_test(
+        f"[{dev_name}] Bilingual Language Restore Persists",
+        restored_lang == initial_lang,
+        f"Restored language: {restored_lang}"
+    )
 
     # -------------------------------------------------------------------------
     # 9. Clean Console & Script Audit
