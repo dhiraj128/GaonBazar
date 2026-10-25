@@ -218,8 +218,6 @@ def require_authenticated_user(payload: Optional[Dict[str, Any]] = Depends(get_c
 def require_vendor_token(payload: Optional[Dict[str, Any]] = Depends(get_current_token_payload)) -> Dict[str, Any]:
     """Requires a valid Vendor JWT token."""
     if not payload:
-        if TEST_MODE or CI_MODE:
-            return {"role": "vendor", "store_id": "sharma_brothers"}
         raise HTTPException(status_code=401, detail="Vendor authentication required", headers={"WWW-Authenticate": "Bearer"})
     if payload.get("role") not in ["vendor", "admin"]:
         raise HTTPException(status_code=403, detail="Forbidden: Vendor privileges required")
@@ -229,8 +227,6 @@ def require_vendor_token(payload: Optional[Dict[str, Any]] = Depends(get_current
 def require_runner_token(payload: Optional[Dict[str, Any]] = Depends(get_current_token_payload)) -> Dict[str, Any]:
     """Requires a valid Gaon Mitra runner JWT token."""
     if not payload:
-        if TEST_MODE or CI_MODE:
-            return {"role": "runner", "runner_id": "gm_1"}
         raise HTTPException(status_code=401, detail="Gaon Mitra authentication required", headers={"WWW-Authenticate": "Bearer"})
     if payload.get("role") not in ["runner", "admin"]:
         raise HTTPException(status_code=403, detail="Forbidden: Gaon Mitra runner privileges required")
@@ -240,8 +236,6 @@ def require_runner_token(payload: Optional[Dict[str, Any]] = Depends(get_current
 def require_admin_token(payload: Optional[Dict[str, Any]] = Depends(get_current_token_payload)) -> Dict[str, Any]:
     """Requires a valid Super Admin JWT token."""
     if not payload:
-        if TEST_MODE or CI_MODE:
-            return {"role": "admin", "admin_id": "super_admin"}
         raise HTTPException(status_code=401, detail="Super Admin authentication required", headers={"WWW-Authenticate": "Bearer"})
     if payload.get("role") != "admin":
         raise HTTPException(status_code=403, detail="Forbidden: Super Admin privileges required")
@@ -257,8 +251,6 @@ def verify_vendor_access(
     A vendor can ONLY access endpoints corresponding to their specific store_id.
     """
     if not payload:
-        if TEST_MODE or CI_MODE:
-            return {"role": "vendor", "store_id": store_id}
         raise HTTPException(status_code=401, detail="Vendor authentication required", headers={"WWW-Authenticate": "Bearer"})
 
     role = payload.get("role")
@@ -289,8 +281,6 @@ def verify_runner_access(
     A runner can ONLY access their specific active missions, shift toggles, and payout ledger.
     """
     if not payload:
-        if TEST_MODE or CI_MODE:
-            return {"role": "runner", "runner_id": runner_id or "gm_1"}
         raise HTTPException(status_code=401, detail="Gaon Mitra authentication required", headers={"WWW-Authenticate": "Bearer"})
 
     role = payload.get("role")

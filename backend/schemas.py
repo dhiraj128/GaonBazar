@@ -1,6 +1,6 @@
 import html
 import re
-from typing import List, Optional
+from typing import List, Optional, Dict, Any, Tuple, Union
 from pydantic import BaseModel, Field, model_validator
 
 

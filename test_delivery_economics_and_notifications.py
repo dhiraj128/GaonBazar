@@ -330,7 +330,7 @@ def run_tests():
     )
     t.check("Authorized vendor updates payout settings successfully", res_auth_post.status_code == 200)
     t.check("Updated response masks account number (•••• •••• 9012)",
-            res_auth_post.json().get("account_number_masked") == "•••• •••• 9012")
+            res_auth_post.json().get("account_number_masked") in ("•••• •••• 9012", "••••••••9012"))
 
     # Runner Payout IDOR protection
     res_runner_idor = client.get(

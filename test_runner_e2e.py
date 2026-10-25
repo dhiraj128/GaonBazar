@@ -849,6 +849,9 @@ def _do_lifecycle_sync(context, logger):
         "landmark": "Near Gram Panchayat Bhawan, Under Peepal Tree",
         "store_id": "sharma_brothers",
         "payment_mode": "COD",
+        "customer_lat": 29.1350,
+        "customer_lng": 77.0100,
+        "distance_km": 1.2,
         "items": [
             {"id": "item_1", "price": 210.0, "qty": 1},
             {"id": "item_2", "price": 145.0, "qty": 1}
