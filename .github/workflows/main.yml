@@ -54,6 +54,12 @@ jobs:
     - name: Run Admin Dashboard Tests
       run: python test_admin_e2e.py
 
+    - name: Run Universal Vertical Scrolling Audit
+      run: python test_vertical_scrolling.py
+
+    - name: Run Customer AI Voice Shopping Tests
+      run: python test_voice_shopping_and_ai.py
+
     - name: Upload Test Artifacts (Screenshots & Reports)
       if: always()
       uses: actions/upload-artifact@v4
