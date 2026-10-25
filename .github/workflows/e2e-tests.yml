@@ -98,6 +98,9 @@ jobs:
           python test_voice_shopping_and_ai.py
           python test_hindi_first_and_voice_shopping.py
 
+      - name: Run Delivery Economics, Payouts & Notifications Audit
+        run: python test_delivery_economics_and_notifications.py
+
       - name: Upload Visual QA Screenshots
         if: always()
         uses: actions/upload-artifact@v4

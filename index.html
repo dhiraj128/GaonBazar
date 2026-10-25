@@ -2410,42 +2410,11 @@
           </button>
         </div>
 
-        <!-- Notification List -->
-        <div class="p-4 overflow-y-auto space-y-3 flex-1">
-          <!-- Notification Card 1: Promo -->
-          <div class="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 flex items-start gap-3">
-            <span class="text-xl shrink-0">🎉</span>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center justify-between gap-1 mb-0.5">
-                <span class="text-xs font-black text-emerald-950" data-i18n="notif_card1_title">स्वागत ऑफ़र - ₹10 छूट!</span>
-                <span class="text-[10px] text-emerald-700 font-semibold shrink-0" data-i18n="notif_card1_time">अभी</span>
-              </div>
-              <p class="text-[11px] text-emerald-800 leading-relaxed font-medium" data-i18n="notif_card1_desc">₹299 से अधिक के पहले ऑर्डर पर ₹10 डिलीवरी छूट स्वतः लागू होगी।</p>
-            </div>
-          </div>
-
-          <!-- Notification Card 2: Runner Tracking -->
-          <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-start gap-3">
-            <span class="text-xl shrink-0">📍</span>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center justify-between gap-1 mb-0.5">
-                <span class="text-xs font-black text-slate-900" data-i18n="notif_card2_title">गाँव-गाँव डिलीवरी सेवा</span>
-                <span class="text-[10px] text-slate-400 font-semibold shrink-0" data-i18n="notif_card2_time">आज</span>
-              </div>
-              <p class="text-[11px] text-slate-600 leading-relaxed font-medium" data-i18n="notif_card2_desc">50+ पंचायतों में डिलीवरी पार्टनर सक्रिय हैं। अपने घर तक सीधा सामान मंगाएं।</p>
-            </div>
-          </div>
-
-          <!-- Notification Card 3: Fresh Mandi Kirana -->
-          <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-start gap-3">
-            <span class="text-xl shrink-0">🌾</span>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center justify-between gap-1 mb-0.5">
-                <span class="text-xs font-black text-slate-900" data-i18n="notif_card3_title">ताज़ा आटा, तेल व किराना</span>
-                <span class="text-[10px] text-slate-400 font-semibold shrink-0" data-i18n="notif_card3_time">1 दिन पहले</span>
-              </div>
-              <p class="text-[11px] text-slate-600 leading-relaxed font-medium" data-i18n="notif_card3_desc">स्थानीय भरोसेमंद दुकानों से शुद्ध देसी उत्पाद उपलब्ध हैं।</p>
-            </div>
+        <!-- Real In-App Notification List -->
+        <div id="notifications-list-container" class="p-4 overflow-y-auto space-y-3 flex-1 min-h-[220px]">
+          <div class="py-8 text-center text-slate-400">
+            <span class="material-symbols-outlined text-2xl text-slate-300">notifications_none</span>
+            <p class="text-xs mt-1" data-i18n="notif_empty">लोड हो रहा है...</p>
           </div>
         </div>
 
@@ -4120,7 +4089,90 @@
       };
     })();
 
-    // --- NOTIFICATIONS MODAL & BADGE LOGIC ---
+    // --- REAL IN-APP NOTIFICATIONS ENGINE ---
+    async function loadRealNotifications() {
+      const container = document.getElementById('notifications-list-container');
+      if (!container) return;
+      const isHi = (AppStore.lang === 'hi');
+      const phone = AppStore.userPhone || (localStorage.getItem('gaonbazar_user_phone') || '9876543210');
+
+      container.innerHTML = `
+        <div class="py-8 text-center text-slate-400">
+          <span class="material-symbols-outlined animate-spin text-2xl">sync</span>
+          <p class="text-xs mt-2">${isHi ? 'सूचनाएं लोड हो रही हैं...' : 'Loading notifications...'}</p>
+        </div>
+      `;
+
+      try {
+        const resp = await fetch(`/api/notifications?role=customer&user_id=${encodeURIComponent(phone)}`);
+        if (!resp.ok) throw new Error('Failed to fetch notifications');
+        const data = await resp.json();
+        const notifs = data.notifications || [];
+
+        // Update header badge
+        const dot = document.getElementById('header-notif-dot');
+        if (dot) {
+          if (data.unread_count > 0) dot.classList.remove('hidden');
+          else dot.classList.add('hidden');
+        }
+
+        if (notifs.length === 0) {
+          container.innerHTML = `
+            <div class="py-12 px-4 text-center">
+              <span class="material-symbols-outlined text-4xl text-slate-300">notifications_off</span>
+              <p class="text-xs font-bold text-slate-700 mt-2">${isHi ? 'कोई नई सूचना नहीं है' : 'No notifications yet'}</p>
+              <p class="text-[11px] text-slate-400 mt-1">${isHi ? 'आपके ऑर्डर और डिलीवरी अपडेट यहाँ दिखाई देंगे।' : 'Your order and delivery updates will appear here.'}</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = notifs.map(n => {
+          const title = isHi ? (n.title_hi || n.title) : n.title;
+          const msg = isHi ? (n.message_hi || n.message) : n.message;
+          const icon = n.notification_type === 'delivered' ? '✅' :
+                       n.notification_type === 'out_for_delivery' ? '🛵' :
+                       n.notification_type === 'order_packed' ? '📦' :
+                       n.notification_type === 'payout_settled' ? '💰' : '🔔';
+          const unreadBg = !n.is_read ? 'bg-primary/5 border-primary/20' : 'bg-slate-50 border-slate-200/80';
+          const timeStr = new Date(n.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+          return `
+            <div onclick="markNotificationReadItem('${n.id}')" class="p-3.5 rounded-2xl ${unreadBg} border flex items-start gap-3 cursor-pointer transition-all active:scale-[0.99]">
+              <span class="text-xl shrink-0">${icon}</span>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between gap-1 mb-0.5">
+                  <span class="text-xs font-black text-slate-900 truncate">${title}</span>
+                  <span class="text-[10px] text-slate-400 font-semibold shrink-0">${timeStr}</span>
+                </div>
+                <p class="text-[11px] text-slate-600 leading-relaxed font-medium">${msg}</p>
+              </div>
+              ${!n.is_read ? '<span class="w-2 h-2 rounded-full bg-primary shrink-0 mt-1.5"></span>' : ''}
+            </div>
+          `;
+        }).join('');
+
+      } catch (err) {
+        console.warn('Notifications fetch error:', err);
+        container.innerHTML = `
+          <div class="py-8 text-center text-slate-400">
+            <p class="text-xs">${isHi ? 'सूचनाएं प्राप्त नहीं हो सकीं' : 'Could not load notifications'}</p>
+          </div>
+        `;
+      }
+    }
+    window.loadRealNotifications = loadRealNotifications;
+
+    async function markNotificationReadItem(notifId) {
+      try {
+        await fetch(`/api/notifications/${encodeURIComponent(notifId)}/read`, { method: 'PATCH' });
+        loadRealNotifications();
+      } catch (e) {
+        console.warn('Error marking notification read:', e);
+      }
+    }
+    window.markNotificationReadItem = markNotificationReadItem;
+
     function openNotificationsModal() {
       const modal = document.getElementById('modal-notifications');
       if (modal) {
@@ -4131,6 +4183,7 @@
             closeNotificationsModal(fromPop);
           });
         }
+        loadRealNotifications();
       }
     }
     window.openNotificationsModal = openNotificationsModal;
@@ -4147,9 +4200,16 @@
     }
     window.closeNotificationsModal = closeNotificationsModal;
 
-    function markAllNotificationsRead() {
-      const dot = document.getElementById('header-notif-dot');
-      if (dot) dot.classList.add('hidden');
+    async function markAllNotificationsRead() {
+      const phone = AppStore.userPhone || (localStorage.getItem('gaonbazar_user_phone') || '9876543210');
+      try {
+        await fetch(`/api/notifications/mark-all-read?role=customer&user_id=${encodeURIComponent(phone)}`, { method: 'POST' });
+        const dot = document.getElementById('header-notif-dot');
+        if (dot) dot.classList.add('hidden');
+        loadRealNotifications();
+      } catch (e) {
+        console.warn('Error marking all notifications read:', e);
+      }
       closeNotificationsModal();
     }
     window.markAllNotificationsRead = markAllNotificationsRead;
@@ -7319,14 +7379,17 @@
       if (activeWrapper) activeWrapper.classList.remove('hidden');
       if (proceedBar) proceedBar.classList.remove('hidden');
 
-      // Base Delivery Fee based on Haversine distance
+      // Base Delivery Fee based on Provisional Commercial Tiers:
+      // 0-2 km: ₹15 | >2-4 km: ₹20 | >4-5 km: ₹25 | >5-8 km: ₹35
       let baseDeliveryFee = 15;
       if (dist <= 2.0) {
         baseDeliveryFee = 15;
+      } else if (dist <= 4.0) {
+        baseDeliveryFee = 20;
       } else if (dist <= 5.0) {
         baseDeliveryFee = 25;
       } else {
-        baseDeliveryFee = 40;
+        baseDeliveryFee = 35;
       }
 
       // Delivery Discount rule: if subtotal >= ₹299 and within discountable distance (<= 5.0 km), apply flat ₹10 discount to delivery fee
@@ -7418,16 +7481,20 @@
           const discountDiffStr = Number.isInteger(discountDiff) ? discountDiff : discountDiff.toFixed(2);
           if (dist <= 2.0) {
             qualifyText.innerText = isHi ? `🛵 स्थानीय डिलीवरी: ₹15 (${dist} km)` : `🛵 Local Delivery: ₹15 (${dist} km)`;
-            if (tierTag) tierTag.innerText = '0-2 km • 30 Mins';
+            if (tierTag) tierTag.innerText = '0-2 km • 35-45 Mins';
+            if (tierSub) tierSub.innerText = isHi ? `₹${discountDiffStr} का सामान और जोड़ें, ₹10 छूट पाएं!` : `₹10 Off Delivery over ₹299 (Add ₹${discountDiffStr} more)`;
+          } else if (dist <= 4.0) {
+            qualifyText.innerText = isHi ? `🛵 क्लस्टर डिलीवरी: ₹20 (${dist} km)` : `🛵 Cluster Delivery: ₹20 (${dist} km)`;
+            if (tierTag) tierTag.innerText = '2-4 km • 40-50 Mins';
             if (tierSub) tierSub.innerText = isHi ? `₹${discountDiffStr} का सामान और जोड़ें, ₹10 छूट पाएं!` : `₹10 Off Delivery over ₹299 (Add ₹${discountDiffStr} more)`;
           } else if (dist <= 5.0) {
             qualifyText.innerText = isHi ? `🛵 गाँव सीमा डिलीवरी: ₹25 (${dist} km)` : `🛵 Village Edge Delivery: ₹25 (${dist} km)`;
-            if (tierTag) tierTag.innerText = '2-5 km • 30 Mins';
-            if (tierSub) tierSub.innerText = isHi ? `₹${discountDiffStr} का सामान और जोड़ें, पाएं ₹10 छूट!` : `₹10 Off Delivery over ₹299 (Add ₹${discountDiffStr} more)`;
+            if (tierTag) tierTag.innerText = '4-5 km • 45-55 Mins';
+            if (tierSub) tierSub.innerText = isHi ? `₹${discountDiffStr} का सामान और जोड़ें, ₹10 छूट पाएं!` : `₹10 Off Delivery over ₹299 (Add ₹${discountDiffStr} more)`;
           } else {
-            qualifyText.innerText = isHi ? `🛵 दूरस्थ डिलीवरी: ₹40 (${dist} km)` : `🛵 Long Distance Delivery: ₹40 (${dist} km)`;
-            if (tierTag) tierTag.innerText = '5-8 km • 45-60 Mins';
-            if (tierSub) tierSub.innerText = isHi ? `₹${discountDiffStr} का सामान और जोड़ें, पाएं ₹10 छूट!` : `₹10 Off Delivery over ₹299 (Add ₹${discountDiffStr} more)`;
+            qualifyText.innerText = isHi ? `🛵 दूरस्थ डिलीवरी: ₹35 (${dist} km)` : `🛵 Long Distance Delivery: ₹35 (${dist} km)`;
+            if (tierTag) tierTag.innerText = '5-8 km • 50-60 Mins';
+            if (tierSub) tierSub.innerText = isHi ? `₹${discountDiffStr} का सामान और जोड़ें, ₹10 छूट पाएं!` : `₹10 Off Delivery over ₹299 (Add ₹${discountDiffStr} more)`;
           }
         }
       }
