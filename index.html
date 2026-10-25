@@ -5575,22 +5575,24 @@
         const loc = await reverseGeocodeCoords(lat, lng);
         const { village, district, state, granular } = loc;
 
-        if (distInput && !distInput.dataset.userEdited) {
-          distInput.value = district || '';
-          distInput.dispatchEvent(new Event('input', { bubbles: true }));
-        }
-        if (villInput && !villInput.dataset.userEdited) {
-          villInput.value = village || '';
-          villInput.dispatchEvent(new Event('input', { bubbles: true }));
-        }
+        // Geocoder suggestions must never masquerade as user edits.
+        // An input event would set dataset.userEdited via the inline handler.
+        if (distInput && !distInput.dataset.userEdited && district) distInput.value = district;
+        if (villInput && !villInput.dataset.userEdited && village) villInput.value = village;
 
-        if (district) document.getElementById('p1-district-err')?.classList.add('hidden');
-        if (village) document.getElementById('p1-village-err')?.classList.add('hidden');
+        const resolvedDistrict = (distInput && distInput.dataset.userEdited)
+          ? distInput.value.trim() : (district || AppStore.user.district || '');
+        const resolvedVillage = (villInput && villInput.dataset.userEdited)
+          ? villInput.value.trim() : (village || AppStore.user.village || '');
 
-        const granularName = granular || village || district;
+        if (resolvedDistrict) document.getElementById('p1-district-err')?.classList.add('hidden');
+        if (resolvedVillage) document.getElementById('p1-village-err')?.classList.add('hidden');
+
+        const granularName = (villInput && villInput.dataset.userEdited)
+          ? resolvedVillage : (granular || village || district);
         AppStore.user.granular = granularName || '';
-        AppStore.user.district = district || '';
-        AppStore.user.village = village || '';
+        AppStore.user.district = resolvedDistrict;
+        AppStore.user.village = resolvedVillage;
         AppStore.user.state = state || '';
 
         // Update GPS Status Text honestly
