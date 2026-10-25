@@ -683,6 +683,9 @@ class CommerceAssistantResponse(BaseModel):
     products: List[CommerceAssistantItemDTO]
     message: str
     found_count: int
+    intent: Optional[str] = "search"
+    action_performed: Optional[str] = None
+    clarification_question: Optional[str] = None
 
 
 class UserOrderSummaryDTO(BaseModel):

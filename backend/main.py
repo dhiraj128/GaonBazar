@@ -2241,45 +2241,119 @@ def list_support_tickets(user_phone: Optional[str] = None, db: Session = Depends
 def commerce_ai_assistant_endpoint(payload: CommerceAssistantRequest, db: Session = Depends(get_db)):
     """
     Smart AI backend for Commerce Shopping Assistant:
-    - Parses multi-item voice/text queries (e.g. 'I want 1kg Aata and 1 packet Milk')
-    - Searches real village store inventory in database
-    - Returns structured product cards for 1-tap cart addition
+    - Recognizes intents: 'search', 'add_to_cart', 'remove_from_cart', 'modify_qty', 'show_cart'
+    - Parses multi-item voice/text queries in Hinglish and English
+    - Validates real stock against SQLite/Postgres DB (never hallucinates products)
+    - Returns structured product cards, exact intent, action descriptions, and clarification questions
     """
     raw_query = payload.query.strip()
     query_lower = raw_query.lower()
     lang = (payload.lang or "en").lower()
 
-    # 1. Clean prefixes
-    clean = re.sub(r"^(i want|please give me|give me|i need|mujhe chahiye|chahiye|add|order|bhejo)\s+", "", query_lower)
-    clean = re.sub(r"\s+(chahiye|dena|bhejo)$", "", clean)
+    # Word-to-number mapping for bilingual Hindi/English speech inputs
+    word_to_num = {
+        "ek": 1, "एक": 1, "one": 1, "1": 1,
+        "do": 2, "दो": 2, "two": 2, "2": 2,
+        "teen": 3, "तीन": 3, "three": 3, "3": 3,
+        "char": 4, "चार": 4, "four": 4, "4": 4,
+        "panch": 5, "पांच": 5, "five": 5, "5": 5,
+        "chhe": 6, "छह": 6, "six": 6, "6": 6,
+        "aadha": 1, "आधा": 1, "half": 1
+    }
 
-    # 2. Split multi-item phrases by conjunctions
+    # 1. Detect Core Intent
+    intent = "search"
+    action_performed = None
+    clarification_question = None
+
+    # SHOW CART INTENT
+    if not re.search(r"\b(add|daal|daalo|jod|jodo|shamil|put|insert|remove|delete|hatao|hata|nikal|increase|decrease|make|kar do|karo)\b", query_lower):
+        if re.search(r"\b(show|view|open|see|go to|check|mera)?\s*(my\s*)?cart(\s*(dikhao|kholo|jao|par jao|open karo))?\b", query_lower) or \
+           re.search(r"\b(cart|basket|thaila)\s*(dikhao|kholo|par jao|me jao)\b", query_lower) or \
+           re.search(r"\bcheckout(\s*karo)?\b", query_lower):
+            intent = "show_cart"
+            action_performed = "Navigated to cart view"
+            msg = "आपका कार्ट खोला जा रहा है..." if lang == "hi" else "Opening your shopping cart..."
+            return CommerceAssistantResponse(
+                query=raw_query,
+                parsed_items=["cart"],
+                products=[],
+                message=msg,
+                found_count=0,
+                intent=intent,
+                action_performed=action_performed
+            )
+
+    # REMOVE FROM CART INTENT
+    rem_match = re.search(r"^(?:remove|delete|hatao|hata do|nikal do)\s+(?:the\s+)?(.+?)(?:\s+from\s+(?:my\s+)?cart|\s+cart\s+(?:se|mein\s*se))?$", query_lower) or \
+                re.search(r"^(.+?)\s+(?:ko\s+)?(?:cart\s+(?:se\s+)?(?:hatao|hata do|nikal do|remove karo|delete karo))$", query_lower) or \
+                re.search(r"^(.+?)\s+(?:hata do|hatao|nikal do)$", query_lower)
+    if rem_match:
+        intent = "remove_from_cart"
+        target_subject = rem_match.group(1).strip()
+        target_subject = re.sub(r"\b(the|cart|se|mein|from|ko)\b", "", target_subject).strip()
+    else:
+        target_subject = None
+
+    # MODIFY QUANTITY INTENT
+    mod_match = re.search(r"^(?:increase|decrease|change|set|update)\s+(?:the\s+)?(.+?)\s+(?:quantity\s+)?(?:to|by)\s+(\d+|ek|do|teen|char|panch|one|two|three|four|five)\s*(kg|kilo|l|litre|packet|packets|g|gram)?", query_lower) or \
+                re.search(r"^(?:make|set)\s+(?:the\s+)?(.+?)\s+(\d+|ek|do|teen|char|panch|one|two|three|four|five)\s*(kg|kilo|l|litre|packet|packets|g|gram)?", query_lower) or \
+                re.search(r"^(.+?)\s+(\d+|ek|do|teen|char|panch|one|two|three|four|five)\s*(kg|kilo|l|litre|packet|packets|g|gram)?\s*(?:kar do|karo|bada do|ghata do)$", query_lower)
+    if mod_match:
+        intent = "modify_qty"
+        target_subject = mod_match.group(1).strip()
+        raw_qty = mod_match.group(2).strip()
+        req_mod_qty = word_to_num.get(raw_qty, int(raw_qty) if raw_qty.isdigit() else 1)
+        target_subject = re.sub(r"\b(quantity|the)\b", "", target_subject).strip()
+    else:
+        req_mod_qty = 1
+
+    # ADD TO CART INTENT
+    add_match = re.search(r"^(?:add|daalo|daal do|jodo|jod do|put)\s+(.+?)\s+(?:in|into|to)\s+(?:my\s+)?cart", query_lower) or \
+                re.search(r"^(.+?)\s+(?:cart\s+mein\s+(?:add|daal do|daalo|jod do|jodo|shamil karo|daal))", query_lower) or \
+                re.search(r"^add\s+(.+)$", query_lower)
+    if add_match and intent == "search":
+        intent = "add_to_cart"
+        full_spec = add_match.group(1).strip()
+        qty_match = re.search(r"(\d+|ek|do|teen|char|panch|one|two|three|four|five)\s*(kg|kilo|l|litre|packet|packets|g|gram)?\s+(.+)", full_spec)
+        if qty_match:
+            raw_qty = qty_match.group(1).strip()
+            target_subject = qty_match.group(3).strip()
+            req_add_qty = word_to_num.get(raw_qty, int(raw_qty) if raw_qty.isdigit() else 1)
+        else:
+            req_add_qty = 1
+            target_subject = full_spec
+        target_subject = re.sub(r"\b(to\s+my\s+cart|to\s+cart|in\s+cart|cart\s+mein|cart)\b", "", target_subject).strip()
+    else:
+        req_add_qty = 1
+
+    # If search, clean conversational search prefixes
+    if intent == "search":
+        clean = re.sub(r"^(search\s+for|search|find|khojo|dhoondo|dikhao|show\s+me|show|look\s+for|i want|please give me|give me|i need|mujhe chahiye|chahiye|bhejo)\s+", "", query_lower)
+        clean = re.sub(r"\s+(chahiye|dena|bhejo|dikhao|dhoondo|khojo)$", "", clean)
+        clean = re.sub(r"^(mujhe|humko)\s+", "", clean).strip()
+    else:
+        clean = target_subject or query_lower
+
+    # Split multi-item phrases by conjunctions
     split_parts = re.split(r"\s*(?:and|aur|और|तथा|साथ में|\+|\&|,)\s*", clean)
     parsed_items = [p.strip() for p in split_parts if p.strip()]
     if not parsed_items:
         parsed_items = [clean]
 
-    # Word-to-number mapping for bilingual Hindi/English speech inputs
-    word_to_num = {
-        "ek": 1, "एक": 1, "one": 1,
-        "do": 2, "दो": 2, "two": 2,
-        "teen": 3, "तीन": 3, "three": 3,
-        "char": 4, "चार": 4, "four": 4,
-        "panch": 5, "पांच": 5, "five": 5,
-        "chhe": 6, "छह": 6, "six": 6,
-        "aadha": 1, "आधा": 1, "half": 1
-    }
-
     # Comprehensive synonyms dictionary covering rural FMCG, grocery, spices, and dairy
     synonyms = {
-        "aata": ["atta", "aata", "gehu", "chakki", "flour", "maida", "आटा"],
-        "atta": ["atta", "aata", "chakki", "flour", "आटा"],
+        "aata": ["atta", "aata", "aashirvaad", "ashirvaad", "gehu", "chakki", "flour", "maida", "आटा"],
+        "atta": ["atta", "aata", "aashirvaad", "ashirvaad", "chakki", "flour", "आटा"],
         "besan": ["besan", "gram flour", "chana besan", "बेसन"],
         "dal": ["dal", "daal", "arhar", "moong", "chana", "masoor", "toor", "urad", "pulses", "दाल"],
         "daal": ["dal", "daal", "arhar", "moong", "chana", "masoor", "pulses", "दाल"],
-        "milk": ["milk", "doodh", "dudh", "taaza", "amul", "sudha", "paneer", "dahi", "दूध"],
-        "doodh": ["milk", "doodh", "taaza", "amul", "sudha", "दूध"],
-        "oil": ["oil", "tel", "mustard", "sarson", "refined", "fortune", "dhara", "तेल"],
+        "milk": ["milk", "doodh", "dudh", "taaza doodh", "दूध", "ताज़ा दूध", "packet milk"],
+        "doodh": ["milk", "doodh", "dudh", "taaza doodh", "दूध", "ताज़ा दूध", "packet milk"],
+        "paneer": ["paneer", "fresh paneer", "पनीर"],
+        "dahi": ["dahi", "curd", "fresh curd", "दही"],
+        "chaas": ["chaas", "buttermilk", "masala buttermilk", "छाछ"],
+        "oil": ["oil", "tel", "mustard", "sarson", "refined", "fortune", "dhara", "kacchi ghani", "तेल"],
         "tel": ["oil", "tel", "mustard", "sarson", "refined", "fortune", "तेल"],
         "salt": ["salt", "namak", "tata", "sendha", "नमक"],
         "namak": ["salt", "namak", "tata", "नमक"],
@@ -2289,7 +2363,7 @@ def commerce_ai_assistant_endpoint(payload: CommerceAssistantRequest, db: Sessio
         "sugar": ["sugar", "chini", "cheeni", "shakkar", "madhur", "चीनी", "शक्कर"],
         "chini": ["sugar", "chini", "cheeni", "shakkar", "madhur", "चीनी"],
         "rice": ["rice", "chawal", "basmati", "daawat", "kolam", "चावल"],
-        "chawal": ["rice", "chawal", "basmati", "daawat", "चावल"],
+        "chawal": ["rice", "chawal", "basmati", "daawat", "kolam", "चावल"],
         "spices": ["mirch", "deggi", "chilli", "haldi", "turmeric", "dhaniya", "coriander", "masala", "spices", "मसाला"],
         "masala": ["masala", "haldi", "mirch", "dhaniya", "garam masala", "spices", "मसाला"],
         "biscuit": ["parle", "biscuit", "biscuits", "marie", "rusk", "cookies", "बिस्कुट"],
@@ -2308,16 +2382,20 @@ def commerce_ai_assistant_endpoint(payload: CommerceAssistantRequest, db: Sessio
         all_products = db.query(Product).filter(Product.in_stock == True).all()
 
     for item_part in parsed_items:
-        # Extract numeric quantity or Hindi word quantity
-        req_qty = 1
-        qty_num_match = re.search(r"(\d+)\s*(kg|g|l|ml|packet|packets|kilo|litre|litres|पैकेट|लीटर|किलो)?", item_part)
-        if qty_num_match and int(qty_num_match.group(1)) > 0:
-            req_qty = int(qty_num_match.group(1))
+        if intent == "modify_qty":
+            req_qty = req_mod_qty
+        elif intent == "add_to_cart":
+            req_qty = req_add_qty
         else:
-            for w, n in word_to_num.items():
-                if re.search(rf"\b{w}\b", item_part):
-                    req_qty = n
-                    break
+            req_qty = 1
+            qty_num_match = re.search(r"(\d+)\s*(kg|g|l|ml|packet|packets|kilo|litre|litres|पैकेट|लीटर|किलो)?", item_part)
+            if qty_num_match and int(qty_num_match.group(1)) > 0:
+                req_qty = int(qty_num_match.group(1))
+            else:
+                for w, n in word_to_num.items():
+                    if re.search(rf"\b{w}\b", item_part):
+                        req_qty = n
+                        break
 
         matched_for_part = []
         found_kw = None
@@ -2329,18 +2407,18 @@ def commerce_ai_assistant_endpoint(payload: CommerceAssistantRequest, db: Sessio
                     if any(syn in p_text for syn in syn_list) and p.id not in seen_ids:
                         matched_for_part.append((p, req_qty, found_kw))
                         seen_ids.add(p.id)
-                        if len(matched_for_part) >= 2:
+                        if len(matched_for_part) >= 3:
                             break
                 break
 
         if not matched_for_part:
-            words = [w for w in re.findall(r"\w+", item_part) if len(w) > 2 and not re.match(r"^\d+(kg|g|l|ml)?$", w) and w not in ["want", "packet", "packets", "kilo", "litre", "litres", "need", "give"]]
+            words = [w for w in re.findall(r"\w+", item_part) if len(w) > 2 and not re.match(r"^\d+(kg|g|l|ml)?$", w) and w not in ["want", "packet", "packets", "kilo", "litre", "litres", "need", "give", "cart", "mein"]]
             for w in words:
                 for p in all_products:
                     if p.id not in seen_ids and (w in p.name_en.lower() or w in p.name_hi.lower() or w in p.category.lower()):
                         matched_for_part.append((p, req_qty, w))
                         seen_ids.add(p.id)
-                        if len(matched_for_part) >= 2:
+                        if len(matched_for_part) >= 3:
                             break
 
         for prod, q, kw in matched_for_part:
@@ -2360,17 +2438,42 @@ def commerce_ai_assistant_endpoint(payload: CommerceAssistantRequest, db: Sessio
                 requested_qty=q
             ))
 
-    if lang == "hi":
-        msg = f"आपके अनुरोध '{raw_query}' के लिए {len(matched_products)} सामान मिले। कार्ट में जोड़ने के लिए बटन दबाएं:"
-    else:
-        msg = f"Found {len(matched_products)} matching items for '{raw_query}'. Tap 'Add to Cart' to add them to your basket:"
+    # Formulate contextual response message
+    if intent == "add_to_cart":
+        if matched_products:
+            action_performed = f"Added {matched_products[0].requested_qty} {matched_products[0].name_en} to cart"
+            msg = f"{matched_products[0].requested_qty} {matched_products[0].name_hi or matched_products[0].name_en} को आपके कार्ट में जोड़ दिया गया है।" if lang == "hi" else f"Added {matched_products[0].requested_qty} {matched_products[0].name_en} to your cart."
+        else:
+            msg = f"क्षमा करें, '{clean}' गाँव की दुकानों में उपलब्ध नहीं है।" if lang == "hi" else f"Sorry, '{clean}' was not found in the village stores."
+    elif intent == "remove_from_cart":
+        if matched_products:
+            action_performed = f"Removed {matched_products[0].name_en} from cart"
+            msg = f"{matched_products[0].name_hi or matched_products[0].name_en} को कार्ट से हटा दिया गया है।" if lang == "hi" else f"Removed {matched_products[0].name_en} from your cart."
+        else:
+            msg = f"यह सामान कार्ट में नहीं मिला।" if lang == "hi" else f"Item '{clean}' was not found in your cart."
+    elif intent == "modify_qty":
+        if matched_products:
+            action_performed = f"Updated {matched_products[0].name_en} quantity to {req_mod_qty}"
+            msg = f"{matched_products[0].name_hi or matched_products[0].name_en} की मात्रा {req_mod_qty} कर दी गई है।" if lang == "hi" else f"Updated {matched_products[0].name_en} quantity to {req_mod_qty}."
+        else:
+            msg = f"सामान नहीं मिला।" if lang == "hi" else f"Item '{clean}' was not found in store."
+    else: # search
+        if len(matched_products) > 1 and len(parsed_items) == 1:
+            clarification_question = f"We have {len(matched_products)} matching varieties. Please select your preferred pack:"
+        if lang == "hi":
+            msg = f"'{raw_query}' के लिए {len(matched_products)} सामान मिले:" if matched_products else f"'{raw_query}' के लिए कोई सामान नहीं मिला।"
+        else:
+            msg = f"Found {len(matched_products)} matching items for '{raw_query}':" if matched_products else f"No matching items found for '{raw_query}'."
 
     return CommerceAssistantResponse(
         query=raw_query,
         parsed_items=parsed_items,
         products=matched_products,
         message=msg,
-        found_count=len(matched_products)
+        found_count=len(matched_products),
+        intent=intent,
+        action_performed=action_performed,
+        clarification_question=clarification_question
     )
 
 

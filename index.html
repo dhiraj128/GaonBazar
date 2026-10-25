@@ -6289,6 +6289,303 @@
     window.openStoreView = openStoreView;
     window.selectCategory = selectCategory;
 
+
+    // =========================================================================
+    // MANDATORY CUSTOMER AI VOICE SHOPPING ENGINE & CART VOICE CONTROLLER
+    // =========================================================================
+    const VoiceCommerceEngine = {
+      synonyms: {
+        atta: ['atta', 'aata', 'aashirvaad', 'ashirvaad', 'gehu', 'chakki', 'flour', 'आटा', 'गेहूं', 'चक्की'],
+        milk: ['milk', 'doodh', 'dudh', 'taaza doodh', 'buffalo milk', 'cow milk', 'packet milk', 'दूध', 'ताज़ा दूध'],
+        oil: ['oil', 'tel', 'mustard', 'sarson', 'fortune', 'refined', 'kacchi ghani', 'dhara', 'तेल', 'सरसों'],
+        rice: ['rice', 'chawal', 'basmati', 'daawat', 'rozana', 'kolam', 'चावल', 'बासमती'],
+        sugar: ['sugar', 'chini', 'cheeni', 'madhur', 'shakkar', 'चीनी', 'शक्कर'],
+        ghee: ['ghee', 'desi ghee', 'cow ghee', 'amul ghee', 'घी', 'देसी घी'],
+        tea: ['tea', 'chai', 'chay', 'red label', 'taj mahal', 'चाय', 'पत्ती'],
+        salt: ['salt', 'namak', 'tata', 'sendha', 'नमक'],
+        dal: ['dal', 'daal', 'arhar', 'toor', 'moong', 'chana', 'urad', 'masoor', 'pulses', 'दाल'],
+        spices: ['spices', 'mirch', 'haldi', 'dhaniya', 'masala', 'deggi', 'मसाला', 'मिर्च'],
+        soap: ['soap', 'sabun', 'surf', 'detergent', 'rin', 'wheel', 'tide', 'dettol', 'साबुन'],
+        paneer: ['paneer', 'fresh paneer', 'पनीर'],
+        chaas: ['chaas', 'buttermilk', 'matka chaas', 'छाछ']
+      },
+
+      wordToNum: {
+        'ek': 1, 'एक': 1, 'one': 1, '1': 1,
+        'do': 2, 'दो': 2, 'two': 2, '2': 2,
+        'teen': 3, 'तीन': 3, 'three': 3, '3': 3,
+        'char': 4, 'चार': 4, 'four': 4, '4': 4,
+        'panch': 5, 'पांच': 5, 'five': 5, '5': 5,
+        'chhe': 6, 'छह': 6, 'six': 6, '6': 6,
+        'aadha': 1, 'आधा': 1, 'half': 1
+      },
+
+      checkMicSupport() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const isSecure = (window.isSecureContext !== false);
+        return {
+          supported: !!SpeechRecognition,
+          isSecure: isSecure,
+          SpeechRecognition: SpeechRecognition
+        };
+      },
+
+      parseIntent(rawTranscript) {
+        if (!rawTranscript) return { intent: 'UNKNOWN', query: '' };
+        const q = rawTranscript.trim();
+        const ql = q.toLowerCase();
+
+        // 1. SHOW CART
+        if (!/(?:add|daal|daalo|jod|jodo|shamil|put|insert|remove|delete|hatao|hata|nikal|increase|decrease|make|kar do|karo)\b/i.test(ql)) {
+          if (/\b(?:show|view|open|see|go to|check|mera)?\s*(?:my\s*)?cart(?:\s*(?:dikhao|kholo|jao|par jao|open karo))?\b/i.test(ql) ||
+              /\b(?:cart|basket|thaila)\s*(?:dikhao|kholo|par jao|me jao)\b/i.test(ql) ||
+              /\bcheckout(?:\s*karo)?\b/i.test(ql)) {
+            return { intent: 'SHOW_CART', query: q };
+          }
+        }
+
+        // 2. REMOVE FROM CART
+        let remMatch = ql.match(/^(?:remove|delete|hatao|hata do|nikal do)\s+(?:the\s+)?(.+?)(?:\s+from\s+(?:my\s+)?cart|\s+cart\s+(?:se|mein\s*se))?$/i) ||
+                       ql.match(/^(.+?)\s+(?:ko\s+)?(?:cart\s+(?:se\s+)?(?:hatao|hata do|nikal do|remove karo|delete karo))$/i) ||
+                       ql.match(/^(.+?)\s+(?:hata do|hatao|nikal do)$/i);
+        if (remMatch) {
+          let target = remMatch[1].replace(/\b(?:the|cart|se|mein|from|ko)\b/gi, '').trim();
+          return { intent: 'REMOVE_FROM_CART', target: target, query: q };
+        }
+
+        // 3. MODIFY QUANTITY
+        let modMatch = ql.match(/^(?:increase|decrease|change|set|update)\s+(?:the\s+)?(.+?)\s+(?:quantity\s+)?(?:to|by)\s+(\d+|ek|do|teen|char|panch|one|two|three|four|five)\s*(kg|kilo|l|litre|packet|packets|g|gram)?/i) ||
+                       ql.match(/^(?:make|set)\s+(?:the\s+)?(.+?)\s+(\d+|ek|do|teen|char|panch|one|two|three|four|five)\s*(kg|kilo|l|litre|packet|packets|g|gram)?/i) ||
+                       ql.match(/^(.+?)\s+(\d+|ek|do|teen|char|panch|one|two|three|four|five)\s*(kg|kilo|l|litre|packet|packets|g|gram)?\s*(?:kar do|karo|bada do|ghata do)$/i);
+        if (modMatch) {
+          let target = modMatch[1].replace(/\b(?:quantity|the)\b/gi, '').trim();
+          let rawQty = modMatch[2].trim();
+          let unit = modMatch[3] || '';
+          let qty = this.wordToNum[rawQty] || parseInt(rawQty, 10) || 1;
+          return { intent: 'MODIFY_QUANTITY', target: target, quantity: qty, unit: unit, query: q };
+        }
+
+        // 4. ADD TO CART
+        let addMatch = ql.match(/^(?:add|daalo|daal do|jodo|jod do|put)\s+(.+?)\s+(?:in|into|to)\s+(?:my\s+)?cart/i) ||
+                       ql.match(/^(.+?)\s+(?:cart\s+mein\s+(?:add|daal do|daalo|jod do|jodo|shamil karo|daal))/i) ||
+                       ql.match(/^add\s+(.+)$/i);
+        if (addMatch) {
+          let fullSpec = addMatch[1].trim();
+          let qtyMatch = fullSpec.match(/(\d+|ek|do|teen|char|panch|one|two|three|four|five)\s*(kg|kilo|l|litre|packet|packets|g|gram)?\s+(.+)/i);
+          let qty = 1;
+          let unit = '';
+          let target = fullSpec;
+          if (qtyMatch) {
+            let rawQty = qtyMatch[1].trim();
+            unit = qtyMatch[2] || '';
+            target = qtyMatch[3].trim();
+            qty = this.wordToNum[rawQty] || parseInt(rawQty, 10) || 1;
+          }
+          target = target.replace(/\b(?:to\s+my\s+cart|to\s+cart|in\s+cart|cart\s+mein|cart)\b/gi, '').trim();
+          return { intent: 'ADD_TO_CART', target: target, quantity: qty, unit: unit, query: q };
+        }
+
+        // 5. SEARCH / DISCOVERY
+        let searchMatch = ql.match(/^(?:search\s+for|search|find|khojo|dhoondo|dikhao|show\s+me|show|look\s+for)\s+(.+)$/i) ||
+                          ql.match(/^(?:mujhe|humko)?\s*(.+?)\s*(?:chahiye|dikhao|dhoondo|khojo)$/i);
+        if (searchMatch) {
+          let target = searchMatch[1].replace(/^(?:mujhe|humko)\s+/i, '').trim();
+          return { intent: 'SEARCH', target: target, query: q };
+        }
+
+        return { intent: 'SEARCH', target: ql, query: q };
+      },
+
+      findMatchingProducts(target) {
+        if (!target) return [];
+        const tl = target.toLowerCase().trim();
+        const catalog = AppStore.catalog || [];
+
+        // 1. Direct name match
+        const exact = catalog.filter(i => {
+          const en = (i.name_en || '').toLowerCase();
+          const hi = (i.name_hi || '').toLowerCase();
+          const id = (i.id || '').toLowerCase();
+          return en.includes(tl) || hi.includes(tl) || id.includes(tl) || tl.includes(en) || tl.includes(hi);
+        });
+        if (exact.length > 0) return exact;
+
+        // 2. Synonyms match
+        for (const [key, synList] of Object.entries(this.synonyms)) {
+          if (synList.some(s => tl.includes(s) || s.includes(tl))) {
+            const matches = catalog.filter(i => {
+              const en = (i.name_en || '').toLowerCase();
+              const hi = (i.name_hi || '').toLowerCase();
+              const cat = (i.cat || '').toLowerCase();
+              return synList.some(s => en.includes(s) || hi.includes(s) || cat.includes(s));
+            });
+            if (matches.length > 0) return matches;
+          }
+        }
+
+        // 3. Keyword token match
+        const words = tl.split(/\s+/).filter(w => w.length > 2 && !['want', 'need', 'give', 'packet', 'kilo', 'litre', 'chahiye'].includes(w));
+        if (words.length > 0) {
+          const matches = catalog.filter(i => {
+            const str = `${i.name_en || ''} ${i.name_hi || ''} ${i.cat || ''}`.toLowerCase();
+            return words.some(w => str.includes(w));
+          });
+          if (matches.length > 0) return matches;
+        }
+
+        return [];
+      },
+
+      speakFeedback(text) {
+        try {
+          if (window.speechSynthesis && !window.speechSynthesis.speaking) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = (AppStore.lang === 'hi') ? 'hi-IN' : 'en-IN';
+            utterance.rate = 1.0;
+            window.speechSynthesis.speak(utterance);
+          }
+        } catch (_) {}
+      },
+
+      async executeVoiceCommand(rawTranscript, sourceView = 'dashboard') {
+        const parsed = this.parseIntent(rawTranscript);
+        const isHi = (AppStore.lang === 'hi');
+        let responseMsg = '';
+        let success = true;
+
+        if (parsed.intent === 'SHOW_CART') {
+          responseMsg = isHi ? 'आपका कार्ट खोल रहे हैं...' : 'Opening your cart...';
+          if (typeof showAudioToast === 'function') showAudioToast(isHi ? 'कार्ट' : 'Cart', responseMsg);
+          this.speakFeedback(responseMsg);
+          if (typeof navigateToPhase === 'function') navigateToPhase('cart');
+          return { success: true, intent: 'SHOW_CART', message: responseMsg };
+        }
+
+        if (parsed.intent === 'REMOVE_FROM_CART') {
+          const matches = this.findMatchingProducts(parsed.target);
+          if (matches.length > 0) {
+            const item = matches[0];
+            const currentQty = item.qty || 0;
+            if (currentQty > 0) {
+              if (typeof modifyItemQty === 'function') {
+                modifyItemQty(item.id, -currentQty);
+              } else {
+                item.qty = 0;
+                if (typeof updateCartCalculations === 'function') updateCartCalculations();
+              }
+              const name = isHi ? (item.name_hi || item.name_en) : (item.name_en || item.name_hi);
+              responseMsg = isHi ? `${name} को कार्ट से हटा दिया गया है।` : `Removed ${name} from your cart.`;
+              if (typeof showAudioToast === 'function') showAudioToast(isHi ? 'कार्ट अपडेट' : 'Cart Updated', responseMsg);
+              this.speakFeedback(responseMsg);
+            } else {
+              const name = isHi ? (item.name_hi || item.name_en) : (item.name_en || item.name_hi);
+              responseMsg = isHi ? `${name} आपके कार्ट में नहीं है।` : `${name} is not in your cart.`;
+              if (typeof showAudioToast === 'function') showAudioToast(isHi ? 'सूचना' : 'Notice', responseMsg);
+            }
+          } else {
+            responseMsg = isHi ? `सामान '${parsed.target}' कार्ट में नहीं मिला।` : `Could not find '${parsed.target}' in cart.`;
+            if (typeof showAudioToast === 'function') showAudioToast(isHi ? 'अलर्ट' : 'Alert', responseMsg);
+            success = false;
+          }
+          if (sourceView === 'ai-commerce' && typeof syncCommerceCartBar === 'function') syncCommerceCartBar();
+          return { success, intent: 'REMOVE_FROM_CART', message: responseMsg };
+        }
+
+        if (parsed.intent === 'MODIFY_QUANTITY') {
+          const matches = this.findMatchingProducts(parsed.target);
+          if (matches.length > 0) {
+            const item = matches[0];
+            const targetQty = Math.max(0, parsed.quantity || 1);
+            const currentQty = item.qty || 0;
+            const delta = targetQty - currentQty;
+            if (typeof modifyItemQty === 'function') {
+              modifyItemQty(item.id, delta);
+            } else {
+              item.qty = targetQty;
+              if (typeof updateCartCalculations === 'function') updateCartCalculations();
+            }
+            const name = isHi ? (item.name_hi || item.name_en) : (item.name_en || item.name_hi);
+            responseMsg = isHi ? `${name} की मात्रा ${targetQty} कर दी गई है।` : `Updated ${name} quantity to ${targetQty}.`;
+            if (typeof showAudioToast === 'function') showAudioToast(isHi ? 'कार्ट अपडेट' : 'Cart Updated', responseMsg);
+            this.speakFeedback(responseMsg);
+          } else {
+            responseMsg = isHi ? `सामान '${parsed.target}' नहीं मिला।` : `Could not find '${parsed.target}'.`;
+            if (typeof showAudioToast === 'function') showAudioToast(isHi ? 'अलर्ट' : 'Alert', responseMsg);
+            success = false;
+          }
+          if (sourceView === 'ai-commerce' && typeof syncCommerceCartBar === 'function') syncCommerceCartBar();
+          return { success, intent: 'MODIFY_QUANTITY', message: responseMsg };
+        }
+
+        if (parsed.intent === 'ADD_TO_CART') {
+          const matches = this.findMatchingProducts(parsed.target);
+          if (matches.length > 0) {
+            const item = matches[0];
+            if (item.in_stock === false) {
+              const name = isHi ? (item.name_hi || item.name_en) : (item.name_en || item.name_hi);
+              responseMsg = isHi ? `क्षमा करें, ${name} अभी स्टॉक में नहीं है।` : `Sorry, ${name} is out of stock.`;
+              if (typeof showAudioToast === 'function') showAudioToast(isHi ? 'स्टॉक अलर्ट' : 'Stock Alert', responseMsg);
+              this.speakFeedback(responseMsg);
+              return { success: false, intent: 'ADD_TO_CART', message: responseMsg, outOfStock: true };
+            }
+
+            const addQty = Math.max(1, parsed.quantity || 1);
+            if (typeof modifyItemQty === 'function') {
+              modifyItemQty(item.id, addQty);
+            } else {
+              item.qty = (item.qty || 0) + addQty;
+              if (typeof updateCartCalculations === 'function') updateCartCalculations();
+            }
+
+            const name = isHi ? (item.name_hi || item.name_en) : (item.name_en || item.name_hi);
+            const cartItems = (AppStore.catalog || []).filter(i => i.qty > 0);
+            const subtotal = cartItems.reduce((acc, i) => acc + (i.price * i.qty), 0);
+            responseMsg = isHi ? `${addQty} ${name} कार्ट में जोड़ा गया। कुल: ₹${subtotal}` : `Added ${addQty} ${name} to your cart. Total: ₹${subtotal}`;
+            if (typeof showAudioToast === 'function') showAudioToast(isHi ? 'कार्ट में जोड़ा गया' : 'Added to Cart', responseMsg);
+            this.speakFeedback(responseMsg);
+
+            // Pop floating cart bar immediately
+            const cartBar = document.getElementById('p3-cart-bar');
+            if (cartBar) cartBar.classList.remove('hidden');
+
+            if (sourceView === 'ai-commerce') {
+              if (typeof refreshCommerceCard === 'function') refreshCommerceCard(item.id);
+              if (typeof syncCommerceCartBar === 'function') syncCommerceCartBar();
+            }
+          } else {
+            responseMsg = isHi ? `क्षमा करें, '${parsed.target}' गाँव की दुकानों में उपलब्ध नहीं है।` : `Could not find '${parsed.target}' in village stores.`;
+            if (typeof showAudioToast === 'function') showAudioToast(isHi ? 'सामान नहीं मिला' : 'Not Found', responseMsg);
+            this.speakFeedback(responseMsg);
+            success = false;
+          }
+          return { success, intent: 'ADD_TO_CART', message: responseMsg };
+        }
+
+        // Default SEARCH intent
+        const searchQuery = parsed.target || rawTranscript;
+        const searchInput = document.getElementById('p2-search-input');
+        if (searchInput) searchInput.value = searchQuery;
+
+        if (sourceView === 'ai-commerce' || (AppStore && AppStore.currentPhase === 'ai-commerce')) {
+          if (typeof processCommerceAiQuery === 'function') {
+            processCommerceAiQuery(searchQuery);
+          }
+        } else {
+          if (typeof filterStoreCatalog === 'function') {
+            filterStoreCatalog(searchQuery);
+          }
+        }
+
+        responseMsg = isHi ? `'${searchQuery}' खोजा जा रहा है...` : `Searching for '${searchQuery}'...`;
+        if (typeof showAudioToast === 'function') showAudioToast(isHi ? 'सर्च' : 'Search', responseMsg);
+        return { success: true, intent: 'SEARCH', query: searchQuery, message: responseMsg };
+      }
+    };
+    window.VoiceCommerceEngine = VoiceCommerceEngine;
+    window.simulateVoiceInput = function(transcript, sourceView = 'dashboard') {
+      return VoiceCommerceEngine.executeVoiceCommand(transcript, sourceView);
+    };
+
     let activeVoiceRecognition = null;
 
     function resetVoiceSearchUI() {
@@ -6403,7 +6700,11 @@
 
           if (finalTranscript) {
             if (speechTimer) clearTimeout(speechTimer);
-            filterStoreCatalog(finalTranscript.trim());
+            if (window.VoiceCommerceEngine) {
+              window.VoiceCommerceEngine.executeVoiceCommand(finalTranscript.trim(), 'dashboard');
+            } else {
+              filterStoreCatalog(finalTranscript.trim());
+            }
             try { recognition.stop(); } catch (e) {}
             resetVoiceSearchUI();
           }
@@ -8842,7 +9143,11 @@
           }
           if (final && transcript) {
             recognition.stop();
-            processCommerceAiQuery(transcript);
+            if (window.VoiceCommerceEngine) {
+              window.VoiceCommerceEngine.executeVoiceCommand(transcript, 'ai-commerce');
+            } else {
+              processCommerceAiQuery(transcript);
+            }
           }
         };
         recognition.onerror = function(event) {
@@ -8907,7 +9212,11 @@
       if (!text) return;
       const transcriptEl = document.getElementById('commerce-ai-transcript');
       if (transcriptEl) transcriptEl.innerText = `"${text}"`;
-      processCommerceAiQuery(text);
+      if (window.VoiceCommerceEngine) {
+        window.VoiceCommerceEngine.executeVoiceCommand(text, 'ai-commerce');
+      } else {
+        processCommerceAiQuery(text);
+      }
     }
     window.submitCommerceAiInput = submitCommerceAiInput;
 
@@ -8916,7 +9225,11 @@
       const transcriptEl = document.getElementById('commerce-ai-transcript');
       if (input) input.value = text;
       if (transcriptEl) transcriptEl.innerText = `"${text}"`;
-      processCommerceAiQuery(text);
+      if (window.VoiceCommerceEngine) {
+        window.VoiceCommerceEngine.executeVoiceCommand(text, 'ai-commerce');
+      } else {
+        processCommerceAiQuery(text);
+      }
     }
     window.handleVoiceChipClick = handleVoiceChipClick;
 
@@ -8987,11 +9300,11 @@
       if (!backendLoaded) {
         const synonyms = {
           item_1: ['aata', 'atta', 'gehu', 'chakki', 'आटा', 'चक्की', 'flour'],
-          item_d1: ['milk', 'doodh', 'dudh', 'taaza', 'दूध', 'ताज़ा', 'packet milk', 'amul'],
+          item_d1: ['milk', 'doodh', 'dudh', 'taaza doodh', 'packet milk', 'दूध', 'ताज़ा दूध'],
           item_2: ['oil', 'tel', 'mustard', 'sarson', 'तेल', 'सरसों'],
           item_3: ['salt', 'namak', 'tata', 'नमक', 'टाटा'],
           item_4: ['tea', 'chai', 'red label', 'chay', 'चाय', 'कड़क चाय'],
-          item_5: ['ghee', 'desi ghee', 'cow ghee', 'घी', 'देसी घी'],
+          item_5: ['ghee', 'desi ghee', 'cow ghee', 'amul ghee', 'घी', 'देसी घी'],
           item_6: ['mirch', 'deggi', 'chilli', 'spices', 'मिर्च', 'देगी'],
           item_7: ['sugar', 'chini', 'cheeni', 'madhur', 'चीनी', 'शक्कर'],
           item_rice: ['rice', 'chawal', 'basmati', 'daawat', 'चावल', 'बासमती']
