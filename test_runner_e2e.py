@@ -210,8 +210,20 @@ def kill_port_processes(ports=[8001]):
         except Exception:
             pass
 
-# Guarantee port cleanup on any script exit
-atexit.register(lambda: kill_port_processes([8001]))
+_SPAWNED_SERVER_PROCESS = None
+
+def cleanup_spawned_server():
+    global _SPAWNED_SERVER_PROCESS
+    if _SPAWNED_SERVER_PROCESS is not None:
+        try:
+            _SPAWNED_SERVER_PROCESS.kill()
+            _SPAWNED_SERVER_PROCESS.wait(timeout=3)
+        except Exception:
+            pass
+        kill_port_processes([8001])
+        _SPAWNED_SERVER_PROCESS = None
+
+atexit.register(cleanup_spawned_server)
 
 
 def ensure_backend_running(logger):
@@ -265,6 +277,8 @@ def ensure_backend_running(logger):
         kill_port_processes([8001])
         raise RuntimeError("FastAPI backend failed to start or respond on http://127.0.0.1:8001")
 
+    global _SPAWNED_SERVER_PROCESS
+    _SPAWNED_SERVER_PROCESS = server_proc
     return server_proc
 
 
@@ -938,14 +952,7 @@ def main():
 
     finally:
         logger.save_report()
-        if server_proc:
-            logger.log("  🛑 Terminating background FastAPI server...")
-            try:
-                server_proc.kill()
-                server_proc.wait(timeout=3)
-            except Exception:
-                pass
-        kill_port_processes([8001])
+        cleanup_spawned_server()
 
     if logger.failed_tests > 0:
         logger.log(f"\n❌ RUNNER E2E SUITE FINISHED WITH {logger.failed_tests} FAILURES")
