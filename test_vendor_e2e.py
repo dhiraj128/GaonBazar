@@ -713,49 +713,63 @@ def _run_vendor_device_steps(context, dev_name, device_config, logger):
     products_count = page.locator("#inventory-container > div").count()
     logger.record_test(f"[{dev_name}] Inventory Products Rendered", products_count >= 5, f"{products_count} products loaded")
 
-    # Find the first product stock toggle and click it
-    first_toggle = page.locator("#inventory-container button:has-text('उपलब्ध'), #inventory-container button:has-text('अनुपलब्ध')").first
+    # Choose one exact product ID and assert its backend state, not a generic
+    # first button. The inventory poller may re-render the grid during a click.
+    first_toggle = page.locator('#inventory-container button[data-product-id]').first
     if first_toggle.count() > 0:
-        btn_id = first_toggle.get_attribute("id")
-        try:
-            first_toggle.scroll_into_view_if_needed()
-            page.evaluate("() => { const el = document.querySelector('#inventory-container button'); if (el) el.scrollIntoView({ block: 'center' }); }")
-            page.wait_for_timeout(200)
-        except Exception:
-            pass
-        initial_stock_text = first_toggle.inner_text().strip()
-        first_toggle.click(force=True)
-        try:
-            if btn_id:
-                page.wait_for_function(
-                    "({id, orig}) => { const el = document.getElementById(id); return el && el.innerText.trim() !== orig; }",
-                    arg={"id": btn_id, "orig": initial_stock_text},
-                    timeout=4000
-                )
-            else:
-                page.wait_for_function(
-                    "orig => { const el = document.querySelector('#inventory-container button'); return el && el.innerText.trim() !== orig; }",
-                    arg=initial_stock_text,
-                    timeout=4000
-                )
-        except Exception:
-            page.wait_for_timeout(1000)
-        toggled_stock_text = page.locator(f"#{btn_id}").inner_text().strip() if btn_id else page.locator("#inventory-container button").first.inner_text().strip()
-        capture_screenshot(page, f"{dev_name.replace(' ', '_')}_step5_stock_toggled", logger)
-        logger.record_test(
-            f"[{dev_name}] Product In-Stock / Out-of-Stock Toggle",
-            initial_stock_text != toggled_stock_text,
-            f"{initial_stock_text} -> {toggled_stock_text}"
+        product_id = first_toggle.get_attribute("data-product-id")
+        stock_button = page.locator('#inventory-container button[data-product-id="' + product_id + '"]')
+        original = page.evaluate(
+            "(pid) => { const p = VendorStore.products.find(x => x.id === pid); return p ? Boolean(p.in_stock) : null; }",
+            product_id
         )
-        # Toggle back to original
         try:
-            if btn_id:
-                page.locator(f"#{btn_id}").click(force=True)
-            else:
-                page.locator("#inventory-container button").first.click(force=True)
-            page.wait_for_timeout(600)
-        except Exception:
-            pass
+            assert original is not None, "Product ID missing from VendorStore inventory"
+            expected = not original
+            stock_button.scroll_into_view_if_needed()
+            with page.expect_response(
+                lambda r: r.request.method == "PATCH" and
+                  ("/vendor/products/" + product_id + "/stock") in r.url,
+                timeout=10000
+            ) as update:
+                stock_button.click()
+            response = update.value
+            assert response.ok, "Stock PATCH returned HTTP " + str(response.status)
+            persisted = response.json()
+            assert bool(persisted["in_stock"]) == expected, "Server did not persist stock update"
+            page.wait_for_function(
+                "args => { const prod = VendorStore.products.find(p => p.id === args.id); return prod && Boolean(prod.in_stock) === args.stock; }",
+                arg={"id": product_id, "stock": expected},
+                timeout=5000,
+            )
+            logger.record_test(
+                f"[{dev_name}] Product In-Stock / Out-of-Stock Toggle",
+                True, f"{product_id}: {original} -> {expected}, verified PATCH response"
+            )
+            capture_screenshot(page, f"{dev_name.replace(' ', '_')}_step5_stock_toggled", logger)
+        except Exception as e:
+            logger.record_test(
+                f"[{dev_name}] Product In-Stock / Out-of-Stock Toggle", False,
+                f"{product_id}: {type(e).__name__}: {e}"
+            )
+        finally:
+            # Restore state only if changed; do not modify another product.
+            current = page.evaluate(
+                "(pid) => { const p = VendorStore.products.find(x => x.id === pid); return p ? Boolean(p.in_stock) : null; }",
+                product_id
+            )
+            if current is not None and original is not None and current != original:
+                try:
+                    stock_button = page.locator('#inventory-container button[data-product-id="' + product_id + '"]')
+                    with page.expect_response(
+                        lambda r: r.request.method == "PATCH" and
+                          ("/vendor/products/" + product_id + "/stock") in r.url,
+                        timeout=10000
+                    ) as restore:
+                        stock_button.click()
+                    assert restore.value.ok, "Failed to restore stock after audit"
+                except Exception as e:
+                    logger.record_test(f"[{dev_name}] Inventory Stock State Restored", False, str(e))
     else:
         logger.record_test(f"[{dev_name}] Product In-Stock / Out-of-Stock Toggle", False, "No toggle found")
 
