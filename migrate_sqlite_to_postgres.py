@@ -38,7 +38,8 @@ TABLE_TRANSFER_ORDER = [
     "otp_records",
     "support_tickets",
     "saved_payment_methods",
-    "payment_transactions"
+    "payment_transactions",
+    "notifications"
 ]
 
 
