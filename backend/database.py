@@ -29,9 +29,16 @@ if os.getenv("GAONBAZAR_REQUIRE_POSTGRES") == "1" and not IS_POSTGRES:
 
 if IS_SQLITE:
     # SQLite remains the zero-configuration local/test backend only.
+    # Configured connection pool with generous limits and pre-ping to eliminate
+    # "QueuePool limit of size 5 overflow 10 reached" during concurrent Playwright audits and background tasks.
     engine = create_engine(
-        DATABASE_URL, connect_args={"check_same_thread": False, "timeout": 30.0},
+        DATABASE_URL,
+        connect_args={"check_same_thread": False, "timeout": 60.0},
         pool_pre_ping=True,
+        pool_size=20,
+        max_overflow=40,
+        pool_timeout=60,
+        pool_recycle=1800,
     )
 
     @event.listens_for(engine, "connect")
@@ -42,27 +49,49 @@ if IS_SQLITE:
         cursor.execute("PRAGMA synchronous=NORMAL")
         cursor.close()
 else:
-    # Persistent FastAPI service; modest pool for free-tier/Postgres pooler limits.
-    # Use the Supabase session pooler (5432) where direct IPv6 is unavailable.
+    # Persistent FastAPI service; pool configured for Supabase session pooler (5432) or direct PostgreSQL.
+    # Generous pool sizing (10 pool + 15 overflow) prevents connection starvation under concurrent orders.
     # Secrets belong in Render environment variables, never client-side JS.
     engine = create_engine(
         DATABASE_URL,
         pool_pre_ping=True,
-        pool_size=3,
-        max_overflow=2,
+        pool_size=10,
+        max_overflow=15,
         pool_recycle=1800,
-        pool_timeout=15,
-        connect_args={"connect_timeout": 10, "sslmode": "require"}
-        if os.getenv("GAONBAZAR_DB_SSL", "require") == "require" else {"connect_timeout": 10},
+        pool_timeout=30,
+        connect_args={"connect_timeout": 15, "sslmode": "require"}
+        if os.getenv("GAONBAZAR_DB_SSL", "require") == "require" else {"connect_timeout": 15},
     )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
+from contextlib import contextmanager
+
+@contextmanager
+def db_session():
+    """
+    Guaranteed session lifecycle context manager for background tasks, scripts, and startups:
+    with db_session() as db:
+        db.query(...)
+    Guarantees session rollback on error and proper close() back to QueuePool upon exit.
+    """
+    db = SessionLocal()
+    try:
+        yield db
+    except Exception:
+        db.rollback()
+        raise
+    finally:
+        db.close()
+
 def get_db():
     db = SessionLocal()
     try:
         yield db
+    except Exception:
+        db.rollback()
+        raise
     finally:
         db.close()
 

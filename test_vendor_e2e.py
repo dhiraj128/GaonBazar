@@ -452,48 +452,47 @@ def check_element_bounds(page, selector, desc, logger, dev_name=None, require_st
 
 
 def ensure_stage1_order_exists():
-    from backend.database import get_db
+    from backend.database import db_session
     from backend.models import Order, OrderItem
     from datetime import timezone
-    db = next(get_db())
-    has_stage1 = db.query(Order).filter(Order.store_id == "sharma_brothers", Order.timeline_stage == 1).first()
-    if not has_stage1:
-        import random
-        # Find a unique order id that does not exist in DB
-        oid = f"#RUR-{random.randint(10000, 99999)}"
-        while db.query(Order).filter(Order.id == oid).first():
+    with db_session() as db:
+        has_stage1 = db.query(Order).filter(Order.store_id == "sharma_brothers", Order.timeline_stage == 1).first()
+        if not has_stage1:
+            import random
+            # Find a unique order id that does not exist in DB
             oid = f"#RUR-{random.randint(10000, 99999)}"
+            while db.query(Order).filter(Order.id == oid).first():
+                oid = f"#RUR-{random.randint(10000, 99999)}"
 
-        demo = Order(
-            id=oid,
-            user_phone="9876543210",
-            user_name="Ramesh Patel (रमेश पटेल)",
-            village="Rampur (रामपुर)",
-            landmark="Near Shiva Mandir, Opp. Blue Water Tank",
-            store_id="sharma_brothers",
-            store_name="Sharma Brothers Kirana",
-            subtotal=355.0,
-            distance_km=1.2,
-            eta_mins="30 Mins",
-            delivery_fee=15.0,
-            platform_fee=3.0,
-            savings=45.0,
-            total_amount=373.0,
-            vendor_payout=355.0,
-            runner_payout=10.0,
-            admin_profit=8.0,
-            payment_mode="COD",
-            status="Order Placed",
-            timeline_stage=1,
-            delivery_otp="4821",
-            created_at=datetime.now(timezone.utc)
-        )
-        db.add(demo)
-        db.flush()
-        db.add(OrderItem(order_id=oid, product_id="item_1", product_name="Aashirvaad Chakki Atta 5kg", price=210.0, quantity=1))
-        db.add(OrderItem(order_id=oid, product_id="item_2", product_name="Fortune Mustard Oil 1L", price=145.0, quantity=1))
-        db.commit()
-    db.close()
+            demo = Order(
+                id=oid,
+                user_phone="9876543210",
+                user_name="Ramesh Patel (रमेश पटेल)",
+                village="Rampur (रामपुर)",
+                landmark="Near Shiva Mandir, Opp. Blue Water Tank",
+                store_id="sharma_brothers",
+                store_name="Sharma Brothers Kirana",
+                subtotal=355.0,
+                distance_km=1.2,
+                eta_mins="30 Mins",
+                delivery_fee=15.0,
+                platform_fee=3.0,
+                savings=45.0,
+                total_amount=373.0,
+                vendor_payout=355.0,
+                runner_payout=10.0,
+                admin_profit=8.0,
+                payment_mode="COD",
+                status="Order Placed",
+                timeline_stage=1,
+                delivery_otp="4821",
+                created_at=datetime.now(timezone.utc)
+            )
+            db.add(demo)
+            db.flush()
+            db.add(OrderItem(order_id=oid, product_id="item_1", product_name="Aashirvaad Chakki Atta 5kg", price=210.0, quantity=1))
+            db.add(OrderItem(order_id=oid, product_id="item_2", product_name="Fortune Mustard Oil 1L", price=145.0, quantity=1))
+            db.commit()
 
 
 def run_vendor_device_simulation(browser, device_config, logger):

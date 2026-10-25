@@ -457,46 +457,45 @@ def ensure_stage3_mission_exists():
     Ensures at least one order exists in Stage 3 (Packed & Ready for Pickup)
     with a valid 4-digit delivery OTP (e.g. '4821') and human-readable landmark.
     """
-    from backend.database import get_db
+    from backend.database import db_session
     from backend.models import Order, OrderItem
-    db = next(get_db())
-    has_stage3 = db.query(Order).filter(Order.store_id == "sharma_brothers", Order.timeline_stage == 3).first()
-    if not has_stage3:
-        import random
-        oid = f"#RUR-{random.randint(10000, 99999)}"
-        while db.query(Order).filter(Order.id == oid).first():
+    with db_session() as db:
+        has_stage3 = db.query(Order).filter(Order.store_id == "sharma_brothers", Order.timeline_stage == 3).first()
+        if not has_stage3:
+            import random
             oid = f"#RUR-{random.randint(10000, 99999)}"
+            while db.query(Order).filter(Order.id == oid).first():
+                oid = f"#RUR-{random.randint(10000, 99999)}"
 
-        demo = Order(
-            id=oid,
-            user_phone="9876543230",
-            user_name="Vikram Singh (विक्रम सिंह)",
-            village="Rampur South (रामपुर दक्षिण)",
-            landmark="Near Old Neem Tree, Tubewell #3, Khasra 19",
-            store_id="sharma_brothers",
-            store_name="Sharma Brothers Kirana",
-            subtotal=234.0,
-            distance_km=1.2,
-            eta_mins="30 Mins",
-            delivery_fee=15.0,
-            platform_fee=3.0,
-            savings=32.0,
-            total_amount=252.0,
-            vendor_payout=234.0,
-            runner_payout=10.0,
-            admin_profit=8.0,
-            payment_mode="COD",
-            status="Packed & Ready",
-            timeline_stage=3,
-            delivery_otp="4821",
-            created_at=datetime.now(timezone.utc)
-        )
-        db.add(demo)
-        db.flush()
-        db.add(OrderItem(order_id=oid, product_id="item_1", product_name="Aashirvaad Chakki Atta 5kg", price=210.0, quantity=1))
-        db.add(OrderItem(order_id=oid, product_id="item_3", product_name="Tata Salt Iodized 1kg", price=24.0, quantity=1))
-        db.commit()
-    db.close()
+            demo = Order(
+                id=oid,
+                user_phone="9876543230",
+                user_name="Vikram Singh (विक्रम सिंह)",
+                village="Rampur South (रामपुर दक्षिण)",
+                landmark="Near Old Neem Tree, Tubewell #3, Khasra 19",
+                store_id="sharma_brothers",
+                store_name="Sharma Brothers Kirana",
+                subtotal=234.0,
+                distance_km=1.2,
+                eta_mins="30 Mins",
+                delivery_fee=15.0,
+                platform_fee=3.0,
+                savings=32.0,
+                total_amount=252.0,
+                vendor_payout=234.0,
+                runner_payout=10.0,
+                admin_profit=8.0,
+                payment_mode="COD",
+                status="Packed & Ready",
+                timeline_stage=3,
+                delivery_otp="4821",
+                created_at=datetime.now(timezone.utc)
+            )
+            db.add(demo)
+            db.flush()
+            db.add(OrderItem(order_id=oid, product_id="item_1", product_name="Aashirvaad Chakki Atta 5kg", price=210.0, quantity=1))
+            db.add(OrderItem(order_id=oid, product_id="item_3", product_name="Tata Salt Iodized 1kg", price=24.0, quantity=1))
+            db.commit()
 
 
 def run_runner_device_simulation(browser, device_config, logger):
@@ -879,12 +878,11 @@ def _do_lifecycle_sync(context, logger):
     logger.record_test("Doorstep Handover OTP Validation & Celebration Modal", is_delivered, "Mission completed successfully!")
 
     # 6. Verify real SQLite database persistence
-    from backend.database import get_db
+    from backend.database import db_session
     from backend.models import Order
-    db = next(get_db())
-    db_order = db.query(Order).filter(Order.id == order_id).first()
-    db_persisted = db_order is not None and db_order.timeline_stage == 5 and db_order.status == "Delivered"
-    db.close()
+    with db_session() as db:
+        db_order = db.query(Order).filter(Order.id == order_id).first()
+        db_persisted = db_order is not None and db_order.timeline_stage == 5 and db_order.status == "Delivered"
 
     logger.record_test(
         "Full Lifecycle SQLite DB State Integrity (Stage 5 Delivered)",

@@ -26,7 +26,7 @@ from sqlalchemy.orm import Session
 import sentry_sdk
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 
-from .database import engine, Base, get_db, check_database_integrity, ensure_schema_migrations
+from .database import engine, Base, get_db, check_database_integrity, ensure_schema_migrations, db_session
 from .models import User, OTPRecord, Landmark, Store, Product, Order, OrderItem, Runner, SupportTicket, StoreCategory, SavedPaymentMethod, PaymentTransaction
 from .schemas import (
     SendOTPRequest, SendOTPResponse,
@@ -173,11 +173,8 @@ def on_startup():
     if os.getenv("GAONBAZAR_SEED_DEMO") == "1" or (
         engine.dialect.name == "sqlite" and os.getenv("GAONBAZAR_SEED_DEMO", "1") == "1"
     ):
-        db = next(get_db())
-        try:
+        with db_session() as db:
             seed_database(db)
-        finally:
-            db.close()
 
 
 # Helper to safely locate frontend HTML dashboard templates across environments
