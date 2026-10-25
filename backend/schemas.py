@@ -217,6 +217,9 @@ class OrderStatusResponse(BaseModel):
     landmark: str
     refund_amount: Optional[float] = None
     refund_penalty: Optional[float] = None
+    runner_id: Optional[str] = None
+    runner_name: Optional[str] = None
+    runner_phone: Optional[str] = None
     created_at: str
 
 
@@ -700,6 +703,9 @@ class UserOrderSummaryDTO(BaseModel):
     payment_mode: str
     items_count: int
     delivery_otp: str
+    runner_id: Optional[str] = None
+    runner_name: Optional[str] = None
+    runner_phone: Optional[str] = None
     created_at: str
 
 

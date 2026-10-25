@@ -1053,6 +1053,13 @@ def get_order_status(order_id: str, db: Session = Depends(get_db)):
     if not order:
         raise HTTPException(status_code=404, detail=f"Order {order_id} not found in database")
 
+    runner_obj = None
+    r_id = getattr(order, "runner_id", None)
+    if r_id:
+        runner_obj = db.query(Runner).filter(Runner.id == r_id).first()
+    elif order.timeline_stage >= 3:
+        runner_obj = db.query(Runner).filter(Runner.is_online == True).first()
+
     return OrderStatusResponse(
         order_id=order.id,
         status=order.status,
@@ -1066,6 +1073,9 @@ def get_order_status(order_id: str, db: Session = Depends(get_db)):
         landmark=order.landmark,
         refund_amount=getattr(order, 'refund_amount', 0.0) or 0.0,
         refund_penalty=getattr(order, 'refund_penalty', 0.0) or 0.0,
+        runner_id=runner_obj.id if runner_obj else None,
+        runner_name=runner_obj.name if runner_obj else None,
+        runner_phone=runner_obj.phone if runner_obj else None,
         created_at=order.created_at.isoformat()
     )
 
@@ -1380,6 +1390,12 @@ def get_user_orders(phone: str, db: Session = Depends(get_db), auth: Dict[str, A
     results = []
     for ord_obj in orders:
         items_cnt = db.query(OrderItem).filter(OrderItem.order_id == ord_obj.id).count()
+        runner_obj = None
+        r_id = getattr(ord_obj, "runner_id", None)
+        if r_id:
+            runner_obj = db.query(Runner).filter(Runner.id == r_id).first()
+        elif ord_obj.timeline_stage >= 3:
+            runner_obj = db.query(Runner).filter(Runner.is_online == True).first()
         results.append(UserOrderSummaryDTO(
             order_id=ord_obj.id,
             store_name=ord_obj.store_name,
@@ -1392,6 +1408,9 @@ def get_user_orders(phone: str, db: Session = Depends(get_db), auth: Dict[str, A
             payment_mode=ord_obj.payment_mode,
             items_count=items_cnt or 1,
             delivery_otp=ord_obj.delivery_otp,
+            runner_id=runner_obj.id if runner_obj else None,
+            runner_name=runner_obj.name if runner_obj else None,
+            runner_phone=runner_obj.phone if runner_obj else None,
             created_at=ord_obj.created_at.isoformat() if ord_obj.created_at else datetime.utcnow().isoformat()
         ))
     return results
@@ -2801,6 +2820,14 @@ def vendor_quick_action(
     - deliver -> stage 5 (Delivered)
     - cancel  -> stage 0 (Cancelled by Vendor)
     """
+    # Enforce delivery restriction: Vendors cannot mark orders delivered.
+    # Delivery must be verified by the authorized Runner via customer doorstep OTP.
+    if action == "deliver" and auth_vendor.get("role") != "admin":
+        raise HTTPException(
+            status_code=403,
+            detail="Access Denied: Vendors cannot mark orders as Delivered. Delivery must be verified through the authorized Runner OTP handover workflow."
+        )
+
     candidate_ids = [order_id, f"#{order_id}", order_id.lstrip("#")]
     order = db.query(Order).filter(Order.id.in_(candidate_ids)).first()
     if not order:
@@ -2828,6 +2855,14 @@ def vendor_quick_action(
         new_stage, status_name = action_map[action]
         order.timeline_stage = new_stage
         order.status = status_name
+        if new_stage == 3:
+            order.eta_mins = compute_dynamic_eta(getattr(order, 'distance_km', 1.5), timeline_stage=3)
+            try:
+                notify_order_packed(db, order)
+            except Exception as e:
+                print(f"Notice: Order packed notification: {e}")
+        elif new_stage == 5:
+            reset_user_trust_on_delivery(order.user_phone, db)
         db.commit()
         db.refresh(order)
 
@@ -2841,6 +2876,13 @@ def vendor_quick_action(
         )
         for it in order.items
     ]
+    runner_obj = None
+    r_id = getattr(order, "runner_id", None)
+    if r_id:
+        runner_obj = db.query(Runner).filter(Runner.id == r_id).first()
+    elif order.timeline_stage >= 3:
+        runner_obj = db.query(Runner).filter(Runner.is_online == True).first()
+
     return VendorOrderDTO(
         id=order.id,
         user_name=order.user_name,
@@ -2858,6 +2900,9 @@ def vendor_quick_action(
         status=order.status,
         timeline_stage=order.timeline_stage,
         delivery_otp=order.delivery_otp,
+        runner_id=runner_obj.id if runner_obj else None,
+        runner_name=runner_obj.name if runner_obj else None,
+        runner_phone=runner_obj.phone if runner_obj else None,
         created_at=order.created_at.isoformat(),
         items=items_dto
     )
