@@ -356,6 +356,15 @@ def send_otp(payload: SendOTPRequest, db: Session = Depends(get_db)):
     if len(clean_digits) < 10:
         raise HTTPException(status_code=400, detail="Invalid phone number: Must be at least 10 digits")
 
+    # Demo preview does not have an SMS provider. Only issue a fixed OTP for its
+    # documented test phone; never pretend to send codes to real phone numbers.
+    is_preview = os.getenv("GAONBAZAR_PREVIEW_MODE") == "1"
+    if is_preview and clean_digits != "9876543210":
+        raise HTTPException(
+            status_code=400,
+            detail="Demo preview only: use test phone 9876543210 and OTP 582941. No SMS is sent."
+        )
+
     is_production = os.getenv("ENVIRONMENT", "").lower() == "production"
     is_test_phone = (phone == "9876543210" or clean_digits == "9876543210") and not is_production
 
@@ -387,7 +396,7 @@ def send_otp(payload: SendOTPRequest, db: Session = Depends(get_db)):
 
     return SendOTPResponse(
         success=True,
-        message=f"OTP sent to +91 {phone}",
+        message=("Demo OTP created (no SMS sent)" if is_preview else f"OTP sent to +91 {phone}"),
         otp=echo_otp
     )
 
