@@ -387,7 +387,7 @@
   </header>
 
   <!-- Global Audio / Notification Banner -->
-  <div id="vendor-toast" class="hidden fixed top-16 left-1/2 transform -translate-x-1/2 z-50 bg-slate-900 text-white px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-3 border border-slate-700 max-w-sm w-11/12">
+  <div id="vendor-toast" role="status" aria-live="polite" class="hidden relative shrink-0 z-20 bg-slate-900 text-white px-3 py-2 rounded-2xl shadow-md flex items-center gap-3 border border-slate-700 max-w-lg w-[calc(100%-24px)] mx-auto my-1">
     <span class="material-symbols-outlined text-primary-fixed text-[22px] animate-bounce" id="toast-icon">notifications_active</span>
     <div class="flex flex-col min-w-0 flex-1">
       <span id="toast-title" class="text-xs font-bold text-white"></span>
@@ -2172,9 +2172,9 @@
             <div class="p-2.5 bg-purple-50 rounded-xl border border-purple-200 flex items-center justify-between gap-2 text-xs">
               <div class="flex items-center gap-2 min-w-0 flex-1">
                 <span class="material-symbols-outlined text-purple-700 text-[18px] shrink-0">sports_motorsports</span>
-                <span class="font-bold text-purple-900 truncate">${isHi ? 'रनर: मोहन लाल (#102)' : 'Runner: Mohan Lal (#102)'}</span>
+                <span class="font-bold text-purple-900 min-w-0 break-words">${isHi ? 'डिलीवरी पार्टनर के असाइन होने की प्रतीक्षा' : 'Waiting for an assigned delivery partner'}</span>
               </div>
-              <span class="text-[11px] font-bold text-purple-700 shrink-0">+91 9876543220</span>
+              <span class="text-[11px] font-bold text-purple-700 shrink-0" aria-label="Assignment pending">…</span>
             </div>
             <button onclick="handleOrderAction('${order.id}', 'dispatch')" class="scroll-mt-28 w-full min-h-[48px] py-3 rounded-2xl bg-purple-700 hover:bg-purple-800 text-white text-xs sm:text-sm font-black shadow-md active:scale-98 transition-transform flex items-center justify-center gap-2">
               <span class="material-symbols-outlined text-[20px]">local_shipping</span>
