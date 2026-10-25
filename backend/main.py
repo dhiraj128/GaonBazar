@@ -167,11 +167,17 @@ def on_startup():
     check_database_integrity()
     ensure_schema_migrations()
     Base.metadata.create_all(bind=engine)
-    db = next(get_db())
-    try:
-        seed_database(db)
-    finally:
-        db.close()
+    # Never insert or overwrite demo shops, catalog prices or runner records in
+    # PostgreSQL production. Seed only when explicitly requested in an isolated
+    # environment; SQLite local development retains legacy demo behavior.
+    if os.getenv("GAONBAZAR_SEED_DEMO") == "1" or (
+        engine.dialect.name == "sqlite" and os.getenv("GAONBAZAR_SEED_DEMO", "1") == "1"
+    ):
+        db = next(get_db())
+        try:
+            seed_database(db)
+        finally:
+            db.close()
 
 
 # Helper to safely locate frontend HTML dashboard templates across environments
