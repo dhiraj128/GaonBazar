@@ -190,7 +190,8 @@ def ensure_schema_migrations():
             ("split_payout_status", "VARCHAR(30) DEFAULT 'unprocessed'"),
             ("paid_at", "DATETIME"),
             ("customer_lat", "FLOAT"),
-            ("customer_lng", "FLOAT")
+            ("customer_lng", "FLOAT"),
+            ("runner_id", "VARCHAR(50)")
         ]
         for col_name, col_type in order_cols:
             if col_name not in existing_order_cols:

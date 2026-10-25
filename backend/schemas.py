@@ -258,6 +258,9 @@ class VendorOrderDTO(BaseModel):
     status: str
     timeline_stage: int
     delivery_otp: str
+    runner_id: Optional[str] = None
+    runner_name: Optional[str] = None
+    runner_phone: Optional[str] = None
     created_at: str
     items: List[VendorOrderItemDTO]
 

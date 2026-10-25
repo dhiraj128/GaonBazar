@@ -239,12 +239,9 @@
       main { padding: 12px !important; padding-bottom: calc(112px + env(safe-area-inset-bottom, 0px)) !important; gap: 12px !important; }
       #vendor-main-content { gap: 12px !important; }
       #vendor-kpi-board { gap: 8px !important; }
-      #vendor-kpi-board > div { min-width: 0; padding: 11px !important; min-height: 79px; border-radius: 18px !important; box-shadow: none !important; }
-      #vendor-kpi-board > div > div:last-child { display: none !important; }
-      #vendor-kpi-board [id^="kpi-"] { font-size: 22px !important; line-height: 1.1 !important; }
+      #vendor-kpi-board > div { min-width: 0; padding: 8px 10px !important; min-height: 58px; border-radius: 14px !important; box-shadow: none !important; }
+      #vendor-kpi-board [id^="kpi-"] { font-size: 18px !important; line-height: 1.1 !important; }
       #vendor-kpi-board .text-\[10px\], #vendor-kpi-board .text-\[11px\] { font-size: 10px !important; }
-      #vendor-main-content[data-active-tab]:not([data-active-tab="orders"]) #vendor-kpi-board { display: none !important; }
-      #vendor-main-content[data-active-tab="orders"] #vendor-kpi-board > :nth-child(n+3) { display: none !important; }
       #tab-orders, #tab-inventory, #tab-ledger, #tab-settings { gap: 10px !important; }
       #tab-orders .rounded-3xl, #tab-inventory .rounded-3xl { border-radius: 18px !important; }
       #vendor-bottom-nav { padding-top: 4px !important; padding-bottom: max(6px, env(safe-area-inset-bottom, 0px)) !important; }
@@ -349,26 +346,22 @@
   <!-- ========================================================================= -->
   <!-- 2. NATIVE TOP APP BAR & STORE CONTROLS                                    -->
   <!-- ========================================================================= -->
-  <header id="vendor-header" class="hidden sticky top-0 z-40 shrink-0 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs px-3 sm:px-6 py-2.5">
-    <div class="max-w-6xl mx-auto flex items-center justify-between gap-2">
+  <header id="vendor-header" class="hidden sticky top-0 z-40 shrink-0 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs px-3 sm:px-6 h-14 sm:h-16 flex items-center">
+    <div class="max-w-6xl w-full mx-auto flex items-center justify-between gap-2">
       
-      <!-- Brand & Store Switcher (Unified Page Title) -->
-      <div class="flex items-center gap-2 min-w-0">
-        <div class="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center shrink-0 shadow-xs">
-          <span class="material-symbols-outlined text-[22px]">storefront</span>
+      <!-- Brand & Shop Name (Compact, Truncated, 56-64px Bar) -->
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-primary text-white flex items-center justify-center shrink-0 shadow-xs">
+          <span class="material-symbols-outlined text-[20px] sm:text-[22px]">storefront</span>
         </div>
         <div class="flex flex-col min-w-0 justify-center">
-          <div class="flex items-center gap-1.5">
-            <span class="text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md min-h-[20px] flex items-center justify-center shrink-0" id="store-badge-code">#SHR-01</span>
-            <span id="header-phone" class="text-[10px] text-slate-400 font-medium truncate hidden sm:inline">+91 9876543210</span>
-            <span id="sync-beacon-text" class="hidden"></span>
-          </div>
-          <span id="vendor-header-shop-name" class="text-sm font-extrabold text-slate-900 truncate block max-w-[150px] sm:max-w-[250px]">GaonBazaar Store</span>
+          <span id="vendor-header-shop-name" class="text-sm sm:text-base font-extrabold text-slate-900 truncate block max-w-[170px] sm:max-w-[280px]">GaonBazaar Store</span>
+          <span class="text-[10px] text-slate-400 font-medium truncate sm:hidden">गांव बाज़ार पार्टनर</span>
         </div>
       </div>
 
-      <!-- Quick Action Controls: Online Status, Language, Logout (Min 44x44px Touch Targets) -->
-      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+      <!-- Quick Action Controls: Online Status & Settings Shortcut (Min 44x44px Touch Targets) -->
+      <div class="flex items-center gap-2 shrink-0">
         <!-- Shop Open/Close Toggle CTA -->
         <button id="store-open-btn" onclick="toggleStoreOpenStatus()" aria-label="Toggle Store Status" class="px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 border transition-all bg-emerald-50 text-emerald-800 border-emerald-300 min-h-[44px] min-w-[44px] active:scale-95 shrink-0 cursor-pointer">
           <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" id="open-indicator-dot"></span>
@@ -376,9 +369,7 @@
           <span id="open-status-mobile-label" class="sm:hidden text-xs font-black" data-i18n="store_open_short">चालू</span>
         </button>
 
-
-
-        <button id="btn-vendor-header-settings" type="button" onclick="switchMainTab('settings')" title="Settings" aria-label="Settings" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-slate-100 text-slate-700 border border-slate-200 flex items-center justify-center active:scale-95 shrink-0">
+        <button id="btn-vendor-header-settings" type="button" onclick="switchMainTab('settings')" title="Settings" aria-label="Settings" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 flex items-center justify-center active:scale-95 shrink-0 cursor-pointer">
           <span class="material-symbols-outlined text-[20px]">settings</span>
         </button>
       </div>
@@ -447,60 +438,7 @@
     <!-- ======================================================================= -->
     <!-- 2. HIGH-LEVEL KPI METRICS BAR (Decluttered & Rural-Friendly)            -->
     <!-- ======================================================================= -->
-    <section id="vendor-kpi-board" class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-      
-      <!-- KPI 1: New / Action Needed -->
-      <div onclick="switchOrderFilter('new')" class="bg-white rounded-3xl p-4 border border-amber-200/80 shadow-xs flex items-center justify-between cursor-pointer hover:border-amber-400 hover:shadow-sm transition-all active:scale-98">
-        <div class="flex flex-col min-w-0 flex-1">
-          <span class="text-[10px] sm:text-[11px] font-extrabold text-amber-700 uppercase tracking-wider flex items-center gap-1.5 truncate">
-            <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse shrink-0"></span>
-            <span data-i18n="kpi_new_orders" class="truncate">नए ऑर्डर</span>
-          </span>
-          <span id="kpi-new-count" class="text-2xl sm:text-3xl font-black text-amber-950 mt-1">0</span>
-          <span class="text-[10px] sm:text-[11px] text-amber-800 font-semibold mt-0.5 truncate" data-i18n="kpi_action_needed">तुरंत स्वीकार करें</span>
-        </div>
-        <div class="w-11 h-11 rounded-2xl bg-amber-50 text-amber-800 border border-amber-200 flex items-center justify-center shrink-0">
-          <span class="material-symbols-outlined text-[24px]">notifications_active</span>
-        </div>
-      </div>
-
-      <!-- KPI 2: In-Progress / Packing -->
-      <div onclick="switchOrderFilter('packing')" class="bg-white rounded-3xl p-4 border border-blue-200/80 shadow-xs flex items-center justify-between cursor-pointer hover:border-blue-400 hover:shadow-sm transition-all active:scale-98">
-        <div class="flex flex-col min-w-0 flex-1">
-          <span class="text-[10px] sm:text-[11px] font-extrabold text-blue-700 uppercase tracking-wider flex items-center gap-1 truncate" data-i18n="kpi_packing">पैकिंग चालू</span>
-          <span id="kpi-packing-count" class="text-2xl sm:text-3xl font-black text-blue-950 mt-1">0</span>
-          <span class="text-[10px] sm:text-[11px] text-blue-800 font-semibold mt-0.5 truncate" data-i18n="kpi_gathering">सामान तैयार करें</span>
-        </div>
-        <div class="w-11 h-11 rounded-2xl bg-blue-50 text-blue-800 border border-blue-200 flex items-center justify-center shrink-0">
-          <span class="material-symbols-outlined text-[24px]">inventory_2</span>
-        </div>
-      </div>
-
-      <!-- KPI 3: Today's Gross Sales -->
-      <div onclick="switchMainTab('ledger')" class="bg-white rounded-3xl p-4 border border-emerald-200/80 shadow-xs flex items-center justify-between cursor-pointer hover:border-emerald-400 hover:shadow-sm transition-all active:scale-98">
-        <div class="flex flex-col min-w-0 flex-1">
-          <span class="text-[10px] sm:text-[11px] font-extrabold text-primary uppercase tracking-wider flex items-center gap-1 truncate" data-i18n="kpi_today_sales">कुल बिक्री</span>
-          <span id="kpi-gross-sales" class="text-2xl sm:text-3xl font-black text-slate-900 mt-1">₹0</span>
-          <span id="kpi-orders-count" class="text-[10px] sm:text-[11px] text-slate-500 font-semibold mt-0.5 truncate" data-i18n="kpi_orders_label">0 कुल ऑर्डर</span>
-        </div>
-        <div class="w-11 h-11 rounded-2xl bg-emerald-50 text-primary border border-emerald-200 flex items-center justify-center shrink-0">
-          <span class="material-symbols-outlined text-[24px]">payments</span>
-        </div>
-      </div>
-
-      <!-- KPI 4: Dukandaar Net Payout -->
-      <div onclick="switchMainTab('ledger')" class="bg-white rounded-3xl p-4 border border-purple-200/80 shadow-xs flex items-center justify-between cursor-pointer hover:border-purple-400 hover:shadow-sm transition-all active:scale-98">
-        <div class="flex flex-col min-w-0 flex-1">
-          <span class="text-[10px] sm:text-[11px] font-extrabold text-purple-700 uppercase tracking-wider flex items-center gap-1 truncate" data-i18n="kpi_net_payout">आपकी कमाई</span>
-          <span id="kpi-net-payout" class="text-2xl sm:text-3xl font-black text-purple-950 mt-1">₹0</span>
-          <span class="text-[10px] sm:text-[11px] text-purple-800 font-semibold mt-0.5 truncate" data-i18n="kpi_after_fee">कमीशन कटने के बाद</span>
-        </div>
-        <div class="w-11 h-11 rounded-2xl bg-purple-50 text-purple-800 border border-purple-200 flex items-center justify-center shrink-0">
-          <span class="material-symbols-outlined text-[24px]">account_balance_wallet</span>
-        </div>
-      </div>
-
-    </section>
+    
 
     <!-- Workspace Header & Quick Actions -->
     <div class="flex items-center justify-between gap-2 px-1 py-0.5">
@@ -518,6 +456,61 @@
     <!-- 4. TAB 1: LIVE INCOMING ORDER QUEUE                                     -->
     <!-- ======================================================================= -->
     <section id="tab-orders" class="flex flex-col gap-3">
+      <!-- HIGH-LEVEL KPI METRICS BAR (Compact, Clean & High-Contrast) -->
+      <section id="vendor-kpi-board" class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
+        
+        <!-- KPI 1: New / Action Needed -->
+        <div onclick="switchOrderFilter('new')" class="bg-white rounded-2xl p-2.5 sm:p-3 border border-amber-200 shadow-2xs flex items-center justify-between cursor-pointer hover:border-amber-400 transition-all active:scale-98">
+          <div class="flex flex-col min-w-0 flex-1">
+            <span class="text-[10px] font-extrabold text-amber-700 uppercase tracking-wider flex items-center gap-1.5 truncate">
+              <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse shrink-0"></span>
+              <span data-i18n="kpi_new_orders" class="truncate">नए ऑर्डर</span>
+            </span>
+            <span id="kpi-new-count" class="text-xl sm:text-2xl font-black text-amber-950 mt-0.5">0</span>
+            <span class="text-[10px] text-amber-800 font-semibold truncate" data-i18n="kpi_action_needed">तुरंत स्वीकारें</span>
+          </div>
+          <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[20px]">notifications_active</span>
+          </div>
+        </div>
+
+        <!-- KPI 2: In-Progress / Packing -->
+        <div onclick="switchOrderFilter('packing')" class="bg-white rounded-2xl p-2.5 sm:p-3 border border-blue-200 shadow-2xs flex items-center justify-between cursor-pointer hover:border-blue-400 transition-all active:scale-98">
+          <div class="flex flex-col min-w-0 flex-1">
+            <span class="text-[10px] font-extrabold text-blue-700 uppercase tracking-wider flex items-center gap-1 truncate" data-i18n="kpi_packing">पैकिंग चालू</span>
+            <span id="kpi-packing-count" class="text-xl sm:text-2xl font-black text-blue-950 mt-0.5">0</span>
+            <span class="text-[10px] text-blue-800 font-semibold truncate" data-i18n="kpi_gathering">सामान तैयार करें</span>
+          </div>
+          <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-800 border border-blue-200 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[20px]">inventory_2</span>
+          </div>
+        </div>
+
+        <!-- KPI 3: Today's Gross Sales -->
+        <div onclick="switchMainTab('ledger')" class="bg-white rounded-2xl p-2.5 sm:p-3 border border-emerald-200 shadow-2xs flex items-center justify-between cursor-pointer hover:border-emerald-400 transition-all active:scale-98">
+          <div class="flex flex-col min-w-0 flex-1">
+            <span class="text-[10px] font-extrabold text-primary uppercase tracking-wider flex items-center gap-1 truncate" data-i18n="kpi_today_sales">कुल बिक्री</span>
+            <span id="kpi-gross-sales" class="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">₹0</span>
+            <span id="kpi-orders-count" class="text-[10px] text-slate-500 font-semibold truncate" data-i18n="kpi_orders_label">0 कुल ऑर्डर</span>
+          </div>
+          <div class="w-9 h-9 rounded-xl bg-emerald-50 text-primary border border-emerald-200 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[20px]">payments</span>
+          </div>
+        </div>
+
+        <!-- KPI 4: Dukandaar Net Payout -->
+        <div onclick="switchMainTab('ledger')" class="bg-white rounded-2xl p-2.5 sm:p-3 border border-purple-200 shadow-2xs flex items-center justify-between cursor-pointer hover:border-purple-400 transition-all active:scale-98">
+          <div class="flex flex-col min-w-0 flex-1">
+            <span class="text-[10px] font-extrabold text-purple-700 uppercase tracking-wider flex items-center gap-1 truncate" data-i18n="kpi_net_payout">आपकी कमाई</span>
+            <span id="kpi-net-payout" class="text-xl sm:text-2xl font-black text-purple-950 mt-0.5">₹0</span>
+            <span class="text-[10px] text-purple-800 font-semibold truncate" data-i18n="kpi_after_fee">कमीशन कटने के बाद</span>
+          </div>
+          <div class="w-9 h-9 rounded-xl bg-purple-50 text-purple-800 border border-purple-200 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+          </div>
+        </div>
+
+      </section>
       
       <!-- Sub-filter Pills -->
       <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
@@ -670,62 +663,20 @@
     <!-- 7. TAB 4: STORE SETTINGS & PROFILE                                      -->
     <!-- ======================================================================= -->
     <section id="tab-settings" class="hidden flex-col gap-4">
-      <!-- Store preferences live in Settings, keeping orders-first header focused. -->
-      <div id="vendor-preferences-card" class="bg-white rounded-2xl p-4 border border-slate-200 flex flex-col gap-3">
-        <div class="flex items-center justify-between gap-3">
-          <span class="text-xs font-bold text-slate-700" data-i18n="profile_row_lang">App language</span>
-        <button id="lang-toggle-btn" onclick="toggleLanguage()" aria-label="Toggle Language" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold flex items-center justify-center gap-1 min-h-[44px] min-w-[44px] active:scale-95 shrink-0 cursor-pointer">
-          <span class="material-symbols-outlined text-[18px]">translate</span>
-          <span id="current-lang-text">English</span>
-        </button>
-        </div>
-        <label class="text-xs font-bold text-slate-700" for="store-switcher-select" data-i18n="lbl_select_store">Select store</label>
-                  <select id="store-switcher-select" onchange="switchStore(this.value)" class="text-xs font-black text-slate-800 bg-slate-100/80 border border-slate-200 rounded-lg px-2 py-1 min-h-[28px] focus:ring-0 cursor-pointer truncate w-full min-h-[44px]">
-            <option value="sharma_brothers">Sharma Brothers</option>
-            <option value="kisan_seva">Kisan Seva</option>
-            <option value="rampur_dawa">Rampur Dawa</option>
-            <option value="apna_dairy">Apna Dairy</option>
-          </select>
-      </div>
-
-      <button id="btn-vendor-logout" type="button" onclick="handleVendorLogout()" class="min-h-[48px] w-full rounded-2xl border border-red-300 bg-red-50 text-red-700 font-bold flex items-center justify-center gap-2">
-        <span class="material-symbols-outlined">logout</span><span data-i18n="logout_label">Log out</span>
-      </button>
-      <!-- Vendor Theme Selection Card (Light / Dark / System) -->
-      <div id="vendor-theme-settings-card" class="bg-white rounded-3xl p-5 border border-slate-200 shadow-xs flex flex-col gap-4 max-w-2xl">
+      
+      <!-- Store Profile & Operational Cluster Card -->
+      <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-xs flex flex-col gap-4 max-w-2xl">
         <div class="flex items-center justify-between border-b pb-2.5">
           <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary text-[22px]">palette</span>
-            <div>
-              <h2 class="text-sm sm:text-base font-black text-slate-900" data-i18n="vendor_theme_title">थीम / रंग रूप (Theme)</h2>
-              <span class="text-[11px] text-slate-500 block" data-i18n="vendor_theme_sub">हल्का, गहरा या डिवाइस के अनुसार</span>
-            </div>
+            <span class="material-symbols-outlined text-primary text-[22px]">store</span>
+            <h2 class="text-sm sm:text-base font-black text-slate-900" data-i18n="settings_title">दुकान की जानकारी व क्लस्टर सेटिंग</h2>
           </div>
-          <span id="vendor-theme-badge" class="px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-50 text-emerald-800 border border-emerald-200">सिस्टम (System)</span>
+          <div class="flex items-center gap-1.5">
+            <span class="text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md min-h-[20px] flex items-center justify-center shrink-0" id="store-badge-code">#SHR-01</span>
+            <span id="header-phone" class="text-[10px] text-slate-400 font-medium truncate hidden sm:inline">+91 9876543210</span>
+            <span id="sync-beacon-text" class="hidden"></span>
+          </div>
         </div>
-
-        <div class="grid grid-cols-3 gap-2 bg-slate-100 p-1.5 rounded-2xl vendor-theme-segment">
-          <button id="btn-vendor-theme-light" type="button" onclick="setVendorTheme('light')" class="min-h-[44px] rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all text-slate-700 hover:bg-white/60 cursor-pointer">
-            <span class="material-symbols-outlined text-[18px]">light_mode</span>
-            <span data-i18n="theme_opt_light">हल्का (Light)</span>
-          </button>
-          <button id="btn-vendor-theme-dark" type="button" onclick="setVendorTheme('dark')" class="min-h-[44px] rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all text-slate-700 hover:bg-white/60 cursor-pointer">
-            <span class="material-symbols-outlined text-[18px]">dark_mode</span>
-            <span data-i18n="theme_opt_dark">गहरा (Dark)</span>
-          </button>
-          <button id="btn-vendor-theme-system" type="button" onclick="setVendorTheme('system')" class="min-h-[44px] rounded-xl font-black text-xs flex items-center justify-center gap-1.5 transition-all bg-primary text-white shadow-xs cursor-pointer">
-            <span class="material-symbols-outlined text-[18px]">settings_suggest</span>
-            <span data-i18n="theme_opt_system">सिस्टम (System)</span>
-          </button>
-        </div>
-      </div>
-
-
-      <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-xs flex flex-col gap-4 max-w-2xl">
-        <h2 class="text-base font-black text-slate-900 border-b pb-2 flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary">store</span>
-          <span data-i18n="settings_title">दुकान की जानकारी व क्लस्टर सेटिंग</span>
-        </h2>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           <div>
@@ -764,11 +715,69 @@
           <span data-i18n="store_verified_note">गाँव बाज़ार से सत्यापित दुकान। प्रति ऑर्डर ₹3 प्लेटफ़ॉर्म शुल्क लागू।</span>
         </div>
       </div>
-    
+
+      <!-- Store Switcher & Language Preferences Card -->
+      <div id="vendor-preferences-card" class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-xs flex flex-col gap-3.5 max-w-2xl">
+        <h2 class="text-sm font-black text-slate-900 flex items-center gap-2 border-b pb-2">
+          <span class="material-symbols-outlined text-primary text-[20px]">tune</span>
+          <span data-i18n="vendor_pref_title">प्राथमिकताएं एवं स्टोर चयन</span>
+        </h2>
+
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <span class="text-xs font-bold text-slate-800 block" data-i18n="profile_row_lang">ऐप की भाषा (Language)</span>
+            <span class="text-[11px] text-slate-400">हिंदी / English</span>
+          </div>
+          <button id="lang-toggle-btn" onclick="toggleLanguage()" aria-label="Toggle Language" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold flex items-center justify-center gap-1.5 min-h-[44px] min-w-[44px] active:scale-95 shrink-0 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">translate</span>
+            <span id="current-lang-text">English</span>
+          </button>
+        </div>
+
+        <div>
+          <label class="text-xs font-bold text-slate-800 block mb-1.5" for="store-switcher-select" data-i18n="lbl_select_store">सक्रिय दुकान चुनें (Store Switcher)</label>
+          <select id="store-switcher-select" onchange="switchStore(this.value)" class="text-xs font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl px-3 py-2.5 min-h-[44px] w-full focus:ring-1 focus:ring-primary cursor-pointer">
+            <option value="sharma_brothers">Sharma Brothers Kirana Store</option>
+            <option value="kisan_seva">Kisan Seva Kendra</option>
+            <option value="rampur_dawa">Rampur Dawa & Health</option>
+            <option value="apna_dairy">Apna Dairy Fresh</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Vendor Theme Selection Card (Light / Dark / System) -->
+      <div id="vendor-theme-settings-card" class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-xs flex flex-col gap-3.5 max-w-2xl">
+        <div class="flex items-center justify-between border-b pb-2">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-[20px]">palette</span>
+            <div>
+              <h2 class="text-sm font-black text-slate-900" data-i18n="vendor_theme_title">थीम / रंग रूप (Theme)</h2>
+              <span class="text-[11px] text-slate-500 block" data-i18n="vendor_theme_sub">हल्का, गहरा या डिवाइस के अनुसार</span>
+            </div>
+          </div>
+          <span id="vendor-theme-badge" class="px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-50 text-emerald-800 border border-emerald-200">सिस्टम (System)</span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 bg-slate-100 p-1.5 rounded-2xl vendor-theme-segment">
+          <button id="btn-vendor-theme-light" type="button" onclick="setVendorTheme('light')" class="min-h-[44px] rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all text-slate-700 hover:bg-white/60 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">light_mode</span>
+            <span data-i18n="theme_opt_light">हल्का</span>
+          </button>
+          <button id="btn-vendor-theme-dark" type="button" onclick="setVendorTheme('dark')" class="min-h-[44px] rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all text-slate-700 hover:bg-white/60 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">dark_mode</span>
+            <span data-i18n="theme_opt_dark">गहरा</span>
+          </button>
+          <button id="btn-vendor-theme-system" type="button" onclick="setVendorTheme('system')" class="min-h-[44px] rounded-xl font-black text-xs flex items-center justify-center gap-1.5 transition-all bg-primary text-white shadow-xs cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">settings_suggest</span>
+            <span data-i18n="theme_opt_system">सिस्टम</span>
+          </button>
+        </div>
+      </div>
+
       <!-- Bank & UPI Payout Settings Module -->
-      <div id="vendor-bank-settings-card" class="bg-white rounded-3xl p-5 border border-slate-200 shadow-xs flex flex-col gap-4 max-w-2xl">
+      <div id="vendor-bank-settings-card" class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-xs flex flex-col gap-4 max-w-2xl">
         <div class="flex flex-wrap items-center justify-between gap-2.5 border-b pb-2.5">
-          <h2 class="text-sm sm:base font-black text-slate-900 flex items-center gap-2">
+          <h2 class="text-sm font-black text-slate-900 flex items-center gap-2">
             <span class="material-symbols-outlined text-primary">account_balance</span>
             <span data-i18n="bank_settings_title">बैंक खाता एवं UPI सेटिंग्स</span>
           </h2>
@@ -784,40 +793,32 @@
 
         <!-- Bank Form Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-          <!-- Account Holder Name -->
           <div class="sm:col-span-2">
             <label class="block text-xs font-bold text-slate-700 mb-1" data-i18n="bank_lbl_name">खाताधारक का पूरा नाम *</label>
             <input type="text" id="vendor-bank-account-name" data-i18n-ph="bank_ph_name" placeholder="उदा. Ramesh Sharma" class="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl text-xs font-semibold focus:outline-primary"/>
           </div>
 
-          <!-- Account Number -->
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1" data-i18n="bank_lbl_acc">बैंक खाता संख्या *</label>
             <input type="password" id="vendor-bank-account-number" data-i18n-ph="bank_ph_acc" placeholder="9-18 अंकों की खाता संख्या" class="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl text-xs font-mono font-semibold focus:outline-primary" autocomplete="off"/>
           </div>
 
-          <!-- Re-enter Account Number -->
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1" data-i18n="bank_lbl_confirm">पुनः खाता संख्या दर्ज करें *</label>
             <input type="password" id="vendor-bank-confirm-account-number" data-i18n-ph="bank_ph_confirm" placeholder="खाता संख्या दोबारा दर्ज करें" class="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl text-xs font-mono font-semibold focus:outline-primary" autocomplete="off"/>
           </div>
 
-          <!-- IFSC Code -->
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1" data-i18n="bank_lbl_ifsc">बैंक IFSC कोड *</label>
             <input type="text" id="vendor-bank-ifsc" data-i18n-ph="bank_ph_ifsc" placeholder="उदा. SBIN0001234" maxlength="11" oninput="this.value = this.value.toUpperCase()" class="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl text-xs font-mono font-semibold uppercase focus:outline-primary"/>
-            <span class="text-[10px] text-slate-400 mt-0.5 block" data-i18n="bank_hint_ifsc">11 अक्षर मान्य कोड</span>
           </div>
 
-          <!-- UPI ID -->
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1" data-i18n="bank_lbl_upi">UPI ID *</label>
             <input type="text" id="vendor-bank-upi" data-i18n-ph="bank_ph_upi" placeholder="उदा. sharma.kirana@okaxis" class="w-full p-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl text-xs font-mono font-semibold focus:outline-primary"/>
-            <span class="text-[10px] text-slate-400 mt-0.5 block" data-i18n="bank_hint_upi">तत्काल सेटलमेंट व सुरक्षा हेतु</span>
           </div>
         </div>
 
-        <!-- Masked Info Card if already configured -->
         <div id="vendor-bank-masked-info" class="hidden bg-slate-50 border border-slate-200 rounded-2xl p-3 text-xs flex items-center justify-between">
           <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-slate-600">credit_card</span>
@@ -829,16 +830,22 @@
           <span class="text-[10px] font-bold text-primary bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200" data-i18n="bank_status_active">सक्रिय</span>
         </div>
 
-        <!-- Inline Error/Success Message Alert -->
         <div id="vendor-bank-msg" class="hidden p-3 rounded-2xl text-xs font-bold"></div>
 
-        <!-- Save Button CTA -->
         <div class="flex justify-end pt-1">
           <button id="btn-save-vendor-bank" onclick="saveVendorPayoutSettings()" class="min-h-[48px] px-6 py-3 bg-primary hover:bg-primary-dark text-white rounded-xl text-xs font-extrabold flex items-center gap-2 shadow-sm active:scale-95 transition-all cursor-pointer">
             <span class="material-symbols-outlined text-[18px]">verified</span>
             <span data-i18n="btn_save_bank">बैंक विवरण सहेजें</span>
           </button>
         </div>
+      </div>
+
+      <!-- Polite, Non-Dominating Vendor Logout Action -->
+      <div class="pt-2 pb-6 max-w-2xl">
+        <button id="btn-vendor-logout" type="button" onclick="handleVendorLogout()" class="min-h-[48px] w-full rounded-2xl border border-red-200 bg-red-50/70 hover:bg-red-100 text-red-700 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-2xs transition-all active:scale-98 cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">logout</span>
+          <span data-i18n="logout_label">लॉगआउट करें (Log out)</span>
+        </button>
       </div>
 
     </section>
@@ -2108,7 +2115,7 @@
       container.innerHTML = filtered.map(order => createOrderCardHTML(order)).join('');
     }
 
-    function createOrderCardHTML(order) {
+        function createOrderCardHTML(order) {
       const isNew = order.timeline_stage === 1;
       const isAccepted = order.timeline_stage === 2;
       const isPacked = order.timeline_stage === 3;
@@ -2143,7 +2150,34 @@
         </div>
       `).join('');
 
-      // Action CTA Button Stack
+      // Delivery Partner Box (Vendor ↔ Runner communication)
+      let runnerBoxHtml = '';
+      if (order.runner_phone) {
+        runnerBoxHtml = `
+          <div class="p-2.5 bg-purple-50/90 rounded-2xl border border-purple-200 mb-3 flex items-center justify-between gap-2 text-xs">
+            <div class="flex items-center gap-2 min-w-0 flex-1">
+              <span class="material-symbols-outlined text-purple-700 text-[18px] shrink-0">sports_motorsports</span>
+              <div class="flex flex-col min-w-0">
+                <span class="text-[9.5px] uppercase font-black tracking-wider text-purple-700">${isHi ? 'डिलीवरी पार्टनर' : 'Delivery Partner'}</span>
+                <span class="font-bold text-purple-950 truncate">${order.runner_name || (isHi ? 'गाँव मित्र' : 'Gaon Mitra')}</span>
+              </div>
+            </div>
+            <a href="tel:${order.runner_phone}" class="min-h-[36px] px-3 py-1.5 rounded-xl bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs flex items-center gap-1 shrink-0 active:scale-95 shadow-xs cursor-pointer">
+              <span class="material-symbols-outlined text-[14px]">call</span>
+              <span>${isHi ? 'रनर को कॉल' : 'Call Partner'}</span>
+            </a>
+          </div>
+        `;
+      } else if (isPacked || isTransit) {
+        runnerBoxHtml = `
+          <div class="p-2.5 bg-amber-50/90 rounded-2xl border border-amber-200 mb-3 flex items-center gap-2 text-xs text-amber-900">
+            <span class="material-symbols-outlined text-amber-600 text-[18px] animate-pulse shrink-0">hourglass_top</span>
+            <span class="font-bold text-[11px]">${isHi ? 'डिलीवरी पार्टनर असाइनमेंट की प्रतीक्षा' : 'Waiting for Delivery Partner'}</span>
+          </div>
+        `;
+      }
+
+      // Action CTA Button Stack (Strict Stage Boundaries: Vendors cannot mark Delivered)
       let actionButtons = '';
       if (isNew) {
         actionButtons = `
@@ -2160,7 +2194,7 @@
       } else if (isAccepted) {
         actionButtons = `
           <div class="mt-3 pt-2 border-t border-slate-100">
-            <button onclick="handleOrderAction('${order.id}', 'pack')" class="scroll-mt-28 w-full min-h-[48px] py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-black shadow-md active:scale-98 transition-transform flex items-center justify-center gap-2">
+            <button onclick="handleOrderAction('${order.id}', 'pack')" class="scroll-mt-28 w-full min-h-[48px] py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-black shadow-md active:scale-98 transition-transform flex items-center justify-center gap-2 cursor-pointer">
               <span class="material-symbols-outlined text-[20px]">inventory_2</span>
               <span>${isHi ? 'सामान पैक हो गया' : 'Mark Packed'}</span>
             </button>
@@ -2169,14 +2203,7 @@
       } else if (isPacked) {
         actionButtons = `
           <div class="mt-3 pt-2 border-t border-slate-100 flex flex-col gap-2">
-            <div class="p-2.5 bg-purple-50 rounded-xl border border-purple-200 flex items-center justify-between gap-2 text-xs">
-              <div class="flex items-center gap-2 min-w-0 flex-1">
-                <span class="material-symbols-outlined text-purple-700 text-[18px] shrink-0">sports_motorsports</span>
-                <span class="font-bold text-purple-900 min-w-0 break-words">${isHi ? 'डिलीवरी पार्टनर के असाइन होने की प्रतीक्षा' : 'Waiting for an assigned delivery partner'}</span>
-              </div>
-              <span class="text-[11px] font-bold text-purple-700 shrink-0" aria-label="Assignment pending">…</span>
-            </div>
-            <button onclick="handleOrderAction('${order.id}', 'dispatch')" class="scroll-mt-28 w-full min-h-[48px] py-3 rounded-2xl bg-purple-700 hover:bg-purple-800 text-white text-xs sm:text-sm font-black shadow-md active:scale-98 transition-transform flex items-center justify-center gap-2">
+            <button onclick="handleOrderAction('${order.id}', 'dispatch')" class="scroll-mt-28 w-full min-h-[48px] py-3 rounded-2xl bg-purple-700 hover:bg-purple-800 text-white text-xs sm:text-sm font-black shadow-md active:scale-98 transition-transform flex items-center justify-center gap-2 cursor-pointer">
               <span class="material-symbols-outlined text-[20px]">local_shipping</span>
               <span>${isHi ? 'रनर को सौंपें' : 'Handover to Gaon Mitra'}</span>
             </button>
@@ -2184,14 +2211,14 @@
         `;
       } else if (isTransit) {
         actionButtons = `
-          <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
-            <div class="flex items-center gap-1.5 text-xs text-primary font-bold min-w-0">
-              <span class="material-symbols-outlined text-[18px] shrink-0">two_wheeler</span>
-              <span class="truncate">${isHi ? 'डिलीवरी रनर रास्ते में है' : 'Delivering to Doorstep'}</span>
+          <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-1.5 text-xs text-emerald-700 font-bold min-w-0">
+              <span class="material-symbols-outlined text-[18px] shrink-0 animate-pulse">sports_motorsports</span>
+              <span class="truncate">${isHi ? 'डिलीवरी पार्टनर रास्ते में है' : 'Out with Delivery Partner'}</span>
             </div>
-            <button onclick="handleOrderAction('${order.id}', 'deliver')" class="min-h-[44px] px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shrink-0 cursor-pointer active:scale-95">
-              ${isHi ? 'डिलीवर मार्क करें' : 'Mark Delivered'}
-            </button>
+            <span class="text-[11px] font-bold px-2.5 py-1 bg-emerald-50 text-emerald-800 rounded-lg border border-emerald-200 shrink-0">
+              ${isHi ? 'ओटीपी सत्यापन प्रतीक्षित' : 'Awaiting Doorstep OTP'}
+            </span>
           </div>
         `;
       }
@@ -2216,17 +2243,16 @@
               <div>${stageBadge}</div>
             </div>
 
-            <!-- Customer & Rural Landmark Info -->
+            <!-- Customer & Delivery Info (No Direct Customer Calling for Vendors) -->
             <div class="bg-slate-50 rounded-2xl p-3 border border-slate-100 mb-3 flex flex-col gap-1.5">
               <div class="flex items-center justify-between">
                 <span class="font-bold text-slate-900 text-xs flex items-center gap-1.5">
                   <span class="material-symbols-outlined text-slate-500 text-[16px]">person</span>
                   ${order.user_name}
                 </span>
-                <a href="tel:${order.user_phone}" class="px-2 py-0.5 rounded-lg bg-emerald-100 text-primary text-[10px] font-bold flex items-center gap-1">
-                  <span class="material-symbols-outlined text-[12px]">call</span>
-                  <span>${isHi ? 'कॉल करें' : 'Call'}</span>
-                </a>
+                <span class="text-[10px] font-semibold text-slate-400">
+                  ${isHi ? 'ग्राहक' : 'Customer'}
+                </span>
               </div>
               
               <div class="text-[11px] text-slate-600 flex items-start gap-1.5">
@@ -2237,6 +2263,8 @@
                 </div>
               </div>
             </div>
+
+            ${runnerBoxHtml}
 
             <!-- Packing Checklist -->
             <div class="mb-3">
@@ -2258,18 +2286,14 @@
                 </span>
               </div>
               <div class="text-right">
-                <span class="text-[10px] font-bold uppercase text-slate-400 block">${isHi ? 'कुल देय राशि' : 'Total Amount'}</span>
-                <span class="text-sm font-black text-slate-900">₹${order.total_amount}.00</span>
-              </div>
-              <div class="text-right pl-2 border-l border-slate-200">
-                <span class="text-[10px] font-bold uppercase text-slate-400 block">${isHi ? 'डिलीवरी कोड' : 'Delivery OTP'}</span>
-                <span class="text-xs font-black tracking-widest text-primary font-mono">${order.delivery_otp}</span>
+                <span class="text-[10px] font-bold uppercase text-slate-400 block">${isHi ? 'कुल बिल' : 'Total Bill'}</span>
+                <span class="text-sm font-black text-slate-900">₹${order.total_amount}</span>
               </div>
             </div>
 
           </div>
 
-          <!-- Action Buttons Bottom -->
+          <!-- Bottom Actions -->
           ${actionButtons}
 
         </div>
