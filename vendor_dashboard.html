@@ -15,6 +15,22 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
 
+  <script>
+    (function() {
+      try {
+        const saved = localStorage.getItem('gaonbazar_vendor_theme') || localStorage.getItem('gaonbazar_theme') || 'system';
+        const isDark = saved === 'dark' || (saved === 'system' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+          document.documentElement.classList.remove('light');
+        } else {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.classList.add('light');
+        }
+      } catch(e) {}
+    })();
+  </script>
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -53,6 +69,82 @@
 </script>
 
   <style>
+    /* ======================================================== */
+    /* THEME SYSTEM STYLES (Light / Dark / System)              */
+    /* ======================================================== */
+    html.dark {
+      color-scheme: dark;
+      background-color: #0b1120 !important;
+    }
+    html.dark body {
+      background-color: #0b1120 !important;
+      color: #f1f5f9 !important;
+    }
+    html.dark .bg-white {
+      background-color: #1e293b !important;
+      color: #f8fafc !important;
+    }
+    html.dark .bg-slate-50,
+    html.dark .bg-slate-100 {
+      background-color: #0f172a !important;
+    }
+    html.dark .border-slate-200,
+    html.dark .border-slate-100,
+    html.dark .border-slate-300 {
+      border-color: #334155 !important;
+    }
+    html.dark .text-slate-900,
+    html.dark .text-slate-800 {
+      color: #f8fafc !important;
+    }
+    html.dark .text-slate-700 {
+      color: #e2e8f0 !important;
+    }
+    html.dark .text-slate-600,
+    html.dark .text-slate-500 {
+      color: #94a3b8 !important;
+    }
+    html.dark header,
+    html.dark nav,
+    html.dark .fixed-bottom-nav {
+      background-color: #0f172a !important;
+      border-color: #1e293b !important;
+    }
+    html.dark input,
+    html.dark select,
+    html.dark textarea {
+      background-color: #0f172a !important;
+      color: #f8fafc !important;
+      border-color: #334155 !important;
+    }
+    html.dark input::placeholder,
+    html.dark textarea::placeholder {
+      color: #64748b !important;
+    }
+    html.dark .vendor-theme-segment {
+      background-color: #0f172a !important;
+      border: 1px solid #334155 !important;
+    }
+    html.dark .vendor-ledger-card {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+      color: #f8fafc !important;
+    }
+    html.dark #modal-add-product > div,
+    html.dark #vendor-login-gate > div {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+      color: #f8fafc !important;
+    }
+    html.dark .bg-emerald-50 {
+      background-color: rgba(6, 78, 59, 0.4) !important;
+      color: #34d399 !important;
+    }
+    html.dark .bg-amber-50 {
+      background-color: rgba(120, 53, 15, 0.4) !important;
+      color: #fbbf24 !important;
+    }
+
     .hidden {
       display: none !important;
     }
@@ -125,12 +217,11 @@
     }
     main {
       -webkit-overflow-scrolling: touch;
-      overscroll-behavior: none;
-      overscroll-behavior-y: none;
+      overscroll-behavior-y: contain;
+      touch-action: pan-y;
     }
     html, body {
-      overscroll-behavior: none;
-      overscroll-behavior-y: none;
+      overscroll-behavior-y: contain;
     }
   </style>
 </head>
@@ -268,9 +359,8 @@
           <span id="current-lang-text">English</span>
         </button>
 
-        <!-- Logout CTA -->
-        <button id="btn-vendor-logout" onclick="handleVendorLogout()" title="लॉगआउट" aria-label="Logout" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 flex items-center justify-center transition-colors active:scale-95 shrink-0 cursor-pointer">
-          <span class="material-symbols-outlined text-[20px]">logout</span>
+        <button id="btn-vendor-header-settings" type="button" onclick="switchMainTab('settings')" title="Settings" aria-label="Settings" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-slate-100 text-slate-700 border border-slate-200 flex items-center justify-center active:scale-95 shrink-0">
+          <span class="material-symbols-outlined text-[20px]">settings</span>
         </button>
       </div>
 
@@ -561,6 +651,39 @@
     <!-- 7. TAB 4: STORE SETTINGS & PROFILE                                      -->
     <!-- ======================================================================= -->
     <section id="tab-settings" class="hidden flex-col gap-4">
+      <button id="btn-vendor-logout" type="button" onclick="handleVendorLogout()" class="min-h-[48px] w-full rounded-2xl border border-red-300 bg-red-50 text-red-700 font-bold flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined">logout</span><span data-i18n="logout_label">Log out</span>
+      </button>
+      <!-- Vendor Theme Selection Card (Light / Dark / System) -->
+      <div id="vendor-theme-settings-card" class="bg-white rounded-3xl p-5 border border-slate-200 shadow-xs flex flex-col gap-4 max-w-2xl">
+        <div class="flex items-center justify-between border-b pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-[22px]">palette</span>
+            <div>
+              <h2 class="text-sm sm:text-base font-black text-slate-900" data-i18n="vendor_theme_title">थीम / रंग रूप (Theme)</h2>
+              <span class="text-[11px] text-slate-500 block" data-i18n="vendor_theme_sub">हल्का, गहरा या डिवाइस के अनुसार</span>
+            </div>
+          </div>
+          <span id="vendor-theme-badge" class="px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-50 text-emerald-800 border border-emerald-200">सिस्टम (System)</span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 bg-slate-100 p-1.5 rounded-2xl vendor-theme-segment">
+          <button id="btn-vendor-theme-light" type="button" onclick="setVendorTheme('light')" class="min-h-[44px] rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all text-slate-700 hover:bg-white/60 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">light_mode</span>
+            <span data-i18n="theme_opt_light">हल्का (Light)</span>
+          </button>
+          <button id="btn-vendor-theme-dark" type="button" onclick="setVendorTheme('dark')" class="min-h-[44px] rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all text-slate-700 hover:bg-white/60 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">dark_mode</span>
+            <span data-i18n="theme_opt_dark">गहरा (Dark)</span>
+          </button>
+          <button id="btn-vendor-theme-system" type="button" onclick="setVendorTheme('system')" class="min-h-[44px] rounded-xl font-black text-xs flex items-center justify-center gap-1.5 transition-all bg-primary text-white shadow-xs cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">settings_suggest</span>
+            <span data-i18n="theme_opt_system">सिस्टम (System)</span>
+          </button>
+        </div>
+      </div>
+
+
       <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-xs flex flex-col gap-4 max-w-2xl">
         <h2 class="text-base font-black text-slate-900 border-b pb-2 flex items-center gap-2">
           <span class="material-symbols-outlined text-primary">store</span>
@@ -1055,6 +1178,11 @@
         ledger_stat_earnings: "आपकी कमाई",
         order_history_title: "हाल की बिक्री का हिसाब",
         settings_title: "दुकान की जानकारी व क्लस्टर सेटिंग",
+        vendor_theme_title: "थीम / रंग रूप",
+        vendor_theme_sub: "हल्का, गहरा या डिवाइस के अनुसार",
+        theme_opt_light: "हल्का (Light)",
+        theme_opt_dark: "गहरा (Dark)",
+        theme_opt_system: "सिस्टम (System)",
         store_name_en: "दुकान का अंग्रेज़ी नाम",
         store_name_hi: "दुकान का हिंदी नाम",
         lbl_delivery_radius: "डिलीवरी दायरा",
@@ -1199,6 +1327,11 @@
         ledger_stat_earnings: "Net Earnings",
         order_history_title: "Recent Orders History",
         settings_title: "Store Profile & Cluster Details",
+        vendor_theme_title: "Theme & Display",
+        vendor_theme_sub: "Light, Dark, or System",
+        theme_opt_light: "Light",
+        theme_opt_dark: "Dark",
+        theme_opt_system: "System",
         store_name_en: "Store Name (English)",
         store_name_hi: "Store Name (Hindi)",
         lbl_delivery_radius: "Delivery Radius",
@@ -2702,6 +2835,84 @@
       document.getElementById('vendor-toast')?.classList.add('hidden');
     }
 
+    
+    // --- VENDOR THEME ENGINE (Light / Dark / System) ---
+    function getVendorTheme() {
+      return localStorage.getItem('gaonbazar_vendor_theme') || localStorage.getItem('gaonbazar_theme') || 'system';
+    }
+
+    function setVendorTheme(themeName) {
+      if (!['light', 'dark', 'system'].includes(themeName)) return;
+      localStorage.setItem('gaonbazar_vendor_theme', themeName);
+      localStorage.setItem('gaonbazar_theme', themeName);
+      applyVendorTheme(themeName);
+    }
+    window.setVendorTheme = setVendorTheme;
+    window.getVendorTheme = getVendorTheme;
+
+    function applyVendorTheme(themeName) {
+      const mode = themeName || getVendorTheme();
+      let isDark = false;
+      if (mode === 'dark') {
+        isDark = true;
+      } else if (mode === 'system') {
+        isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      }
+
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('light');
+        const metaTheme = document.querySelector('meta[name="theme-color"]');
+        if (metaTheme) metaTheme.setAttribute('content', '#0b1120');
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.add('light');
+        const metaTheme = document.querySelector('meta[name="theme-color"]');
+        if (metaTheme) metaTheme.setAttribute('content', '#006b2c');
+      }
+
+      updateVendorThemeUI(mode);
+    }
+    window.applyVendorTheme = applyVendorTheme;
+
+    function updateVendorThemeUI(activeMode) {
+      const mode = activeMode || getVendorTheme();
+      const btnLight = document.getElementById('btn-vendor-theme-light');
+      const btnDark = document.getElementById('btn-vendor-theme-dark');
+      const btnSystem = document.getElementById('btn-vendor-theme-system');
+      const badge = document.getElementById('vendor-theme-badge');
+      const isHi = (typeof VendorStore !== 'undefined' && VendorStore && VendorStore.lang === 'hi') || document.documentElement.lang === 'hi';
+
+      const activeClass = "min-h-[44px] rounded-xl font-black text-xs flex items-center justify-center gap-1.5 transition-all bg-primary text-white shadow-xs cursor-pointer";
+      const inactiveClass = "min-h-[44px] rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all text-slate-700 hover:bg-white/60 cursor-pointer";
+
+      if (btnLight) btnLight.className = (mode === 'light') ? activeClass : inactiveClass;
+      if (btnDark) btnDark.className = (mode === 'dark') ? activeClass : inactiveClass;
+      if (btnSystem) btnSystem.className = (mode === 'system') ? activeClass : inactiveClass;
+
+      if (badge) {
+        if (mode === 'light') badge.innerText = isHi ? "हल्का (Light)" : "Light";
+        else if (mode === 'dark') badge.innerText = isHi ? "गहरा (Dark)" : "Dark";
+        else badge.innerText = isHi ? "सिस्टम (System)" : "System";
+      }
+    }
+    window.updateVendorThemeUI = updateVendorThemeUI;
+
+    function initVendorTheme() {
+      applyVendorTheme(getVendorTheme());
+      if (window.matchMedia) {
+        const mql = window.matchMedia('(prefers-color-scheme: dark)');
+        const handler = () => {
+          if (getVendorTheme() === 'system') {
+            applyVendorTheme('system');
+          }
+        };
+        if (mql.addEventListener) mql.addEventListener('change', handler);
+        else if (mql.addListener) mql.addListener(handler);
+      }
+    }
+    window.initVendorTheme = initVendorTheme;
+
     // --- 9.13 BILINGUAL TOGGLE ---
     function toggleLanguage() {
       VendorStore.lang = VendorStore.lang === 'hi' ? 'en' : 'hi';
@@ -2721,6 +2932,7 @@
     }
 
     function updateLanguageUI() {
+      if (typeof updateVendorThemeUI === 'function') updateVendorThemeUI();
       const isHi = VendorStore.lang === 'hi';
       const dict = I18N[VendorStore.lang] || I18N.hi;
 
@@ -2808,6 +3020,7 @@
 
     // --- 9.14 STARTUP BOOTSTRAP ---
     window.addEventListener('DOMContentLoaded', () => {
+      if (typeof initVendorTheme === 'function') initVendorTheme();
       initVendorApp();
     });
 

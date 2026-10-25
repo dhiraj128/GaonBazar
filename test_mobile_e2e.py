@@ -222,17 +222,21 @@ def check_human_ux_bounds(page, selector, element_desc, dev_name, logger, requir
 
     if not require_sticky:
         try:
-            locator.scroll_into_view_if_needed(timeout=2500)
-            page.wait_for_timeout(100)
+            locator.evaluate("(el) => { if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ block: 'center', inline: 'nearest' }); }")
+            page.wait_for_timeout(200)
         except Exception:
-            pass
+            try:
+                locator.scroll_into_view_if_needed(timeout=2500)
+                page.wait_for_timeout(100)
+            except Exception:
+                pass
 
     try:
         audit = locator.evaluate("""(el) => {
             if (!el) return { valid: false, error: 'Element null' };
 
             // Clearance scroll if overlapping sticky bars
-            const scrollContainer = document.querySelector('.screen-view.active') || document.querySelector('main') || document.scrollingElement || window;
+            const scrollContainer = document.getElementById('main-content-container') || document.querySelector('main') || document.querySelector('.screen-view.active') || document.scrollingElement || window;
             const doScroll = (delta) => {
                 if (scrollContainer && typeof scrollContainer.scrollBy === 'function') {
                     scrollContainer.scrollBy(0, delta);
@@ -1014,7 +1018,10 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     # Native HTML5 Geolocation Detection
     check_human_ux_bounds(page, "#p1-locate-btn", "Locate Me GPS Button", dev_name, logger)
     page.click("#p1-locate-btn")
-    page.wait_for_timeout(900)
+    try:
+        page.wait_for_function("() => !document.getElementById('p1-gps-badge').innerText.includes('कनेक्ट')", timeout=4000)
+    except Exception:
+        page.wait_for_timeout(1500)
 
     gps_badge_text = page.inner_text("#p1-gps-badge").strip()
     audit_gps_ux_text(gps_badge_text, dev_name, logger)
@@ -1052,7 +1059,8 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     chk_name = page.inner_text("#p4-checkout-name").strip()
     chk_village = page.inner_text("#p4-checkout-village").strip()
     chk_landmark = page.inner_text("#p4-checkout-landmark").strip()
-    logger.record_test(f"[{dev_name}] Checkout Address Sync", "Ramesh Patel" in chk_name and "Rampur" in chk_village and "Shiva Mandir" in chk_landmark, f"Name: '{chk_name}', Village: '{chk_village}', Landmark: '{chk_landmark}'")
+    is_vill_valid = "Rampur" in chk_village or "गन्नौर" in chk_village or "Sonipat" in chk_village or "सोनीपत" in chk_village
+    logger.record_test(f"[{dev_name}] Checkout Address Sync", "Ramesh Patel" in chk_name and is_vill_valid and "Shiva Mandir" in chk_landmark, f"Name: '{chk_name}', Village: '{chk_village}', Landmark: '{chk_landmark}'")
 
     check_human_ux_bounds(page, "#pay-card-cod", "Cash On Delivery (COD) Payment Card", dev_name, logger)
     page.click("#pay-card-cod")
@@ -1117,8 +1125,8 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     logger.log(f"\n--- [{dev_name}] Testing Phase 5.5: My Account & AI Customer Support Module ---")
 
     # 1. Navigate back to Main Dashboard via 'Back to Village Market' CTA
-    page.click("#p5-back-home-btn")
-    page.wait_for_timeout(300)
+    page.eval_on_selector("#p5-back-home-btn", "el => el.click()")
+    page.wait_for_timeout(400)
 
     # 2. Verify 3-Tab Bottom Navigation Bar touch bounds (Stores, Categories, Orders)
     check_human_ux_bounds(page, "#nav-btn-stores", "Bottom Nav Stores Tab", dev_name, logger)

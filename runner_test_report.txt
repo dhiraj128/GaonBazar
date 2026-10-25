@@ -1,7 +1,7 @@
 ================================================================================
           GAONBAZAAR GAON MITRA (RUNNER) DASHBOARD AUTOMATED TEST REPORT
 ================================================================================
-Generated: 2026-10-24 02:55:05
+Generated: 2026-10-25 01:50:43
 Total Audits Executed: 183
 Passed Audits:         183
 Failed Audits:         0
@@ -10,341 +10,341 @@ Total Screenshots:     29
 ================================================================================
 
 DETAILED AUDIT LOGS:
-[2026-10-24 02:53:38] Starting GaonBazaar Gaon Mitra (Runner) Dashboard Automated Test Suite...
-[2026-10-24 02:53:40]   🚀 Starting GaonBazaar FastAPI backend server in background on port 8001 (no-reload)...
-[2026-10-24 02:53:42]   ✓ GaonBazaar Backend verified ready on http://127.0.0.1:8001/docs (2.25s)
-[2026-10-24 02:53:43] 
+[2026-10-25 01:49:06] Starting GaonBazaar Gaon Mitra (Runner) Dashboard Automated Test Suite...
+[2026-10-25 01:49:07]   🚀 Starting GaonBazaar FastAPI backend server in background on port 8001 (no-reload)...
+[2026-10-25 01:49:09]   ✓ GaonBazaar Backend verified ready on http://127.0.0.1:8001/docs (2.25s)
+[2026-10-25 01:49:10] 
 ================================================================================
-[2026-10-24 02:53:43] STARTING GAON MITRA DASHBOARD E2E SIMULATION: Redmi 9A (Small Android 360x800)
-[2026-10-24 02:53:43] Dimensions: 360x800 | DPR: 2.0
-[2026-10-24 02:53:43] ================================================================================
-[2026-10-24 02:53:43] Loading Gaon Mitra Portal: http://127.0.0.1:8001/runner
-[2026-10-24 02:53:46] 
+[2026-10-25 01:49:10] STARTING GAON MITRA DASHBOARD E2E SIMULATION: Redmi 9A (Small Android 360x800)
+[2026-10-25 01:49:10] Dimensions: 360x800 | DPR: 2.0
+[2026-10-25 01:49:10] ================================================================================
+[2026-10-25 01:49:10] Loading Gaon Mitra Portal: http://127.0.0.1:8001/runner
+[2026-10-25 01:49:16] 
 --- [Redmi 9A (Small Android 360x800)] Step 0: Runner Login Gate Security Enforcement ---
-[2026-10-24 02:53:46]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Gaon Mitra Login Gate Enforced - Full-screen high-contrast login gate shown; mission queue hidden before auth
-[2026-10-24 02:53:46]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Redmi_9A_(Small_Android_360x800)_step0_login_gate.png
-[2026-10-24 02:53:48] 
+[2026-10-25 01:49:16]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Gaon Mitra Login Gate Enforced - Full-screen high-contrast login gate shown; mission queue hidden before auth
+[2026-10-25 01:49:16]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Redmi_9A_(Small_Android_360x800)_step0_login_gate.png
+[2026-10-25 01:49:18] 
 --- [Redmi 9A (Small Android 360x800)] Step 1: Header, Shift Toggle & Runner Identity ---
-[2026-10-24 02:53:48]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Runner Name Display - Visual Geometry & Bounding Box Audit - Box: 19x15px at (60, 16) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:53:48]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Runner Badge Code - Visual Geometry & Bounding Box Audit - Box: 82x20px at (85, 14) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:53:48]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Shift Online/Offline Toggle CTA - Visual Geometry & Bounding Box Audit - Box: 52x32px at (176, 16) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:53:48]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Language Switcher Button - Visual Geometry & Bounding Box Audit - Box: 65x44px at (233, 10) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:53:48]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Bottom Nav Missions Button - Visual Geometry & Bounding Box Audit - Box: 86x53px at (8, 739) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:53:48]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Bottom Nav Detail Button - Visual Geometry & Bounding Box Audit - Box: 86x53px at (94, 739) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:53:48]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Bottom Nav Ledger Button - Visual Geometry & Bounding Box Audit - Box: 86x53px at (180, 739) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:53:48]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Redmi_9A_(Small_Android_360x800)_step1_initial_dashboard.png
-[2026-10-24 02:53:49]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Shift Operational State Toggle - ड्यूटी चालू -> ड्यूटी बंद
-[2026-10-24 02:53:49] 
+[2026-10-25 01:49:18]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Runner Name Display - Visual Geometry & Bounding Box Audit - Box: 50x15px at (50, 14) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:18]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Runner Badge Code - Visual Geometry & Bounding Box Audit - Box: 75x19px at (104, 12) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:18]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Shift Online/Offline Toggle CTA - Visual Geometry & Bounding Box Audit - Box: 52x32px at (189, 14) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:19]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Language Switcher Button - Visual Geometry & Bounding Box Audit - Box: 60x44px at (244, 8) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:19]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Bottom Nav Missions Button - Visual Geometry & Bounding Box Audit - Box: 86x53px at (8, 739) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:19]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Bottom Nav Detail Button - Visual Geometry & Bounding Box Audit - Box: 86x53px at (94, 739) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:19]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Bottom Nav Ledger Button - Visual Geometry & Bounding Box Audit - Box: 86x53px at (180, 739) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:19]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Redmi_9A_(Small_Android_360x800)_step1_initial_dashboard.png
+[2026-10-25 01:49:19]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Shift Operational State Toggle - ड्यूटी चालू -> ड्यूटी बंद
+[2026-10-25 01:49:20] 
 --- [Redmi 9A (Small Android 360x800)] Step 2: High-Level KPI Summary Tiles ---
-[2026-10-24 02:53:50]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Active Missions KPI Card - Visual Geometry & Bounding Box Audit - Box: 100x32px at (27, 111) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:53:50]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Completed Today KPI Card - Visual Geometry & Bounding Box Audit - Box: 100x32px at (201, 111) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:53:50]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Today's Earnings KPI Card - Visual Geometry & Bounding Box Audit - Box: 100x32px at (27, 221) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:53:50]   ✓ PASS: [Redmi 9A (Small Android 360x800)] COD Cash in Hand KPI Card - Visual Geometry & Bounding Box Audit - Box: 100x32px at (201, 221) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:53:50]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Active Missions Live Counter Populated - Active Missions: 247
-[2026-10-24 02:53:50] 
+[2026-10-25 01:49:20]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Active Missions KPI Card - Visual Geometry & Bounding Box Audit - Box: 100x32px at (27, 107) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:20]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Completed Today KPI Card - Visual Geometry & Bounding Box Audit - Box: 100x32px at (201, 107) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:20]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Today's Earnings KPI Card - Visual Geometry & Bounding Box Audit - Box: 100x32px at (27, 217) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:20]   ✓ PASS: [Redmi 9A (Small Android 360x800)] COD Cash in Hand KPI Card - Visual Geometry & Bounding Box Audit - Box: 100x32px at (201, 217) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:21]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Active Missions Live Counter Populated - Active Missions: 263
+[2026-10-25 01:49:21] 
 --- [Redmi 9A (Small Android 360x800)] Step 3: Active Missions Queue & Navigation ---
-[2026-10-24 02:53:50]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Mission Cards Rendered in Queue - 247 cards loaded
-[2026-10-24 02:53:51]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Transition to Mission Detail Workspace Tab
-[2026-10-24 02:53:51]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Redmi_9A_(Small_Android_360x800)_step2_mission_detail.png
-[2026-10-24 02:53:51] 
+[2026-10-25 01:49:21]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Mission Cards Rendered in Queue - 263 cards loaded
+[2026-10-25 01:49:21]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Transition to Mission Detail Workspace Tab
+[2026-10-25 01:49:21]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Redmi_9A_(Small_Android_360x800)_step2_mission_detail.png
+[2026-10-25 01:49:21] 
 --- [Redmi 9A (Small Android 360x800)] Step 4: Kirana Store Pickup Workflow ---
-[2026-10-24 02:53:51]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Kirana Store Name - Visual Geometry & Bounding Box Audit - Box: 86x53px at (79, 435) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:53:51]   ✓ PASS: [Redmi 9A (Small Android 360x800)] 1-Tap Call Dukandaar CTA - Visual Geometry & Bounding Box Audit - Box: 158x44px at (173, 405) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:53:51]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Dukandaar Call tel: URL Integration - tel:9876543210
-[2026-10-24 02:53:52]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Confirm Store Pickup CTA Button - Visual Geometry & Bounding Box Audit - Box: 302x48px at (29, 656) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:53:52]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Confirm Store Pickup Action (Stage 3 -> Stage 4) - दुकान से सामान लिया -> ✓ सामान उठाया जा चुका है
-[2026-10-24 02:53:52]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Redmi_9A_(Small_Android_360x800)_step3_pickup_confirmed.png
-[2026-10-24 02:53:52] 
+[2026-10-25 01:49:22]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Kirana Store Name - Visual Geometry & Bounding Box Audit - Box: 86x53px at (79, 431) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:22]   ✓ PASS: [Redmi 9A (Small Android 360x800)] 1-Tap Call Dukandaar CTA - Visual Geometry & Bounding Box Audit - Box: 158x44px at (173, 401) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:22]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Dukandaar Call tel: URL Integration - tel:9876543210
+[2026-10-25 01:49:22]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Confirm Store Pickup CTA Button - Visual Geometry & Bounding Box Audit - Box: 302x48px at (29, 652) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:23]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Confirm Store Pickup Action (Stage 3 -> Stage 4) - दुकान से सामान लिया -> ✓ सामान उठाया जा चुका है
+[2026-10-25 01:49:23]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Redmi_9A_(Small_Android_360x800)_step3_pickup_confirmed.png
+[2026-10-25 01:49:23] 
 --- [Redmi 9A (Small Android 360x800)] Step 5: Rural Landmark Spotlight Box & Customer Navigation ---
-[2026-10-24 02:53:53]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Customer Name Header - Visual Geometry & Bounding Box Audit - Box: 103x35px at (79, 660) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:53:53]   ✓ PASS: [Redmi 9A (Small Android 360x800)] 1-Tap Call Customer CTA - Visual Geometry & Bounding Box Audit - Box: 141x44px at (190, 630) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:53:53]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Customer Call tel: URL Integration - tel:9876543230
-[2026-10-24 02:53:53]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Rural Landmark Spotlight Box - Visual Geometry & Bounding Box Audit - Box: 302x132px at (29, 563) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:53:53]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Human-Readable Rural Landmark Audit - Landmark: 'Near Old Neem Tree, Tubewell #3, Khasra 19'
-[2026-10-24 02:53:53]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Payment Mode & Cash Collect Badge - Visual Geometry & Bounding Box Audit - Box: 302x69px at (29, 626) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:53:53]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Redmi_9A_(Small_Android_360x800)_step4_landmark_spotlight.png
-[2026-10-24 02:53:53] 
+[2026-10-25 01:49:23]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Customer Name Header - Visual Geometry & Bounding Box Audit - Box: 203x18px at (79, 677) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:23]   ✓ PASS: [Redmi 9A (Small Android 360x800)] 1-Tap Call Customer CTA - Visual Geometry & Bounding Box Audit - Box: 147x44px at (29, 651) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:23]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Customer Call tel: URL Integration - tel:9876543230
+[2026-10-25 01:49:24]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Rural Landmark Spotlight Box - Visual Geometry & Bounding Box Audit - Box: 302x132px at (29, 564) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:24]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Human-Readable Rural Landmark Audit - Landmark: 'Near Old Neem Tree, Tubewell #3, Khasra 19'
+[2026-10-25 01:49:24]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Payment Mode & Cash Collect Badge - Visual Geometry & Bounding Box Audit - Box: 302x69px at (29, 626) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:24]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Redmi_9A_(Small_Android_360x800)_step4_landmark_spotlight.png
+[2026-10-25 01:49:24] 
 --- [Redmi 9A (Small Android 360x800)] Step 6: Doorstep 4-Digit OTP Handover Verification ---
-[2026-10-24 02:53:53]   ✓ PASS: [Redmi 9A (Small Android 360x800)] OTP Box Digit 1 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (69, 639) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:53:54]   ✓ PASS: [Redmi 9A (Small Android 360x800)] OTP Box Digit 2 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (127, 639) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:53:54]   ✓ PASS: [Redmi 9A (Small Android 360x800)] OTP Box Digit 3 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (185, 639) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:53:54]   ✓ PASS: [Redmi 9A (Small Android 360x800)] OTP Box Digit 4 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (243, 639) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:53:54]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Verify & Complete Handover CTA - Visual Geometry & Bounding Box Audit - Box: 268x68px at (46, 627) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:53:55]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Doorstep 4-Digit OTP Verified & Success Modal Opened
-[2026-10-24 02:53:56]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Redmi_9A_(Small_Android_360x800)_step5_delivery_success_modal.png
-[2026-10-24 02:53:56]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Delivery Success Modal Dismissed cleanly
-[2026-10-24 02:53:56] 
+[2026-10-25 01:49:24]   ✓ PASS: [Redmi 9A (Small Android 360x800)] OTP Box Digit 1 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (69, 639) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:24]   ✓ PASS: [Redmi 9A (Small Android 360x800)] OTP Box Digit 2 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (127, 639) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:24]   ✓ PASS: [Redmi 9A (Small Android 360x800)] OTP Box Digit 3 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (185, 639) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:25]   ✓ PASS: [Redmi 9A (Small Android 360x800)] OTP Box Digit 4 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (243, 639) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:25]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Verify & Complete Handover CTA - Visual Geometry & Bounding Box Audit - Box: 268x68px at (46, 627) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:26]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Doorstep 4-Digit OTP Verified & Success Modal Opened
+[2026-10-25 01:49:26]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Redmi_9A_(Small_Android_360x800)_step5_delivery_success_modal.png
+[2026-10-25 01:49:27]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Delivery Success Modal Dismissed cleanly
+[2026-10-25 01:49:27] 
 --- [Redmi 9A (Small Android 360x800)] Step 7: Shift Earnings & Hub Settlement Ledger ---
-[2026-10-24 02:53:57]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Transition to Shift Ledger Workspace Tab
-[2026-10-24 02:53:57]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Completed Deliveries Count Box - Visual Geometry & Bounding Box Audit - Box: 120x28px at (42, 462) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:53:57]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Runner Total Payout Box - Visual Geometry & Bounding Box Audit - Box: 120x28px at (198, 462) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:53:58]   ✓ PASS: [Redmi 9A (Small Android 360x800)] COD Cash in Hand Box - Visual Geometry & Bounding Box Audit - Box: 120x28px at (42, 569) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:53:58]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Distance Covered Box - Visual Geometry & Bounding Box Audit - Box: 120x28px at (198, 569) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:53:58]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Ledger Financial Breakdown Verified - Earnings: ₹1525 | COD in Hand: ₹41608
-[2026-10-24 02:53:58]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Hub Deposit Slip CTA Button - Visual Geometry & Bounding Box Audit - Box: 147x40px at (184, 363) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:53:59]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Hub Cash Deposit Slip Modal Opened
-[2026-10-24 02:53:59]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Redmi_9A_(Small_Android_360x800)_step6_deposit_slip_modal.png
-[2026-10-24 02:53:59] 
+[2026-10-25 01:49:28]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Transition to Shift Ledger Workspace Tab
+[2026-10-25 01:49:28]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Completed Deliveries Count Box - Visual Geometry & Bounding Box Audit - Box: 120x28px at (42, 458) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:28]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Runner Total Payout Box - Visual Geometry & Bounding Box Audit - Box: 120x28px at (198, 458) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:28]   ✓ PASS: [Redmi 9A (Small Android 360x800)] COD Cash in Hand Box - Visual Geometry & Bounding Box Audit - Box: 120x28px at (42, 565) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:29]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Distance Covered Box - Visual Geometry & Bounding Box Audit - Box: 120x28px at (198, 565) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:29]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Ledger Financial Breakdown Verified - Earnings: ₹1675 | COD in Hand: ₹45721
+[2026-10-25 01:49:29]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Hub Deposit Slip CTA Button - Visual Geometry & Bounding Box Audit - Box: 147x40px at (184, 359) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:29]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Hub Cash Deposit Slip Modal Opened
+[2026-10-25 01:49:29]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Redmi_9A_(Small_Android_360x800)_step6_deposit_slip_modal.png
+[2026-10-25 01:49:30] 
 --- [Redmi 9A (Small Android 360x800)] Step 8: Bilingual State Switch (Hindi / English) ---
-[2026-10-24 02:54:00]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Bilingual Toggle to English - Label: translate
+[2026-10-25 01:49:30]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Bilingual Toggle to English - Label: translate
 English
-[2026-10-24 02:54:00]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Bilingual Storage State Persisted ('gaonbazar_lang') - Value: en
-[2026-10-24 02:54:00] 
+[2026-10-25 01:49:30]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Bilingual Storage State Persisted ('gaonbazar_lang') - Value: en
+[2026-10-25 01:49:31] 
 --- [Redmi 9A (Small Android 360x800)] Step 9: Zero Console Errors Audit ---
-[2026-10-24 02:54:00]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Zero JavaScript Console Errors - Clean runtime execution
-[2026-10-24 02:54:00] 
+[2026-10-25 01:49:31]   ✓ PASS: [Redmi 9A (Small Android 360x800)] Zero JavaScript Console Errors - Clean runtime execution
+[2026-10-25 01:49:31] 
 ================================================================================
-[2026-10-24 02:54:00] STARTING GAON MITRA DASHBOARD E2E SIMULATION: iPhone 16 (Standard iPhone 393x852)
-[2026-10-24 02:54:00] Dimensions: 393x852 | DPR: 3.0
-[2026-10-24 02:54:00] ================================================================================
-[2026-10-24 02:54:00] Loading Gaon Mitra Portal: http://127.0.0.1:8001/runner
-[2026-10-24 02:54:03] 
+[2026-10-25 01:49:31] STARTING GAON MITRA DASHBOARD E2E SIMULATION: iPhone 16 (Standard iPhone 393x852)
+[2026-10-25 01:49:31] Dimensions: 393x852 | DPR: 3.0
+[2026-10-25 01:49:31] ================================================================================
+[2026-10-25 01:49:31] Loading Gaon Mitra Portal: http://127.0.0.1:8001/runner
+[2026-10-25 01:49:36] 
 --- [iPhone 16 (Standard iPhone 393x852)] Step 0: Runner Login Gate Security Enforcement ---
-[2026-10-24 02:54:03]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Gaon Mitra Login Gate Enforced - Full-screen high-contrast login gate shown; mission queue hidden before auth
-[2026-10-24 02:54:03]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/iPhone_16_(Standard_iPhone_393x852)_step0_login_gate.png
-[2026-10-24 02:54:05] 
+[2026-10-25 01:49:36]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Gaon Mitra Login Gate Enforced - Full-screen high-contrast login gate shown; mission queue hidden before auth
+[2026-10-25 01:49:36]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/iPhone_16_(Standard_iPhone_393x852)_step0_login_gate.png
+[2026-10-25 01:49:38] 
 --- [iPhone 16 (Standard iPhone 393x852)] Step 1: Header, Shift Toggle & Runner Identity ---
-[2026-10-24 02:54:05]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Runner Name Display - Visual Geometry & Bounding Box Audit - Box: 50x15px at (60, 16) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:05]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Runner Badge Code - Visual Geometry & Bounding Box Audit - Box: 82x20px at (116, 14) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:05]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Shift Online/Offline Toggle CTA - Visual Geometry & Bounding Box Audit - Box: 52x32px at (209, 16) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:05]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Language Switcher Button - Visual Geometry & Bounding Box Audit - Box: 65x44px at (266, 10) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:05]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Bottom Nav Missions Button - Visual Geometry & Bounding Box Audit - Box: 90x53px at (10, 791) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:06]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Bottom Nav Detail Button - Visual Geometry & Bounding Box Audit - Box: 90x53px at (104, 791) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:06]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Bottom Nav Ledger Button - Visual Geometry & Bounding Box Audit - Box: 90x53px at (199, 791) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:06]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/iPhone_16_(Standard_iPhone_393x852)_step1_initial_dashboard.png
-[2026-10-24 02:54:06]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Shift Operational State Toggle - ड्यूटी चालू -> ड्यूटी बंद
-[2026-10-24 02:54:07] 
+[2026-10-25 01:49:38]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Runner Name Display - Visual Geometry & Bounding Box Audit - Box: 50x15px at (50, 14) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:38]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Runner Badge Code - Visual Geometry & Bounding Box Audit - Box: 75x19px at (104, 12) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:38]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Shift Online/Offline Toggle CTA - Visual Geometry & Bounding Box Audit - Box: 52x32px at (222, 14) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:39]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Language Switcher Button - Visual Geometry & Bounding Box Audit - Box: 60x44px at (277, 8) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:39]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Bottom Nav Missions Button - Visual Geometry & Bounding Box Audit - Box: 90x53px at (10, 791) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:39]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Bottom Nav Detail Button - Visual Geometry & Bounding Box Audit - Box: 90x53px at (104, 791) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:39]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Bottom Nav Ledger Button - Visual Geometry & Bounding Box Audit - Box: 90x53px at (199, 791) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:39]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/iPhone_16_(Standard_iPhone_393x852)_step1_initial_dashboard.png
+[2026-10-25 01:49:40]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Shift Operational State Toggle - ड्यूटी चालू -> ड्यूटी बंद
+[2026-10-25 01:49:40] 
 --- [iPhone 16 (Standard iPhone 393x852)] Step 2: High-Level KPI Summary Tiles ---
-[2026-10-24 02:54:07]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Active Missions KPI Card - Visual Geometry & Bounding Box Audit - Box: 117x32px at (27, 111) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:07]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Completed Today KPI Card - Visual Geometry & Bounding Box Audit - Box: 117x32px at (218, 111) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:07]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Today's Earnings KPI Card - Visual Geometry & Bounding Box Audit - Box: 117x32px at (27, 221) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:08]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] COD Cash in Hand KPI Card - Visual Geometry & Bounding Box Audit - Box: 117x32px at (218, 221) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:08]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Active Missions Live Counter Populated - Active Missions: 247
-[2026-10-24 02:54:08] 
+[2026-10-25 01:49:40]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Active Missions KPI Card - Visual Geometry & Bounding Box Audit - Box: 117x32px at (27, 107) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:40]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Completed Today KPI Card - Visual Geometry & Bounding Box Audit - Box: 117x32px at (218, 107) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:41]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Today's Earnings KPI Card - Visual Geometry & Bounding Box Audit - Box: 117x32px at (27, 217) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:41]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] COD Cash in Hand KPI Card - Visual Geometry & Bounding Box Audit - Box: 117x32px at (218, 217) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:41]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Active Missions Live Counter Populated - Active Missions: 263
+[2026-10-25 01:49:41] 
 --- [iPhone 16 (Standard iPhone 393x852)] Step 3: Active Missions Queue & Navigation ---
-[2026-10-24 02:54:08]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Mission Cards Rendered in Queue - 247 cards loaded
-[2026-10-24 02:54:08]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Transition to Mission Detail Workspace Tab
-[2026-10-24 02:54:09]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/iPhone_16_(Standard_iPhone_393x852)_step2_mission_detail.png
-[2026-10-24 02:54:09] 
+[2026-10-25 01:49:41]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Mission Cards Rendered in Queue - 263 cards loaded
+[2026-10-25 01:49:41]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Transition to Mission Detail Workspace Tab
+[2026-10-25 01:49:42]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/iPhone_16_(Standard_iPhone_393x852)_step2_mission_detail.png
+[2026-10-25 01:49:42] 
 --- [iPhone 16 (Standard iPhone 393x852)] Step 4: Kirana Store Pickup Workflow ---
-[2026-10-24 02:54:09]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Kirana Store Name - Visual Geometry & Bounding Box Audit - Box: 119x35px at (79, 420) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:09]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] 1-Tap Call Dukandaar CTA - Visual Geometry & Bounding Box Audit - Box: 158x44px at (206, 405) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:09]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Dukandaar Call tel: URL Integration - tel:9876543210
-[2026-10-24 02:54:09]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Confirm Store Pickup CTA Button - Visual Geometry & Bounding Box Audit - Box: 335x48px at (29, 624) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:10]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Confirm Store Pickup Action (Stage 3 -> Stage 4) - दुकान से सामान लिया -> ✓ सामान उठाया जा चुका है
-[2026-10-24 02:54:10]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/iPhone_16_(Standard_iPhone_393x852)_step3_pickup_confirmed.png
-[2026-10-24 02:54:10] 
+[2026-10-25 01:49:42]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Kirana Store Name - Visual Geometry & Bounding Box Audit - Box: 119x35px at (79, 416) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:42]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] 1-Tap Call Dukandaar CTA - Visual Geometry & Bounding Box Audit - Box: 158x44px at (206, 401) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:42]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Dukandaar Call tel: URL Integration - tel:9876543210
+[2026-10-25 01:49:42]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Confirm Store Pickup CTA Button - Visual Geometry & Bounding Box Audit - Box: 335x48px at (29, 620) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:43]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Confirm Store Pickup Action (Stage 3 -> Stage 4) - दुकान से सामान लिया -> ✓ सामान उठाया जा चुका है
+[2026-10-25 01:49:43]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/iPhone_16_(Standard_iPhone_393x852)_step3_pickup_confirmed.png
+[2026-10-25 01:49:43] 
 --- [iPhone 16 (Standard iPhone 393x852)] Step 5: Rural Landmark Spotlight Box & Customer Navigation ---
-[2026-10-24 02:54:10]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Customer Name Header - Visual Geometry & Bounding Box Audit - Box: 136x35px at (79, 704) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:11]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] 1-Tap Call Customer CTA - Visual Geometry & Bounding Box Audit - Box: 141x44px at (223, 689) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:11]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Customer Call tel: URL Integration - tel:9876543230
-[2026-10-24 02:54:11]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Rural Landmark Spotlight Box - Visual Geometry & Bounding Box Audit - Box: 335x132px at (29, 616) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:11]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Human-Readable Rural Landmark Audit - Landmark: 'Near Old Neem Tree, Tubewell #3, Khasra 19'
-[2026-10-24 02:54:11]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Payment Mode & Cash Collect Badge - Visual Geometry & Bounding Box Audit - Box: 335x69px at (29, 678) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:11]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/iPhone_16_(Standard_iPhone_393x852)_step4_landmark_spotlight.png
-[2026-10-24 02:54:11] 
+[2026-10-25 01:49:44]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Customer Name Header - Visual Geometry & Bounding Box Audit - Box: 203x18px at (79, 700) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:44]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] 1-Tap Call Customer CTA - Visual Geometry & Bounding Box Audit - Box: 164x44px at (29, 703) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:44]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Customer Call tel: URL Integration - tel:9876543230
+[2026-10-25 01:49:44]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Rural Landmark Spotlight Box - Visual Geometry & Bounding Box Audit - Box: 335x132px at (29, 615) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:44]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Human-Readable Rural Landmark Audit - Landmark: 'Near Old Neem Tree, Tubewell #3, Khasra 19'
+[2026-10-25 01:49:44]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Payment Mode & Cash Collect Badge - Visual Geometry & Bounding Box Audit - Box: 335x69px at (29, 678) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:44]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/iPhone_16_(Standard_iPhone_393x852)_step4_landmark_spotlight.png
+[2026-10-25 01:49:44] 
 --- [iPhone 16 (Standard iPhone 393x852)] Step 6: Doorstep 4-Digit OTP Handover Verification ---
-[2026-10-24 02:54:11]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] OTP Box Digit 1 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (86, 691) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:11]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] OTP Box Digit 2 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (144, 691) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:12]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] OTP Box Digit 3 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (202, 691) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:12]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] OTP Box Digit 4 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (260, 691) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:12]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Verify & Complete Handover CTA - Visual Geometry & Bounding Box Audit - Box: 301x48px at (46, 699) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:13]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Doorstep 4-Digit OTP Verified & Success Modal Opened
-[2026-10-24 02:54:14]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/iPhone_16_(Standard_iPhone_393x852)_step5_delivery_success_modal.png
-[2026-10-24 02:54:14]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Delivery Success Modal Dismissed cleanly
-[2026-10-24 02:54:14] 
+[2026-10-25 01:49:45]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] OTP Box Digit 1 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (86, 691) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:45]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] OTP Box Digit 2 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (144, 691) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:45]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] OTP Box Digit 3 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (202, 691) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:45]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] OTP Box Digit 4 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (260, 691) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:45]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Verify & Complete Handover CTA - Visual Geometry & Bounding Box Audit - Box: 301x48px at (46, 699) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:47]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Doorstep 4-Digit OTP Verified & Success Modal Opened
+[2026-10-25 01:49:47]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/iPhone_16_(Standard_iPhone_393x852)_step5_delivery_success_modal.png
+[2026-10-25 01:49:48]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Delivery Success Modal Dismissed cleanly
+[2026-10-25 01:49:48] 
 --- [iPhone 16 (Standard iPhone 393x852)] Step 7: Shift Earnings & Hub Settlement Ledger ---
-[2026-10-24 02:54:15]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Transition to Shift Ledger Workspace Tab
-[2026-10-24 02:54:15]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Completed Deliveries Count Box - Visual Geometry & Bounding Box Audit - Box: 137x28px at (42, 462) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:15]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Runner Total Payout Box - Visual Geometry & Bounding Box Audit - Box: 137x28px at (215, 462) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:16]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] COD Cash in Hand Box - Visual Geometry & Bounding Box Audit - Box: 137x28px at (42, 569) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:16]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Distance Covered Box - Visual Geometry & Bounding Box Audit - Box: 137x28px at (215, 569) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:16]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Ledger Financial Breakdown Verified - Earnings: ₹1535 | COD in Hand: ₹41860
-[2026-10-24 02:54:16]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Hub Deposit Slip CTA Button - Visual Geometry & Bounding Box Audit - Box: 164x40px at (201, 363) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:17]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Hub Cash Deposit Slip Modal Opened
-[2026-10-24 02:54:17]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/iPhone_16_(Standard_iPhone_393x852)_step6_deposit_slip_modal.png
-[2026-10-24 02:54:17] 
+[2026-10-25 01:49:49]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Transition to Shift Ledger Workspace Tab
+[2026-10-25 01:49:49]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Completed Deliveries Count Box - Visual Geometry & Bounding Box Audit - Box: 137x28px at (42, 458) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:49]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Runner Total Payout Box - Visual Geometry & Bounding Box Audit - Box: 137x28px at (215, 458) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:49]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] COD Cash in Hand Box - Visual Geometry & Bounding Box Audit - Box: 137x28px at (42, 565) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:50]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Distance Covered Box - Visual Geometry & Bounding Box Audit - Box: 137x28px at (215, 565) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:50]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Ledger Financial Breakdown Verified - Earnings: ₹1685 | COD in Hand: ₹45973
+[2026-10-25 01:49:50]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Hub Deposit Slip CTA Button - Visual Geometry & Bounding Box Audit - Box: 164x40px at (201, 359) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:50]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Hub Cash Deposit Slip Modal Opened
+[2026-10-25 01:49:51]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/iPhone_16_(Standard_iPhone_393x852)_step6_deposit_slip_modal.png
+[2026-10-25 01:49:51] 
 --- [iPhone 16 (Standard iPhone 393x852)] Step 8: Bilingual State Switch (Hindi / English) ---
-[2026-10-24 02:54:18]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Bilingual Toggle to English - Label: translate
+[2026-10-25 01:49:51]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Bilingual Toggle to English - Label: translate
 English
-[2026-10-24 02:54:18]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Bilingual Storage State Persisted ('gaonbazar_lang') - Value: en
-[2026-10-24 02:54:18] 
+[2026-10-25 01:49:51]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Bilingual Storage State Persisted ('gaonbazar_lang') - Value: en
+[2026-10-25 01:49:52] 
 --- [iPhone 16 (Standard iPhone 393x852)] Step 9: Zero Console Errors Audit ---
-[2026-10-24 02:54:18]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Zero JavaScript Console Errors - Clean runtime execution
-[2026-10-24 02:54:18] 
+[2026-10-25 01:49:52]   ✓ PASS: [iPhone 16 (Standard iPhone 393x852)] Zero JavaScript Console Errors - Clean runtime execution
+[2026-10-25 01:49:52] 
 ================================================================================
-[2026-10-24 02:54:18] STARTING GAON MITRA DASHBOARD E2E SIMULATION: Nothing Phone 1 (Tall Android 412x915)
-[2026-10-24 02:54:18] Dimensions: 412x915 | DPR: 2.625
-[2026-10-24 02:54:18] ================================================================================
-[2026-10-24 02:54:18] Loading Gaon Mitra Portal: http://127.0.0.1:8001/runner
-[2026-10-24 02:54:21] 
+[2026-10-25 01:49:52] STARTING GAON MITRA DASHBOARD E2E SIMULATION: Nothing Phone 1 (Tall Android 412x915)
+[2026-10-25 01:49:52] Dimensions: 412x915 | DPR: 2.625
+[2026-10-25 01:49:52] ================================================================================
+[2026-10-25 01:49:52] Loading Gaon Mitra Portal: http://127.0.0.1:8001/runner
+[2026-10-25 01:49:56] 
 --- [Nothing Phone 1 (Tall Android 412x915)] Step 0: Runner Login Gate Security Enforcement ---
-[2026-10-24 02:54:21]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Gaon Mitra Login Gate Enforced - Full-screen high-contrast login gate shown; mission queue hidden before auth
-[2026-10-24 02:54:21]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Nothing_Phone_1_(Tall_Android_412x915)_step0_login_gate.png
-[2026-10-24 02:54:23] 
+[2026-10-25 01:49:56]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Gaon Mitra Login Gate Enforced - Full-screen high-contrast login gate shown; mission queue hidden before auth
+[2026-10-25 01:49:56]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Nothing_Phone_1_(Tall_Android_412x915)_step0_login_gate.png
+[2026-10-25 01:49:58] 
 --- [Nothing Phone 1 (Tall Android 412x915)] Step 1: Header, Shift Toggle & Runner Identity ---
-[2026-10-24 02:54:23]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Runner Name Display - Visual Geometry & Bounding Box Audit - Box: 50x15px at (60, 16) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:23]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Runner Badge Code - Visual Geometry & Bounding Box Audit - Box: 82x20px at (116, 14) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:23]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Shift Online/Offline Toggle CTA - Visual Geometry & Bounding Box Audit - Box: 52x32px at (228, 16) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:24]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Language Switcher Button - Visual Geometry & Bounding Box Audit - Box: 65x44px at (285, 10) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:24]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Bottom Nav Missions Button - Visual Geometry & Bounding Box Audit - Box: 90x53px at (13, 854) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:24]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Bottom Nav Detail Button - Visual Geometry & Bounding Box Audit - Box: 90x53px at (112, 854) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:24]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Bottom Nav Ledger Button - Visual Geometry & Bounding Box Audit - Box: 90x53px at (211, 854) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:24]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Nothing_Phone_1_(Tall_Android_412x915)_step1_initial_dashboard.png
-[2026-10-24 02:54:24]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Shift Operational State Toggle - ड्यूटी चालू -> ड्यूटी बंद
-[2026-10-24 02:54:25] 
+[2026-10-25 01:49:58]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Runner Name Display - Visual Geometry & Bounding Box Audit - Box: 50x15px at (50, 14) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:58]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Runner Badge Code - Visual Geometry & Bounding Box Audit - Box: 75x19px at (104, 12) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:58]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Shift Online/Offline Toggle CTA - Visual Geometry & Bounding Box Audit - Box: 52x32px at (241, 14) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:58]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Language Switcher Button - Visual Geometry & Bounding Box Audit - Box: 60x44px at (296, 8) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:58]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Bottom Nav Missions Button - Visual Geometry & Bounding Box Audit - Box: 90x53px at (13, 854) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:58]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Bottom Nav Detail Button - Visual Geometry & Bounding Box Audit - Box: 90x53px at (112, 854) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:59]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Bottom Nav Ledger Button - Visual Geometry & Bounding Box Audit - Box: 90x53px at (211, 854) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:49:59]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Nothing_Phone_1_(Tall_Android_412x915)_step1_initial_dashboard.png
+[2026-10-25 01:49:59]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Shift Operational State Toggle - ड्यूटी चालू -> ड्यूटी बंद
+[2026-10-25 01:50:00] 
 --- [Nothing Phone 1 (Tall Android 412x915)] Step 2: High-Level KPI Summary Tiles ---
-[2026-10-24 02:54:25]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Active Missions KPI Card - Visual Geometry & Bounding Box Audit - Box: 126x32px at (27, 111) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:25]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Completed Today KPI Card - Visual Geometry & Bounding Box Audit - Box: 126x32px at (227, 111) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:25]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Today's Earnings KPI Card - Visual Geometry & Bounding Box Audit - Box: 126x32px at (27, 221) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:26]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] COD Cash in Hand KPI Card - Visual Geometry & Bounding Box Audit - Box: 126x32px at (227, 221) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:26]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Active Missions Live Counter Populated - Active Missions: 247
-[2026-10-24 02:54:26] 
+[2026-10-25 01:50:00]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Active Missions KPI Card - Visual Geometry & Bounding Box Audit - Box: 126x32px at (27, 107) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:00]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Completed Today KPI Card - Visual Geometry & Bounding Box Audit - Box: 126x32px at (227, 107) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:01]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Today's Earnings KPI Card - Visual Geometry & Bounding Box Audit - Box: 126x32px at (27, 217) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:01]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] COD Cash in Hand KPI Card - Visual Geometry & Bounding Box Audit - Box: 126x32px at (227, 217) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:01]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Active Missions Live Counter Populated - Active Missions: 263
+[2026-10-25 01:50:01] 
 --- [Nothing Phone 1 (Tall Android 412x915)] Step 3: Active Missions Queue & Navigation ---
-[2026-10-24 02:54:26]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Mission Cards Rendered in Queue - 247 cards loaded
-[2026-10-24 02:54:26]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Transition to Mission Detail Workspace Tab
-[2026-10-24 02:54:27]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Nothing_Phone_1_(Tall_Android_412x915)_step2_mission_detail.png
-[2026-10-24 02:54:27] 
+[2026-10-25 01:50:01]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Mission Cards Rendered in Queue - 263 cards loaded
+[2026-10-25 01:50:02]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Transition to Mission Detail Workspace Tab
+[2026-10-25 01:50:02]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Nothing_Phone_1_(Tall_Android_412x915)_step2_mission_detail.png
+[2026-10-25 01:50:02] 
 --- [Nothing Phone 1 (Tall Android 412x915)] Step 4: Kirana Store Pickup Workflow ---
-[2026-10-24 02:54:27]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Kirana Store Name - Visual Geometry & Bounding Box Audit - Box: 138x35px at (79, 420) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:27]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] 1-Tap Call Dukandaar CTA - Visual Geometry & Bounding Box Audit - Box: 158x44px at (225, 405) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:27]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Dukandaar Call tel: URL Integration - tel:9876543210
-[2026-10-24 02:54:27]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Confirm Store Pickup CTA Button - Visual Geometry & Bounding Box Audit - Box: 354x48px at (29, 624) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:28]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Confirm Store Pickup Action (Stage 3 -> Stage 4) - दुकान से सामान लिया -> ✓ सामान उठाया जा चुका है
-[2026-10-24 02:54:28]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Nothing_Phone_1_(Tall_Android_412x915)_step3_pickup_confirmed.png
-[2026-10-24 02:54:28] 
+[2026-10-25 01:50:02]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Kirana Store Name - Visual Geometry & Bounding Box Audit - Box: 138x35px at (79, 416) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:02]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] 1-Tap Call Dukandaar CTA - Visual Geometry & Bounding Box Audit - Box: 158x44px at (225, 401) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:02]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Dukandaar Call tel: URL Integration - tel:9876543210
+[2026-10-25 01:50:03]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Confirm Store Pickup CTA Button - Visual Geometry & Bounding Box Audit - Box: 354x48px at (29, 620) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:03]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Confirm Store Pickup Action (Stage 3 -> Stage 4) - दुकान से सामान लिया -> ✓ सामान उठाया जा चुका है
+[2026-10-25 01:50:04]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Nothing_Phone_1_(Tall_Android_412x915)_step3_pickup_confirmed.png
+[2026-10-25 01:50:04] 
 --- [Nothing Phone 1 (Tall Android 412x915)] Step 5: Rural Landmark Spotlight Box & Customer Navigation ---
-[2026-10-24 02:54:28]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Customer Name Header - Visual Geometry & Bounding Box Audit - Box: 155x35px at (79, 704) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:29]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] 1-Tap Call Customer CTA - Visual Geometry & Bounding Box Audit - Box: 141x44px at (242, 689) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:29]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Customer Call tel: URL Integration - tel:9876543230
-[2026-10-24 02:54:29]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Rural Landmark Spotlight Box - Visual Geometry & Bounding Box Audit - Box: 354x115px at (29, 695) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:29]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Human-Readable Rural Landmark Audit - Landmark: 'Near Old Neem Tree, Tubewell #3, Khasra 19'
-[2026-10-24 02:54:29]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Payment Mode & Cash Collect Badge - Visual Geometry & Bounding Box Audit - Box: 354x69px at (29, 741) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:29]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Nothing_Phone_1_(Tall_Android_412x915)_step4_landmark_spotlight.png
-[2026-10-24 02:54:29] 
+[2026-10-25 01:50:04]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Customer Name Header - Visual Geometry & Bounding Box Audit - Box: 203x18px at (79, 700) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:04]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] 1-Tap Call Customer CTA - Visual Geometry & Bounding Box Audit - Box: 173x44px at (29, 753) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:04]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Customer Call tel: URL Integration - tel:9876543230
+[2026-10-25 01:50:04]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Rural Landmark Spotlight Box - Visual Geometry & Bounding Box Audit - Box: 354x115px at (29, 695) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:04]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Human-Readable Rural Landmark Audit - Landmark: 'Near Old Neem Tree, Tubewell #3, Khasra 19'
+[2026-10-25 01:50:04]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Payment Mode & Cash Collect Badge - Visual Geometry & Bounding Box Audit - Box: 354x69px at (29, 741) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:05]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Nothing_Phone_1_(Tall_Android_412x915)_step4_landmark_spotlight.png
+[2026-10-25 01:50:05] 
 --- [Nothing Phone 1 (Tall Android 412x915)] Step 6: Doorstep 4-Digit OTP Handover Verification ---
-[2026-10-24 02:54:29]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] OTP Box Digit 1 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (95, 754) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:29]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] OTP Box Digit 2 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (153, 754) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:30]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] OTP Box Digit 3 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (211, 754) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:30]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] OTP Box Digit 4 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (269, 754) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:30]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Verify & Complete Handover CTA - Visual Geometry & Bounding Box Audit - Box: 320x48px at (46, 762) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:31]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Doorstep 4-Digit OTP Verified & Success Modal Opened
-[2026-10-24 02:54:32]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Nothing_Phone_1_(Tall_Android_412x915)_step5_delivery_success_modal.png
-[2026-10-24 02:54:32]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Delivery Success Modal Dismissed cleanly
-[2026-10-24 02:54:32] 
+[2026-10-25 01:50:05]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] OTP Box Digit 1 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (95, 754) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:05]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] OTP Box Digit 2 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (153, 754) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:05]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] OTP Box Digit 3 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (211, 754) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:05]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] OTP Box Digit 4 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (269, 754) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:06]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Verify & Complete Handover CTA - Visual Geometry & Bounding Box Audit - Box: 320x48px at (46, 762) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:07]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Doorstep 4-Digit OTP Verified & Success Modal Opened
+[2026-10-25 01:50:07]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Nothing_Phone_1_(Tall_Android_412x915)_step5_delivery_success_modal.png
+[2026-10-25 01:50:08]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Delivery Success Modal Dismissed cleanly
+[2026-10-25 01:50:08] 
 --- [Nothing Phone 1 (Tall Android 412x915)] Step 7: Shift Earnings & Hub Settlement Ledger ---
-[2026-10-24 02:54:33]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Transition to Shift Ledger Workspace Tab
-[2026-10-24 02:54:33]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Completed Deliveries Count Box - Visual Geometry & Bounding Box Audit - Box: 146x28px at (42, 462) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:33]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Runner Total Payout Box - Visual Geometry & Bounding Box Audit - Box: 146x28px at (224, 462) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:34]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] COD Cash in Hand Box - Visual Geometry & Bounding Box Audit - Box: 146x28px at (42, 569) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:34]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Distance Covered Box - Visual Geometry & Bounding Box Audit - Box: 146x28px at (224, 569) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:34]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Ledger Financial Breakdown Verified - Earnings: ₹1545 | COD in Hand: ₹42112
-[2026-10-24 02:54:34]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Hub Deposit Slip CTA Button - Visual Geometry & Bounding Box Audit - Box: 173x40px at (210, 363) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:34]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Hub Cash Deposit Slip Modal Opened
-[2026-10-24 02:54:35]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Nothing_Phone_1_(Tall_Android_412x915)_step6_deposit_slip_modal.png
-[2026-10-24 02:54:35] 
+[2026-10-25 01:50:09]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Transition to Shift Ledger Workspace Tab
+[2026-10-25 01:50:09]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Completed Deliveries Count Box - Visual Geometry & Bounding Box Audit - Box: 146x28px at (42, 458) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:09]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Runner Total Payout Box - Visual Geometry & Bounding Box Audit - Box: 146x28px at (224, 458) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:10]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] COD Cash in Hand Box - Visual Geometry & Bounding Box Audit - Box: 146x28px at (42, 565) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:10]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Distance Covered Box - Visual Geometry & Bounding Box Audit - Box: 146x28px at (224, 565) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:10]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Ledger Financial Breakdown Verified - Earnings: ₹1695 | COD in Hand: ₹46225
+[2026-10-25 01:50:10]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Hub Deposit Slip CTA Button - Visual Geometry & Bounding Box Audit - Box: 173x40px at (210, 359) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:10]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Hub Cash Deposit Slip Modal Opened
+[2026-10-25 01:50:11]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Nothing_Phone_1_(Tall_Android_412x915)_step6_deposit_slip_modal.png
+[2026-10-25 01:50:11] 
 --- [Nothing Phone 1 (Tall Android 412x915)] Step 8: Bilingual State Switch (Hindi / English) ---
-[2026-10-24 02:54:36]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Bilingual Toggle to English - Label: translate
+[2026-10-25 01:50:12]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Bilingual Toggle to English - Label: translate
 English
-[2026-10-24 02:54:36]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Bilingual Storage State Persisted ('gaonbazar_lang') - Value: en
-[2026-10-24 02:54:36] 
+[2026-10-25 01:50:12]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Bilingual Storage State Persisted ('gaonbazar_lang') - Value: en
+[2026-10-25 01:50:12] 
 --- [Nothing Phone 1 (Tall Android 412x915)] Step 9: Zero Console Errors Audit ---
-[2026-10-24 02:54:36]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Zero JavaScript Console Errors - Clean runtime execution
-[2026-10-24 02:54:36] 
+[2026-10-25 01:50:12]   ✓ PASS: [Nothing Phone 1 (Tall Android 412x915)] Zero JavaScript Console Errors - Clean runtime execution
+[2026-10-25 01:50:12] 
 ================================================================================
-[2026-10-24 02:54:36] STARTING GAON MITRA DASHBOARD E2E SIMULATION: Realme C35 (Standard Rural Android 393x851)
-[2026-10-24 02:54:36] Dimensions: 393x851 | DPR: 2.75
-[2026-10-24 02:54:36] ================================================================================
-[2026-10-24 02:54:36] Loading Gaon Mitra Portal: http://127.0.0.1:8001/runner
-[2026-10-24 02:54:39] 
+[2026-10-25 01:50:12] STARTING GAON MITRA DASHBOARD E2E SIMULATION: Realme C35 (Standard Rural Android 393x851)
+[2026-10-25 01:50:12] Dimensions: 393x851 | DPR: 2.75
+[2026-10-25 01:50:12] ================================================================================
+[2026-10-25 01:50:12] Loading Gaon Mitra Portal: http://127.0.0.1:8001/runner
+[2026-10-25 01:50:15] 
 --- [Realme C35 (Standard Rural Android 393x851)] Step 0: Runner Login Gate Security Enforcement ---
-[2026-10-24 02:54:39]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Gaon Mitra Login Gate Enforced - Full-screen high-contrast login gate shown; mission queue hidden before auth
-[2026-10-24 02:54:39]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Realme_C35_(Standard_Rural_Android_393x851)_step0_login_gate.png
-[2026-10-24 02:54:41] 
+[2026-10-25 01:50:15]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Gaon Mitra Login Gate Enforced - Full-screen high-contrast login gate shown; mission queue hidden before auth
+[2026-10-25 01:50:15]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Realme_C35_(Standard_Rural_Android_393x851)_step0_login_gate.png
+[2026-10-25 01:50:17] 
 --- [Realme C35 (Standard Rural Android 393x851)] Step 1: Header, Shift Toggle & Runner Identity ---
-[2026-10-24 02:54:41]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Runner Name Display - Visual Geometry & Bounding Box Audit - Box: 50x15px at (60, 16) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:41]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Runner Badge Code - Visual Geometry & Bounding Box Audit - Box: 82x20px at (116, 14) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:41]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Shift Online/Offline Toggle CTA - Visual Geometry & Bounding Box Audit - Box: 52x32px at (209, 16) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:41]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Language Switcher Button - Visual Geometry & Bounding Box Audit - Box: 65x44px at (266, 10) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:41]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Bottom Nav Missions Button - Visual Geometry & Bounding Box Audit - Box: 90x53px at (10, 790) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:42]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Bottom Nav Detail Button - Visual Geometry & Bounding Box Audit - Box: 90x53px at (104, 790) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:42]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Bottom Nav Ledger Button - Visual Geometry & Bounding Box Audit - Box: 90x53px at (199, 790) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:42]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Realme_C35_(Standard_Rural_Android_393x851)_step1_initial_dashboard.png
-[2026-10-24 02:54:42]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Shift Operational State Toggle - ड्यूटी चालू -> ड्यूटी बंद
-[2026-10-24 02:54:43] 
+[2026-10-25 01:50:17]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Runner Name Display - Visual Geometry & Bounding Box Audit - Box: 50x15px at (50, 14) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:17]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Runner Badge Code - Visual Geometry & Bounding Box Audit - Box: 75x19px at (104, 12) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:18]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Shift Online/Offline Toggle CTA - Visual Geometry & Bounding Box Audit - Box: 52x32px at (222, 14) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:18]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Language Switcher Button - Visual Geometry & Bounding Box Audit - Box: 60x44px at (277, 8) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:18]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Bottom Nav Missions Button - Visual Geometry & Bounding Box Audit - Box: 90x53px at (10, 790) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:18]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Bottom Nav Detail Button - Visual Geometry & Bounding Box Audit - Box: 90x53px at (104, 790) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:18]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Bottom Nav Ledger Button - Visual Geometry & Bounding Box Audit - Box: 90x53px at (199, 790) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:18]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Realme_C35_(Standard_Rural_Android_393x851)_step1_initial_dashboard.png
+[2026-10-25 01:50:19]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Shift Operational State Toggle - ड्यूटी चालू -> ड्यूटी बंद
+[2026-10-25 01:50:19] 
 --- [Realme C35 (Standard Rural Android 393x851)] Step 2: High-Level KPI Summary Tiles ---
-[2026-10-24 02:54:43]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Active Missions KPI Card - Visual Geometry & Bounding Box Audit - Box: 117x32px at (27, 111) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:43]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Completed Today KPI Card - Visual Geometry & Bounding Box Audit - Box: 117x32px at (218, 111) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:43]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Today's Earnings KPI Card - Visual Geometry & Bounding Box Audit - Box: 117x32px at (27, 221) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:43]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] COD Cash in Hand KPI Card - Visual Geometry & Bounding Box Audit - Box: 117x32px at (218, 221) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:43]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Active Missions Live Counter Populated - Active Missions: 247
-[2026-10-24 02:54:43] 
+[2026-10-25 01:50:19]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Active Missions KPI Card - Visual Geometry & Bounding Box Audit - Box: 117x32px at (27, 107) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:20]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Completed Today KPI Card - Visual Geometry & Bounding Box Audit - Box: 117x32px at (218, 107) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:20]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Today's Earnings KPI Card - Visual Geometry & Bounding Box Audit - Box: 117x32px at (27, 217) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:20]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] COD Cash in Hand KPI Card - Visual Geometry & Bounding Box Audit - Box: 117x32px at (218, 217) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:20]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Active Missions Live Counter Populated - Active Missions: 263
+[2026-10-25 01:50:20] 
 --- [Realme C35 (Standard Rural Android 393x851)] Step 3: Active Missions Queue & Navigation ---
-[2026-10-24 02:54:43]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Mission Cards Rendered in Queue - 247 cards loaded
-[2026-10-24 02:54:44]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Transition to Mission Detail Workspace Tab
-[2026-10-24 02:54:44]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Realme_C35_(Standard_Rural_Android_393x851)_step2_mission_detail.png
-[2026-10-24 02:54:44] 
+[2026-10-25 01:50:20]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Mission Cards Rendered in Queue - 263 cards loaded
+[2026-10-25 01:50:21]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Transition to Mission Detail Workspace Tab
+[2026-10-25 01:50:21]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Realme_C35_(Standard_Rural_Android_393x851)_step2_mission_detail.png
+[2026-10-25 01:50:21] 
 --- [Realme C35 (Standard Rural Android 393x851)] Step 4: Kirana Store Pickup Workflow ---
-[2026-10-24 02:54:44]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Kirana Store Name - Visual Geometry & Bounding Box Audit - Box: 119x35px at (79, 420) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:45]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] 1-Tap Call Dukandaar CTA - Visual Geometry & Bounding Box Audit - Box: 158x44px at (206, 405) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:45]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Dukandaar Call tel: URL Integration - tel:9876543210
-[2026-10-24 02:54:45]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Confirm Store Pickup CTA Button - Visual Geometry & Bounding Box Audit - Box: 335x48px at (29, 624) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:46]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Confirm Store Pickup Action (Stage 3 -> Stage 4) - दुकान से सामान लिया -> ✓ सामान उठाया जा चुका है
-[2026-10-24 02:54:46]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Realme_C35_(Standard_Rural_Android_393x851)_step3_pickup_confirmed.png
-[2026-10-24 02:54:46] 
+[2026-10-25 01:50:21]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Kirana Store Name - Visual Geometry & Bounding Box Audit - Box: 119x35px at (79, 416) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:21]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] 1-Tap Call Dukandaar CTA - Visual Geometry & Bounding Box Audit - Box: 158x44px at (206, 401) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:21]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Dukandaar Call tel: URL Integration - tel:9876543210
+[2026-10-25 01:50:22]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Confirm Store Pickup CTA Button - Visual Geometry & Bounding Box Audit - Box: 335x48px at (29, 620) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:22]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Confirm Store Pickup Action (Stage 3 -> Stage 4) - दुकान से सामान लिया -> ✓ सामान उठाया जा चुका है
+[2026-10-25 01:50:23]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Realme_C35_(Standard_Rural_Android_393x851)_step3_pickup_confirmed.png
+[2026-10-25 01:50:23] 
 --- [Realme C35 (Standard Rural Android 393x851)] Step 5: Rural Landmark Spotlight Box & Customer Navigation ---
-[2026-10-24 02:54:46]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Customer Name Header - Visual Geometry & Bounding Box Audit - Box: 136x35px at (79, 704) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:46]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] 1-Tap Call Customer CTA - Visual Geometry & Bounding Box Audit - Box: 141x44px at (223, 689) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:46]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Customer Call tel: URL Integration - tel:9876543230
-[2026-10-24 02:54:46]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Rural Landmark Spotlight Box - Visual Geometry & Bounding Box Audit - Box: 335x132px at (29, 615) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:46]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Human-Readable Rural Landmark Audit - Landmark: 'Near Old Neem Tree, Tubewell #3, Khasra 19'
-[2026-10-24 02:54:47]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Payment Mode & Cash Collect Badge - Visual Geometry & Bounding Box Audit - Box: 335x69px at (29, 677) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:47]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Realme_C35_(Standard_Rural_Android_393x851)_step4_landmark_spotlight.png
-[2026-10-24 02:54:47] 
+[2026-10-25 01:50:23]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Customer Name Header - Visual Geometry & Bounding Box Audit - Box: 203x18px at (79, 700) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:23]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] 1-Tap Call Customer CTA - Visual Geometry & Bounding Box Audit - Box: 164x44px at (29, 702) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:23]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Customer Call tel: URL Integration - tel:9876543230
+[2026-10-25 01:50:23]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Rural Landmark Spotlight Box - Visual Geometry & Bounding Box Audit - Box: 335x132px at (29, 614) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:23]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Human-Readable Rural Landmark Audit - Landmark: 'Near Old Neem Tree, Tubewell #3, Khasra 19'
+[2026-10-25 01:50:23]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Payment Mode & Cash Collect Badge - Visual Geometry & Bounding Box Audit - Box: 335x69px at (29, 677) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:24]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Realme_C35_(Standard_Rural_Android_393x851)_step4_landmark_spotlight.png
+[2026-10-25 01:50:24] 
 --- [Realme C35 (Standard Rural Android 393x851)] Step 6: Doorstep 4-Digit OTP Handover Verification ---
-[2026-10-24 02:54:47]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] OTP Box Digit 1 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (86, 690) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:47]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] OTP Box Digit 2 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (144, 690) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:47]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] OTP Box Digit 3 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (202, 690) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:48]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] OTP Box Digit 4 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (260, 690) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:48]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Verify & Complete Handover CTA - Visual Geometry & Bounding Box Audit - Box: 301x48px at (46, 698) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:49]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Doorstep 4-Digit OTP Verified & Success Modal Opened
-[2026-10-24 02:54:49]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Realme_C35_(Standard_Rural_Android_393x851)_step5_delivery_success_modal.png
-[2026-10-24 02:54:50]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Delivery Success Modal Dismissed cleanly
-[2026-10-24 02:54:50] 
+[2026-10-25 01:50:24]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] OTP Box Digit 1 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (86, 690) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:24]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] OTP Box Digit 2 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (144, 690) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:24]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] OTP Box Digit 3 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (202, 690) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:24]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] OTP Box Digit 4 - Visual Geometry & Bounding Box Audit - Box: 48x56px at (260, 690) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:25]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Verify & Complete Handover CTA - Visual Geometry & Bounding Box Audit - Box: 301x48px at (46, 698) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:26]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Doorstep 4-Digit OTP Verified & Success Modal Opened
+[2026-10-25 01:50:26]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Realme_C35_(Standard_Rural_Android_393x851)_step5_delivery_success_modal.png
+[2026-10-25 01:50:27]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Delivery Success Modal Dismissed cleanly
+[2026-10-25 01:50:27] 
 --- [Realme C35 (Standard Rural Android 393x851)] Step 7: Shift Earnings & Hub Settlement Ledger ---
-[2026-10-24 02:54:51]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Transition to Shift Ledger Workspace Tab
-[2026-10-24 02:54:51]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Completed Deliveries Count Box - Visual Geometry & Bounding Box Audit - Box: 137x28px at (42, 462) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:51]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Runner Total Payout Box - Visual Geometry & Bounding Box Audit - Box: 137x28px at (215, 462) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:51]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] COD Cash in Hand Box - Visual Geometry & Bounding Box Audit - Box: 137x28px at (42, 569) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:52]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Distance Covered Box - Visual Geometry & Bounding Box Audit - Box: 137x28px at (215, 569) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:52]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Ledger Financial Breakdown Verified - Earnings: ₹1555 | COD in Hand: ₹42364
-[2026-10-24 02:54:52]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Hub Deposit Slip CTA Button - Visual Geometry & Bounding Box Audit - Box: 164x40px at (201, 363) | In-Viewport: True | Collisions: None | Occlusion: None
-[2026-10-24 02:54:52]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Hub Cash Deposit Slip Modal Opened
-[2026-10-24 02:54:53]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Realme_C35_(Standard_Rural_Android_393x851)_step6_deposit_slip_modal.png
-[2026-10-24 02:54:53] 
+[2026-10-25 01:50:28]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Transition to Shift Ledger Workspace Tab
+[2026-10-25 01:50:28]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Completed Deliveries Count Box - Visual Geometry & Bounding Box Audit - Box: 137x28px at (42, 458) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:29]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Runner Total Payout Box - Visual Geometry & Bounding Box Audit - Box: 137x28px at (215, 458) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:29]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] COD Cash in Hand Box - Visual Geometry & Bounding Box Audit - Box: 137x28px at (42, 565) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:29]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Distance Covered Box - Visual Geometry & Bounding Box Audit - Box: 137x28px at (215, 565) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:29]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Ledger Financial Breakdown Verified - Earnings: ₹1705 | COD in Hand: ₹46477
+[2026-10-25 01:50:29]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Hub Deposit Slip CTA Button - Visual Geometry & Bounding Box Audit - Box: 164x40px at (201, 359) | In-Viewport: True | Collisions: None | Occlusion: None
+[2026-10-25 01:50:30]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Hub Cash Deposit Slip Modal Opened
+[2026-10-25 01:50:30]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/Realme_C35_(Standard_Rural_Android_393x851)_step6_deposit_slip_modal.png
+[2026-10-25 01:50:30] 
 --- [Realme C35 (Standard Rural Android 393x851)] Step 8: Bilingual State Switch (Hindi / English) ---
-[2026-10-24 02:54:53]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Bilingual Toggle to English - Label: translate
+[2026-10-25 01:50:31]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Bilingual Toggle to English - Label: translate
 English
-[2026-10-24 02:54:53]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Bilingual Storage State Persisted ('gaonbazar_lang') - Value: en
-[2026-10-24 02:54:54] 
+[2026-10-25 01:50:31]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Bilingual Storage State Persisted ('gaonbazar_lang') - Value: en
+[2026-10-25 01:50:31] 
 --- [Realme C35 (Standard Rural Android 393x851)] Step 9: Zero Console Errors Audit ---
-[2026-10-24 02:54:54]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Zero JavaScript Console Errors - Clean runtime execution
-[2026-10-24 02:54:54] 
+[2026-10-25 01:50:31]   ✓ PASS: [Realme C35 (Standard Rural Android 393x851)] Zero JavaScript Console Errors - Clean runtime execution
+[2026-10-25 01:50:31] 
 ================================================================================
-[2026-10-24 02:54:54] STARTING FULL END-TO-END MULTI-PARTY ORDER LIFECYCLE SYNC TEST
-[2026-10-24 02:54:54] ================================================================================
-[2026-10-24 02:54:58]   📦 1. Customer places order via /api/orders/checkout...
-[2026-10-24 02:54:58]   ✓ Order placed: #RUR-4811 | Delivery OTP: 4821
-[2026-10-24 02:54:58]   🏬 2. Vendor accepts and packs #RUR-4811...
-[2026-10-24 02:54:59]   ✓ Order advanced to Stage 3 (Packed & Ready for Runner)
-[2026-10-24 02:54:59]   ⏳ 3. Waiting for Gaon Mitra live polling to detect #RUR-4811...
-[2026-10-24 02:55:02]   ✓ PASS: Real-Time Gaon Mitra Mission Reception (Vendor Pack -> Runner Sync) - Order #RUR-4811 appeared live in Runner Missions Queue without page reload!
-[2026-10-24 02:55:02]   🛵 4. Runner confirms store pickup...
-[2026-10-24 02:55:03]   🏡 5. Runner arrives at customer landmark and verifies doorstep OTP...
-[2026-10-24 02:55:04]   ✓ PASS: Doorstep Handover OTP Validation & Celebration Modal - Mission completed successfully!
-[2026-10-24 02:55:04]   ✓ PASS: Full Lifecycle SQLite DB State Integrity (Stage 5 Delivered) - Order #RUR-4811: Stage 5 (Delivered)
-[2026-10-24 02:55:05]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/step7_full_lifecycle_sync.png
-[2026-10-24 02:55:05]   ✓ Playwright browser closed cleanly.
+[2026-10-25 01:50:31] STARTING FULL END-TO-END MULTI-PARTY ORDER LIFECYCLE SYNC TEST
+[2026-10-25 01:50:31] ================================================================================
+[2026-10-25 01:50:37]   📦 1. Customer places order via /api/orders/checkout...
+[2026-10-25 01:50:37]   ✓ Order placed: #RUR-4454 | Delivery OTP: 3760
+[2026-10-25 01:50:37]   🏬 2. Vendor accepts and packs #RUR-4454...
+[2026-10-25 01:50:37]   ✓ Order advanced to Stage 3 (Packed & Ready for Runner)
+[2026-10-25 01:50:37]   ⏳ 3. Waiting for Gaon Mitra live polling to detect #RUR-4454...
+[2026-10-25 01:50:40]   ✓ PASS: Real-Time Gaon Mitra Mission Reception (Vendor Pack -> Runner Sync) - Order #RUR-4454 appeared live in Runner Missions Queue without page reload!
+[2026-10-25 01:50:40]   🛵 4. Runner confirms store pickup...
+[2026-10-25 01:50:42]   🏡 5. Runner arrives at customer landmark and verifies doorstep OTP...
+[2026-10-25 01:50:43]   ✓ PASS: Doorstep Handover OTP Validation & Celebration Modal - Mission completed successfully!
+[2026-10-25 01:50:43]   ✓ PASS: Full Lifecycle SQLite DB State Integrity (Stage 5 Delivered) - Order #RUR-4454: Stage 5 (Delivered)
+[2026-10-25 01:50:43]   📸 [SCREENSHOT CAPTURED]: screenshots/runner/step7_full_lifecycle_sync.png
+[2026-10-25 01:50:43]   ✓ Playwright browser closed cleanly.
 
 ================================================================================
 END OF RUNNER TEST REPORT - 100% HEALTHY

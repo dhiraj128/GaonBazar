@@ -2,11 +2,12 @@ import os
 import re
 import uuid
 import random
+import secrets
 import json
 import hmac
 import hashlib
 from datetime import datetime, timedelta
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from pathlib import Path
 import razorpay
 from dotenv import load_dotenv
@@ -66,11 +67,14 @@ from .security import (
     issue_runner_token,
     issue_admin_token,
     decode_jwt_token,
+    get_current_token_payload,
     verify_vendor_access,
     verify_runner_access,
+    verify_customer_access,
     require_vendor_token,
     require_runner_token,
     require_admin_token,
+    require_customer_token,
     require_authenticated_user,
     enforce_otp_rate_limit,
     enforce_checkout_rate_limit,
@@ -313,82 +317,120 @@ def debug_sentry_test():
 @app.post("/api/auth/send-otp", response_model=SendOTPResponse, dependencies=[Depends(enforce_otp_rate_limit)])
 def send_otp(payload: SendOTPRequest, db: Session = Depends(get_db)):
     """
-    Generates a 6-digit OTP code, persists it to SQLite DB, and returns it.
+    Generates a secure 6-digit OTP code, persists single-use record to DB with 5-minute TTL.
     Strictly rate-limited to 5 requests / min to prevent SMS flooding and budget drain.
-    Predictable dev code: if phone starts with 98765, allows 582941 for QA automation.
+    In production mode: generates random code and NEVER echoes OTP in API response.
+    In dev/test mode: allows predictable test code 582941 for phone 9876543210.
     """
     phone = payload.phone.strip()
-    if len(phone) < 10:
-        raise HTTPException(status_code=400, detail="Invalid phone number: Must be 10 digits")
+    clean_digits = "".join(filter(str.isdigit, phone))
+    if len(clean_digits) < 10:
+        raise HTTPException(status_code=400, detail="Invalid phone number: Must be at least 10 digits")
 
-    # Generate 6-digit OTP (deterministic 582941 for standard QA flow, or random)
-    otp_code = "582941" if phone == "9876543210" else f"{random.randint(100000, 999999)}"
+    is_production = os.getenv("ENVIRONMENT", "").lower() == "production"
+    is_test_phone = (phone == "9876543210" or clean_digits == "9876543210") and not is_production
+
+    if is_test_phone:
+        otp_code = "582941"
+    else:
+        # Cryptographically secure random 6-digit code
+        otp_code = f"{secrets.randbelow(900000) + 100000}"
+
+    # Invalidate any prior unverified OTPs for this phone to guarantee single-use latest
+    db.query(OTPRecord).filter(
+        OTPRecord.phone == phone,
+        OTPRecord.is_verified == False
+    ).update({"is_verified": True})
 
     otp_record = OTPRecord(
         phone=phone,
         otp_code=otp_code,
         is_verified=False,
+        attempts=0,
         created_at=datetime.utcnow(),
-        expires_at=datetime.utcnow() + timedelta(minutes=10)
+        expires_at=datetime.utcnow() + timedelta(minutes=5)
     )
     db.add(otp_record)
     db.commit()
 
+    # Never echo OTP in production! Echo only in non-production/test environments for automated QA
+    echo_otp = otp_code if (not is_production and (is_test_phone or os.getenv("ALLOW_TEST_OTP", "0") == "1")) else None
+
     return SendOTPResponse(
         success=True,
         message=f"OTP sent to +91 {phone}",
-        otp=otp_code
+        otp=echo_otp
     )
 
 
 @app.post("/api/auth/verify", response_model=VerifyOTPResponse)
 def verify_otp(payload: VerifyOTPRequest, db: Session = Depends(get_db)):
     """
-    Validates the 6-digit OTP against SQLite DB. Creates or retrieves User record
-    and returns a signed RFC 7519 JSON Web Token (JWT).
+    Validates the 6-digit OTP against DB. Enforces:
+    1. Single-use (is_verified == False)
+    2. Expiration (5-minute TTL)
+    3. Max attempt limit (5 failed attempts per OTP code)
+    4. Issues authentic signed RFC 7519 JWT upon successful validation.
     """
     phone = payload.phone.strip()
     entered_otp = payload.otp.strip()
 
-    # Find matching unexpired OTP record (or allow 582941 in dev mode)
+    if len(entered_otp) != 6 or not entered_otp.isdigit():
+        raise HTTPException(status_code=400, detail="Invalid OTP: Must be a 6-digit code")
+
+    # Find the latest unverified OTP record for this phone
     otp_record = (
         db.query(OTPRecord)
-        .filter(OTPRecord.phone == phone, OTPRecord.otp_code == entered_otp)
+        .filter(OTPRecord.phone == phone, OTPRecord.is_verified == False)
         .order_by(OTPRecord.created_at.desc())
         .first()
     )
 
-    if not otp_record and entered_otp != "582941":
-        raise HTTPException(status_code=400, detail="Invalid or expired OTP code")
+    if not otp_record:
+        raise HTTPException(status_code=400, detail="Invalid or expired OTP code. Please request a new code.")
 
-    if otp_record:
-        otp_record.is_verified = True
-        db.commit()
+    # Check expiration (5-minute TTL)
+    now = datetime.utcnow()
+    if otp_record.expires_at and now > otp_record.expires_at:
+        raise HTTPException(status_code=400, detail="OTP code has expired. Please request a new code.")
+
+    # Check attempt threshold
+    attempts = getattr(otp_record, "attempts", 0) or 0
+    if attempts >= 5:
+        raise HTTPException(status_code=400, detail="Too many failed attempts. This OTP has been invalidated.")
+
+    # Verify matching code
+    if otp_record.otp_code != entered_otp:
+        if hasattr(otp_record, "attempts"):
+            otp_record.attempts = attempts + 1
+            db.commit()
+        raise HTTPException(status_code=400, detail="Invalid OTP code. Please check and try again.")
+
+    # Mark OTP as verified (Single-Use enforcement)
+    otp_record.is_verified = True
+    db.commit()
 
     # Get or create User
     user = db.query(User).filter(User.phone == phone).first()
-    user_id_val = user.id if user else random.randint(1000, 9999)
-    session_token = issue_user_token(
-        user_id=user_id_val,
-        phone=phone,
-        name=user.name if (user and user.name) else "Customer"
-    )
-
     if not user:
         user = User(
             phone=phone,
             name=None,
             lang="hi",
-            session_token=session_token,
             created_at=datetime.utcnow()
         )
         db.add(user)
         db.commit()
         db.refresh(user)
-    else:
-        user.session_token = session_token
-        db.commit()
-        db.refresh(user)
+
+    session_token = issue_user_token(
+        user_id=user.id,
+        phone=phone,
+        name=user.name if (user and user.name) else "Customer"
+    )
+    user.session_token = session_token
+    db.commit()
+    db.refresh(user)
 
     # Fetch latest landmark if any
     latest_lm = db.query(Landmark).filter(Landmark.phone == phone).order_by(Landmark.created_at.desc()).first()
@@ -420,14 +462,33 @@ def verify_otp(payload: VerifyOTPRequest, db: Session = Depends(get_db)):
 # =============================================================================
 
 @app.post("/api/user/landmark", response_model=SaveLandmarkResponse)
-def save_user_landmark(payload: SaveLandmarkRequest, db: Session = Depends(get_db)):
+def save_user_landmark(
+    payload: SaveLandmarkRequest,
+    db: Session = Depends(get_db),
+    auth: Optional[Dict[str, Any]] = Depends(get_current_token_payload)
+):
     """
     Saves user's GPS coordinates, Panchayat/Village, and rural landmark text
-    (validating minimum 10 characters length) into the SQLite database.
+    (validating minimum 10 characters length) into the database.
+    Enforces customer authorization and account boundary when token is present.
     """
     landmark_text = payload.landmark.strip()
     if len(landmark_text) < 10:
         raise HTTPException(status_code=400, detail="Landmark text must be at least 10 characters for rural delivery")
+
+    req_phone = str(payload.phone or "").strip().replace("+91", "").lstrip("0")
+    if not req_phone or len(req_phone) < 10:
+        raise HTTPException(status_code=400, detail="Valid customer phone number required")
+
+    # Enforce customer account boundary: caller cannot modify location for another phone
+    if auth:
+        if auth.get("role") != "admin":
+            tok_phone = str(auth.get("phone") or "").strip().replace("+91", "").lstrip("0")
+            if not tok_phone or tok_phone != req_phone:
+                raise HTTPException(
+                    status_code=403,
+                    detail=f"Access Denied: You cannot modify landmark data for another customer ({payload.phone})"
+                )
 
     # Update or create user
     user = db.query(User).filter(User.phone == payload.phone).first()
@@ -842,7 +903,8 @@ def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
             break
     else:
         order_id = f"#RUR-{random.randint(10000, 99999)}"
-    delivery_otp = "4821"  # Default test delivery OTP for reliable QA, can also be random
+    fixed_otp = os.getenv("GAONBAZAR_FIXED_OTP")
+    delivery_otp = fixed_otp if fixed_otp else f"{secrets.randbelow(9000) + 1000}"
 
     # Fetch user if exists
     user = db.query(User).filter(User.phone == payload.user_phone).first()
@@ -1194,9 +1256,10 @@ def cancel_order_endpoint(
 
 
 @app.get("/api/user/{phone}/trust-status", response_model=CustomerTrustStatusDTO)
-def get_user_trust_status(phone: str, db: Session = Depends(get_db)):
+def get_user_trust_status(phone: str, db: Session = Depends(get_db), auth: Dict[str, Any] = Depends(verify_customer_access)):
     """
     Returns the real-time Trust Score, strike status, warning notification, and allowed payment modes for a user.
+    Protected by Customer JWT with phone-level data isolation.
     """
     user = db.query(User).filter(User.phone == phone).first()
     if not user:
@@ -1243,9 +1306,10 @@ def get_user_trust_status(phone: str, db: Session = Depends(get_db)):
 # =============================================================================
 
 @app.get("/api/user/{phone}/orders", response_model=List[UserOrderSummaryDTO])
-def get_user_orders(phone: str, db: Session = Depends(get_db)):
+def get_user_orders(phone: str, db: Session = Depends(get_db), auth: Dict[str, Any] = Depends(verify_customer_access)):
     """
     Returns full order history for a customer phone number.
+    Protected by Customer JWT with phone-level data isolation.
     Used by the 'My Account' & Profile screen.
     """
     orders = db.query(Order).filter(Order.user_phone == phone).order_by(Order.created_at.desc()).all()
@@ -1286,9 +1350,10 @@ def mask_bank_account(acc_num: Optional[str]) -> Optional[str]:
 @app.get("/api/user/{phone}/payment-methods", response_model=List[CustomerSavedPaymentDTO])
 @app.get("/user/{phone}/payment-methods", response_model=List[CustomerSavedPaymentDTO])
 @app.get("/api/api/user/{phone}/payment-methods", response_model=List[CustomerSavedPaymentDTO])
-def get_user_payment_methods(phone: str, db: Session = Depends(get_db)):
+def get_user_payment_methods(phone: str, db: Session = Depends(get_db), auth: Dict[str, Any] = Depends(verify_customer_access)):
     """
     Returns saved payment methods (UPI IDs and Card tokens) for a customer.
+    Protected by Customer JWT with phone-level data isolation.
     Seeds default dummy methods on first access if none exist.
     """
     clean_phone = phone.strip()
@@ -1339,9 +1404,10 @@ def get_user_payment_methods(phone: str, db: Session = Depends(get_db)):
 @app.post("/api/user/{phone}/payment-methods", response_model=CustomerSavedPaymentDTO)
 @app.post("/user/{phone}/payment-methods", response_model=CustomerSavedPaymentDTO)
 @app.post("/api/api/user/{phone}/payment-methods", response_model=CustomerSavedPaymentDTO)
-def add_user_payment_method(phone: str, payload: AddCustomerSavedPaymentRequest, db: Session = Depends(get_db)):
+def add_user_payment_method(phone: str, payload: AddCustomerSavedPaymentRequest, db: Session = Depends(get_db), auth: Dict[str, Any] = Depends(verify_customer_access)):
     """
     Adds a new saved payment method (UPI or dummy Card token) for the customer.
+    Protected by Customer JWT with phone-level data isolation.
     """
     clean_phone = phone.strip()
     if payload.is_default:
@@ -1374,9 +1440,10 @@ def add_user_payment_method(phone: str, payload: AddCustomerSavedPaymentRequest,
 @app.delete("/api/user/{phone}/payment-methods/{method_id}")
 @app.delete("/user/{phone}/payment-methods/{method_id}")
 @app.delete("/api/api/user/{phone}/payment-methods/{method_id}")
-def delete_user_payment_method(phone: str, method_id: int, db: Session = Depends(get_db)):
+def delete_user_payment_method(phone: str, method_id: int, db: Session = Depends(get_db), auth: Dict[str, Any] = Depends(verify_customer_access)):
     """
     Deletes a saved payment method for the customer.
+    Protected by Customer JWT with phone-level data isolation.
     """
     clean_phone = phone.strip()
     item = db.query(SavedPaymentMethod).filter(
@@ -1581,7 +1648,7 @@ def create_payment_order(payload: CreatePaymentOrderRequest, db: Session = Depen
             payment_status="PENDING",
             status="Order Placed",
             timeline_stage=1,
-            delivery_otp="4821",
+            delivery_otp=os.getenv("GAONBAZAR_FIXED_OTP") or f"{secrets.randbelow(9000) + 1000}",
             created_at=datetime.utcnow()
         )
         db.add(order)
@@ -2146,41 +2213,70 @@ def commerce_ai_assistant_endpoint(payload: CommerceAssistantRequest, db: Sessio
     clean = re.sub(r"\s+(chahiye|dena|bhejo)$", "", clean)
 
     # 2. Split multi-item phrases by conjunctions
-    split_parts = re.split(r"\s*(?:and|aur|और|\+|\&|,)\s*", clean)
+    split_parts = re.split(r"\s*(?:and|aur|और|तथा|साथ में|\+|\&|,)\s*", clean)
     parsed_items = [p.strip() for p in split_parts if p.strip()]
     if not parsed_items:
         parsed_items = [clean]
 
-    # Keyword synonyms mapped to target categories / search terms
+    # Word-to-number mapping for bilingual Hindi/English speech inputs
+    word_to_num = {
+        "ek": 1, "एक": 1, "one": 1,
+        "do": 2, "दो": 2, "two": 2,
+        "teen": 3, "तीन": 3, "three": 3,
+        "char": 4, "चार": 4, "four": 4,
+        "panch": 5, "पांच": 5, "five": 5,
+        "chhe": 6, "छह": 6, "six": 6,
+        "aadha": 1, "आधा": 1, "half": 1
+    }
+
+    # Comprehensive synonyms dictionary covering rural FMCG, grocery, spices, and dairy
     synonyms = {
-        "aata": ["atta", "aata", "gehu", "chakki", "flour"],
-        "atta": ["atta", "aata", "chakki"],
-        "milk": ["milk", "doodh", "dudh", "taaza", "amul"],
-        "doodh": ["milk", "doodh", "taaza"],
-        "oil": ["oil", "tel", "mustard", "sarson"],
-        "tel": ["oil", "tel", "mustard", "sarson"],
-        "salt": ["salt", "namak", "tata"],
-        "namak": ["salt", "namak", "tata"],
-        "tea": ["tea", "chai", "red label", "chay"],
-        "chai": ["tea", "chai", "red label"],
-        "ghee": ["ghee", "desi ghee", "cow ghee"],
-        "sugar": ["sugar", "chini", "cheeni", "madhur"],
-        "chini": ["sugar", "chini", "cheeni"],
-        "rice": ["rice", "chawal", "basmati", "daawat"],
-        "chawal": ["rice", "chawal", "basmati"],
-        "mirch": ["mirch", "deggi", "chilli", "spices"],
-        "biscuit": ["parle", "biscuit", "biscuits"],
-        "soap": ["dettol", "soap", "sabun"]
+        "aata": ["atta", "aata", "gehu", "chakki", "flour", "maida", "आटा"],
+        "atta": ["atta", "aata", "chakki", "flour", "आटा"],
+        "besan": ["besan", "gram flour", "chana besan", "बेसन"],
+        "dal": ["dal", "daal", "arhar", "moong", "chana", "masoor", "toor", "urad", "pulses", "दाल"],
+        "daal": ["dal", "daal", "arhar", "moong", "chana", "masoor", "pulses", "दाल"],
+        "milk": ["milk", "doodh", "dudh", "taaza", "amul", "sudha", "paneer", "dahi", "दूध"],
+        "doodh": ["milk", "doodh", "taaza", "amul", "sudha", "दूध"],
+        "oil": ["oil", "tel", "mustard", "sarson", "refined", "fortune", "dhara", "तेल"],
+        "tel": ["oil", "tel", "mustard", "sarson", "refined", "fortune", "तेल"],
+        "salt": ["salt", "namak", "tata", "sendha", "नमक"],
+        "namak": ["salt", "namak", "tata", "नमक"],
+        "tea": ["tea", "chai", "red label", "taj mahal", "chay", "चाय"],
+        "chai": ["tea", "chai", "red label", "taj mahal", "चाय"],
+        "ghee": ["ghee", "desi ghee", "cow ghee", "amul ghee", "घी"],
+        "sugar": ["sugar", "chini", "cheeni", "shakkar", "madhur", "चीनी", "शक्कर"],
+        "chini": ["sugar", "chini", "cheeni", "shakkar", "madhur", "चीनी"],
+        "rice": ["rice", "chawal", "basmati", "daawat", "kolam", "चावल"],
+        "chawal": ["rice", "chawal", "basmati", "daawat", "चावल"],
+        "spices": ["mirch", "deggi", "chilli", "haldi", "turmeric", "dhaniya", "coriander", "masala", "spices", "मसाला"],
+        "masala": ["masala", "haldi", "mirch", "dhaniya", "garam masala", "spices", "मसाला"],
+        "biscuit": ["parle", "biscuit", "biscuits", "marie", "rusk", "cookies", "बिस्कुट"],
+        "soap": ["dettol", "soap", "sabun", "surf", "detergent", "rin", "wheel", "tide", "साबुन"]
     }
 
     matched_products = []
     seen_ids = set()
 
-    all_products = db.query(Product).filter(Product.in_stock == True).all()
+    # Query in-stock products with optional store scope restriction
+    store_filter = payload.store_id.strip() if payload.store_id else None
+    if store_filter:
+        store_prods = db.query(Product).filter(Product.in_stock == True, Product.store_id == store_filter).all()
+        all_products = store_prods if len(store_prods) > 0 else db.query(Product).filter(Product.in_stock == True).all()
+    else:
+        all_products = db.query(Product).filter(Product.in_stock == True).all()
 
     for item_part in parsed_items:
-        qty_match = re.search(r"(\d+)\s*(kg|g|l|ml|packet|packets|kilo|litre|litres)?", item_part)
-        req_qty = int(qty_match.group(1)) if qty_match and int(qty_match.group(1)) > 0 else 1
+        # Extract numeric quantity or Hindi word quantity
+        req_qty = 1
+        qty_num_match = re.search(r"(\d+)\s*(kg|g|l|ml|packet|packets|kilo|litre|litres|पैकेट|लीटर|किलो)?", item_part)
+        if qty_num_match and int(qty_num_match.group(1)) > 0:
+            req_qty = int(qty_num_match.group(1))
+        else:
+            for w, n in word_to_num.items():
+                if re.search(rf"\b{w}\b", item_part):
+                    req_qty = n
+                    break
 
         matched_for_part = []
         found_kw = None
@@ -2358,7 +2454,8 @@ def get_vendor_orders(
 def update_vendor_order_status(
     order_id: str,
     payload: UpdateOrderStatusRequest,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    auth_vendor: dict = Depends(require_vendor_token)
 ):
     """
     Updates order timeline stage in the shared SQLite database.
@@ -2373,6 +2470,15 @@ def update_vendor_order_status(
     order = db.query(Order).filter(Order.id.in_(candidate_ids)).first()
     if not order:
         raise HTTPException(status_code=404, detail=f"Order {order_id} not found")
+
+    # Enforce strict multi-tenant store isolation
+    if auth_vendor.get("role") != "admin":
+        vendor_store_id = auth_vendor.get("store_id")
+        if vendor_store_id and order.store_id and vendor_store_id != order.store_id:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Access Denied: Vendor '{vendor_store_id}' cannot modify order '{order.id}' belonging to store '{order.store_id}'"
+            )
 
     stage_names = {
         1: "Order Placed",
@@ -2425,7 +2531,8 @@ def update_vendor_order_status(
 def vendor_quick_action(
     order_id: str,
     action: str = Query(..., pattern="^(accept|pack|dispatch|deliver|cancel)$"),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    auth_vendor: dict = Depends(require_vendor_token)
 ):
     """
     Quick one-tap action buttons for touch screens:
@@ -2439,6 +2546,15 @@ def vendor_quick_action(
     order = db.query(Order).filter(Order.id.in_(candidate_ids)).first()
     if not order:
         raise HTTPException(status_code=404, detail=f"Order {order_id} not found")
+
+    # Enforce strict multi-tenant store isolation
+    if auth_vendor.get("role") != "admin":
+        vendor_store_id = auth_vendor.get("store_id")
+        if vendor_store_id and order.store_id and vendor_store_id != order.store_id:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Access Denied: Vendor '{vendor_store_id}' cannot modify order '{order.id}' belonging to store '{order.store_id}'"
+            )
 
     action_map = {
         "accept": (2, "Vendor Accepted"),
@@ -2502,7 +2618,8 @@ def get_vendor_products(
 def update_product_stock(
     product_id: str,
     payload: UpdateStockRequest,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    auth_vendor: dict = Depends(require_vendor_token)
 ):
     """
     Toggles product in_stock state (In-Stock / Out-of-Stock) and optional price update.
@@ -2511,6 +2628,15 @@ def update_product_stock(
     product = db.query(Product).filter(Product.id == product_id).first()
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
+
+    # Enforce strict multi-tenant store isolation
+    if auth_vendor.get("role") != "admin":
+        vendor_store_id = auth_vendor.get("store_id")
+        if vendor_store_id and product.store_id and vendor_store_id != product.store_id:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Access Denied: Vendor '{vendor_store_id}' cannot modify product '{product.id}' belonging to store '{product.store_id}'"
+            )
 
     product.in_stock = payload.in_stock
     if payload.price is not None and payload.price > 0:
@@ -2525,9 +2651,19 @@ def update_product_stock(
 def add_vendor_product(
     payload: AddProductRequest,
     store_id: str = Query(...),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    auth_vendor: dict = Depends(require_vendor_token)
 ):
     """Adds a new local product to the shop's inventory."""
+    # Enforce strict multi-tenant store isolation
+    if auth_vendor.get("role") != "admin":
+        vendor_store_id = auth_vendor.get("store_id")
+        if vendor_store_id and vendor_store_id != store_id:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Access Denied: Vendor '{vendor_store_id}' cannot add products to store '{store_id}'"
+            )
+
     prod_id = f"item_v_{uuid.uuid4().hex[:8]}"
     new_prod = Product(
         id=prod_id,
@@ -2833,7 +2969,7 @@ def get_runner_missions(
                 commission=m_commission,
                 status=ord_obj.status,
                 timeline_stage=ord_obj.timeline_stage,
-                delivery_otp=ord_obj.delivery_otp,
+                delivery_otp=None,  # Delivery OTP held securely by customer only
                 distance_km=m_dist,
                 eta_mins=m_eta,
                 created_at=ord_obj.created_at.isoformat()
@@ -2843,7 +2979,7 @@ def get_runner_missions(
 
 
 @app.post("/api/runner/orders/{order_id}/pickup", response_model=RunnerMissionDTO)
-def confirm_runner_pickup(order_id: str, db: Session = Depends(get_db)):
+def confirm_runner_pickup(order_id: str, db: Session = Depends(get_db), auth_runner: dict = Depends(require_runner_token)):
     """
     Runner confirms physical package pickup from the village store.
     Advances order from Stage 3 (Packed) -> Stage 4 (Out for Delivery).
@@ -2852,6 +2988,17 @@ def confirm_runner_pickup(order_id: str, db: Session = Depends(get_db)):
     order = db.query(Order).filter(Order.id.in_(candidate_ids)).first()
     if not order:
         raise HTTPException(status_code=404, detail=f"Order {order_id} not found")
+
+    if order.timeline_stage >= 4:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Order {order_id} has already been picked up (Stage {order.timeline_stage}: {order.status})"
+        )
+    if order.timeline_stage < 3:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Order {order_id} is not yet packed and ready for pickup (Current Stage {order.timeline_stage}: {order.status})"
+        )
 
     order.timeline_stage = 4
     order.status = "Out for Delivery"
@@ -2887,7 +3034,7 @@ def confirm_runner_pickup(order_id: str, db: Session = Depends(get_db)):
         commission=20.0,
         status=order.status,
         timeline_stage=order.timeline_stage,
-        delivery_otp=order.delivery_otp,
+        delivery_otp=None,
         created_at=order.created_at.isoformat()
     )
 
@@ -2896,7 +3043,8 @@ def confirm_runner_pickup(order_id: str, db: Session = Depends(get_db)):
 def verify_doorstep_otp(
     order_id: str,
     payload: RunnerVerifyOTPRequest,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    auth_runner: dict = Depends(require_runner_token)
 ):
     """
     Validates the 4-digit doorstep delivery OTP provided by the rural customer.
@@ -2907,6 +3055,17 @@ def verify_doorstep_otp(
     order = db.query(Order).filter(Order.id.in_(candidate_ids)).first()
     if not order:
         raise HTTPException(status_code=404, detail=f"Order {order_id} not found")
+
+    if order.timeline_stage == 5:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Order {order_id} has already been delivered."
+        )
+    if order.timeline_stage < 4:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Order {order_id} is not out for delivery yet (Current Stage {order.timeline_stage}: {order.status})"
+        )
 
     # Validate OTP string
     if payload.otp.strip() != order.delivery_otp.strip():

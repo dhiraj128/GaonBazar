@@ -21,6 +21,10 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Razorpay Checkout.js Enterprise FinTech SDK -->
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <!-- Leaflet Interactive Mobile Maps SDK (OpenStreetMap, Zero API Key Required) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
   <script>
     tailwind.config = {
       darkMode: "class",
@@ -70,7 +74,139 @@
     };
   </script>
 
+  <!-- Immediate Theme Engine Early-Boot (Zero Flash of Unstyled Content) -->
+  <script>
+    (function() {
+      try {
+        const saved = localStorage.getItem('gaonbazar_theme') || localStorage.getItem('gaonbazar_customer_theme') || 'system';
+        const isDark = saved === 'dark' || (saved === 'system' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+          document.documentElement.classList.remove('light');
+        } else {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.classList.add('light');
+        }
+      } catch(e) {}
+    })();
+  </script>
+
   <style>
+    /* ======================================================== */
+    /* THEME SYSTEM STYLES (Light / Dark / System)              */
+    /* ======================================================== */
+    html.dark {
+      color-scheme: dark;
+      background-color: #0b1120 !important;
+    }
+    html.dark body {
+      background-color: #0b1120 !important;
+      color: #f1f5f9 !important;
+    }
+    html.dark #app-root {
+      background-color: #0b1120 !important;
+      color: #f1f5f9 !important;
+    }
+    html.dark #main-content-container,
+    html.dark .bg-surface {
+      background-color: #0b1120 !important;
+      color: #f1f5f9 !important;
+    }
+    html.dark .bg-white,
+    html.dark .bg-surface-card {
+      background-color: #1e293b !important;
+      color: #f8fafc !important;
+    }
+    html.dark .bg-slate-50,
+    html.dark .bg-slate-100,
+    html.dark .bg-surface-container-low,
+    html.dark .bg-surface-container {
+      background-color: #0f172a !important;
+    }
+    html.dark .bg-slate-100\/80,
+    html.dark .bg-slate-50\/90 {
+      background-color: #1e293b !important;
+    }
+    html.dark .border-slate-200,
+    html.dark .border-slate-100,
+    html.dark .border-slate-300,
+    html.dark .border-slate-200\/90,
+    html.dark .border-surface-container-high,
+    html.dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+    html.dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
+      border-color: #334155 !important;
+    }
+    html.dark .text-slate-900,
+    html.dark .text-slate-800,
+    html.dark .text-on-surface {
+      color: #f8fafc !important;
+    }
+    html.dark .text-slate-700 {
+      color: #e2e8f0 !important;
+    }
+    html.dark .text-slate-600,
+    html.dark .text-slate-500,
+    html.dark .text-on-surface-variant {
+      color: #94a3b8 !important;
+    }
+    html.dark .text-slate-400 {
+      color: #64748b !important;
+    }
+    html.dark #customer-header,
+    html.dark #customer-bottom-nav,
+    html.dark #sidebar-drawer {
+      background-color: #0f172a !important;
+      border-color: #1e293b !important;
+    }
+    html.dark input:not([type="checkbox"]):not([type="radio"]),
+    html.dark select,
+    html.dark textarea {
+      background-color: #0f172a !important;
+      color: #f8fafc !important;
+      border-color: #334155 !important;
+    }
+    html.dark input::placeholder,
+    html.dark textarea::placeholder {
+      color: #64748b !important;
+    }
+    html.dark #otp-modal-container > div,
+    html.dark #add-payment-modal > div,
+    html.dark #voice-search-modal-container > div,
+    html.dark #cart-slide-tray,
+    html.dark #order-tracking-modal > div {
+      background-color: #1e293b !important;
+      color: #f8fafc !important;
+      border-color: #334155 !important;
+    }
+    html.dark .theme-segmented-container {
+      background-color: #0f172a !important;
+      border: 1px solid #334155 !important;
+    }
+    html.dark .theme-icon-badge {
+      background-color: rgba(245, 158, 11, 0.15) !important;
+      border-color: rgba(245, 158, 11, 0.3) !important;
+      color: #fbbf24 !important;
+    }
+    html.dark .bg-emerald-50 {
+      background-color: rgba(6, 78, 59, 0.4) !important;
+      color: #34d399 !important;
+    }
+    html.dark .bg-amber-50 {
+      background-color: rgba(120, 53, 15, 0.4) !important;
+      color: #fbbf24 !important;
+    }
+    html.dark .bg-red-50 {
+      background-color: rgba(127, 29, 29, 0.4) !important;
+      color: #f87171 !important;
+    }
+    html.dark .bg-blue-50 {
+      background-color: rgba(30, 58, 138, 0.4) !important;
+      color: #60a5fa !important;
+    }
+    html.dark .bg-purple-50 {
+      background-color: rgba(88, 28, 135, 0.4) !important;
+      color: #c084fc !important;
+    }
     /* Strict Mobile-first responsive optimization */
     html {
       width: 100%;
@@ -95,6 +231,23 @@
       -webkit-tap-highlight-color: transparent;
       box-sizing: border-box;
     }
+    .material-symbols-outlined {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      vertical-align: middle;
+      max-width: 1.2em;
+      max-height: 1.2em;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    #p1-leaflet-map {
+      isolation: isolate;
+      z-index: 0;
+    }
+    .leaflet-pane, .leaflet-top, .leaflet-bottom, .leaflet-control {
+      z-index: 10 !important;
+    }
     #app-root {
       height: 100%;
       height: 100dvh;
@@ -117,22 +270,27 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
-    /* Main scrollable content container rules (critical to prevent scroll-chaining freezes) */
+    /* SINGLE SCROLL OWNER ARCHITECTURE:
+       'main#main-content-container' is the sole vertical scroll owner.
+       Eliminates duplicate nested scroll containers that freeze touches on Android. */
     main, #main-content-container {
+      flex: 1 1 0%;
+      min-height: 0;
+      width: 100%;
       overflow-y: auto !important;
-      height: 100% !important;
+      overflow-x: hidden !important;
       -webkit-overflow-scrolling: touch !important;
       overscroll-behavior-y: contain !important;
       touch-action: pan-y !important;
+      scroll-padding-bottom: 120px;
+      scroll-padding-top: 75px;
     }
     .screen-view {
       transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       width: 100%;
-      height: 100%;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      overscroll-behavior-y: contain;
-      touch-action: pan-y;
+      min-height: 100%;
+      overflow: visible !important;
+      display: none;
     }
     .screen-view.hidden {
       display: none !important;
@@ -142,13 +300,9 @@
       display: flex !important;
       opacity: 1;
       flex-direction: column;
-      flex: 1 1 0%;
-      min-height: 0;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      overscroll-behavior: none;
-      overscroll-behavior-y: none;
-      touch-action: pan-y;
+      width: 100%;
+      min-height: 100%;
+      overflow: visible !important;
     }
     /* Stepper and active button tactile feedback */
     .btn-tactile:active {
@@ -156,18 +310,6 @@
     }
     .timeline-node-active {
       box-shadow: 0 0 0 4px rgba(0, 107, 44, 0.2);
-    }
-    /* Guaranteed clearance for sticky bottom CTAs and floating navbars across all devices */
-    html, body, #app-root, main, .screen-view {
-      scroll-padding-bottom: 120px;
-      scroll-padding-top: 75px;
-      -webkit-overflow-scrolling: touch;
-    }
-    main, .screen-view {
-      overflow-y: auto;
-      overscroll-behavior-y: none;
-      touch-action: pan-y;
-      -webkit-overflow-scrolling: touch;
     }
     #p1-landmark-text, textarea, input, .shadow-mobile-card, [onclick*="sharma_brothers"] {
       scroll-margin-bottom: 120px;
@@ -184,14 +326,14 @@
   <div id="app-root" class="w-full h-full min-h-[100dvh] flex flex-col bg-surface relative">
 
     <!-- App Global Sticky Header (Native Top App Bar - Blinkit Centered Standard) -->
-    <header id="customer-header" class="w-full max-w-full h-14 min-h-[56px] bg-white border-b border-slate-200/90 shadow-2xs px-3.5 flex items-center gap-2 z-40 shrink-0">
+    <header id="customer-header" class="w-full max-w-full h-14 min-h-[56px] bg-white border-b border-slate-200/90 shadow-2xs px-1.5 sm:px-2 flex items-center gap-0.5 sm:gap-1 z-40 shrink-0 overflow-x-hidden">
       <!-- Clean Hamburger Menu Icon on the Left (min 44x44px touch target) - ONLY ON HOME -->
-      <button id="btn-open-sidebar" onclick="openSidebarDrawer()" aria-label="Open navigation menu" class="w-11 h-11 min-w-[44px] min-h-[44px] -ml-1 rounded-full text-slate-800 hover:bg-slate-100 active:scale-90 transition-all flex items-center justify-center shrink-0 cursor-pointer">
+      <button id="btn-open-sidebar" onclick="openSidebarDrawer()" aria-label="Open navigation menu" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full text-slate-800 hover:bg-slate-100 active:scale-90 transition-all flex items-center justify-center shrink-0 cursor-pointer">
         <span class="material-symbols-outlined text-[26px] inline-block select-none leading-none">menu</span>
       </button>
 
       <!-- Native Android Left Arrow (Back Button) - REPLACES HAMBURGER WHEN NAVIGATED AWAY -->
-      <button id="global-nav-back" onclick="navigateBack()" aria-label="Go Back" class="hidden w-11 h-11 min-w-[44px] min-h-[44px] -ml-1 rounded-full text-slate-800 hover:bg-slate-100 active:scale-90 transition-all flex items-center justify-center shrink-0 cursor-pointer">
+      <button id="global-nav-back" onclick="navigateBack()" aria-label="Go Back" class="hidden w-11 h-11 min-w-[44px] min-h-[44px] rounded-full text-slate-800 hover:bg-slate-100 active:scale-90 transition-all flex items-center justify-center shrink-0 cursor-pointer">
         <span class="material-symbols-outlined text-[24px] inline-block select-none leading-none">arrow_back</span>
       </button>
 
@@ -206,7 +348,7 @@
       <div class="flex-1 min-w-0" aria-hidden="true"></div>
 
       <!-- Compact Language Toggle ("HI | EN" pill, min 44x44px touch target) -->
-      <button id="header-lang-btn" onclick="window.toggleGlobalLanguage()" type="button" aria-label="Language Toggle" title="Switch Language (भाषा बदलें)" class="h-11 min-h-[44px] min-w-[44px] px-2.5 rounded-full border border-slate-200/90 bg-slate-50 hover:bg-slate-100 active:scale-95 transition-all flex items-center justify-center gap-1 cursor-pointer select-none shrink-0 shadow-2xs">
+      <button id="header-lang-btn" onclick="window.toggleGlobalLanguage()" type="button" aria-label="Language Toggle" title="Switch Language (भाषा बदलें)" class="h-11 min-h-[44px] min-w-[44px] px-2 rounded-full border border-slate-200/90 bg-slate-50 hover:bg-slate-100 active:scale-95 transition-all flex items-center justify-center gap-1 cursor-pointer select-none shrink-0 shadow-2xs">
         <span class="material-symbols-outlined text-primary text-[17px] leading-none pointer-events-none">translate</span>
         <span id="header-lang-label" class="text-xs font-black tracking-tight leading-none pointer-events-none flex items-center">
           <span id="header-lang-hi" class="text-primary font-black">HI</span>
@@ -233,7 +375,7 @@
 
       <!-- Shopping Cart Icon (with active count badge, min 44x44px touch target) -->
       <button id="header-cart-icon" onclick="navigateToPhase('cart')" aria-label="View Cart" class="relative w-11 h-11 min-w-[44px] min-h-[44px] rounded-full text-slate-800 hover:bg-slate-100 active:scale-90 transition-all flex items-center justify-center shrink-0 cursor-pointer">
-        <span class="material-symbols-outlined text-[24px] inline-block select-none leading-none">shopping_cart</span>
+        <span class="material-symbols-outlined text-[24px] inline-flex items-center justify-center w-6 h-6 max-w-[24px] max-h-[24px] overflow-hidden select-none leading-none">shopping_cart</span>
         <span id="header-cart-badge" class="absolute top-1 right-1 min-w-[18px] h-[18px] px-1 bg-secondary text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-white shadow-xs">0</span>
       </button>
 
@@ -376,12 +518,12 @@
     <!-- ========================================================================= -->
     <!-- MAIN SCREEN ROUTER VIEWPORT CONTAINER                                     -->
     <!-- ========================================================================= -->
-    <main id="main-content-container" class="flex-1 w-full min-h-0 h-full relative bg-surface flex flex-col pb-safe overflow-y-auto overscroll-contain">
+    <main id="main-content-container" class="flex-1 w-full min-h-0 h-full relative bg-surface flex flex-col pb-safe overflow-y-auto overscroll-contain scroll-pb-28">
 
       <!-- ===================================================================== -->
       <!-- PHASE 1.1: PHONE LOGIN & SEPARATE AUTH INTENTIONS (SIGN IN / SIGN UP) -->
       <!-- ===================================================================== -->
-      <section id="view-p1-login" class="screen-view active flex-col w-full px-4 pt-4 pb-28 flex-1 min-h-0 overflow-y-auto space-y-4">
+      <section id="view-p1-login" class="screen-view active flex-col w-full px-4 pt-4 pb-28 flex-1 min-h-0 space-y-4">
         <!-- Hero Banner -->
         <div class="w-full shrink-0 relative overflow-hidden rounded-2xl bg-gradient-to-br from-surface-container/70 to-surface-container-low px-4 py-3 shadow-xs border border-surface-container-high/80 text-center flex flex-col items-center justify-center gap-1.5" style="max-width: 100%;">
           <div class="inline-flex items-center justify-center gap-1.5 bg-emerald-50 text-emerald-900 border border-emerald-300/80 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold shadow-xs max-w-full box-border">
@@ -522,7 +664,7 @@
       <!-- ===================================================================== -->
       <!-- PHASE 1.2: OTP VERIFICATION                                           -->
       <!-- ===================================================================== -->
-      <section id="view-p1-otp" class="screen-view hidden flex-col w-full px-4 pt-4 pb-28 flex-1 min-h-0 overflow-y-auto space-y-4">
+      <section id="view-p1-otp" class="screen-view hidden flex-col w-full px-4 pt-4 pb-28 flex-1 min-h-0 space-y-4">
         <div>
           <div class="flex items-center justify-between mb-1.5">
             <span class="text-xs font-bold text-primary uppercase" data-i18n="p1_otp_step">चरण 2 • सत्यापन</span>
@@ -582,6 +724,12 @@
           </div>
         </div>
 
+        <!-- OTP Verification Error Alert Banner -->
+        <div id="p1-otp-error" class="hidden bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl p-3.5 text-xs font-bold flex items-center gap-2 shadow-2xs">
+          <span class="material-symbols-outlined text-[20px] text-rose-600 shrink-0">error</span>
+          <span id="p1-otp-error-text">अमान्य या समाप्त OTP कोड। कृपया दोबारा प्रयास करें।</span>
+        </div>
+
         <button id="p1-verify-otp-btn" onclick="submitVerifyOtp()" class="w-full min-h-[52px] py-3.5 px-6 rounded-2xl bg-secondary hover:bg-secondary/90 text-white text-base font-bold shadow-lg flex items-center justify-center gap-2 active:scale-98 transition-all">
           <span data-i18n="p1_otp_verify_btn">सत्यापित करें और आगे बढ़ें</span>
           <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
@@ -591,7 +739,7 @@
       <!-- ===================================================================== -->
       <!-- DELIVERY LOCATION SETUP (Gated at Checkout Phase)                     -->
       <!-- ===================================================================== -->
-      <section id="view-p1-landmark" class="screen-view hidden flex-col w-full px-4 pt-4 pb-28 flex-1 min-h-0 overflow-y-auto space-y-4">
+      <section id="view-p1-landmark" class="screen-view hidden flex-col w-full px-4 pt-4 pb-52 flex-1 min-h-0 space-y-4">
         <div>
           <div class="flex items-center justify-between mb-1.5">
             <span class="text-xs font-bold text-primary uppercase" data-i18n="p1_lm_step">डिलीवरी पता सेटअप</span>
@@ -636,42 +784,6 @@
             <span id="p1-locate-text" data-i18n="p1_locate_btn" class="truncate text-center font-bold">वर्तमान लोकेशन लें</span>
           </button>
 
-          <!-- Mini-Map Visual Confirmation & Accuracy Indicator (Injected on GPS Success) -->
-          <div id="p1-map-preview-container" class="hidden flex-col gap-2 pt-1 transition-all duration-300">
-            <div class="flex items-center justify-between gap-2 flex-wrap">
-              <span id="p1-doorstep-badge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 font-extrabold text-[11px] shadow-2xs">
-                <span id="p1-doorstep-badge-text" data-i18n="p1_doorstep_pinned">✅ Exact Doorstep Pinned</span>
-              </span>
-              <span id="p1-coords-display" class="font-mono text-[10px] text-slate-500 font-bold tracking-tight"></span>
-            </div>
-
-            <!-- Mini Map Frame with Centered Pin -->
-            <div class="relative w-full h-36 rounded-xl overflow-hidden border border-emerald-500/40 shadow-xs bg-slate-100">
-              <iframe 
-                id="p1-osm-map-iframe" 
-                title="Exact Delivery Location Mini-Map" 
-                class="w-full h-full border-0 pointer-events-none" 
-                loading="lazy" 
-                scrolling="no"
-                src="about:blank"
-              ></iframe>
-              <!-- Center Pin Overlay on Map Center to visually guarantee exact doorstep pin -->
-              <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div class="relative flex items-center justify-center">
-                  <span class="animate-ping absolute inline-flex h-7 w-7 rounded-full bg-emerald-500 opacity-30"></span>
-                  <div class="relative z-10 w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center shadow-md border-2 border-white">
-                    <span class="material-symbols-outlined text-[16px]">location_on</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Accuracy Indicator -->
-            <div id="p1-gps-accuracy-indicator" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-bold">
-              <span class="material-symbols-outlined text-[15px] text-emerald-600 shrink-0">verified</span>
-              <span id="p1-gps-accuracy-text" data-i18n="p1_gps_acc_high">GPS Accuracy: High (Targeting exact location)</span>
-            </div>
-          </div>
         </div>
 
         <!-- 3. Open Text Address Inputs: District / Tehsil -->
@@ -680,7 +792,7 @@
           <div class="relative flex items-center bg-surface-container-low rounded-xl border border-surface-container-high focus-within:border-primary">
             <span class="material-symbols-outlined text-outline absolute left-3 text-[18px]">location_city</span>
             <input 
-              id="p1-district-input" 
+              id="p1-district-input" oninput="this.dataset.userEdited='true'" 
               type="text" 
               placeholder="जैसे: सोनीपत या गनौर" 
               data-i18n-ph="p1_district_ph" 
@@ -696,12 +808,21 @@
           <div class="relative flex items-center bg-surface-container-low rounded-xl border border-surface-container-high focus-within:border-primary">
             <span class="material-symbols-outlined text-outline absolute left-3 text-[18px]">home_pin</span>
             <input 
-              id="p1-village-input" 
+              id="p1-village-input" oninput="this.dataset.userEdited='true'" 
               type="text" 
               placeholder="जैसे: रामपुर" 
               data-i18n-ph="p1_village_ph" 
               class="w-full h-11 pl-10 pr-3 rounded-xl bg-transparent text-xs font-bold text-on-surface focus:outline-none"
             />
+          </div>
+          <!-- Suggested Local Village Chips (One-tap village selection) -->
+          <div class="flex flex-wrap items-center gap-1.5 pt-1">
+            <span class="text-[10px] text-slate-400 font-bold" data-i18n="p1_quick_villages">आस-पास के गाँव:</span>
+            <button type="button" onclick="selectVillageChip('चतुर्सी')" class="px-2.5 py-1 rounded-full bg-surface-container text-[11px] font-bold text-slate-700 hover:bg-primary hover:text-white transition-all cursor-pointer">चतुर्सी</button>
+            <button type="button" onclick="selectVillageChip('मीनपुर')" class="px-2.5 py-1 rounded-full bg-surface-container text-[11px] font-bold text-slate-700 hover:bg-primary hover:text-white transition-all cursor-pointer">मीनपुर</button>
+            <button type="button" onclick="selectVillageChip('रामपुर')" class="px-2.5 py-1 rounded-full bg-surface-container text-[11px] font-bold text-slate-700 hover:bg-primary hover:text-white transition-all cursor-pointer">रामपुर</button>
+            <button type="button" onclick="selectVillageChip('कांटी')" class="px-2.5 py-1 rounded-full bg-surface-container text-[11px] font-bold text-slate-700 hover:bg-primary hover:text-white transition-all cursor-pointer">कांटी</button>
+            <button type="button" onclick="selectVillageChip('मोतीपुर')" class="px-2.5 py-1 rounded-full bg-surface-container text-[11px] font-bold text-slate-700 hover:bg-primary hover:text-white transition-all cursor-pointer">मोतीपुर</button>
           </div>
           <!-- Hidden form inputs for delivery pinpointing & GPS coordinates -->
           <input id="p1-village-search-input" type="hidden" />
@@ -759,8 +880,52 @@
           <span id="p1-lm-err" class="hidden text-[10px] text-error font-bold" data-i18n="p1_lm_err">कम से कम 10 अक्षर आवश्यक हैं</span>
         </div>
 
-        <!-- Sticky Bottom Action CTA Tray (Fixed & Accessible) -->
-        <div class="fixed bottom-0 left-0 right-0 w-full z-50 bg-white border-t border-surface-container-high px-4 py-3 pb-safe shadow-sticky-bar">
+        <!-- 6. Interactive Leaflet Delivery Map & Accurate Doorstep Confirmation -->
+        <div id="p1-map-preview-container" class="hidden bg-white rounded-2xl p-4 shadow-mobile-card border border-surface-container-high flex-col gap-3 transition-all duration-300">
+          <div class="flex items-center justify-between gap-2 flex-wrap">
+            <span id="p1-doorstep-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-900 border border-amber-300 font-extrabold text-[11px] shadow-2xs">
+              <span id="p1-doorstep-badge-text" data-i18n="p1_doorstep_pinned">📍 स्थान चुनें (पिन खींचें)</span>
+            </span>
+            <span id="p1-coords-display" class="font-mono text-[10px] text-slate-500 font-bold tracking-tight"></span>
+          </div>
+
+          <!-- Interactive Mobile Map (Pinch to zoom, pan, draggable pin, zoom buttons) -->
+          <div class="relative w-full h-56 rounded-2xl overflow-hidden border border-slate-300 shadow-sm bg-slate-100">
+            <div id="p1-leaflet-map" class="w-full h-full" style="touch-action: pan-x pan-y pinch-zoom;"></div>
+            
+            <!-- Floating Recenter Button -->
+            <button 
+              id="p1-map-recenter-btn" 
+              onclick="recenterMapToGps()" 
+              type="button" 
+              class="absolute bottom-3 right-3 z-[400] bg-white/95 hover:bg-white text-slate-800 text-xs font-bold py-1.5 px-3 rounded-full shadow-md border border-slate-200 flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer"
+              title="Recenter to detected GPS coordinates"
+            >
+              <span class="material-symbols-outlined text-[16px] text-primary">my_location</span>
+              <span id="p1-recenter-text">GPS पर जाएं</span>
+            </button>
+          </div>
+
+          <!-- Honest Accuracy Indicator -->
+          <div id="p1-gps-accuracy-indicator" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 text-slate-700 border border-slate-200 text-[11px] font-bold">
+            <span class="material-symbols-outlined text-[16px] text-slate-500 shrink-0">info</span>
+            <span id="p1-gps-accuracy-text">GPS Accuracy: Detecting...</span>
+          </div>
+
+          <!-- Explicit Confirmation CTA Button -->
+          <button 
+            id="p1-confirm-location-btn" 
+            onclick="confirmPinnedLocation()" 
+            type="button" 
+            class="w-full min-h-[46px] py-2.5 px-4 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-bold shadow-md flex items-center justify-center gap-2 active:scale-98 transition-all cursor-pointer"
+          >
+            <span class="material-symbols-outlined text-[18px]">verified</span>
+            <span id="p1-confirm-location-text">✅ इस सटीक पते की पुष्टि करें (Confirm Doorstep)</span>
+          </button>
+        </div>
+
+                <!-- Sticky Bottom Action CTA Tray (Fixed & Accessible) -->
+        <div class="fixed bottom-0 left-0 right-0 w-full z-[2000] bg-white border-t border-surface-container-high px-4 py-3 pb-safe shadow-sticky-bar">
           <button id="p1-save-landmark-btn" onclick="submitLandmarkSetup()" class="w-full h-[52px] rounded-xl bg-primary text-white text-base font-bold shadow-md flex items-center justify-center gap-2 active:scale-98 transition-all">
             <span data-i18n="p1_save_proceed_btn">पता सहेजें और आगे बढ़ें</span>
             <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
@@ -771,7 +936,7 @@
       <!-- ===================================================================== -->
       <!-- PHASE 2: MAIN DASHBOARD & STORE DISCOVERY                             -->
       <!-- ===================================================================== -->
-      <section id="view-p2-dashboard" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 overflow-y-auto space-y-4">
+      <section id="view-p2-dashboard" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 space-y-4">
         <!-- Sticky Location Header Bar -->
         <div class="bg-surface-container rounded-2xl p-3.5 flex items-center justify-between shadow-xs border border-surface-container-high">
           <div class="flex items-center gap-2.5 min-w-0 cursor-pointer" onclick="navigateToPhase('landmark')">
@@ -891,7 +1056,7 @@
       <!-- ===================================================================== -->
       <!-- PHASE 3: STORE & PRODUCT VIEW (Dynamic Rural Storefront)               -->
       <!-- ===================================================================== -->
-      <section id="view-p3-store" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 overflow-y-auto overflow-x-hidden max-w-full">
+      <section id="view-p3-store" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 max-w-full">
         <!-- Store Overview Header Card (Fully Dynamic) -->
         <div id="p3-store-header-card" class="bg-white rounded-2xl p-4 shadow-mobile-card border border-surface-container-high mb-3">
           <div class="flex items-center justify-between gap-2">
@@ -945,7 +1110,7 @@
       <!-- ===================================================================== -->
       <!-- PHASE 4.1: CART REVIEW                                                -->
       <!-- ===================================================================== -->
-      <section id="view-p4-cart" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 overflow-y-auto space-y-4">
+      <section id="view-p4-cart" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 space-y-4">
         
         <!-- Empty Cart Illustration & State (Shown when cart items = 0) -->
         <div id="p4-empty-cart-state" class="hidden flex flex-col items-center justify-center text-center py-12 px-4 space-y-4 bg-white rounded-3xl border border-surface-container-high shadow-mobile-card">
@@ -1071,7 +1236,7 @@
       <!-- ===================================================================== -->
       <!-- PHASE 4.2: CHECKOUT & PAYMENT SELECTION                               -->
       <!-- ===================================================================== -->
-      <section id="view-p4-checkout" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 overflow-y-auto space-y-4">
+      <section id="view-p4-checkout" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 space-y-4">
         <!-- Verified Delivery Address & Landmark Confirmation -->
         <div class="bg-white rounded-2xl p-5 shadow-mobile-card border border-surface-container-high">
           <div class="flex items-center justify-between pb-2 border-b border-surface-container">
@@ -1156,7 +1321,7 @@
       <!-- ===================================================================== -->
       <!-- PHASE 5: LIVE ORDER TRACKING (Order Placed -> Delivered)              -->
       <!-- ===================================================================== -->
-      <section id="view-p5-tracking" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 sm:pb-32 flex-1 min-h-0 overflow-y-auto space-y-4">
+      <section id="view-p5-tracking" class="screen-view hidden flex-col w-full px-4 pt-3 pb-48 sm:pb-52 flex-1 min-h-0 space-y-4">
         <!-- 1. EMPTY STATE CONTAINER (Visible when NO active order exists) -->
         <div id="p5-tracking-empty-state" class="w-full bg-white rounded-3xl p-6 text-center shadow-mobile-card border border-surface-container-high flex flex-col items-center justify-center my-auto py-12">
           <div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-4 text-primary">
@@ -1275,17 +1440,17 @@
           </div>
 
           <!-- Back to Home / Enter Market Button -->
-          <button id="p5-back-home-btn" onclick="navigateToPhase('dashboard')" class="w-full min-h-[52px] rounded-2xl bg-primary hover:bg-primary-dark text-white text-base font-extrabold shadow-md flex items-center justify-center gap-2 active:scale-98 transition-all">
+          <button id="p5-back-home-btn" onclick="navigateToPhase('dashboard')" class="w-full min-h-[52px] rounded-2xl bg-primary hover:bg-primary-dark text-white text-base font-extrabold shadow-md flex items-center justify-center gap-2 active:scale-98 transition-all mb-12 sm:mb-16">
             <span class="material-symbols-outlined text-[20px]">storefront</span>
             <span data-i18n="p5_back_home_btn">मुख्य बाज़ार पर वापस जाएँ</span>
           </button>
         </div>
-      </section></section>
+      </section>
 
       <!-- ===================================================================== -->
       <!-- PHASE 6: CUSTOM OFFLINE FALLBACK SCREEN                               -->
       <!-- ===================================================================== -->
-      <section id="view-offline-fallback" class="screen-view hidden flex-col w-full px-4 pt-6 pb-28 flex-1 min-h-0 overflow-y-auto items-center text-center">
+      <section id="view-offline-fallback" class="screen-view hidden flex-col w-full px-4 pt-6 pb-28 flex-1 min-h-0 items-center text-center">
         <div id="offline-fallback-container" data-status="offline" class="w-full bg-white rounded-3xl p-6 shadow-mobile-card border border-emerald-100 flex flex-col items-center">
           <!-- Offline Icon -->
           <div class="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mb-4 border-2 border-red-100">
@@ -1336,7 +1501,7 @@
       <!-- ===================================================================== -->
       <!-- PHASE: MY ACCOUNT & PROFILE VIEW (Swiggy / Flipkart Standard)         -->
       <!-- ===================================================================== -->
-      <section id="view-profile" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 overflow-y-auto space-y-4">
+      <section id="view-profile" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 space-y-4">
         
         <!-- Profile Top Title Bar -->
         <div class="flex items-center justify-between pb-1">
@@ -1540,12 +1705,69 @@
         </div>
 
         <!-- =================================================================== -->
+        <!-- PAST ORDERS / ORDER HISTORY                                         -->
+        <!-- =================================================================== -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between px-1">
+            <h3 class="text-xs font-black text-slate-500 uppercase tracking-wider" data-i18n="profile_sec_orders">पिछले ऑर्डर (Past Orders)</h3>
+            <span class="text-[11px] text-primary font-bold cursor-pointer" onclick="loadUserOrderHistory()" data-i18n="profile_refresh_orders">रिफ्रेश</span>
+          </div>
+          <div id="profile-order-history-list" class="space-y-3"></div>
+        </div>
+
+        <!-- =================================================================== -->
         <!-- 3. SETTINGS & PREFERENCES                                           -->
         <!-- =================================================================== -->
         <div class="space-y-2">
           <h3 class="text-xs font-black text-slate-500 uppercase tracking-wider px-1" data-i18n="profile_sec_settings">सेटिंग्स एवं प्राथमिकताएं (Settings & Preferences)</h3>
 
           <div class="rounded-3xl bg-white shadow-mobile-card border border-surface-container-high divide-y divide-slate-100 overflow-hidden">
+            <!-- Theme Selector Row (Light / Dark / System) -->
+            <div id="profile-row-theme" class="p-4 flex flex-col gap-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3.5">
+                  <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 border border-amber-100 theme-icon-badge">
+                    <span class="material-symbols-outlined text-[22px]" id="theme-header-icon">palette</span>
+                  </div>
+                  <div>
+                    <span class="text-xs font-black text-slate-900 block" data-i18n="profile_row_theme">थीम / रंग रूप (Theme)</span>
+                    <span id="profile-current-theme-badge" class="text-[11px] text-slate-500 font-bold block" data-i18n="profile_theme_badge">सिस्टम (System)</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- 3 Segmented Theme Pills -->
+              <div class="grid grid-cols-3 gap-1.5 bg-slate-100 p-1 rounded-2xl theme-segmented-container">
+                <button 
+                  id="btn-theme-light" 
+                  type="button" 
+                  onclick="setAppTheme('light')"
+                  class="h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-1 transition-all text-slate-700 hover:bg-white/60 cursor-pointer"
+                >
+                  <span class="material-symbols-outlined text-[16px]">light_mode</span>
+                  <span data-i18n="theme_opt_light">हल्का (Light)</span>
+                </button>
+                <button 
+                  id="btn-theme-dark" 
+                  type="button" 
+                  onclick="setAppTheme('dark')"
+                  class="h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-1 transition-all text-slate-700 hover:bg-white/60 cursor-pointer"
+                >
+                  <span class="material-symbols-outlined text-[16px]">dark_mode</span>
+                  <span data-i18n="theme_opt_dark">गहरा (Dark)</span>
+                </button>
+                <button 
+                  id="btn-theme-system" 
+                  type="button" 
+                  onclick="setAppTheme('system')"
+                  class="h-10 rounded-xl font-black text-xs flex items-center justify-center gap-1 transition-all bg-primary text-white shadow-xs cursor-pointer"
+                >
+                  <span class="material-symbols-outlined text-[16px]">settings_suggest</span>
+                  <span data-i18n="theme_opt_system">सिस्टम (System)</span>
+                </button>
+              </div>
+            </div>
+
             <!-- Language Selector Row -->
             <div class="p-4 flex flex-col gap-3">
               <div class="flex items-center justify-between">
@@ -1768,7 +1990,7 @@
       <!-- ===================================================================== -->
       <!-- MODULE 1: COMMERCE AI ASSISTANT (Voice-First Shopping & Direct Cart CTA) -->
       <!-- ===================================================================== -->
-      <section id="view-commerce-ai" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 overflow-y-auto space-y-4">
+      <section id="view-commerce-ai" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 space-y-4">
         
         <!-- Top Title Bar -->
         <div class="flex items-center justify-between">
@@ -1892,7 +2114,7 @@
       <!-- ===================================================================== -->
       <!-- MODULE 3: TRADITIONAL HELP & SUPPORT CENTER (Self-Service & Tickets)   -->
       <!-- ===================================================================== -->
-      <section id="view-support-center" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 overflow-y-auto space-y-4">
+      <section id="view-support-center" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 space-y-4">
         
         <!-- Header with Back Button -->
         <div class="flex items-center justify-between">
@@ -2764,7 +2986,8 @@
         p1_gps_title: "वर्तमान GPS लोकेशन इस्तेमाल करें",
         p1_gps_badge: "GPS सेट नहीं है",
         p1_locate_btn: "वर्तमान लोकेशन लें",
-        p1_doorstep_pinned: "✅ Exact Doorstep Pinned",
+        p1_doorstep_pinned: "📍 स्थान चुनें (पिन खींचें)",
+        p1_doorstep_confirmed: "✅ सटीक स्थान ग्राहक द्वारा पुष्ट",
         p1_gps_acc_high: "GPS Accuracy: High (Targeting exact location)",
         p1_district_label: "जिला या तहसील *",
         p1_district_ph: "जैसे: सोनीपत या गनौर",
@@ -2896,6 +3119,11 @@
         profile_row_payments_sub: "UPI ID, डेबिट व क्रेडिट कार्ड",
         profile_badge_manage: "प्रबंधित करें",
         profile_sec_settings: "सेटिंग्स एवं प्राथमिकताएं",
+        profile_row_theme: "थीम / रंग रूप",
+        profile_theme_badge: "सिस्टम (System)",
+        theme_opt_light: "हल्का (Light)",
+        theme_opt_dark: "गहरा (Dark)",
+        theme_opt_system: "सिस्टम (System)",
         profile_row_lang: "ऐप की भाषा",
         profile_sec_notifications: "सूचनाएं",
         profile_sec_notifications_sub: "ऑर्डर अपडेट व अलर्ट्स प्राथमिकताएं",
@@ -3152,7 +3380,8 @@
         p1_gps_title: "Use Current GPS Location",
         p1_gps_badge: "GPS not set",
         p1_locate_btn: "Use Location",
-        p1_doorstep_pinned: "✅ Exact Doorstep Pinned",
+        p1_doorstep_pinned: "📍 Select Location (Drag Pin to Doorstep)",
+        p1_doorstep_confirmed: "✅ Exact Doorstep Confirmed by You",
         p1_gps_acc_high: "GPS Accuracy: High (Targeting exact location)",
         p1_district_label: "District / Tehsil *",
         p1_district_ph: "e.g., Sonipat / Ganaur",
@@ -3284,6 +3513,11 @@
         profile_row_payments_sub: "UPI IDs, Debit & Credit Cards",
         profile_badge_manage: "Manage",
         profile_sec_settings: "Settings & Preferences",
+        profile_row_theme: "Theme & Display",
+        profile_theme_badge: "System",
+        theme_opt_light: "Light",
+        theme_opt_dark: "Dark",
+        theme_opt_system: "System",
         profile_row_lang: "App Language",
         profile_sec_notifications: "Notifications",
         profile_sec_notifications_sub: "Order updates & alert preferences",
@@ -3574,12 +3808,13 @@
 
     async function apiFetch(endpoint, options = {}) {
       const url = `${API_BASE}${endpoint}`;
+      const token = AppStore.sessionToken || (typeof localStorage !== 'undefined' ? (localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_authToken')) : null);
       const headers = {
         'Content-Type': 'application/json',
         ...(options.headers || {})
       };
-      if (AppStore.sessionToken) {
-        headers['Authorization'] = `Bearer ${AppStore.sessionToken}`;
+      if (token && !headers['Authorization']) {
+        headers['Authorization'] = `Bearer ${token}`;
       }
 
       try {
@@ -3701,10 +3936,13 @@
       let historyPushedCount = 0;
 
       window.syncBodyScrollLock = function() {
+        // Guarantee clean body scroll unlock without residual scroll freezes
         if (overlayStack.length > 0) {
           document.body.classList.add('overflow-hidden');
+          document.documentElement.classList.add('overflow-hidden');
         } else {
           document.body.classList.remove('overflow-hidden');
+          document.documentElement.classList.remove('overflow-hidden');
         }
       };
 
@@ -3720,12 +3958,11 @@
         centralizedNavigate(overlayId, 'modal', { gaonbazar_overlay: overlayId });
       };
 
-      // Set initial history state for root view (guards against accidental app exit on first edge swipe)
+      // Set initial history state for current view without creating duplicate history entries
       if (window.history && window.history.replaceState) {
         try {
           if (!window.history.state || !window.history.state.page) {
-            window.history.replaceState({ page: 'root', gaonbazar_phase: 'dashboard', timestamp: Date.now() }, '');
-            window.history.pushState({ page: 'dashboard', gaonbazar_phase: 'dashboard', timestamp: Date.now() }, '');
+            window.history.replaceState({ page: 'dashboard', gaonbazar_phase: 'dashboard', timestamp: Date.now() }, '');
           }
         } catch (e) {
           console.warn('Initial replaceState error:', e);
@@ -3741,7 +3978,7 @@
         }
         window.syncBodyScrollLock();
         if (!isFromPopstate) {
-          // Closed via UI (button, backdrop, or programmatic switch)
+          // Closed via UI (button or backdrop tap)
           if (historyPushedCount > overlayStack.length) {
             historyPushedCount--;
             isProgrammaticBack = true;
@@ -3765,7 +4002,7 @@
         }
 
         // 1. Intercept back swipe / button when an overlay/modal is open:
-        // Close the active modal cleanly WITHOUT exiting the app
+        // Close topmost modal/overlay cleanly and restore scroll
         if (overlayStack.length > 0) {
           const topOverlay = overlayStack.pop();
           if (topOverlay && typeof topOverlay.close === 'function') {
@@ -3803,30 +4040,27 @@
           }
         }
 
-        // 2. Revert to previous DOM view cleanly WITHOUT exiting the app
+        // 2. Revert to previous DOM view cleanly
         window.syncBodyScrollLock();
         const state = event.state;
         const targetPhase = (state && (state.page || state.gaonbazar_phase));
 
-        if (targetPhase && targetPhase !== 'root' && targetPhase !== AppStore.currentPhase && typeof navigateToPhase === 'function') {
+        if (targetPhase && targetPhase !== AppStore.currentPhase && typeof navigateToPhase === 'function') {
           navigateToPhase(targetPhase, true /* isFromPopstate */);
         } else if (AppStore.historyStack && AppStore.historyStack.length > 0) {
           const prev = AppStore.historyStack.pop();
           if (prev && prev !== AppStore.currentPhase && typeof navigateToPhase === 'function') {
             navigateToPhase(prev, true /* isFromPopstate */);
-          } else if (typeof navigateToPhase === 'function') {
+          } else if (typeof navigateToPhase === 'function' && AppStore.currentPhase !== 'dashboard') {
             navigateToPhase('dashboard', true /* isFromPopstate */);
           }
-        } else if (typeof AppStore !== 'undefined' && AppStore.currentPhase && AppStore.currentPhase !== 'dashboard') {
+        } else if (typeof AppStore !== 'undefined' && AppStore.currentPhase && AppStore.currentPhase !== 'dashboard' && AppStore.currentPhase !== 'login') {
           if (typeof navigateToPhase === 'function') {
             navigateToPhase('dashboard', true /* isFromPopstate */);
           }
         } else {
-          // User is on root view (dashboard): keep them on dashboard and re-arm state
-          // so an edge swipe NEVER closes the PWA completely
-          try {
-            window.history.pushState({ page: 'dashboard', gaonbazar_phase: 'dashboard' }, '', '');
-          } catch (e) {}
+          // User is on root view (dashboard or login) and has no subview or overlay open:
+          // Do NOT block or trap them! Allow normal OS/browser exit.
         }
       });
 
@@ -4083,6 +4317,84 @@
     }
     window.confirmDeleteAccount = confirmDeleteAccount;
 
+
+    // --- THEME ENGINE (Light / Dark / System) ---
+    function getAppTheme() {
+      return localStorage.getItem('gaonbazar_theme') || localStorage.getItem('gaonbazar_customer_theme') || 'system';
+    }
+
+    function setAppTheme(themeName) {
+      if (!['light', 'dark', 'system'].includes(themeName)) return;
+      localStorage.setItem('gaonbazar_theme', themeName);
+      localStorage.setItem('gaonbazar_customer_theme', themeName);
+      applyAppTheme(themeName);
+    }
+    window.setAppTheme = setAppTheme;
+    window.getAppTheme = getAppTheme;
+
+    function applyAppTheme(themeName) {
+      const mode = themeName || getAppTheme();
+      let isDark = false;
+      if (mode === 'dark') {
+        isDark = true;
+      } else if (mode === 'system') {
+        isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      }
+
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('light');
+        const metaTheme = document.querySelector('meta[name="theme-color"]');
+        if (metaTheme) metaTheme.setAttribute('content', '#0b1120');
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.add('light');
+        const metaTheme = document.querySelector('meta[name="theme-color"]');
+        if (metaTheme) metaTheme.setAttribute('content', '#006b2c');
+      }
+
+      updateThemeSelectorUI(mode);
+    }
+    window.applyAppTheme = applyAppTheme;
+
+    function updateThemeSelectorUI(activeMode) {
+      const mode = activeMode || getAppTheme();
+      const btnLight = document.getElementById('btn-theme-light');
+      const btnDark = document.getElementById('btn-theme-dark');
+      const btnSystem = document.getElementById('btn-theme-system');
+      const badge = document.getElementById('profile-current-theme-badge');
+      const isHi = (typeof AppStore !== 'undefined' && AppStore && AppStore.lang === 'hi') || document.documentElement.lang === 'hi';
+
+      const activeClass = "h-10 rounded-xl font-black text-xs flex items-center justify-center gap-1 transition-all bg-primary text-white shadow-xs cursor-pointer";
+      const inactiveClass = "h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-1 transition-all bg-transparent text-slate-700 hover:bg-white/60 cursor-pointer";
+
+      if (btnLight) btnLight.className = (mode === 'light') ? activeClass : inactiveClass;
+      if (btnDark) btnDark.className = (mode === 'dark') ? activeClass : inactiveClass;
+      if (btnSystem) btnSystem.className = (mode === 'system') ? activeClass : inactiveClass;
+
+      if (badge) {
+        if (mode === 'light') badge.innerText = isHi ? "हल्का (Light)" : "Light";
+        else if (mode === 'dark') badge.innerText = isHi ? "गहरा (Dark)" : "Dark";
+        else badge.innerText = isHi ? "सिस्टम (System)" : "System";
+      }
+    }
+    window.updateThemeSelectorUI = updateThemeSelectorUI;
+
+    function initAppTheme() {
+      applyAppTheme(getAppTheme());
+      if (window.matchMedia) {
+        const mql = window.matchMedia('(prefers-color-scheme: dark)');
+        const handler = () => {
+          if (getAppTheme() === 'system') {
+            applyAppTheme('system');
+          }
+        };
+        if (mql.addEventListener) mql.addEventListener('change', handler);
+        else if (mql.addListener) mql.addListener(handler);
+      }
+    }
+    window.initAppTheme = initAppTheme;
+
     // --- 4. BILINGUAL TRANSLATION ENGINE ---
     window.toggleGlobalLanguage = function(forceLang) {
       if (forceLang === 'en' || forceLang === 'hi') {
@@ -4105,6 +4417,7 @@
     }
 
     window.applyBilingualState = function() {
+      if (typeof updateThemeSelectorUI === 'function') updateThemeSelectorUI();
       const lang = AppStore.lang || 'hi';
       document.documentElement.lang = lang;
       const dict = i18nDictionary[lang] || i18nDictionary['hi'];
@@ -4298,11 +4611,13 @@
       const btnLocate = document.getElementById('p1-locate-text');
       if (btnLocate && AppStore.user && AppStore.user.gps) {
         const placeName = AppStore.user.granular || AppStore.user.village || AppStore.user.district;
-        const doorstepTxt = '✅ Exact Doorstep Pinned';
-        if (placeName) {
-          btnLocate.innerHTML = `<span>📍 ${placeName}</span> <span class="font-extrabold text-emerald-200 ml-1">• ${doorstepTxt}</span>`;
+        const isHi = (lang === 'hi');
+        const suffix = isHi ? 'पहचाना गया' : 'Detected';
+        if (AppStore.user.gps.confirmed) {
+          const confText = isHi ? 'सटीक स्थान पुष्ट' : 'Doorstep Confirmed';
+          btnLocate.innerHTML = `<span>📍 ${placeName ? `${placeName} • ` : ''}✅ ${confText}</span>`;
         } else {
-          btnLocate.innerHTML = `<span>📍 ${doorstepTxt}</span>`;
+          btnLocate.innerHTML = `<span>📍 ${placeName ? `${placeName} ${suffix}` : (isHi ? 'लोकेशन पहचानी गई' : 'Location Detected')}</span>`;
         }
       }
       const gpsBadge = document.getElementById('p1-gps-badge');
@@ -4634,25 +4949,30 @@
       btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span><span>Sending OTP...</span>';
       btn.disabled = true;
 
+      // Reset any previous OTP error banner
+      const errBox = document.getElementById('p1-otp-error');
+      if (errBox) errBox.classList.add('hidden');
+
       try {
-        const data = await apiFetch('/auth/send-otp', {
+        await apiFetch('/auth/send-otp', {
           method: 'POST',
           body: JSON.stringify({ phone: phoneVal })
         });
-        if (data && data.otp) {
-          AppStore.latestOtp = data.otp;
-        }
+        showAudioToast(AppStore.lang === 'en' ? "Verification Code" : "सत्यापन कोड", AppStore.lang === 'en' ? `Verification code generated for +91 ${phoneVal}` : `सत्यापन कोड +91 ${phoneVal} के लिए तैयार है`);
       } catch (err) {
-        console.warn('Backend send-otp fallback:', err);
-        AppStore.latestOtp = '582941';
+        console.warn('Backend send-otp notice:', err);
+        showAudioToast("Notice", err.message || (AppStore.lang === 'en' ? 'Unable to reach SMS gateway.' : 'OTP भेजने में समस्या। कृपया पुनः प्रयास करें।'));
       } finally {
         btn.disabled = false;
         btn.innerHTML = '<span class="material-symbols-outlined text-[20px]">send_to_mobile</span><span>' + i18nDictionary[AppStore.lang].p1_send_otp_btn + '</span><span class="material-symbols-outlined text-[18px]">arrow_forward</span>';
         document.getElementById('p1-otp-phone-lbl').innerText = `+91 ${AppStore.user.phone.substring(0, 5)} ${AppStore.user.phone.substring(5)}`;
         navigateToPhase('otp');
         startOtpCountdownTimer();
-        // Auto-fill WebOTP code
-        setTimeout(() => autoFillOtp(AppStore.latestOtp || "582941"), 600);
+        // Clear cells and focus first cell
+        const cells = document.querySelectorAll('.otp-cell');
+        cells.forEach(c => c.value = '');
+        const firstCell = document.querySelector('.otp-cell[data-idx="0"]');
+        if (firstCell) setTimeout(() => firstCell.focus(), 300);
       }
     }
 
@@ -4726,17 +5046,35 @@
           verifyBtn.disabled = false;
           verifyBtn.removeAttribute('disabled');
           verifyBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        } else {
+          verifyBtn.disabled = true;
+          verifyBtn.setAttribute('disabled', 'true');
+          verifyBtn.classList.add('opacity-50', 'cursor-not-allowed');
         }
       }
     }
 
     async function submitVerifyOtp() {
       let fullCode = '';
-      document.querySelectorAll('.otp-cell').forEach(c => fullCode += c.value);
+      document.querySelectorAll('.otp-cell').forEach(c => fullCode += (c.value || '').trim());
+      const isHi = (AppStore.lang === 'hi');
+      const errBox = document.getElementById('p1-otp-error');
+      const errText = document.getElementById('p1-otp-error-text');
+
+      if (errBox) errBox.classList.add('hidden');
+
+      if (fullCode.length !== 6) {
+        if (errBox && errText) {
+          errText.innerText = isHi ? "कृपया 6-अंकीय OTP कोड दर्ज करें" : "Please enter the complete 6-digit OTP code";
+          errBox.classList.remove('hidden');
+        }
+        return;
+      }
+
       const verifyBtn = document.getElementById('p1-verify-otp-btn');
       if (verifyBtn) {
         verifyBtn.disabled = true;
-        verifyBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span><span>Verifying...</span>';
+        verifyBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span><span>' + (isHi ? 'सत्यापित हो रहा है...' : 'Verifying...') + '</span>';
       }
 
       try {
@@ -4744,52 +5082,151 @@
           method: 'POST',
           body: JSON.stringify({
             phone: AppStore.user.phone,
-            otp: fullCode || AppStore.latestOtp || '582941'
+            otp: fullCode
           })
         });
-        if (res && res.session_token) {
-          AppStore.sessionToken = res.session_token;
-          if (res.user) {
-            if (res.user.name) AppStore.user.name = res.user.name;
-            if (res.user.district) AppStore.user.district = res.user.district;
-            if (res.user.village) AppStore.user.village = res.user.village;
-            if (res.user.landmark) AppStore.user.landmark = res.user.landmark;
-          }
+
+        if (!res || !res.session_token) {
+          throw new Error(isHi ? "सत्यापन विफल: अमान्य सर्वर प्रतिक्रिया" : "Verification failed: Invalid server response");
         }
-      } catch (err) {
-        console.warn('Backend verify fallback:', err);
-      } finally {
-        if (verifyBtn) {
-          verifyBtn.disabled = false;
-          const vText = (i18nDictionary[AppStore.lang] || i18nDictionary['hi']).p1_otp_verify_btn;
-          verifyBtn.innerHTML = '<span data-i18n="p1_otp_verify_btn">' + vText + '</span><span class="material-symbols-outlined text-[18px]">arrow_forward</span>';
+
+        // Authenticated customer session established
+        AppStore.sessionToken = res.session_token;
+        if (res.user) {
+          if (res.user.name) AppStore.user.name = res.user.name;
+          if (res.user.district) AppStore.user.district = res.user.district;
+          if (res.user.village) AppStore.user.village = res.user.village;
+          if (res.user.landmark) AppStore.user.landmark = res.user.landmark;
         }
-        if (!AppStore.sessionToken) {
-          AppStore.sessionToken = 'cust_jwt_' + Date.now();
-        }
+
         localStorage.setItem('authToken', AppStore.sessionToken);
         localStorage.setItem('gaonbazar_authToken', AppStore.sessionToken);
         localStorage.setItem('gaonbazar_user', JSON.stringify(AppStore.user));
         savePersistentState();
 
-        // Immediate transition to Main Dashboard (Phase 2) - No early friction
+        // Successful authentication: navigate to Main Dashboard
         navigateToPhase('dashboard');
         loadStoresFromBackend();
+      } catch (err) {
+        console.warn('Backend verify error:', err);
+        // Security: NEVER fabricate fake JWT! Never navigate to dashboard on error!
+        if (errBox && errText) {
+          errText.innerText = err.message || (isHi ? "अमान्य या समाप्त OTP कोड। कृपया पुनः प्रयास करें।" : "Invalid or expired OTP code. Please try again.");
+          errBox.classList.remove('hidden');
+        }
+        // Clear cells and focus first cell
+        const cells = document.querySelectorAll('.otp-cell');
+        cells.forEach(c => c.value = '');
+        const firstCell = document.querySelector('.otp-cell[data-idx="0"]');
+        if (firstCell) firstCell.focus();
+      } finally {
+        if (verifyBtn) {
+          const vText = (i18nDictionary[AppStore.lang] || i18nDictionary['hi']).p1_otp_verify_btn;
+          verifyBtn.innerHTML = '<span data-i18n="p1_otp_verify_btn">' + vText + '</span><span class="material-symbols-outlined text-[18px]">arrow_forward</span>';
+          checkOtpAutoAdvance();
+        }
       }
     }
 
-    function simulateVoiceInputName() {
+        // Genuine browser speech transcription (no hardcoded fake strings)
+    function startNameVoiceInput() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const isHi = (AppStore && AppStore.lang === 'hi');
       const nameInput = document.getElementById('p1-name-input');
       const micLbl = document.getElementById('p1-name-mic-lbl');
-      if (micLbl) micLbl.innerText = 'Listening...';
-      setTimeout(() => {
-        if (nameInput) {
-          nameInput.value = AppStore.lang === 'hi' ? 'रमेश कुमार पटेल' : 'Ramesh Kumar Patel';
-          AppStore.user.name = nameInput.value;
-        }
+
+      if (!SpeechRecognition) {
+        if (micLbl) micLbl.innerText = isHi ? 'माइक उपलब्ध नहीं' : 'Mic unavailable';
+        if (nameInput) nameInput.focus();
+        return;
+      }
+      try {
+        const recognition = new SpeechRecognition();
+        recognition.lang = isHi ? 'hi-IN' : 'en-IN';
+        recognition.interimResults = false;
+        if (micLbl) micLbl.innerText = isHi ? 'बोलिए...' : 'Listening...';
+        recognition.onresult = (e) => {
+          if (e.results && e.results[0] && e.results[0][0]) {
+            const transcript = e.results[0][0].transcript.trim();
+            if (nameInput && transcript) {
+              nameInput.value = transcript;
+              if (AppStore && AppStore.user) AppStore.user.name = transcript;
+            }
+          }
+          if (micLbl) micLbl.innerText = 'Speak 🎙️';
+        };
+        recognition.onerror = () => {
+          if (micLbl) micLbl.innerText = isHi ? 'टाइप करें' : 'Type below';
+          if (nameInput) nameInput.focus();
+        };
+        recognition.onend = () => {
+          if (micLbl && micLbl.innerText.includes('Listening')) micLbl.innerText = 'Speak 🎙️';
+        };
+        recognition.start();
+      } catch (err) {
         if (micLbl) micLbl.innerText = 'Speak 🎙️';
-      }, 1000);
+        if (nameInput) nameInput.focus();
+      }
     }
+    window.startNameVoiceInput = startNameVoiceInput;
+    window.simulateVoiceInputName = startNameVoiceInput;
+
+    function startLandmarkVoiceInput() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const isHi = (AppStore && AppStore.lang === 'hi');
+      const btnText = document.getElementById('p1-voice-lm-btn');
+      const status = document.getElementById('p1-voice-lm-status');
+      const textarea = document.getElementById('p1-landmark-text');
+
+      if (!SpeechRecognition) {
+        if (status) status.innerText = isHi ? 'माइक उपलब्ध नहीं है। नीचे टाइप करें।' : 'Voice search unavailable. Please type.';
+        if (textarea) textarea.focus();
+        return;
+      }
+      try {
+        const recognition = new SpeechRecognition();
+        recognition.lang = isHi ? 'hi-IN' : 'en-IN';
+        recognition.interimResults = false;
+        if (btnText) btnText.innerText = isHi ? 'सुन रहा हूँ...' : 'Listening...';
+        if (status) status.innerText = isHi ? 'स्पष्ट बोलिए...' : 'Speak clearly...';
+        recognition.onresult = (e) => {
+          if (e.results && e.results[0] && e.results[0][0]) {
+            const transcript = e.results[0][0].transcript.trim();
+            if (textarea && transcript) {
+              textarea.value = (textarea.value.trim() ? textarea.value.trim() + ', ' : '') + transcript;
+              onLandmarkChange(textarea);
+            }
+          }
+          if (btnText) btnText.innerText = isHi ? 'माइक 🎙️' : 'Voice 🎙️';
+          if (status) status.innerText = isHi ? 'पहचान चिन्ह दर्ज हुआ' : 'Landmark added';
+        };
+        recognition.onerror = () => {
+          if (btnText) btnText.innerText = isHi ? 'माइक 🎙️' : 'Voice 🎙️';
+          if (status) status.innerText = isHi ? 'कृपया नीचे टाइप करें' : 'Please type below';
+          if (textarea) textarea.focus();
+        };
+        recognition.start();
+      } catch (err) {
+        if (btnText) btnText.innerText = 'Voice 🎙️';
+        if (textarea) textarea.focus();
+      }
+    }
+    window.startLandmarkVoiceInput = startLandmarkVoiceInput;
+    window.toggleVoiceLandmarkRecord = startLandmarkVoiceInput;
+
+    function selectVillageChip(name) {
+      const vInput = document.getElementById('p1-village-input');
+      if (vInput) {
+        vInput.value = name;
+        vInput.dataset.userEdited = 'true';
+        vInput.dispatchEvent(new Event('input', { bubbles: true }));
+        document.getElementById('p1-village-err')?.classList.add('hidden');
+      }
+      if (typeof AppStore !== 'undefined' && AppStore.user) {
+        AppStore.user.village = name;
+      }
+    }
+    window.selectVillageChip = selectVillageChip;
 
     // --- 7.1 NATIVE HTML5 GEOLOCATION & REVERSE GEOCODING ENGINE ---
     async function reverseGeocodeCoords(lat, lng) {
@@ -4835,6 +5272,10 @@
         if (village && district && village.trim().toLowerCase() === district.trim().toLowerCase()) {
           village = '';
         }
+        // Do not assign broad district as a village
+        if (village && (village.toLowerCase().includes('muzaffarpur') || village.toLowerCase().includes('मुजफ्फरपुर'))) {
+          village = '';
+        }
 
         const state = addr.state || '';
 
@@ -4846,6 +5287,162 @@
       }
     }
     window.reverseGeocodeCoords = reverseGeocodeCoords;
+
+    let leafletMapInstance = null;
+    let leafletMarkerInstance = null;
+
+    function initOrUpdateLeafletMap(lat, lng, acc) {
+      const mapContainer = document.getElementById('p1-map-preview-container');
+      const mapDiv = document.getElementById('p1-leaflet-map');
+      if (mapContainer) {
+        mapContainer.classList.remove('hidden');
+        mapContainer.classList.add('flex');
+      }
+      if (!mapDiv || typeof L === 'undefined') return;
+
+      try {
+        if (!leafletMapInstance) {
+          leafletMapInstance = L.map('p1-leaflet-map', {
+            center: [lat, lng],
+            zoom: 17,
+            zoomControl: true,
+            scrollWheelZoom: true,
+            tap: false,
+            attributionControl: true
+          });
+
+          L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+          }).addTo(leafletMapInstance);
+
+          leafletMarkerInstance = L.marker([lat, lng], {
+            draggable: true,
+            autoPan: true
+          }).addTo(leafletMapInstance);
+
+          leafletMarkerInstance.on('dragend', async function(e) {
+            const pos = e.target.getLatLng();
+            handlePinMoved(pos.lat, pos.lng);
+          });
+
+          leafletMapInstance.on('click', function(e) {
+            if (leafletMarkerInstance) {
+              leafletMarkerInstance.setLatLng(e.latlng);
+              handlePinMoved(e.latlng.lat, e.latlng.lng);
+            }
+          });
+        } else {
+          leafletMapInstance.setView([lat, lng], 17);
+          if (leafletMarkerInstance) {
+            leafletMarkerInstance.setLatLng([lat, lng]);
+          }
+        }
+
+        setTimeout(() => {
+          if (leafletMapInstance) leafletMapInstance.invalidateSize();
+        }, 200);
+      } catch (err) {
+        console.warn("Leaflet initialization notice:", err);
+      }
+    }
+    window.initOrUpdateLeafletMap = initOrUpdateLeafletMap;
+
+    async function handlePinMoved(newLat, newLng) {
+      AppStore.user.gps = AppStore.user.gps || {};
+      AppStore.user.gps.lat = newLat;
+      AppStore.user.gps.lng = newLng;
+      AppStore.user.gps.confirmed = false;
+      AppStore.user.latitude = newLat;
+      AppStore.user.longitude = newLng;
+
+      ['p1-latitude-input', 'latitude', 'p1-lat-input'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = newLat;
+      });
+      ['p1-longitude-input', 'longitude', 'p1-lng-input'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = newLng;
+      });
+
+      const coordsDisplay = document.getElementById('p1-coords-display');
+      if (coordsDisplay) {
+        coordsDisplay.innerText = `${newLat.toFixed(5)}°N, ${newLng.toFixed(5)}°E (पिन बदला गया)`;
+      }
+
+      const badge = document.getElementById('p1-doorstep-badge');
+      const badgeText = document.getElementById('p1-doorstep-badge-text');
+      const isHi = (AppStore.lang === 'hi');
+      if (badge && badgeText) {
+        badge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-900 border border-amber-300 font-extrabold text-[11px] shadow-2xs';
+        badgeText.innerText = isHi ? '📍 पिन समायोजित (पुष्टि आवश्यक)' : '📍 Pin Adjusted (Tap Confirm Below)';
+      }
+
+      // Invalidate customer doorstep confirmation since the pin has moved
+      if (AppStore.user && AppStore.user.gps) {
+        AppStore.user.gps.confirmed = false;
+      }
+      if (badge && badgeText) {
+        badge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-900 border border-amber-300 font-extrabold text-[11px] shadow-2xs';
+        badgeText.innerText = isHi ? '📍 पिन समायोजित (पुष्टि आवश्यक)' : '📍 Pin Adjusted (Tap Confirm Below)';
+      }
+
+      // Reverse geocode new position but STRICTLY preserve user's manually entered village
+      try {
+        const loc = await reverseGeocodeCoords(newLat, newLng);
+        const distEl = document.getElementById('p1-district-input');
+        if (distEl && !distEl.dataset.userEdited && loc.district) {
+          distEl.value = loc.district;
+        }
+        const villEl = document.getElementById('p1-village-input');
+        // NEVER overwrite user-edited or already chosen village name
+        if (villEl && !villEl.dataset.userEdited && !villEl.value.trim() && loc.village) {
+          villEl.value = loc.village;
+        }
+      } catch (e) {}
+    }
+    window.handlePinMoved = handlePinMoved;
+
+    function recenterMapToGps() {
+      if (!AppStore.detectedGps || !AppStore.detectedGps.lat) {
+        showAudioToast("GPS Notice", "No detected GPS coordinates to recenter.");
+        return;
+      }
+      const { lat, lng } = AppStore.detectedGps;
+      if (leafletMapInstance) {
+        leafletMapInstance.setView([lat, lng], 17);
+        if (leafletMarkerInstance) {
+          leafletMarkerInstance.setLatLng([lat, lng]);
+        }
+        handlePinMoved(lat, lng);
+      }
+    }
+    window.recenterMapToGps = recenterMapToGps;
+
+    function confirmPinnedLocation() {
+      if (!AppStore.user || !AppStore.user.gps || !AppStore.user.gps.lat) {
+        showAudioToast("GPS Notice", "Please detect or set your location first.");
+        return;
+      }
+      AppStore.user.gps.confirmed = true;
+      const isHi = (AppStore.lang === 'hi');
+      const badge = document.getElementById('p1-doorstep-badge');
+      const badgeText = document.getElementById('p1-doorstep-badge-text');
+      if (badge && badgeText) {
+        badge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 font-extrabold text-[11px] shadow-2xs';
+        badgeText.innerText = isHi ? '✅ सटीक स्थान ग्राहक द्वारा पुष्ट' : '✅ Exact Doorstep Confirmed by You';
+      }
+      const coordsDisplay = document.getElementById('p1-coords-display');
+      if (coordsDisplay) {
+        coordsDisplay.innerText = `${AppStore.user.gps.lat.toFixed(5)}°N, ${AppStore.user.gps.lng.toFixed(5)}°E (Confirmed)`;
+      }
+      showAudioToast(
+        isHi ? "स्थान पुष्ट हुआ" : "Doorstep Confirmed",
+        isHi ? "सटीक डिलीवरी स्थान सफलतापूर्वक पुष्ट किया गया।" : "Exact delivery location confirmed successfully."
+      );
+    }
+    window.confirmPinnedLocation = confirmPinnedLocation;
+
 
     async function detectGpsLocation() {
       const btnText = document.getElementById('p1-locate-text');
@@ -4862,7 +5459,8 @@
       }
 
       const applyLocationResult = async (lat, lng, acc) => {
-        AppStore.user.gps = { lat, lng, accuracy: acc };
+        AppStore.detectedGps = { lat, lng, accuracy: acc };
+        AppStore.user.gps = { lat, lng, accuracy: acc, confirmed: false };
         AppStore.user.latitude = lat;
         AppStore.user.longitude = lng;
 
@@ -4878,104 +5476,72 @@
 
         if (btnText) btnText.innerText = isHi ? 'स्थान का नाम पता कर रहे हैं...' : 'Fetching Address...';
 
+        // Provide immediate visual confirmation of coordinates & display map instantly
+        initOrUpdateLeafletMap(lat, lng, acc);
+        const coordsDisplay = document.getElementById('p1-coords-display');
+        if (coordsDisplay) {
+          coordsDisplay.innerText = `${lat.toFixed(5)}°N, ${lng.toFixed(5)}°E (±${Math.round(acc)}m)`;
+        }
+
+        // Provide immediate visual confirmation of coordinates while reverse geocoding
+        if (badge) {
+          badge.innerHTML = `<span class="text-on-surface font-semibold">📍 GPS: ${lat.toFixed(4)}, ${lng.toFixed(4)}</span>`;
+          badge.classList.remove('text-on-surface-variant', 'text-rose-500');
+          badge.classList.add('text-primary', 'font-bold');
+        }
+
         // 1. Fetch Real Reverse Geocoded Location from exact device coordinates
         const loc = await reverseGeocodeCoords(lat, lng);
         const { village, district, state, granular } = loc;
 
-        // 2. Auto-fill the "District / Tehsil" and "Village / Gram Panchayat" inputs
-        if (distInput) {
+        if (distInput && !distInput.dataset.userEdited) {
           distInput.value = district || '';
           distInput.dispatchEvent(new Event('input', { bubbles: true }));
         }
-        if (villInput) {
-          // If the exact village is not found by the API, leave the "Village" input BLANK
-          // so the user can type it manually (e.g., Chatursi), rather than auto-filling incorrect broad data.
+        if (villInput && !villInput.dataset.userEdited) {
           villInput.value = village || '';
           villInput.dispatchEvent(new Event('input', { bubbles: true }));
         }
 
-        // Hide validation error messages if shown
         if (district) document.getElementById('p1-district-err')?.classList.add('hidden');
         if (village) document.getElementById('p1-village-err')?.classList.add('hidden');
 
-        // Update reactive state
         const granularName = granular || village || district;
         AppStore.user.granular = granularName || '';
         AppStore.user.district = district || '';
         AppStore.user.village = village || '';
         AppStore.user.state = state || '';
 
-        // 3. Update GPS Subtitle Badge with readable location AND bold confirmation badge: "✅ Exact Doorstep Pinned"
-        let locText = '';
-        if (granular && district && granular.trim().toLowerCase() !== district.trim().toLowerCase()) {
-          locText = `${granular}, ${district}`;
-        } else if (granular) {
-          locText = granular;
-        } else if (district) {
-          locText = district;
-        } else {
-          locText = isHi ? 'लोकेशन पहचानी गई' : 'Location Detected';
-        }
+        // Update GPS Status Text honestly
+        let locText = granularName || (isHi ? 'स्थान पहचाना गया' : 'Location Detected');
         if (state) locText += ` (${state})`;
 
-        const doorstepConfirmation = '✅ Exact Doorstep Pinned';
         if (badge) {
-          badge.innerHTML = `<span class="text-on-surface font-semibold">📍 ${locText}</span> <span class="inline-flex items-center gap-1 text-emerald-700 font-extrabold ml-1 bg-emerald-100/90 px-2 py-0.5 rounded-full text-[10px] border border-emerald-300">${doorstepConfirmation}</span>`;
+          badge.innerHTML = `<span class="text-on-surface font-semibold">📍 ${locText}</span> <span class="inline-flex items-center gap-1 text-amber-700 font-bold ml-1 bg-amber-100/90 px-2 py-0.5 rounded-full text-[10px] border border-amber-300">📍 स्थान समायोजित करें</span>`;
           badge.classList.remove('text-on-surface-variant', 'text-rose-500');
           badge.classList.add('text-primary', 'font-bold');
         }
 
-        // 4. Update GPS Button UI to show granular location AND confirmation badge
         if (btnText) {
-          if (granularName) {
-            btnText.innerHTML = `<span>📍 ${granularName}</span> <span class="font-extrabold text-emerald-200 ml-1">• ${doorstepConfirmation}</span>`;
-          } else {
-            btnText.innerHTML = `<span>📍 ${doorstepConfirmation}</span>`;
-          }
+          const suffix = isHi ? 'पहचाना गया' : 'Detected';
+          btnText.innerHTML = `<span>📍 ${granularName ? `${granularName} ${suffix}` : (isHi ? 'लोकेशन पहचानी गई' : 'Location Detected')}</span>`;
         }
 
-        // 5. MINI-MAP VISUAL CONFIRMATION: Injected directly below GPS button, centered on exact coords
-        const mapContainer = document.getElementById('p1-map-preview-container');
-        const mapIframe = document.getElementById('p1-osm-map-iframe');
-        const coordsDisplay = document.getElementById('p1-coords-display');
-        const doorstepBadgeText = document.getElementById('p1-doorstep-badge-text');
-
-        if (doorstepBadgeText) {
-          doorstepBadgeText.innerText = doorstepConfirmation;
-        }
-
-        if (coordsDisplay) {
-          coordsDisplay.innerText = `${lat.toFixed(5)}°N, ${lng.toFixed(5)}°E`;
-        }
-
-        if (mapIframe) {
-          const delta = 0.0025;
-          const minLon = (lng - delta).toFixed(5);
-          const minLat = (lat - delta).toFixed(5);
-          const maxLon = (lng + delta).toFixed(5);
-          const maxLat = (lat + delta).toFixed(5);
-          const osmEmbedUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${minLon}%2C${minLat}%2C${maxLon}%2C${maxLat}&layer=mapnik&marker=${lat.toFixed(5)}%2C${lng.toFixed(5)}`;
-          if (mapIframe.src !== osmEmbedUrl) {
-            mapIframe.src = osmEmbedUrl;
-          }
-        }
-
-        if (mapContainer) {
-          mapContainer.classList.remove('hidden');
-          mapContainer.classList.add('flex');
-        }
-
-        // 6. ACCURACY INDICATOR: Display small green indicator under map reading "GPS Accuracy: High (Targeting exact location)" when accuracy < 100m
+        // Honest Accuracy Indicator (never claims exact doorstep before customer confirmation)
         const accIndicator = document.getElementById('p1-gps-accuracy-indicator');
         const accText = document.getElementById('p1-gps-accuracy-text');
         if (accIndicator && accText) {
           accIndicator.classList.remove('hidden');
-          if (acc < 100) {
-            accIndicator.className = 'flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-300 text-[11px] font-bold shadow-2xs';
-            accText.innerText = 'GPS Accuracy: High (Targeting exact location)';
+          const roundedAcc = Math.round(acc);
+          if (acc <= 35) {
+            accIndicator.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-300 text-[11px] font-bold shadow-2xs';
+            accText.innerText = isHi ? `GPS सटीकता: उच्च (±${roundedAcc}m) - कृपया दरवाजे की पुष्टि करें` : `GPS Accuracy: High (±${roundedAcc}m) - Please confirm doorstep`;
+          } else if (acc <= 150) {
+            accIndicator.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 text-amber-800 border border-amber-300 text-[11px] font-bold shadow-2xs';
+            accText.innerText = isHi ? `GPS सटीकता: मध्यम (±${roundedAcc}m) - लाल पिन को अपने दरवाजे पर खींचें` : `GPS Accuracy: Moderate (±${roundedAcc}m) - Drag pin to your door`;
           } else {
-            accIndicator.className = 'flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-300 text-[11px] font-bold shadow-2xs';
-            accText.innerText = `GPS Accuracy: Moderate (±${Math.round(acc)}m)`;
+            accIndicator.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-50 text-rose-800 border border-rose-300 text-[11px] font-bold shadow-2xs';
+            accText.innerText = isHi ? `GPS अनुमानित है (±${roundedAcc}m) - कृपया पिन सही स्थान पर रखें` : `GPS is Approximate (±${roundedAcc}m) - Please drag pin to exact location`;
           }
         }
       };
@@ -4993,35 +5559,82 @@
           return;
         }
 
-        // Real Native HTML5 Geolocation API - triggers native "Allow Location Permission" popup
+        // STAGED RURAL POSITIONING:
+        // Tier 1: Fast Approximate / Cached Location (5s timeout, 5 min cache)
+        // Works reliably on rural mobile networks & cellular towers even without instant satellite lock
+        let gotTier1 = false;
+
+        const tryTier2Refinement = () => {
+          if (btnText && gotTier1) {
+            btnText.innerHTML = `<span>⏳ ${isHi ? 'GPS सटीक कर रहे हैं...' : 'Refining Accuracy...'}</span>`;
+          }
+          navigator.geolocation.getCurrentPosition(
+            async (pos) => {
+              const lat = pos.coords.latitude;
+              const lng = pos.coords.longitude;
+              const acc = pos.coords.accuracy || 10;
+              await applyLocationResult(lat, lng, acc);
+              resolve();
+            },
+            (err) => {
+              console.warn("Tier 2 GPS refinement error or timeout:", err);
+              // If Tier 1 approximate location was already received, do NOT display failure!
+              if (!gotTier1) {
+                let errMsg = isHi ? '⚠️ GPS अनुमति नहीं मिली' : '⚠️ GPS Permission Denied';
+                if (err && err.code === 2) {
+                  errMsg = isHi ? '⚠️ GPS सिग्नल अनुपलब्ध - नीचे गाँव लिखें' : '⚠️ GPS Signal Unavailable - enter village';
+                } else if (err && err.code === 3) {
+                  errMsg = isHi ? '⚠️ GPS समय समाप्त - नीचे गाँव लिखें या पिन रखें' : '⚠️ GPS Timeout - enter village or pin';
+                }
+                if (btnText) btnText.innerText = isHi ? '📍 फिर से प्रयास करें' : '📍 Retry GPS';
+                if (badge) {
+                  badge.innerText = errMsg;
+                  badge.classList.remove('text-primary');
+                  badge.classList.add('text-rose-500');
+                }
+              }
+              resolve();
+            },
+            {
+              enableHighAccuracy: true,
+              timeout: 15000,
+              maximumAge: 0
+            }
+          );
+        };
+
+        // Execute Tier 1 fast approximate detection
         navigator.geolocation.getCurrentPosition(
           async (pos) => {
+            gotTier1 = true;
             const lat = pos.coords.latitude;
             const lng = pos.coords.longitude;
-            const acc = pos.coords.accuracy || 10;
+            const acc = pos.coords.accuracy || 100;
             await applyLocationResult(lat, lng, acc);
-            resolve();
+            // Seamlessly trigger Tier 2 high-accuracy refinement in background
+            tryTier2Refinement();
           },
           (err) => {
-            console.warn("Geolocation API error or permission denied:", err);
-            let errMsg = isHi ? '⚠️ GPS अनुमति नहीं मिली' : '⚠️ GPS Permission Denied';
-            if (err && err.code === 2) {
-              errMsg = isHi ? '⚠️ GPS सिग्नल अनुपलब्ध' : '⚠️ GPS Signal Unavailable';
-            } else if (err && err.code === 3) {
-              errMsg = isHi ? '⚠️ GPS समय समाप्त' : '⚠️ GPS Timeout';
+            console.warn("Tier 1 approximate geolocation error:", err);
+            if (err && err.code === 1) {
+              // Permission Denied
+              const errMsg = isHi ? '⚠️ GPS अनुमति नहीं मिली - नीचे गाँव लिखें' : '⚠️ GPS Permission Denied - enter village below';
+              if (btnText) btnText.innerText = isHi ? '📍 अनुमति दें या गाँव लिखें' : '📍 Allow Permission or Enter Village';
+              if (badge) {
+                badge.innerText = errMsg;
+                badge.classList.remove('text-primary');
+                badge.classList.add('text-rose-500');
+              }
+              resolve();
+              return;
             }
-            if (btnText) btnText.innerText = isHi ? '📍 फिर से प्रयास करें' : '📍 Retry GPS';
-            if (badge) {
-              badge.innerText = errMsg;
-              badge.classList.remove('text-primary');
-              badge.classList.add('text-rose-500');
-            }
-            resolve();
+            // For signal unavailable or timeout, attempt Tier 2 directly
+            tryTier2Refinement();
           },
           {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 0
+            enableHighAccuracy: false,
+            timeout: 5000,
+            maximumAge: 300000
           }
         );
       });
@@ -5082,22 +5695,6 @@
       textarea.focus();
     }
     window.appendChipLandmark = appendChipLandmark;
-
-    function toggleVoiceLandmarkRecord() {
-      const btnText = document.getElementById('p1-voice-lm-btn');
-      const status = document.getElementById('p1-voice-lm-status');
-      const textarea = document.getElementById('p1-landmark-text');
-      if (btnText) btnText.innerText = 'Recording...';
-      if (status) status.innerText = 'Speak clearly in Hindi';
-      setTimeout(() => {
-        if (btnText) btnText.innerText = 'Voice Note Saved ✓';
-        if (status) status.innerText = 'Audio note attached (0:04)';
-        if (textarea && !textarea.value.trim()) {
-          textarea.value = 'शिव मंदिर के पीछे, नीम का बड़ा पेड़ (Audio note attached)';
-          onLandmarkChange(textarea);
-        }
-      }, 1500);
-    }
 
     async function submitLandmarkSetup() {
       const nameInput = document.getElementById('p1-name-input');
@@ -5621,23 +6218,20 @@
     }
 
     function triggerVoiceSearch() {
-      // 1. Use webkitSpeechRecognition or SpeechRecognition
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       const voiceBtn = document.getElementById('p2-voice-search-btn');
       const voiceText = document.getElementById('p2-voice-search-text');
       const voiceIcon = document.getElementById('p2-voice-search-icon');
       const searchInput = document.getElementById('p2-search-input');
-      const isHi = AppStore.lang === 'hi';
+      const isHi = (AppStore.lang === 'hi');
 
       if (!SpeechRecognition) {
-        if (searchInput) {
-          searchInput.placeholder = isHi ? 'माइक समर्थित नहीं - यहाँ टाइप करें...' : 'Mic not supported - Type here...';
-          searchInput.focus();
-        }
+        showAudioToast("Mic Notice", isHi ? 'माइक ब्राउज़र द्वारा समर्थित नहीं है। कृपया लिखकर खोजें।' : 'Microphone speech recognition not supported. Please type.');
+        if (searchInput) searchInput.focus();
         return;
       }
 
-      // If active recognition is running, allow clicking to cancel
+      // If active recognition is running, user tapped to cancel/stop
       if (activeVoiceRecognition) {
         try { activeVoiceRecognition.stop(); } catch (e) {}
         resetVoiceSearchUI();
@@ -5648,66 +6242,83 @@
         const recognition = new SpeechRecognition();
         activeVoiceRecognition = recognition;
 
-        // 2. Set continuous = false so it stops automatically after one phrase
         recognition.continuous = false;
-        recognition.interimResults = false;
+        recognition.interimResults = true; // Real-time interim feedback!
         recognition.maxAlternatives = 1;
+        // Language choice follows user toggle (hi-IN for Hindi, en-IN for English)
+        recognition.lang = isHi ? 'hi-IN' : 'en-IN';
 
-        // 3. Set recognition.lang = 'hi-IN' to properly understand Hindi & English mixed rural words (Chawal, Aata, etc.)
-        recognition.lang = 'hi-IN';
-
-        // Auto-stop timeout safety (guaranteed max 7 seconds so it never freezes on "Listening...")
-        const voiceTimeout = setTimeout(() => {
-          if (activeVoiceRecognition === recognition) {
-            try { recognition.stop(); } catch (e) {}
-            resetVoiceSearchUI();
-          }
-        }, 7000);
-
-        // Update button UI to "Listening..." state
-        if (voiceBtn) {
-          voiceBtn.classList.remove('bg-slate-100', 'text-slate-700', 'bg-secondary');
-          voiceBtn.classList.add('bg-red-500', 'text-white', 'animate-pulse');
-        }
-        const voiceSvg = document.getElementById('p2-voice-search-svg');
-        if (voiceSvg) {
-          voiceSvg.classList.remove('text-slate-700');
-          voiceSvg.classList.add('text-white');
-        }
-        if (voiceIcon) {
-          voiceIcon.innerText = 'graphic_eq';
-        }
-        if (voiceText) {
-          voiceText.innerText = isHi ? 'सुन रहे हैं...' : 'Listening...';
-        }
-        if (searchInput) {
-          searchInput.placeholder = isHi ? 'बोलिए (उदा. आटा, चावल)...' : 'Listening (e.g. Aata, Chawal)...';
-        }
-
-        // 4. In onresult, capture transcript, put in input, and automatically trigger product search
-        recognition.onresult = (event) => {
-          clearTimeout(voiceTimeout);
-          if (event.results && event.results[0] && event.results[0][0]) {
-            const transcript = event.results[0][0].transcript.trim();
-            if (searchInput) {
-              searchInput.value = transcript;
+        let speechTimer = null;
+        const resetInactivityTimer = () => {
+          if (speechTimer) clearTimeout(speechTimer);
+          speechTimer = setTimeout(() => {
+            if (activeVoiceRecognition === recognition) {
+              try { recognition.stop(); } catch (e) {}
+              resetVoiceSearchUI();
             }
-            filterStoreCatalog(transcript);
-            // Immediately stop listening and reset UI to prevent freezing on "Listening..."
+          }, 5000);
+        };
+
+        // Complete state machine
+        recognition.onstart = () => {
+          resetInactivityTimer();
+          if (voiceBtn) {
+            voiceBtn.classList.remove('bg-slate-100', 'text-slate-700');
+            voiceBtn.classList.add('bg-red-500', 'text-white', 'animate-pulse');
+          }
+          if (voiceIcon) voiceIcon.innerText = 'graphic_eq';
+          if (voiceText) voiceText.innerText = isHi ? 'सुन रहे हैं...' : 'Listening...';
+          if (searchInput) searchInput.placeholder = isHi ? 'बोलिए (उदा. आटा, दाल, तेल)...' : 'Listening... speak product name';
+        };
+
+        recognition.onspeechstart = () => {
+          resetInactivityTimer();
+        };
+
+        recognition.onresult = (event) => {
+          resetInactivityTimer();
+          let interimTranscript = '';
+          let finalTranscript = '';
+
+          for (let i = event.resultIndex; i < event.results.length; ++i) {
+            const res = event.results[i];
+            if (res.isFinal) {
+              finalTranscript += res[0].transcript;
+            } else {
+              interimTranscript += res[0].transcript;
+            }
+          }
+
+          const currentText = (finalTranscript || interimTranscript).trim();
+          if (searchInput && currentText) {
+            searchInput.value = currentText;
+          }
+
+          if (finalTranscript) {
+            if (speechTimer) clearTimeout(speechTimer);
+            filterStoreCatalog(finalTranscript.trim());
             try { recognition.stop(); } catch (e) {}
             resetVoiceSearchUI();
           }
         };
 
-        // 5. In onend and onerror, strictly reset the button UI back to normal mic icon
         recognition.onerror = (event) => {
-          clearTimeout(voiceTimeout);
+          if (speechTimer) clearTimeout(speechTimer);
           console.warn('SpeechRecognition error:', event.error);
+          let userErr = isHi ? 'आवाज नहीं पहचानी जा सकी।' : 'Could not understand speech.';
+          if (event.error === 'not-allowed') {
+            userErr = isHi ? 'माइक की अनुमति नहीं मिली। कृपया ब्राउज़र में माइक चालू करें।' : 'Microphone permission denied. Please allow mic access.';
+          } else if (event.error === 'no-speech') {
+            userErr = isHi ? 'कोई आवाज सुनाई नहीं दी।' : 'No speech detected. Please try again.';
+          } else if (event.error === 'network') {
+            userErr = isHi ? 'नेटवर्क समस्या। कृपया लिखकर खोजें।' : 'Voice network error. Please type.';
+          }
+          showAudioToast("Mic Alert", userErr);
           resetVoiceSearchUI();
         };
 
         recognition.onend = () => {
-          clearTimeout(voiceTimeout);
+          if (speechTimer) clearTimeout(speechTimer);
           resetVoiceSearchUI();
         };
 
@@ -6503,8 +7114,9 @@
               },
               handler: async function (response) {
                 showPaymentProcessingModal("बैंक भुगतान सत्यापित हो रहा है...", "Verifying cryptographic payment signature with bank...");
+                let verifyOk = false;
                 try {
-                  await apiFetch('/payments/verify-signature', {
+                  const verifyRes = await apiFetch('/payments/verify-signature', {
                     method: 'POST',
                     body: JSON.stringify({
                       order_id: rzpOrderData.order_id,
@@ -6513,20 +7125,32 @@
                       razorpay_signature: response.razorpay_signature
                     })
                   });
+                  if (verifyRes && (verifyRes.success || verifyRes.payment_status === 'PAID')) {
+                    verifyOk = true;
+                  }
                 } catch (sigErr) {
-                  console.warn("Client signature verify notice:", sigErr);
+                  console.error("Client signature verify error:", sigErr);
                 }
                 hidePaymentProcessingModal();
 
+                if (!verifyOk) {
+                  const isHi = (AppStore.lang === 'hi');
+                  showAudioToast(
+                    isHi ? "भुगतान सत्यापन विफल" : "Payment Verification Failed",
+                    isHi ? "बैंक हस्ताक्षर सत्यापित नहीं हो सका। कृपया पुनः प्रयास करें।" : "Could not verify bank payment signature. Please retry."
+                  );
+                  return;
+                }
+
                 AppStore.orderId = rzpOrderData.order_id;
-                AppStore.deliveryOtp = '4821';
+                AppStore.deliveryOtp = rzpOrderData.delivery_otp || '';
                 AppStore.orderTimelineStage = 1;
                 AppStore.distanceKm = dist;
                 AppStore.etaMins = dist > 5.0 ? '45-60 Mins' : '30 Mins';
 
                 const orderDetails = {
                   order_id: rzpOrderData.order_id,
-                  delivery_otp: '4821',
+                  delivery_otp: rzpOrderData.delivery_otp || '',
                   timeline_stage: 1,
                   distance_km: dist,
                   eta_mins: dist > 5.0 ? '45-60 Mins' : '30 Mins',
@@ -6561,21 +7185,18 @@
             rzp.open();
             return;
           } else {
-            // Simulated fallback mode if external Checkout.js script blocked
             hidePaymentProcessingModal();
-            const simulatedData = {
-              order_id: rzpOrderData.order_id,
-              delivery_otp: '4821',
-              timeline_stage: 1,
-              distance_km: dist,
-              eta_mins: dist > 5.0 ? '45-60 Mins' : '30 Mins',
-              total_amount: rzpOrderData.amount,
-              payment_mode: 'ONLINE',
-              payment_status: 'PENDING'
-            };
-            AppStore.activeOrderData = simulatedData;
-            populateTrackingUI(simulatedData);
-            navigateToPhase('tracking');
+            const ordText = (i18nDictionary[AppStore.lang] || i18nDictionary['hi']).p4_place_order_btn;
+            btn.disabled = false;
+            btn.innerHTML = '<span class="material-symbols-outlined text-[20px]">shopping_bag</span><span id="place-order-text" data-i18n="p4_place_order_btn">' + ordText + '</span><span class="material-symbols-outlined text-[18px]">arrow_forward</span>';
+            const payFailMsg = (AppStore.lang === 'hi')
+              ? 'ऑनलाइन पेमेंट गेटवे लोड नहीं हो सका। कृपया कैश ऑन डिलीवरी (COD) चुनें।'
+              : 'Online payment gateway unavailable. Please select Cash on Delivery (COD).';
+            if (typeof showAudioToast === 'function') {
+              showAudioToast('Payment Gateway Unavailable', payFailMsg);
+            } else {
+              alert(payFailMsg);
+            }
             return;
           }
         } catch (payErr) {
@@ -6855,7 +7476,7 @@
       const dict = i18nDictionary[AppStore.lang] || i18nDictionary['hi'];
 
       AppStore.orderId = orderData.order_id;
-      AppStore.deliveryOtp = orderData.delivery_otp || '4821';
+      AppStore.deliveryOtp = orderData.delivery_otp || '';
       AppStore.orderTimelineStage = orderData.timeline_stage || 4;
       AppStore.activeOrderData = orderData;
 
@@ -6947,7 +7568,8 @@
       }
 
       // 2. If no orderId in session or fetch failed, check user's active orders in SQLite DB
-      if (AppStore.user && AppStore.user.phone) {
+      const currentToken = AppStore.sessionToken || (typeof localStorage !== 'undefined' ? (localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_authToken')) : null);
+      if (AppStore.user && AppStore.user.phone && currentToken) {
         try {
           const encPhone = encodeURIComponent(AppStore.user.phone);
           const userOrders = await apiFetch(`/user/${encPhone}/orders`);
@@ -7300,7 +7922,20 @@
       if (!container) return;
 
       const isHi = (AppStore.lang === 'hi');
-      const phone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '9876543210';
+      const currentToken = AppStore.sessionToken || (typeof localStorage !== 'undefined' ? (localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_authToken')) : null);
+      const phone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '';
+      if (!currentToken || !phone) {
+        container.innerHTML = `
+          <div class="rounded-3xl bg-white p-6 text-center border border-surface-container-high shadow-mobile-card space-y-2">
+            <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
+              <span class="material-symbols-outlined text-2xl">receipt_long</span>
+            </div>
+            <p class="text-xs font-bold text-slate-700 font-hindi">${isHi ? 'कोई पिछला ऑर्डर नहीं मिला' : 'No past orders found'}</p>
+            <p class="text-[11px] text-slate-400 font-hindi">${isHi ? 'जब आप ऑर्डर करेंगे, तो वह यहाँ दिखाई देगा।' : 'Your past orders will appear here once placed.'}</p>
+          </div>
+        `;
+        return;
+      }
 
       try {
         const orders = await apiFetch(`/user/${phone}/orders`);
@@ -7539,9 +8174,8 @@
       }
 
       try {
-        const res = await fetch(`${API_BASE}/user/${phone}/payment-methods`, {
+        await apiFetch(`/user/${phone}/payment-methods`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             method_type: 'upi',
             title: title,
@@ -7549,11 +8183,6 @@
             is_default: isDefault
           })
         });
-
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error(data.detail || (isHi ? 'भुगतान माध्यम सहेजने में विफल' : 'Failed to save payment method'));
-        }
 
         closeAddPaymentModal();
         showToast(isHi ? 'नया भुगतान माध्यम सफलतापूर्वक जोड़ा गया' : 'Payment method added successfully');
@@ -7597,9 +8226,8 @@
       const maskedCard = `•••• •••• •••• ${cardNum.slice(-4)}`;
 
       try {
-        const res = await fetch(`${API_BASE}/user/${phone}/payment-methods`, {
+        await apiFetch(`/user/${phone}/payment-methods`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             method_type: 'card',
             title: title,
@@ -7607,11 +8235,6 @@
             is_default: isDefault
           })
         });
-
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error(data.detail || (isHi ? 'कार्ड सहेजने में विफल' : 'Failed to save card'));
-        }
 
         closeAddPaymentModal();
         showToast(isHi ? 'कार्ड सफलतापूर्वक सहेजा गया' : 'Card saved successfully');
@@ -7636,9 +8259,12 @@
       const container = document.getElementById('profile-saved-payment-list');
       if (!container) return;
 
+      const currentToken = AppStore.sessionToken || (typeof localStorage !== 'undefined' ? (localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_authToken')) : null);
+      const phone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '';
+      if (!currentToken || !phone) return;
+
       const isHi = (AppStore.lang === 'hi');
       const dict = (window.translations && window.translations[AppStore.lang]) ? window.translations[AppStore.lang] : {};
-      const phone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '9876543210';
 
       const defaultBadgeText = dict.profile_default_badge || (isHi ? 'डिफ़ॉल्ट' : 'Default');
       const secureTokenText = dict.profile_secure_token || (isHi ? 'सुरक्षित Razorpay लिंक्ड' : 'Secured by Razorpay');
@@ -7696,15 +8322,14 @@
 
     async function deleteSavedPaymentMethod(methodId) {
       const isHi = (AppStore.lang === 'hi');
-      const phone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '9876543210';
+      const phone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '';
+      if (!phone) return;
       try {
-        const res = await fetch(`${API_BASE}/user/${phone}/payment-methods/${methodId}`, {
+        await apiFetch(`/user/${phone}/payment-methods/${methodId}`, {
           method: 'DELETE'
         });
-        if (res.ok) {
-          showToast(isHi ? 'भुगतान माध्यम हटा दिया गया' : 'Payment method removed');
-          loadUserSavedPaymentMethods();
-        }
+        showToast(isHi ? 'भुगतान माध्यम हटा दिया गया' : 'Payment method removed');
+        loadUserSavedPaymentMethods();
       } catch (err) {
         console.error('Delete payment method error:', err);
       }
@@ -7983,24 +8608,27 @@
     }
     window.syncCommerceCartBar = syncCommerceCartBar;
 
+    // Genuine speech-recognition lifecycle: never claim listening before onstart.
+    let commerceVoiceHadError = false;
+    function setCommerceVoiceStatus(message, transcript) {
+      const status = document.getElementById('commerce-ai-status-text');
+      const transcriptEl = document.getElementById('commerce-ai-transcript');
+      if (status) { status.innerText = message; status.setAttribute('role', 'status'); status.setAttribute('aria-live', 'polite'); }
+      if (transcriptEl && transcript !== undefined) transcriptEl.innerText = transcript;
+    }
+
     function toggleCommerceVoiceRecognition() {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const statusText = document.getElementById('commerce-ai-status-text');
-      const transcriptEl = document.getElementById('commerce-ai-transcript');
-      const micBtn = document.getElementById('commerce-ai-mic-btn');
-      const ring1 = document.getElementById('commerce-mic-pulse-ring');
-      const ring2 = document.getElementById('commerce-mic-pulse-ring-2');
-      const isHi = (AppStore.lang === 'hi');
+      const isHi = AppStore.lang === 'hi';
+      const input = document.getElementById('commerce-ai-input');
 
       if (!SpeechRecognition) {
-        if (statusText) statusText.innerText = isHi ? 'माइक समर्थित नहीं है - नीचे लिखें' : 'Mic not supported on browser - please type below';
-        const input = document.getElementById('commerce-ai-input');
+        setCommerceVoiceStatus(isHi ? 'इस ब्राउज़र में वॉइस सर्च उपलब्ध नहीं है। नीचे टाइप करें।' : 'Voice search is unavailable in this browser. Please type below.');
         if (input) input.focus();
         return;
       }
-
       if (activeCommerceRecognition) {
-        try { activeCommerceRecognition.stop(); } catch (e) {}
+        try { activeCommerceRecognition.abort(); } catch (_) {}
         resetCommerceVoiceUI();
         return;
       }
@@ -8008,73 +8636,87 @@
       try {
         const recognition = new SpeechRecognition();
         activeCommerceRecognition = recognition;
+        commerceVoiceHadError = false;
         recognition.lang = isHi ? 'hi-IN' : 'en-IN';
         recognition.continuous = false;
         recognition.interimResults = true;
+        setCommerceVoiceStatus(isHi ? 'माइक्रोफ़ोन शुरू हो रहा है…' : 'Starting microphone…');
 
-        if (ring1) ring1.classList.remove('hidden');
-        if (ring2) ring2.classList.remove('hidden');
-        if (micBtn) {
-          micBtn.classList.remove('bg-gradient-to-tr', 'from-primary', 'to-emerald-600');
-          micBtn.classList.add('bg-red-500', 'animate-pulse');
-        }
-        if (statusText) statusText.innerText = isHi ? 'सुन रहा हूँ... बोलिए (उदा. 1 किलो आटा और 1 पैकेट दूध)' : 'Listening... Speak items (e.g. 1kg Aata and 1 packet Milk)';
-        if (transcriptEl) transcriptEl.innerText = isHi ? 'सुन रहा हूँ...' : 'Listening...';
-
+        recognition.onstart = function() {
+          if (activeCommerceRecognition !== recognition) return;
+          const ring1 = document.getElementById('commerce-mic-pulse-ring');
+          const ring2 = document.getElementById('commerce-mic-pulse-ring-2');
+          const micBtn = document.getElementById('commerce-ai-mic-btn');
+          if (ring1) ring1.classList.remove('hidden');
+          if (ring2) ring2.classList.remove('hidden');
+          if (micBtn) {
+            micBtn.classList.remove('bg-gradient-to-tr', 'from-primary', 'to-emerald-600');
+            micBtn.classList.add('bg-red-500', 'animate-pulse');
+          }
+          setCommerceVoiceStatus(isHi ? 'सुन रहा है… अब बोलें' : 'Listening… speak now', isHi ? 'बोलना शुरू करें…' : 'Speak now…');
+        };
         recognition.onresult = function(event) {
-          let currentTranscript = '';
-          for (let i = event.resultIndex; i < event.results.length; ++i) {
-            currentTranscript += event.results[i][0].transcript;
+          if (activeCommerceRecognition !== recognition) return;
+          let transcript = '';
+          let final = false;
+          for (let i = 0; i < event.results.length; i++) {
+            transcript += event.results[i][0].transcript + ' ';
+            if (event.results[i].isFinal) final = true;
           }
-          if (transcriptEl && currentTranscript) {
-            transcriptEl.innerText = `"${currentTranscript}"`;
+          transcript = transcript.trim();
+          if (transcript) {
+            setCommerceVoiceStatus(isHi ? 'आपने कहा:' : 'You said:', transcript);
+            if (input) input.value = transcript;
           }
-          const input = document.getElementById('commerce-ai-input');
-          if (input && currentTranscript) {
-            input.value = currentTranscript;
-          }
-
-          if (event.results[0] && event.results[0].isFinal) {
-            try { recognition.stop(); } catch (e) {}
-            resetCommerceVoiceUI();
-            processCommerceAiQuery(currentTranscript);
+          if (final && transcript) {
+            recognition.stop();
+            processCommerceAiQuery(transcript);
           }
         };
-
-        recognition.onerror = function(err) {
-          console.warn('Commerce SpeechRecognition error:', err);
-          resetCommerceVoiceUI();
+        recognition.onerror = function(event) {
+          if (activeCommerceRecognition !== recognition) return;
+          commerceVoiceHadError = true;
+          const error = event.error || 'unknown';
+          let msg;
+          if (error === 'not-allowed' || error === 'service-not-allowed') {
+            msg = isHi ? 'माइक की अनुमति नहीं है। ब्राउज़र की साइट सेटिंग्स में माइक्रोफ़ोन Allow करें या नीचे टाइप करें।'
+                       : 'Microphone blocked. Allow microphone access in this site\'s browser settings, or type below.';
+          } else if (error === 'no-speech') {
+            msg = isHi ? 'आवाज़ नहीं मिली। फिर कोशिश करें या टाइप करें।' : 'No speech detected. Try again or type below.';
+          } else if (error === 'network') {
+            msg = isHi ? 'वॉइस सेवा का नेटवर्क उपलब्ध नहीं है। नीचे टाइप करें।' : 'Voice service unavailable on this network. Please type below.';
+          } else {
+            msg = isHi ? 'आवाज़ पहचानने में समस्या हुई। नीचे टाइप करें।' : 'Voice recognition failed. Please type below.';
+          }
+          resetCommerceVoiceUI(true);
+          setCommerceVoiceStatus(msg);
+          if (input) input.focus();
         };
-
         recognition.onend = function() {
-          resetCommerceVoiceUI();
+          if (activeCommerceRecognition !== recognition) return;
+          resetCommerceVoiceUI(commerceVoiceHadError);
         };
-
         recognition.start();
-      } catch (err) {
-        console.error('Failed to start speech recognition:', err);
-        resetCommerceVoiceUI();
+      } catch (error) {
+        resetCommerceVoiceUI(true);
+        setCommerceVoiceStatus(isHi ? 'माइक शुरू नहीं हुआ। अनुमति जांचें या टाइप करें।' : 'Microphone could not start. Check permissions or type below.');
+        if (input) input.focus();
       }
     }
     window.toggleCommerceVoiceRecognition = toggleCommerceVoiceRecognition;
 
-    function resetCommerceVoiceUI() {
+    function resetCommerceVoiceUI(preserveStatus = false) {
       activeCommerceRecognition = null;
       const ring1 = document.getElementById('commerce-mic-pulse-ring');
       const ring2 = document.getElementById('commerce-mic-pulse-ring-2');
       const micBtn = document.getElementById('commerce-ai-mic-btn');
-      const statusText = document.getElementById('commerce-ai-status-text');
-      const isHi = (AppStore.lang === 'hi');
-
       if (ring1) ring1.classList.add('hidden');
       if (ring2) ring2.classList.add('hidden');
       if (micBtn) {
         micBtn.classList.remove('bg-red-500', 'animate-pulse');
         micBtn.classList.add('bg-gradient-to-tr', 'from-primary', 'to-emerald-600');
       }
-      if (statusText) {
-        statusText.innerText = isHi ? 'सामान बोलने के लिए माइक दबाएं' : 'Tap mic to speak your grocery items';
-      }
+      if (!preserveStatus) setCommerceVoiceStatus(AppStore.lang === 'hi' ? 'सामान बोलने के लिए माइक दबाएं' : 'Tap mic to speak your grocery items');
     }
     window.resetCommerceVoiceUI = resetCommerceVoiceUI;
 
@@ -8125,71 +8767,105 @@
         `;
       }
 
-      // 1. NLP Parser mapping
-      const synonyms = {
-        item_1: ['aata', 'atta', 'gehu', 'chakki', 'आटा', 'चक्की', 'flour'],
-        item_d1: ['milk', 'doodh', 'dudh', 'taaza', 'दूध', 'ताज़ा', 'packet milk', 'amul'],
-        item_2: ['oil', 'tel', 'mustard', 'sarson', 'तेल', 'सरसों'],
-        item_3: ['salt', 'namak', 'tata', 'नमक', 'टाटा'],
-        item_4: ['tea', 'chai', 'red label', 'chay', 'चाय', 'कड़क चाय'],
-        item_5: ['ghee', 'desi ghee', 'cow ghee', 'घी', 'देसी घी'],
-        item_6: ['mirch', 'deggi', 'chilli', 'spices', 'मिर्च', 'देगी'],
-        item_7: ['sugar', 'chini', 'cheeni', 'madhur', 'चीनी', 'शक्कर'],
-        item_rice: ['rice', 'chawal', 'basmati', 'daawat', 'चावल', 'बासमती']
-      };
-
       const matchedMap = new Map();
       const catalog = AppStore.catalog || [];
 
-      // Split query by commas, and, aur, etc.
-      const parts = queryLower.split(/(?:and|aur|और|\+|\&|,)/).map(p => p.trim()).filter(Boolean);
-      const queryParts = parts.length > 0 ? parts : [queryLower];
-
-      queryParts.forEach(part => {
-        let matchedItem = null;
-
-        // Try synonym dictionary first
-        for (const [id, synList] of Object.entries(synonyms)) {
-          if (synList.some(s => part.includes(s))) {
-            const found = catalog.find(i => i.id === id);
-            if (found) {
-              matchedItem = found;
-              break;
-            }
-          }
-        }
-
-        // Fallback: substring matching across catalog item names
-        if (!matchedItem) {
-          const words = part.split(/\s+/).filter(w => w.length > 2 && !['want', 'need', 'give', 'packet', 'kilo', 'chahiye'].includes(w));
-          for (const item of catalog) {
-            const itemStr = `${item.name_en || ''} ${item.name_hi || ''} ${item.cat || ''}`.toLowerCase();
-            if (words.some(w => itemStr.includes(w))) {
-              matchedItem = item;
-              break;
-            }
-          }
-        }
-
-        if (matchedItem && !matchedMap.has(matchedItem.id)) {
-          matchedMap.set(matchedItem.id, matchedItem);
-        }
-      });
-
-      // If no exact item matched, do broader catalog search
-      if (matchedMap.size === 0) {
-        catalog.forEach(item => {
-          const itemStr = `${item.name_en || ''} ${item.name_hi || ''} ${item.cat || ''}`.toLowerCase();
-          if (queryLower.split(/\s+/).some(w => w.length > 2 && itemStr.includes(w))) {
-            matchedMap.set(item.id, item);
-          }
+      // 1. First, attempt backend AI NLP parsing via FastAPI endpoint
+      let backendLoaded = false;
+      try {
+        const aiResp = await fetch('/api/ai/commerce-assistant', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query: query,
+            lang: AppStore.lang || 'en',
+            store_id: AppStore.activeStoreId || null
+          })
         });
+        if (aiResp.ok) {
+          const aiData = await aiResp.json();
+          if (Array.isArray(aiData.products) && aiData.products.length > 0) {
+            backendLoaded = true;
+            aiData.products.forEach(p => {
+              let existing = catalog.find(i => i.id === p.id);
+              if (!existing) {
+                existing = {
+                  id: p.id,
+                  name_en: p.name_en,
+                  name_hi: p.name_hi,
+                  price: p.price,
+                  mrp: p.mrp,
+                  weight: p.weight,
+                  cat: p.category,
+                  icon: p.icon || 'inventory_2',
+                  store_id: p.store_id,
+                  qty: 0
+                };
+                catalog.push(existing);
+              }
+              if (!matchedMap.has(existing.id)) {
+                matchedMap.set(existing.id, existing);
+              }
+            });
+          }
+        }
+      } catch (e) {
+        console.warn("Backend commerce assistant fetch notice, falling back to local NLP:", e);
       }
 
-      // If still empty, display the first 2 default groceries so user always gets actionable result
-      if (matchedMap.size === 0) {
-        const defaultItems = catalog.filter(i => i.id === 'item_1' || i.id === 'item_d1');
-        defaultItems.forEach(i => matchedMap.set(i.id, i));
+      // 2. Client-side NLP fallback if backend unavailable or no items returned
+      if (!backendLoaded) {
+        const synonyms = {
+          item_1: ['aata', 'atta', 'gehu', 'chakki', 'आटा', 'चक्की', 'flour'],
+          item_d1: ['milk', 'doodh', 'dudh', 'taaza', 'दूध', 'ताज़ा', 'packet milk', 'amul'],
+          item_2: ['oil', 'tel', 'mustard', 'sarson', 'तेल', 'सरसों'],
+          item_3: ['salt', 'namak', 'tata', 'नमक', 'टाटा'],
+          item_4: ['tea', 'chai', 'red label', 'chay', 'चाय', 'कड़क चाय'],
+          item_5: ['ghee', 'desi ghee', 'cow ghee', 'घी', 'देसी घी'],
+          item_6: ['mirch', 'deggi', 'chilli', 'spices', 'मिर्च', 'देगी'],
+          item_7: ['sugar', 'chini', 'cheeni', 'madhur', 'चीनी', 'शक्कर'],
+          item_rice: ['rice', 'chawal', 'basmati', 'daawat', 'चावल', 'बासमती']
+        };
+
+        const parts = queryLower.split(/(?:and|aur|और|\+|\&|,)/).map(p => p.trim()).filter(Boolean);
+        const queryParts = parts.length > 0 ? parts : [queryLower];
+
+        queryParts.forEach(part => {
+          let matchedItem = null;
+          for (const [id, synList] of Object.entries(synonyms)) {
+            if (synList.some(s => part.includes(s))) {
+              const found = catalog.find(i => i.id === id);
+              if (found) {
+                matchedItem = found;
+                break;
+              }
+            }
+          }
+
+          if (!matchedItem) {
+            const words = part.split(/\s+/).filter(w => w.length > 2 && !['want', 'need', 'give', 'packet', 'kilo', 'chahiye'].includes(w));
+            for (const item of catalog) {
+              const itemStr = `${item.name_en || ''} ${item.name_hi || ''} ${item.cat || ''}`.toLowerCase();
+              if (words.some(w => itemStr.includes(w))) {
+                matchedItem = item;
+                break;
+              }
+            }
+          }
+
+          if (matchedItem && !matchedMap.has(matchedItem.id)) {
+            matchedMap.set(matchedItem.id, matchedItem);
+          }
+        });
+
+        if (matchedMap.size === 0) {
+          catalog.forEach(item => {
+            const itemStr = `${item.name_en || ''} ${item.name_hi || ''} ${item.cat || ''}`.toLowerCase();
+            if (queryLower.split(/\s+/).some(w => w.length > 2 && itemStr.includes(w))) {
+              matchedMap.set(item.id, item);
+            }
+          });
+        }
       }
 
       const matchedItems = Array.from(matchedMap.values());
@@ -8214,7 +8890,16 @@
 
       if (resultsContainer) {
         resultsContainer.innerHTML = '';
-        matchedItems.forEach(item => {
+        if (matchedItems.length === 0) {
+          resultsContainer.innerHTML = `
+            <div class="p-6 bg-white rounded-2xl flex flex-col items-center justify-center gap-2 border border-slate-200 text-center">
+              <span class="material-symbols-outlined text-[36px] text-slate-400">search_off</span>
+              <span class="text-xs font-bold text-slate-700">${isHi ? 'कोई सामान नहीं मिला' : 'No matching items found'}</span>
+              <span class="text-[11px] text-slate-500 max-w-[240px]">${isHi ? 'कृपया आटा, दूध, तेल, चीनी, दाल या मसाला जैसे दैनिक किराना सामान खोजें।' : 'Please search for daily essentials like milk, flour, oil, sugar, or tea.'}</span>
+            </div>
+          `;
+        } else {
+          matchedItems.forEach(item => {
           const title = isHi ? (item.name_hi || item.name_en) : (item.name_en || item.name_hi);
           const weight = isHi ? (item.weight_hi || item.weight) : (item.weight_en || item.weight);
           const storeName = item.store_id === 'apna_dairy' ? (isHi ? 'अपना गाँव डेयरी' : 'Apna Village Dairy') : (isHi ? 'शर्मा किराना स्टोर' : 'Sharma Kirana Store');
@@ -8263,7 +8948,8 @@
             </div>
           `;
           resultsContainer.appendChild(card);
-        });
+          });
+        }
       }
 
       syncCommerceCartBar();
@@ -8582,7 +9268,7 @@
           phase: "Phase 5: Live Order Tracking 5-Stage Timeline",
           test: () => {
             const stage = AppStore.orderTimelineStage;
-            const hasDeliveryOtp = AppStore.deliveryOtp === '4821';
+            const hasDeliveryOtp = Boolean(AppStore.deliveryOtp && /^\d{4}$/.test(String(AppStore.deliveryOtp)));
             return stage >= 1 && stage <= 5 && hasDeliveryOtp;
           },
           detail: "5-stage color-coded tracker & safe delivery verification OTP active"
@@ -8651,6 +9337,7 @@
 
     // --- 13. APP BOOTSTRAP INITIALIZATION ---
     window.addEventListener('DOMContentLoaded', () => {
+      if (typeof initAppTheme === 'function') initAppTheme();
       // Render initial catalog & cart
       renderProductCatalog();
       window.applyBilingualState();

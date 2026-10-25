@@ -71,19 +71,25 @@ self.addEventListener('fetch', (event) => {
   // STRATEGY A: Network-First for API Calls (/api/*)
   // ---------------------------------------------------------------------------
   if (url.pathname.startsWith('/api/')) {
+    const isSensitiveAuth = url.pathname.includes('/user/') || 
+                            url.pathname.includes('/auth/') || 
+                            url.pathname.includes('/payments/') || 
+                            url.pathname.includes('/orders/') || 
+                            request.headers.has('Authorization');
+
     event.respondWith(
       fetch(request)
         .then((response) => {
-          // If valid GET response, save to cache
-          if (request.method === 'GET' && response && response.status === 200) {
+          // If valid GET response and not a sensitive/user-specific route, cache for offline catalog browsing
+          if (!isSensitiveAuth && request.method === 'GET' && response && response.status === 200) {
             const responseClone = response.clone();
             caches.open(CACHE_NAME).then((cache) => cache.put(request, responseClone));
           }
           return response;
         })
         .catch(async () => {
-          // Network dropped entirely! Check cache first for GET queries
-          if (request.method === 'GET') {
+          // Network dropped entirely! Check cache only for public catalog data
+          if (!isSensitiveAuth && request.method === 'GET') {
             const cachedResponse = await caches.match(request);
             if (cachedResponse) {
               return cachedResponse;

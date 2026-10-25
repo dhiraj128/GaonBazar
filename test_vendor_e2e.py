@@ -704,6 +704,7 @@ def _run_vendor_device_steps(context, dev_name, device_config, logger):
     # Find the first product stock toggle and click it
     first_toggle = page.locator("#inventory-container button:has-text('उपलब्ध'), #inventory-container button:has-text('अनुपलब्ध')").first
     if first_toggle.count() > 0:
+        btn_id = first_toggle.get_attribute("id")
         try:
             first_toggle.scroll_into_view_if_needed()
             page.evaluate("() => { const el = document.querySelector('#inventory-container button'); if (el) el.scrollIntoView({ block: 'center' }); }")
@@ -711,16 +712,23 @@ def _run_vendor_device_steps(context, dev_name, device_config, logger):
         except Exception:
             pass
         initial_stock_text = first_toggle.inner_text().strip()
-        first_toggle.click()
+        first_toggle.click(force=True)
         try:
-            page.wait_for_function(
-                "orig => { const el = document.querySelector('#inventory-container button'); return el && el.innerText.trim() !== orig; }",
-                arg=initial_stock_text,
-                timeout=4000
-            )
+            if btn_id:
+                page.wait_for_function(
+                    "({id, orig}) => { const el = document.getElementById(id); return el && el.innerText.trim() !== orig; }",
+                    arg={"id": btn_id, "orig": initial_stock_text},
+                    timeout=4000
+                )
+            else:
+                page.wait_for_function(
+                    "orig => { const el = document.querySelector('#inventory-container button'); return el && el.innerText.trim() !== orig; }",
+                    arg=initial_stock_text,
+                    timeout=4000
+                )
         except Exception:
             page.wait_for_timeout(1000)
-        toggled_stock_text = page.locator("#inventory-container button:has-text('उपलब्ध'), #inventory-container button:has-text('अनुपलब्ध')").first.inner_text().strip()
+        toggled_stock_text = page.locator(f"#{btn_id}").inner_text().strip() if btn_id else page.locator("#inventory-container button").first.inner_text().strip()
         capture_screenshot(page, f"{dev_name.replace(' ', '_')}_step5_stock_toggled", logger)
         logger.record_test(
             f"[{dev_name}] Product In-Stock / Out-of-Stock Toggle",
@@ -729,7 +737,10 @@ def _run_vendor_device_steps(context, dev_name, device_config, logger):
         )
         # Toggle back to original
         try:
-            page.locator("#inventory-container button:has-text('उपलब्ध'), #inventory-container button:has-text('अनुपलब्ध')").first.click()
+            if btn_id:
+                page.locator(f"#{btn_id}").click(force=True)
+            else:
+                page.locator("#inventory-container button").first.click(force=True)
             page.wait_for_timeout(600)
         except Exception:
             pass

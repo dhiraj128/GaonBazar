@@ -1,10 +1,26 @@
 <!DOCTYPE html>
-<html lang="hi" class="h-full bg-slate-900 text-slate-100">
+<html lang="hi" class="h-full">
 <head>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛒</text></svg>"/>
     <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
   <title data-i18n="page_title_runner">गाँव मित्र • डिलीवरी पार्टनर डैशबोर्ड</title>
+
+  <script>
+    (function() {
+      try {
+        const saved = localStorage.getItem('gaonbazar_runner_theme') || localStorage.getItem('gaonbazar_theme') || 'system';
+        const isDark = saved === 'dark' || (saved === 'system' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+          document.documentElement.classList.remove('light');
+        } else {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.classList.add('light');
+        }
+      } catch(e) {}
+    })();
+  </script>
 
   <!-- Google Fonts: Plus Jakarta Sans & Noto Sans Devanagari -->
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -42,6 +58,104 @@
   </script>
 
   <style>
+    /* ======================================================== */
+    /* RUNNER THEME SYSTEM STYLES (Genuine Light & Dark Modes) */
+    /* ======================================================== */
+    html.light {
+      color-scheme: light;
+      background-color: #f8fafc !important;
+      color: #0f172a !important;
+    }
+    html.light body {
+      background-color: #f8fafc !important;
+      color: #0f172a !important;
+    }
+    html.light .bg-slate-900,
+    html.light .bg-slate-950 {
+      background-color: #f1f5f9 !important;
+      color: #0f172a !important;
+    }
+    html.light .bg-slate-800,
+    html.light .bg-slate-800\/80,
+    html.light .bg-slate-800\/90 {
+      background-color: #ffffff !important;
+      border-color: #e2e8f0 !important;
+      color: #0f172a !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06) !important;
+    }
+    html.light #runner-header,
+    html.light #runner-bottom-nav {
+      background-color: #ffffff !important;
+      border-color: #e2e8f0 !important;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05) !important;
+    }
+    html.light .text-white,
+    html.light .text-slate-100,
+    html.light .text-slate-200 {
+      color: #0f172a !important;
+    }
+    html.light .text-slate-300,
+    html.light .text-slate-400 {
+      color: #475569 !important;
+    }
+    html.light .text-slate-500 {
+      color: #64748b !important;
+    }
+    html.light .border-slate-800,
+    html.light .border-slate-700 {
+      border-color: #e2e8f0 !important;
+    }
+    html.light input:not([type="checkbox"]),
+    html.light select,
+    html.light textarea {
+      background-color: #ffffff !important;
+      color: #0f172a !important;
+      border-color: #cbd5e1 !important;
+    }
+    html.light input::placeholder,
+    html.light textarea::placeholder {
+      color: #94a3b8 !important;
+    }
+    html.light #runner-login-gate {
+      background-color: #f8fafc !important;
+    }
+    html.light #runner-login-gate > div {
+      background-color: #ffffff !important;
+      border-color: #e2e8f0 !important;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
+    }
+    html.light #modal-delivery-success > div,
+    html.light #modal-order-detail > div,
+    html.light #modal-otp-verify > div {
+      background-color: #ffffff !important;
+      border-color: #e2e8f0 !important;
+      color: #0f172a !important;
+    }
+    html.light .runner-ledger-card {
+      background-color: #ffffff !important;
+      border-color: #e2e8f0 !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
+    }
+    html.light .runner-ledger-card td {
+      border-bottom: 1px dashed #e2e8f0 !important;
+    }
+    html.light .runner-theme-segment {
+      background-color: #f1f5f9 !important;
+      border: 1px solid #e2e8f0 !important;
+    }
+    html.dark .runner-theme-segment {
+      background-color: #0f172a !important;
+      border: 1px solid #334155 !important;
+    }
+    html.light #runner-pending-view {
+      background-color: #ffffff !important;
+      border-color: #f59e0b !important;
+    }
+    html.light #runner-pending-view .bg-slate-950 {
+      background-color: #fef3c7 !important;
+      color: #78350f !important;
+    }
+
     .hidden {
       display: none !important;
     }
@@ -98,13 +212,12 @@
       width: 100%;
       margin: 0;
       padding: 0;
-      overscroll-behavior: none;
-      overscroll-behavior-y: none;
+      overscroll-behavior-y: contain;
     }
     main {
       -webkit-overflow-scrolling: touch;
-      overscroll-behavior: none;
-      overscroll-behavior-y: none;
+      overscroll-behavior-y: contain;
+      touch-action: pan-y;
     }
   </style>
 </head>
@@ -240,9 +353,9 @@
           <span id="current-lang-text">English</span>
         </button>
 
-        <!-- Runner Logout CTA -->
-        <button id="btn-runner-logout" onclick="handleRunnerLogout()" title="लॉगआउट" aria-label="Logout" class="w-9 h-9 sm:w-11 sm:h-11 min-w-[36px] sm:min-w-[44px] min-h-[36px] sm:min-h-[44px] rounded-xl bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-800/50 flex items-center justify-center transition-colors active:scale-95 shrink-0 cursor-pointer">
-          <span class="material-symbols-outlined text-[19px] sm:text-[20px]">logout</span>
+        <!-- Settings entry; logout lives inside Settings, not the cramped header -->
+        <button id="btn-runner-header-settings" type="button" onclick="switchTab('settings')" title="Settings" aria-label="Settings" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center justify-center active:scale-95 shrink-0">
+          <span class="material-symbols-outlined text-[20px]">settings</span>
         </button>
       </div>
 
@@ -468,8 +581,8 @@
       <!-- ===================================================================== -->
       <div class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-md flex flex-col gap-3.5">
         
-        <div class="flex items-start justify-between gap-2 border-b border-slate-700/80 pb-3">
-          <div class="flex items-center gap-2.5">
+        <div class="flex flex-col gap-3 border-b border-slate-700/80 pb-3">
+          <div class="flex items-center gap-2.5 min-w-0">
             <div class="w-10 h-10 rounded-2xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center shrink-0">
               <span class="material-symbols-outlined text-[24px]">person_pin_circle</span>
             </div>
@@ -481,14 +594,14 @@
           </div>
 
           <!-- 1-Tap Call & Map Navigation CTAs -->
-          <div class="flex items-center gap-1.5 shrink-0">
-            <a id="btn-call-customer" href="tel:9876543210" class="min-h-[44px] px-3 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-black flex items-center gap-1 shadow-sm active:scale-95 transition-all shrink-0 cursor-pointer">
+          <div class="grid grid-cols-1 min-[355px]:grid-cols-2 gap-2 w-full min-w-0">
+            <a id="btn-call-customer" href="#" class="min-w-0 w-full min-h-[44px] px-2 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-[11px] sm:text-xs font-black flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-all cursor-pointer text-center">
               <span class="material-symbols-outlined text-[18px]">call</span>
               <span data-i18n="call_customer_btn">कॉल करें</span>
             </a>
-            <a id="btn-navigate-map" href="#" onclick="openRunnerMapNavigation(event)" target="_blank" rel="noopener noreferrer" class="min-h-[44px] px-3 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black flex items-center gap-1 shadow-sm active:scale-95 transition-all shrink-0 cursor-pointer" title="Navigate via Google Maps">
+            <a id="btn-navigate-map" href="#" onclick="openRunnerMapNavigation(event)" target="_blank" rel="noopener noreferrer" class="min-w-0 w-full min-h-[44px] px-2 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] sm:text-xs font-black flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-all cursor-pointer text-center" title="Navigate via Google Maps">
               <span class="material-symbols-outlined text-[18px]">navigation</span>
-              <span data-i18n="navigate_map_btn">Navigate via Map</span>
+              <span class="min-w-0 text-center leading-tight break-words" data-i18n="navigate_map_btn">Navigate via Map</span>
             </a>
           </div>
         </div>
@@ -654,6 +767,41 @@
     <!-- 5.5 TAB 4: RUNNER BANK & UPI SETTINGS (Payout Onboarding)               -->
     <!-- ======================================================================= -->
     <section id="tab-settings" class="hidden flex-col gap-3.5">
+      <button id="btn-runner-logout" type="button" onclick="handleRunnerLogout()" class="w-full min-h-[48px] rounded-2xl border border-red-400/40 text-red-400 font-bold flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined">logout</span><span data-i18n="logout_label">Log out</span>
+      </button>
+      <!-- Runner Theme Selection Card (Light / Dark / System) -->
+      <div id="runner-theme-settings-card" class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-md flex flex-col gap-3.5">
+        <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+          <div class="flex items-center gap-2">
+            <div class="w-9 h-9 rounded-xl bg-purple-500/20 text-purple-400 border border-purple-500/40 flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-[20px]">palette</span>
+            </div>
+            <div>
+              <h2 class="text-sm font-black text-white" data-i18n="runner_theme_title">थीम / रंग रूप (Theme)</h2>
+              <span class="text-[10px] text-slate-400 block" data-i18n="runner_theme_sub">हल्का, गहरा या डिवाइस के अनुसार</span>
+            </div>
+          </div>
+          <span id="runner-theme-badge" class="px-2.5 py-1 rounded-full text-[11px] font-black bg-purple-500/20 text-purple-300 border border-purple-500/40">सिस्टम (System)</span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 bg-slate-900 p-1.5 rounded-2xl runner-theme-segment">
+          <button id="btn-runner-theme-light" type="button" onclick="setRunnerTheme('light')" class="min-h-[44px] rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all text-slate-300 hover:bg-slate-800/80 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">light_mode</span>
+            <span data-i18n="theme_opt_light">हल्का (Light)</span>
+          </button>
+          <button id="btn-runner-theme-dark" type="button" onclick="setRunnerTheme('dark')" class="min-h-[44px] rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all text-slate-300 hover:bg-slate-800/80 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">dark_mode</span>
+            <span data-i18n="theme_opt_dark">गहरा (Dark)</span>
+          </button>
+          <button id="btn-runner-theme-system" type="button" onclick="setRunnerTheme('system')" class="min-h-[44px] rounded-xl font-black text-xs flex items-center justify-center gap-1.5 transition-all bg-primary text-white shadow-xs cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">settings_suggest</span>
+            <span data-i18n="theme_opt_system">सिस्टम (System)</span>
+          </button>
+        </div>
+      </div>
+
+
       <div class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-md flex flex-col gap-4">
         
         <div class="flex flex-wrap items-center justify-between gap-2.5 border-b border-slate-700 pb-3">
@@ -1088,6 +1236,11 @@
         tab_detail: "लैंडमार्क",
         tab_ledger: "बहीखाता",
         tab_settings: "बैंक खाता",
+        runner_theme_title: "थीम / रंग रूप",
+        runner_theme_sub: "हल्का, गहरा या डिवाइस के अनुसार",
+        theme_opt_light: "हल्का (Light)",
+        theme_opt_dark: "गहरा (Dark)",
+        theme_opt_system: "सिस्टम (System)",
         runner_bank_title: "बैंक खाता व UPI सेटिंग्स",
         runner_bank_sub: "डिलीवरी कमीशन (₹20/ऑर्डर) सीधे आपके बैंक में",
         runner_bank_desc: "गाँव मित्र डिलीवरी कमीशन की दैनिक निकासी Razorpay Route लिंक्ड बैंक खाते या UPI में स्थानांतरित की जाती है।",
@@ -1241,6 +1394,11 @@
         tab_detail: "Landmark",
         tab_ledger: "Ledger",
         tab_settings: "Bank & UPI",
+        runner_theme_title: "Theme & Display",
+        runner_theme_sub: "Light, Dark, or System",
+        theme_opt_light: "Light",
+        theme_opt_dark: "Dark",
+        theme_opt_system: "System",
         runner_bank_title: "Bank Account & UPI Settings",
         runner_bank_sub: "Delivery commission (₹20/order) directly into your bank",
         runner_bank_desc: "Daily Gaon Mitra delivery payout settlement is routed to your verified linked bank or UPI ID.",
@@ -2011,8 +2169,8 @@
         const lat = mission.customer_lat || mission.lat;
         const lng = mission.customer_lng || mission.lng;
         const navUrl = (lat && lng) 
-          ? `https://maps.google.com/?q=${lat},${lng}` 
-          : `https://maps.google.com/?q=${encodeURIComponent((mission.village || '') + ' ' + (mission.landmark || ''))}`;
+          ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(lat + "," + lng)}&travelmode=driving` 
+          : `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(((mission.village || "") + " " + (mission.landmark || "")).trim())}&travelmode=driving`;
 
         return `
           <div onclick="selectMission('${mission.id}')" class="bg-slate-800 rounded-3xl p-4 sm:p-5 border ${isStage3 ? 'border-amber-500/40' : 'border-slate-700'} shadow-md flex flex-col gap-3 cursor-pointer hover:border-primary transition-all active:scale-99">
@@ -2142,22 +2300,24 @@
 
       if (elCustName) elCustName.innerText = m.user_name;
       if (elCustVillage) elCustVillage.innerText = isHi ? `ग्राम पंचायत: ${m.village}` : `Village: ${m.village}`;
-      if (elBtnCallCust) elBtnCallCust.href = `tel:${m.user_phone || '9876543210'}`;
+      if (elBtnCallCust) { const phone = String(m.user_phone || '').replace(/[^0-9+]/g, ''); elBtnCallCust.href = phone ? `tel:${phone}` : '#'; elBtnCallCust.setAttribute('aria-disabled', phone ? 'false' : 'true'); }
       if (elLandmarkText) elLandmarkText.innerText = m.landmark;
 
-      // Exact GPS Coordinates & "Navigate via Map" Routing
+      // Maps Directions links require an actual order destination, never sample coordinates.
       const elBtnNavMap = document.getElementById('btn-navigate-map');
       const elCoordsContainer = document.getElementById('runner-coords-container');
       const elCoordsText = document.getElementById('runner-coords-text');
-      const destLat = m.customer_lat || m.lat || 26.1209;
-      const destLng = m.customer_lng || m.lng || 85.3647;
-      const navUrl = `https://maps.google.com/?q=${destLat},${destLng}`;
+      const destLat = Number(m.customer_lat ?? m.lat);
+      const destLng = Number(m.customer_lng ?? m.lng);
+      const hasCoords = Number.isFinite(destLat) && Number.isFinite(destLng) && Math.abs(destLat) <= 90 && Math.abs(destLng) <= 180 && !(destLat === 0 && destLng === 0);
+      const addressText = [m.landmark, m.village].filter(Boolean).join(', ').trim();
+      const destination = hasCoords ? `${destLat},${destLng}` : addressText;
+      const navUrl = destination ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}&travelmode=driving` : '';
       if (elBtnNavMap) {
-        elBtnNavMap.href = navUrl;
-        elBtnNavMap.setAttribute('onclick', 'openRunnerMapNavigation(event)');
+        elBtnNavMap.href = navUrl || '#';
+        elBtnNavMap.setAttribute('aria-disabled', navUrl ? 'false' : 'true');
         elBtnNavMap.onclick = function(event) {
-          if (event) { try { event.preventDefault(); } catch(e){} try { event.stopPropagation(); } catch(e){} }
-          window.open('https://maps.google.com/?q=' + destLat + ',' + destLng, '_blank');
+          if (!navUrl) { event.preventDefault(); showToast(isHi ? 'ग्राहक का पता उपलब्ध नहीं है' : 'Customer address unavailable'); }
         };
       }
       if (elCoordsContainer && elCoordsText) {
@@ -2634,18 +2794,100 @@
       if (sel) sel.value = mapped;
     }
 
-    // --- 9.145 RUNNER MAP NAVIGATION HANDLER ---
+    // --- Runner map navigation is driven by the selected mission, without dummy coordinates.
     function openRunnerMapNavigation(event) {
-      if (event) {
-        try { event.preventDefault(); } catch (e) {}
-        try { event.stopPropagation(); } catch (e) {}
-      }
       const m = RunnerStore.selectedMission;
-      const destLat = (m && (m.customer_lat || m.lat)) || 26.1209;
-      const destLng = (m && (m.customer_lng || m.lng)) || 85.3647;
-      window.open('https://maps.google.com/?q=' + destLat + ',' + destLng, '_blank');
+      const lat = Number(m?.customer_lat ?? m?.lat);
+      const lng = Number(m?.customer_lng ?? m?.lng);
+      const coordsValid = m && Number.isFinite(lat) && Number.isFinite(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180 && !(lat === 0 && lng === 0);
+      const address = m ? [m.landmark, m.village].filter(Boolean).join(', ').trim() : '';
+      const destination = coordsValid ? `${lat},${lng}` : address;
+      if (event) { event.preventDefault(); event.stopPropagation(); }
+      if (!destination) {
+        showToast(RunnerStore.lang === 'hi' ? 'ग्राहक का पता उपलब्ध नहीं है' : 'Customer address unavailable');
+        return;
+      }
+      window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}&travelmode=driving`, '_blank', 'noopener,noreferrer');
     }
     window.openRunnerMapNavigation = openRunnerMapNavigation;
+
+    
+    // --- RUNNER THEME ENGINE (Light / Dark / System) ---
+    function getRunnerTheme() {
+      return localStorage.getItem('gaonbazar_runner_theme') || localStorage.getItem('gaonbazar_theme') || 'system';
+    }
+
+    function setRunnerTheme(themeName) {
+      if (!['light', 'dark', 'system'].includes(themeName)) return;
+      localStorage.setItem('gaonbazar_runner_theme', themeName);
+      localStorage.setItem('gaonbazar_theme', themeName);
+      applyRunnerTheme(themeName);
+    }
+    window.setRunnerTheme = setRunnerTheme;
+    window.getRunnerTheme = getRunnerTheme;
+
+    function applyRunnerTheme(themeName) {
+      const mode = themeName || getRunnerTheme();
+      let isDark = false;
+      if (mode === 'dark') {
+        isDark = true;
+      } else if (mode === 'system') {
+        isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      }
+
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('light');
+        const metaTheme = document.querySelector('meta[name="theme-color"]');
+        if (metaTheme) metaTheme.setAttribute('content', '#0f172a');
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.add('light');
+        const metaTheme = document.querySelector('meta[name="theme-color"]');
+        if (metaTheme) metaTheme.setAttribute('content', '#16a34a');
+      }
+
+      updateRunnerThemeUI(mode);
+    }
+    window.applyRunnerTheme = applyRunnerTheme;
+
+    function updateRunnerThemeUI(activeMode) {
+      const mode = activeMode || getRunnerTheme();
+      const btnLight = document.getElementById('btn-runner-theme-light');
+      const btnDark = document.getElementById('btn-runner-theme-dark');
+      const btnSystem = document.getElementById('btn-runner-theme-system');
+      const badge = document.getElementById('runner-theme-badge');
+      const isHi = (typeof RunnerStore !== 'undefined' && RunnerStore && RunnerStore.lang === 'hi') || document.documentElement.lang === 'hi';
+
+      const activeClass = "min-h-[44px] rounded-xl font-black text-xs flex items-center justify-center gap-1.5 transition-all bg-primary text-white shadow-xs cursor-pointer";
+      const inactiveClass = "min-h-[44px] rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all text-slate-400 hover:bg-slate-800/80 cursor-pointer";
+
+      if (btnLight) btnLight.className = (mode === 'light') ? activeClass : inactiveClass;
+      if (btnDark) btnDark.className = (mode === 'dark') ? activeClass : inactiveClass;
+      if (btnSystem) btnSystem.className = (mode === 'system') ? activeClass : inactiveClass;
+
+      if (badge) {
+        if (mode === 'light') badge.innerText = isHi ? "हल्का (Light)" : "Light";
+        else if (mode === 'dark') badge.innerText = isHi ? "गहरा (Dark)" : "Dark";
+        else badge.innerText = isHi ? "सिस्टम (System)" : "System";
+      }
+    }
+    window.updateRunnerThemeUI = updateRunnerThemeUI;
+
+    function initRunnerTheme() {
+      applyRunnerTheme(getRunnerTheme());
+      if (window.matchMedia) {
+        const mql = window.matchMedia('(prefers-color-scheme: dark)');
+        const handler = () => {
+          if (getRunnerTheme() === 'system') {
+            applyRunnerTheme('system');
+          }
+        };
+        if (mql.addEventListener) mql.addEventListener('change', handler);
+        else if (mql.addListener) mql.addListener(handler);
+      }
+    }
+    window.initRunnerTheme = initRunnerTheme;
 
     // --- 9.15 BILINGUAL ENGINE ---
     function toggleLanguage() {
@@ -2655,6 +2897,7 @@
     }
 
     function applyRunnerLanguageUI() {
+      if (typeof updateRunnerThemeUI === 'function') updateRunnerThemeUI();
       const isHi = RunnerStore.lang === 'hi';
       const dict = I18N[RunnerStore.lang] || I18N.hi;
 
@@ -2804,7 +3047,10 @@
     }
 
     // Boot
-    window.addEventListener('DOMContentLoaded', initRunnerApp);
+    window.addEventListener('DOMContentLoaded', () => {
+      if (typeof initRunnerTheme === 'function') initRunnerTheme();
+      initRunnerApp();
+    });
 
     // Global Scroll Delegator to ensure window.scrollTo / window.scrollBy always target the main scroll container
     (function() {
