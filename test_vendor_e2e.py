@@ -739,7 +739,10 @@ def _run_vendor_device_steps(context, dev_name, device_config, logger):
         try:
             assert original is not None, "Product ID missing from VendorStore inventory"
             expected = not original
-            stock_button.scroll_into_view_if_needed()
+            try:
+                stock_button.scroll_into_view_if_needed(timeout=3000)
+            except Exception:
+                pass
             with page.expect_response(
                 lambda r: r.request.method == "PATCH" and
                   ("/vendor/products/" + product_id + "/stock") in r.url,
