@@ -280,8 +280,9 @@
       overflow-y: auto !important;
       overflow-x: hidden !important;
       -webkit-overflow-scrolling: touch !important;
-      overscroll-behavior-y: contain !important;
-      touch-action: pan-y !important;
+      overscroll-behavior-y: auto !important;
+      /* Do not restrict pinch or mobile gestures on descendant Leaflet maps. */
+      touch-action: auto !important;
       scroll-padding-bottom: 120px;
       scroll-padding-top: 75px;
     }
@@ -431,6 +432,15 @@
             <span class="material-symbols-outlined text-[20px]">person</span>
           </div>
           <span class="flex-1 text-left" data-i18n="drawer_profile">मेरी प्रोफाइल (My Account)</span>
+          <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
+        </button>
+
+        <!-- Discoverable appearance settings; no extra crowded header control. -->
+        <button id="drawer-appearance-btn" type="button" onclick="openCustomerAppearanceSettings()" class="w-full min-h-[48px] px-3.5 py-3 rounded-xl flex items-center gap-3.5 text-slate-800 hover:bg-slate-100 active:bg-slate-200 text-sm font-bold transition-colors cursor-pointer">
+          <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[20px]">dark_mode</span>
+          </div>
+          <span class="flex-1 text-left" data-i18n="profile_row_theme">Theme &amp; Display / थीम</span>
           <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
         </button>
 
@@ -3936,14 +3946,12 @@
       let historyPushedCount = 0;
 
       window.syncBodyScrollLock = function() {
-        // Guarantee clean body scroll unlock without residual scroll freezes
-        if (overlayStack.length > 0) {
-          document.body.classList.add('overflow-hidden');
-          document.documentElement.classList.add('overflow-hidden');
-        } else {
-          document.body.classList.remove('overflow-hidden');
-          document.documentElement.classList.remove('overflow-hidden');
-        }
+        // Main is the actual vertical scroll owner. Locking document root can
+        // swallow Android touch gestures after a modal or sidebar closes.
+        // The overlay itself captures taps; never leave a global scroll lock.
+        document.body.classList.remove('overflow-hidden');
+        document.documentElement.classList.remove('overflow-hidden');
+        document.body.dataset.overlayOpen = overlayStack.length ? 'true' : 'false';
       };
 
       window.pushOverlayHistory = function(overlayId, closeCallback) {
@@ -3962,7 +3970,7 @@
       if (window.history && window.history.replaceState) {
         try {
           if (!window.history.state || !window.history.state.page) {
-            window.history.replaceState({ page: 'dashboard', gaonbazar_phase: 'dashboard', timestamp: Date.now() }, '');
+            window.history.replaceState({ page: AppStore.currentPhase || 'login', gaonbazar_phase: AppStore.currentPhase || 'login', timestamp: Date.now() }, '');
           }
         } catch (e) {
           console.warn('Initial replaceState error:', e);
@@ -4157,6 +4165,21 @@
       }
     }
     window.openSidebarDrawer = openSidebarDrawer;
+
+    function openCustomerAppearanceSettings() {
+      const drawer = document.getElementById('sidebar-drawer');
+      if (drawer && drawer.classList.contains('translate-x-0')) closeSidebarDrawer(true);
+      navigateToPhase('profile');
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        const main = document.getElementById('main-content-container');
+        const settings = document.getElementById('profile-row-theme');
+        if (main && settings) {
+          const targetTop = settings.getBoundingClientRect().top - main.getBoundingClientRect().top + main.scrollTop - 16;
+          main.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
+        }
+      }));
+    }
+    window.openCustomerAppearanceSettings = openCustomerAppearanceSettings;
 
     function closeSidebarDrawer(isFromPopstate) {
       const overlay = document.getElementById('sidebar-overlay');
@@ -5353,6 +5376,8 @@
       AppStore.user.gps.lat = newLat;
       AppStore.user.gps.lng = newLng;
       AppStore.user.gps.confirmed = false;
+      // Higher-accuracy GPS callbacks must never override a manually moved pin.
+      AppStore.user.gps.manuallyAdjusted = true;
       AppStore.user.latitude = newLat;
       AppStore.user.longitude = newLng;
 
@@ -5451,6 +5476,7 @@
       const villInput = document.getElementById('p1-village-input');
       const isHi = (AppStore.lang === 'hi');
 
+      if (AppStore.user.gps) AppStore.user.gps.manuallyAdjusted = false;
       if (btnText) btnText.innerText = isHi ? 'लोकेशन खोज रहे हैं...' : 'Detecting GPS...';
       if (badge) {
         badge.innerText = isHi ? 'सैटेलाइट से कनेक्ट हो रहे हैं...' : 'Connecting to GPS...';
@@ -5459,6 +5485,8 @@
       }
 
       const applyLocationResult = async (lat, lng, acc) => {
+        // A late GPS refinement must not erase the doorstep the user selected.
+        if (AppStore.user.gps && AppStore.user.gps.manuallyAdjusted) return;
         AppStore.detectedGps = { lat, lng, accuracy: acc };
         AppStore.user.gps = { lat, lng, accuracy: acc, confirmed: false };
         AppStore.user.latitude = lat;
@@ -9370,7 +9398,9 @@
         } catch (e) {
           console.warn('Could not restore user from localStorage', e);
         }
-        navigateToPhase('dashboard');
+        // Restored sessions must not add a phantom login history entry.
+        navigateToPhase('dashboard', true);
+        window.history.replaceState({ page: 'dashboard', gaonbazar_phase: 'dashboard', timestamp: Date.now() }, '');
       }
 
       // Check auto-test query
@@ -9429,7 +9459,7 @@
       const origScrollBy = window.scrollBy.bind(window);
 
       function getActiveScrollContainer() {
-        return document.querySelector('.screen-view.active') ||
+        return document.getElementById('main-content-container') ||
                document.querySelector('main.overflow-y-auto') ||
                document.querySelector('main') ||
                document.documentElement ||
