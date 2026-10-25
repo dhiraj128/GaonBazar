@@ -524,6 +524,10 @@
       <!-- PHASE 1.1: PHONE LOGIN & SEPARATE AUTH INTENTIONS (SIGN IN / SIGN UP) -->
       <!-- ===================================================================== -->
       <section id="view-p1-login" class="screen-view active flex-col w-full px-4 pt-4 pb-28 flex-1 min-h-0 space-y-4">
+        <div id="preview-demo-login-hint" class="rounded-xl border border-amber-300 bg-amber-50 p-3 text-xs text-amber-950" role="note">
+          <strong>Development preview — no real SMS</strong>
+          <p class="mt-1">Use demo mobile <strong>9876543210</strong> and verification code <strong>582941</strong>. Do not enter your personal number or payment details.</p>
+        </div>
         <!-- Hero Banner -->
         <div class="w-full shrink-0 relative overflow-hidden rounded-2xl bg-gradient-to-br from-surface-container/70 to-surface-container-low px-4 py-3 shadow-xs border border-surface-container-high/80 text-center flex flex-col items-center justify-center gap-1.5" style="max-width: 100%;">
           <div class="inline-flex items-center justify-center gap-1.5 bg-emerald-50 text-emerald-900 border border-emerald-300/80 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold shadow-xs max-w-full box-border">
@@ -665,6 +669,9 @@
       <!-- PHASE 1.2: OTP VERIFICATION                                           -->
       <!-- ===================================================================== -->
       <section id="view-p1-otp" class="screen-view hidden flex-col w-full px-4 pt-4 pb-28 flex-1 min-h-0 space-y-4">
+        <div class="rounded-xl bg-amber-50 border border-amber-300 p-3 text-xs font-semibold text-amber-950" role="note">
+          Demo verification only. Use code <strong>582941</strong> with demo number 9876543210. No SMS is sent from this preview.
+        </div>
         <div>
           <div class="flex items-center justify-between mb-1.5">
             <span class="text-xs font-bold text-primary uppercase" data-i18n="p1_otp_step">चरण 2 • सत्यापन</span>
@@ -4958,7 +4965,8 @@
           method: 'POST',
           body: JSON.stringify({ phone: phoneVal })
         });
-        showAudioToast(AppStore.lang === 'en' ? "Verification Code" : "सत्यापन कोड", AppStore.lang === 'en' ? `Verification code generated for +91 ${phoneVal}` : `सत्यापन कोड +91 ${phoneVal} के लिए तैयार है`);
+        showAudioToast("Demo verification", "No SMS sent. Enter demo OTP 582941.");
+        navigateToPhase('otp');
       } catch (err) {
         console.warn('Backend send-otp notice:', err);
         showAudioToast("Notice", err.message || (AppStore.lang === 'en' ? 'Unable to reach SMS gateway.' : 'OTP भेजने में समस्या। कृपया पुनः प्रयास करें।'));
@@ -4966,7 +4974,7 @@
         btn.disabled = false;
         btn.innerHTML = '<span class="material-symbols-outlined text-[20px]">send_to_mobile</span><span>' + i18nDictionary[AppStore.lang].p1_send_otp_btn + '</span><span class="material-symbols-outlined text-[18px]">arrow_forward</span>';
         document.getElementById('p1-otp-phone-lbl').innerText = `+91 ${AppStore.user.phone.substring(0, 5)} ${AppStore.user.phone.substring(5)}`;
-        navigateToPhase('otp');
+        // Move to OTP only if the server created a valid demo challenge.
         startOtpCountdownTimer();
         // Clear cells and focus first cell
         const cells = document.querySelectorAll('.otp-cell');
@@ -4999,14 +5007,16 @@
     }
 
     async function resendOtpCode() {
-      showAudioToast("SMS Sent", "New OTP code sent to +91 " + AppStore.user.phone);
-      startOtpCountdownTimer();
       try {
         await apiFetch('/auth/send-otp', {
           method: 'POST',
           body: JSON.stringify({ phone: AppStore.user.phone })
         });
-      } catch (e) {}
+        showAudioToast("Demo code renewed", "Use demo OTP 582941. No SMS was sent.");
+        startOtpCountdownTimer();
+      } catch (e) {
+        showAudioToast("Demo OTP unavailable", e.message || "Please retry.");
+      }
     }
 
     function onOtpCellInput(input, index) {
