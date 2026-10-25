@@ -3807,7 +3807,9 @@
         { id: 'item_6', name_hi: 'एमडीएच देगी मिर्च', name_en: 'MDH Deggi Mirch', cat: 'spices', weight: '100 g', weight_hi: '100 ग्राम', weight_en: '100 g', price: 62, mrp: 75, qty: 0, icon: 'local_fire_department', store_id: 'sharma_brothers' },
         { id: 'item_7', name_hi: 'मधुर शुद्ध चीनी', name_en: 'Madhur Pure Sugar', cat: 'kirana', weight: '1 kg', weight_hi: '1 किग्रा', weight_en: '1 kg', price: 48, mrp: 55, qty: 0, icon: 'cookie', store_id: 'sharma_brothers' },
         { id: 'item_d1', name_hi: 'अमूल ताज़ा फ्रेश दूध', name_en: 'Amul Taaza Fresh Milk', cat: 'dairy', weight: '500 ml', weight_hi: '500 मिली', weight_en: '500 ml', price: 28, mrp: 30, qty: 0, icon: 'water_drop', store_id: 'apna_dairy' },
-        { id: 'item_rice', name_hi: 'दावत रोज़ाना बासमती चावल', name_en: 'Daawat Rozana Basmati Rice', cat: 'rice', weight: '1 kg', weight_hi: '1 किग्रा', weight_en: '1 kg', price: 85, mrp: 105, qty: 0, icon: 'rice_bowl', store_id: 'sharma_brothers' }
+        { id: 'item_rice', name_hi: 'दावत रोज़ाना बासमती चावल', name_en: 'Daawat Rozana Basmati Rice', cat: 'rice', weight: '1 kg', weight_hi: '1 किग्रा', weight_en: '1 kg', price: 85, mrp: 105, qty: 0, icon: 'rice_bowl', store_id: 'sharma_brothers' },
+        { id: 'item_surf', name_hi: 'सर्फ एक्सेल डिटर्जेंट पाउडर', name_en: 'Surf Excel Detergent Powder', cat: 'cleaning', weight: '1 kg', weight_hi: '1 किग्रा', weight_en: '1 kg', price: 140, mrp: 160, qty: 0, icon: 'local_laundry_service', store_id: 'sharma_brothers' },
+        { id: 'item_biscuit', name_hi: 'पारले-जी ग्लूकोज बिस्कुट', name_en: 'Parle-G Gold Glucose Biscuits', cat: 'tea', weight: '250 g', weight_hi: '250 ग्राम', weight_en: '250 g', price: 25, mrp: 30, qty: 0, icon: 'cookie', store_id: 'sharma_brothers' }
       ],
       orderTimelineStage: 1, // 1 to 5
       orderId: null,
@@ -6295,6 +6297,8 @@
         salt: ['salt', 'namak', 'tata', 'sendha', 'नमक'],
         dal: ['dal', 'daal', 'arhar', 'toor', 'moong', 'chana', 'urad', 'masoor', 'pulses', 'दाल'],
         spices: ['spices', 'mirch', 'haldi', 'dhaniya', 'masala', 'deggi', 'मसाला', 'मिर्च'],
+        surf: ['surf', 'surf excel', 'detergent', 'rin', 'wheel', 'tide', 'powder', 'सर्फ', 'डिटर्जेंट'],
+        biscuit: ['biscuit', 'biscuits', 'parle', 'parle-g', 'marie', 'rusk', 'cookies', 'बिस्कुट', 'बिस्किट', 'पारले'],
         soap: ['soap', 'sabun', 'surf', 'detergent', 'rin', 'wheel', 'tide', 'dettol', 'साबुन'],
         paneer: ['paneer', 'fresh paneer', 'पनीर'],
         chaas: ['chaas', 'buttermilk', 'matka chaas', 'छाछ']
@@ -6323,7 +6327,7 @@
       parseIntent(rawTranscript) {
         if (!rawTranscript) return { intent: 'UNKNOWN', query: '' };
         const q = rawTranscript.trim();
-        const ql = q.toLowerCase();
+        const ql = q.toLowerCase().replace(/[.,!?;:]/g, '').trim();
 
         // 1. SHOW CART
         if (!/(?:add|daal|daalo|jod|jodo|shamil|put|insert|remove|delete|hatao|hata|nikal|increase|decrease|make|kar do|karo)\b/i.test(ql)) {
@@ -6356,20 +6360,32 @@
         }
 
         // 4. ADD TO CART
-        let addMatch = ql.match(/^(?:add|daalo|daal do|jodo|jod do|put)\s+(.+?)\s+(?:in|into|to)\s+(?:my\s+)?cart/i) ||
-                       ql.match(/^(.+?)\s+(?:cart\s+mein\s+(?:add|daal do|daalo|jod do|jodo|shamil karo|daal))/i) ||
+        let m_chahiye = ql.match(/^(?:mujhe|humko)?\s*(\d+|ek|do|teen|char|panch|chhe|one|two|three|four|five|six)\s*(kg|kilo|l|litre|packet|packets|g|gram|ग्राम|किलो|लीटर|पैकेट)?\s+(.+?)\s*(?:chahiye|daal do|daalo|add karo)$/i);
+        let addMatch = m_chahiye ||
+                       ql.match(/^(?:add|daalo|daal do|daal|jodo|jod do|put)\s+(.+?)(?:\s+(?:in|into|to)\s+(?:my\s+)?cart|\s+cart\s+mein)?$/i) ||
+                       ql.match(/^(.+?)\s+(?:cart\s+mein\s+(?:add|daal do|daalo|daal|jod do|jodo|shamil karo))/i) ||
+                       ql.match(/^(.+?)\s+(?:add\s*karo|daal\s*do|daalo|jod\s*do|jodo|shamil\s*karo)$/i) ||
                        ql.match(/^add\s+(.+)$/i);
         if (addMatch) {
-          let fullSpec = addMatch[1].trim();
-          let qtyMatch = fullSpec.match(/(\d+|ek|do|teen|char|panch|one|two|three|four|five)\s*(kg|kilo|l|litre|packet|packets|g|gram)?\s+(.+)/i);
           let qty = 1;
           let unit = '';
-          let target = fullSpec;
-          if (qtyMatch) {
-            let rawQty = qtyMatch[1].trim();
-            unit = qtyMatch[2] || '';
-            target = qtyMatch[3].trim();
+          let target = '';
+          if (m_chahiye) {
+            let rawQty = m_chahiye[1].trim();
+            unit = m_chahiye[2] || '';
+            target = m_chahiye[3].trim();
             qty = this.wordToNum[rawQty] || parseInt(rawQty, 10) || 1;
+          } else {
+            let fullSpec = addMatch[1].trim();
+            let qtyMatch = fullSpec.match(/(\d+|ek|do|teen|char|panch|chhe|one|two|three|four|five|six)\s*(kg|kilo|l|litre|packet|packets|g|gram|ग्राम|किलो|लीटर|पैकेट)?\s+(.+)/i);
+            if (qtyMatch) {
+              let rawQty = qtyMatch[1].trim();
+              unit = qtyMatch[2] || '';
+              target = qtyMatch[3].trim();
+              qty = this.wordToNum[rawQty] || parseInt(rawQty, 10) || 1;
+            } else {
+              target = fullSpec;
+            }
           }
           target = target.replace(/\b(?:to\s+my\s+cart|to\s+cart|in\s+cart|cart\s+mein|cart)\b/gi, '').trim();
           return { intent: 'ADD_TO_CART', target: target, quantity: qty, unit: unit, query: q };
@@ -6377,7 +6393,8 @@
 
         // 5. SEARCH / DISCOVERY
         let searchMatch = ql.match(/^(?:search\s+for|search|find|khojo|dhoondo|dikhao|show\s+me|show|look\s+for)\s+(.+)$/i) ||
-                          ql.match(/^(?:mujhe|humko)?\s*(.+?)\s*(?:chahiye|dikhao|dhoondo|khojo)$/i);
+                          ql.match(/^(?:mujhe|humko)?\s*(.+?)\s*(?:chahiye|dikhao|dhoondo|khojo)$/i) ||
+                          ql.match(/^(.+?)\s+(?:dikhao|dhoondo|khojo)$/i);
         if (searchMatch) {
           let target = searchMatch[1].replace(/^(?:mujhe|humko)\s+/i, '').trim();
           return { intent: 'SEARCH', target: target, query: q };
@@ -9348,9 +9365,15 @@
       await new Promise(resolve => setTimeout(resolve, 150));
 
       if (resultsHeading) {
-        resultsHeading.innerText = isHi 
-          ? `"${query}" के लिए ${matchedItems.length} उपलब्ध सामान:`
-          : `Found ${matchedItems.length} matching items for "${query}":`;
+        if (matchedItems.length > 1) {
+          resultsHeading.innerText = isHi 
+            ? `"${query}" के लिए ${matchedItems.length} विकल्प मिले हैं। कृपया अपनी पसंद चुनें:`
+            : `Found ${matchedItems.length} varieties for "${query}". Please choose your option:`;
+        } else {
+          resultsHeading.innerText = isHi 
+            ? `"${query}" के लिए ${matchedItems.length} उपलब्ध सामान:`
+            : `Found ${matchedItems.length} matching item for "${query}":`;
+        }
       }
 
       if (addAllBtn) {

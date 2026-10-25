@@ -176,6 +176,30 @@ DEFAULT_PRODUCTS = [
         "icon": "cookie",
         "in_stock": True
     },
+    {
+        "id": "item_surf",
+        "store_id": "sharma_brothers",
+        "name_en": "Surf Excel Detergent Powder",
+        "name_hi": "सर्फ एक्सेल डिटर्जेंट पाउडर",
+        "category": "spices",
+        "weight": "1 kg • जिद्दी दाग हटाए",
+        "price": 140.0,
+        "mrp": 160.0,
+        "icon": "local_laundry_service",
+        "in_stock": True
+    },
+    {
+        "id": "item_biscuit",
+        "store_id": "sharma_brothers",
+        "name_en": "Parle-G Gold Glucose Biscuits",
+        "name_hi": "पारले-जी ग्लूकोज बिस्कुट",
+        "category": "tea",
+        "weight": "250 g • असली चाय का साथी",
+        "price": 25.0,
+        "mrp": 30.0,
+        "icon": "cookie",
+        "in_stock": True
+    },
     # Kisan Seva Kendra Products
     {
         "id": "item_k1",

@@ -58,7 +58,9 @@ jobs:
       run: python test_vertical_scrolling.py
 
     - name: Run Customer AI Voice Shopping Tests
-      run: python test_voice_shopping_and_ai.py
+      run: |
+        python test_voice_shopping_and_ai.py
+        python test_hindi_first_and_voice_shopping.py
 
     - name: Upload Test Artifacts (Screenshots & Reports)
       if: always()

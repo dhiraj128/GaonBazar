@@ -96,6 +96,7 @@ jobs:
       - name: Run Customer AI Voice Shopping & Assistance Suite
         run: |
           python test_voice_shopping_and_ai.py
+          python test_hindi_first_and_voice_shopping.py
 
       - name: Upload Visual QA Screenshots
         if: always()
