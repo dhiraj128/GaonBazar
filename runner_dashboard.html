@@ -219,6 +219,39 @@
       overscroll-behavior-y: contain;
       touch-action: pan-y;
     }
+
+    /* Mobile mission-first shell: eliminate compressed desktop dashboard density. */
+    @media (max-width: 640px) {
+      #runner-header { padding: 7px 12px !important; }
+      #runner-header > div { gap: 9px !important; }
+      #runner-header #runner-badge-code,
+      #runner-header #runner-hub-display { display: none !important; }
+      #runner-header #runner-name-display { max-width: min(40vw, 165px); min-width: 0; font-size: 13px; line-height: 22px; min-height: 22px; }
+      #runner-header #shift-toggle-btn,
+      #runner-header #btn-runner-header-settings { min-width: 44px !important; min-height: 44px !important; padding: 0 8px !important; border-radius: 12px !important; }
+      main { padding: 12px !important; padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px)) !important; gap: 12px !important; }
+      #runner-main-content { gap: 11px !important; }
+      #runner-kpi-board { gap: 8px !important; }
+      #runner-kpi-board > div { min-width: 0; min-height: 78px; padding: 11px !important; border-radius: 17px !important; }
+      #runner-kpi-board > div > .material-symbols-outlined { display: none !important; }
+      #runner-kpi-board [id^="kpi-"] { font-size: 22px !important; line-height: 1.1 !important; }
+      #runner-main-content[data-active-tab="missions"] #runner-kpi-board > :nth-child(n+3) { display: none !important; }
+      #runner-main-content[data-active-tab="detail"] #runner-kpi-board,
+      #runner-main-content[data-active-tab="settings"] #runner-kpi-board { display: none !important; }
+      #tab-detail, #tab-missions, #tab-ledger, #tab-settings { gap: 10px !important; }
+      #tab-detail > .rounded-3xl, #tab-missions .rounded-3xl { border-radius: 18px !important; padding: 13px !important; }
+      #tab-detail #runner-pickup-heading { min-width: 0; }
+      #tab-detail #detail-store-name, #tab-detail #detail-customer-name { overflow-wrap: anywhere; }
+      #tab-detail #btn-call-store { min-height: 44px; justify-content: center; width: 100%; }
+      #tab-detail #btn-call-customer, #tab-detail #btn-navigate-map { min-height: 46px; line-height: 1.25; }
+      #tab-detail #runner-landmark-box { border-radius: 14px; padding: 11px !important; }
+      #tab-detail #runner-landmark-text { font-size: 14px !important; line-height: 1.4; }
+      #runner-bottom-nav { padding-top: 4px !important; padding-bottom: max(5px, env(safe-area-inset-bottom, 0px)) !important; }
+      #runner-bottom-nav button { min-height: 48px !important; border-radius: 14px !important; }
+      #missions-container > div { padding: 12px !important; gap: 10px !important; border-radius: 18px !important; }
+      #missions-container > div > div:first-child { flex-wrap: wrap; gap: 6px; min-width: 0; }
+      #runner-preferences-card { border-radius: 18px !important; }
+    }
   </style>
 </head>
 
@@ -347,11 +380,7 @@
           <span id="shift-status-mobile" class="sm:hidden text-xs font-black" data-i18n="shift_status_mobile">चालू</span>
         </button>
 
-        <!-- Language Switcher Pill -->
-        <button id="lang-toggle-btn" onclick="toggleLanguage()" aria-label="Toggle Language" class="px-2 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center justify-center gap-1 min-h-[44px] min-w-[40px] active:scale-95 shrink-0 cursor-pointer" title="Language">
-          <span class="material-symbols-outlined text-[17px] shrink-0">translate</span>
-          <span id="current-lang-text">English</span>
-        </button>
+
 
         <!-- Settings entry; logout lives inside Settings, not the cramped header -->
         <button id="btn-runner-header-settings" type="button" onclick="switchTab('settings')" title="Settings" aria-label="Settings" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center justify-center active:scale-95 shrink-0">
@@ -363,7 +392,7 @@
   </header>
 
   <!-- Global Audio / Notification Banner -->
-  <div id="runner-toast" class="hidden fixed top-28 sm:top-24 left-1/2 transform -translate-x-1/2 z-50 bg-slate-950 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-amber-500/50 max-w-sm w-11/12 animate-bounce">
+  <div id="runner-toast" role="status" aria-live="polite" class="hidden relative shrink-0 z-20 bg-slate-950 text-white px-3 py-2.5 rounded-2xl shadow-md flex items-center gap-3 border border-amber-500/50 max-w-lg w-[calc(100%-24px)] mx-auto my-1">
     <span class="material-symbols-outlined text-amber-400 text-[24px]" id="toast-icon">notifications_active</span>
     <div class="flex flex-col min-w-0 flex-1">
       <span id="toast-title" class="text-xs font-black text-amber-300" data-i18n="toast_new_mission_title">नया डिलीवरी मिशन!</span>
@@ -418,12 +447,12 @@
     </div>
 
     <!-- Active Runner Dashboard Content (Hidden if pending_approval) -->
-    <div id="runner-main-content" class="flex flex-col gap-3.5">
+    <div id="runner-main-content" data-active-tab="missions" class="flex flex-col gap-3.5">
 
     <!-- ======================================================================= -->
     <!-- 2. HIGH-LEVEL KPI SUMMARY BAR (Decluttered & Outdoor-Readable)          -->
     <!-- ======================================================================= -->
-    <section class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <section id="runner-kpi-board" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
       
       <!-- KPI 1: Active Missions Queue -->
       <div onclick="switchTab('missions')" class="bg-slate-800 rounded-3xl p-3.5 border border-amber-500/30 flex items-center justify-between cursor-pointer hover:border-amber-400 hover:bg-slate-750 transition-all active:scale-98">
@@ -538,7 +567,7 @@
       <!-- ===================================================================== -->
       <div class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-md flex flex-col gap-3.5">
         
-        <div class="flex items-start justify-between gap-2 border-b border-slate-700/80 pb-3">
+        <div id="runner-pickup-heading" class="flex flex-col gap-2.5 border-b border-slate-700/80 pb-3">
           <div class="flex items-center gap-2.5">
             <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0">
               <span class="material-symbols-outlined text-[24px]">store</span>
@@ -550,7 +579,7 @@
             </div>
           </div>
 
-          <!-- 1-Tap Call Dukandaar CTA -->
+          <!-- One clear store-call action below the shop identity -->
           <a id="btn-call-store" href="tel:9876543210" class="min-h-[44px] px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black flex items-center gap-1.5 shadow-sm active:scale-95 transition-all shrink-0 cursor-pointer">
             <span class="material-symbols-outlined text-[18px]">call</span>
             <span data-i18n="call_dukandaar_btn">दुकानदार को कॉल करें</span>
@@ -594,18 +623,19 @@
           </div>
 
           <!-- 1-Tap Call & Map Navigation CTAs -->
-          <div class="grid grid-cols-1 min-[355px]:grid-cols-2 gap-2 w-full min-w-0">
+          <div class="grid grid-cols-2 gap-2 w-full min-w-0">
             <a id="btn-call-customer" href="#" class="min-w-0 w-full min-h-[44px] px-2 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-[11px] sm:text-xs font-black flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-all cursor-pointer text-center">
               <span class="material-symbols-outlined text-[18px]">call</span>
               <span data-i18n="call_customer_btn">कॉल करें</span>
             </a>
-            <a id="btn-navigate-map" href="#" onclick="openRunnerMapNavigation(event)" target="_blank" rel="noopener noreferrer" class="min-w-0 w-full min-h-[44px] px-2 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] sm:text-xs font-black flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-all cursor-pointer text-center" title="Navigate via Google Maps">
+            <a id="btn-navigate-map" href="#" target="_blank" rel="noopener noreferrer" class="min-w-0 w-full min-h-[44px] px-2 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] sm:text-xs font-black flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-all cursor-pointer text-center" title="Navigate via Google Maps">
               <span class="material-symbols-outlined text-[18px]">navigation</span>
-              <span class="min-w-0 text-center leading-tight break-words" data-i18n="navigate_map_btn">Navigate via Map</span>
+              <span class="min-w-0 text-center leading-tight" data-i18n="navigate_map_btn">Directions</span>
             </a>
           </div>
         </div>
 
+        <p id="runner-navigation-confidence" class="text-[11px] text-slate-300 leading-snug hidden" role="status"></p>
         <!-- OUTDOOR HIGH-CONTRAST RURAL LANDMARK SPOTLIGHT BOX -->
         <div id="runner-landmark-box" class="bg-amber-100 border-2 border-amber-500 rounded-2xl p-3.5 sm:p-4 text-slate-950 shadow-md flex items-start gap-3">
           <div class="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 mt-0.5">
@@ -767,6 +797,17 @@
     <!-- 5.5 TAB 4: RUNNER BANK & UPI SETTINGS (Payout Onboarding)               -->
     <!-- ======================================================================= -->
     <section id="tab-settings" class="hidden flex-col gap-3.5">
+      <div id="runner-preferences-card" class="bg-slate-800 border border-slate-700 rounded-2xl p-4 flex flex-col gap-3">
+        <div class="flex items-center justify-between gap-3">
+          <span class="text-xs font-bold text-slate-200" data-i18n="lang_label">App language</span>
+        <button id="lang-toggle-btn" onclick="toggleLanguage()" aria-label="Toggle Language" class="px-2 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center justify-center gap-1 min-h-[44px] min-w-[40px] active:scale-95 shrink-0 cursor-pointer" title="Language">
+          <span class="material-symbols-outlined text-[17px] shrink-0">translate</span>
+          <span id="current-lang-text">English</span>
+        </button>
+        </div>
+        <div class="text-xs font-medium text-slate-400" data-i18n="runner_theme_sub">Display and device appearance options are below.</div>
+      </div>
+
       <button id="btn-runner-logout" type="button" onclick="handleRunnerLogout()" class="w-full min-h-[48px] rounded-2xl border border-red-400/40 text-red-400 font-bold flex items-center justify-center gap-2">
         <span class="material-symbols-outlined">logout</span><span data-i18n="logout_label">Log out</span>
       </button>
@@ -898,7 +939,7 @@
     <!-- Tab 2: Mission Detail & Landmark -->
     <button id="nav-btn-detail" onclick="switchTab('detail')" class="flex-1 min-w-0 max-w-[90px] flex flex-col items-center justify-center py-1.5 px-2 rounded-2xl text-slate-400 font-bold transition-all min-h-[48px] active:scale-95 cursor-pointer">
       <span class="material-symbols-outlined text-[24px]">explore</span>
-      <span class="text-[10px] tracking-wide truncate max-w-full font-sans mt-0.5" data-i18n="tab_detail">लैंडमार्क</span>
+      <span class="text-[10px] tracking-wide truncate max-w-full font-sans mt-0.5" data-i18n="tab_detail">डिलीवरी</span>
     </button>
 
     <!-- Tab 3: Shift Earnings & Ledger -->
@@ -910,7 +951,7 @@
     <!-- Tab 4: Bank & UPI Settings -->
     <button id="nav-btn-settings" onclick="switchTab('settings')" class="flex-1 min-w-0 max-w-[90px] flex flex-col items-center justify-center py-1.5 px-2 rounded-2xl text-slate-400 font-bold transition-all min-h-[48px] active:scale-95 cursor-pointer">
       <span class="material-symbols-outlined text-[24px]">account_balance</span>
-      <span class="text-[10px] tracking-wide truncate max-w-full font-sans mt-0.5" data-i18n="tab_settings">बैंक खाता</span>
+      <span class="text-[10px] tracking-wide truncate max-w-full font-sans mt-0.5" data-i18n="tab_settings">सेटिंग्स</span>
     </button>
 
   </nav>
@@ -1233,9 +1274,9 @@
         btn_deposit_slip: "हब जमा रसीद",
         recent_deliveries_title: "आज की पूरी हुई डिलीवरी सूची",
         tab_missions: "मिशन",
-        tab_detail: "लैंडमार्क",
+        tab_detail: "डिलीवरी",
         tab_ledger: "बहीखाता",
-        tab_settings: "बैंक खाता",
+        tab_settings: "सेटिंग्स",
         runner_theme_title: "थीम / रंग रूप",
         runner_theme_sub: "हल्का, गहरा या डिवाइस के अनुसार",
         theme_opt_light: "हल्का (Light)",
@@ -1356,7 +1397,7 @@
         btn_cancel: "रद्द करें",
         btn_submit_reg: "सत्यापन हेतु भेजें",
         page_title_runner: "गाँव मित्र • डिलीवरी पार्टनर डैशबोर्ड",
-        navigate_map_btn: "Navigate via Map",
+        navigate_map_btn: "Directions",
         lang_name: "हिंदी"
       },
       en: {
@@ -1391,9 +1432,9 @@
         btn_deposit_slip: "Hub Deposit Slip",
         recent_deliveries_title: "Today's Completed Deliveries",
         tab_missions: "Missions",
-        tab_detail: "Landmark",
+        tab_detail: "Delivery",
         tab_ledger: "Ledger",
-        tab_settings: "Bank & UPI",
+        tab_settings: "Settings",
         runner_theme_title: "Theme & Display",
         runner_theme_sub: "Light, Dark, or System",
         theme_opt_light: "Light",
@@ -1514,7 +1555,7 @@
         btn_cancel: "Cancel",
         btn_submit_reg: "Submit for Verification",
         page_title_runner: "GaonMitra • Delivery Partner Dashboard",
-        navigate_map_btn: "Navigate via Map",
+        navigate_map_btn: "Directions",
         lang_name: "English"
       }
     };
@@ -1960,6 +2001,11 @@
       const savedLang = localStorage.getItem('gaonbazar_lang');
       if (savedLang === 'hi' || savedLang === 'en') {
         RunnerStore.lang = savedLang;
+      } else {
+        // Persist the actual initial language before the user changes it.
+        // Without this, a first-time user sees Hindi but has no saved
+        // preference; switching to English and back cannot restore storage.
+        localStorage.setItem('gaonbazar_lang', RunnerStore.lang);
       }
       applyRunnerLanguageUI();
       await checkRunnerSession();
@@ -2296,39 +2342,54 @@
       if (elEtaText) elEtaText.innerText = `${etaText} (${dist} km)`;
       if (elOrderId) elOrderId.innerText = m.id;
       if (elStoreName) elStoreName.innerText = m.store_name;
-      if (elBtnCallStore) elBtnCallStore.href = `tel:${m.store_phone || '9876543210'}`;
+      if (elBtnCallStore) {
+        const phone = String(m.store_phone || '').replace(/[^0-9+]/g, '');
+        if (phone) elBtnCallStore.href = `tel:${phone}`;
+        else elBtnCallStore.removeAttribute('href');
+        elBtnCallStore.setAttribute('aria-disabled', phone ? 'false' : 'true');
+      }
 
       if (elCustName) elCustName.innerText = m.user_name;
       if (elCustVillage) elCustVillage.innerText = isHi ? `ग्राम पंचायत: ${m.village}` : `Village: ${m.village}`;
-      if (elBtnCallCust) { const phone = String(m.user_phone || '').replace(/[^0-9+]/g, ''); elBtnCallCust.href = phone ? `tel:${phone}` : '#'; elBtnCallCust.setAttribute('aria-disabled', phone ? 'false' : 'true'); }
+      if (elBtnCallCust) {
+        const phone = String(m.user_phone || '').replace(/[^0-9+]/g, '');
+        if (phone) elBtnCallCust.href = `tel:${phone}`;
+        else elBtnCallCust.removeAttribute('href');
+        elBtnCallCust.setAttribute('aria-disabled', phone ? 'false' : 'true');
+      }
       if (elLandmarkText) elLandmarkText.innerText = m.landmark;
 
       // Maps Directions links require an actual order destination, never sample coordinates.
       const elBtnNavMap = document.getElementById('btn-navigate-map');
       const elCoordsContainer = document.getElementById('runner-coords-container');
       const elCoordsText = document.getElementById('runner-coords-text');
-      const destLat = Number(m.customer_lat ?? m.lat);
-      const destLng = Number(m.customer_lng ?? m.lng);
-      const hasCoords = Number.isFinite(destLat) && Number.isFinite(destLng) && Math.abs(destLat) <= 90 && Math.abs(destLng) <= 180 && !(destLat === 0 && destLng === 0);
+      const coordsProvided = m.customer_lat != null && m.customer_lng != null;
+      const destLat = coordsProvided ? Number(m.customer_lat) : NaN;
+      const destLng = coordsProvided ? Number(m.customer_lng) : NaN;
+      const hasCoords = coordsProvided && Number.isFinite(destLat) && Number.isFinite(destLng) && Math.abs(destLat) <= 90 && Math.abs(destLng) <= 180 && !(destLat === 0 && destLng === 0);
       const addressText = [m.landmark, m.village].filter(Boolean).join(', ').trim();
       const destination = hasCoords ? `${destLat},${destLng}` : addressText;
       const navUrl = destination ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}&travelmode=driving` : '';
       if (elBtnNavMap) {
-        elBtnNavMap.href = navUrl || '#';
+        if (navUrl) elBtnNavMap.href = navUrl;
+        else elBtnNavMap.removeAttribute('href');
         elBtnNavMap.setAttribute('aria-disabled', navUrl ? 'false' : 'true');
-        elBtnNavMap.onclick = function(event) {
-          if (!navUrl) { event.preventDefault(); showToast(isHi ? 'ग्राहक का पता उपलब्ध नहीं है' : 'Customer address unavailable'); }
-        };
+        elBtnNavMap.onclick = navUrl ? null : (event) => event.preventDefault();
+      }
+      const confidence = document.getElementById('runner-navigation-confidence');
+      if (confidence) {
+        confidence.classList.remove('hidden');
+        confidence.textContent = hasCoords
+          ? (isHi ? 'ग्राहक के GPS पिन तक रास्ता। डोरस्टेप पर पुष्टि करें।' : 'Directions to customer GPS pin. Confirm the doorstep.')
+          : (addressText
+            ? (isHi ? 'सिर्फ गाँव और पहचान स्थल है। सही घर के लिए ग्राहक को कॉल करें।' : 'Village/landmark only. Call the customer to confirm the doorstep.')
+            : (isHi ? 'ग्राहक का पता उपलब्ध नहीं है।' : 'Customer destination unavailable.'));
       }
       if (elCoordsContainer && elCoordsText) {
-        if (m.customer_lat || m.lat) {
-          const latStr = typeof destLat === 'number' ? destLat.toFixed(5) : destLat;
-          const lngStr = typeof destLng === 'number' ? destLng.toFixed(5) : destLng;
-          elCoordsText.innerText = `GPS: ${latStr}, ${lngStr}`;
+        if (hasCoords) {
+          elCoordsText.innerText = `GPS: ${destLat.toFixed(5)}, ${destLng.toFixed(5)}`;
           elCoordsContainer.classList.remove('hidden');
-        } else {
-          elCoordsContainer.classList.add('hidden');
-        }
+        } else elCoordsContainer.classList.add('hidden');
       }
 
       if (elTotalAmt) elTotalAmt.innerText = `₹${m.total_amount}.00`;
@@ -2626,6 +2687,7 @@
       const mainScroll = document.querySelector('main');
       if (mainScroll) mainScroll.scrollTop = 0;
       RunnerStore.activeTab = tabId;
+      document.getElementById('runner-main-content')?.setAttribute('data-active-tab', tabId);
       ['missions', 'detail', 'ledger', 'settings'].forEach(t => {
         const sec = document.getElementById(`tab-${t}`);
         const btn = document.getElementById(`nav-btn-${t}`);
@@ -2797,9 +2859,10 @@
     // --- Runner map navigation is driven by the selected mission, without dummy coordinates.
     function openRunnerMapNavigation(event) {
       const m = RunnerStore.selectedMission;
-      const lat = Number(m?.customer_lat ?? m?.lat);
-      const lng = Number(m?.customer_lng ?? m?.lng);
-      const coordsValid = m && Number.isFinite(lat) && Number.isFinite(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180 && !(lat === 0 && lng === 0);
+      const coordsProvided = m && m.customer_lat != null && m.customer_lng != null;
+      const lat = coordsProvided ? Number(m.customer_lat) : NaN;
+      const lng = coordsProvided ? Number(m.customer_lng) : NaN;
+      const coordsValid = coordsProvided && Number.isFinite(lat) && Number.isFinite(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180 && !(lat === 0 && lng === 0);
       const address = m ? [m.landmark, m.village].filter(Boolean).join(', ').trim() : '';
       const destination = coordsValid ? `${lat},${lng}` : address;
       if (event) { event.preventDefault(); event.stopPropagation(); }
