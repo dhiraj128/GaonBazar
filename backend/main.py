@@ -146,39 +146,190 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Password-protect the entire preview when GAONBAZAR_PREVIEW_MODE=1
-from fastapi.responses import PlainTextResponse
+# User-Friendly & Secure Cookie-Based Preview Session Gate
+# (Completely eliminates repeated browser HTTP Basic Auth popups and polling interruptions)
+from fastapi.responses import PlainTextResponse, HTMLResponse, JSONResponse, RedirectResponse
 import base64 as _preview_b64
+import hashlib as _preview_hashlib
 import hmac as _preview_hmac
+
+def _compute_preview_token(password: str) -> str:
+    secret = os.getenv("JWT_SECRET_KEY", "gaonbazar_preview_secret_salt_2026")
+    return _preview_hmac.new(secret.encode(), password.encode(), _preview_hashlib.sha256).hexdigest()
+
+def _render_preview_unlock_html(error_msg: str = "", redirect_to: str = "/") -> str:
+    err_html = f'<div class="mb-4 p-3 bg-red-500/20 border border-red-500/40 text-red-200 text-xs rounded-xl font-bold flex items-center gap-2"><span>⚠️</span><span>{error_msg}</span></div>' if error_msg else ""
+    return f'''<!DOCTYPE html>
+<html lang="hi" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>गांव बाज़ार प्रीव्यू अनलॉक | GaonBazaar Development Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex items-center justify-center p-4">
+  <div class="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col gap-5">
+    
+    <!-- Branding Header -->
+    <div class="flex flex-col items-center text-center gap-2">
+      <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shadow-inner">
+        <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+      </div>
+      <h1 class="text-xl font-black text-white tracking-tight">गांव बाज़ार प्रीव्यू</h1>
+      <p class="text-xs text-slate-400 font-medium">डेवलपमेंट व मोबाइल डिज़ाइन प्रीव्यू</p>
+    </div>
+
+    {err_html}
+
+    <!-- Unlock Form -->
+    <form method="POST" action="/api/preview/unlock" class="flex flex-col gap-4">
+      <input type="hidden" name="redirect_to" value="{redirect_to}">
+      <div>
+        <label for="preview_password" class="block text-xs font-bold text-slate-300 mb-1.5">प्रीव्यू पासवर्ड (Access Key)</label>
+        <input 
+          type="password" 
+          id="preview_password" 
+          name="password" 
+          required 
+          autofocus 
+          placeholder="पासवर्ड दर्ज करें..." 
+          class="w-full px-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all"
+        />
+      </div>
+
+      <button 
+        type="submit" 
+        class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm rounded-xl active:scale-98 transition-all shadow-lg shadow-emerald-900/30 flex items-center justify-center gap-2 cursor-pointer"
+      >
+        <span>प्रीव्यू खोलें (Unlock Preview)</span>
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    </form>
+
+    <div class="pt-2 border-t border-slate-800/60 text-center">
+      <p class="text-[10px] text-slate-500 font-medium">एक बार पासवर्ड दर्ज करने पर 7 दिनों तक बार-बार लॉगिन नहीं करना पड़ेगा।</p>
+    </div>
+
+  </div>
+</body>
+</html>'''
 
 @app.middleware("http")
 async def preview_access_guard(request: Request, call_next):
     if os.getenv("GAONBAZAR_PREVIEW_MODE") != "1":
         return await call_next(request)
-    # Allow diagnostic health and version endpoints through without basic auth
-    if request.url.path in ("/api/version", "/version", "/health", "/favicon.ico"):
+
+    # Diagnostic, public static, and unlock endpoints
+    public_paths = (
+        "/api/version", "/version", "/health", "/favicon.ico",
+        "/api/preview/unlock", "/preview-unlock"
+    )
+    if request.url.path in public_paths:
         return await call_next(request)
+
     expected = os.getenv("GAONBAZAR_PREVIEW_PASSWORD", "")
     if not expected:
-        return PlainTextResponse("Preview disabled: missing access password", status_code=503)
+        return PlainTextResponse("Preview disabled: missing GAONBAZAR_PREVIEW_PASSWORD", status_code=503)
+
+    valid_token = _compute_preview_token(expected)
+
+    # 1. Cookie-based session (Once authenticated, all HTML and background polling requests pass)
+    cookie_token = request.cookies.get("gb_preview_session")
+    if cookie_token and _preview_hmac.compare_digest(cookie_token, valid_token):
+        response = await call_next(request)
+        response.headers["Cache-Control"] = "no-store"
+        return response
+
+    # 2. Query Parameter direct unlock (?preview_key=...)
+    query_key = request.query_params.get("preview_key")
+    if query_key and _preview_hmac.compare_digest(query_key, expected):
+        clean_url = str(request.url.remove_query_params("preview_key"))
+        resp = RedirectResponse(url=clean_url, status_code=303)
+        resp.set_cookie(
+            key="gb_preview_session",
+            value=valid_token,
+            max_age=604800,
+            path="/",
+            httponly=False,
+            samesite="lax",
+            secure=False
+        )
+        return resp
+
+    # 3. HTTP Header token / basic auth (backward compatibility without popup)
     auth = request.headers.get("Authorization", "")
-    valid = False
     if auth.startswith("Basic "):
         try:
             supplied = _preview_b64.b64decode(auth[6:], validate=True).decode("utf-8")
             username, password = supplied.split(":", 1)
-            valid = _preview_hmac.compare_digest(username, "preview") and _preview_hmac.compare_digest(password, expected)
+            if _preview_hmac.compare_digest(username, "preview") and _preview_hmac.compare_digest(password, expected):
+                response = await call_next(request)
+                response.headers["Cache-Control"] = "no-store"
+                return response
         except (ValueError, UnicodeError):
-            valid = False
-    if not valid:
-        return PlainTextResponse(
-            "Protected GaonBazar development preview",
-            status_code=401,
-            headers={"WWW-Authenticate": 'Basic realm="GaonBazar Preview"', "Cache-Control": "no-store"}
+            pass
+    elif auth.startswith("Bearer "):
+        token = auth[7:].strip()
+        if _preview_hmac.compare_digest(token, valid_token) or _preview_hmac.compare_digest(token, expected):
+            response = await call_next(request)
+            response.headers["Cache-Control"] = "no-store"
+            return response
+
+    # 4. Unauthenticated navigation requests: Show friendly HTML unlock form
+    accepts_html = "text/html" in request.headers.get("accept", "")
+    is_navigate = request.headers.get("sec-fetch-mode") == "navigate" or (request.method == "GET" and accepts_html)
+
+    if is_navigate and not request.url.path.startswith("/api/"):
+        return HTMLResponse(_render_preview_unlock_html(redirect_to=str(request.url.path)), status_code=200)
+
+    # 5. Unauthenticated background API/fetch polling: Return clean JSON 401
+    # STRICT RULE: NEVER return WWW-Authenticate: Basic header to prevent browser modal popups!
+    return JSONResponse(
+        status_code=401,
+        content={"error": "preview_auth_required", "detail": "GaonBazaar Preview session required."}
+    )
+
+
+@app.post("/api/preview/unlock")
+async def preview_unlock_handler(request: Request):
+    expected = os.getenv("GAONBAZAR_PREVIEW_PASSWORD", "")
+    form_data = await request.form()
+    password = form_data.get("password", "")
+    redirect_to = form_data.get("redirect_to", "/") or "/"
+    if not redirect_to.startswith("/"):
+        redirect_to = "/"
+
+    if expected and _preview_hmac.compare_digest(password, expected):
+        token = _compute_preview_token(expected)
+        resp = RedirectResponse(url=redirect_to, status_code=303)
+        resp.set_cookie(
+            key="gb_preview_session",
+            value=token,
+            max_age=604800,  # 7 days
+            path="/",
+            httponly=False,
+            samesite="lax",
+            secure=False
         )
-    response = await call_next(request)
-    response.headers["Cache-Control"] = "no-store"
-    return response
+        return resp
+
+    return HTMLResponse(
+        _render_preview_unlock_html(error_msg="गलत पासवर्ड। कृपया दोबारा प्रयास करें। (Invalid Preview Password)", redirect_to=redirect_to),
+        status_code=401
+    )
+
+
+@app.get("/preview-unlock", response_class=HTMLResponse)
+def serve_preview_unlock_page(redirect_to: str = "/"):
+    return HTMLResponse(_render_preview_unlock_html(redirect_to=redirect_to))
 
 
 # 1. Bank-Grade Security Headers (Helmet-style)
