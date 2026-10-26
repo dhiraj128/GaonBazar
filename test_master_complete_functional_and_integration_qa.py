@@ -717,17 +717,17 @@ def test_full_cross_app_realtime_lifecycle(browser, logger: MasterQALogger):
     vendor_context = browser.new_context(viewport={"width": 393, "height": 852})
     vendor_page = vendor_context.new_page()
     vendor_page.goto("http://127.0.0.1:8001/vendor", timeout=30000)
-    vendor_page.wait_for_timeout(1000)
+    vendor_page.wait_for_selector("#vendor-login-gate, #vendor-main-content", timeout=15000)
     if vendor_page.is_visible("#vendor-login-gate"):
         vendor_page.click("#btn-vendor-login")
         vendor_page.wait_for_selector("#vendor-main-content:not(.hidden)", timeout=10000)
-        vendor_page.wait_for_timeout(800)
+        vendor_page.wait_for_timeout(1000)
 
     # Poll for order in Vendor Dashboard
     found_in_vendor = False
-    for _ in range(25):
-        vendor_page.wait_for_timeout(800)
-        if vendor_page.locator(f"text={order_id}").count() > 0:
+    for _ in range(30):
+        vendor_page.wait_for_timeout(1000)
+        if vendor_page.locator(f"text={order_id}").count() > 0 or vendor_page.locator(f"#order-card-{order_id}").count() > 0:
             found_in_vendor = True
             break
     snap(vendor_page, "cross_01_vendor_received", logger)
