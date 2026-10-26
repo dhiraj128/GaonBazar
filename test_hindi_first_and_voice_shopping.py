@@ -85,9 +85,9 @@ def main():
         page.wait_for_timeout(400)
         runner.check("Customer Dashboard active", page.is_visible("#view-p2-dashboard"))
 
-        # Verify Language Toggle in Customer Header (#header-lang-btn)
-        lang_btn = page.locator("#header-lang-btn")
-        runner.check("Language Toggle Button exists in Customer Header", lang_btn.is_visible())
+        # Verify Language Toggle in Navigation Drawer (#drawer-lang-btn)
+        drawer_lang_btn = page.locator("#drawer-lang-btn")
+        runner.check("Language Toggle Button exists in Navigation Drawer", drawer_lang_btn.count() > 0)
         
         # Switch to English
         page.evaluate("toggleLanguage()")

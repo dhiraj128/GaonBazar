@@ -445,10 +445,31 @@
       <!-- Drawer Nav Items List -->
       <nav class="flex-1 overflow-y-auto p-3 space-y-1">
         
-        <!-- Profile & Saved Addresses -->
-        <button id="drawer-account-btn" onclick="navigateToPhase('landmark'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F6FBFD] hover:bg-slate-100 dark:hover:bg-[#2B4858] active:bg-slate-200 text-xs font-bold transition-colors cursor-pointer">
+        <!-- My Profile -->
+        <button id="drawer-account-btn" onclick="navigateToPhase('profile'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F6FBFD] hover:bg-slate-100 dark:hover:bg-[#2B4858] active:bg-slate-200 text-xs font-bold transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[#FF981A] text-[20px]">person</span>
+          <span class="flex-1 text-left" data-i18n="drawer_profile">My Profile & Account</span>
+          <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
+        </button>
+
+        <!-- My Cart -->
+        <button id="drawer-cart-btn" onclick="navigateToPhase('cart'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F6FBFD] hover:bg-slate-100 dark:hover:bg-[#2B4858] active:bg-slate-200 text-xs font-bold transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[#16B86E] text-[20px]">shopping_cart</span>
+          <span class="flex-1 text-left" data-i18n="drawer_cart">My Cart</span>
+          <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
+        </button>
+
+        <!-- My Orders -->
+        <button id="drawer-orders-btn" onclick="navigateToPhase('tracking'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F6FBFD] hover:bg-slate-100 dark:hover:bg-[#2B4858] active:bg-slate-200 text-xs font-bold transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-blue-500 text-[20px]">receipt_long</span>
+          <span class="flex-1 text-left" data-i18n="drawer_orders">My Orders</span>
+          <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
+        </button>
+
+        <!-- Saved Addresses -->
+        <button id="drawer-addresses-btn" onclick="navigateToPhase('landmark'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F6FBFD] hover:bg-slate-100 dark:hover:bg-[#2B4858] active:bg-slate-200 text-xs font-bold transition-colors cursor-pointer">
           <span class="material-symbols-outlined text-[#FF981A] text-[20px]">location_on</span>
-          <span class="flex-1 text-left" data-i18n="drawer_addresses">Profile & Saved Addresses</span>
+          <span class="flex-1 text-left" data-i18n="drawer_addresses">Saved Addresses</span>
           <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
         </button>
 
@@ -492,7 +513,7 @@
         </button>
 
         <!-- Language Switcher Row -->
-        <button onclick="window.toggleGlobalLanguage()" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center justify-between text-slate-700 dark:text-[#F6FBFD] hover:bg-slate-100 dark:hover:bg-[#2B4858] text-xs font-bold transition-colors cursor-pointer">
+        <button id="drawer-lang-btn" onclick="window.toggleGlobalLanguage()" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center justify-between text-slate-700 dark:text-[#F6FBFD] hover:bg-slate-100 dark:hover:bg-[#2B4858] text-xs font-bold transition-colors cursor-pointer">
           <div class="flex items-center gap-3">
             <span class="material-symbols-outlined text-blue-500 text-[20px]">language</span>
             <span data-i18n="drawer_lang">Language</span>
@@ -1017,38 +1038,38 @@
           </div>
         </div>
 
-        <!-- Category Filter Chips (Inside Home) -->
-        <div class="w-full overflow-x-auto no-scrollbar py-0.5">
-          <div class="flex items-center gap-2 min-w-max">
-            <button type="button" onclick="filterStoresByCategory('all')" id="cat-chip-all" class="cat-chip min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#16B86E] text-white shadow-xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer">
+        <!-- Category Filter Chips (Inside Home) Matching Reference 01 -->
+        <div class="w-full overflow-x-auto no-scrollbar py-2.5 my-1.5 px-0.5">
+          <div class="flex items-center gap-2.5 min-w-max pb-1">
+            <button type="button" onclick="filterStoresByCategory('all')" id="cat-chip-all" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-black bg-[#16B86E] text-white shadow-xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer">
               <span id="cat-lbl-all" data-i18n="cat_all">All</span>
             </button>
-            <button type="button" onclick="filterStoresByCategory('kirana')" id="cat-chip-kirana" class="cat-chip min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-700 dark:text-[#C9DCE5] border border-slate-200 dark:border-[#476476] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
+            <button type="button" onclick="filterStoresByCategory('kirana')" id="cat-chip-kirana" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-800 dark:text-[#F6FBFD] border border-slate-200 dark:border-[#476476] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
               <span id="cat-lbl-kirana" data-i18n="cat_kirana">Grocery</span>
             </button>
-            <button type="button" onclick="filterStoresByCategory('dairy')" id="cat-chip-dairy" class="cat-chip min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-700 dark:text-[#C9DCE5] border border-slate-200 dark:border-[#476476] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
+            <button type="button" onclick="filterStoresByCategory('dairy')" id="cat-chip-dairy" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-800 dark:text-[#F6FBFD] border border-slate-200 dark:border-[#476476] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
               <span id="cat-lbl-dairy" data-i18n="cat_dairy">Dairy</span>
             </button>
-            <button type="button" onclick="filterStoresByCategory('sabzi')" id="cat-chip-sabzi" class="cat-chip min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-700 dark:text-[#C9DCE5] border border-slate-200 dark:border-[#476476] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
+            <button type="button" onclick="filterStoresByCategory('sabzi')" id="cat-chip-sabzi" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-800 dark:text-[#F6FBFD] border border-slate-200 dark:border-[#476476] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
               <span id="cat-lbl-sabzi" data-i18n="cat_sabzi">Veg</span>
             </button>
-            <button type="button" onclick="filterStoresByCategory('fruits')" id="cat-chip-fruits" class="cat-chip min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-700 dark:text-[#C9DCE5] border border-slate-200 dark:border-[#476476] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
+            <button type="button" onclick="filterStoresByCategory('fruits')" id="cat-chip-fruits" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-800 dark:text-[#F6FBFD] border border-slate-200 dark:border-[#476476] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
               <span id="cat-lbl-fruits" data-i18n="cat_fruits">Fruits</span>
             </button>
-            <button type="button" onclick="filterStoresByCategory('medicines')" id="cat-chip-medicines" class="cat-chip min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-700 dark:text-[#C9DCE5] border border-slate-200 dark:border-[#476476] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
+            <button type="button" onclick="filterStoresByCategory('medicines')" id="cat-chip-medicines" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-800 dark:text-[#F6FBFD] border border-slate-200 dark:border-[#476476] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
               <span id="cat-lbl-medicines" data-i18n="cat_medicines">Medicines</span>
             </button>
-            <button type="button" onclick="filterStoresByCategory('agri')" id="cat-chip-agri" class="cat-chip min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-700 dark:text-[#C9DCE5] border border-slate-200 dark:border-[#476476] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
+            <button type="button" onclick="filterStoresByCategory('agri')" id="cat-chip-agri" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-800 dark:text-[#F6FBFD] border border-slate-200 dark:border-[#476476] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
               <span id="cat-lbl-agri" data-i18n="cat_agri">Agri</span>
             </button>
-            <button type="button" onclick="filterStoresByCategory('tools')" id="cat-chip-tools" class="cat-chip min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-700 dark:text-[#C9DCE5] border border-slate-200 dark:border-[#476476] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
+            <button type="button" onclick="filterStoresByCategory('tools')" id="cat-chip-tools" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-800 dark:text-[#F6FBFD] border border-slate-200 dark:border-[#476476] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
               <span id="cat-lbl-tools" data-i18n="cat_tools">Tools</span>
             </button>
           </div>
         </div>
 
         <!-- Hero Banner: Fresh Essentials from Local Shops (Light Cream Warm Card) -->
-        <div id="p2-guarantee-banner" class="w-full shrink-0 rounded-3xl bg-[#FFF6EB] dark:bg-[#2B4858] border border-amber-200/60 dark:border-[#476476] p-4 shadow-xs relative overflow-hidden flex items-center justify-between gap-3">
+        <div id="p2-guarantee-banner" class="w-full shrink-0 rounded-3xl bg-[#FFF6EB] dark:bg-[#2B4858] border border-amber-200/60 dark:border-[#476476] p-4.5 shadow-xs relative overflow-hidden flex items-center justify-between gap-3 mt-2.5 mb-3.5">
           <div class="flex flex-col gap-1 z-10">
             <h2 class="text-base font-black text-slate-900 dark:text-[#F6FBFD] leading-tight" data-i18n="p2_hero_title">Fresh essentials<br>from local shops</h2>
             <p class="text-xs text-slate-600 dark:text-[#C9DCE5] font-medium" data-i18n="p2_hero_sub">Good food. Stronger villages.</p>
@@ -1658,7 +1679,7 @@
               <p class="text-[11px] text-slate-600 dark:text-[#C9DCE5]">Share with partner at delivery</p>
             </div>
             <div class="flex items-center gap-2">
-              <span class="text-xs font-bold text-slate-500 dark:text-[#C9DCE5]">OTP:</span>
+              <span class="text-xs font-bold text-slate-500 dark:text-[#C9DCE5]">DELIVERY OTP:</span>
               <div id="p5-delivery-otp-digits" class="flex gap-1.5 font-mono font-black text-sm text-[#16B86E] bg-white dark:bg-[#203846] px-2.5 py-1 rounded-lg border border-emerald-200 dark:border-[#476476]">
                 <span>3</span><span>7</span><span>2</span><span>1</span>
               </div>
@@ -8586,14 +8607,14 @@
     function filterStoresByCategory(cat) {
       window.activeCategoryFilter = cat;
       document.querySelectorAll('.cat-chip').forEach(el => {
-        el.classList.remove('active', 'bg-primary', 'text-white');
-        el.classList.add('bg-white', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-200');
+        el.classList.remove('active', 'bg-primary', 'bg-[#16B86E]', 'text-white');
+        el.classList.add('bg-white', 'dark:bg-[#2B4858]', 'text-slate-800', 'dark:text-[#F6FBFD]');
       });
       const targetId = cat === 'all' ? 'cat-chip-all' : 'cat-chip-' + cat;
       const activeEl = document.getElementById(targetId);
       if (activeEl) {
-        activeEl.classList.add('active', 'bg-primary', 'text-white');
-        activeEl.classList.remove('bg-white', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-200');
+        activeEl.classList.add('active', 'bg-[#16B86E]', 'text-white');
+        activeEl.classList.remove('bg-white', 'dark:bg-[#2B4858]', 'text-slate-800', 'dark:text-[#F6FBFD]');
       }
 
       const allStores = AppStore.stores || [];
@@ -10454,7 +10475,12 @@
         .catch(() => {});
 
       let refreshing = false;
+      let hadController = Boolean(navigator.serviceWorker.controller);
       navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!hadController) {
+          hadController = true;
+          return;
+        }
         if (!refreshing) {
           refreshing = true;
           window.location.reload();

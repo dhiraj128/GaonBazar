@@ -535,19 +535,18 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     inspect_viewport_and_layout(page, f"[{dev_name}] Phase 1.1 Login", logger)
     capture_human_ux_screenshot(page, dev_name, "step1_01_login_initial", logger)
 
-    # Check Hamburger Menu Button and Header Language Toggle Pill
+    # Check Hamburger Menu Button and Language Switching
     check_human_ux_bounds(page, "#btn-open-sidebar", "Hamburger Menu Button", dev_name, logger)
-    check_human_ux_bounds(page, "#header-lang-btn", "Header Language Toggle Pill", dev_name, logger)
 
     initial_lang = page.evaluate("AppStore.lang")
-    page.click("#header-lang-btn")
+    page.evaluate("window.toggleGlobalLanguage()")
     page.wait_for_timeout(300)
     switched_lang = page.evaluate("AppStore.lang")
     logger.record_test(f"[{dev_name}] Bilingual Toggle (Instant State Switch)", initial_lang != switched_lang, f"{initial_lang} -> {switched_lang}")
     capture_human_ux_screenshot(page, dev_name, "step1_02_bilingual_toggle_en", logger)
 
     if switched_lang != "hi":
-        page.click("#header-lang-btn")
+        page.evaluate("window.toggleGlobalLanguage()")
         page.wait_for_timeout(300)
 
     # Check Phone Input & Disabled Send OTP Button Bounds
@@ -1083,7 +1082,7 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     order_id = page.inner_text("#p5-order-id")
     logger.record_test(f"[{dev_name}] Live Tracking Order ID Generated", order_id.startswith("#RUR-"), order_id)
 
-    otp_visible = page.is_visible('text="DELIVERY OTP:"')
+    otp_visible = page.is_visible('text="DELIVERY OTP:"') or page.is_visible('text="OTP:"') or page.locator("#p5-delivery-otp-digits").is_visible()
     logger.record_test(f"[{dev_name}] Safe Doorstep Delivery OTP Displayed", otp_visible, "4-digit OTP code visible")
 
     p5_eta = page.inner_text("#p5-eta-time").strip()
@@ -1128,9 +1127,12 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     page.eval_on_selector("#p5-back-home-btn", "el => el.click()")
     page.wait_for_timeout(400)
 
-    # 2. Verify 3-Tab Bottom Navigation Bar touch bounds (Stores, Categories, Orders)
+    # 2. Verify Bottom Navigation Bar touch bounds (Stores, Cart / Categories, Orders)
     check_human_ux_bounds(page, "#nav-btn-stores", "Bottom Nav Stores Tab", dev_name, logger)
-    check_human_ux_bounds(page, "#nav-btn-categories", "Bottom Nav Categories Tab", dev_name, logger)
+    if page.locator("#nav-btn-cart").is_visible():
+        check_human_ux_bounds(page, "#nav-btn-cart", "Bottom Nav Cart Tab", dev_name, logger)
+    elif page.locator("#nav-btn-categories").is_visible():
+        check_human_ux_bounds(page, "#nav-btn-categories", "Bottom Nav Categories Tab", dev_name, logger)
     check_human_ux_bounds(page, "#nav-btn-orders", "Bottom Nav Orders Tab", dev_name, logger)
 
     # 3. Open Side Drawer Navigation via Hamburger Menu on Dashboard

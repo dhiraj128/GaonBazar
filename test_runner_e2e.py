@@ -475,6 +475,10 @@ def ensure_stage3_mission_exists():
     from backend.models import Order, OrderItem
     with db_session() as db:
         has_stage3 = db.query(Order).filter(Order.store_id == "sharma_brothers", Order.timeline_stage == 3).first()
+        if has_stage3:
+            has_stage3.delivery_otp = "4821"
+            db.commit()
+            return
         if not has_stage3:
             import random
             oid = f"#RUR-{random.randint(10000, 99999)}"
