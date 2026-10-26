@@ -216,7 +216,7 @@
       padding: 0;
       overflow-x: hidden;
       overscroll-behavior-y: none;
-      background-color: #f9f9ff;
+      background-color: #faf8f5;
     }
     body {
       width: 100%;
@@ -226,7 +226,7 @@
       padding: 0;
       overflow-x: hidden;
       overscroll-behavior-y: none;
-      background-color: #f9f9ff;
+      background-color: #faf8f5;
       font-family: 'Plus Jakarta Sans', 'Noto Sans Devanagari', sans-serif;
     }
     * {
@@ -354,7 +354,7 @@
       </button>
 
       <!-- Compact App Logo (Icon only, no text) - min 44x44px touch target -->
-      <button id="header-logo-icon" onclick="navigateToPhase('dashboard')" aria-label="GaonBazaar Home" title="GaonBazaar" class="hidden min-[380px]:flex w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-gradient-to-tr from-primary to-emerald-600 items-center justify-center text-white shadow-xs shrink-0 cursor-pointer active:scale-95 transition-transform">
+      <button id="header-logo-icon" onclick="navigateToPhase('dashboard')" aria-label="GaonBazaar Home" title="GaonBazaar" class="flex w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-gradient-to-tr from-primary to-emerald-600 items-center justify-center text-white shadow-xs shrink-0 cursor-pointer active:scale-95 transition-transform">
         <span class="material-symbols-outlined text-[24px] inline-block select-none leading-none">storefront</span>
       </button>
       <span class="sr-only">GaonBazaar</span>
@@ -1023,48 +1023,44 @@
         </div>
 
         <!-- Category Grid (6 Clean Visual Tiles - Single Language) -->
-        <div id="p2-categories-container" class="space-y-2.5">
-          <div class="flex items-center justify-between">
-            <h3 class="text-xs font-extrabold text-on-surface uppercase tracking-wide" data-i18n="p2_categories_title">सामान की श्रेणियाँ</h3>
-            <span class="text-[10px] text-primary font-bold">All 6 Active</span>
+        <!-- Category Filter Chips Bar (Horizontal Scrolling - Blinkit/Zepto Usability) -->
+        <div id="p2-categories-container" class="w-full space-y-1.5">
+          <div class="flex items-center justify-between px-0.5">
+            <h3 class="text-xs font-black text-on-surface uppercase tracking-wide flex items-center gap-1.5" data-i18n="p2_categories_title">
+              <span class="w-2 h-2 rounded-full bg-primary shrink-0"></span>
+              <span>श्रेणियाँ (Categories)</span>
+            </h3>
+            <span class="text-[10px] text-primary font-bold bg-primary/10 px-2 py-0.5 rounded-full">6 श्रेणियां उपलब्ध</span>
           </div>
-          <div class="grid grid-cols-3 gap-2.5">
-            <div onclick="selectCategory('kirana')" class="btn-tactile p-3 rounded-2xl bg-white shadow-xs border border-surface-container-high flex flex-col items-center text-center cursor-pointer hover:border-primary">
-              <div class="w-11 h-11 rounded-xl bg-primary-fixed/30 text-primary flex items-center justify-center mb-1.5">
-                <span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">shopping_basket</span>
-              </div>
-              <span class="text-xs font-bold text-on-surface text-center leading-tight truncate max-w-full block" id="cat-lbl-kirana" data-i18n="cat_kirana">किराना व राशन</span>
-            </div>
-            <div onclick="selectCategory('medicines')" class="btn-tactile p-3 rounded-2xl bg-white shadow-xs border border-surface-container-high flex flex-col items-center text-center cursor-pointer hover:border-primary">
-              <div class="w-11 h-11 rounded-xl bg-error-container/40 text-error flex items-center justify-center mb-1.5">
-                <span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">medication</span>
-              </div>
-              <span class="text-xs font-bold text-on-surface text-center leading-tight truncate max-w-full block" id="cat-lbl-medicines" data-i18n="cat_medicines">दवाइयाँ</span>
-            </div>
-            <div onclick="selectCategory('agri')" class="btn-tactile p-3 rounded-2xl bg-white shadow-xs border border-surface-container-high flex flex-col items-center text-center cursor-pointer hover:border-primary">
-              <div class="w-11 h-11 rounded-xl bg-primary-fixed/20 text-primary flex items-center justify-center mb-1.5">
-                <span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">potted_plant</span>
-              </div>
-              <span class="text-xs font-bold text-on-surface text-center leading-tight truncate max-w-full block" id="cat-lbl-agri" data-i18n="cat_agri">बीज व खाद</span>
-            </div>
-            <div onclick="selectCategory('dairy')" class="btn-tactile p-3 rounded-2xl bg-white shadow-xs border border-surface-container-high flex flex-col items-center text-center cursor-pointer hover:border-primary">
-              <div class="w-11 h-11 rounded-xl bg-tertiary-fixed text-tertiary flex items-center justify-center mb-1.5">
-                <span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">water_drop</span>
-              </div>
-              <span class="text-xs font-bold text-on-surface text-center leading-tight truncate max-w-full block" id="cat-lbl-dairy" data-i18n="cat_dairy">दूध व घी</span>
-            </div>
-            <div onclick="selectCategory('tools')" class="btn-tactile p-3 rounded-2xl bg-white shadow-xs border border-surface-container-high flex flex-col items-center text-center cursor-pointer hover:border-primary">
-              <div class="w-11 h-11 rounded-xl bg-secondary-fixed text-secondary flex items-center justify-center mb-1.5">
-                <span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">bolt</span>
-              </div>
-              <span class="text-xs font-bold text-on-surface text-center leading-tight truncate max-w-full block" id="cat-lbl-tools" data-i18n="cat_tools">बिजली व औज़ार</span>
-            </div>
-            <div onclick="selectCategory('sabzi')" class="btn-tactile p-3 rounded-2xl bg-white shadow-xs border border-surface-container-high flex flex-col items-center text-center cursor-pointer hover:border-primary">
-              <div class="w-11 h-11 rounded-xl bg-primary-container/20 text-primary flex items-center justify-center mb-1.5">
-                <span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">nutrition</span>
-              </div>
-              <span class="text-xs font-bold text-on-surface text-center leading-tight truncate max-w-full block" id="cat-lbl-sabzi" data-i18n="cat_sabzi">ताज़ी सब्ज़ियाँ</span>
-            </div>
+          <div id="nav-btn-categories" class="flex items-center gap-2 overflow-x-auto pb-1.5 pt-0.5 no-scrollbar touch-pan-x" style="scrollbar-width: none; -ms-overflow-style: none;">
+            <button type="button" onclick="filterStoresByCategory('all')" id="cat-chip-all" class="cat-chip active px-3.5 py-2 rounded-xl text-xs font-black bg-primary text-white shrink-0 shadow-xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer">
+              <span class="material-symbols-outlined text-[16px]">grid_view</span>
+              <span data-i18n="cat_all">सब (All)</span>
+            </button>
+            <button type="button" onclick="filterStoresByCategory('kirana')" id="cat-chip-kirana" class="cat-chip px-3 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 shrink-0 shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-primary">
+              <span class="material-symbols-outlined text-[16px] text-amber-500">shopping_basket</span>
+              <span id="cat-lbl-kirana" data-i18n="cat_kirana">किराना व राशन</span>
+            </button>
+            <button type="button" onclick="filterStoresByCategory('medicines')" id="cat-chip-medicines" class="cat-chip px-3 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 shrink-0 shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-primary">
+              <span class="material-symbols-outlined text-[16px] text-rose-500">medication</span>
+              <span id="cat-lbl-medicines" data-i18n="cat_medicines">दवाइयाँ</span>
+            </button>
+            <button type="button" onclick="filterStoresByCategory('dairy')" id="cat-chip-dairy" class="cat-chip px-3 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 shrink-0 shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-primary">
+              <span class="material-symbols-outlined text-[16px] text-blue-500">water_drop</span>
+              <span id="cat-lbl-dairy" data-i18n="cat_dairy">दूध व घी</span>
+            </button>
+            <button type="button" onclick="filterStoresByCategory('agri')" id="cat-chip-agri" class="cat-chip px-3 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 shrink-0 shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-primary">
+              <span class="material-symbols-outlined text-[16px] text-emerald-500">potted_plant</span>
+              <span id="cat-lbl-agri" data-i18n="cat_agri">बीज व खाद</span>
+            </button>
+            <button type="button" onclick="filterStoresByCategory('tools')" id="cat-chip-tools" class="cat-chip px-3 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 shrink-0 shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-primary">
+              <span class="material-symbols-outlined text-[16px] text-amber-600">bolt</span>
+              <span id="cat-lbl-tools" data-i18n="cat_tools">बिजली व औज़ार</span>
+            </button>
+            <button type="button" onclick="filterStoresByCategory('sabzi')" id="cat-chip-sabzi" class="cat-chip px-3 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 shrink-0 shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-primary">
+              <span class="material-symbols-outlined text-[16px] text-green-600">nutrition</span>
+              <span id="cat-lbl-sabzi" data-i18n="cat_sabzi">ताज़ी सब्ज़ियाँ</span>
+            </button>
           </div>
         </div>
 
@@ -2350,33 +2346,42 @@
     <!-- CUSTOMER BOTTOM NAVIGATION (Strictly 4-Tab: Stores, Categories, AI Assistant, Orders) -->
     <!-- Positioned outside main scroll owner as direct child of #app-root -->
     <!-- ===================================================================== -->
-    <nav id="customer-bottom-nav" class="hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-3 sm:px-6 py-2 pb-safe flex items-center justify-around shadow-sticky-bar max-w-full">
+    <nav id="customer-bottom-nav" class="hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 px-2 sm:px-6 py-1.5 pb-safe flex items-center justify-around shadow-sticky-bar max-w-full">
       
       <!-- Tab 1: Home / Stores -->
       <button id="nav-btn-stores" onclick="navigateToPhase('dashboard')" class="flex-1 flex flex-col items-center justify-center min-h-[48px] py-1 text-primary font-black transition-all active:scale-95 cursor-pointer">
-        <span class="material-symbols-outlined text-[24px]">storefront</span>
-        <span id="nav-lbl-stores" class="text-[10.5px] font-bold tracking-wide mt-0.5 font-sans" data-i18n="nav_stores">दुकानें</span>
+        <span class="material-symbols-outlined text-[23px]">storefront</span>
+        <span id="nav-lbl-stores" class="text-[10px] font-bold tracking-tight mt-0.5 font-sans" data-i18n="nav_stores">बाज़ार</span>
       </button>
 
-      <!-- Tab 2: Categories -->
-      <button id="nav-btn-categories" onclick="navigateToPhase('dashboard'); setTimeout(() => document.getElementById('p2-categories-container')?.scrollIntoView({behavior: 'smooth'}), 100)" class="flex-1 flex flex-col items-center justify-center min-h-[48px] py-1 text-slate-500 hover:text-slate-800 font-bold transition-all active:scale-95 cursor-pointer">
-        <span class="material-symbols-outlined text-[24px]">category</span>
-        <span id="nav-lbl-categories" class="text-[10.5px] font-bold tracking-wide mt-0.5 font-sans" data-i18n="nav_categories">श्रेणियाँ</span>
-      </button>
-
-      <!-- Tab 3: AI Assistant (Voice-First Shopping) -->
-      <button id="nav-btn-ai" onclick="navigateToPhase('ai-commerce')" class="flex-1 flex flex-col items-center justify-center min-h-[48px] py-1 text-slate-500 hover:text-slate-800 font-bold transition-all active:scale-95 cursor-pointer">
+      <!-- Tab 2: AI Voice Shopping Assistant -->
+      <button id="nav-btn-ai" onclick="navigateToPhase('ai-commerce')" class="flex-1 flex flex-col items-center justify-center min-h-[48px] py-1 text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold transition-all active:scale-95 cursor-pointer">
         <div class="relative flex items-center justify-center">
-          <span class="material-symbols-outlined text-[24px]">mic</span>
-          <span class="absolute -top-1 -right-2 w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+          <span class="material-symbols-outlined text-[23px]">mic</span>
+          <span class="absolute -top-1 -right-1.5 w-2 h-2 rounded-full bg-primary animate-pulse"></span>
         </div>
-        <span id="nav-lbl-ai" class="text-[10.5px] font-bold tracking-wide mt-0.5 font-sans" data-i18n="nav_ai_assistant">AI सहायक</span>
+        <span id="nav-lbl-ai" class="text-[10px] font-bold tracking-tight mt-0.5 font-sans" data-i18n="nav_ai_assistant">AI बोलें</span>
       </button>
 
-      <!-- Tab 4: Orders / Track -->
-      <button id="nav-btn-orders" onclick="navigateToPhase('tracking')" class="flex-1 flex flex-col items-center justify-center min-h-[48px] py-1 text-slate-500 hover:text-slate-800 font-bold transition-all active:scale-95 cursor-pointer">
-        <span class="material-symbols-outlined text-[24px]">receipt_long</span>
-        <span id="nav-lbl-orders" class="text-[10.5px] font-bold tracking-wide mt-0.5 font-sans" data-i18n="nav_orders">ऑर्डर</span>
+      <!-- Tab 3: Cart with Live Badge -->
+      <button id="nav-btn-cart" onclick="navigateToPhase('cart')" class="flex-1 flex flex-col items-center justify-center min-h-[48px] py-1 text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold transition-all active:scale-95 cursor-pointer relative">
+        <div class="relative flex items-center justify-center">
+          <span class="material-symbols-outlined text-[23px]">shopping_cart</span>
+          <span id="bottom-nav-cart-badge" class="absolute -top-1 -right-2.5 min-w-[16px] h-[16px] px-1 bg-secondary text-white text-[9px] font-black rounded-full flex items-center justify-center border-2 border-white dark:border-slate-900 shadow-xs hidden">0</span>
+        </div>
+        <span id="nav-lbl-cart" class="text-[10px] font-bold tracking-tight mt-0.5 font-sans" data-i18n="nav_cart">कार्ट</span>
+      </button>
+
+      <!-- Tab 4: Orders & Tracking -->
+      <button id="nav-btn-orders" onclick="navigateToPhase('tracking')" class="flex-1 flex flex-col items-center justify-center min-h-[48px] py-1 text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold transition-all active:scale-95 cursor-pointer">
+        <span class="material-symbols-outlined text-[23px]">receipt_long</span>
+        <span id="nav-lbl-orders" class="text-[10px] font-bold tracking-tight mt-0.5 font-sans" data-i18n="nav_orders">ऑर्डर</span>
+      </button>
+
+      <!-- Tab 5: Account & Settings -->
+      <button id="nav-btn-profile" onclick="navigateToPhase('profile')" class="flex-1 flex flex-col items-center justify-center min-h-[48px] py-1 text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold transition-all active:scale-95 cursor-pointer">
+        <span class="material-symbols-outlined text-[23px]">person</span>
+        <span id="nav-lbl-profile" class="text-[10px] font-bold tracking-tight mt-0.5 font-sans" data-i18n="nav_profile">खाता</span>
       </button>
 
     </nav>
@@ -8319,24 +8324,80 @@
       window.toggleGlobalLanguage(lang);
     };
 
+    
+    // --- CATEGORY FILTER CHIPS HANDLER ---
+    window.activeCategoryFilter = 'all';
+    function filterStoresByCategory(cat) {
+      window.activeCategoryFilter = cat;
+      document.querySelectorAll('.cat-chip').forEach(el => {
+        el.classList.remove('active', 'bg-primary', 'text-white');
+        el.classList.add('bg-white', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-200');
+      });
+      const targetId = cat === 'all' ? 'cat-chip-all' : 'cat-chip-' + cat;
+      const activeEl = document.getElementById(targetId);
+      if (activeEl) {
+        activeEl.classList.add('active', 'bg-primary', 'text-white');
+        activeEl.classList.remove('bg-white', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-200');
+      }
+
+      const allStores = AppStore.stores || [];
+      if (!cat || cat === 'all') {
+        renderDashboardStoresFeed(allStores);
+      } else {
+        const catNorm = cat.toLowerCase();
+        const filtered = allStores.filter(s => {
+          const sType = (s.store_type || s.category || '').toLowerCase();
+          if (catNorm === 'kirana') return sType.includes('kirana') || sType.includes('ration') || sType.includes('grocery');
+          if (catNorm === 'medicines' || catNorm === 'pharma') return sType.includes('pharma') || sType.includes('med');
+          if (catNorm === 'dairy') return sType.includes('dairy') || sType.includes('milk');
+          if (catNorm === 'agri') return sType.includes('agri') || sType.includes('kisan') || sType.includes('seed');
+          if (catNorm === 'tools') return sType.includes('tool') || sType.includes('elect') || sType.includes('hard');
+          if (catNorm === 'sabzi') return sType.includes('sabzi') || sType.includes('veg') || sType.includes('kirana');
+          return sType.includes(catNorm);
+        });
+        renderDashboardStoresFeed(filtered.length > 0 ? filtered : allStores);
+      }
+    }
+    window.filterStoresByCategory = filterStoresByCategory;
+
     function updateBottomNavActiveTab(activePhase) {
       const isStores = activePhase === 'dashboard';
       const isCategories = activePhase === 'categories';
       const isAi = activePhase === 'ai-commerce';
       const isOrders = activePhase === 'tracking';
 
+      const isCart = activePhase === 'cart' || activePhase === 'checkout';
+      const isProfile = activePhase === 'profile';
+
       const btnStores = document.getElementById('nav-btn-stores');
       const btnCategories = document.getElementById('nav-btn-categories');
       const btnAi = document.getElementById('nav-btn-ai');
+      const btnCart = document.getElementById('nav-btn-cart');
       const btnOrders = document.getElementById('nav-btn-orders');
+      const btnProfile = document.getElementById('nav-btn-profile');
 
       const activeClass = "flex-1 flex flex-col items-center justify-center min-h-[48px] py-1 text-primary font-black transition-all active:scale-95 cursor-pointer";
-      const inactiveClass = "flex-1 flex flex-col items-center justify-center min-h-[48px] py-1 text-slate-500 hover:text-slate-800 font-bold transition-all active:scale-95 cursor-pointer";
+      const inactiveClass = "flex-1 flex flex-col items-center justify-center min-h-[48px] py-1 text-slate-500 dark:text-slate-400 hover:text-slate-800 font-bold transition-all active:scale-95 cursor-pointer";
 
       if (btnStores) btnStores.className = isStores ? activeClass : inactiveClass;
-      if (btnCategories) btnCategories.className = isCategories ? activeClass : inactiveClass;
+      if (btnCategories && btnCategories.tagName === 'BUTTON') btnCategories.className = isCategories ? activeClass : inactiveClass;
       if (btnAi) btnAi.className = isAi ? activeClass : inactiveClass;
+      if (btnCart) btnCart.className = isCart ? activeClass : inactiveClass;
       if (btnOrders) btnOrders.className = isOrders ? activeClass : inactiveClass;
+      if (btnProfile) btnProfile.className = isProfile ? activeClass : inactiveClass;
+
+      // Update bottom nav cart badge
+      const bCartBadge = document.getElementById('bottom-nav-cart-badge');
+      const hCartBadge = document.getElementById('header-cart-badge');
+      const cartTotalQty = (AppStore.catalog ? AppStore.catalog.reduce((acc, it) => acc + (it.qty || 0), 0) : 0);
+      if (bCartBadge) {
+        bCartBadge.innerText = cartTotalQty;
+        if (cartTotalQty > 0) bCartBadge.classList.remove('hidden');
+        else bCartBadge.classList.add('hidden');
+      }
+      if (hCartBadge) {
+        hCartBadge.innerText = cartTotalQty;
+      }
     }
     window.updateBottomNavActiveTab = updateBottomNavActiveTab;
 
