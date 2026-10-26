@@ -3948,6 +3948,8 @@ def get_admin_metrics(db: Session = Depends(get_db)):
     approved_runners = len([r for r in runners if r.status == "approved"])
     pending_runners = len([r for r in runners if r.status == "pending_approval"])
 
+    open_tickets = db.query(SupportTicket).filter(SupportTicket.status == "open").count()
+
     return AdminMetricsResponse(
         total_gmv=round(total_gmv, 2),
         platform_profits=round(platform_profits, 2),
@@ -3960,8 +3962,76 @@ def get_admin_metrics(db: Session = Depends(get_db)):
         pending_vendors=pending_vendors,
         total_runners=total_runners,
         approved_runners=approved_runners,
-        pending_runners=pending_runners
+        pending_runners=pending_runners,
+        open_tickets=open_tickets
     )
+
+
+@app.get("/api/admin/support/tickets")
+def admin_list_support_tickets(status: Optional[str] = None, db: Session = Depends(get_db)):
+    """
+    Returns all customer/vendor/runner grievance and support tickets for Super Admin Help Desk.
+    """
+    query = db.query(SupportTicket)
+    if status and status != "all":
+        query = query.filter(SupportTicket.status == status)
+    tickets = query.order_by(SupportTicket.created_at.desc()).limit(100).all()
+    return [
+        {
+            "ticket_id": t.ticket_id,
+            "user_phone": t.user_phone,
+            "order_id": t.order_id,
+            "category": t.category,
+            "message": t.message,
+            "status": t.status,
+            "created_at": t.created_at.isoformat() if t.created_at else datetime.utcnow().isoformat()
+        }
+        for t in tickets
+    ]
+
+
+@app.post("/api/admin/support/tickets/{ticket_id}/action")
+def admin_support_ticket_action(
+    ticket_id: str,
+    action: str = Query("resolve", regex="^(resolve|in_progress|close)$"),
+    admin_notes: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
+    """
+    Super Admin action on customer/vendor/runner support ticket (resolves grievance with real audit status).
+    """
+    ticket = db.query(SupportTicket).filter(SupportTicket.ticket_id == ticket_id).first()
+    if not ticket:
+        raise HTTPException(status_code=404, detail="Support ticket not found")
+
+    new_status = "resolved" if action in ("resolve", "close") else "in_progress"
+    ticket.status = new_status
+    db.commit()
+    db.refresh(ticket)
+
+    # Dispatch notification to user
+    try:
+        from .notifications import create_notification
+        create_notification(
+            db=db,
+            user_id=ticket.user_phone,
+            role="customer",
+            notif_type="ticket_resolved" if new_status == "resolved" else "ticket_updated",
+            title_en=f"Ticket #{ticket.ticket_id} {'Resolved' if new_status == 'resolved' else 'In Progress'}",
+            title_hi=f"सहायता टिकट #{ticket.ticket_id} {'हल किया गया' if new_status == 'resolved' else 'प्रगति पर है'}",
+            body_en=admin_notes or "Our village support coordinator has reviewed and resolved your complaint.",
+            body_hi=admin_notes or "हमारे ग्रामीण सहायता समन्वयक ने आपकी शिकायत का समाधान कर दिया है।",
+            data={"ticket_id": ticket.ticket_id, "status": ticket.status}
+        )
+    except Exception as e:
+        print(f"Notice: Ticket resolution notification dispatch: {e}")
+
+    return {
+        "success": True,
+        "ticket_id": ticket.ticket_id,
+        "status": ticket.status,
+        "message": f"Support ticket #{ticket.ticket_id} marked as {new_status} successfully."
+    }
 
 
 @app.get("/api/admin/pending-vendors", response_model=List[AdminPendingVendorDTO])

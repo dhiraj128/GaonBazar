@@ -1,11 +1,11 @@
 ================================================================================
 GAONBAZAAR MASTER COMPLETE FUNCTIONAL & INTEGRATION QA REPORT
 ================================================================================
-Execution Timestamp: 2026-10-25 19:30:28 UTC
+Execution Timestamp: 2026-10-26 11:53:20 UTC
 Total Tests Executed: 72
 Passed: 72 (100.0%)
 Failed: 0
-Execution Duration: 87.21s
+Execution Duration: 88.72s
 ================================================================================
 
 DETAILED TEST VERIFICATION BREAKDOWN:
@@ -37,9 +37,9 @@ DETAILED TEST VERIFICATION BREAKDOWN:
 [PASS] Checkout: Payment Mode Selection (COD)
        Evidence: Payment mode set to 'COD'
 [PASS] Order Checkout: Transition to Live Tracking
-       Evidence: Tracking visible with Order ID '#RUR-1850'
+       Evidence: Tracking visible with Order ID '#RUR-7365'
 [PASS] Customer Delivery OTP Held Securely
-       Evidence: Customer holds 4-digit OTP: '6233'
+       Evidence: Customer holds 4-digit OTP: '4017'
 [PASS] 5-Stage Dynamic Order Timeline Rendered
        Evidence: Rendered 5 timeline stage nodes
 [PASS] Customer Support Center View Navigation
@@ -98,23 +98,23 @@ DETAILED TEST VERIFICATION BREAKDOWN:
 [PASS] Admin Navigation: Runner KYC Approval Queue
        Evidence: Gaon Mitra applications queue accessible
 [PASS] Stage 1: Customer Places Order via API
-       Evidence: Order: #RUR-2523 | Delivery OTP: 3181
+       Evidence: Order: #RUR-7414 | Delivery OTP: 2192
 [PASS] Stage 1 -> 2: Vendor Receives Order Live in Dashboard
-       Evidence: Order #RUR-2523 received live in Vendor polling cycle
+       Evidence: Order #RUR-7414 received live in Vendor polling cycle
 [PASS] Stage 2 -> 3: Vendor Packs Order
-       Evidence: Order #RUR-2523 packed & ready for Gaon Mitra pickup
+       Evidence: Order #RUR-7414 packed & ready for Gaon Mitra pickup
 [PASS] Stage 3: Gaon Mitra Receives Pickup Mission Live
-       Evidence: Order #RUR-2523 appeared live in Runner Missions Queue
+       Evidence: Order #RUR-7414 appeared live in Runner Missions Queue
 [PASS] Stage 3 -> 4: Runner Confirms Store Pickup (Out for Delivery)
-       Evidence: Order #RUR-2523 in transit to customer
+       Evidence: Order #RUR-7414 in transit to customer
 [PASS] Stage 4: Customer Live Tracking Displays En Route Status
-       Evidence: Customer sees #RUR-2523 approaching landmark
+       Evidence: Customer sees #RUR-7414 approaching landmark
 [PASS] Stage 4 -> 5: Doorstep OTP Verified by Runner
-       Evidence: OTP 3181 verified; order marked Delivered
+       Evidence: OTP 2192 verified; order marked Delivered
 [PASS] Stage 5: Customer App Reflects Delivered Live
        Evidence: Customer app confirmed order successfully delivered
 [PASS] Stage 5: Admin Dashboard God-View Reflects Delivered
-       Evidence: Admin table displays order #RUR-2523 in real database records
+       Evidence: Admin table displays order #RUR-7414 in real database records
 [PASS] Authoritative Road Curvature Factor (1.25x)
        Evidence: Straight: 0.97 km -> Road: 1.21 km (road_routing_estimate)
 [PASS] Zero-Trust Payout Reconciliation: Tier 1 (0-2 km)
