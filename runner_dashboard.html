@@ -490,10 +490,9 @@
           <div class="flex flex-col min-w-0">
             <span id="runner-name-display" class="text-sm font-black text-slate-900 dark:text-[#F6FBFD] leading-tight truncate">Ram Kumar</span>
             <!-- Online status dropdown pill -->
-            <button id="shift-toggle-btn" onclick="toggleRunnerShift()" type="button" class="min-h-[38px] px-2.5 py-1 rounded-full text-xs font-black transition-all flex items-center gap-1.5 shadow-2xs cursor-pointer select-none active:scale-95 bg-[#16B86E] text-white">
+            <button id="shift-toggle-btn" onclick="toggleRunnerShift()" type="button" class="min-h-[38px] px-3 py-1 rounded-full text-xs font-black transition-all flex items-center gap-1.5 shadow-2xs cursor-pointer select-none active:scale-95 bg-[#16B86E] text-white">
               <span id="shift-status-dot" class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
               <span id="shift-status-label">Online</span>
-              <span id="shift-status-mobile" class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-white/20">चालू</span>
               <span class="material-symbols-outlined text-[14px]">expand_more</span>
             </button>
           </div>
@@ -503,8 +502,8 @@
       <!-- "I am on duty" Big Toggle Card Matching Reference 03 -->
       <div class="rounded-2xl bg-white dark:bg-[#2B4858] p-3.5 border border-slate-200 dark:border-[#476476] shadow-xs flex items-center justify-between">
         <div class="flex flex-col">
-          <span class="text-xs font-black text-slate-900 dark:text-[#F6FBFD]">I am on duty</span>
-          <span class="text-[11px] text-slate-500 dark:text-[#C9DCE5]">Ready to receive orders</span>
+          <span id="runner-duty-title" class="text-xs font-black text-slate-900 dark:text-[#F6FBFD]" data-i18n="runner_duty_title">I am on duty</span>
+          <span id="runner-duty-sub" class="text-[11px] text-slate-500 dark:text-[#C9DCE5]" data-i18n="runner_duty_sub">Ready to receive orders</span>
         </div>
         <!-- Big Green Toggle Switch -->
         <label class="relative inline-flex items-center cursor-pointer">
@@ -518,39 +517,47 @@
         <div class="flex items-center gap-2.5 min-w-0">
           <span class="material-symbols-outlined text-[#3B82F6] text-[22px] shrink-0">location_on</span>
           <div class="flex flex-col min-w-0">
-            <div class="text-[10px] text-slate-400 dark:text-[#8CAAB9] font-medium uppercase tracking-wider">Current Area</div>
-            <span class="text-xs font-black text-slate-900 dark:text-[#F6FBFD] truncate">Sonpur Hub</span>
-            <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5]">Delivering in Sonpur • 0-10 km</span>
+            <div class="text-[10px] text-slate-400 dark:text-[#8CAAB9] font-medium uppercase tracking-wider" data-i18n="runner_current_area_lbl">Current Area</div>
+            <span id="runner-current-area-name" class="text-xs font-black text-slate-900 dark:text-[#F6FBFD] truncate" data-i18n="runner_service_hub">Sonpur Hub</span>
+            <span id="runner-current-area-range" class="text-[10px] text-slate-500 dark:text-[#C9DCE5]" data-i18n="runner_service_range">Delivering in Sonpur • 0-10 km</span>
           </div>
         </div>
-        <button onclick="alert('Current area: Sonpur Hub (0-10 km radius active)')" class="text-xs font-bold text-[#3B82F6] hover:underline shrink-0">Change</button>
+        <button type="button" onclick="showRunnerAreaInfo()" class="text-xs font-bold text-[#3B82F6] dark:text-[#60A5FA] hover:underline shrink-0 min-h-[36px] flex items-center px-1 cursor-pointer" data-i18n="btn_change_area">Change</button>
       </div>
 
-      <!-- Today's Missions 3-Box Summary Matching Reference 03 -->
+      <!-- Today's Missions Summary Matching Reference 03 -->
       <div class="rounded-2xl bg-white dark:bg-[#2B4858] p-3.5 border border-slate-200 dark:border-[#476476] shadow-xs flex flex-col gap-2.5">
         <div class="flex items-center justify-between">
-          <span class="text-xs font-black text-slate-900 dark:text-[#F6FBFD]">Today's Missions</span>
+          <span class="text-xs font-black text-slate-900 dark:text-[#F6FBFD]" data-i18n="runner_todays_missions">Today's Missions</span>
           <button onclick="switchTab('ledger')" class="text-xs font-bold text-[#16B86E] hover:underline flex items-center gap-0.5">
-            <span>View all</span>
+            <span data-i18n="runner_view_all">View all</span>
             <span class="material-symbols-outlined text-[14px]">chevron_right</span>
           </button>
         </div>
 
-        <div class="grid grid-cols-3 gap-2">
-          <!-- Card 1: Assigned -->
-          <div class="p-2.5 rounded-xl bg-emerald-50 dark:bg-[#365668] border border-emerald-200/60 dark:border-[#476476] flex flex-col">
-            <span id="stat-pending-missions" class="text-base font-black text-[#16B86E]">5</span>
-            <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5] font-semibold">Assigned</span>
+        <div id="runner-kpi-board" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <!-- Card 1: Assigned / Active Missions -->
+          <div onclick="switchTab('missions')" class="p-2.5 rounded-xl bg-emerald-50 dark:bg-[#365668] border border-emerald-200/60 dark:border-[#476476] flex flex-col cursor-pointer">
+            <span id="kpi-active-missions" class="text-base font-black text-[#16B86E]">5</span>
+            <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5] font-semibold" data-i18n="kpi_active_missions">Assigned</span>
+            <span id="stat-pending-missions" class="hidden">5</span>
           </div>
           <!-- Card 2: Completed -->
-          <div class="p-2.5 rounded-xl bg-blue-50 dark:bg-[#365668] border border-blue-200/60 dark:border-[#476476] flex flex-col">
-            <span id="stat-completed-missions" class="text-base font-black text-[#3B82F6]">3</span>
-            <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5] font-semibold">Completed</span>
+          <div onclick="switchTab('ledger')" class="p-2.5 rounded-xl bg-blue-50 dark:bg-[#365668] border border-blue-200/60 dark:border-[#476476] flex flex-col cursor-pointer">
+            <span id="kpi-completed-today" class="text-base font-black text-[#3B82F6]">3</span>
+            <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5] font-semibold" data-i18n="kpi_delivered_today">Completed</span>
+            <span id="stat-completed-missions" class="hidden">3</span>
           </div>
           <!-- Card 3: Earnings -->
-          <div class="p-2.5 rounded-xl bg-amber-50 dark:bg-[#365668] border border-amber-200/60 dark:border-[#476476] flex flex-col">
-            <span id="stat-daily-earnings" class="text-base font-black text-[#FF981A]">₹320</span>
-            <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5] font-semibold">Earnings</span>
+          <div onclick="switchTab('ledger')" class="p-2.5 rounded-xl bg-amber-50 dark:bg-[#365668] border border-amber-200/60 dark:border-[#476476] flex flex-col cursor-pointer">
+            <span id="kpi-today-earnings" class="text-base font-black text-[#FF981A]">₹320</span>
+            <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5] font-semibold" data-i18n="kpi_shift_earnings">Earnings</span>
+            <span id="stat-daily-earnings" class="hidden">₹320</span>
+          </div>
+          <!-- Card 4: Cash in Hand -->
+          <div onclick="switchTab('ledger')" class="p-2.5 rounded-xl bg-purple-50 dark:bg-[#365668] border border-purple-200/60 dark:border-[#476476] flex flex-col cursor-pointer">
+            <span id="kpi-cod-cash" class="text-base font-black text-purple-600 dark:text-purple-400">₹0</span>
+            <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5] font-semibold" data-i18n="kpi_cod_cash">Cash</span>
           </div>
         </div>
       </div>
@@ -1303,6 +1310,7 @@
       lastSeenMissionCount: 0,
       pollTimer: null
     };
+    window.RunnerStore = RunnerStore;
 
     // Translations Dictionary
     const I18N = {
@@ -1427,6 +1435,12 @@
         bank_ph_upi: "उदा. kamal.singh@ybl",
         runner_profile_name: "कमल सिंह",
         runner_hub_name: "रामपुर क्लस्टर हब #RMP-04",
+        runner_current_area_lbl: "वर्तमान कार्य क्षेत्र",
+        runner_service_hub: "सोनपुर क्लस्टर हब",
+        runner_service_range: "सोनपुर क्षेत्र में डिलीवरी • 0-10 किमी",
+        btn_change_area: "बदलें",
+        runner_duty_title: "ड्यूटी चालू है",
+        runner_duty_sub: "नए डिलीवरी ऑर्डर प्राप्त करने के लिए तैयार",
         bank_saved_account_lbl: "सहेजा गया खाता:",
         bank_status_active: "सक्रिय",
         shift_status_label: "ड्यूटी चालू",
@@ -1585,6 +1599,12 @@
         bank_ph_upi: "e.g. kamal.singh@ybl",
         runner_profile_name: "Kamal Singh",
         runner_hub_name: "Rampur Cluster Hub",
+        runner_current_area_lbl: "Current Area",
+        runner_service_hub: "Sonpur Hub",
+        runner_service_range: "Delivering in Sonpur • 0-10 km",
+        btn_change_area: "Change",
+        runner_duty_title: "I am on duty",
+        runner_duty_sub: "Ready to receive orders",
         bank_saved_account_lbl: "Saved Account:",
         bank_status_active: "Active",
         shift_status_label: "Duty Online",
@@ -2180,23 +2200,36 @@
         hubDisplayText.innerText = dict.runner_hub_name || (isHi ? 'रामपुर क्लस्टर हब #RMP-04' : 'Rampur Cluster Hub');
       }
 
-      // Header Shift Button
+      // Header Shift Button & Synchronized Duty Controls
       const shiftBtn = document.getElementById('shift-toggle-btn');
       const shiftDot = document.getElementById('shift-status-dot') || document.getElementById('shift-indicator-dot');
       const shiftLabel = document.getElementById('shift-status-label');
-      const shiftMobile = document.getElementById('shift-status-mobile');
 
       if (shiftBtn) {
         if (RunnerStore.isOnline) {
-          shiftBtn.className = "min-h-[40px] px-3.5 py-1.5 rounded-full text-xs font-black transition-all flex items-center gap-1.5 shadow-xs cursor-pointer select-none active:scale-95 bg-emerald-600 text-white hover:bg-emerald-700";
+          shiftBtn.className = "min-h-[38px] px-3 py-1 rounded-full text-xs font-black transition-all flex items-center gap-1.5 shadow-xs cursor-pointer select-none active:scale-95 bg-[#16B86E] text-white hover:bg-emerald-600";
           if (shiftDot) shiftDot.className = "w-2 h-2 rounded-full bg-white animate-pulse";
-          if (shiftLabel) shiftLabel.innerText = isHi ? "ड्यूटी चालू" : "Duty Online";
-          if (shiftMobile) shiftMobile.innerText = isHi ? "चालू" : "Online";
+          if (shiftLabel) shiftLabel.innerText = isHi ? "चालू" : "Online";
         } else {
-          shiftBtn.className = "min-h-[40px] px-3.5 py-1.5 rounded-full text-xs font-black transition-all flex items-center gap-1.5 shadow-xs cursor-pointer select-none active:scale-95 bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700";
+          shiftBtn.className = "min-h-[38px] px-3 py-1 rounded-full text-xs font-black transition-all flex items-center gap-1.5 shadow-xs cursor-pointer select-none active:scale-95 bg-slate-200 text-slate-700 dark:bg-[#365668] dark:text-[#C9DCE5] hover:bg-slate-300";
           if (shiftDot) shiftDot.className = "w-2 h-2 rounded-full bg-slate-400";
-          if (shiftLabel) shiftLabel.innerText = isHi ? "ड्यूटी बंद" : "Duty Offline";
-          if (shiftMobile) shiftMobile.innerText = isHi ? "बंद" : "Offline";
+          if (shiftLabel) shiftLabel.innerText = isHi ? "बंद" : "Offline";
+        }
+      }
+
+      // Synchronize "I am on duty" switch card
+      const dutyToggle = document.getElementById('runner-duty-toggle');
+      if (dutyToggle) dutyToggle.checked = !!RunnerStore.isOnline;
+
+      const dutyTitle = document.getElementById('runner-duty-title');
+      const dutySub = document.getElementById('runner-duty-sub');
+      if (dutyTitle && dutySub) {
+        if (RunnerStore.isOnline) {
+          dutyTitle.innerText = isHi ? "ड्यूटी चालू है" : "I am on duty";
+          dutySub.innerText = isHi ? "नए डिलीवरी ऑर्डर प्राप्त करने के लिए तैयार" : "Ready to receive orders";
+        } else {
+          dutyTitle.innerText = isHi ? "ड्यूटी बंद है" : "Off duty";
+          dutySub.innerText = isHi ? "नए ऑर्डर अलर्ट बंद हैं" : "Not receiving orders";
         }
       }
 
@@ -2216,6 +2249,14 @@
     }
 
     // --- 9.6 SHIFT TOGGLE HANDLER ---
+    async function showRunnerAreaInfo() {
+      const isHi = RunnerStore.lang === 'hi';
+      showToast(
+        isHi ? 'कार्य क्षेत्र: सोनपुर हब' : 'Service Area: Sonpur Hub',
+        isHi ? 'सोनपुर क्षेत्र एवं 10 किमी दायरे में सक्रिय' : 'Delivering within Sonpur hub and 10 km radius'
+      );
+    }
+
     async function toggleRunnerShift() {
       const nextStatus = !RunnerStore.isOnline;
       const isHi = RunnerStore.lang === 'hi';
@@ -2308,14 +2349,14 @@
         const timeStr = mission.time_str || '10:30 AM';
 
         return `
-          <div onclick="openMissionDetail(${mission.id})" class="rounded-2xl bg-white dark:bg-[#2B4858] p-4 border border-slate-200 dark:border-[#476476] shadow-xs flex flex-col gap-2.5 transition-all hover:border-[#16B86E] cursor-pointer active:scale-98">
+          <div onclick="selectMission('${mission.id}')" class="rounded-2xl bg-white dark:bg-[#2B4858] p-4 border border-slate-200 dark:border-[#476476] shadow-xs flex flex-col gap-2.5 transition-all hover:border-[#16B86E] cursor-pointer active:scale-98">
             <!-- Header: Badge | #GB-XXXX | Time -->
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <span class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${badgeClass}">
                   ${badgeText}
                 </span>
-                <span class="font-mono font-black text-xs text-slate-800 dark:text-[#F6FBFD]">#GB-${mission.id}</span>
+                <span class="font-mono font-black text-xs text-slate-800 dark:text-[#F6FBFD]">${(mission.id && String(mission.id).startsWith("#")) ? mission.id : "#" + (mission.id || "")}</span>
               </div>
               <span class="text-[11px] text-slate-400 dark:text-[#8CAAB9]">${timeStr}</span>
             </div>
@@ -2344,18 +2385,21 @@
     }
 
     function selectMission(orderId) {
-      const found = RunnerStore.missions.find(m => m.id === orderId);
+      const missions = RunnerStore.missions || [];
+      const found = missions.find(m => m.id == orderId || String(m.id).replace(/\D/g, '') === String(orderId).replace(/\D/g, '')) || missions[0];
       if (found) {
         RunnerStore.selectedMission = found;
         renderMissionDetail();
-        switchTab('detail');
-        if (window.pushOverlayHistory) {
-          window.pushOverlayHistory('runner-tab-detail', function(fromPop) {
-            switchTab('missions', fromPop);
-          });
-        }
+      }
+      switchTab('detail');
+      if (window.pushOverlayHistory) {
+        window.pushOverlayHistory('runner-tab-detail', function(fromPop) {
+          switchTab('missions', fromPop);
+        });
       }
     }
+    window.selectMission = selectMission;
+    window.openMissionDetail = selectMission;
 
     function filterMissions(f) {
       RunnerStore.missionFilter = f;
@@ -3058,14 +3102,11 @@
 
       // Update Shift status button labels
       const shiftLabel = document.getElementById('shift-status-label');
-      const shiftMobile = document.getElementById('shift-status-mobile');
-      if (shiftLabel && shiftMobile) {
+      if (shiftLabel) {
         if (RunnerStore.isOnline) {
-          shiftLabel.innerText = isHi ? "ड्यूटी चालू" : "Duty Online";
-          shiftMobile.innerText = isHi ? "चालू" : "Online";
+          shiftLabel.innerText = isHi ? "चालू" : "Online";
         } else {
-          shiftLabel.innerText = isHi ? "ड्यूटी बंद" : "Duty Offline";
-          shiftMobile.innerText = isHi ? "बंद" : "Offline";
+          shiftLabel.innerText = isHi ? "बंद" : "Offline";
         }
       }
 
@@ -3249,7 +3290,12 @@
         .catch(() => {});
 
       let refreshing = false;
+      let hadController = Boolean(navigator.serviceWorker.controller);
       navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!hadController) {
+          hadController = true;
+          return;
+        }
         if (!refreshing) {
           refreshing = true;
           window.location.reload();

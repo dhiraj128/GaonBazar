@@ -252,10 +252,9 @@
       #vendor-header .w-10.h-10.rounded-xl { width: 36px !important; height: 36px !important; border-radius: 11px; }
       #vendor-header #store-badge-code { display: none !important; }
       #vendor-header #header-phone { display: none !important; }
-      #vendor-header #vendor-header-shop-name { max-width: min(38vw, 154px); font-size: 13px; }
-      #vendor-header #store-open-btn,
-      #vendor-header #btn-vendor-header-settings { min-width: 44px !important; min-height: 44px !important; border-radius: 12px; }
-      #vendor-header #store-open-btn { padding: 0 8px !important; gap: 5px !important; }
+      #vendor-header #vendor-header-shop-name { max-width: min(54vw, 240px); font-size: 13.5px; }
+      #vendor-header #btn-vendor-header-settings { min-width: 40px !important; min-height: 40px !important; border-radius: 12px; }
+      #vendor-header #store-open-btn { min-height: 28px !important; }
       main { padding: 12px !important; padding-bottom: calc(112px + env(safe-area-inset-bottom, 0px)) !important; gap: 12px !important; }
       #vendor-main-content { gap: 12px !important; }
       #vendor-kpi-board { gap: 8px !important; }
@@ -370,7 +369,7 @@
     <div class="max-w-6xl w-full mx-auto flex items-center justify-between gap-2">
       
       <!-- Brand & Shop Name + Open Status Dropdown -->
-      <div class="flex items-center gap-2.5 min-w-0">
+      <div class="flex items-center gap-2.5 min-w-0 flex-1">
         <div class="w-10 h-10 rounded-full bg-[#16B86E] text-white flex items-center justify-center shrink-0 shadow-xs text-xl">
           🏪
         </div>
@@ -407,7 +406,7 @@
     <span class="material-symbols-outlined text-primary-fixed text-[22px] animate-bounce" id="toast-icon">notifications_active</span>
     <div class="flex flex-col min-w-0 flex-1">
       <span id="toast-title" class="text-xs font-bold text-white"></span>
-      <span id="toast-subtitle" class="text-[11px] text-slate-300 truncate"></span>
+      <span id="toast-subtitle" class="text-[11px] text-slate-300 break-words leading-snug"></span>
     </div>
     <button onclick="dismissToast()" aria-label="Close notification" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center text-slate-400 hover:text-white active:scale-90 cursor-pointer">
       <span class="material-symbols-outlined text-[18px]">close</span>
@@ -483,7 +482,7 @@
     <section id="tab-orders" class="flex flex-col gap-3">
       
       <!-- ORDERS-FIRST STREAMLINED STAGE FILTER RIBBON (Replaces 4 oversized KPI blocks) -->
-      <section id="vendor-kpi-board" class="w-full flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
+      <section id="vendor-kpi-board" class="w-full flex items-center gap-2 overflow-x-auto no-scrollbar py-2.5 px-0.5">
         
         <!-- Filter 1: All Orders -->
         <button onclick="switchOrderFilter('all')" id="filter-btn-all" class="order-filter-pill min-h-[42px] px-4 py-2 rounded-xl text-xs font-black bg-emerald-600 text-white shrink-0 active:scale-95 cursor-pointer shadow-xs flex items-center gap-1.5" data-i18n="filter_orders_all">
@@ -491,30 +490,30 @@
         </button>
 
         <!-- Filter 2: New Orders (Action Needed) -->
-        <button onclick="switchOrderFilter('new')" id="filter-btn-new" class="order-filter-pill min-h-[42px] px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-700 shrink-0 active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5" data-i18n="filter_orders_new">
+        <button onclick="switchOrderFilter('new')" id="filter-btn-new" class="order-filter-pill min-h-[42px] px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-[#2B4858] text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-600/60 shrink-0 active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5" data-i18n="filter_orders_new">
           <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
           <span>नए ऑर्डर</span>
           <span id="kpi-new-count" class="min-w-[18px] h-[18px] px-1 bg-amber-500 text-white text-[10px] font-black rounded-full flex items-center justify-center">0</span>
         </button>
 
         <!-- Filter 3: Packing / In Progress -->
-        <button onclick="switchOrderFilter('packing')" id="filter-btn-packing" class="order-filter-pill min-h-[42px] px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-blue-800 dark:text-blue-300 border border-blue-300 dark:border-blue-700 shrink-0 active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5" data-i18n="filter_orders_packing">
+        <button onclick="switchOrderFilter('packing')" id="filter-btn-packing" class="order-filter-pill min-h-[42px] px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-[#2B4858] text-blue-800 dark:text-blue-300 border border-blue-300 dark:border-blue-600/60 shrink-0 active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5" data-i18n="filter_orders_packing">
           <span>पैकिंग</span>
           <span id="kpi-packing-count" class="min-w-[18px] h-[18px] px-1 bg-blue-500 text-white text-[10px] font-black rounded-full flex items-center justify-center">0</span>
         </button>
 
         <!-- Filter 4: Ready for Runner -->
-        <button onclick="switchOrderFilter('ready')" id="filter-btn-ready" class="order-filter-pill min-h-[42px] px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-purple-800 dark:text-purple-300 border border-purple-300 dark:border-purple-700 shrink-0 active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5" data-i18n="filter_orders_ready">
+        <button onclick="switchOrderFilter('ready')" id="filter-btn-ready" class="order-filter-pill min-h-[42px] px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-[#2B4858] text-purple-800 dark:text-purple-300 border border-purple-300 dark:border-purple-600/60 shrink-0 active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5" data-i18n="filter_orders_ready">
           <span>तैयार / सौंपें</span>
         </button>
 
         <!-- Filter 5: Out in Transit -->
-        <button onclick="switchOrderFilter('transit')" id="filter-btn-transit" class="order-filter-pill min-h-[42px] px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shrink-0 active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5" data-i18n="filter_orders_transit">
+        <button onclick="switchOrderFilter('transit')" id="filter-btn-transit" class="order-filter-pill min-h-[42px] px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-800 dark:text-[#F6FBFD] border border-slate-200 dark:border-[#476476] shrink-0 active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5" data-i18n="filter_orders_transit">
           <span>रास्ते में</span>
         </button>
 
         <!-- Filter 6: Completed / Delivered -->
-        <button onclick="switchOrderFilter('delivered')" id="filter-btn-delivered" class="order-filter-pill min-h-[42px] px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shrink-0 active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5" data-i18n="filter_orders_delivered">
+        <button onclick="switchOrderFilter('delivered')" id="filter-btn-delivered" class="order-filter-pill min-h-[42px] px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-800 dark:text-[#F6FBFD] border border-slate-200 dark:border-[#476476] shrink-0 active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5" data-i18n="filter_orders_delivered">
           <span>पूर्ण</span>
         </button>
 
@@ -1991,7 +1990,7 @@
       const headerName = document.getElementById('vendor-header-shop-name');
       if (headerName) headerName.textContent = store.name || store.id || 'Store';
       const badge = document.getElementById('store-badge-code');
-      if (badge) badge.innerText = `#${store.id.substring(0, 3).toUpperCase()}-01`;
+      if (badge) badge.innerText = store.id ? `#${String(store.id).substring(0, 3).toUpperCase()}-01` : "#SHR-01";
 
       const phone = document.getElementById('header-phone');
       if (phone) phone.innerText = `+91 ${store.phone}`;
@@ -2115,13 +2114,13 @@
         return;
       }
       container.innerHTML = notifs.map(n => `
-        <div onclick="markVendorNotifRead('${n.id}')" class="p-3 rounded-2xl border ${n.is_read ? 'bg-slate-50 border-slate-200/80 text-slate-600' : 'bg-primary-50/50 border-primary-200 text-slate-900'} cursor-pointer hover:border-primary-400 transition-all flex flex-col gap-1">
+        <div onclick="markVendorNotifRead('${n.id}')" class="p-3.5 rounded-2xl border ${n.is_read ? 'bg-slate-50 dark:bg-[#2B4858] border-slate-200/80 dark:border-[#476476] text-slate-600 dark:text-[#C9DCE5]' : 'bg-emerald-50/50 dark:bg-[#365668] border-emerald-200 dark:border-[#476476] text-slate-900 dark:text-[#F6FBFD]'} cursor-pointer hover:border-[#16B86E] transition-all flex flex-col gap-1">
           <div class="flex items-center justify-between text-[11px] font-bold">
-            <span class="${n.is_read ? 'text-slate-700' : 'text-primary font-black'}">${isHi && n.title_hi ? n.title_hi : n.title}</span>
-            ${!n.is_read ? '<span class="w-2 h-2 rounded-full bg-primary shrink-0"></span>' : ''}
+            <span class="${n.is_read ? 'text-slate-700 dark:text-[#C9DCE5]' : 'text-emerald-700 dark:text-[#4ADE80] font-black'}">${isHi && n.title_hi ? n.title_hi : n.title}</span>
+            ${!n.is_read ? '<span class="w-2 h-2 rounded-full bg-[#16B86E] shrink-0 animate-pulse"></span>' : ''}
           </div>
-          <p class="text-xs ${n.is_read ? 'text-slate-500' : 'text-slate-800'} leading-relaxed">${isHi && n.message_hi ? n.message_hi : n.message}</p>
-          <span class="text-[10px] text-slate-400 self-end">${new Date(n.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+          <p class="text-xs ${n.is_read ? 'text-slate-500 dark:text-[#8CAAB9]' : 'text-slate-800 dark:text-[#F6FBFD]'} leading-relaxed break-words">${isHi && n.message_hi ? n.message_hi : n.message}</p>
+          <span class="text-[10px] text-slate-400 dark:text-[#8CAAB9] self-end">${new Date(n.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
         </div>
       `).join('');
     }
@@ -2310,7 +2309,7 @@
           <div class="pt-2">
             <button onclick="handleOrderAction('${order.id}', 'pack')" class="w-full h-10 rounded-xl bg-[#16B86E] hover:bg-emerald-600 text-white font-bold text-xs shadow-xs active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1">
               <span class="material-symbols-outlined text-[16px]">inventory_2</span>
-              <span>Packing Complete • Ready for Runner (सामान पैक)</span>
+              <span>पैक हो गया / Mark Packed (Ready)</span>
             </button>
           </div>
         `;
@@ -2319,7 +2318,7 @@
           <div class="pt-2">
             <button onclick="handleOrderAction('${order.id}', 'dispatch')" class="w-full h-10 rounded-xl bg-[#16B86E] hover:bg-emerald-600 text-white font-bold text-xs shadow-xs active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1">
               <span class="material-symbols-outlined text-[16px]">send</span>
-              <span>Handover to Delivery Partner (सुपुर्द)</span>
+              <span>रनर को सौंपें / Handover to Gaon Mitra</span>
             </button>
           </div>
         `;
@@ -2427,11 +2426,13 @@
     function switchOrderFilter(filterName) {
       VendorStore.orderFilter = filterName;
       document.querySelectorAll('.order-filter-pill').forEach(btn => {
-        btn.className = "order-filter-pill min-h-[40px] px-4 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 active:scale-95 cursor-pointer";
+        btn.classList.remove('bg-emerald-600', 'bg-[#16B86E]', 'bg-primary', 'text-white', 'font-black');
+        btn.classList.add('bg-white', 'dark:bg-[#2B4858]', 'text-slate-800', 'dark:text-[#F6FBFD]', 'border', 'border-slate-200', 'dark:border-[#476476]', 'font-bold', 'shrink-0', 'shadow-2xs');
       });
       const activeBtn = document.getElementById(`filter-btn-${filterName}`);
       if (activeBtn) {
-        activeBtn.className = "order-filter-pill min-h-[40px] px-4 py-2 rounded-full text-xs font-bold bg-primary text-white active:scale-95 cursor-pointer";
+        activeBtn.classList.remove('bg-white', 'dark:bg-[#2B4858]', 'text-slate-800', 'dark:text-[#F6FBFD]', 'border', 'border-slate-200', 'dark:border-[#476476]', 'font-bold');
+        activeBtn.classList.add('bg-[#16B86E]', 'text-white', 'font-black', 'shrink-0', 'shadow-xs');
       }
       renderOrdersQueue();
     }
@@ -3249,7 +3250,12 @@
         .catch(() => {});
 
       let refreshing = false;
+      let hadController = Boolean(navigator.serviceWorker.controller);
       navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!hadController) {
+          hadController = true;
+          return;
+        }
         if (!refreshing) {
           refreshing = true;
           window.location.reload();
