@@ -270,6 +270,13 @@
         <span data-i18n="tab_risk">आंतरिक खाता जोखिम प्रबंधन</span>
       </button>
 
+      <!-- Tab 8: Support & Complaints Desk -->
+      <button id="admin-tab-btn-tickets" onclick="switchTab('tickets')" class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-slate-900 text-slate-300 hover:text-white border border-slate-800 transition-all whitespace-nowrap shrink-0 min-h-[38px]">
+        <span class="material-symbols-outlined text-[18px]">support_agent</span>
+        <span data-i18n="tab_tickets">शिकायतें व सहायता डेस्क</span>
+        <span id="tab-tickets-badge" class="ml-1 text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-full font-bold">0</span>
+      </button>
+
     </div>
 
     <!-- ======================================================================= -->
@@ -425,6 +432,55 @@
             </tr>
           </thead>
           <tbody id="godview-orders-table-body" class="divide-y divide-slate-800 text-slate-300">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+    <!-- ======================================================================= -->
+    <!-- 7.6 TAB 8: SUPPORT & GRIEVANCE TICKETS DESK                             -->
+    <!-- ======================================================================= -->
+    <section id="tab-tickets" class="hidden mt-10 shrink-0 flex-col gap-6 p-4 sm:p-6 bg-slate-900/60 rounded-3xl border border-slate-800/80 shadow-lg" style="margin-top: 40px;">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-sm font-black text-white flex items-center gap-2">
+            <span class="material-symbols-outlined text-amber-400">support_agent</span>
+            <span data-i18n="tickets_heading">सहायता व शिकायत टिकट डेस्क (Grievance Help Desk)</span>
+          </h2>
+          <p class="text-xs text-slate-400 mt-1" data-i18n="tickets_subheading">ग्राहकों, विक्रेताओं व डिलीवरी पार्टनर्स के टिकट और समाधान प्रबंधन</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <select id="tickets-status-filter" onchange="fetchSupportTickets(this.value)" class="bg-slate-800 text-xs text-white border border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none">
+            <option value="">सभी स्थितियाँ (All Status)</option>
+            <option value="open">ओपन (Open)</option>
+            <option value="in_review">समीक्षाधीन (In Review)</option>
+            <option value="resolved">समाधानित (Resolved)</option>
+          </select>
+          <button onclick="fetchSupportTickets()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 border border-slate-700 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-xs">refresh</span>
+            रिफ्रेश
+          </button>
+        </div>
+      </div>
+
+      <!-- Tickets Table Container -->
+      <div class="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-950/60">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="border-b border-slate-800 bg-slate-900/80 text-slate-400 font-bold uppercase tracking-wider">
+              <th class="py-3 px-3">ID</th>
+              <th class="py-3 px-3">उपयोगकर्ता (User)</th>
+              <th class="py-3 px-3">विषय व श्रेणी (Category)</th>
+              <th class="py-3 px-3">समस्या विवरण (Issue Description)</th>
+              <th class="py-3 px-3">स्थिति (Status)</th>
+              <th class="py-3 px-3">समय (Created)</th>
+              <th class="py-3 px-3 min-w-[240px]">समाधान व कार्रवाई (Resolution & Action)</th>
+            </tr>
+          </thead>
+          <tbody id="tickets-table-body" class="divide-y divide-slate-800 text-slate-300 font-medium">
             <!-- Rendered dynamically -->
           </tbody>
         </table>
@@ -1026,6 +1082,10 @@
 
       document.getElementById('tab-vendor-badge').innerText = m.pending_vendors;
       document.getElementById('tab-runner-badge').innerText = m.pending_runners;
+      const tBadge = document.getElementById('tab-tickets-badge');
+      if (tBadge && m.open_tickets !== undefined) {
+        tBadge.innerText = m.open_tickets;
+      }
       document.getElementById('godview-count-badge').innerText = `${m.active_orders} ${isHi ? 'ऑर्डर सक्रिय' : 'Orders In-Flight'}`;
     }
 
@@ -1588,7 +1648,7 @@
     // --- TAB SWITCHER ---
     function switchTab(tabId) {
       AdminStore.activeTab = tabId;
-      ['vendors', 'runners', 'orders', 'ledger', 'risk', 'bank', 'notifications'].forEach(t => {
+      ['vendors', 'runners', 'orders', 'ledger', 'risk', 'bank', 'notifications', 'tickets'].forEach(t => {
         const sec = document.getElementById(`tab-${t}`);
         const btn = document.getElementById(`admin-tab-btn-${t}`);
         if (sec) sec.classList.add('hidden');
@@ -1611,6 +1671,9 @@
       }
       if (tabId === 'notifications') {
         fetchAdminNotifications();
+      }
+      if (tabId === 'tickets') {
+        fetchSupportTickets();
       }
     }
 
@@ -1665,6 +1728,106 @@
       }
     }
     window.fetchRiskProfiles = fetchRiskProfiles;
+
+    // --- SUPPORT TICKETS HANDLERS ---
+    async function fetchSupportTickets(statusFilter = '') {
+      const tbody = document.getElementById('tickets-table-body');
+      if (!tbody) return;
+      const isHi = AdminStore.lang === 'hi';
+
+      const filterVal = statusFilter !== undefined && statusFilter !== null && statusFilter !== ''
+        ? statusFilter
+        : (document.getElementById('tickets-status-filter')?.value || '');
+
+      const endpoint = filterVal ? `/admin/support/tickets?status=${encodeURIComponent(filterVal)}` : '/admin/support/tickets';
+
+      try {
+        const tickets = await adminFetch(endpoint);
+        if (!tickets || tickets.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-500 font-bold">${isHi ? 'कोई सहायता टिकट उपलब्ध नहीं है' : 'No support tickets found.'}</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = tickets.map(t => {
+          let statusBadge = '';
+          if (t.status === 'open') {
+            statusBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-black bg-rose-500/20 text-rose-300 border border-rose-500/30">ओपन (Open)</span>`;
+          } else if (t.status === 'in_review') {
+            statusBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/30">समीक्षाधीन</span>`;
+          } else {
+            statusBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">समाधानित (Resolved)</span>`;
+          }
+
+          const createdTime = t.created_at ? new Date(t.created_at).toLocaleString() : 'N/A';
+          const userRole = t.user_role ? `<span class="text-[10px] uppercase font-bold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">${t.user_role}</span>` : '';
+          const userPhone = t.user_phone ? `<div class="font-mono text-slate-300">${t.user_phone}</div>` : '';
+          const orderBadge = t.order_id ? `<div class="text-[10px] text-blue-400 font-mono">Order #${t.order_id}</div>` : '';
+
+          const actionHtml = t.status === 'resolved'
+            ? `<div class="text-emerald-400 text-xs font-medium"><span class="material-symbols-outlined text-xs align-middle text-emerald-400">check_circle</span> समाधानित: ${t.resolution_notes || 'Resolved by Super Admin'}</div>`
+            : `<div class="flex items-center gap-2">
+                <input type="text" id="ticket-res-input-${t.id}" placeholder="${isHi ? 'समाधान नोट दर्ज करें...' : 'Resolution notes...'}" class="w-full bg-slate-800 text-xs text-white border border-slate-700 rounded-lg px-2 py-1 focus:outline-none focus:border-emerald-500" />
+                <button onclick="handleResolveTicket(${t.id})" class="shrink-0 px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1 transition-all">
+                  <span class="material-symbols-outlined text-xs">done</span>
+                  ${isHi ? 'हल करें' : 'Resolve'}
+                </button>
+              </div>`;
+
+          return `
+            <tr class="hover:bg-slate-800/40 transition-colors">
+              <td class="py-2.5 px-3 font-mono text-amber-400 font-bold">#${t.id}</td>
+              <td class="py-2.5 px-3">
+                <div class="font-bold text-white">${t.user_name || 'Anonymous User'}</div>
+                ${userPhone}
+                ${userRole}
+              </td>
+              <td class="py-2.5 px-3">
+                <div class="font-bold text-slate-200">${t.subject || t.category}</div>
+                <div class="text-[11px] text-slate-400 capitalize">${t.category}</div>
+                ${orderBadge}
+              </td>
+              <td class="py-2.5 px-3 max-w-xs text-slate-300">
+                <div class="line-clamp-2" title="${t.description}">${t.description}</div>
+              </td>
+              <td class="py-2.5 px-3">${statusBadge}</td>
+              <td class="py-2.5 px-3 text-[11px] text-slate-400 whitespace-nowrap">${createdTime}</td>
+              <td class="py-2.5 px-3">${actionHtml}</td>
+            </tr>
+          `;
+        }).join('');
+
+      } catch (err) {
+        console.error('Failed to load support tickets:', err);
+        tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-rose-400 font-bold">Error loading tickets: ${err.message}</td></tr>`;
+      }
+    }
+    window.fetchSupportTickets = fetchSupportTickets;
+
+    async function handleResolveTicket(ticketId) {
+      const input = document.getElementById(`ticket-res-input-${ticketId}`);
+      const notes = input ? input.value.trim() : '';
+      const isHi = AdminStore.lang === 'hi';
+
+      try {
+        const res = await adminFetch(`/admin/support/tickets/${ticketId}/action`, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'resolve',
+            resolution_notes: notes || 'Resolved by Super Admin via Operations Desk'
+          })
+        });
+
+        showToast(
+          isHi ? 'टिकट हल हुआ' : 'Ticket Resolved',
+          isHi ? `टिकट #${ticketId} सफलतापूर्वक हल किया गया` : `Ticket #${ticketId} was resolved successfully.`
+        );
+        fetchSupportTickets();
+        refreshAdminData(false);
+      } catch (err) {
+        alert(err.message || 'Failed to resolve ticket');
+      }
+    }
+    window.handleResolveTicket = handleResolveTicket;
 
     // --- TOAST UTILITY ---
     let toastTimeout = null;

@@ -504,6 +504,7 @@ class AdminMetricsResponse(BaseModel):
     total_runners: int
     approved_runners: int
     pending_runners: int
+    open_tickets: Optional[int] = 0
 
 
 class AdminPendingVendorDTO(BaseModel):

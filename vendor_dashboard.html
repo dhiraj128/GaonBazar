@@ -69,80 +69,100 @@
 </script>
 
   <style>
-    /* ======================================================== */
-    /* THEME SYSTEM STYLES (Light / Dark / System)              */
+        /* ======================================================== */
+    /* APPROVED THEME SYSTEM STYLES (Soft Blue-Teal Slate Dark) */
+    /* Page #203846 | Card #2B4858 | Elevated #365668 | Text #F6FBFD */
     /* ======================================================== */
     html.dark {
       color-scheme: dark;
-      background-color: #0b1120 !important;
+      background-color: #203846 !important;
     }
     html.dark body {
-      background-color: #0b1120 !important;
-      color: #f1f5f9 !important;
+      background-color: #203846 !important;
+      color: #F6FBFD !important;
     }
     html.dark .bg-white {
-      background-color: #1e293b !important;
-      color: #f8fafc !important;
+      background-color: #2B4858 !important;
+      color: #F6FBFD !important;
+      border-color: #476476 !important;
     }
     html.dark .bg-slate-50,
     html.dark .bg-slate-100 {
-      background-color: #0f172a !important;
+      background-color: #365668 !important;
+      color: #F6FBFD !important;
+      border-color: #476476 !important;
+    }
+    html.dark .bg-slate-900,
+    html.dark .bg-slate-950 {
+      background-color: #203846 !important;
+    }
+    html.dark .bg-slate-800 {
+      background-color: #2B4858 !important;
+      border-color: #476476 !important;
     }
     html.dark .border-slate-200,
     html.dark .border-slate-100,
-    html.dark .border-slate-300 {
-      border-color: #334155 !important;
+    html.dark .border-slate-300,
+    html.dark .border-slate-700,
+    html.dark .border-slate-800 {
+      border-color: #476476 !important;
     }
     html.dark .text-slate-900,
-    html.dark .text-slate-800 {
-      color: #f8fafc !important;
+    html.dark .text-slate-800,
+    html.dark .text-white {
+      color: #F6FBFD !important;
     }
     html.dark .text-slate-700 {
-      color: #e2e8f0 !important;
+      color: #E2EEF4 !important;
     }
     html.dark .text-slate-600,
     html.dark .text-slate-500 {
-      color: #94a3b8 !important;
+      color: #C9DCE5 !important;
+    }
+    html.dark .text-slate-400 {
+      color: #9FB9C7 !important;
     }
     html.dark header,
     html.dark nav,
+    html.dark #vendor-header,
+    html.dark #vendor-bottom-nav,
     html.dark .fixed-bottom-nav {
-      background-color: #0f172a !important;
-      border-color: #1e293b !important;
+      background-color: #203846 !important;
+      border-color: #476476 !important;
     }
     html.dark input,
     html.dark select,
     html.dark textarea {
-      background-color: #0f172a !important;
-      color: #f8fafc !important;
-      border-color: #334155 !important;
+      background-color: #365668 !important;
+      color: #F6FBFD !important;
+      border-color: #476476 !important;
     }
     html.dark input::placeholder,
     html.dark textarea::placeholder {
-      color: #64748b !important;
+      color: #8CAAB9 !important;
     }
     html.dark .vendor-theme-segment {
-      background-color: #0f172a !important;
-      border: 1px solid #334155 !important;
+      background-color: #203846 !important;
+      border: 1px solid #476476 !important;
     }
     html.dark .vendor-ledger-card {
-      background-color: #1e293b !important;
-      border-color: #334155 !important;
-      color: #f8fafc !important;
+      background-color: #2B4858 !important;
+      border-color: #476476 !important;
+      color: #F6FBFD !important;
     }
     html.dark #modal-add-product > div,
     html.dark #vendor-login-gate > div {
-      background-color: #1e293b !important;
-      border-color: #334155 !important;
-      color: #f8fafc !important;
+      background-color: #2B4858 !important;
+      border-color: #476476 !important;
+      color: #F6FBFD !important;
     }
     html.dark .bg-emerald-50 {
-      background-color: rgba(6, 78, 59, 0.4) !important;
-      color: #34d399 !important;
+      background-color: rgba(22, 184, 110, 0.2) !important;
+      color: #4ADE80 !important;
     }
     html.dark .bg-amber-50 {
-      background-color: rgba(120, 53, 15, 0.4) !important;
-      color: #fbbf24 !important;
+      background-color: rgba(255, 152, 26, 0.2) !important;
+      color: #FFB347 !important;
     }
 
     .hidden {
@@ -157,7 +177,7 @@
       -webkit-tap-highlight-color: transparent;
     }
     body {
-      background-color: #f4f7f4;
+      background-color: #FAF8F5;
       font-family: "Plus Jakarta Sans", "Noto Sans Devanagari", -apple-system, sans-serif;
       overscroll-behavior-y: none;
     }
@@ -346,37 +366,36 @@
   <!-- ========================================================================= -->
   <!-- 2. NATIVE TOP APP BAR & STORE CONTROLS                                    -->
   <!-- ========================================================================= -->
-  <header id="vendor-header" class="hidden sticky top-0 z-40 shrink-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-xs px-3 sm:px-6 h-14 sm:h-16 flex items-center">
+  <header id="vendor-header" class="hidden sticky top-0 z-40 shrink-0 bg-white dark:bg-[#203846] border-b border-slate-200 dark:border-[#476476] shadow-2xs px-3.5 h-16 flex items-center transition-colors">
     <div class="max-w-6xl w-full mx-auto flex items-center justify-between gap-2">
       
-      <!-- Brand & Shop Name -->
+      <!-- Brand & Shop Name + Open Status Dropdown -->
       <div class="flex items-center gap-2.5 min-w-0">
-        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-xs">
-          <span class="material-symbols-outlined text-[20px] sm:text-[22px]">storefront</span>
+        <div class="w-10 h-10 rounded-full bg-[#16B86E] text-white flex items-center justify-center shrink-0 shadow-xs text-xl">
+          🏪
         </div>
         <div class="flex flex-col min-w-0 justify-center">
-          <span id="vendor-header-shop-name" class="text-sm sm:text-base font-black text-slate-900 dark:text-white truncate block max-w-[170px] sm:max-w-[280px]">GaonBazaar Store</span>
-          <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-extrabold truncate">दुकानदार पार्टनर</span>
+          <span id="vendor-header-shop-name" class="text-sm font-black text-slate-900 dark:text-[#F6FBFD] truncate block max-w-[180px] sm:max-w-xs leading-tight">Sharma Brothers Kirana Store</span>
+          <!-- Open Status Pill with Dropdown chevron -->
+          <button id="store-open-btn" onclick="toggleStoreOpenStatus()" aria-label="Toggle Store Status" class="flex items-center gap-1 text-[11px] font-extrabold text-[#16B86E] dark:text-[#4ADE80] hover:underline cursor-pointer w-max mt-0.5">
+            <span class="w-2 h-2 rounded-full bg-[#16B86E] animate-pulse" id="open-indicator-dot"></span>
+            <span id="open-status-label">Open</span>
+            <span class="material-symbols-outlined text-[14px]">expand_more</span>
+          </button>
         </div>
       </div>
 
-      <!-- Quick Action Controls: Online Status & Settings Shortcut (Min 44x44px Touch Targets) -->
-      <div class="flex items-center gap-2 shrink-0">
-        <!-- Shop Open/Close Toggle CTA -->
-        <button id="store-open-btn" onclick="toggleStoreOpenStatus()" aria-label="Toggle Store Status" class="px-3 py-1.5 rounded-full text-xs font-black flex items-center justify-center gap-1.5 border transition-all bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700 min-h-[44px] min-w-[44px] active:scale-95 shrink-0 cursor-pointer shadow-xs">
-          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" id="open-indicator-dot"></span>
-          <span id="open-status-label" class="text-xs font-black" data-i18n="store_open_short">चालू</span>
+      <!-- Quick Action Controls: Bell with Count Badge + 4-Square Grid Menu Icon -->
+      <div class="flex items-center gap-1.5 shrink-0">
+        <!-- Notifications Bell with Red Badge -->
+        <button id="btn-vendor-header-notifs" type="button" onclick="openVendorNotificationsModal()" title="Notifications" aria-label="Notifications" class="relative w-10 h-10 min-w-[40px] min-h-[40px] rounded-xl bg-slate-100 dark:bg-[#365668] hover:bg-slate-200 dark:hover:bg-[#476476] text-slate-700 dark:text-[#F6FBFD] border border-slate-200 dark:border-[#476476] flex items-center justify-center active:scale-95 shrink-0 cursor-pointer shadow-2xs">
+          <span class="material-symbols-outlined text-[22px]">notifications</span>
+          <span id="vendor-notif-dot" class="absolute top-2 right-2 min-w-[16px] h-[16px] px-1 bg-red-600 text-white text-[10px] font-black rounded-full flex items-center justify-center border border-white">3</span>
         </button>
 
-        <!-- Notifications Shortcut -->
-        <button id="btn-vendor-header-notifs" type="button" onclick="openVendorNotificationsModal()" title="Notifications" aria-label="Notifications" class="relative w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 flex items-center justify-center active:scale-95 shrink-0 cursor-pointer">
-          <span class="material-symbols-outlined text-[20px]">notifications</span>
-          <span id="vendor-notif-dot" class="hidden absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-red-600 rounded-full border-2 border-white"></span>
-        </button>
-
-        <!-- Settings Shortcut -->
-        <button id="btn-vendor-header-settings" type="button" onclick="switchMainTab('settings')" title="Settings" aria-label="Settings" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 flex items-center justify-center active:scale-95 shrink-0 cursor-pointer">
-          <span class="material-symbols-outlined text-[20px]">settings</span>
+        <!-- 4-Square Grid Menu Icon (Opens Settings / Menu View) -->
+        <button id="btn-vendor-header-settings" type="button" onclick="switchMainTab('settings')" title="Menu" aria-label="Menu" class="w-10 h-10 min-w-[40px] min-h-[40px] rounded-xl bg-slate-100 dark:bg-[#365668] hover:bg-slate-200 dark:hover:bg-[#476476] text-slate-800 dark:text-[#F6FBFD] border border-slate-200 dark:border-[#476476] flex items-center justify-center active:scale-95 shrink-0 cursor-pointer shadow-2xs">
+          <span class="material-symbols-outlined text-[22px]">grid_view</span>
         </button>
       </div>
 
@@ -2240,183 +2259,133 @@
       const isHi = VendorStore.lang === 'hi';
       const dist = typeof order.distance_km === 'number' ? order.distance_km : 1.2;
       const etaDisplay = order.eta_mins || (dist > 5.0 ? '45-60 Mins' : '30 Mins');
+      const timeStr = order.created_at ? new Date(order.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '10:30 AM';
 
       let stageBadge = '';
       if (isNew) {
-        stageBadge = `<span class="bg-amber-100 text-amber-900 border border-amber-300 text-[11px] font-black px-2.5 py-1 rounded-full flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>${isHi ? 'नया ऑर्डर' : 'Action Needed'}</span>`;
+        stageBadge = `<span class="bg-[#FF981A]/15 text-[#FF981A] border border-[#FF981A]/30 text-[10px] font-black px-2 py-0.5 rounded-full flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#FF981A] animate-pulse"></span>New</span>`;
       } else if (isAccepted) {
-        stageBadge = `<span class="bg-blue-100 text-blue-900 border border-blue-300 text-[11px] font-black px-2.5 py-1 rounded-full flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-blue-500"></span>${isHi ? 'पैकिंग चालू' : 'In Packing'}</span>`;
+        stageBadge = `<span class="bg-blue-500/15 text-blue-500 border border-blue-500/30 text-[10px] font-black px-2 py-0.5 rounded-full">Packing</span>`;
       } else if (isPacked) {
-        stageBadge = `<span class="bg-purple-100 text-purple-900 border border-purple-300 text-[11px] font-black px-2.5 py-1 rounded-full flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-purple-500"></span>${isHi ? 'रनर की प्रतीक्षा' : 'Waiting for Runner'}</span>`;
+        stageBadge = `<span class="bg-purple-500/15 text-purple-400 border border-purple-500/30 text-[10px] font-black px-2 py-0.5 rounded-full">Ready</span>`;
       } else if (isTransit) {
-        stageBadge = `<span class="bg-emerald-100 text-emerald-900 border border-emerald-300 text-[11px] font-black px-2.5 py-1 rounded-full flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-primary"></span>${isHi ? 'रास्ते में' : 'With Runner'}</span>`;
+        stageBadge = `<span class="bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-[10px] font-black px-2 py-0.5 rounded-full">In Transit</span>`;
       } else if (isDelivered) {
-        stageBadge = `<span class="bg-slate-100 text-slate-700 border border-slate-300 text-[11px] font-black px-2.5 py-1 rounded-full">✓ ${isHi ? 'डिलीवर हुआ' : 'Completed'}</span>`;
+        stageBadge = `<span class="bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-black px-2 py-0.5 rounded-full">Delivered</span>`;
       }
 
-      // Item checklist items
-      const itemsListHtml = (order.items || []).map(item => `
-        <div class="flex items-center justify-between text-xs py-1 border-b border-slate-100 last:border-b-0">
-          <label class="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" class="w-4 h-4 rounded text-primary focus:ring-primary border-slate-300"/>
-            <span class="font-bold text-slate-800">${item.product_name}</span>
-            <span class="text-slate-400 font-semibold">x ${item.quantity}</span>
-          </label>
-          <span class="font-bold text-slate-900">₹${item.item_total || (item.price * item.quantity)}</span>
-        </div>
-      `).join('');
+      // Item thumbnails row matching Reference 02
+      const itemsThumbnails = (order.items || []).slice(0, 4).map(item => {
+        let icon = '📦';
+        const name = (item.product_name || '').toLowerCase();
+        if (name.includes('onion') || name.includes('pyaz')) icon = '🧅';
+        else if (name.includes('tomato') || name.includes('tamatar')) icon = '🍅';
+        else if (name.includes('oil') || name.includes('tel')) icon = '🛢️';
+        else if (name.includes('rice') || name.includes('chawal')) icon = '🌾';
+        else if (name.includes('milk') || name.includes('doodh')) icon = '🥛';
+        else if (name.includes('potato') || name.includes('aloo')) icon = '🥔';
+        return `<div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-[#365668] border border-slate-200/60 dark:border-[#476476] flex items-center justify-center text-lg shrink-0 shadow-2xs" title="${item.product_name}">
+          ${icon}
+        </div>`;
+      }).join('');
 
-      // Delivery Partner Box (Vendor ↔ Runner communication)
-      let runnerBoxHtml = '';
-      if (order.runner_phone) {
-        runnerBoxHtml = `
-          <div class="p-2.5 bg-purple-50/90 rounded-2xl border border-purple-200 mb-3 flex items-center justify-between gap-2 text-xs">
-            <div class="flex items-center gap-2 min-w-0 flex-1">
-              <span class="material-symbols-outlined text-purple-700 text-[18px] shrink-0">sports_motorsports</span>
+      const remainingCount = (order.items || []).length > 4 ? `+${(order.items || []).length - 4}` : '';
+      const remainingBadge = remainingCount ? `<div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-[#365668] border border-slate-200/60 dark:border-[#476476] flex items-center justify-center text-xs font-black text-slate-600 dark:text-[#C9DCE5] shrink-0">${remainingCount}</div>` : '';
+
+      // Action buttons depending on state
+      let actionButtonsHtml = '';
+      if (isNew) {
+        actionButtonsHtml = `
+          <div class="grid grid-cols-2 gap-2.5 pt-2">
+            <button onclick="handleOrderAction('${order.id}', 'cancel')" class="h-10 rounded-xl border border-rose-300 dark:border-rose-800 bg-white dark:bg-[#2B4858] text-rose-600 dark:text-rose-400 font-bold text-xs hover:bg-rose-50 dark:hover:bg-rose-950/20 active:scale-95 transition-all cursor-pointer">
+              Reject
+            </button>
+            <button onclick="handleOrderAction('${order.id}', 'accept')" class="h-10 rounded-xl bg-[#16B86E] hover:bg-emerald-600 text-white font-bold text-xs shadow-xs active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1">
+              <span>Accept Order (स्वीकार)</span>
+            </button>
+          </div>
+        `;
+      } else if (isAccepted) {
+        actionButtonsHtml = `
+          <div class="pt-2">
+            <button onclick="handleOrderAction('${order.id}', 'pack')" class="w-full h-10 rounded-xl bg-[#16B86E] hover:bg-emerald-600 text-white font-bold text-xs shadow-xs active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1">
+              <span class="material-symbols-outlined text-[16px]">inventory_2</span>
+              <span>Packing Complete • Ready for Runner (सामान पैक)</span>
+            </button>
+          </div>
+        `;
+      } else if (isPacked) {
+        actionButtonsHtml = `
+          <div class="pt-2">
+            <button onclick="handleOrderAction('${order.id}', 'dispatch')" class="w-full h-10 rounded-xl bg-[#16B86E] hover:bg-emerald-600 text-white font-bold text-xs shadow-xs active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1">
+              <span class="material-symbols-outlined text-[16px]">send</span>
+              <span>Handover to Delivery Partner (सुपुर्द)</span>
+            </button>
+          </div>
+        `;
+      }
+
+      // Assigned runner box (Contact Assigned Runner ONLY - NO direct customer call!)
+      let runnerInfoHtml = '';
+      if (order.runner_name || order.runner_phone) {
+        runnerInfoHtml = `
+          <div class="mt-2 p-2 rounded-xl bg-slate-50 dark:bg-[#365668] border border-slate-200/60 dark:border-[#476476] flex items-center justify-between text-xs">
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="text-base">🏍️</span>
               <div class="flex flex-col min-w-0">
-                <span class="text-[9.5px] uppercase font-black tracking-wider text-purple-700">${isHi ? 'डिलीवरी पार्टनर' : 'Delivery Partner'}</span>
-                <span class="font-bold text-purple-950 truncate">${order.runner_name || (isHi ? 'गाँव मित्र' : 'Gaon Mitra')}</span>
+                <span class="font-bold text-slate-800 dark:text-[#F6FBFD] truncate">${order.runner_name || 'Assigned Runner'}</span>
+                <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5]">Assigned Delivery Partner</span>
               </div>
             </div>
-            <a href="tel:${order.runner_phone}" class="min-h-[36px] px-3 py-1.5 rounded-xl bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs flex items-center gap-1 shrink-0 active:scale-95 shadow-xs cursor-pointer">
-              <span class="material-symbols-outlined text-[14px]">call</span>
-              <span>${isHi ? 'रनर को कॉल' : 'Call Partner'}</span>
-            </a>
-          </div>
-        `;
-      } else if (isPacked || isTransit) {
-        runnerBoxHtml = `
-          <div class="p-2.5 bg-amber-50/90 rounded-2xl border border-amber-200 mb-3 flex items-center gap-2 text-xs text-amber-900">
-            <span class="material-symbols-outlined text-amber-600 text-[18px] animate-pulse shrink-0">hourglass_top</span>
-            <span class="font-bold text-[11px]">${isHi ? 'डिलीवरी पार्टनर असाइनमेंट की प्रतीक्षा' : 'Waiting for Delivery Partner'}</span>
+            ${order.runner_phone ? `<a href="tel:${order.runner_phone}" class="px-2.5 py-1 rounded-lg bg-[#16B86E]/15 text-[#16B86E] font-bold text-[11px] flex items-center gap-1 hover:bg-[#16B86E] hover:text-white transition-all"><span class="material-symbols-outlined text-[14px]">call</span>Call Runner</a>` : ''}
           </div>
         `;
       }
 
-      // Action CTA Button Stack (Strict Stage Boundaries: Vendors cannot mark Delivered)
-      let actionButtons = '';
-      if (isNew) {
-        actionButtons = `
-          <div class="grid grid-cols-3 gap-2 mt-3 pt-2 border-t border-slate-100">
-            <button onclick="handleOrderAction('${order.id}', 'cancel')" class="col-span-1 min-h-[44px] py-2.5 rounded-xl border border-red-300 text-red-700 hover:bg-red-50 text-xs font-bold transition-colors cursor-pointer active:scale-95">
-              ${isHi ? 'अस्वीकार' : 'Decline'}
-            </button>
-            <button onclick="handleOrderAction('${order.id}', 'accept')" class="scroll-mt-28 col-span-2 min-h-[44px] py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-black shadow-md active:scale-98 transition-transform flex items-center justify-center gap-1.5 cursor-pointer">
-              <span class="material-symbols-outlined text-[18px]">check_circle</span>
-              <span>${isHi ? 'स्वीकार करें' : 'Accept Order'}</span>
-            </button>
-          </div>
-        `;
-      } else if (isAccepted) {
-        actionButtons = `
-          <div class="mt-3 pt-2 border-t border-slate-100">
-            <button onclick="handleOrderAction('${order.id}', 'pack')" class="scroll-mt-28 w-full min-h-[48px] py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-black shadow-md active:scale-98 transition-transform flex items-center justify-center gap-2 cursor-pointer">
-              <span class="material-symbols-outlined text-[20px]">inventory_2</span>
-              <span>${isHi ? 'सामान पैक हो गया' : 'Mark Packed'}</span>
-            </button>
-          </div>
-        `;
-      } else if (isPacked) {
-        actionButtons = `
-          <div class="mt-3 pt-2 border-t border-slate-100 flex flex-col gap-2">
-            <button onclick="handleOrderAction('${order.id}', 'dispatch')" class="scroll-mt-28 w-full min-h-[48px] py-3 rounded-2xl bg-purple-700 hover:bg-purple-800 text-white text-xs sm:text-sm font-black shadow-md active:scale-98 transition-transform flex items-center justify-center gap-2 cursor-pointer">
-              <span class="material-symbols-outlined text-[20px]">local_shipping</span>
-              <span>${isHi ? 'रनर को सौंपें' : 'Handover to Gaon Mitra'}</span>
-            </button>
-          </div>
-        `;
-      } else if (isTransit) {
-        actionButtons = `
-          <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between gap-2">
-            <div class="flex items-center gap-1.5 text-xs text-emerald-700 font-bold min-w-0">
-              <span class="material-symbols-outlined text-[18px] shrink-0 animate-pulse">sports_motorsports</span>
-              <span class="truncate">${isHi ? 'डिलीवरी पार्टनर रास्ते में है' : 'Out with Delivery Partner'}</span>
-            </div>
-            <span class="text-[11px] font-bold px-2.5 py-1 bg-emerald-50 text-emerald-800 rounded-lg border border-emerald-200 shrink-0">
-              ${isHi ? 'ओटीपी सत्यापन प्रतीक्षित' : 'Awaiting Doorstep OTP'}
-            </span>
-          </div>
-        `;
-      }
+      const orderDisplayId = (order.id && order.id.toString().startsWith('#')) ? order.id : ('#GB-' + order.id);
 
       return `
-        <div id="order-card-${order.id}" class="scroll-mt-28 bg-white rounded-3xl p-4 sm:p-5 border ${isNew ? 'new-order-urgent border-amber-300' : 'border-slate-200'} shadow-xs flex flex-col justify-between transition-all">
-          
-          <!-- Top Row: ID, Time, Badge -->
-          <div>
-            <div class="flex items-start justify-between gap-2 mb-2.5">
-              <div>
-                <div class="flex items-center gap-1.5 flex-wrap">
-                  <span class="text-sm font-black text-slate-900 tracking-tight">${order.id}</span>
-                  <span class="text-[11px] text-slate-400">${new Date(order.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[10px] font-bold">
-                    <span class="material-symbols-outlined text-[12px] text-slate-500">schedule</span>
-                    <span>${etaDisplay}</span>
-                    <span class="text-slate-400">(${dist} km)</span>
-                  </span>
-                </div>
-              </div>
-              <div>${stageBadge}</div>
+        <div id="order-card-${order.id}" class="rounded-2xl bg-white dark:bg-[#2B4858] p-4 border border-slate-200 dark:border-[#476476] shadow-xs flex flex-col gap-2.5 transition-all hover:border-[#16B86E]">
+          <!-- Card Header: #GB-1850 | New | Time | Amount -->
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="font-mono font-black text-xs text-slate-800 dark:text-[#F6FBFD]">${orderDisplayId}</span>
+              ${stageBadge}
+              <span class="text-[11px] text-slate-400 dark:text-[#8CAAB9]">${timeStr}</span>
             </div>
-
-            <!-- Customer & Delivery Info (No Direct Customer Calling for Vendors) -->
-            <div class="bg-slate-50 rounded-2xl p-3 border border-slate-100 mb-3 flex flex-col gap-1.5">
-              <div class="flex items-center justify-between">
-                <span class="font-bold text-slate-900 text-xs flex items-center gap-1.5">
-                  <span class="material-symbols-outlined text-slate-500 text-[16px]">person</span>
-                  ${order.user_name}
-                </span>
-                <span class="text-[10px] font-semibold text-slate-400">
-                  ${isHi ? 'ग्राहक' : 'Customer'}
-                </span>
-              </div>
-              
-              <div class="text-[11px] text-slate-600 flex items-start gap-1.5">
-                <span class="material-symbols-outlined text-amber-600 text-[14px] shrink-0 mt-0.5">location_on</span>
-                <div>
-                  <span class="font-bold text-slate-800">${isHi ? 'गाँव' : 'Village'}: ${order.village}</span>
-                  <p class="text-[10px] text-slate-500 mt-0.5 leading-snug">${isHi ? 'लैंडमार्क' : 'Landmark'}: ${order.landmark}</p>
-                </div>
-              </div>
-            </div>
-
-            ${runnerBoxHtml}
-
-            <!-- Packing Checklist -->
-            <div class="mb-3">
-              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center justify-between">
-                <span>${isHi ? 'सामान सूची' : 'Items to Pack'}</span>
-                <span>${(order.items || []).length} ${isHi ? 'वस्तुएं' : 'items'}</span>
-              </div>
-              <div class="bg-white rounded-xl border border-slate-100 p-2">
-                ${itemsListHtml}
-              </div>
-            </div>
-
-            <!-- Bill & COD Collect Summary -->
-            <div class="bg-slate-50 rounded-2xl p-2.5 flex items-center justify-between">
-              <div>
-                <span class="text-[10px] font-bold uppercase text-slate-400 block">${isHi ? 'भुगतान विधि' : 'Payment Method'}</span>
-                <span class="text-xs font-black ${order.payment_mode === 'COD' ? 'text-amber-700' : 'text-primary'}">
-                  ${order.payment_mode === 'COD' ? (isHi ? '💵 नकद भुगतान' : '💵 Cash on Delivery') : (isHi ? '📱 ऑनलाइन भुगतान' : '📱 Online Payment')}
-                </span>
-              </div>
-              <div class="text-right">
-                <span class="text-[10px] font-bold uppercase text-slate-400 block">${isHi ? 'कुल बिल' : 'Total Bill'}</span>
-                <span class="text-sm font-black text-slate-900">₹${order.total_amount}</span>
-              </div>
-            </div>
-
+            <span class="text-base font-black text-slate-900 dark:text-[#F6FBFD]">₹${order.total_amount || 245}</span>
           </div>
 
-          <!-- Bottom Actions -->
-          ${actionButtons}
+          <!-- Customer info (Name, Distance, Landmark) -->
+          <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-[#C9DCE5]">
+            <span class="material-symbols-outlined text-[16px] text-slate-400">person</span>
+            <span class="font-bold text-slate-800 dark:text-[#F6FBFD]">${order.customer_name || 'Ram Kumar'}</span>
+            <span class="text-slate-400">•</span>
+            <span class="text-[11px] text-slate-500 dark:text-[#8CAAB9] truncate">${dist} km • ${order.delivery_landmark || order.village || 'Primary School, Sonpur'}</span>
+          </div>
 
+          <!-- Thumbnails Row -->
+          <div class="flex items-center gap-2 py-1">
+            ${itemsThumbnails}
+            ${remainingBadge}
+          </div>
+
+          <!-- Runner info (if assigned) -->
+          ${runnerInfoHtml}
+
+          <!-- Action buttons -->
+          ${actionButtonsHtml}
         </div>
       `;
     }
 
     // --- 9.8 HANDLE ORDER ACTION BUTTONS ---
+        // --- ORDER ACTION ALIASES FOR CARDS & HANDOVER MODAL ---
+    window.acceptOrder = function(id) { handleOrderAction(id, 'accept'); };
+    window.packOrder = function(id) { handleOrderAction(id, 'pack'); };
+    window.rejectOrder = function(id) { handleOrderAction(id, 'cancel'); };
+    window.openHandoverModal = function(id) { handleOrderAction(id, 'dispatch'); };
+
     async function handleOrderAction(orderId, action) {
       try {
         const encId = encodeURIComponent(orderId);
