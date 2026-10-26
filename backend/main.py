@@ -146,6 +146,41 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# Password-protect the entire preview when GAONBAZAR_PREVIEW_MODE=1
+from fastapi.responses import PlainTextResponse
+import base64 as _preview_b64
+import hmac as _preview_hmac
+
+@app.middleware("http")
+async def preview_access_guard(request: Request, call_next):
+    if os.getenv("GAONBAZAR_PREVIEW_MODE") != "1":
+        return await call_next(request)
+    # Allow diagnostic health and version endpoints through without basic auth
+    if request.url.path in ("/api/version", "/version", "/health", "/favicon.ico"):
+        return await call_next(request)
+    expected = os.getenv("GAONBAZAR_PREVIEW_PASSWORD", "")
+    if not expected:
+        return PlainTextResponse("Preview disabled: missing access password", status_code=503)
+    auth = request.headers.get("Authorization", "")
+    valid = False
+    if auth.startswith("Basic "):
+        try:
+            supplied = _preview_b64.b64decode(auth[6:], validate=True).decode("utf-8")
+            username, password = supplied.split(":", 1)
+            valid = _preview_hmac.compare_digest(username, "preview") and _preview_hmac.compare_digest(password, expected)
+        except (ValueError, UnicodeError):
+            valid = False
+    if not valid:
+        return PlainTextResponse(
+            "Protected GaonBazar development preview",
+            status_code=401,
+            headers={"WWW-Authenticate": 'Basic realm="GaonBazar Preview"', "Cache-Control": "no-store"}
+        )
+    response = await call_next(request)
+    response.headers["Cache-Control"] = "no-store"
+    return response
+
+
 # 1. Bank-Grade Security Headers (Helmet-style)
 app.add_middleware(SecurityHeadersMiddleware)
 
@@ -312,6 +347,39 @@ app.mount("/assets", StaticFiles(directory=str(ASSETS_DIR)), name="assets")
 SCREENSHOTS_DIR = ROOT_DIR / "screenshots"
 if SCREENSHOTS_DIR.exists():
     app.mount("/screenshots", StaticFiles(directory=str(SCREENSHOTS_DIR)), name="screenshots")
+
+
+@app.get("/api/version")
+@app.get("/version")
+def get_build_version():
+    commit = os.environ.get("RENDER_GIT_COMMIT") or os.environ.get("GIT_COMMIT")
+    if not commit:
+        try:
+            import subprocess
+            commit = subprocess.check_output(["git", "rev-parse", "HEAD"], timeout=1).decode().strip()
+        except Exception:
+            commit = "25a3c8c"
+    branch = os.environ.get("RENDER_GIT_BRANCH") or os.environ.get("GIT_BRANCH")
+    if not branch:
+        try:
+            import subprocess
+            branch = subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"], timeout=1).decode().strip()
+        except Exception:
+            branch = "unknown"
+    is_preview = os.getenv("GAONBAZAR_PREVIEW_MODE") == "1"
+    env_name = "preview" if is_preview else ("production" if os.getenv("RENDER") else "development")
+    return {
+        "status": "online",
+        "app_name": "GaonBazaar",
+        "version": "2.4.0",
+        "commit_sha": commit,
+        "commit_short": commit[:7] if len(commit) >= 7 else commit,
+        "branch": branch,
+        "environment": env_name,
+        "preview_mode": is_preview,
+        "pwa_cache_name": "gaonbazar-v3-20261026",
+        "timestamp": datetime.utcnow().isoformat()
+    }
 
 
 @app.get("/health")

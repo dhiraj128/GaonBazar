@@ -669,6 +669,25 @@
     <!-- 7. TAB 4: STORE SETTINGS & PROFILE                                      -->
     <!-- ======================================================================= -->
     <section id="tab-settings" class="hidden flex-col gap-4">
+
+      <!-- App Diagnostics & Cache Invalidation Card -->
+      <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-xs flex flex-col gap-3 max-w-2xl">
+        <div class="flex items-center justify-between border-b pb-2">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-[20px]">system_update</span>
+            <h2 class="text-sm font-black text-slate-900">ऐप वर्ज़न व सिस्टम डायग्नोस्टिक्स</h2>
+          </div>
+          <span class="gb-build-badge text-[11px] font-black bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full border border-slate-200">v2.4.0 (25a3c8c)</span>
+        </div>
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-600">
+          <p class="leading-relaxed">यदि स्क्रीन पर पुराना डिज़ाइन दिख रहा हो, तो नीचे दिए बटन से कैश साफ़ करके तुरंत नया वर्ज़न लोड करें।</p>
+          <button onclick="forceClearCacheAndReload()" type="button" class="w-full sm:w-auto px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl active:scale-95 transition-all shadow-sm shrink-0 flex items-center justify-center gap-1.5 cursor-pointer min-h-[40px]">
+            <span class="material-symbols-outlined text-[18px]">cached</span>
+            <span>कैश साफ़ करें व रीलोड</span>
+          </button>
+        </div>
+      </div>
+    
       
       <!-- Store Profile & Operational Cluster Card -->
       <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-xs flex flex-col gap-4 max-w-2xl">
@@ -3236,5 +3255,6 @@
       };
     })();
   </script>
+<script src="/static/pwa_manager.js"></script>
 </body>
 </html>

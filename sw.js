@@ -15,10 +15,12 @@
  *    - Eliminates the browser's "No Internet" dinosaur screen.
  */
 
-const CACHE_NAME = 'gaonbazar-v2-20261025';
+const CACHE_NAME = 'gaonbazar-v3-20261026';
 const PRECACHE_ASSETS = [
   '/',
   '/index.html',
+  '/vendor_dashboard.html',
+  '/runner_dashboard.html',
   '/offline.html',
   '/sw.js'
 ];
@@ -51,12 +53,25 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         cacheNames.map((name) => {
           if (name !== CACHE_NAME) {
+            console.log('[GaonBazaar SW]: Purging obsolete cache:', name);
             return caches.delete(name);
           }
         })
       );
     }).then(() => self.clients.claim())
   );
+});
+
+
+
+// --- 2.5 SERVICE WORKER MESSAGE DISPATCHER ---
+self.addEventListener('message', (event) => {
+  if (!event.data) return;
+  if (event.data.action === 'SKIP_WAITING') {
+    self.skipWaiting();
+  } else if (event.data.action === 'CLEAR_ALL_CACHES') {
+    caches.keys().then((names) => Promise.all(names.map((n) => caches.delete(n))));
+  }
 });
 
 // --- 3. INTELLIGENT FETCH INTERCEPTION ---
