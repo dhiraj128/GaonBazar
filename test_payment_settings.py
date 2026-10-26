@@ -26,7 +26,8 @@ sys.path.insert(0, str(ROOT_DIR))
 from backend.main import app, mask_bank_account
 from backend.database import SessionLocal, ensure_schema_migrations
 from backend.models import Store, Runner, SavedPaymentMethod, User
-from backend.security import issue_user_token, issue_vendor_token, issue_runner_token
+from backend.security import issue_user_token, issue_vendor_token, issue_runner_token, issue_admin_token
+ADMIN_AUTH = {'Authorization': f'Bearer {issue_admin_token()}'}
 
 VENDOR_AUTH = {"Authorization": f"Bearer {issue_vendor_token('sharma_brothers', '9876543211')}"}
 RUNNER_AUTH = {"Authorization": f"Bearer {issue_runner_token('gm_1', '9876543220')}"}
@@ -251,7 +252,7 @@ def test_super_admin_verification_and_frontend_dom():
     print("\n[SUITE 5/5]: Super Admin Payout KYC Controls & Frontend DOM Audits")
 
     # 5.1 Admin Payout Verifications List
-    res_admin = client.get("/api/admin/payout-verifications")
+    res_admin = client.get("/api/admin/payout-verifications", headers=ADMIN_AUTH)
     check(res_admin.status_code == 200, "Super Admin GET payout verifications returns 200")
     admin_list = res_admin.json()
     check(len(admin_list) > 0, "Admin payout verifications list contains stores and runners")
@@ -265,7 +266,7 @@ def test_super_admin_verification_and_frontend_dom():
     check(runner_entry["account_number_masked"] == "••••••••••6102", "Admin sees masked runner account number")
 
     # 5.2 Super Admin transitions Vendor to 'verified'
-    res_verify_v = client.post("/api/admin/payout-verifications/vendor/sharma_brothers/status", json={"status": "verified"})
+    res_verify_v = client.post("/api/admin/payout-verifications/vendor/sharma_brothers/status", json={"status": "verified"}, headers=ADMIN_AUTH)
     check(res_verify_v.status_code == 200, "Super Admin approved Vendor bank verification (Status 200)")
     check(res_verify_v.json().get("status") == "verified", "Vendor verification status transitioned to 'verified'")
 
@@ -274,7 +275,7 @@ def test_super_admin_verification_and_frontend_dom():
     check(v_status_check.get("verification_status") == "verified", "Vendor GET reflects 'verified' status immediately")
 
     # 5.3 Super Admin transitions Runner to 'verified'
-    res_verify_r = client.post("/api/admin/payout-verifications/runner/gm_1/status", json={"status": "verified"})
+    res_verify_r = client.post("/api/admin/payout-verifications/runner/gm_1/status", json={"status": "verified"}, headers=ADMIN_AUTH)
     check(res_verify_r.status_code == 200, "Super Admin approved Runner bank verification (Status 200)")
     check(res_verify_r.json().get("status") == "verified", "Runner verification status transitioned to 'verified'")
 
@@ -283,7 +284,7 @@ def test_super_admin_verification_and_frontend_dom():
     check(r_status_check.get("verification_status") == "verified", "Runner GET reflects 'verified' status immediately")
 
     # 5.4 Super Admin transitions Runner to 'rejected'
-    res_reject_r = client.post("/api/admin/payout-verifications/runner/gm_1/status", json={"status": "rejected"})
+    res_reject_r = client.post("/api/admin/payout-verifications/runner/gm_1/status", json={"status": "rejected"}, headers=ADMIN_AUTH)
     check(res_reject_r.status_code == 200, "Super Admin rejected Runner bank verification (Status 200)")
     r_rejected_check = client.get("/api/runner/gm_1/payout-settings", headers=RUNNER_AUTH).json()
     check(r_rejected_check.get("verification_status") == "rejected", "Runner GET reflects 'rejected' status")

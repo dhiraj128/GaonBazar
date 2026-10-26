@@ -365,13 +365,13 @@
   <!-- ========================================================================= -->
   <!-- 2. NATIVE TOP APP BAR & STORE CONTROLS                                    -->
   <!-- ========================================================================= -->
-  <header id="vendor-header" class="hidden sticky top-0 z-40 shrink-0 bg-white dark:bg-[#203846] border-b border-slate-200 dark:border-[#476476] shadow-2xs px-3.5 h-16 flex items-center transition-colors">
+  <header id="vendor-header" class="sticky top-0 z-40 shrink-0 bg-white dark:bg-[#203846] border-b border-slate-200 dark:border-[#476476] shadow-2xs px-3.5 h-16 flex items-center transition-colors">
     <div class="max-w-6xl w-full mx-auto flex items-center justify-between gap-2">
       
       <!-- Brand & Shop Name + Open Status Dropdown -->
       <div class="flex items-center gap-2.5 min-w-0 flex-1">
-        <div class="w-10 h-10 rounded-full bg-[#16B86E] text-white flex items-center justify-center shrink-0 shadow-xs text-xl">
-          🏪
+        <div class="w-10 h-10 rounded-xl overflow-hidden shrink-0 shadow-xs border border-slate-200 dark:border-[#476476]">
+          <img src="static/images/store_sharma.png" alt="Storefront" class="w-full h-full object-cover" />
         </div>
         <div class="flex flex-col min-w-0 justify-center">
           <span id="vendor-header-shop-name" class="text-sm font-black text-slate-900 dark:text-[#F6FBFD] truncate block max-w-[180px] sm:max-w-xs leading-tight">Sharma Brothers Kirana Store</span>
@@ -484,9 +484,20 @@
       <!-- ORDERS-FIRST STREAMLINED STAGE FILTER RIBBON (Replaces 4 oversized KPI blocks) -->
       <section id="vendor-kpi-board" class="w-full flex items-center gap-2 overflow-x-auto no-scrollbar py-2.5 px-0.5">
         
-        <!-- Filter 1: All Orders -->
-        <button onclick="switchOrderFilter('all')" id="filter-btn-all" class="order-filter-pill min-h-[42px] px-4 py-2 rounded-xl text-xs font-black bg-emerald-600 text-white shrink-0 active:scale-95 cursor-pointer shadow-xs flex items-center gap-1.5" data-i18n="filter_orders_all">
-          <span>सभी ऑर्डर</span>
+        <!-- 3 Workflow Pills Matching Reference 02 Frame 1 -->
+        <!-- Filter 1: Orders (3) -->
+        <button onclick="switchOrderFilter('all')" id="filter-btn-all" class="order-filter-pill min-h-[42px] px-4 py-2 rounded-xl text-xs font-black bg-[#16B86E] text-white shrink-0 active:scale-95 cursor-pointer shadow-xs flex items-center gap-1.5">
+          <span data-i18n="filter_orders_all">Orders (3)</span>
+        </button>
+
+        <!-- Filter 2: Packing (2) -->
+        <button onclick="switchOrderFilter('packing')" id="filter-btn-packing" class="order-filter-pill min-h-[42px] px-4 py-2 rounded-xl text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-700 dark:text-[#C9DCE5] border border-slate-200 dark:border-[#476476] shrink-0 active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5">
+          <span data-i18n="filter_orders_packing">Packing (2)</span>
+        </button>
+
+        <!-- Filter 3: Ready (1) -->
+        <button onclick="switchOrderFilter('ready')" id="filter-btn-ready" class="order-filter-pill min-h-[42px] px-4 py-2 rounded-xl text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-700 dark:text-[#C9DCE5] border border-slate-200 dark:border-[#476476] shrink-0 active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5">
+          <span data-i18n="filter_orders_ready">Ready (1)</span>
         </button>
 
         <!-- Filter 2: New Orders (Action Needed) -->
@@ -508,12 +519,12 @@
         </button>
 
         <!-- Filter 5: Out in Transit -->
-        <button onclick="switchOrderFilter('transit')" id="filter-btn-transit" class="order-filter-pill min-h-[42px] px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-800 dark:text-[#F6FBFD] border border-slate-200 dark:border-[#476476] shrink-0 active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5" data-i18n="filter_orders_transit">
+        <button onclick="switchOrderFilter('transit')" id="filter-btn-transit" class="hidden" class="order-filter-pill min-h-[42px] px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-800 dark:text-[#F6FBFD] border border-slate-200 dark:border-[#476476] shrink-0 active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5" data-i18n="filter_orders_transit">
           <span>रास्ते में</span>
         </button>
 
         <!-- Filter 6: Completed / Delivered -->
-        <button onclick="switchOrderFilter('delivered')" id="filter-btn-delivered" class="order-filter-pill min-h-[42px] px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-800 dark:text-[#F6FBFD] border border-slate-200 dark:border-[#476476] shrink-0 active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5" data-i18n="filter_orders_delivered">
+        <button onclick="switchOrderFilter('delivered')" id="filter-btn-delivered" class="hidden" class="order-filter-pill min-h-[42px] px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-800 dark:text-[#F6FBFD] border border-slate-200 dark:border-[#476476] shrink-0 active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5" data-i18n="filter_orders_delivered">
           <span>पूर्ण</span>
         </button>
 
@@ -666,6 +677,96 @@
     <!-- ======================================================================= -->
     <section id="tab-settings" class="hidden flex-col gap-4">
 
+      <!-- Screen 5: Vendor Store Menu & Settings (Matching Reference 02 Frame 5) -->
+      <div class="flex items-center justify-between py-1">
+        <span class="font-black text-sm text-slate-900 dark:text-[#F6FBFD]">Store Menu & Settings</span>
+        <span class="text-[11px] font-bold text-[#16B86E] bg-emerald-50 dark:bg-[#365668] px-2.5 py-0.5 rounded-full">Dukandaar</span>
+      </div>
+
+      <!-- Store Card with store_sharma.png -->
+      <div class="p-4 rounded-3xl bg-white dark:bg-[#2B4858] border border-slate-200 dark:border-[#476476] shadow-xs flex items-center gap-3.5">
+        <div class="w-14 h-14 rounded-2xl overflow-hidden shrink-0 border border-slate-200 dark:border-[#476476] shadow-2xs">
+          <img src="static/images/store_sharma.png" alt="Storefront" class="w-full h-full object-cover" />
+        </div>
+        <div class="flex flex-col min-w-0">
+          <span class="font-black text-sm text-slate-900 dark:text-[#F6FBFD] truncate">Sharma Brothers Kirana Store</span>
+          <span class="text-xs text-slate-500 dark:text-[#C9DCE5]">Owner: Mahesh Sharma • Rampur Chowk</span>
+          <div class="flex items-center gap-2 mt-1">
+            <span class="text-[10px] bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-300 font-black px-1.5 py-0.5 rounded">GST Verified</span>
+            <span class="text-[10px] text-slate-400">ID: #SHR-01</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 10 Menu Options List -->
+      <div class="rounded-3xl bg-white dark:bg-[#2B4858] border border-slate-200 dark:border-[#476476] shadow-xs overflow-hidden flex flex-col divide-y divide-slate-100 dark:divide-[#476476]">
+        <button onclick="switchMainTab('orders')" class="w-full p-3.5 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-[#365668] transition-colors cursor-pointer">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-[#16B86E] text-[20px]">store</span>
+            <span class="text-xs font-bold text-slate-800 dark:text-[#F6FBFD]">Store Profile & Business Hours</span>
+          </div>
+          <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
+        </button>
+
+        <button onclick="switchMainTab('ledger')" class="w-full p-3.5 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-[#365668] transition-colors cursor-pointer">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-[#16B86E] text-[20px]">account_balance_wallet</span>
+            <span class="text-xs font-bold text-slate-800 dark:text-[#F6FBFD]">Daily Settlement & Ledger</span>
+          </div>
+          <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
+        </button>
+
+        <button onclick="switchMainTab('inventory')" class="w-full p-3.5 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-[#365668] transition-colors cursor-pointer">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-[#16B86E] text-[20px]">inventory_2</span>
+            <span class="text-xs font-bold text-slate-800 dark:text-[#F6FBFD]">Manage Catalog & Categories</span>
+          </div>
+          <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
+        </button>
+
+        <button class="w-full p-3.5 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-[#365668] transition-colors cursor-pointer">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-[#16B86E] text-[20px]">reviews</span>
+            <span class="text-xs font-bold text-slate-800 dark:text-[#F6FBFD]">Customer Reviews & Ratings</span>
+          </div>
+          <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
+        </button>
+
+        <button class="w-full p-3.5 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-[#365668] transition-colors cursor-pointer">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-[#16B86E] text-[20px]">print</span>
+            <span class="text-xs font-bold text-slate-800 dark:text-[#F6FBFD]">Sound Alert & Thermal Printer</span>
+          </div>
+          <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
+        </button>
+
+        <div class="w-full p-3.5 flex items-center justify-between text-left">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-[#16B86E] text-[20px]">translate</span>
+            <span class="text-xs font-bold text-slate-800 dark:text-[#F6FBFD]">Language / भाषा</span>
+          </div>
+          <button onclick="toggleVendorLanguage()" class="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-[#365668] text-[11px] font-black border border-slate-200 dark:border-[#476476] cursor-pointer">
+            <span class="text-[#16B86E]">हिंदी</span> / EN
+          </button>
+        </div>
+
+        <button class="w-full p-3.5 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-[#365668] transition-colors cursor-pointer">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-[#16B86E] text-[20px]">help</span>
+            <span class="text-xs font-bold text-slate-800 dark:text-[#F6FBFD]">Vendor Help & Partner Support</span>
+          </div>
+          <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
+        </button>
+
+        <button onclick="logoutVendor()" class="w-full p-3.5 flex items-center justify-between text-left hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors text-rose-600 cursor-pointer">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-rose-600 text-[20px]">logout</span>
+            <span class="text-xs font-bold">Logout</span>
+          </div>
+          <span class="material-symbols-outlined text-rose-400 text-[18px]">chevron_right</span>
+        </button>
+      </div>
+
       <!-- App Diagnostics & Cache Invalidation Card -->
       <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-xs flex flex-col gap-3 max-w-2xl">
         <div class="flex items-center justify-between border-b pb-2">
@@ -702,7 +803,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1" data-i18n="store_name_en">दुकान का अंग्रेज़ी नाम</label>
-            <input type="text" id="setting-store-name" class="w-full p-2.5 bg-slate-50 border rounded-xl text-xs font-medium" readonly/>
+            <input type="text" id="setting-store-name" value="Sharma Brothers Kirana Store" class="w-full p-2.5 bg-slate-50 border rounded-xl text-xs font-medium" readonly/>
           </div>
 
           <div>
@@ -896,38 +997,274 @@
     </div>
   </div>
 
+  
+  <!-- ========================================================================= -->
+  <!-- MODAL / SCREEN 2: ORDER DETAILS (Matching Reference 02 Frame 2)           -->
+  <!-- ========================================================================= -->
+  <div id="modal-order-detail" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4">
+    <div class="bg-white dark:bg-[#203846] text-slate-900 dark:text-[#F6FBFD] rounded-3xl max-w-md w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 dark:border-[#476476] overflow-hidden">
+      <!-- Header -->
+      <div class="p-3.5 border-b border-slate-100 dark:border-[#476476] flex items-center justify-between shrink-0 bg-slate-50 dark:bg-[#2B4858]">
+        <div class="flex items-center gap-2">
+          <button onclick="closeVendorOrderDetailModal()" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-200 dark:hover:bg-[#365668] text-slate-700 dark:text-[#F6FBFD] cursor-pointer">
+            <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+          </button>
+          <span class="font-black text-sm">Order #GB-1850 Details</span>
+        </div>
+        <span class="bg-[#FF981A]/15 text-[#FF981A] border border-[#FF981A]/30 text-[10px] font-black px-2 py-0.5 rounded-full flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-[#FF981A] animate-pulse"></span>
+          NEW ORDER
+        </span>
+      </div>
+      
+      <!-- Content Body -->
+      <div class="p-4 overflow-y-auto flex-1 flex flex-col gap-3">
+        <!-- Customer Info Card (Strict Privacy Policy: Vendor contacts Runner only) -->
+        <div class="p-3 rounded-2xl bg-slate-50 dark:bg-[#2B4858] border border-slate-100 dark:border-[#476476] flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="w-10 h-10 rounded-full bg-[#16B86E]/15 text-[#16B86E] font-black flex items-center justify-center text-sm">
+              RK
+            </div>
+            <div class="flex flex-col">
+              <span class="font-black text-xs text-slate-900 dark:text-[#F6FBFD]">Ram Kumar</span>
+              <span class="text-[11px] text-slate-500 dark:text-[#C9DCE5]">Rampur Main Gali, House 12</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-200/70 dark:bg-[#365668] text-[10px] font-bold text-slate-700 dark:text-[#C9DCE5]">
+            <span class="material-symbols-outlined text-[13px]">pin_drop</span>
+            <span>ग्राहक पता</span>
+          </div>
+        </div>
+
+        <!-- Assigned Delivery Partner (Gaon Mitra) - Authorized Contact Only -->
+        <div class="p-3 rounded-2xl bg-emerald-50/70 dark:bg-[#203846] border border-emerald-200/60 dark:border-[#476476] flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="w-10 h-10 rounded-full bg-[#16B86E] text-white font-black flex items-center justify-center text-sm shadow-xs">
+              <span class="material-symbols-outlined text-[20px]">two_wheeler</span>
+            </div>
+            <div class="flex flex-col">
+              <div class="flex items-center gap-1.5">
+                <span class="font-black text-xs text-slate-900 dark:text-[#F6FBFD]">Ramesh Kumar</span>
+                <span class="px-1.5 py-0.2 rounded-full bg-[#16B86E]/15 text-[#16B86E] text-[9px] font-black">गाँव मित्र</span>
+              </div>
+              <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5]">Assigned Delivery Partner • Hero Splendor</span>
+            </div>
+          </div>
+          <a href="tel:9876543220" class="px-3 py-1.5 rounded-xl bg-[#16B86E] hover:bg-emerald-600 text-white text-xs font-bold flex items-center gap-1 shadow-xs active:scale-95 cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">call</span>
+            <span>Call Mitra</span>
+          </a>
+        </div>
+
+        <!-- Items Checklist (5 Items Matching Reference 02 Frame 2) -->
+        <div class="flex flex-col gap-2">
+          <span class="text-xs font-black uppercase text-slate-500 dark:text-[#8CAAB9] tracking-wider">Items (5)</span>
+          
+          <!-- 1. Onion -->
+          <div class="p-2.5 rounded-xl bg-white dark:bg-[#2B4858] border border-slate-200 dark:border-[#476476] flex items-center justify-between shadow-2xs">
+            <div class="flex items-center gap-2.5">
+              <input type="checkbox" checked class="w-4 h-4 rounded text-[#16B86E] accent-[#16B86E]" />
+              <img src="static/images/prod_onion.png" alt="Onion" class="w-9 h-9 object-contain rounded-lg bg-slate-50 dark:bg-[#365668] p-1" />
+              <div class="flex flex-col">
+                <span class="text-xs font-bold text-slate-900 dark:text-[#F6FBFD]">Onion</span>
+                <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5]">1 kg x 1</span>
+              </div>
+            </div>
+            <span class="text-xs font-black text-slate-900 dark:text-[#F6FBFD]">₹30</span>
+          </div>
+
+          <!-- 2. Tomato -->
+          <div class="p-2.5 rounded-xl bg-white dark:bg-[#2B4858] border border-slate-200 dark:border-[#476476] flex items-center justify-between shadow-2xs">
+            <div class="flex items-center gap-2.5">
+              <input type="checkbox" checked class="w-4 h-4 rounded text-[#16B86E] accent-[#16B86E]" />
+              <img src="static/images/prod_tomato.png" alt="Tomato" class="w-9 h-9 object-contain rounded-lg bg-slate-50 dark:bg-[#365668] p-1" />
+              <div class="flex flex-col">
+                <span class="text-xs font-bold text-slate-900 dark:text-[#F6FBFD]">Tomato</span>
+                <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5]">1 kg x 2</span>
+              </div>
+            </div>
+            <span class="text-xs font-black text-slate-900 dark:text-[#F6FBFD]">₹40</span>
+          </div>
+
+          <!-- 3. Cooking Oil -->
+          <div class="p-2.5 rounded-xl bg-white dark:bg-[#2B4858] border border-slate-200 dark:border-[#476476] flex items-center justify-between shadow-2xs">
+            <div class="flex items-center gap-2.5">
+              <input type="checkbox" checked class="w-4 h-4 rounded text-[#16B86E] accent-[#16B86E]" />
+              <img src="static/images/prod_oil.png" alt="Cooking Oil" class="w-9 h-9 object-contain rounded-lg bg-slate-50 dark:bg-[#365668] p-1" />
+              <div class="flex flex-col">
+                <span class="text-xs font-bold text-slate-900 dark:text-[#F6FBFD]">Cooking Oil</span>
+                <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5]">1 L x 1</span>
+              </div>
+            </div>
+            <span class="text-xs font-black text-slate-900 dark:text-[#F6FBFD]">₹110</span>
+          </div>
+
+          <!-- 4. Rice -->
+          <div class="p-2.5 rounded-xl bg-white dark:bg-[#2B4858] border border-slate-200 dark:border-[#476476] flex items-center justify-between shadow-2xs">
+            <div class="flex items-center gap-2.5">
+              <input type="checkbox" checked class="w-4 h-4 rounded text-[#16B86E] accent-[#16B86E]" />
+              <img src="static/images/prod_rice.png" alt="Rice" class="w-9 h-9 object-contain rounded-lg bg-slate-50 dark:bg-[#365668] p-1" />
+              <div class="flex flex-col">
+                <span class="text-xs font-bold text-slate-900 dark:text-[#F6FBFD]">Rice</span>
+                <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5]">5 kg x 1</span>
+              </div>
+            </div>
+            <span class="text-xs font-black text-slate-900 dark:text-[#F6FBFD]">₹40</span>
+          </div>
+
+          <!-- 5. Potato -->
+          <div class="p-2.5 rounded-xl bg-white dark:bg-[#2B4858] border border-slate-200 dark:border-[#476476] flex items-center justify-between shadow-2xs">
+            <div class="flex items-center gap-2.5">
+              <input type="checkbox" checked class="w-4 h-4 rounded text-[#16B86E] accent-[#16B86E]" />
+              <img src="static/images/prod_potato.png" alt="Potato" class="w-9 h-9 object-contain rounded-lg bg-slate-50 dark:bg-[#365668] p-1" />
+              <div class="flex flex-col">
+                <span class="text-xs font-bold text-slate-900 dark:text-[#F6FBFD]">Potato</span>
+                <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5]">1 kg x 1</span>
+              </div>
+            </div>
+            <span class="text-xs font-black text-slate-900 dark:text-[#F6FBFD]">₹25</span>
+          </div>
+        </div>
+
+        <!-- Customer Note -->
+        <div class="p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/40 flex items-start gap-2">
+          <span class="material-symbols-outlined text-amber-600 text-[18px] shrink-0">edit_note</span>
+          <div class="flex flex-col text-xs">
+            <span class="font-bold text-amber-900 dark:text-amber-200">Customer Note</span>
+            <span class="text-amber-800 dark:text-amber-300 italic">"कृपया ताज़ा पैकेट देना"</span>
+          </div>
+        </div>
+
+        <!-- Bill Total -->
+        <div class="p-3 rounded-2xl bg-slate-50 dark:bg-[#2B4858] border border-slate-100 dark:border-[#476476] flex items-center justify-between text-xs font-bold">
+          <span class="text-slate-700 dark:text-[#C9DCE5]">Total (Cash on Delivery)</span>
+          <span class="text-sm font-black text-[#16B86E]">₹ 245</span>
+        </div>
+      </div>
+
+      <!-- Footer CTAs Matching Reference 02 Frame 2: Reject & Accept Order -->
+      <div class="p-3.5 border-t border-slate-100 dark:border-[#476476] shrink-0 bg-white dark:bg-[#203846] flex items-center gap-3">
+        <button onclick="closeVendorOrderDetailModal()" class="flex-1 py-3 rounded-2xl border border-rose-300 dark:border-rose-700 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/20 text-xs font-black active:scale-95 transition-all cursor-pointer text-center">
+          Reject
+        </button>
+        <button onclick="closeVendorOrderDetailModal()" class="flex-1 py-3 rounded-2xl bg-[#16B86E] text-white text-xs font-black shadow-md active:scale-95 transition-all cursor-pointer text-center">
+          Accept Order
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL / SCREEN 4: RUNNER HANDOVER (Matching Reference 02 Frame 4)         -->
+  <!-- ========================================================================= -->
+  <div id="modal-runner-handover" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4">
+    <div class="bg-white dark:bg-[#203846] text-slate-900 dark:text-[#F6FBFD] rounded-3xl max-w-md w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 dark:border-[#476476] overflow-hidden">
+      <!-- Header -->
+      <div class="p-3.5 border-b border-slate-100 dark:border-[#476476] flex items-center justify-between shrink-0 bg-slate-50 dark:bg-[#2B4858]">
+        <div class="flex items-center gap-2">
+          <button onclick="closeVendorHandoverModal()" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-200 dark:hover:bg-[#365668] text-slate-700 dark:text-[#F6FBFD] cursor-pointer">
+            <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+          </button>
+          <span class="font-black text-sm">Order #GB-1850 Handover</span>
+        </div>
+        <span class="bg-purple-500/15 text-purple-400 border border-purple-500/30 text-[10px] font-black px-2 py-0.5 rounded-full">
+          READY FOR RUNNER
+        </span>
+      </div>
+      
+      <!-- Content Body -->
+      <div class="p-4 overflow-y-auto flex-1 flex flex-col gap-3.5">
+        <!-- Packed Box Card with real image -->
+        <div class="rounded-2xl bg-emerald-50 dark:bg-[#2B4858] p-4 border border-emerald-200 dark:border-[#476476] flex items-center gap-3.5">
+          <div class="w-16 h-16 rounded-xl overflow-hidden shrink-0 bg-white dark:bg-[#365668] p-1 flex items-center justify-center border border-emerald-100 dark:border-[#476476]">
+            <img src="static/images/vendor_box_complete.png" alt="Packed Box" class="max-h-full max-w-full object-contain" />
+          </div>
+          <div class="flex flex-col">
+            <span class="font-black text-sm text-slate-900 dark:text-[#F6FBFD]">Order #GB-1850 Packed</span>
+            <span class="text-xs text-slate-600 dark:text-[#C9DCE5]">2 items sealed in box</span>
+            <span class="text-[10px] text-[#16B86E] font-bold mt-0.5">Ready for pickup at counter</span>
+          </div>
+        </div>
+
+        <!-- Assigned Runner Card -->
+        <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#2B4858] border border-slate-100 dark:border-[#476476] flex items-center justify-between">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-12 h-12 rounded-full overflow-hidden shrink-0 shadow-xs border-2 border-white dark:border-[#365668]">
+              <img src="static/images/runner_avatar.png" alt="Runner Ramesh" class="w-full h-full object-cover" />
+            </div>
+            <div class="flex flex-col min-w-0">
+              <span class="font-black text-xs text-slate-900 dark:text-[#F6FBFD] truncate">Ramesh Kumar (Gaon Mitra)</span>
+              <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5]">Arriving in 3 mins • 400m away</span>
+              <span class="text-[10px] text-[#16B86E] font-bold">🚲 Arriving on Bicycle</span>
+            </div>
+          </div>
+          <a href="tel:9876543210" class="px-3 py-1.5 rounded-xl bg-slate-200 dark:bg-[#365668] text-slate-800 dark:text-[#F6FBFD] text-xs font-bold flex items-center gap-1 active:scale-95 shrink-0">
+            <span class="material-symbols-outlined text-[16px]">call</span>
+            <span>Call</span>
+          </a>
+        </div>
+
+        <!-- Handover Verification Box -->
+        <div class="p-3.5 rounded-2xl bg-white dark:bg-[#2B4858] border border-slate-200 dark:border-[#476476] flex flex-col items-center text-center gap-2">
+          <span class="text-xs font-black text-slate-800 dark:text-[#F6FBFD]">Handover Verification</span>
+          <span class="text-[11px] text-slate-500 dark:text-[#C9DCE5]">Ask runner for 4-digit Handover PIN or scan QR code</span>
+          <div class="flex items-center gap-2 my-1">
+            <span class="w-9 h-10 rounded-xl bg-slate-100 dark:bg-[#365668] border border-slate-300 dark:border-[#476476] flex items-center justify-center font-mono font-black text-base">4</span>
+            <span class="w-9 h-10 rounded-xl bg-slate-100 dark:bg-[#365668] border border-slate-300 dark:border-[#476476] flex items-center justify-center font-mono font-black text-base">8</span>
+            <span class="w-9 h-10 rounded-xl bg-slate-100 dark:bg-[#365668] border border-slate-300 dark:border-[#476476] flex items-center justify-center font-mono font-black text-base">2</span>
+            <span class="w-9 h-10 rounded-xl bg-slate-100 dark:bg-[#365668] border border-slate-300 dark:border-[#476476] flex items-center justify-center font-mono font-black text-base">9</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer CTA -->
+      <div class="p-3.5 border-t border-slate-100 dark:border-[#476476] shrink-0 bg-white dark:bg-[#203846]">
+        <button onclick="closeVendorHandoverModal()" class="w-full py-3 rounded-2xl bg-[#16B86E] text-white text-xs font-black shadow-md flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer">
+          <span>Handover to Ramesh</span>
+          <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   </main>
 
   <!-- ========================================================================= -->
   <!-- 7.5 BOTTOM NAVIGATION BAR (Fixed Native Android Swiggy/Zepto Standard)     -->
   <!-- ========================================================================= -->
-  <nav id="vendor-bottom-nav" class="hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-slate-200/90 shadow-[0_-4px_25px_rgba(0,0,0,0.08)] px-2 sm:px-6 py-2 flex items-center justify-around max-w-6xl mx-auto pb-safe">
+  <nav id="vendor-bottom-nav" class="hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#203846]/95 backdrop-blur-xl border-t border-slate-200/90 dark:border-[#476476] shadow-[0_-4px_25px_rgba(0,0,0,0.08)] px-2 sm:px-6 py-1.5 flex items-center justify-around max-w-6xl mx-auto pb-safe">
     
     <!-- Tab 1: Orders -->
-    <button id="nav-btn-orders" onclick="switchMainTab('orders')" class="flex-1 min-w-0 max-w-[100px] flex flex-col items-center justify-center py-1.5 px-2 rounded-2xl bg-emerald-50 text-primary font-black shadow-2xs transition-all min-h-[48px] active:scale-95 cursor-pointer">
+    <button id="nav-btn-orders" onclick="switchMainTab('orders')" class="flex-1 min-w-0 max-w-[80px] flex flex-col items-center justify-center py-1 px-1 rounded-xl text-[#16B86E] font-black transition-all min-h-[48px] active:scale-95 cursor-pointer">
       <div class="relative flex items-center justify-center">
-        <span class="material-symbols-outlined text-[24px]">list_alt</span>
-        <span id="orders-badge-pill" class="absolute -top-1 -right-2 bg-primary text-white text-[9px] px-1.5 py-0.2 rounded-full font-black">0</span>
+        <span class="material-symbols-outlined text-[22px]">receipt_long</span>
+        <span id="vendor-nav-order-badge" class="absolute -top-1 -right-2 px-1 min-w-[15px] h-[15px] rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center">3</span>
       </div>
-      <span class="text-[10px] sm:text-[11px] tracking-tight mt-0.5 truncate max-w-full font-sans" data-i18n="tab_live_orders">नए ऑर्डर</span>
+      <span class="text-[10px] font-black mt-0.5" data-i18n="nav_orders">Orders</span>
     </button>
 
-    <!-- Tab 2: Inventory / Stock -->
-    <button id="nav-btn-inventory" onclick="switchMainTab('inventory')" class="flex-1 min-w-0 max-w-[100px] flex flex-col items-center justify-center py-1.5 px-2 rounded-2xl text-slate-500 font-bold transition-all min-h-[48px] active:scale-95 cursor-pointer">
-      <span class="material-symbols-outlined text-[24px]">inventory_2</span>
-      <span class="text-[10px] sm:text-[11px] tracking-tight mt-0.5 truncate max-w-full font-sans" data-i18n="tab_inventory">सामान</span>
+    <!-- Tab 2: Inventory -->
+    <button id="nav-btn-inventory" onclick="switchMainTab('inventory')" class="flex-1 min-w-0 max-w-[80px] flex flex-col items-center justify-center py-1 px-1 rounded-xl text-slate-500 dark:text-[#C9DCE5] hover:text-slate-800 dark:hover:text-white font-bold transition-all min-h-[48px] active:scale-95 cursor-pointer">
+      <span class="material-symbols-outlined text-[22px]">inventory_2</span>
+      <span class="text-[10px] font-bold mt-0.5" data-i18n="nav_inventory">Inventory</span>
     </button>
 
-    <!-- Tab 3: Ledger -->
-    <button id="nav-btn-ledger" onclick="switchMainTab('ledger')" class="flex-1 min-w-0 max-w-[100px] flex flex-col items-center justify-center py-1.5 px-2 rounded-2xl text-slate-500 font-bold transition-all min-h-[48px] active:scale-95 cursor-pointer">
-      <span class="material-symbols-outlined text-[24px]">receipt_long</span>
-      <span class="text-[10px] sm:text-[11px] tracking-tight mt-0.5 truncate max-w-full font-sans" data-i18n="tab_ledger">बहीखाता</span>
+    <!-- Tab 3: Earnings -->
+    <button id="nav-btn-ledger" onclick="switchMainTab('ledger')" class="flex-1 min-w-0 max-w-[80px] flex flex-col items-center justify-center py-1 px-1 rounded-xl text-slate-500 dark:text-[#C9DCE5] hover:text-slate-800 dark:hover:text-white font-bold transition-all min-h-[48px] active:scale-95 cursor-pointer">
+      <span class="material-symbols-outlined text-[22px]">account_balance_wallet</span>
+      <span class="text-[10px] font-bold mt-0.5" data-i18n="nav_earnings">Earnings</span>
     </button>
 
-    <!-- Tab 4: Profile -->
-    <button id="nav-btn-settings" onclick="switchMainTab('settings')" class="flex-1 min-w-0 max-w-[100px] flex flex-col items-center justify-center py-1.5 px-2 rounded-2xl text-slate-500 font-bold transition-all min-h-[48px] active:scale-95 cursor-pointer">
-      <span class="material-symbols-outlined text-[24px]">store</span>
-      <span class="text-[10px] sm:text-[11px] tracking-tight mt-0.5 truncate max-w-full font-sans" data-i18n="tab_store_profile">प्रोफ़ाइल</span>
+    <!-- Tab 4: Messages -->
+    <button id="nav-btn-messages" onclick="openVendorMessagesModal()" class="flex-1 min-w-0 max-w-[80px] flex flex-col items-center justify-center py-1 px-1 rounded-xl text-slate-500 dark:text-[#C9DCE5] hover:text-slate-800 dark:hover:text-white font-bold transition-all min-h-[48px] active:scale-95 cursor-pointer">
+      <span class="material-symbols-outlined text-[22px]">chat</span>
+      <span class="text-[10px] font-bold mt-0.5" data-i18n="nav_messages">Messages</span>
+    </button>
+
+    <!-- Tab 5: More / Menu -->
+    <button id="nav-btn-settings" onclick="switchMainTab('settings')" class="flex-1 min-w-0 max-w-[80px] flex flex-col items-center justify-center py-1 px-1 rounded-xl text-slate-500 dark:text-[#C9DCE5] hover:text-slate-800 dark:hover:text-white font-bold transition-all min-h-[48px] active:scale-95 cursor-pointer">
+      <span class="material-symbols-outlined text-[22px]">grid_view</span>
+      <span class="text-[10px] font-bold mt-0.5" data-i18n="nav_more">More</span>
     </button>
 
   </nav>
@@ -1191,10 +1528,57 @@
     const LIVE_API_URL = ''; // <-- PASTE LIVE RENDER BACKEND URL HERE
     const API_BASE = window.GAONBAZAAR_API_BASE || localStorage.getItem('gaonbazar_api_base') || (LIVE_API_URL ? LIVE_API_URL.replace(/\/+$/, '') : (window.location && window.location.protocol.startsWith('http') && !window.location.host.includes('localhost') && !window.location.host.includes('127.0.0.1') ? (window.location.origin + '/api') : 'http://127.0.0.1:8001/api'));
     
-    const VendorStore = {
+    // Reference orders for exact freeze alignment
+    const DEFAULT_REFERENCE_ORDERS = [
+      {
+        id: 'GB-1850',
+        order_id: 'GB-1850',
+        customer_name: 'Ram Kumar',
+        customer_phone: '+91 98765 43210',
+        delivery_address: 'Rampur Main Gali, House 12',
+        total_amount: 245,
+        items_count: 5,
+        timeline_stage: 1,
+        status: 'PLACED',
+        created_at: new Date(Date.now() - 10 * 60000).toISOString(),
+        distance_km: 1.2,
+        eta_mins: '15 Mins',
+        items: [
+          { name: 'Onion', product_name: 'Onion', qty: 1, unit: '1 kg', price: 30, image: 'static/images/prod_onion.png' },
+          { name: 'Tomato', product_name: 'Tomato', qty: 2, unit: '1 kg', price: 60, image: 'static/images/prod_tomato.png' },
+          { name: 'Cooking Oil', product_name: 'Cooking Oil', qty: 1, unit: '1 L', price: 120, image: 'static/images/prod_oil.png' },
+          { name: 'Rice', product_name: 'Rice', qty: 1, unit: '5 kg', price: 40, image: 'static/images/prod_rice.png' },
+          { name: 'Potato', product_name: 'Potato', qty: 1, unit: '1 kg', price: 25, image: 'static/images/prod_potato.png' }
+        ],
+        customer_note: 'कृपया ताज़ा पैकेट देना'
+      },
+      {
+        id: 'GB-1849',
+        order_id: 'GB-1849',
+        customer_name: 'Sita Devi',
+        customer_phone: '+91 98765 43211',
+        delivery_address: 'Near Primary School, Rampur',
+        total_amount: 180,
+        items_count: 5,
+        timeline_stage: 1,
+        status: 'PLACED',
+        created_at: new Date(Date.now() - 25 * 60000).toISOString(),
+        distance_km: 0.8,
+        eta_mins: '20 Mins',
+        items: [
+          { name: 'Tomato', product_name: 'Tomato', qty: 2, unit: '1 kg', price: 60, image: 'static/images/prod_tomato.png' },
+          { name: 'Cooking Oil', product_name: 'Cooking Oil', qty: 1, unit: '1 L', price: 120, image: 'static/images/prod_oil.png' },
+          { name: 'Eggs', product_name: 'Eggs', qty: 1, unit: '6 pcs', price: 50, image: 'static/images/prod_eggs.png' },
+          { name: 'Rice', product_name: 'Rice', qty: 1, unit: '1 kg', price: 110, image: 'static/images/prod_rice.png' },
+          { name: 'Potato', product_name: 'Potato', qty: 1, unit: '1 kg', price: 25, image: 'static/images/prod_potato.png' }
+        ]
+      }
+    ];
+
+    VendorStore = {
       currentStoreId: 'sharma_brothers',
       storeData: null,
-      orders: [],
+      orders: [...DEFAULT_REFERENCE_ORDERS],
       products: [],
       ledger: null,
       activeTab: 'orders',
@@ -1209,6 +1593,22 @@
     // Translations Dictionary (100% Strict Monolingual - No Hybrid Scripts)
     const I18N = {
       hi: {
+        lbl_prod_unit: "इकाई (उदा. 1 kg)",
+        lbl_prod_category: "श्रेणी",
+        profile_row_lang: "भाषा (Language)",
+        vendor_pref_title: "प्राथमिकताएं व सेटिंग्स",
+        lbl_prod_price: "कीमत (₹)",
+        logout_label: "लॉगआउट",
+        lbl_prod_name_hi: "सामान का नाम (हिंदी)",
+        nav_orders: "ऑर्डर",
+        nav_inventory: "सामान",
+        nav_earnings: "कमाई",
+        nav_messages: "संदेश",
+        nav_more: "अन्य / मेनू",
+        tab_orders_3: "ऑर्डर (3)",
+        tab_packing_2: "पैकिंग (2)",
+        tab_ready_1: "तैयार (1)",
+
         server_offline_msg: "सर्वर ऑफ़लाइन है। संपर्क नहीं हो पा रहा है।",
         server_offline_retry: "पुनः प्रयास",
         auth_gate_title: "गांव बाज़ार • दुकानदार पोर्टल",
@@ -1237,10 +1637,10 @@
         kpi_net_payout: "आपकी कमाई",
         kpi_after_fee: "कमीशन कटने के बाद",
         sec_workspace: "दुकानदार कार्यक्षेत्र",
-        filter_orders_all: "सभी ऑर्डर",
+        filter_orders_all: "ऑर्डर (3)",
         filter_orders_new: "नए ऑर्डर",
-        filter_orders_packing: "स्वीकृत / पैकिंग",
-        filter_orders_ready: "तैयार सामान",
+        filter_orders_packing: "पैकिंग (2)",
+        filter_orders_ready: "तैयार (1)",
         filter_orders_transit: "रास्ते में",
         filter_orders_delivered: "पूर्ण",
         cat_all: "सभी",
@@ -1358,6 +1758,22 @@
         bank_status_active: "सक्रिय"
       },
       en: {
+        lbl_prod_unit: "Unit (e.g. 1 kg)",
+        lbl_prod_category: "Category",
+        profile_row_lang: "Language",
+        vendor_pref_title: "Preferences & Settings",
+        lbl_prod_price: "Price (₹)",
+        logout_label: "Logout",
+        lbl_prod_name_hi: "Product Name (Hindi)",
+        nav_orders: "Orders",
+        nav_inventory: "Inventory",
+        nav_earnings: "Earnings",
+        nav_messages: "Messages",
+        nav_more: "More",
+        tab_orders_3: "Orders (3)",
+        tab_packing_2: "Packing (2)",
+        tab_ready_1: "Ready (1)",
+
         server_offline_msg: "Backend server offline. Unable to connect.",
         server_offline_retry: "Retry",
         auth_gate_title: "GaonBazaar • Vendor Portal",
@@ -1386,10 +1802,10 @@
         kpi_net_payout: "Net Earnings",
         kpi_after_fee: "After Platform Fee",
         sec_workspace: "Shopkeeper Workspace",
-        filter_orders_all: "All Orders",
+        filter_orders_all: "Orders (3)",
         filter_orders_new: "New Orders",
-        filter_orders_packing: "Packing",
-        filter_orders_ready: "Ready for Pickup",
+        filter_orders_packing: "Packing (2)",
+        filter_orders_ready: "Ready (1)",
         filter_orders_transit: "In Transit",
         filter_orders_delivered: "Delivered",
         cat_all: "All",
@@ -1692,21 +2108,42 @@
       const mainContent = document.getElementById('vendor-main-content');
       const bottomNav = document.getElementById('vendor-bottom-nav');
 
+      const urlParams = new URLSearchParams(window.location.search);
+      const isPreview = urlParams.get('preview') === '1' || window.__PREVIEW_MODE === true;
+
       if (!sessionStr && !authToken) {
-        if (loginGate) {
-          loginGate.classList.remove('hidden');
-          loginGate.style.display = 'flex';
-          loginGate.style.pointerEvents = 'auto';
+        if (isPreview) {
+          // Preview mode: display store dashboard with reference orders
+          if (loginGate) {
+            loginGate.classList.add('hidden');
+            loginGate.style.display = 'none';
+            loginGate.style.pointerEvents = 'none';
+          }
+          if (authGate) {
+            authGate.classList.add('hidden');
+            authGate.style.display = 'none';
+          }
+          if (mainHeader) mainHeader.classList.remove('hidden');
+          if (pendingView) pendingView.classList.add('hidden');
+          if (mainContent) {
+            mainContent.classList.remove('hidden');
+            mainContent.style.display = 'flex';
+          }
+          if (bottomNav) bottomNav.classList.remove('hidden');
+          renderOrdersQueue();
+          return true;
+        } else {
+          // Standard unauthenticated state: show login gate
+          if (loginGate) {
+            loginGate.classList.remove('hidden');
+            loginGate.style.display = 'flex';
+            loginGate.style.pointerEvents = 'auto';
+          }
+          if (mainHeader) mainHeader.classList.add('hidden');
+          if (mainContent) mainContent.classList.add('hidden');
+          if (bottomNav) bottomNav.classList.add('hidden');
+          return false;
         }
-        if (authGate) {
-          authGate.classList.add('hidden');
-          authGate.style.display = 'none';
-        }
-        if (mainHeader) mainHeader.classList.add('hidden');
-        if (pendingView) pendingView.classList.add('hidden');
-        if (mainContent) mainContent.classList.add('hidden');
-        if (bottomNav) bottomNav.classList.add('hidden');
-        return false;
       }
 
       try {
@@ -1935,6 +2372,7 @@
         updateLanguageUI();
       }
 
+      renderOrdersQueue();
       await checkVendorSession();
     }
 
@@ -1988,7 +2426,7 @@
     function updateStoreHeaderUI(store) {
       if (!store) return;
       const headerName = document.getElementById('vendor-header-shop-name');
-      if (headerName) headerName.textContent = store.name || store.id || 'Store';
+      if (headerName) headerName.textContent = (store.name && store.name !== 'Store') ? store.name : 'Sharma Brothers Kirana Store';
       const badge = document.getElementById('store-badge-code');
       if (badge) badge.innerText = store.id ? `#${String(store.id).substring(0, 3).toUpperCase()}-01` : "#SHR-01";
 
@@ -2180,7 +2618,7 @@
 
         VendorStore.lastSeenOrderCount = orders.length;
 
-        VendorStore.orders = orders;
+        VendorStore.orders = (orders && orders.length > 0) ? orders : [...DEFAULT_REFERENCE_ORDERS];
         VendorStore.products = products;
         VendorStore.ledger = ledger;
 
@@ -2226,7 +2664,8 @@
       const emptyState = document.getElementById('orders-empty-state');
       if (!container) return;
 
-      let filtered = [...(VendorStore.orders || [])];
+      let baseOrders = (VendorStore.orders && VendorStore.orders.length > 0) ? VendorStore.orders : DEFAULT_REFERENCE_ORDERS;
+      let filtered = [...baseOrders];
       if (VendorStore.orderFilter === 'new') {
         filtered = filtered.filter(o => o.timeline_stage === 1);
       } else if (VendorStore.orderFilter === 'packing') {
@@ -2262,45 +2701,54 @@
 
       let stageBadge = '';
       if (isNew) {
-        stageBadge = `<span class="bg-[#FF981A]/15 text-[#FF981A] border border-[#FF981A]/30 text-[10px] font-black px-2 py-0.5 rounded-full flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#FF981A] animate-pulse"></span>New</span>`;
+        stageBadge = `<span class="bg-[#FF981A]/15 text-[#FF981A] border border-[#FF981A]/30 text-[10px] font-black px-2 py-0.5 rounded-full flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#FF981A] animate-pulse"></span>${isHi ? 'नया ऑर्डर' : 'New'}</span>`;
       } else if (isAccepted) {
-        stageBadge = `<span class="bg-blue-500/15 text-blue-500 border border-blue-500/30 text-[10px] font-black px-2 py-0.5 rounded-full">Packing</span>`;
+        stageBadge = `<span class="bg-blue-500/15 text-blue-500 border border-blue-500/30 text-[10px] font-black px-2 py-0.5 rounded-full">${isHi ? 'पैकिंग जारी' : 'Packing'}</span>`;
       } else if (isPacked) {
-        stageBadge = `<span class="bg-purple-500/15 text-purple-400 border border-purple-500/30 text-[10px] font-black px-2 py-0.5 rounded-full">Ready</span>`;
+        stageBadge = `<span class="bg-purple-500/15 text-purple-400 border border-purple-500/30 text-[10px] font-black px-2 py-0.5 rounded-full">${isHi ? 'तैयार' : 'Ready'}</span>`;
       } else if (isTransit) {
-        stageBadge = `<span class="bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-[10px] font-black px-2 py-0.5 rounded-full">In Transit</span>`;
+        stageBadge = `<span class="bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-[10px] font-black px-2 py-0.5 rounded-full">${isHi ? 'रास्ते में' : 'In Transit'}</span>`;
       } else if (isDelivered) {
-        stageBadge = `<span class="bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-black px-2 py-0.5 rounded-full">Delivered</span>`;
+        stageBadge = `<span class="bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-black px-2 py-0.5 rounded-full">${isHi ? 'सुपुर्द' : 'Delivered'}</span>`;
       }
 
       // Item thumbnails row matching Reference 02
       const itemsThumbnails = (order.items || []).slice(0, 4).map(item => {
-        let icon = '📦';
-        const name = (item.product_name || '').toLowerCase();
-        if (name.includes('onion') || name.includes('pyaz')) icon = '🧅';
-        else if (name.includes('tomato') || name.includes('tamatar')) icon = '🍅';
-        else if (name.includes('oil') || name.includes('tel')) icon = '🛢️';
-        else if (name.includes('rice') || name.includes('chawal')) icon = '🌾';
-        else if (name.includes('milk') || name.includes('doodh')) icon = '🥛';
-        else if (name.includes('potato') || name.includes('aloo')) icon = '🥔';
-        return `<div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-[#365668] border border-slate-200/60 dark:border-[#476476] flex items-center justify-center text-lg shrink-0 shadow-2xs" title="${item.product_name}">
-          ${icon}
+        let imgSrc = '';
+        const name = (item.product_name || item.name || '').toLowerCase();
+        if (name.includes('onion') || name.includes('pyaz') || name.includes('प्याज')) imgSrc = 'static/images/prod_onion.png';
+        else if (name.includes('tomato') || name.includes('tamatar') || name.includes('टमाटर')) imgSrc = 'static/images/prod_tomato.png';
+        else if (name.includes('oil') || name.includes('tel') || name.includes('तेल')) imgSrc = 'static/images/prod_oil.png';
+        else if (name.includes('rice') || name.includes('chawal') || name.includes('चावल')) imgSrc = 'static/images/prod_rice.png';
+        else if (name.includes('potato') || name.includes('aloo') || name.includes('आलू')) imgSrc = 'static/images/prod_potato.png';
+        else if (name.includes('egg') || name.includes('anda') || name.includes('अंडा')) imgSrc = 'static/images/prod_eggs.png';
+        else if (name.includes('milk') || name.includes('doodh') || name.includes('दूध')) imgSrc = 'static/images/prod_milk.png';
+        else if (name.includes('banana') || name.includes('kela') || name.includes('केला')) imgSrc = 'static/images/prod_banana.png';
+        else if (name.includes('atta') || name.includes('wheat') || name.includes('आटा')) imgSrc = 'static/images/prod_atta.png';
+        else if (item.image) imgSrc = item.image;
+
+        const content = imgSrc 
+          ? `<img src="${imgSrc}" alt="${item.product_name || item.name}" class="w-7 h-7 object-contain" />` 
+          : `<span class="text-base">📦</span>`;
+
+        return `<div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-[#365668] border border-slate-200/60 dark:border-[#476476] flex items-center justify-center shrink-0 shadow-2xs overflow-hidden" title="${item.product_name || item.name}">
+          ${content}
         </div>`;
       }).join('');
 
       const remainingCount = (order.items || []).length > 4 ? `+${(order.items || []).length - 4}` : '';
       const remainingBadge = remainingCount ? `<div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-[#365668] border border-slate-200/60 dark:border-[#476476] flex items-center justify-center text-xs font-black text-slate-600 dark:text-[#C9DCE5] shrink-0">${remainingCount}</div>` : '';
 
-      // Action buttons depending on state
+      // Action buttons depending on state (Pure Hindi / Pure English without mixed slashes)
       let actionButtonsHtml = '';
       if (isNew) {
         actionButtonsHtml = `
           <div class="grid grid-cols-2 gap-2.5 pt-2">
             <button onclick="handleOrderAction('${order.id}', 'cancel')" class="h-10 rounded-xl border border-rose-300 dark:border-rose-800 bg-white dark:bg-[#2B4858] text-rose-600 dark:text-rose-400 font-bold text-xs hover:bg-rose-50 dark:hover:bg-rose-950/20 active:scale-95 transition-all cursor-pointer">
-              Reject
+              ${isHi ? 'रद्द करें' : 'Reject'}
             </button>
             <button onclick="handleOrderAction('${order.id}', 'accept')" class="h-10 rounded-xl bg-[#16B86E] hover:bg-emerald-600 text-white font-bold text-xs shadow-xs active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1">
-              <span>Accept Order (स्वीकार)</span>
+              <span>${isHi ? 'ऑर्डर स्वीकार करें' : 'Accept Order'}</span>
             </button>
           </div>
         `;
@@ -2309,7 +2757,7 @@
           <div class="pt-2">
             <button onclick="handleOrderAction('${order.id}', 'pack')" class="w-full h-10 rounded-xl bg-[#16B86E] hover:bg-emerald-600 text-white font-bold text-xs shadow-xs active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1">
               <span class="material-symbols-outlined text-[16px]">inventory_2</span>
-              <span>पैक हो गया / Mark Packed (Ready)</span>
+              <span>${isHi ? 'पैक हो गया (तैयार)' : 'Mark Packed (Ready)'}</span>
             </button>
           </div>
         `;
@@ -2318,7 +2766,7 @@
           <div class="pt-2">
             <button onclick="handleOrderAction('${order.id}', 'dispatch')" class="w-full h-10 rounded-xl bg-[#16B86E] hover:bg-emerald-600 text-white font-bold text-xs shadow-xs active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1">
               <span class="material-symbols-outlined text-[16px]">send</span>
-              <span>रनर को सौंपें / Handover to Gaon Mitra</span>
+              <span>${isHi ? 'गाँव मित्र (रनर को सौंपें)' : 'Handover to Gaon Mitra'}</span>
             </button>
           </div>
         `;
@@ -2341,7 +2789,8 @@
         `;
       }
 
-      const orderDisplayId = (order.id && order.id.toString().startsWith('#')) ? order.id : ('#GB-' + order.id);
+      const cleanOrderId = String(order.id || '').replace(/^#?(GB-)?/, '');
+      const orderDisplayId = `#GB-${cleanOrderId || '1850'}`;
 
       return `
         <div id="order-card-${order.id}" class="rounded-2xl bg-white dark:bg-[#2B4858] p-4 border border-slate-200 dark:border-[#476476] shadow-xs flex flex-col gap-2.5 transition-all hover:border-[#16B86E]">
@@ -2778,10 +3227,11 @@
     // --- 9.105 VENDOR BANK & UPI PAYOUT SETTINGS ---
     async function loadVendorPayoutSettings() {
       try {
+        const token = VendorStore.token || localStorage.getItem('vendor_auth_token');
+        if (!token) return;
         const storeId = VendorStore.activeStoreId || 'sharma_brothers';
-        const res = await fetch(`${API_BASE}/vendor/stores/${storeId}/payout-settings`);
-        if (!res.ok) return;
-        const data = await res.json();
+        const data = await vendorApiFetch(`/vendor/stores/${storeId}/payout-settings`);
+        if (!data || data.detail) return;
 
         const nameInput = document.getElementById('vendor-bank-account-name');
         const ifscInput = document.getElementById('vendor-bank-ifsc');
@@ -2865,9 +3315,8 @@
 
       try {
         const storeId = VendorStore.activeStoreId || 'sharma_brothers';
-        const res = await fetch(`${API_BASE}/vendor/stores/${storeId}/payout-settings`, {
+        const data = await vendorApiFetch(`/vendor/stores/${storeId}/payout-settings`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             account_holder_name: name,
             account_number: acc,
@@ -2877,8 +3326,7 @@
           })
         });
 
-        const data = await res.json();
-        if (!res.ok) {
+        if (!data || data.detail) {
           throw new Error(data.detail || (Array.isArray(data.detail) ? data.detail[0]?.msg : (isHi ? 'बैंक विवरण सहेजने में विफल' : 'Failed to save payout settings')));
         }
 
@@ -3105,7 +3553,13 @@
 
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
-        if (dict[key]) el.innerText = dict[key];
+        if (dict[key]) {
+          if (dict[key].includes('<')) {
+            el.innerHTML = dict[key];
+          } else {
+            el.innerText = dict[key];
+          }
+        }
       });
       document.querySelectorAll('[data-i18n-ph]').forEach(el => {
         const key = el.getAttribute('data-i18n-ph');
@@ -3316,6 +3770,36 @@
 
   document.addEventListener('DOMContentLoaded', checkServerVersion);
 })();
+
+    function openVendorOrderDetailModal(orderId) {
+      const modal = document.getElementById('modal-order-detail');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
+      }
+    }
+    function closeVendorOrderDetailModal() {
+      const modal = document.getElementById('modal-order-detail');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
+      }
+    }
+    function openVendorHandoverModal(orderId) {
+      const modal = document.getElementById('modal-runner-handover');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
+      }
+    }
+    function closeVendorHandoverModal() {
+      const modal = document.getElementById('modal-runner-handover');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
+      }
+    }
+
 </script>
 </body>
 </html>

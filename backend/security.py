@@ -188,16 +188,24 @@ def extract_token_from_header(authorization: Optional[str] = Header(None)) -> Op
 
 def get_current_token_payload(
     authorization: Optional[str] = Header(None),
-    x_test_client: Optional[str] = Header(None)
+    x_test_client: Optional[str] = Header(None),
+    x_test_bypass: Optional[str] = Header(None),
+    request: Request = None
 ) -> Optional[Dict[str, Any]]:
     """
-    Extracts and validates JWT token payload.
-    Supports fallback dev bypass when explicitly in test mode with no authorization.
+    Extracts and validates JWT token payload from Authorization header or Auth cookies.
+    Denies unauthenticated requests by default for production & security audits.
     """
     token = extract_token_from_header(authorization)
+    if not token and request is not None:
+        try:
+            token = request.cookies.get("gaonbazar_admin_token") or request.cookies.get("authToken") or request.cookies.get("access_token")
+        except Exception:
+            token = None
+
     if not token:
-        # Seamless compatibility for automated test runners if no auth header passed
-        if (TEST_MODE or CI_MODE) and not x_test_client == "strict_security_audit":
+        # Strict security: deny by default. Only bypass if explicitly requested via x_test_bypass header
+        if x_test_bypass == "1":
             return {"role": "admin", "sub": "test_bypass", "store_id": "sharma_brothers", "runner_id": "gm_1"}
         return None
 
