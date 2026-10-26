@@ -285,7 +285,12 @@ async def preview_access_guard(request: Request, call_next):
 
     # 4. Unauthenticated navigation requests: Show friendly HTML unlock form
     accepts_html = "text/html" in request.headers.get("accept", "")
-    is_navigate = request.headers.get("sec-fetch-mode") == "navigate" or (request.method == "GET" and accepts_html)
+    is_navigate = (
+        request.headers.get("sec-fetch-mode") == "navigate"
+        or accepts_html
+        or request.url.path in ("/", "/index.html", "/vendor_dashboard.html", "/runner_dashboard.html", "/admin_dashboard.html")
+        or request.url.path.endswith(".html")
+    )
 
     if is_navigate and not request.url.path.startswith("/api/"):
         return HTMLResponse(_render_preview_unlock_html(redirect_to=str(request.url.path)), status_code=200)
@@ -301,9 +306,29 @@ async def preview_access_guard(request: Request, call_next):
 @app.post("/api/preview/unlock")
 async def preview_unlock_handler(request: Request):
     expected = os.getenv("GAONBAZAR_PREVIEW_PASSWORD", "")
-    form_data = await request.form()
-    password = form_data.get("password", "")
-    redirect_to = form_data.get("redirect_to", "/") or "/"
+    content_type = request.headers.get("content-type", "")
+    password = ""
+    redirect_to = "/"
+
+    if "application/json" in content_type:
+        try:
+            payload = await request.json()
+            password = str(payload.get("password", "")).strip()
+            redirect_to = str(payload.get("redirect_to", "/")).strip()
+        except Exception:
+            pass
+    else:
+        try:
+            # Parse application/x-www-form-urlencoded using standard library (zero external dependency)
+            raw_bytes = await request.body()
+            raw_text = raw_bytes.decode("utf-8", errors="ignore")
+            from urllib.parse import parse_qs
+            parsed = parse_qs(raw_text)
+            password = parsed.get("password", [""])[0].strip()
+            redirect_to = parsed.get("redirect_to", ["/"])[0].strip()
+        except Exception:
+            pass
+
     if not redirect_to.startswith("/"):
         redirect_to = "/"
 
