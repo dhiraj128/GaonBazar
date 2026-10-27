@@ -67,8 +67,8 @@ def is_test_bypass_allowed() -> bool:
 
 
 def _check_jwt_secret_integrity(secret: str):
-    """Fails closed in production or hosted environments if JWT secret is missing or uses insecure default."""
-    if is_hosted_or_production_environment():
+    """Fails closed in production environments if JWT secret is missing or uses insecure default."""
+    if is_production_environment():
         insecure_defaults = (
             "gb-bankgrade-production-secret-9a8b7c6d5e4f3a2b1c-2026",
             "super-secret-key-gaonbazar-2026",
@@ -97,7 +97,7 @@ def get_fernet_ciphers() -> MultiFernet:
     bank_key = os.getenv("BANK_ENCRYPTION_KEY", "").strip()
     jwt_sec = os.getenv("JWT_SECRET", "").strip()
 
-    if is_hosted_or_production_environment():
+    if is_production_environment():
         insecure_keys = (
             "",
             "gb-bankgrade-production-secret-9a8b7c6d5e4f3a2b1c-2026",
