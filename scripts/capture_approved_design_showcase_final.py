@@ -260,8 +260,18 @@ with sync_playwright() as p:
 
     # --- V3: Vendor Inventory ---
     print("\n[V3] Capturing Vendor Inventory & Stock Management...")
-    vpage.evaluate("if (typeof switchMainTab === 'function') switchMainTab('inventory');")
-    vpage.wait_for_timeout(600)
+    vpage.evaluate("""
+        async () => {
+            if (typeof switchMainTab === 'function') switchMainTab('inventory');
+            if (typeof fetchAllVendorData === 'function') await fetchAllVendorData(true);
+            if (typeof renderInventoryGrid === 'function') renderInventoryGrid();
+        }
+    """)
+    try:
+        vpage.wait_for_selector("#inventory-container > div", timeout=6000)
+    except Exception:
+        pass
+    vpage.wait_for_timeout(800)
     save_dual_screenshot(vpage, "vend_03_inventory_light.png")
 
     vpage.evaluate("document.documentElement.classList.add('dark');")
@@ -336,9 +346,12 @@ with sync_playwright() as p:
     save_dual_screenshot(rpage, "runn_01_missions_dark.png")
     rpage.evaluate("document.documentElement.classList.remove('dark');")
 
-    # --- R2: Runner Store Pickup ---
+    # --- R2: Runner Store Pickup (Reference 03 Frame 2) ---
     print("\n[R2] Capturing Runner Store Pickup...")
-    rpage.evaluate("if (typeof switchTab === 'function') switchTab('detail');")
+    rpage.evaluate("""
+        if (typeof showRunnerPickupDetail === 'function') showRunnerPickupDetail(1850);
+        else if (typeof switchTab === 'function') switchTab('detail');
+    """)
     rpage.wait_for_timeout(600)
     save_dual_screenshot(rpage, "runn_02_pickup_light.png")
 
@@ -347,7 +360,7 @@ with sync_playwright() as p:
     save_dual_screenshot(rpage, "runn_02_pickup_dark.png")
     rpage.evaluate("document.documentElement.classList.remove('dark');")
 
-    # --- R3: Runner Navigation & Landmark ---
+    # --- R3: Runner Navigation & Landmark (Reference 03 Frame 3) ---
     print("\n[R3] Capturing Runner Navigation & Directions...")
     rpage.evaluate("""
         if (typeof showRunnerMapView === 'function') showRunnerMapView();
@@ -361,22 +374,12 @@ with sync_playwright() as p:
     save_dual_screenshot(rpage, "runn_03_navigation_dark.png")
     rpage.evaluate("document.documentElement.classList.remove('dark');")
 
-    # --- R4: Runner Doorstep OTP Completion ---
+    # --- R4: Runner Doorstep OTP Completion (Reference 03 Frame 4) ---
     print("\n[R4] Capturing Runner Handover & OTP Completion...")
     rpage.evaluate("""
-        if (typeof switchTab === 'function') switchTab('detail');
-        const otp1 = document.getElementById('otp-digit-1');
-        if (otp1) otp1.value = '4';
-        const otp2 = document.getElementById('otp-digit-2');
-        if (otp2) otp2.value = '8';
-        const otp3 = document.getElementById('otp-digit-3');
-        if (otp3) otp3.value = '2';
-        const otp4 = document.getElementById('otp-digit-4');
-        if (otp4) otp4.value = '1';
-        const cb = document.getElementById('cb-cod-confirm');
-        if (cb) cb.checked = true;
+        if (typeof showRunnerDeliverySuccess === 'function') showRunnerDeliverySuccess();
     """)
-    rpage.wait_for_timeout(500)
+    rpage.wait_for_timeout(600)
     save_dual_screenshot(rpage, "runn_04_completion_light.png")
 
     rpage.evaluate("document.documentElement.classList.add('dark');")
@@ -384,9 +387,11 @@ with sync_playwright() as p:
     save_dual_screenshot(rpage, "runn_04_completion_dark.png")
     rpage.evaluate("document.documentElement.classList.remove('dark');")
 
-    # --- R5: Runner Profile & Earnings Ledger ---
-    print("\n[R5] Capturing Runner Shift Ledger & Profile...")
-    rpage.evaluate("if (typeof switchTab === 'function') switchTab('ledger');")
+    # --- R5: Runner Profile & Earnings Ledger (Reference 03 Frame 5) ---
+    print("\n[R5] Capturing Runner Profile & Earnings...")
+    rpage.evaluate("""
+        if (typeof switchTab === 'function') switchTab('settings');
+    """)
     rpage.wait_for_timeout(600)
     save_dual_screenshot(rpage, "runn_05_profile_light.png")
 
@@ -406,25 +411,37 @@ with sync_playwright() as p:
     apage.goto(f"{BASE_URL}/admin?preview=1", wait_until="load")
     apage.wait_for_timeout(1000)
 
-    # Set mock admin session cookie or token
+    # Perform legitimate Super Admin login via gate
     apage.evaluate("""
-        document.cookie = "gaonbazar_admin_token=mock_admin_token; path=/";
-        sessionStorage.setItem('admin_token', 'mock_admin_token');
+        async () => {
+            const keyInput = document.getElementById('admin-input-key');
+            if (keyInput) keyInput.value = 'gaonbazar_super_admin_secret_2026';
+            if (typeof handleAdminLogin === 'function') {
+                await handleAdminLogin();
+            }
+        }
     """)
+    try:
+        apage.wait_for_selector("#admin-main-content:not(.hidden)", timeout=8000)
+    except Exception:
+        pass
+    apage.wait_for_timeout(1000)
 
-    # Overview
+    # A1: Overview / Vendor KYC Queue
     print("\n[A1] Capturing Admin Overview...")
+    apage.evaluate("if (typeof switchTab === 'function') switchTab('vendors');")
+    apage.wait_for_timeout(600)
     save_dual_screenshot(apage, "admin_01_overview.png")
 
-    # God View Orders
+    # A2: God View Orders
     print("\n[A2] Capturing Admin God-View Orders...")
-    apage.evaluate("if (typeof switchAdminTab === 'function') switchAdminTab('orders');")
+    apage.evaluate("if (typeof switchTab === 'function') switchTab('orders');")
     apage.wait_for_timeout(600)
     save_dual_screenshot(apage, "admin_02_godview_orders.png")
 
-    # Support Tickets & Disputes
+    # A3: Support Tickets & Disputes
     print("\n[A3] Capturing Admin Tickets & Helpdesk...")
-    apage.evaluate("if (typeof switchAdminTab === 'function') switchAdminTab('tickets');")
+    apage.evaluate("if (typeof switchTab === 'function') switchTab('tickets');")
     apage.wait_for_timeout(600)
     save_dual_screenshot(apage, "admin_03_tickets_helpdesk.png")
     apage.close()

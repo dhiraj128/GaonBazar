@@ -119,6 +119,12 @@
           <span id="admin-current-lang-text">English</span>
         </button>
 
+        <!-- Admin Logout Button -->
+        <button id="btn-admin-logout" onclick="handleAdminLogout()" class="hidden px-2 sm:px-2.5 py-1.5 rounded-xl bg-rose-950/60 hover:bg-rose-900/60 text-rose-300 border border-rose-700/50 text-xs font-bold flex items-center gap-1 transition-all active:scale-95" title="लॉगआउट (Logout)">
+          <span class="material-symbols-outlined text-[15px]">logout</span>
+          <span class="hidden sm:inline">लॉगआउट</span>
+        </button>
+
         <a href="index.html" target="_blank" title="Open Customer App (PWA) in new tab" class="px-2 sm:px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center gap-1 transition-all">
           <span class="material-symbols-outlined text-[15px] text-blue-400">smartphone</span>
           <span class="hidden sm:inline" data-i18n="nav_customer">ग्राहक ऐप</span>
@@ -150,8 +156,57 @@
     </button>
   </div>
 
+  <!-- ========================================================================= -->
+  <!-- 0.1 SUPER ADMIN LOGIN GATE (Zero-Trust Deny-by-Default Authentication)      -->
+  <!-- ========================================================================= -->
+  <div id="admin-login-gate" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/95 p-4 backdrop-blur-md">
+    <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col gap-5">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-emerald-700 text-white flex items-center justify-center shadow-lg shrink-0">
+          <span class="material-symbols-outlined text-[28px]">admin_panel_settings</span>
+        </div>
+        <div>
+          <h2 class="text-base sm:text-lg font-black text-white" data-i18n="admin_gate_title">सुपर एडमिन प्रमाणीकरण</h2>
+          <span class="text-xs text-slate-400">Super Admin Control Center • Zero-Trust Gate</span>
+        </div>
+      </div>
+
+      <div id="admin-login-error" class="hidden p-3 rounded-xl bg-rose-950/60 border border-rose-500/40 text-rose-200 text-xs font-bold flex items-center gap-2">
+        <span class="material-symbols-outlined text-[18px] text-rose-400">error</span>
+        <span id="admin-login-error-text">अमान्य क्रेडेंशियल्स (Invalid Credentials)</span>
+      </div>
+
+      <form id="admin-login-form" onsubmit="event.preventDefault(); handleAdminLogin();" class="flex flex-col gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1" for="admin-input-username">उपयोगकर्ता नाम (Username)</label>
+          <div class="relative">
+            <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-500 text-[18px]">person</span>
+            <input type="text" id="admin-input-username" value="super_admin" class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2.5 text-xs font-bold text-white focus:outline-none focus:border-primary placeholder-slate-600" placeholder="super_admin" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1" for="admin-input-key">एडमिन सीक्रेट की / पासवर्ड (Secret Key)</label>
+          <div class="relative">
+            <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-500 text-[18px]">key</span>
+            <input type="password" id="admin-input-key" autocomplete="current-password" class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2.5 text-xs font-bold text-white focus:outline-none focus:border-primary placeholder-slate-600" placeholder="••••••••••••••••" required />
+          </div>
+        </div>
+
+        <button type="submit" id="btn-admin-login" class="w-full mt-2 py-3 rounded-xl bg-primary hover:bg-primary-dark text-white font-black text-xs flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">lock_open</span>
+          <span>प्रवेश करें (Authenticate & Enter)</span>
+        </button>
+      </form>
+
+      <div class="text-[11px] text-slate-500 text-center font-medium border-t border-slate-800/80 pt-3">
+        सुरक्षित एन्क्रिप्टेड सत्र • केवल अधिकृत सुपर एडमिन ऑपरेटर
+      </div>
+    </div>
+  </div>
+
   <!-- Main Dashboard Viewport -->
-  <main class="flex-1 min-h-0 max-w-7xl w-full mx-auto p-4 sm:p-6 flex flex-col gap-5 pb-32 sm:pb-36 overflow-y-auto">
+  <main id="admin-main-content" class="hidden flex-1 min-h-0 max-w-7xl w-full mx-auto p-4 sm:p-6 flex flex-col gap-5 pb-32 sm:pb-36 overflow-y-auto">
 
     <!-- ======================================================================= -->
     <!-- 2. GLOBAL ECOSYSTEM METRICS RIBBON                                      -->
@@ -1020,18 +1075,102 @@
       }
     }
 
+    async function handleAdminLogin() {
+      const username = document.getElementById('admin-input-username')?.value.trim() || 'super_admin';
+      const key = document.getElementById('admin-input-key')?.value.trim();
+      const errBox = document.getElementById('admin-login-error');
+      const errText = document.getElementById('admin-login-error-text');
+      const btn = document.getElementById('btn-admin-login');
+
+      if (!key) {
+        if (errBox) errBox.classList.remove('hidden');
+        if (errText) errText.innerText = 'कृपया एडमिन सीक्रेट की दर्ज करें (Key required)';
+        return;
+      }
+
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="material-symbols-outlined text-[18px] animate-spin">progress_activity</span><span>प्रमाणीकरण हो रहा है...</span>';
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/admin/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, admin_key: key })
+        });
+
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({ detail: 'Invalid credentials' }));
+          throw new Error(data.detail || 'Authentication failed');
+        }
+
+        const data = await res.json();
+        AdminStore.token = data.token;
+        localStorage.setItem('gaonbazar_admin_token', data.token);
+        localStorage.setItem('authToken', data.token);
+        document.cookie = `gaonbazar_admin_token=${data.token}; path=/; max-age=604800; samesite=lax`;
+
+        // Unlock dashboard
+        document.getElementById('admin-login-gate')?.classList.add('hidden');
+        const main = document.getElementById('admin-main-content');
+        if (main) main.classList.remove('hidden');
+        document.getElementById('btn-admin-logout')?.classList.remove('hidden');
+        if (errBox) errBox.classList.add('hidden');
+
+        updateAdminLanguageUI();
+        await refreshAdminData();
+
+        if (AdminStore.pollTimer) clearInterval(AdminStore.pollTimer);
+        AdminStore.pollTimer = setInterval(() => {
+          refreshAdminData(false);
+        }, 5000);
+      } catch (err) {
+        if (errBox) {
+          errBox.classList.remove('hidden');
+          if (errText) errText.innerText = err.message || 'अमान्य क्रेडेंशियल्स (Invalid credentials)';
+        }
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<span class="material-symbols-outlined text-[18px]">lock_open</span><span>प्रवेश करें (Authenticate & Enter)</span>';
+        }
+      }
+    }
+    window.handleAdminLogin = handleAdminLogin;
+
+    function handleAdminLogout() {
+      AdminStore.token = null;
+      localStorage.removeItem('gaonbazar_admin_token');
+      localStorage.removeItem('authToken');
+      document.cookie = 'gaonbazar_admin_token=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+      if (AdminStore.pollTimer) clearInterval(AdminStore.pollTimer);
+      document.getElementById('admin-main-content')?.classList.add('hidden');
+      document.getElementById('btn-admin-logout')?.classList.add('hidden');
+      document.getElementById('admin-login-gate')?.classList.remove('hidden');
+      const errBox = document.getElementById('admin-login-error');
+      if (errBox) errBox.classList.add('hidden');
+      const keyInput = document.getElementById('admin-input-key');
+      if (keyInput) keyInput.value = '';
+    }
+    window.handleAdminLogout = handleAdminLogout;
+
     async function initAdminApp() {
-      let savedToken = localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_admin_token');
+      let savedToken = localStorage.getItem('gaonbazar_admin_token') || localStorage.getItem('authToken');
       const cookieMatch = document.cookie.match(/(?:^|;\s*)gaonbazar_admin_token=([^;]+)/);
       if (cookieMatch && cookieMatch[1]) {
         savedToken = cookieMatch[1];
       }
-      if (!savedToken) {
+
+      // Check query param for explicit admin_key if provided: ?admin_key=...
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryKey = urlParams.get('admin_key');
+      if (!savedToken && queryKey) {
         try {
           const loginRes = await fetch(`${API_BASE}/admin/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ admin_key: 'gaonbazar_super_admin_secret_2026' })
+            body: JSON.stringify({ admin_key: queryKey })
           });
           if (loginRes.ok) {
             const data = await loginRes.json();
@@ -1039,16 +1178,36 @@
           }
         } catch (_) {}
       }
+
       if (savedToken) {
         AdminStore.token = savedToken;
         localStorage.setItem('gaonbazar_admin_token', savedToken);
+        document.cookie = `gaonbazar_admin_token=${savedToken}; path=/; max-age=604800; samesite=lax`;
+
+        document.getElementById('admin-login-gate')?.classList.add('hidden');
+        const main = document.getElementById('admin-main-content');
+        if (main) main.classList.remove('hidden');
+        document.getElementById('btn-admin-logout')?.classList.remove('hidden');
+
+        updateAdminLanguageUI();
+        try {
+          await refreshAdminData();
+        } catch (e) {
+          handleAdminLogout();
+          return;
+        }
+
+        if (AdminStore.pollTimer) clearInterval(AdminStore.pollTimer);
+        AdminStore.pollTimer = setInterval(() => {
+          refreshAdminData(false);
+        }, 5000);
+      } else {
+        // Unauthenticated: gate is visible, main content hidden
+        document.getElementById('admin-login-gate')?.classList.remove('hidden');
+        document.getElementById('admin-main-content')?.classList.add('hidden');
+        document.getElementById('btn-admin-logout')?.classList.add('hidden');
+        updateAdminLanguageUI();
       }
-      updateAdminLanguageUI();
-      await refreshAdminData();
-      if (AdminStore.pollTimer) clearInterval(AdminStore.pollTimer);
-      AdminStore.pollTimer = setInterval(() => {
-        refreshAdminData(false);
-      }, 5000);
     }
 
     async function refreshAdminData(showToastFeedback = false) {

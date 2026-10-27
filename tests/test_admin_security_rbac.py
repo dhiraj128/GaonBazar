@@ -7,6 +7,8 @@ Verifies strict role-based access control (RBAC) across all /api/admin/* endpoin
 3. Authorized access (200 OK) with genuine Super Admin JWT token
 4. Super Admin Login & JWT issuance via /api/admin/login
 5. Cookie-based authentication support for admin web session
+6. Zero-trust portal: GET /admin, /admin/, and /admin_dashboard.html issue NO cookies automatically
+7. Strict credential validation: Invalid or empty passwords rejected with 401 Unauthorized
 """
 
 import sys
@@ -126,6 +128,28 @@ def test_super_admin_cookie_auth():
     assert resp.status_code == 200, f"Expected 200 via cookie auth, got {resp.status_code}"
 
 
+def test_anonymous_admin_portal_sets_no_cookie():
+    """Visiting GET /admin or /admin/ or /admin_dashboard.html must NOT issue any auth cookies."""
+    for path in ["/admin", "/admin/", "/admin_dashboard.html"]:
+        resp = client.get(path, follow_redirects=False)
+        assert resp.status_code == 200
+        set_cookie = resp.headers.get("set-cookie", "")
+        assert "gaonbazar_admin_token" not in set_cookie, f"Path {path} improperly issued an admin token cookie!"
+
+
+def test_admin_login_invalid_credentials_rejected():
+    """Invalid or empty passwords must return 401 Unauthorized; bypass strings must fail."""
+    for invalid_payload in [
+        {},
+        {"admin_key": ""},
+        {"admin_key": "wrong_password"},
+        {"admin_key": "admin"},  # backdoor string must be rejected
+        {"password": "wrong"},
+    ]:
+        resp = client.post("/api/admin/login", json=invalid_payload)
+        assert resp.status_code == 401, f"Expected 401 for payload {invalid_payload}, got {resp.status_code}"
+
+
 if __name__ == "__main__":
     test_anonymous_requests_denied()
     print("✓ test_anonymous_requests_denied PASSED")
@@ -137,4 +161,8 @@ if __name__ == "__main__":
     print("✓ test_super_admin_login_endpoint PASSED")
     test_super_admin_cookie_auth()
     print("✓ test_super_admin_cookie_auth PASSED")
-    print("\nALL 5 SUPER ADMIN RBAC SECURITY TESTS PASSED 100%!")
+    test_anonymous_admin_portal_sets_no_cookie()
+    print("✓ test_anonymous_admin_portal_sets_no_cookie PASSED")
+    test_admin_login_invalid_credentials_rejected()
+    print("✓ test_admin_login_invalid_credentials_rejected PASSED")
+    print("\nALL 7 SUPER ADMIN RBAC SECURITY TESTS PASSED 100%!")

@@ -970,7 +970,7 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
                 "user_phone": "9876543210",
                 "user_name": "Ramesh Patel",
                 "village": "Rampur",
-                "landmark": "Far Outside",
+                "landmark": "Near Forest Outpost, Far Outside Zone",
                 "store_id": "sharma_brothers",
                 "payment_mode": "COD",
                 "distance_km": 9.5,

@@ -426,6 +426,10 @@ def _run_admin_e2e_steps(browser, logger, contexts):
     admin_page.set_default_navigation_timeout(15000)
 
     admin_page.goto("http://127.0.0.1:8001/admin", wait_until="domcontentloaded", timeout=15000)
+    if admin_page.is_visible("#admin-login-gate"):
+        admin_page.fill("#admin-input-key", "gaonbazar_super_admin_secret_2026")
+        admin_page.click("#btn-admin-login")
+        admin_page.wait_for_selector("#admin-main-content:not(.hidden)", timeout=10000)
     # Wait for async initial data fetch to populate DOM metrics & queues
     try:
         admin_page.wait_for_function('() => document.getElementById("metric-gmv") && document.getElementById("metric-gmv").innerText !== "₹0.00"', timeout=8000)
@@ -573,6 +577,10 @@ def _run_admin_e2e_steps(browser, logger, contexts):
     contexts.append(tablet_context)
     tablet_page = tablet_context.new_page()
     tablet_page.goto("http://127.0.0.1:8001/admin", wait_until="domcontentloaded", timeout=15000)
+    if tablet_page.is_visible("#admin-login-gate"):
+        tablet_page.fill("#admin-input-key", "gaonbazar_super_admin_secret_2026")
+        tablet_page.click("#btn-admin-login")
+        tablet_page.wait_for_selector("#admin-main-content:not(.hidden)", timeout=10000)
     tablet_page.wait_for_timeout(1000)
     tab_gmv = tablet_page.locator("#metric-gmv").text_content()
     tab_godview_btn = tablet_page.is_visible("#admin-tab-btn-orders")

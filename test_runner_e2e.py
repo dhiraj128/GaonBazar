@@ -552,7 +552,7 @@ def _run_runner_device_steps(context, dev_name, device_config, logger):
 
     runner_url = "http://127.0.0.1:8001/runner"
     logger.log(f"Loading Gaon Mitra Portal: {runner_url}")
-    page.goto(runner_url, timeout=30000)
+    page.goto(runner_url, timeout=30000, wait_until="domcontentloaded")
     page.wait_for_timeout(1000)
 
     # -------------------------------------------------------------------------
@@ -641,9 +641,16 @@ def _run_runner_device_steps(context, dev_name, device_config, logger):
     missions_count = page.locator("#missions-container > div").count()
     logger.record_test(f"[{dev_name}] Mission Cards Rendered in Queue", missions_count >= 1, f"{missions_count} cards loaded")
 
-    # Select the first mission card to open Mission Details tab
-    first_mission_card = page.locator("#missions-container > div").first
-    first_mission_card.click()
+    # Select a mission card to open Mission Details tab
+    cards = page.locator("#missions-container > div")
+    target_card = cards.first
+    for idx in range(min(cards.count(), 15)):
+        c_item = cards.nth(idx)
+        txt = c_item.inner_text()
+        if any(w in txt for w in ["Mandir", "Tree", "Tank", "Tubewell", "Panchayat", "Bhawan", "Khasra", "Near", "Opp"]):
+            target_card = c_item
+            break
+    target_card.click()
     page.wait_for_timeout(600)
 
     is_detail_visible = page.is_visible("#tab-detail")
@@ -854,7 +861,7 @@ def test_full_lifecycle_sync(browser, logger):
 
 def _do_lifecycle_sync(context, logger):
     runner_page = context.new_page()
-    runner_page.goto("http://127.0.0.1:8001/runner")
+    runner_page.goto("http://127.0.0.1:8001/runner", wait_until="domcontentloaded", timeout=30000)
     runner_page.wait_for_timeout(1000)
     if runner_page.is_visible("#runner-login-gate"):
         runner_page.click("#btn-runner-login")

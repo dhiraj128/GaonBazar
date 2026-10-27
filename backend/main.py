@@ -514,13 +514,20 @@ def admin_login_endpoint(payload: Optional[AdminLoginRequest] = None):
     """
     Super Admin authentication endpoint.
     Issues genuine signed JWT with role 'admin'.
+    Deny-by-default: requires valid credentials checked with constant-time comparison.
     """
-    provided = ""
-    if payload:
-        provided = payload.admin_key or payload.password or ""
-    expected = os.getenv("ADMIN_SECRET_KEY", "gaonbazar_super_admin_secret_2026")
-    if os.getenv("TEST_MODE") == "1" or os.getenv("CI") == "1" or provided in (expected, "admin", "gaonbazar_super_admin_secret_2026") or not os.getenv("ADMIN_SECRET_KEY"):
-        admin_id = (payload.username if payload and payload.username else None) or "super_admin"
+    if not payload:
+        raise HTTPException(status_code=401, detail="Missing admin credentials")
+    provided = (payload.admin_key or payload.password or "").strip()
+    if not provided:
+        raise HTTPException(status_code=401, detail="Invalid admin credentials")
+
+    expected = os.getenv("ADMIN_SECRET_KEY", "gaonbazar_super_admin_secret_2026").strip()
+    if not expected:
+        raise HTTPException(status_code=401, detail="Admin authentication unconfigured (deny-by-default)")
+
+    if hmac.compare_digest(provided.encode("utf-8"), expected.encode("utf-8")):
+        admin_id = (payload.username.strip() if payload and payload.username else None) or "super_admin"
         token = issue_admin_token(admin_id)
         return {"success": True, "token": token, "role": "admin", "admin_id": admin_id}
     raise HTTPException(status_code=401, detail="Invalid admin credentials")
@@ -528,18 +535,12 @@ def admin_login_endpoint(payload: Optional[AdminLoginRequest] = None):
 @app.get("/admin", response_class=HTMLResponse)
 @app.get("/admin/", response_class=HTMLResponse)
 def serve_admin_portal(request: Request):
-    response = FileResponse(_resolve_html_path("admin_dashboard.html"), media_type="text/html")
-    if not request.cookies.get("gaonbazar_admin_token"):
-        response.set_cookie("gaonbazar_admin_token", issue_admin_token("super_admin"), httponly=False, samesite="lax", max_age=86400 * 7)
-    return response
+    return FileResponse(_resolve_html_path("admin_dashboard.html"), media_type="text/html")
 
 
 @app.get("/admin_dashboard.html", response_class=HTMLResponse)
 def serve_admin_dashboard(request: Request):
-    response = FileResponse(_resolve_html_path("admin_dashboard.html"), media_type="text/html")
-    if not request.cookies.get("gaonbazar_admin_token"):
-        response.set_cookie("gaonbazar_admin_token", issue_admin_token("super_admin"), httponly=False, samesite="lax", max_age=86400 * 7)
-    return response
+    return FileResponse(_resolve_html_path("admin_dashboard.html"), media_type="text/html")
 
 
 # Mount static assets directories (CSS, JS, Images, Icons)
@@ -2315,7 +2316,10 @@ def execute_order_split_payout(order_id: str, db: Session = Depends(get_db)):
             "transfers": split_data["route_transfers"],
             "vendor_transfer_id": v_saved,
             "runner_transfer_id": r_saved,
-            "message": f"Razorpay Route split payout was already {order.split_payout_status} (idempotent)."
+            "is_simulated": True,
+            "settlement_pending_provider_webhook": True,
+            "settled_at": None,
+            "message": f"Razorpay Route split payout was already {order.split_payout_status} (idempotent; simulated sandbox pending bank webhook settlement)."
         }
 
     split_data = prepare_razorpay_route_split(order, db)
@@ -2340,17 +2344,17 @@ def execute_order_split_payout(order_id: str, db: Session = Depends(get_db)):
             runner_split_amount=order.runner_payout,
             admin_platform_fee=order.platform_fee,
             admin_margin=round(float(order.admin_profit) - float(order.platform_fee), 2),
-            route_transfer_status="processed",
+            route_transfer_status="simulated_pending_webhook",
             vendor_transfer_id=v_trf,
             runner_transfer_id=r_trf,
-            settled_at=datetime.utcnow()
+            settled_at=None
         )
         db.add(tx)
     else:
-        tx.route_transfer_status = "processed"
+        tx.route_transfer_status = "simulated_pending_webhook"
         tx.vendor_transfer_id = v_trf
         tx.runner_transfer_id = r_trf
-        tx.settled_at = datetime.utcnow()
+        tx.settled_at = None
     db.commit()
 
     # Dispatch real notifications to Vendor & Runner
@@ -2367,7 +2371,10 @@ def execute_order_split_payout(order_id: str, db: Session = Depends(get_db)):
         "transfers": split_data["route_transfers"],
         "vendor_transfer_id": v_trf,
         "runner_transfer_id": r_trf,
-        "message": "Razorpay Route split payout successfully transferred to linked accounts."
+        "is_simulated": True,
+        "settlement_pending_provider_webhook": True,
+        "settled_at": None,
+        "message": "Simulated sandbox split transfer initiated; awaiting Razorpay bank webhook for final settlement."
     }
 
 
