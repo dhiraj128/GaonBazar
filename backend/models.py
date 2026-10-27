@@ -278,3 +278,33 @@ class Notification(Base):
     notification_type = Column(String(50), nullable=False)  # "order_placed", "order_packed", etc.
     is_read = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class MessageThread(Base):
+    __tablename__ = "message_threads"
+
+    id = Column(String(50), primary_key=True, index=True)
+    order_id = Column(String(50), ForeignKey("orders.id"), nullable=True, index=True)
+    vendor_id = Column(String(50), nullable=False, index=True)
+    runner_id = Column(String(50), nullable=True, index=True)
+    customer_phone = Column(String(20), nullable=True)
+    subject = Column(String(200), default="Order Coordination")
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    messages = relationship("ChatMessage", back_populates="thread", cascade="all, delete-orphan", order_by="ChatMessage.created_at")
+
+
+class ChatMessage(Base):
+    __tablename__ = "chat_messages"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    thread_id = Column(String(50), ForeignKey("message_threads.id"), nullable=False, index=True)
+    sender_id = Column(String(50), nullable=False)
+    sender_role = Column(String(20), nullable=False)  # "vendor", "runner", "customer", "admin"
+    sender_name = Column(String(100), nullable=False)
+    message = Column(Text, nullable=False)
+    is_read = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    thread = relationship("MessageThread", back_populates="messages")

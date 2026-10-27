@@ -594,4 +594,38 @@ def seed_database(db: Session):
         )
         db.add(runner_obj)
 
+
+    # 5. Seed default coordination message thread for active reference order #GB-1284
+    from .models import MessageThread, ChatMessage
+    thread = db.query(MessageThread).filter(MessageThread.id == "th_GB1284").first()
+    if not thread:
+        thread = MessageThread(
+            id="th_GB1284",
+            order_id="#GB-1284",
+            vendor_id="sharma_brothers",
+            runner_id="gm_1",
+            subject="Order #GB-1284 Coordination",
+            created_at=datetime.utcnow(),
+            updated_at=datetime.utcnow()
+        )
+        db.add(thread)
+        db.add(ChatMessage(
+            thread_id="th_GB1284",
+            sender_id="sharma_brothers",
+            sender_role="vendor",
+            sender_name="Sharma Brothers Kirana",
+            message="नमस्ते कमल जी, ऑर्डर #GB-1284 पैक हो चुका है। पिकअप कर लें।",
+            is_read=True,
+            created_at=datetime.utcnow()
+        ))
+        db.add(ChatMessage(
+            thread_id="th_GB1284",
+            sender_id="gm_1",
+            sender_role="runner",
+            sender_name="Kamal Singh",
+            message="जी भैया, मैं 5 मिनट में दुकान पर पहुँच रहा हूँ।",
+            is_read=False,
+            created_at=datetime.utcnow()
+        ))
+
     db.commit()

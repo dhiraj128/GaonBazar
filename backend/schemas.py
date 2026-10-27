@@ -221,6 +221,7 @@ class OrderStatusResponse(BaseModel):
     runner_name: Optional[str] = None
     runner_phone: Optional[str] = None
     created_at: str
+    items: Optional[List[Dict[str, Any]]] = None
 
 
 # --- Vendor (Dukandaar) Schemas ---
@@ -920,3 +921,42 @@ class WebPushSubscriptionRequest(BaseModel):
     user_role: str
     endpoint: str
     keys: Dict[str, str] = Field(default_factory=dict)
+
+
+# --- In-App Role Messaging Schemas (Vendor <-> Runner <-> Admin) ---
+class ChatMessageCreate(BaseModel):
+    message: Optional[str] = None
+    text: Optional[str] = None
+    sender_id: Optional[str] = None
+    sender_role: Optional[str] = None
+    sender_name: Optional[str] = None
+    quick_tag: Optional[str] = None
+
+class ChatMessageResponse(BaseModel):
+    id: int
+    thread_id: str
+    sender_id: str
+    sender_role: str
+    sender_name: str
+    message: str
+    is_read: bool
+    created_at: str
+
+class MessageThreadResponse(BaseModel):
+    id: str
+    order_id: Optional[str] = None
+    vendor_id: str
+    runner_id: Optional[str] = None
+    vendor_name: Optional[str] = None
+    runner_name: Optional[str] = None
+    customer_phone: Optional[str] = None
+    subject: str
+    unread_count: int = 0
+    last_message: Optional[str] = None
+    updated_at: str
+    messages: Optional[List[ChatMessageResponse]] = None
+
+class MessageThreadListResponse(BaseModel):
+    success: bool
+    threads: List[MessageThreadResponse]
+    total_unread: int

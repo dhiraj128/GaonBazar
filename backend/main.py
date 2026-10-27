@@ -24,11 +24,12 @@ from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
+from sqlalchemy import or_, and_, text
 import sentry_sdk
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 
 from .database import engine, Base, get_db, check_database_integrity, ensure_schema_migrations, db_session
-from .models import User, OTPRecord, Landmark, Store, Product, Order, OrderItem, Runner, SupportTicket, StoreCategory, SavedPaymentMethod, PaymentTransaction
+from .models import User, OTPRecord, Landmark, Store, Product, Order, OrderItem, Runner, SupportTicket, StoreCategory, SavedPaymentMethod, PaymentTransaction, Notification, MessageThread, ChatMessage
 from .schemas import (
     SendOTPRequest, SendOTPResponse,
     VerifyOTPRequest, VerifyOTPResponse, UserProfileDTO, CustomerTrustStatusDTO,
@@ -61,7 +62,8 @@ from .schemas import (
     CreatePaymentOrderRequest, CreatePaymentOrderResponse,
     WebhookPaymentEventResponse, SplitPayoutDetailsDTO,
     NotificationDTO, NotificationListResponse, UnreadCountResponse,
-    NotificationMarkReadResponse, WebPushSubscriptionRequest
+    NotificationMarkReadResponse, WebPushSubscriptionRequest,
+    ChatMessageCreate, ChatMessageResponse, MessageThreadResponse, MessageThreadListResponse
 )
 from .pricing import (
     calculate_order_pricing,
@@ -576,7 +578,7 @@ if SCREENSHOTS_DIR.exists():
 
 @app.get("/api/version")
 @app.get("/version")
-def get_build_version():
+def get_build_version(db: Session = Depends(get_db)):
     commit = os.environ.get("RENDER_GIT_COMMIT") or os.environ.get("GIT_COMMIT")
     if not commit:
         try:
@@ -593,6 +595,36 @@ def get_build_version():
             branch = "unknown"
     is_preview = os.getenv("GAONBAZAR_PREVIEW_MODE") == "1"
     env_name = "preview" if is_preview else ("production" if os.getenv("RENDER") else "development")
+
+    dialect_name = engine.dialect.name
+    is_sqlite = (dialect_name == "sqlite")
+    if is_sqlite:
+        redacted_id = "sqlite:///backend/gaonbazar.db"
+        storage_durability = "Render Ephemeral Disk (Warning: resets to git state on redeploy or restart without persistent disk)"
+    else:
+        url_obj = engine.url
+        host = url_obj.host or "unknown"
+        masked_host = host[:4] + "***" + host[-8:] if len(host) > 12 else "***"
+        database = url_obj.database or "postgres"
+        redacted_id = f"postgresql://****@{masked_host}:{url_obj.port or 5432}/{database}"
+        storage_durability = "Remote Persistent Managed PostgreSQL"
+
+    table_counts = {}
+    try:
+        table_counts = {
+            "stores": db.query(Store).count(),
+            "products": db.query(Product).count(),
+            "orders": db.query(Order).count(),
+            "users": db.query(User).count(),
+            "runners": db.query(Runner).count(),
+            "notifications": db.query(Notification).count(),
+            "support_tickets": db.query(SupportTicket).count(),
+            "message_threads": db.query(MessageThread).count(),
+            "chat_messages": db.query(ChatMessage).count()
+        }
+    except Exception as e:
+        table_counts = {"error": str(e)}
+
     return {
         "status": "online",
         "app_name": "GaonBazaar",
@@ -603,6 +635,10 @@ def get_build_version():
         "environment": env_name,
         "preview_mode": is_preview,
         "pwa_cache_name": "gaonbazar-v3-20261026",
+        "database_engine": dialect_name,
+        "database_identifier": redacted_id,
+        "storage_durability": storage_durability,
+        "table_counts": table_counts,
         "timestamp": datetime.utcnow().isoformat()
     }
 
@@ -1363,6 +1399,18 @@ def get_order_status(order_id: str, db: Session = Depends(get_db)):
     elif order.timeline_stage >= 3:
         runner_obj = db.query(Runner).filter(Runner.is_online == True).first()
 
+    order_items_list = []
+    if hasattr(order, "items") and order.items:
+        for it in order.items:
+            order_items_list.append({
+                "product_id": it.product_id,
+                "name": it.product_name,
+                "price": it.price,
+                "qty": it.quantity,
+                "unit": "pack",
+                "image": f"static/images/{it.product_id}.png"
+            })
+
     return OrderStatusResponse(
         order_id=order.id,
         status=order.status,
@@ -1379,7 +1427,8 @@ def get_order_status(order_id: str, db: Session = Depends(get_db)):
         runner_id=runner_obj.id if runner_obj else None,
         runner_name=runner_obj.name if runner_obj else None,
         runner_phone=runner_obj.phone if runner_obj else None,
-        created_at=order.created_at.isoformat()
+        created_at=order.created_at.isoformat(),
+        items=order_items_list
     )
 
 
@@ -4771,6 +4820,244 @@ def mark_all_notifications_read_endpoint(
 def register_web_push_subscription(payload: WebPushSubscriptionRequest, db: Session = Depends(get_db)):
     """Registers a Web Push subscription endpoint and keys for browser push."""
     return {"success": True, "message": "Web Push subscription registered successfully."}
+
+
+# =============================================================================
+# 11. IN-APP ROLE MESSAGING (Vendor <-> Runner <-> Admin)
+# =============================================================================
+
+@app.get("/api/messages/threads", response_model=MessageThreadListResponse)
+def list_message_threads(
+    user_id: Optional[str] = Query(None),
+    role: Optional[str] = Query(None),
+    db: Session = Depends(get_db)
+):
+    """
+    Returns authorized message threads for a vendor, runner, or admin.
+    """
+    query = db.query(MessageThread)
+    if role == "vendor" and user_id:
+        query = query.filter(MessageThread.vendor_id == user_id)
+    elif role == "runner" and user_id:
+        query = query.filter(MessageThread.runner_id == user_id)
+    elif role == "admin":
+        pass
+    elif user_id:
+        query = query.filter(
+            or_(MessageThread.vendor_id == user_id, MessageThread.runner_id == user_id)
+        )
+    
+    threads = query.order_by(MessageThread.updated_at.desc()).all()
+    
+    results = []
+    total_unread = 0
+    for t in threads:
+        unread = 0
+        last_msg = None
+        if t.messages:
+            last_msg = t.messages[-1].message
+            for m in t.messages:
+                if not m.is_read and (not user_id or m.sender_id != user_id):
+                    unread += 1
+        total_unread += unread
+        
+        vendor = db.query(Store).filter(Store.id == t.vendor_id).first()
+        runner = db.query(Runner).filter(Runner.id == t.runner_id).first() if t.runner_id else None
+        
+        results.append(MessageThreadResponse(
+            id=t.id,
+            order_id=t.order_id,
+            vendor_id=t.vendor_id,
+            runner_id=t.runner_id,
+            vendor_name=vendor.name if vendor else t.vendor_id,
+            runner_name=runner.name if runner else (t.runner_id or "Gaon Mitra"),
+            customer_phone=t.customer_phone,
+            subject=t.subject,
+            unread_count=unread,
+            last_message=last_msg,
+            updated_at=t.updated_at.isoformat() if t.updated_at else t.created_at.isoformat(),
+            messages=[
+                ChatMessageResponse(
+                    id=m.id,
+                    thread_id=m.thread_id,
+                    sender_id=m.sender_id,
+                    sender_role=m.sender_role,
+                    sender_name=m.sender_name,
+                    message=m.message,
+                    is_read=m.is_read,
+                    created_at=m.created_at.isoformat()
+                ) for m in t.messages
+            ]
+        ))
+        
+    return MessageThreadListResponse(
+        success=True,
+        threads=results,
+        total_unread=total_unread
+    )
+
+
+@app.get("/api/messages/threads/{thread_id}", response_model=MessageThreadResponse)
+def get_message_thread(
+    thread_id: str,
+    user_id: Optional[str] = Query(None),
+    role: Optional[str] = Query(None),
+    db: Session = Depends(get_db)
+):
+    t = db.query(MessageThread).filter(MessageThread.id == thread_id).first()
+    if not t:
+        raise HTTPException(status_code=404, detail="Thread not found")
+        
+    changed = False
+    for m in t.messages:
+        if not m.is_read and (not user_id or m.sender_id != user_id):
+            m.is_read = True
+            changed = True
+    if changed:
+        db.commit()
+        
+    vendor = db.query(Store).filter(Store.id == t.vendor_id).first()
+    runner = db.query(Runner).filter(Runner.id == t.runner_id).first() if t.runner_id else None
+    
+    return MessageThreadResponse(
+        id=t.id,
+        order_id=t.order_id,
+        vendor_id=t.vendor_id,
+        runner_id=t.runner_id,
+        vendor_name=vendor.name if vendor else t.vendor_id,
+        runner_name=runner.name if runner else (t.runner_id or "Gaon Mitra"),
+        customer_phone=t.customer_phone,
+        subject=t.subject,
+        unread_count=0,
+        last_message=t.messages[-1].message if t.messages else None,
+        updated_at=t.updated_at.isoformat() if t.updated_at else t.created_at.isoformat(),
+        messages=[
+            ChatMessageResponse(
+                id=m.id,
+                thread_id=m.thread_id,
+                sender_id=m.sender_id,
+                sender_role=m.sender_role,
+                sender_name=m.sender_name,
+                message=m.message,
+                is_read=m.is_read,
+                created_at=m.created_at.isoformat()
+            ) for m in t.messages
+        ]
+    )
+
+
+@app.post("/api/messages/threads/{thread_id}/send", response_model=ChatMessageResponse)
+def send_thread_message(
+    thread_id: str,
+    payload: ChatMessageCreate,
+    sender_id: Optional[str] = Query(None),
+    sender_role: Optional[str] = Query(None),
+    sender_name: Optional[str] = Query(None),
+    db: Session = Depends(get_db)
+):
+    msg_text = (payload.message or payload.text or "").strip()
+    if not msg_text:
+        raise HTTPException(status_code=400, detail="Message cannot be empty")
+        
+    t = db.query(MessageThread).filter(MessageThread.id == thread_id).first()
+    if not t:
+        raise HTTPException(status_code=404, detail="Thread not found")
+        
+    s_id = sender_id or payload.sender_id or "unknown"
+    s_role = sender_role or payload.sender_role or "vendor"
+    s_name = sender_name or payload.sender_name or ("Dukandaar" if s_role == "vendor" else "Gaon Mitra")
+    
+    msg = ChatMessage(
+        thread_id=t.id,
+        sender_id=s_id,
+        sender_role=s_role,
+        sender_name=s_name,
+        message=msg_text,
+        is_read=False,
+        created_at=datetime.utcnow()
+    )
+    db.add(msg)
+    
+    t.last_message = msg_text
+    t.updated_at = datetime.utcnow()
+    db.commit()
+    db.refresh(msg)
+    
+    return ChatMessageResponse(
+        id=msg.id,
+        thread_id=msg.thread_id,
+        sender_id=msg.sender_id,
+        sender_role=msg.sender_role,
+        sender_name=msg.sender_name,
+        message=msg.message,
+        is_read=msg.is_read,
+        created_at=msg.created_at.isoformat()
+    )
+
+
+@app.post("/api/messages/threads/order/{order_id}", response_model=MessageThreadResponse)
+def get_or_create_order_thread(order_id: str, db: Session = Depends(get_db)):
+    cand = [order_id, f"#{order_id}", order_id.lstrip("#")]
+    order = db.query(Order).filter(Order.id.in_(cand)).first()
+    if not order:
+        raise HTTPException(status_code=404, detail=f"Order {order_id} not found")
+        
+    th_id = f"th_{order.id.replace('#', '')}"
+    t = db.query(MessageThread).filter(MessageThread.order_id == order.id).first()
+    if not t:
+        t = MessageThread(
+            id=th_id,
+            order_id=order.id,
+            vendor_id=order.store_id,
+            runner_id=order.runner_id or "gm_1",
+            subject=f"Order {order.id} Coordination",
+            created_at=datetime.utcnow(),
+            updated_at=datetime.utcnow()
+        )
+        db.add(t)
+        store = db.query(Store).filter(Store.id == order.store_id).first()
+        store_name = store.name if store else "दुकानदार"
+        db.add(ChatMessage(
+            thread_id=th_id,
+            sender_id=order.store_id,
+            sender_role="vendor",
+            sender_name=store_name,
+            message=f"नमस्ते! ऑर्डर {order.id} तैयार किया जा रहा है।",
+            is_read=False,
+            created_at=datetime.utcnow()
+        ))
+        db.commit()
+        db.refresh(t)
+        
+    vendor = db.query(Store).filter(Store.id == t.vendor_id).first()
+    runner = db.query(Runner).filter(Runner.id == t.runner_id).first() if t.runner_id else None
+    
+    return MessageThreadResponse(
+        id=t.id,
+        order_id=t.order_id,
+        vendor_id=t.vendor_id,
+        runner_id=t.runner_id,
+        vendor_name=vendor.name if vendor else t.vendor_id,
+        runner_name=runner.name if runner else (t.runner_id or "Gaon Mitra"),
+        customer_phone=t.customer_phone,
+        subject=t.subject,
+        unread_count=0,
+        last_message=t.messages[-1].message if t.messages else None,
+        updated_at=t.updated_at.isoformat() if t.updated_at else t.created_at.isoformat(),
+        messages=[
+            ChatMessageResponse(
+                id=m.id,
+                thread_id=m.thread_id,
+                sender_id=m.sender_id,
+                sender_role=m.sender_role,
+                sender_name=m.sender_name,
+                message=m.message,
+                is_read=m.is_read,
+                created_at=m.created_at.isoformat()
+            ) for m in t.messages
+        ]
+    )
+
 
 # Static file extension handler for root-level assets (CSS, JS, Images, Icons, Audio, Fonts, WebManifest)
 @app.get("/{filename:path}", include_in_schema=False)

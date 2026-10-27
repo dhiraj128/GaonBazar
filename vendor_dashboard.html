@@ -267,6 +267,81 @@
       #vendor-bottom-nav button { border-radius: 14px !important; min-height: 48px !important; }
       #vendor-preferences-card { border-radius: 18px; }
     }
+
+    /* HIGH CONTRAST VENDOR LEDGER DARK MODE GUARANTEES (WCAG AAA) */
+    html.dark #tab-ledger .bg-white {
+      background-color: #2B4858 !important;
+      border-color: #476476 !important;
+    }
+    html.dark .bg-emerald-50 {
+      background-color: rgba(16, 185, 129, 0.18) !important;
+      border-color: rgba(52, 211, 153, 0.45) !important;
+    }
+    html.dark .bg-emerald-50 [data-i18n="ledger_stat_cod"],
+    html.dark .bg-emerald-50 span.text-primary,
+    html.dark .bg-emerald-50 .text-emerald-800 {
+      color: #6EE7B7 !important;
+    }
+    html.dark .bg-emerald-50 #ledger-cod-collected,
+    html.dark .bg-emerald-50 .text-emerald-900,
+    html.dark .bg-emerald-50 .text-emerald-950 {
+      color: #F6FBFD !important;
+    }
+    html.dark .bg-emerald-50 [data-i18n="ledger_stat_cod_sub"],
+    html.dark .bg-emerald-50 .text-emerald-700 {
+      color: #A7F3D0 !important;
+    }
+
+    html.dark .bg-amber-50 {
+      background-color: rgba(245, 158, 11, 0.18) !important;
+      border-color: rgba(251, 191, 36, 0.45) !important;
+    }
+    html.dark .bg-amber-50 [data-i18n="ledger_stat_fee"],
+    html.dark .bg-amber-50 .text-amber-800,
+    html.dark .bg-amber-50 .text-amber-900 {
+      color: #FCD34D !important;
+    }
+    html.dark .bg-amber-50 #ledger-platform-fee,
+    html.dark .bg-amber-50 .text-amber-950 {
+      color: #FFFBEB !important;
+    }
+    html.dark .bg-amber-50 [data-i18n="ledger_stat_fee_sub"],
+    html.dark .bg-amber-50 .text-amber-700 {
+      color: #FDE68A !important;
+    }
+
+    html.dark .bg-purple-50 {
+      background-color: rgba(168, 85, 247, 0.18) !important;
+      border-color: rgba(192, 132, 252, 0.45) !important;
+    }
+    html.dark .bg-purple-50 [data-i18n="ledger_stat_earnings"],
+    html.dark .bg-purple-50 .text-purple-800 {
+      color: #D8B4FE !important;
+    }
+    html.dark .bg-purple-50 #ledger-net-payout,
+    html.dark .bg-purple-50 .text-purple-900,
+    html.dark .bg-purple-50 .text-purple-950 {
+      color: #FAF5FF !important;
+    }
+    html.dark .bg-purple-50 [data-i18n="ledger_stat_earnings_sub"],
+    html.dark .bg-purple-50 .text-purple-700 {
+      color: #E9D5FF !important;
+    }
+
+    html.dark #tab-ledger .bg-slate-50 {
+      background-color: #1E3542 !important;
+      border-color: #476476 !important;
+    }
+    html.dark #tab-ledger .bg-slate-50 [data-i18n="ledger_stat_sales"] {
+      color: #CBD5E1 !important;
+    }
+    html.dark #tab-ledger .bg-slate-50 #ledger-gross-sales {
+      color: #F6FBFD !important;
+    }
+    html.dark #tab-ledger .bg-slate-50 [data-i18n="ledger_stat_sales_sub"] {
+      color: #94A3B8 !important;
+    }
+
   </style>
 </head>
 <body class="h-full min-h-[100dvh] max-h-[100dvh] w-full text-on-surface flex flex-col antialiased select-none overflow-hidden bg-slate-50">
@@ -484,38 +559,28 @@
       <!-- ORDERS-FIRST STREAMLINED STAGE FILTER RIBBON (Replaces 4 oversized KPI blocks) -->
       <section id="vendor-kpi-board" class="w-full flex items-center gap-2 overflow-x-auto no-scrollbar py-2.5 px-0.5">
         
-        <!-- 3 Workflow Pills Matching Reference 02 Frame 1 -->
-        <!-- Filter 1: Orders (3) -->
+        <!-- Workflow Filter Pills Ribbon -->
+        <!-- Filter 1: Orders (All) -->
         <button onclick="switchOrderFilter('all')" id="filter-btn-all" class="order-filter-pill min-h-[42px] px-4 py-2 rounded-xl text-xs font-black bg-[#16B86E] text-white shrink-0 active:scale-95 cursor-pointer shadow-xs flex items-center gap-1.5">
-          <span data-i18n="filter_orders_all">Orders (3)</span>
-        </button>
-
-        <!-- Filter 2: Packing (2) -->
-        <button onclick="switchOrderFilter('packing')" id="filter-btn-packing" class="order-filter-pill min-h-[42px] px-4 py-2 rounded-xl text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-700 dark:text-[#C9DCE5] border border-slate-200 dark:border-[#476476] shrink-0 active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5">
-          <span data-i18n="filter_orders_packing">Packing (2)</span>
-        </button>
-
-        <!-- Filter 3: Ready (1) -->
-        <button onclick="switchOrderFilter('ready')" id="filter-btn-ready" class="order-filter-pill min-h-[42px] px-4 py-2 rounded-xl text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-700 dark:text-[#C9DCE5] border border-slate-200 dark:border-[#476476] shrink-0 active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5">
-          <span data-i18n="filter_orders_ready">Ready (1)</span>
+          <span data-i18n="filter_orders_all">Orders</span>
         </button>
 
         <!-- Filter 2: New Orders (Action Needed) -->
-        <button onclick="switchOrderFilter('new')" id="filter-btn-new" class="order-filter-pill min-h-[42px] px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-[#2B4858] text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-600/60 shrink-0 active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5" data-i18n="filter_orders_new">
+        <button onclick="switchOrderFilter('new')" id="filter-btn-new" class="order-filter-pill min-h-[42px] px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-[#2B4858] text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-600/60 shrink-0 active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5">
           <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-          <span>नए ऑर्डर</span>
+          <span data-i18n="filter_orders_new">नए ऑर्डर</span>
           <span id="kpi-new-count" class="min-w-[18px] h-[18px] px-1 bg-amber-500 text-white text-[10px] font-black rounded-full flex items-center justify-center">0</span>
         </button>
 
         <!-- Filter 3: Packing / In Progress -->
-        <button onclick="switchOrderFilter('packing')" id="filter-btn-packing" class="order-filter-pill min-h-[42px] px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-[#2B4858] text-blue-800 dark:text-blue-300 border border-blue-300 dark:border-blue-600/60 shrink-0 active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5" data-i18n="filter_orders_packing">
-          <span>पैकिंग</span>
+        <button onclick="switchOrderFilter('packing')" id="filter-btn-packing" class="order-filter-pill min-h-[42px] px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-[#2B4858] text-blue-800 dark:text-blue-300 border border-blue-300 dark:border-blue-600/60 shrink-0 active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5">
+          <span data-i18n="filter_orders_packing">पैकिंग</span>
           <span id="kpi-packing-count" class="min-w-[18px] h-[18px] px-1 bg-blue-500 text-white text-[10px] font-black rounded-full flex items-center justify-center">0</span>
         </button>
 
         <!-- Filter 4: Ready for Runner -->
-        <button onclick="switchOrderFilter('ready')" id="filter-btn-ready" class="order-filter-pill min-h-[42px] px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-[#2B4858] text-purple-800 dark:text-purple-300 border border-purple-300 dark:border-purple-600/60 shrink-0 active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5" data-i18n="filter_orders_ready">
-          <span>तैयार / सौंपें</span>
+        <button onclick="switchOrderFilter('ready')" id="filter-btn-ready" class="order-filter-pill min-h-[42px] px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-[#2B4858] text-purple-800 dark:text-purple-300 border border-purple-300 dark:border-purple-600/60 shrink-0 active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5">
+          <span data-i18n="filter_orders_ready">तैयार / सौंपें</span>
         </button>
 
         <!-- Filter 5: Out in Transit -->
@@ -1256,9 +1321,10 @@
     </button>
 
     <!-- Tab 4: Messages -->
-    <button id="nav-btn-messages" onclick="openVendorMessagesModal()" class="flex-1 min-w-0 max-w-[80px] flex flex-col items-center justify-center py-1 px-1 rounded-xl text-slate-500 dark:text-[#C9DCE5] hover:text-slate-800 dark:hover:text-white font-bold transition-all min-h-[48px] active:scale-95 cursor-pointer">
+    <button id="nav-btn-messages" onclick="openVendorMessagesModal()" class="relative flex-1 min-w-0 max-w-[80px] flex flex-col items-center justify-center py-1 px-1 rounded-xl text-slate-500 dark:text-[#C9DCE5] hover:text-slate-800 dark:hover:text-white font-bold transition-all min-h-[48px] active:scale-95 cursor-pointer">
       <span class="material-symbols-outlined text-[22px]">chat</span>
       <span class="text-[10px] font-bold mt-0.5" data-i18n="nav_messages">Messages</span>
+      <span id="vendor-messages-unread-dot" class="hidden absolute top-1 right-3 min-w-[16px] h-[16px] px-1 bg-red-600 text-white text-[10px] font-black rounded-full flex items-center justify-center border border-white dark:border-[#203846]">0</span>
     </button>
 
     <!-- Tab 5: More / Menu -->
@@ -1272,6 +1338,81 @@
   <!-- ========================================================================= -->
   <!-- 8. BOTTOM SHEET: ADD NEW PRODUCT (Swipe-up Native Android Style)          -->
   <!-- ========================================================================= -->
+  
+  <!-- ========================================================================= -->
+  <!-- 9. VENDOR MESSAGES & PARTNER COORDINATION MODAL                           -->
+  <!-- ========================================================================= -->
+  <div id="modal-vendor-messages" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex flex-col justify-end sm:justify-center items-center p-0 sm:p-4 transition-opacity duration-300">
+    <div class="bg-white dark:bg-[#203846] text-slate-900 dark:text-[#F6FBFD] rounded-t-[32px] sm:rounded-3xl p-4 sm:p-6 pb-safe shadow-2xl max-w-lg w-full max-h-[90vh] sm:max-h-[85vh] flex flex-col border-t sm:border border-slate-200 dark:border-[#476476] overflow-hidden animate-in slide-in-from-bottom duration-300">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-[#365668] pb-3 shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-2xl bg-emerald-50 dark:bg-[#365668] text-[#16B86E] flex items-center justify-center shrink-0 border border-emerald-200 dark:border-[#476476]">
+            <span class="material-symbols-outlined text-[22px]">forum</span>
+          </div>
+          <div>
+            <h3 class="text-sm font-black leading-tight flex items-center gap-1.5" data-i18n="vendor_msg_title">
+              <span>संदेश व बातचीत</span>
+              <span id="vendor-chat-active-order-badge" class="text-[10px] font-mono bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 px-2 py-0.5 rounded-full font-bold">#GB-1284</span>
+            </h3>
+            <span id="vendor-chat-partner-name" class="text-xs text-slate-500 dark:text-[#C9DCE5] font-semibold">कमल सिंह • गाँव मित्र (डिलीवरी पार्टनर)</span>
+          </div>
+        </div>
+        <button onclick="closeVendorMessagesModal()" aria-label="Close" class="w-10 h-10 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-white active:scale-90 cursor-pointer">
+          <span class="material-symbols-outlined text-[22px]">close</span>
+        </button>
+      </div>
+
+      <!-- Thread Picker / Tab Row -->
+      <div id="vendor-thread-tabs" class="flex items-center gap-2 py-2 overflow-x-auto no-scrollbar border-b border-slate-100 dark:border-[#365668] shrink-0 text-xs">
+        <button onclick="selectVendorThread('th_GB1284')" class="vendor-thread-chip px-3 py-1.5 rounded-xl font-bold bg-[#16B86E] text-white flex items-center gap-1 shrink-0 cursor-pointer shadow-2xs">
+          <span class="material-symbols-outlined text-[16px]">local_shipping</span>
+          <span>#GB-1284 (कमल सिंह)</span>
+        </button>
+      </div>
+
+      <!-- Messages Message History Box -->
+      <div id="vendor-chat-messages-container" class="flex-1 overflow-y-auto p-3 flex flex-col gap-2.5 min-h-[220px] max-h-[380px] bg-slate-50 dark:bg-[#1A2E3B] rounded-2xl my-3 border border-slate-200/80 dark:border-[#365668]">
+        <!-- Dynamic message bubbles injected here -->
+      </div>
+
+      <!-- Quick Reply Chips -->
+      <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-2 shrink-0">
+        <button type="button" onclick="sendQuickVendorMessage('सामान पैक होकर तैयार है।')" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-white dark:bg-[#2B4858] text-slate-700 dark:text-[#C9DCE5] border border-slate-200 dark:border-[#476476] whitespace-nowrap active:scale-95 cursor-pointer hover:border-[#16B86E]">
+          📦 सामान तैयार है
+        </button>
+        <button type="button" onclick="sendQuickVendorMessage('दुकान पर कब तक पहुँचेंगे?')" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-white dark:bg-[#2B4858] text-slate-700 dark:text-[#C9DCE5] border border-slate-200 dark:border-[#476476] whitespace-nowrap active:scale-95 cursor-pointer hover:border-[#16B86E]">
+          ⏱️ कब तक पहुँचेंगे?
+        </button>
+        <button type="button" onclick="sendQuickVendorMessage('ग्राहक से बात हो गई है।')" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-white dark:bg-[#2B4858] text-slate-700 dark:text-[#C9DCE5] border border-slate-200 dark:border-[#476476] whitespace-nowrap active:scale-95 cursor-pointer hover:border-[#16B86E]">
+          ✅ ग्राहक से बात हो गई
+        </button>
+      </div>
+
+      <!-- Chat Input Form -->
+      <form onsubmit="handleVendorChatSubmit(event)" class="flex items-center gap-2 shrink-0 pt-1">
+        <input 
+          id="vendor-chat-input" 
+          type="text" 
+          placeholder="रनर को संदेश भेजें..." 
+          data-i18n-ph="vendor_chat_placeholder"
+          class="flex-1 min-h-[44px] px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-[#365668] text-slate-900 dark:text-[#F6FBFD] border border-slate-200 dark:border-[#476476] text-xs font-semibold focus:outline-none focus:border-[#16B86E]"
+        />
+        <button 
+          id="btn-vendor-send-msg" 
+          type="submit" 
+          aria-label="Send Message"
+          class="min-h-[44px] px-4 rounded-xl bg-[#16B86E] hover:bg-emerald-600 active:scale-95 text-white text-xs font-black flex items-center justify-center gap-1 shadow-md transition-all cursor-pointer shrink-0"
+        >
+          <span class="material-symbols-outlined text-[18px]">send</span>
+          <span data-i18n="btn_send">भेजें</span>
+        </button>
+      </form>
+
+    </div>
+  </div>
+
   <div id="modal-add-product" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex flex-col justify-end p-0 sm:p-4 transition-opacity duration-300">
     <div class="bg-white rounded-t-[32px] sm:rounded-3xl p-5 sm:p-6 pb-safe shadow-2xl max-w-md w-full mx-auto border-t sm:border border-slate-200 flex flex-col gap-3.5 max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom duration-300">
       <!-- Drag Handle -->
@@ -1526,7 +1667,7 @@
     // Can also be set in browser console: localStorage.setItem('gaonbazar_api_base', 'https://...');
     // ============================================================================
     const LIVE_API_URL = ''; // <-- PASTE LIVE RENDER BACKEND URL HERE
-    const API_BASE = window.GAONBAZAAR_API_BASE || localStorage.getItem('gaonbazar_api_base') || (LIVE_API_URL ? LIVE_API_URL.replace(/\/+$/, '') : (window.location && window.location.protocol.startsWith('http') && !window.location.host.includes('localhost') && !window.location.host.includes('127.0.0.1') ? (window.location.origin + '/api') : 'http://127.0.0.1:8001/api'));
+    const API_BASE = window.GAONBAZAAR_API_BASE || localStorage.getItem('gaonbazar_api_base') || (LIVE_API_URL ? LIVE_API_URL.replace(/\/+$/, '') : (window.location && window.location.protocol.startsWith('http') ? (window.location.origin + '/api') : 'http://127.0.0.1:8001/api'));
     
     // Reference orders for exact freeze alignment
     
@@ -2397,7 +2538,15 @@
       const savedLang = localStorage.getItem('gaonbazar_lang') || localStorage.getItem('gaonbazar_vendor_lang');
       if (savedLang === 'hi' || savedLang === 'en') {
         VendorStore.lang = savedLang;
-        updateLanguageUI();
+      } else {
+        VendorStore.lang = 'hi';
+        localStorage.setItem('gaonbazar_lang', 'hi');
+      }
+      updateLanguageUI();
+      // Ensure dynamic date is populated immediately
+      const initialDateEl = document.getElementById('ledger-date-val');
+      if (initialDateEl) {
+        initialDateEl.innerText = new Date().toISOString().split('T')[0];
       }
 
       renderOrdersQueue();
@@ -3195,7 +3344,253 @@
     }
 
     // --- 9.10 TAB 3: LEDGER VIEW ---
-    function renderLedgerView() {
+
+    // =========================================================================
+    // VENDOR MESSAGING & PARTNER COORDINATION ENGINE
+    // =========================================================================
+    let currentVendorThreadId = "th_GB1284";
+    let vendorPollInterval = null;
+
+    async function openVendorMessagesModal(preselectOrder = null) {
+      const modal = document.getElementById('modal-vendor-messages');
+      if (!modal) return;
+      modal.classList.remove('hidden');
+      modal.style.display = 'flex';
+      
+      if (window.pushOverlayHistory) {
+        window.pushOverlayHistory('modal-vendor-messages', function(fromPop) {
+          closeVendorMessagesModal(fromPop);
+        });
+      }
+
+      await loadVendorMessageThreads(preselectOrder);
+      setTimeout(() => {
+        const inp = document.getElementById('vendor-chat-input');
+        if (inp) inp.focus();
+      }, 200);
+
+      // Real-time polling while modal is open
+      if (vendorPollInterval) clearInterval(vendorPollInterval);
+      vendorPollInterval = setInterval(() => {
+        if (!modal.classList.contains('hidden')) {
+          refreshActiveVendorThread();
+        }
+      }, 3000);
+    }
+    window.openVendorMessagesModal = openVendorMessagesModal;
+
+    function closeVendorMessagesModal(isFromPopstate) {
+      const modal = document.getElementById('modal-vendor-messages');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
+      }
+      if (vendorPollInterval) {
+        clearInterval(vendorPollInterval);
+        vendorPollInterval = null;
+      }
+      if (window.closeOverlayHistory) {
+        window.closeOverlayHistory('modal-vendor-messages', isFromPopstate);
+      }
+    }
+    window.closeVendorMessagesModal = closeVendorMessagesModal;
+
+    async function loadVendorMessageThreads(preselectOrder = null) {
+      const storeId = VendorStore.currentStoreId || 'sharma_brothers';
+      const isHi = VendorStore.lang === 'hi';
+      try {
+        const res = await fetch(`/api/messages/threads?user_id=${encodeURIComponent(storeId)}&role=vendor`);
+        if (!res.ok) throw new Error('Failed to load threads');
+        const data = await res.json();
+        const threads = data.threads || [];
+        
+        // Update unread badge on bottom nav
+        const unreadDot = document.getElementById('vendor-messages-unread-dot');
+        if (unreadDot) {
+          if (data.total_unread > 0) {
+            unreadDot.innerText = data.total_unread;
+            unreadDot.classList.remove('hidden');
+          } else {
+            unreadDot.classList.add('hidden');
+          }
+        }
+
+        // Render thread selection tabs
+        const tabContainer = document.getElementById('vendor-thread-tabs');
+        if (tabContainer && threads.length > 0) {
+          tabContainer.innerHTML = threads.map(t => {
+            const isActive = (t.id === currentVendorThreadId);
+            return `
+              <button 
+                type="button"
+                onclick="selectVendorThread('${t.id}')" 
+                class="vendor-thread-chip px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1 shrink-0 cursor-pointer transition-all ${isActive ? 'bg-[#16B86E] text-white shadow-2xs' : 'bg-slate-100 dark:bg-[#2B4858] text-slate-700 dark:text-[#C9DCE5] border border-slate-200 dark:border-[#476476]'}"
+              >
+                <span class="material-symbols-outlined text-[16px]">local_shipping</span>
+                <span>${t.order_id || 'ऑर्डर'} (${t.runner_name || 'गाँव मित्र'})</span>
+                ${t.unread_count > 0 ? `<span class="w-2 h-2 rounded-full bg-red-500 shrink-0"></span>` : ''}
+              </button>
+            `;
+          }).join('');
+        }
+
+        let targetThreadId = currentVendorThreadId;
+        if (preselectOrder) {
+          const match = threads.find(t => t.order_id === preselectOrder || t.order_id === '#' + preselectOrder);
+          if (match) targetThreadId = match.id;
+        } else if (threads.length > 0 && !threads.find(t => t.id === targetThreadId)) {
+          targetThreadId = threads[0].id;
+        }
+
+        await selectVendorThread(targetThreadId);
+
+      } catch (e) {
+        console.warn('Could not load vendor message threads:', e);
+        renderVendorMessagesFallback();
+      }
+    }
+    window.loadVendorMessageThreads = loadVendorMessageThreads;
+
+    async function selectVendorThread(threadId) {
+      currentVendorThreadId = threadId;
+      const storeId = VendorStore.currentStoreId || 'sharma_brothers';
+      try {
+        const res = await fetch(`/api/messages/threads/${encodeURIComponent(threadId)}?user_id=${encodeURIComponent(storeId)}&role=vendor`);
+        if (!res.ok) throw new Error('Thread not found');
+        const thread = await res.json();
+        
+        // Update header details
+        const badge = document.getElementById('vendor-chat-active-order-badge');
+        if (badge) badge.innerText = thread.order_id || '#GB-1284';
+        const partner = document.getElementById('vendor-chat-partner-name');
+        if (partner) partner.innerText = `${thread.runner_name || 'गाँव मित्र'} • डिलीवरी पार्टनर`;
+
+        // Render message bubbles
+        renderVendorMessagesList(thread.messages || []);
+
+      } catch (e) {
+        console.warn('Thread fetch error:', e);
+        renderVendorMessagesFallback();
+      }
+    }
+    window.selectVendorThread = selectVendorThread;
+
+    async function refreshActiveVendorThread() {
+      if (!currentVendorThreadId) return;
+      const storeId = VendorStore.currentStoreId || 'sharma_brothers';
+      try {
+        const res = await fetch(`/api/messages/threads/${encodeURIComponent(currentVendorThreadId)}?user_id=${encodeURIComponent(storeId)}&role=vendor`);
+        if (res.ok) {
+          const thread = await res.json();
+          renderVendorMessagesList(thread.messages || []);
+        }
+      } catch (e) {}
+    }
+
+    function renderVendorMessagesList(messages) {
+      const container = document.getElementById('vendor-chat-messages-container');
+      if (!container) return;
+      const storeId = VendorStore.currentStoreId || 'sharma_brothers';
+      const isHi = VendorStore.lang === 'hi';
+
+      if (!messages || messages.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-8 text-xs text-slate-400">
+            ${isHi ? 'अभी तक कोई संदेश नहीं है। नीचे से संदेश भेजें।' : 'No messages yet. Send a message below.'}
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = messages.map(m => {
+        const isMe = (m.sender_role === 'vendor' || m.sender_id === storeId);
+        const timeStr = m.created_at ? new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+        if (isMe) {
+          return `
+            <div class="flex flex-col items-end gap-1 max-w-[85%] self-end">
+              <span class="text-[9px] font-bold text-slate-400 dark:text-[#8CAAB9]">${isHi ? 'आप (दुकानदार)' : 'You (Vendor)'} • ${timeStr}</span>
+              <div class="p-3 rounded-2xl rounded-tr-none bg-[#16B86E] text-white text-xs font-semibold shadow-2xs break-words leading-relaxed">
+                ${escapeVendorHtml(m.message)}
+              </div>
+            </div>
+          `;
+        } else {
+          return `
+            <div class="flex flex-col items-start gap-1 max-w-[85%] self-start">
+              <span class="text-[9px] font-bold text-slate-400 dark:text-[#8CAAB9]">${escapeVendorHtml(m.sender_name)} (${m.sender_role}) • ${timeStr}</span>
+              <div class="p-3 rounded-2xl rounded-tl-none bg-white dark:bg-[#365668] text-slate-900 dark:text-[#F6FBFD] border border-slate-200/80 dark:border-[#476476] text-xs font-semibold shadow-2xs break-words leading-relaxed">
+                ${escapeVendorHtml(m.message)}
+              </div>
+            </div>
+          `;
+        }
+      }).join('');
+
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function renderVendorMessagesFallback() {
+      renderVendorMessagesList([
+        { id: 1, sender_id: 'sharma_brothers', sender_role: 'vendor', sender_name: 'Sharma Brothers Kirana', message: 'नमस्ते कमल जी, ऑर्डर #GB-1284 पैक हो चुका है। पिकअप कर लें।', created_at: new Date().toISOString() },
+        { id: 2, sender_id: 'gm_1', sender_role: 'runner', sender_name: 'Kamal Singh', message: 'जी भैया, मैं 5 मिनट में दुकान पर पहुँच रहा हूँ।', created_at: new Date().toISOString() }
+      ]);
+    }
+
+    function escapeVendorHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>"']/g, function(m) {
+        return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m];
+      });
+    }
+
+    async function handleVendorChatSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById('vendor-chat-input');
+      if (!input) return;
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = '';
+      await sendVendorMessageText(text);
+    }
+    window.handleVendorChatSubmit = handleVendorChatSubmit;
+
+    async function sendQuickVendorMessage(text) {
+      await sendVendorMessageText(text);
+    }
+    window.sendQuickVendorMessage = sendQuickVendorMessage;
+
+    async function sendVendorMessageText(text) {
+      const storeId = VendorStore.currentStoreId || 'sharma_brothers';
+      const storeName = VendorStore.storeData ? VendorStore.storeData.name : 'Sharma Brothers Kirana';
+      try {
+        const res = await fetch(`/api/messages/threads/${encodeURIComponent(currentVendorThreadId)}/send?sender_id=${encodeURIComponent(storeId)}&sender_role=vendor&sender_name=${encodeURIComponent(storeName)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text })
+        });
+        if (!res.ok) throw new Error('Send failed');
+        await refreshActiveVendorThread();
+      } catch (e) {
+        console.warn('Send error:', e);
+        // Optimistic local fallback append
+        const container = document.getElementById('vendor-chat-messages-container');
+        if (container) {
+          const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          const newBubble = document.createElement('div');
+          newBubble.className = "flex flex-col items-end gap-1 max-w-[85%] self-end";
+          newBubble.innerHTML = `
+            <span class="text-[9px] font-bold text-slate-400">आप (दुकानदार) • ${timeStr}</span>
+            <div class="p-3 rounded-2xl rounded-tr-none bg-[#16B86E] text-white text-xs font-semibold shadow-2xs break-words leading-relaxed">
+              ${escapeVendorHtml(text)}
+            </div>
+          `;
+          container.appendChild(newBubble);
+          container.scrollTop = container.scrollHeight;
+        }
+      }
+    }
+
+        function renderLedgerView() {
       const l = VendorStore.ledger;
       if (!l) return;
 
@@ -3205,6 +3600,11 @@
       const elNet = document.getElementById('ledger-net-payout');
       const elBadge = document.getElementById('ledger-orders-count-badge');
       const tableBody = document.getElementById('ledger-table-body');
+      const dateEl = document.getElementById('ledger-date-val');
+      if (dateEl) {
+        const todayIso = new Date().toISOString().split('T')[0];
+        dateEl.innerText = (l && l.date) ? l.date : todayIso;
+      }
 
       const isHi = VendorStore.lang === 'hi';
       if (elGross) elGross.innerText = `₹${l.gross_sales}`;
