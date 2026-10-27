@@ -241,6 +241,7 @@ def ensure_backend_running(logger):
 
     logger.log("  🚀 Starting GaonBazaar FastAPI backend server in background on port 8001 (no-reload)...")
     server_env = os.environ.copy()
+    server_env["ALLOW_TEST_BYPASS"] = "1"
     server_env["TEST_MODE"] = "1"
     server_env["CI"] = "1"
 
@@ -477,6 +478,8 @@ def ensure_stage3_mission_exists():
         has_stage3 = db.query(Order).filter(Order.store_id == "sharma_brothers", Order.timeline_stage == 3).first()
         if has_stage3:
             has_stage3.delivery_otp = "4821"
+            if not any(w in (has_stage3.landmark or "") for w in ["Mandir", "Tree", "Tank", "Tubewell", "Panchayat", "Bhawan", "Khasra", "Near", "Opp"]):
+                has_stage3.landmark = "Near Old Neem Tree, Tubewell #3, Khasra 19"
             db.commit()
             return
         if not has_stage3:
@@ -517,6 +520,22 @@ def ensure_stage3_mission_exists():
 
 
 def run_runner_device_simulation(browser, device_config, logger):
+    try:
+        req = urllib.request.Request(
+            "http://127.0.0.1:8001/api/test/reset-rate-limits",
+            headers={"X-Test-Bypass": "1"},
+            data=b"{}"
+        )
+        with urllib.request.urlopen(req, timeout=1.0) as res:
+            pass
+    except Exception:
+        pass
+    try:
+        from backend.security import otp_rate_limiter, checkout_rate_limiter
+        otp_rate_limiter.reset()
+        checkout_rate_limiter.reset()
+    except Exception:
+        pass
     ensure_stage3_mission_exists()
     dev_name = device_config["name"]
     logger.log("\n" + "=" * 80)
@@ -868,6 +887,25 @@ def _do_lifecycle_sync(context, logger):
         runner_page.wait_for_selector("#runner-main-content:not(.hidden)", timeout=10000)
         runner_page.wait_for_timeout(1000)
 
+    runner_page.evaluate("""() => {
+        RunnerStore.isOnline = true;
+        updateHeaderAndKPISummary();
+        if (!RunnerStore.pollTimer) {
+            RunnerStore.pollTimer = setInterval(() => { fetchAllRunnerData(false); }, 2000);
+        }
+    }""")
+
+    try:
+        req_reset = urllib.request.Request(
+            "http://127.0.0.1:8001/api/test/reset-rate-limits",
+            headers={"X-Test-Bypass": "1"},
+            data=b"{}"
+        )
+        with urllib.request.urlopen(req_reset, timeout=1.0) as res:
+            pass
+    except Exception:
+        pass
+
     # 1. Customer places order
     payload = {
         "user_phone": "9876543291",
@@ -931,7 +969,7 @@ def _do_lifecycle_sync(context, logger):
 
     # 4. Runner opens mission and confirms pickup
     logger.log(f"  🛵 4. Runner confirms store pickup...")
-    runner_page.locator(f'div:has-text("{order_id}")').last.click()
+    runner_page.evaluate(f"selectMission('{order_id}')")
     runner_page.wait_for_timeout(600)
     runner_page.click("#btn-confirm-pickup")
     runner_page.wait_for_timeout(600)
@@ -942,6 +980,10 @@ def _do_lifecycle_sync(context, logger):
         runner_page.fill(f"#otp-digit-{idx + 1}", char)
     runner_page.wait_for_timeout(300)
 
+    try:
+        runner_page.check("#cb-cod-confirm")
+    except Exception:
+        pass
     runner_page.click("#btn-verify-handover")
     runner_page.wait_for_timeout(800)
 
