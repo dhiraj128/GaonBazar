@@ -143,30 +143,31 @@ def test_rbac_and_data_isolation():
 
     # 2.6 Cross-Vendor Order Action Denial (Vendor A cannot modify Vendor B's order)
     import urllib.parse
-    from backend.database import get_db
+    from backend.database import db_session
     from backend.models import Order
-    db = next(get_db())
-    test_ord = db.query(Order).filter(Order.store_id == "apna_dairy").first()
-    if not test_ord:
-        test_ord = Order(
-            id="#SEC-TEST-ORDER-1",
-            user_phone="9876543210",
-            user_name="Security Test User",
-            village="Rampur",
-            landmark="Test Landmark",
-            store_id="apna_dairy",
-            store_name="Apna Dairy",
-            subtotal=100.0,
-            total_amount=115.0,
-            payment_mode="COD",
-            status="Order Placed",
-            timeline_stage=1,
-            delivery_otp="9999"
-        )
-        db.add(test_ord)
-        db.commit()
+    with db_session() as db:
+        test_ord = db.query(Order).filter(Order.store_id == "apna_dairy").first()
+        if not test_ord:
+            test_ord = Order(
+                id="#SEC-TEST-ORDER-1",
+                user_phone="9876543210",
+                user_name="Security Test User",
+                village="Rampur",
+                landmark="Test Landmark",
+                store_id="apna_dairy",
+                store_name="Apna Dairy",
+                subtotal=100.0,
+                total_amount=115.0,
+                payment_mode="COD",
+                status="Order Placed",
+                timeline_stage=1,
+                delivery_otp="9999"
+            )
+            db.add(test_ord)
+            db.commit()
+        test_ord_id = test_ord.id
 
-    enc_order_id = urllib.parse.quote(test_ord.id)
+    enc_order_id = urllib.parse.quote(test_ord_id)
     res_cross_action = client.post(
         f"/api/vendor/orders/{enc_order_id}/quick-action?action=accept",
         headers={"Authorization": f"Bearer {vendor_sharma_token}", "X-Test-Client": "strict_security_audit"}
@@ -226,6 +227,9 @@ def test_rate_limiting():
             "landmark": "Near Mandir Complex",
             "store_id": "sharma_brothers",
             "payment_mode": "COD",
+            "customer_lat": 29.1350,
+            "customer_lng": 77.0100,
+            "distance_km": 1.2,
             "items": [{"id": "item_1", "name": "Atta", "price": 210.0, "qty": 1}]
         }
         r = client.post(

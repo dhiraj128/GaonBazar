@@ -1,6 +1,6 @@
 import html
 import re
-from typing import List, Optional
+from typing import List, Optional, Dict, Any, Tuple, Union
 from pydantic import BaseModel, Field, model_validator
 
 
@@ -217,7 +217,11 @@ class OrderStatusResponse(BaseModel):
     landmark: str
     refund_amount: Optional[float] = None
     refund_penalty: Optional[float] = None
+    runner_id: Optional[str] = None
+    runner_name: Optional[str] = None
+    runner_phone: Optional[str] = None
     created_at: str
+    items: Optional[List[Dict[str, Any]]] = None
 
 
 # --- Vendor (Dukandaar) Schemas ---
@@ -258,6 +262,9 @@ class VendorOrderDTO(BaseModel):
     status: str
     timeline_stage: int
     delivery_otp: str
+    runner_id: Optional[str] = None
+    runner_name: Optional[str] = None
+    runner_phone: Optional[str] = None
     created_at: str
     items: List[VendorOrderItemDTO]
 
@@ -498,6 +505,7 @@ class AdminMetricsResponse(BaseModel):
     total_runners: int
     approved_runners: int
     pending_runners: int
+    open_tickets: Optional[int] = 0
 
 
 class AdminPendingVendorDTO(BaseModel):
@@ -680,6 +688,9 @@ class CommerceAssistantResponse(BaseModel):
     products: List[CommerceAssistantItemDTO]
     message: str
     found_count: int
+    intent: Optional[str] = "search"
+    action_performed: Optional[str] = None
+    clarification_question: Optional[str] = None
 
 
 class UserOrderSummaryDTO(BaseModel):
@@ -694,6 +705,9 @@ class UserOrderSummaryDTO(BaseModel):
     payment_mode: str
     items_count: int
     delivery_otp: str
+    runner_id: Optional[str] = None
+    runner_name: Optional[str] = None
+    runner_phone: Optional[str] = None
     created_at: str
 
 
@@ -864,3 +878,85 @@ class SplitPayoutDetailsDTO(BaseModel):
 
 
 
+
+
+# =============================================================================
+# REAL IN-APP & BACKEND-BACKED NOTIFICATIONS SCHEMAS
+# =============================================================================
+
+class NotificationDTO(BaseModel):
+    id: str
+    user_id: Optional[str] = None
+    user_role: str
+    order_id: Optional[str] = None
+    title: str
+    title_hi: str
+    message: str
+    message_hi: str
+    notification_type: str
+    is_read: bool
+    created_at: str
+
+
+class NotificationListResponse(BaseModel):
+    success: bool
+    notifications: List[NotificationDTO]
+    unread_count: int
+    total_count: int
+
+
+class UnreadCountResponse(BaseModel):
+    unread_count: int
+
+
+class NotificationMarkReadResponse(BaseModel):
+    success: bool
+    message: str
+    notification_id: Optional[str] = None
+    is_read: bool = True
+
+
+class WebPushSubscriptionRequest(BaseModel):
+    user_id: Optional[str] = None
+    user_role: str
+    endpoint: str
+    keys: Dict[str, str] = Field(default_factory=dict)
+
+
+# --- In-App Role Messaging Schemas (Vendor <-> Runner <-> Admin) ---
+class ChatMessageCreate(BaseModel):
+    message: Optional[str] = None
+    text: Optional[str] = None
+    sender_id: Optional[str] = None
+    sender_role: Optional[str] = None
+    sender_name: Optional[str] = None
+    quick_tag: Optional[str] = None
+
+class ChatMessageResponse(BaseModel):
+    id: int
+    thread_id: str
+    sender_id: str
+    sender_role: str
+    sender_name: str
+    message: str
+    is_read: bool
+    created_at: str
+
+class MessageThreadResponse(BaseModel):
+    id: str
+    order_id: Optional[str] = None
+    vendor_id: str
+    runner_id: Optional[str] = None
+    vendor_name: Optional[str] = None
+    runner_name: Optional[str] = None
+    customer_phone: Optional[str] = None
+    subject: str
+    unread_count: int = 0
+    last_message: Optional[str] = None
+    updated_at: str
+    messages: Optional[List[ChatMessageResponse]] = None
+
+class MessageThreadListResponse(BaseModel):
+    success: bool
+    threads: List[MessageThreadResponse]
+    total_unread: int
