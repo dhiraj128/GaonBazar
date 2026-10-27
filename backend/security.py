@@ -20,7 +20,7 @@ from typing import Optional, Dict, Any, Tuple
 from fastapi import Request, HTTPException, Header, Depends
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet, MultiFernet
 
 # -----------------------------------------------------------------------------
 # 1. CRYPTOGRAPHIC CONFIGURATION
@@ -31,16 +31,53 @@ DEFAULT_EXPIRATION_DAYS = 30
 TEST_MODE = os.getenv("TEST_MODE", "0").lower() in ("1", "true", "yes")
 CI_MODE = os.getenv("CI", "0").lower() in ("1", "true", "yes")
 
+def is_hosted_or_production_environment() -> bool:
+    """Returns True if the application is running in production, preview, or on a hosted cloud platform (e.g. Render)."""
+    if os.getenv("RENDER", "").lower() in ("true", "1") or os.getenv("RENDER_SERVICE_NAME") or os.getenv("RENDER_INSTANCE_ID"):
+        return True
+    if os.getenv("GAONBAZAR_PREVIEW_MODE") == "1":
+        return True
+    env = os.getenv("ENVIRONMENT", "").strip().lower()
+    return env in ("production", "prod", "preview", "staging")
+
+
 def is_production_environment() -> bool:
     """Returns True if the application is running in production mode."""
+    if is_hosted_or_production_environment():
+        env = os.getenv("ENVIRONMENT", "").strip().lower()
+        if env in ("preview", "staging"):
+            return False
+        return True
     env = os.getenv("ENVIRONMENT", "").strip().lower()
     return env in ("production", "prod")
 
 
+def is_test_bypass_allowed() -> bool:
+    """
+    Test bypass via X-Test-Bypass header is strictly prohibited in hosted, preview, or production environments.
+    It is ONLY permitted when running local automated tests in an explicitly configured test environment.
+    """
+    if is_hosted_or_production_environment():
+        return False
+    return (
+        os.getenv("ALLOW_TEST_BYPASS", "").lower() in ("1", "true", "yes")
+        or os.getenv("TEST_MODE", "").lower() in ("1", "true", "yes")
+        or os.getenv("PYTEST_CURRENT_TEST") is not None
+    )
+
+
 def _check_jwt_secret_integrity(secret: str):
-    """Fails closed in production if JWT secret is missing or uses insecure default."""
-    if is_production_environment():
-        if not secret or secret == "gb-bankgrade-production-secret-9a8b7c6d5e4f3a2b1c-2026":
+    """Fails closed in production or hosted environments if JWT secret is missing or uses insecure default."""
+    if is_hosted_or_production_environment():
+        insecure_defaults = (
+            "gb-bankgrade-production-secret-9a8b7c6d5e4f3a2b1c-2026",
+            "super-secret-key-gaonbazar-2026",
+            "secret",
+            "changeme",
+            "123456",
+            "default_secret"
+        )
+        if not secret or secret in insecure_defaults:
             raise HTTPException(
                 status_code=500,
                 detail="Production security violation: JWT_SECRET unconfigured or using insecure default (fail closed)."
@@ -50,15 +87,58 @@ def _check_jwt_secret_integrity(secret: str):
 # -----------------------------------------------------------------------------
 # 1.1 SENSITIVE DATA ENCRYPTION AT REST (Bank Accounts & Identity Confidentiality)
 # -----------------------------------------------------------------------------
-def get_fernet_cipher() -> Fernet:
-    """Derives a deterministic 32-byte URL-safe base64 encryption key from secrets."""
-    secret = os.getenv("BANK_ENCRYPTION_KEY") or os.getenv("JWT_SECRET", "gb-bankgrade-production-secret-9a8b7c6d5e4f3a2b1c-2026")
-    key = base64.urlsafe_b64encode(hashlib.sha256(secret.encode("utf-8")).digest())
-    return Fernet(key)
+def get_fernet_ciphers() -> MultiFernet:
+    """
+    Derives deterministic 32-byte URL-safe base64 encryption keys supporting MultiFernet key rotation.
+    Primary cipher: dedicated BANK_ENCRYPTION_KEY (isolated fin-tech secret).
+    Rotation fallback cipher: JWT_SECRET derived key (allows seamless zero-downtime key rotation).
+    Fails closed in hosted/production if unconfigured or default.
+    """
+    bank_key = os.getenv("BANK_ENCRYPTION_KEY", "").strip()
+    jwt_sec = os.getenv("JWT_SECRET", "").strip()
+
+    if is_hosted_or_production_environment():
+        insecure_keys = (
+            "",
+            "gb-bankgrade-production-secret-9a8b7c6d5e4f3a2b1c-2026",
+            "default_bank_key",
+            "changeme",
+            "secret"
+        )
+        if bank_key in insecure_keys:
+            if jwt_sec and jwt_sec not in insecure_keys:
+                bank_key = f"bank-subsystem-isolated-key::{jwt_sec}"
+            else:
+                raise HTTPException(
+                    status_code=500,
+                    detail="FinTech security violation: BANK_ENCRYPTION_KEY unconfigured or using insecure default in hosted/production (fail closed)."
+                )
+
+    if not bank_key:
+        bank_key = jwt_sec or "gb-bankgrade-production-secret-9a8b7c6d5e4f3a2b1c-2026"
+
+    # Primary key
+    primary_key = base64.urlsafe_b64encode(hashlib.sha256(bank_key.encode("utf-8")).digest())
+    ciphers = [Fernet(primary_key)]
+
+    # Fallback key for rotation / legacy records
+    if jwt_sec and jwt_sec != bank_key:
+        legacy_key = base64.urlsafe_b64encode(hashlib.sha256(jwt_sec.encode("utf-8")).digest())
+        ciphers.append(Fernet(legacy_key))
+    elif "gb-bankgrade-production-secret-9a8b7c6d5e4f3a2b1c-2026" != bank_key:
+        fallback_key = base64.urlsafe_b64encode(hashlib.sha256("gb-bankgrade-production-secret-9a8b7c6d5e4f3a2b1c-2026".encode("utf-8")).digest())
+        ciphers.append(Fernet(fallback_key))
+
+    return MultiFernet(ciphers)
+
+
+def get_fernet_cipher() -> MultiFernet:
+    """Returns the active MultiFernet cipher suite."""
+    return get_fernet_ciphers()
 
 
 def encrypt_sensitive_field(plaintext: Optional[str]) -> Optional[str]:
-    """Encrypts sensitive plaintext (e.g. bank account numbers) at rest using AES-128-CBC Fernet."""
+    """Encrypts sensitive plaintext (e.g. bank account numbers) at rest using AES-128-CBC MultiFernet."""
     if not plaintext:
         return plaintext
     text_val = str(plaintext).strip()
@@ -70,7 +150,7 @@ def encrypt_sensitive_field(plaintext: Optional[str]) -> Optional[str]:
 
 
 def decrypt_sensitive_field(ciphertext: Optional[str]) -> Optional[str]:
-    """Decrypts ciphertext at rest back to plaintext."""
+    """Decrypts ciphertext at rest back to plaintext with MultiFernet key rotation and explicit error handling."""
     if not ciphertext:
         return ciphertext
     text_val = str(ciphertext).strip()
@@ -81,15 +161,18 @@ def decrypt_sensitive_field(ciphertext: Optional[str]) -> Optional[str]:
         encrypted_token = text_val[5:]
         decrypted_bytes = cipher.decrypt(encrypted_token.encode("utf-8"))
         return decrypted_bytes.decode("utf-8")
-    except Exception:
-        return text_val
+    except Exception as e:
+        raise ValueError(f"Cryptographic decryption failure for sensitive field: invalid ciphertext or mismatched key ({e})")
 
 
 def mask_bank_account(acc_num: Optional[str]) -> Optional[str]:
     """Securely masks bank account numbers for API output (e.g. ••••••••5821, showing only last 4 digits)."""
     if not acc_num:
         return None
-    decrypted = decrypt_sensitive_field(acc_num)
+    try:
+        decrypted = decrypt_sensitive_field(acc_num)
+    except Exception:
+        return "•••• •••• ••••"
     if not decrypted:
         return None
     acc_clean = str(decrypted).strip()
@@ -274,9 +357,17 @@ def get_current_token_payload(
             token = None
 
     if not token:
-        # Strict security: deny by default. Only bypass if explicitly requested via x_test_bypass header
+        # Strict security: deny by default.
+        # Test bypass is ONLY allowed when is_test_bypass_allowed() is True.
+        # It is ALWAYS rejected in preview, production, or when not explicitly enabled.
         if x_test_bypass == "1":
-            return {"role": "admin", "sub": "test_bypass", "store_id": "sharma_brothers", "runner_id": "gm_1"}
+            if is_test_bypass_allowed():
+                return {"role": "admin", "sub": "test_bypass", "store_id": "sharma_brothers", "runner_id": "gm_1"}
+            else:
+                raise HTTPException(
+                    status_code=401,
+                    detail="X-Test-Bypass is strictly forbidden in hosted, preview, or production environments."
+                )
         return None
 
     return decode_jwt_token(token)
@@ -494,7 +585,7 @@ def enforce_otp_rate_limit(
     client_ip = request.client.host if request.client else "127.0.0.1"
     
     # In general test mode, bypass unless explicitly testing rate limits
-    if is_production_environment():
+    if is_hosted_or_production_environment() or not is_test_bypass_allowed():
         is_bypass = False
     else:
         is_bypass = (TEST_MODE or CI_MODE or x_test_bypass == "1") and (x_enforce_rate_limit != "1")
@@ -516,7 +607,7 @@ def enforce_checkout_rate_limit(
     """Dependency that enforces rate limit on /api/orders/checkout."""
     client_ip = request.client.host if request.client else "127.0.0.1"
 
-    if is_production_environment():
+    if is_hosted_or_production_environment() or not is_test_bypass_allowed():
         is_bypass = False
     else:
         is_bypass = (TEST_MODE or CI_MODE or x_test_bypass == "1") and (x_enforce_rate_limit != "1")

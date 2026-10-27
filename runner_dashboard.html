@@ -3940,7 +3940,15 @@
       const mission = (RunnerStore.missions || []).find(m => String(m.id) === String(missionId) || String(m.order_id) === String(missionId)) || (RunnerStore.missions && RunnerStore.missions[0]);
       if (mission) {
         const clink = document.getElementById('runner-screen-pickup-call-link');
-        if (clink) clink.href = `tel:${mission.store_phone || '9876543210'}`;
+        if (clink) {
+          if (mission && mission.store_phone) {
+            clink.href = `tel:${mission.store_phone}`;
+            clink.style.display = 'flex';
+          } else {
+            clink.removeAttribute('href');
+            clink.style.display = 'none';
+          }
+        }
       }
     }
 
@@ -3956,7 +3964,16 @@
       const mission = (RunnerStore.missions || []).find(m => String(m.id) === String(missionId) || String(m.order_id) === String(missionId)) || (RunnerStore.missions && RunnerStore.missions[0]);
       if (mission) {
         const clink = document.getElementById('runner-screen-map-call-link');
-        if (clink) clink.href = `tel:${mission.user_phone || mission.customer_phone || '9876543210'}`;
+        if (clink) {
+          const cphone = mission ? (mission.user_phone || mission.customer_phone) : null;
+          if (cphone) {
+            clink.href = `tel:${cphone}`;
+            clink.style.display = 'flex';
+          } else {
+            clink.removeAttribute('href');
+            clink.style.display = 'none';
+          }
+        }
       }
     }
 

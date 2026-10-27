@@ -111,6 +111,8 @@ from .security import (
     decrypt_sensitive_field,
     mask_bank_account,
     is_production_environment,
+    is_hosted_or_production_environment,
+    is_test_bypass_allowed,
 )
 
 # Root directory of the application
@@ -526,13 +528,18 @@ def admin_login_endpoint(payload: Optional[AdminLoginRequest] = None):
     if not provided:
         raise HTTPException(status_code=401, detail="Invalid admin credentials")
 
-    is_prod = is_production_environment()
-    expected = os.getenv("ADMIN_SECRET_KEY", "" if is_prod else "gaonbazar_super_admin_secret_2026").strip()
-    if is_prod and (not expected or expected == "gaonbazar_super_admin_secret_2026"):
-        raise HTTPException(
-            status_code=500,
-            detail="Admin authentication unconfigured or insecure default in production (deny-by-default)"
-        )
+    is_hosted_or_prod = is_hosted_or_production_environment()
+    expected = os.getenv("ADMIN_SECRET_KEY", "").strip()
+    if is_hosted_or_prod:
+        insecure_keys = ("gaonbazar_super_admin_secret_2026", "admin123", "password", "changeme", "secret", "default")
+        if not expected or expected in insecure_keys:
+            raise HTTPException(
+                status_code=500,
+                detail="Admin authentication unconfigured or insecure default in hosted/production (deny-by-default)"
+            )
+    else:
+        if not expected:
+            expected = "gaonbazar_super_admin_secret_2026"
     if not expected:
         raise HTTPException(status_code=401, detail="Admin authentication unconfigured (deny-by-default)")
 
@@ -608,11 +615,22 @@ def health_check():
     except Exception as e:
         integrity_status = f"failed: {e}"
 
+    commit = os.environ.get("RENDER_GIT_COMMIT") or os.environ.get("GIT_COMMIT")
+    if not commit:
+        try:
+            import subprocess
+            commit = subprocess.check_output(["git", "rev-parse", "HEAD"], timeout=1).decode().strip()
+        except Exception:
+            commit = "unknown"
+
     return {
         "status": "healthy",
         "service": "GaonBazaar Backend",
         "sentry_configured": bool(SENTRY_DSN),
         "db_integrity": integrity_status,
+        "commit_sha": commit,
+        "commit_short": commit[:7] if len(commit) >= 7 else commit,
+        "environment": "preview" if os.getenv("GAONBAZAR_PREVIEW_MODE") == "1" else ("production" if os.getenv("RENDER") else "development"),
         "timestamp": datetime.utcnow().isoformat()
     }
 
@@ -1909,6 +1927,10 @@ def create_payment_order(payload: CreatePaymentOrderRequest, db: Session = Depen
         if not payload.items:
             raise HTTPException(status_code=400, detail="Cannot create payment order with an empty cart")
 
+        target_store_id = payload.store_id or "sharma_brothers"
+        store = db.query(Store).filter(Store.id == target_store_id).first()
+        store_name = store.name if store else "Sharma Brothers Kirana"
+
         subtotal = 0.0
         for item_input in payload.items:
             if item_input.qty <= 0:
@@ -1916,6 +1938,18 @@ def create_payment_order(payload: CreatePaymentOrderRequest, db: Session = Depen
             db_prod = db.query(Product).filter(Product.id == item_input.id).first()
             if not db_prod:
                 raise HTTPException(status_code=400, detail=f"Product {item_input.id} not found in catalog")
+            # Store matching check
+            if db_prod.store_id and payload.store_id and db_prod.store_id != payload.store_id:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Item {db_prod.name_en or db_prod.id} belongs to a different store ({db_prod.store_id} vs {payload.store_id})"
+                )
+            # In-stock check
+            if getattr(db_prod, 'in_stock', True) is False:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Item {db_prod.name_en or db_prod.id} is currently out of stock / स्टॉक में नहीं है"
+                )
             subtotal += float(db_prod.price) * int(item_input.qty)
 
         if subtotal < 99.0:
@@ -1923,9 +1957,39 @@ def create_payment_order(payload: CreatePaymentOrderRequest, db: Session = Depen
             diff_str = f"{int(diff)}" if diff.is_integer() else f"{diff:.2f}"
             raise HTTPException(status_code=400, detail=f"Minimum order is ₹99. Add ₹{diff_str} more.")
 
-        effective_dist = float(payload.distance_km) if payload.distance_km is not None else 1.2
+        # Server-side distance & 8.0 km geofence validation
+        store_coords = DEFAULT_STORE_COORDS.get(target_store_id, (29.1350, 77.0100))
+        if store and getattr(store, 'lat', None) is not None and getattr(store, 'lng', None) is not None:
+            store_lat, store_lng = float(store.lat), float(store.lng)
+        else:
+            store_lat, store_lng = store_coords
+
+        has_explicit_coords = (payload.customer_lat is not None and payload.customer_lng is not None)
+        cust_lat = payload.customer_lat
+        cust_lng = payload.customer_lng
+        if not has_explicit_coords:
+            user_landmark = db.query(Landmark).filter(Landmark.phone == (payload.user_phone or "9876543210")).order_by(Landmark.id.desc()).first()
+            if user_landmark and user_landmark.lat and user_landmark.lng and payload.distance_km is None:
+                cust_lat = float(user_landmark.lat)
+                cust_lng = float(user_landmark.lng)
+                has_explicit_coords = True
+            elif payload.distance_km is not None:
+                if is_hosted_or_production_environment():
+                    raise HTTPException(
+                        status_code=400,
+                        detail="Client-provided distance is forbidden in production/preview. Confirmed delivery coordinates or verified landmark are required."
+                    )
+                effective_dist = float(payload.distance_km)
+            else:
+                effective_dist = 1.2
+        else:
+            effective_dist = haversine_distance_km(store_lat, store_lng, float(cust_lat), float(cust_lng))
+
         if not is_geofence_bypass_permitted() and effective_dist > MAX_DELIVERY_RADIUS_KM:
-            raise HTTPException(status_code=400, detail=f"Outside delivery zone ({effective_dist} km exceeds 8.0 km limit)")
+            raise HTTPException(
+                status_code=400,
+                detail=f"Outside delivery zone ({effective_dist:.2f} km exceeds {MAX_DELIVERY_RADIUS_KM} km limit) / डिलीवरी क्षेत्र से बाहर है"
+            )
 
         pricing = calculate_order_pricing(
             subtotal_in_rupees=subtotal,
@@ -1943,7 +2007,7 @@ def create_payment_order(payload: CreatePaymentOrderRequest, db: Session = Depen
         eta_mins = compute_dynamic_eta(distance_km, timeline_stage=1)
         user_phone = payload.user_phone or "9876543210"
         user_name = payload.user_name or "Customer"
-        store_id = payload.store_id or "sharma_brothers"
+        store_id = target_store_id
 
         # Check user trust score
         user = db.query(User).filter(User.phone == user_phone).first()
@@ -2290,26 +2354,46 @@ async def verify_payment_signature(request: Request, db: Session = Depends(get_d
 
 @app.get("/payments/orders/{order_id}/split-payout", response_model=SplitPayoutDetailsDTO)
 @app.get("/api/payments/orders/{order_id}/split-payout", response_model=SplitPayoutDetailsDTO)
-def get_order_split_payout(order_id: str, db: Session = Depends(get_db)):
+def get_order_split_payout(
+    order_id: str,
+    payload: Optional[Dict[str, Any]] = Depends(get_current_token_payload),
+    db: Session = Depends(get_db)
+):
     """
-    Retrieves the Razorpay Route Split Payout breakdown for an order:
-    - Admin: Platform fee (₹3) + Admin margin
-    - Vendor: 100% of Cart Subtotal
-    - Runner: Distance-based Delivery Payout
+    Retrieves the Razorpay Route Split Payout breakdown for an order.
+    Strictly read-only (no state mutation or database commit).
+    Restricted to authorized actors: Super Admin, the order's vendor, assigned runner, or customer.
     """
     candidate_ids = [order_id, f"#{order_id}", order_id.lstrip("#")]
     order = db.query(Order).filter(Order.id.in_(candidate_ids)).first()
     if not order:
         raise HTTPException(status_code=404, detail=f"Order {order_id} not found")
 
+    if not payload:
+        raise HTTPException(status_code=401, detail="Authentication required to view payment split details")
+
+    role = payload.get("role")
+    sub = str(payload.get("sub", ""))
+    is_authorized = (
+        role == "admin"
+        or (role == "vendor" and payload.get("store_id") == order.store_id)
+        or (role == "runner" and order.runner_id and (str(payload.get("runner_id")) == str(order.runner_id) or str(payload.get("sub")) == str(order.runner_id)))
+        or (role == "customer" and (sub == order.user_phone or payload.get("phone") == order.user_phone))
+    )
+    if not is_authorized:
+        raise HTTPException(status_code=403, detail="Forbidden: You are not authorized to view this order payment split")
+
     split_data = prepare_razorpay_route_split(order, db)
-    db.commit()
     return SplitPayoutDetailsDTO(**split_data)
 
 
 @app.post("/payments/orders/{order_id}/execute-split")
 @app.post("/api/payments/orders/{order_id}/execute-split")
-def execute_order_split_payout(order_id: str, db: Session = Depends(get_db)):
+def execute_order_split_payout(
+    order_id: str,
+    payload: Dict[str, Any] = Depends(require_admin_token),
+    db: Session = Depends(get_db)
+):
     """
     Simulates or executes the Razorpay Route fund transfers to linked accounts
     for Vendor and Runner once payment has been verified as PAID.
