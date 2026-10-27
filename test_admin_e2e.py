@@ -211,6 +211,7 @@ def ensure_backend_running(logger):
 
     logger.log("  🚀 Starting GaonBazaar FastAPI backend server in background on port 8001 (no-reload)...")
     server_env = os.environ.copy()
+    server_env["ALLOW_TEST_BYPASS"] = "1"
     server_env["TEST_MODE"] = "1"
     server_env["CI"] = "1"
 
