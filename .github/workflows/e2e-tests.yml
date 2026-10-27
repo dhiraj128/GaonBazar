@@ -18,6 +18,9 @@ jobs:
     name: Run Automated E2E & Visual Regression Suite
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    env:
+      ALLOW_TEST_BYPASS: "1"
+      TEST_MODE: "1"
 
     steps:
       - name: Checkout Repository
@@ -36,8 +39,11 @@ jobs:
           playwright install --with-deps chromium
 
       - name: Boot GaonBazaar Backend Server (Background)
+        env:
+          ALLOW_TEST_BYPASS: "1"
+          TEST_MODE: "1"
         run: |
-          python run_server.py 8001 &
+          ALLOW_TEST_BYPASS=1 TEST_MODE=1 python run_server.py 8001 &
           echo "SERVER_PID=$!" >> $GITHUB_ENV
           echo "GaonBazaar FastAPI backend booted in background (PID: $!)."
 
