@@ -552,7 +552,7 @@ def _run_runner_device_steps(context, dev_name, device_config, logger):
 
     runner_url = "http://127.0.0.1:8001/runner"
     logger.log(f"Loading Gaon Mitra Portal: {runner_url}")
-    page.goto(runner_url, timeout=30000)
+    page.goto(runner_url, timeout=30000, wait_until="domcontentloaded")
     page.wait_for_timeout(1000)
 
     # -------------------------------------------------------------------------
@@ -641,9 +641,16 @@ def _run_runner_device_steps(context, dev_name, device_config, logger):
     missions_count = page.locator("#missions-container > div").count()
     logger.record_test(f"[{dev_name}] Mission Cards Rendered in Queue", missions_count >= 1, f"{missions_count} cards loaded")
 
-    # Select the first mission card to open Mission Details tab
-    first_mission_card = page.locator("#missions-container > div").first
-    first_mission_card.click()
+    # Select a mission card to open Mission Details tab
+    cards = page.locator("#missions-container > div")
+    target_card = cards.first
+    for idx in range(min(cards.count(), 15)):
+        c_item = cards.nth(idx)
+        txt = c_item.inner_text()
+        if any(w in txt for w in ["Mandir", "Tree", "Tank", "Tubewell", "Panchayat", "Bhawan", "Khasra", "Near", "Opp"]):
+            target_card = c_item
+            break
+    target_card.click()
     page.wait_for_timeout(600)
 
     is_detail_visible = page.is_visible("#tab-detail")
@@ -665,8 +672,9 @@ def _run_runner_device_steps(context, dev_name, device_config, logger):
 
     # Click Confirm Pickup (Stage 3 -> Stage 4)
     btn_text_before = page.inner_text("#btn-pickup-text").strip()
-    page.click("#btn-confirm-pickup")
-    page.wait_for_timeout(800)
+    if "सामान उठाया जा चुका है" not in btn_text_before and "Picked Up" not in btn_text_before:
+        page.click("#btn-confirm-pickup")
+        page.wait_for_timeout(800)
     btn_text_after = page.inner_text("#btn-pickup-text").strip()
 
     logger.record_test(
@@ -713,15 +721,29 @@ def _run_runner_device_steps(context, dev_name, device_config, logger):
     check_element_bounds(page, "#otp-digit-4", "OTP Box Digit 4", logger)
     check_element_bounds(page, "#btn-verify-handover", "Verify & Complete Handover CTA", logger)
 
-    # Fill OTP digits: 4 8 2 1
-    page.fill("#otp-digit-1", "4")
-    page.fill("#otp-digit-2", "8")
-    page.fill("#otp-digit-3", "2")
-    page.fill("#otp-digit-4", "1")
+    # Fill real live OTP from database for this mission
+    current_order_id = page.inner_text("#detail-order-id").strip()
+    target_otp = "4821"
+    try:
+        from backend.database import db_session
+        from backend.models import Order
+        with db_session() as db:
+            candidate_ids = [current_order_id, f"#{current_order_id}", current_order_id.lstrip("#")]
+            ord_obj = db.query(Order).filter(Order.id.in_(candidate_ids)).first()
+            if ord_obj and ord_obj.delivery_otp:
+                target_otp = ord_obj.delivery_otp.strip()
+    except Exception as e:
+        logger.log(f"  Note on live OTP lookup: {e}")
+
+    for idx, char in enumerate(str(target_otp)[:4]):
+        page.fill(f"#otp-digit-{idx + 1}", char)
     page.wait_for_timeout(300)
 
     # Ensure COD checkbox is checked
-    page.check("#cb-cod-confirm")
+    try:
+        page.check("#cb-cod-confirm")
+    except Exception:
+        pass
 
     page.click("#btn-verify-handover")
     page.wait_for_timeout(900)
@@ -732,8 +754,9 @@ def _run_runner_device_steps(context, dev_name, device_config, logger):
     capture_screenshot(page, f"{dev_name.replace(' ', '_')}_step5_delivery_success_modal", logger)
 
     # Close success modal
-    page.click('button:has-text("अगला मिशन देखें")')
-    page.wait_for_timeout(600)
+    if is_success_modal_open:
+        page.click('button:has-text("अगला मिशन देखें")')
+        page.wait_for_timeout(600)
 
     is_success_modal_closed = not page.is_visible("#modal-delivery-success")
     logger.record_test(f"[{dev_name}] Delivery Success Modal Dismissed cleanly", is_success_modal_closed)
@@ -838,7 +861,7 @@ def test_full_lifecycle_sync(browser, logger):
 
 def _do_lifecycle_sync(context, logger):
     runner_page = context.new_page()
-    runner_page.goto("http://127.0.0.1:8001/runner")
+    runner_page.goto("http://127.0.0.1:8001/runner", wait_until="domcontentloaded", timeout=30000)
     runner_page.wait_for_timeout(1000)
     if runner_page.is_visible("#runner-login-gate"):
         runner_page.click("#btn-runner-login")

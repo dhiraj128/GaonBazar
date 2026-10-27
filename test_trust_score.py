@@ -368,7 +368,8 @@ def run_trust_score_tests():
     )
 
     # 3. Super Admin API Check
-    admin_risk_api = client.get("/api/admin/users/risk-profile")
+    from backend.security import issue_admin_token
+    admin_risk_api = client.get('/api/admin/users/risk-profile', headers={'Authorization': f'Bearer {issue_admin_token()}'})
     record("Step 6: Super Admin Risk Profile API Succeeded (HTTP 200)", admin_risk_api.status_code == 200)
     risk_users = admin_risk_api.json()
     u1_admin_profile = next((u for u in risk_users if u["phone"] == test_phone_1), None)

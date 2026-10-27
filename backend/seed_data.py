@@ -91,7 +91,55 @@ DEFAULT_STORE_CATEGORIES = [
 ]
 
 DEFAULT_PRODUCTS = [
-    # Sharma Brothers Kirana Products
+    # Sharma Brothers Kirana Products (including Home Featured Products)
+    {
+        "id": "item_tomato",
+        "store_id": "sharma_brothers",
+        "name_en": "Fresh Tomato",
+        "name_hi": "ताज़ा टमाटर",
+        "category": "kirana",
+        "weight": "1 kg • स्थानीय खेत की उपज",
+        "price": 30.0,
+        "mrp": 35.0,
+        "icon": "nutrition",
+        "in_stock": True
+    },
+    {
+        "id": "item_banana",
+        "store_id": "sharma_brothers",
+        "name_en": "Banana",
+        "name_hi": "केला",
+        "category": "kirana",
+        "weight": "1 kg • ताज़ा फल",
+        "price": 40.0,
+        "mrp": 50.0,
+        "icon": "nutrition",
+        "in_stock": True
+    },
+    {
+        "id": "item_onion",
+        "store_id": "sharma_brothers",
+        "name_en": "Onion",
+        "name_hi": "प्याज़",
+        "category": "kirana",
+        "weight": "1 kg • ताज़ी उपज",
+        "price": 25.0,
+        "mrp": 30.0,
+        "icon": "nutrition",
+        "in_stock": True
+    },
+    {
+        "id": "item_milk",
+        "store_id": "apna_dairy",
+        "name_en": "Amul Taaza Milk",
+        "name_hi": "अमूल ताज़ा दूध",
+        "category": "dairy",
+        "weight": "1 L • पाश्चुरीकृत टोंड दूध",
+        "price": 60.0,
+        "mrp": 65.0,
+        "icon": "water_full",
+        "in_stock": True
+    },
     {
         "id": "item_1",
         "store_id": "sharma_brothers",

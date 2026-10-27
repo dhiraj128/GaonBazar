@@ -108,14 +108,14 @@ async def test_three_ux_fixes():
             )
             print("  ✓ PASS: Minimum 44x44px touch target size strictly verified!")
 
-            # 2.2 Verify Positioning between Language Toggle and Shopping Cart
-            lang_box = await page.locator("#header-lang-btn").bounding_box()
+            # 2.2 Verify Positioning between Menu Button and Shopping Cart
+            menu_box = await page.locator("#btn-open-sidebar").bounding_box()
             cart_box = await page.locator("#header-cart-icon").bounding_box()
-            print(f"  Header Flexbox Positions: Lang_X={lang_box['x']:.1f}, Notif_X={notif_box['x']:.1f}, Cart_X={cart_box['x']:.1f}")
-            assert lang_box["x"] < notif_box["x"] < cart_box["x"], (
-                "Notification button is not placed between Language Toggle and Shopping Cart!"
+            print(f"  Header Flexbox Positions: Menu_X={menu_box['x']:.1f}, Notif_X={notif_box['x']:.1f}, Cart_X={cart_box['x']:.1f}")
+            assert menu_box["x"] < notif_box["x"] < cart_box["x"], (
+                "Notification button is not placed between Menu Button and Shopping Cart!"
             )
-            print("  ✓ PASS: Notification Bell is placed seamlessly between Language Toggle and Shopping Cart!")
+            print("  ✓ PASS: Notification Bell is placed seamlessly between Menu Button and Shopping Cart!")
 
             # 2.3 Verify SVG Bell Icon & Small Red Unread Dot
             svg_count = await page.locator("#header-notifications-btn svg").count()
