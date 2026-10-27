@@ -141,7 +141,7 @@ def run_razorpay_tests() -> bool:
         "user_phone": "9812300003",
         "user_name": "Small Buyer",
         "village": "Rampur",
-        "landmark": "Near Well",
+        "landmark": "Near Village Tubewell, Sonpur",
         "items": [{"id": test_prod.id, "name": test_prod.name_en, "price": 10.0, "qty": 1}]
     })
     # Note: item_1 in DB is 180, so 1 qty = 180 (>=99). Let's test with empty or 0 qty
@@ -150,7 +150,7 @@ def run_razorpay_tests() -> bool:
         "user_phone": "9812300003",
         "user_name": "Empty Cart Buyer",
         "village": "Rampur",
-        "landmark": "Near Well",
+        "landmark": "Near Village Tubewell, Sonpur",
         "items": []
     })
     audit("Empty Cart Payment Order Rejected with 400", res_empty.status_code == 400)
