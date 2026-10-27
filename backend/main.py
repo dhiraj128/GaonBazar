@@ -1056,6 +1056,22 @@ def is_geofence_bypass_enabled() -> bool:
     return str(raw_val).strip().lower() in ("true", "1", "yes")
 
 
+@app.post("/api/test/reset-rate-limits")
+def reset_rate_limits_for_tests():
+    """
+    Clears in-memory sliding window rate limiters for independent test runs.
+    Strictly prohibited in hosted, preview, or production environments.
+    """
+    if not is_test_bypass_allowed():
+        raise HTTPException(
+            status_code=403,
+            detail="Rate limit reset endpoint is strictly forbidden outside authorized local test environments."
+        )
+    otp_rate_limiter.reset()
+    checkout_rate_limiter.reset()
+    return {"status": "ok", "message": "Rate limiters successfully reset for independent test execution."}
+
+
 @app.post("/api/orders/checkout", response_model=CheckoutResponse, dependencies=[Depends(enforce_checkout_rate_limit)])
 def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
     """

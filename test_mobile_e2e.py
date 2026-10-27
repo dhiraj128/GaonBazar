@@ -509,6 +509,24 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     except Exception:
         pass
 
+    # Ensure device-independent rate-limit isolation across 5 simulated devices
+    try:
+        req = urllib.request.Request(
+            "http://127.0.0.1:8001/api/test/reset-rate-limits",
+            headers={"X-Test-Bypass": "1"},
+            data=b"{}"
+        )
+        with urllib.request.urlopen(req, timeout=1.0) as res:
+            pass
+    except Exception:
+        pass
+    try:
+        from backend.security import otp_rate_limiter, checkout_rate_limiter
+        otp_rate_limiter.reset()
+        checkout_rate_limiter.reset()
+    except Exception:
+        pass
+
     context.add_init_script("try { localStorage.clear(); sessionStorage.clear(); } catch(e){}")
 
     page = context.new_page()
@@ -1394,6 +1412,7 @@ def ensure_backend_running(logger):
 
     logger.log("  🚀 Starting GaonBazaar FastAPI backend server in background on port 8001 (no-reload)...")
     server_env = os.environ.copy()
+    server_env["ALLOW_TEST_BYPASS"] = "1"
     server_env["TEST_MODE"] = "1"
     server_env["CI"] = "1"
 

@@ -588,7 +588,8 @@ def enforce_otp_rate_limit(
     if is_hosted_or_production_environment() or not is_test_bypass_allowed():
         is_bypass = False
     else:
-        is_bypass = (TEST_MODE or CI_MODE or x_test_bypass == "1") and (x_enforce_rate_limit != "1")
+        is_test_mode = os.getenv("TEST_MODE", "0").lower() in ("1", "true", "yes") or os.getenv("ALLOW_TEST_BYPASS", "0").lower() in ("1", "true", "yes")
+        is_bypass = (is_test_mode or x_test_bypass == "1") and (x_enforce_rate_limit != "1")
 
     allowed, retry_after = otp_rate_limiter.check_rate_limit(client_ip, is_test_bypass=is_bypass)
     if not allowed:
@@ -610,7 +611,8 @@ def enforce_checkout_rate_limit(
     if is_hosted_or_production_environment() or not is_test_bypass_allowed():
         is_bypass = False
     else:
-        is_bypass = (TEST_MODE or CI_MODE or x_test_bypass == "1") and (x_enforce_rate_limit != "1")
+        is_test_mode = os.getenv("TEST_MODE", "0").lower() in ("1", "true", "yes") or os.getenv("ALLOW_TEST_BYPASS", "0").lower() in ("1", "true", "yes")
+        is_bypass = (is_test_mode or x_test_bypass == "1") and (x_enforce_rate_limit != "1")
 
     allowed, retry_after = checkout_rate_limiter.check_rate_limit(client_ip, is_test_bypass=is_bypass)
     if not allowed:

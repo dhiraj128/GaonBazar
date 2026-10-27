@@ -141,6 +141,12 @@ def run_negative_authorization_tests():
             headers={"X-Test-Bypass": "1"}
         )
         check("X-Test-Bypass blocked on execute-split with 401 when RENDER=true", res_bypass_exec.status_code == 401)
+
+        res_bypass_reset = client.post(
+            "/api/test/reset-rate-limits",
+            headers={"X-Test-Bypass": "1"}
+        )
+        check("Test reset rate-limits blocked with 403 when RENDER=true", res_bypass_reset.status_code == 403, f"Status: {res_bypass_reset.status_code}")
     finally:
         if orig_render is not None:
             os.environ["RENDER"] = orig_render
