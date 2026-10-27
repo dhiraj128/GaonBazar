@@ -625,6 +625,12 @@ def test_admin_dashboard_interactive_flow(browser, logger: MasterQALogger):
     try:
         page.goto("http://127.0.0.1:8001/admin", timeout=30000)
         page.wait_for_timeout(1000)
+        if page.is_visible("#admin-login-gate"):
+            admin_key = os.getenv("ADMIN_SECRET_KEY", "gaonbazar_super_admin_secret_2026")
+            page.fill("#admin-input-key", admin_key)
+            page.click("#btn-admin-login")
+            page.wait_for_selector("#admin-main-content:not(.hidden)", timeout=10000)
+            page.wait_for_timeout(1000)
         snap(page, "admin_01_dashboard", logger)
 
         # 1. Admin KPI Metrics Cards
@@ -844,6 +850,12 @@ def test_full_cross_app_realtime_lifecycle(browser, logger: MasterQALogger):
     admin_page = admin_context.new_page()
     admin_page.goto("http://127.0.0.1:8001/admin", timeout=30000)
     admin_page.wait_for_timeout(1000)
+    if admin_page.is_visible("#admin-login-gate"):
+        admin_key = os.getenv("ADMIN_SECRET_KEY", "gaonbazar_super_admin_secret_2026")
+        admin_page.fill("#admin-input-key", admin_key)
+        admin_page.click("#btn-admin-login")
+        admin_page.wait_for_selector("#admin-main-content:not(.hidden)", timeout=10000)
+        admin_page.wait_for_timeout(1000)
     admin_page.click("#admin-tab-btn-orders")
     admin_page.wait_for_timeout(800)
     snap(admin_page, "cross_08_admin_delivered", logger)

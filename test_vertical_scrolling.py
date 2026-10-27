@@ -474,7 +474,15 @@ def run_admin_app_scroll_tests(browser, device, logger):
         page.goto("http://127.0.0.1:8001/admin", wait_until="domcontentloaded", timeout=20000)
         page.wait_for_timeout(1000)
 
-        page.wait_for_selector("main.overflow-y-auto", timeout=5000)
+        # Authenticate via zero-trust gate if presented
+        if page.is_visible("#admin-login-gate"):
+            admin_key = os.getenv("ADMIN_SECRET_KEY", "gaonbazar_super_admin_secret_2026")
+            page.fill("#admin-input-key", admin_key)
+            page.click("#btn-admin-login")
+            page.wait_for_selector("#admin-main-content:not(.hidden)", timeout=10000)
+            page.wait_for_timeout(1000)
+
+        page.wait_for_selector("main.overflow-y-auto:not(.hidden)", timeout=10000)
         page.wait_for_timeout(1500)
 
         # Audit Vendor Queue Scroll
