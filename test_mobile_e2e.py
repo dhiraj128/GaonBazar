@@ -407,7 +407,32 @@ def inspect_viewport_and_layout(page, phase_name, logger):
         const docWidth = document.documentElement.scrollWidth;
         const bodyWidth = document.body.scrollWidth;
         const root = document.getElementById('app-root') || document.body;
+        const mainContent = document.getElementById('main-content-container');
         const rootRect = root.getBoundingClientRect();
+
+        // Distinguish intentionally clipped content inside bounded sub-containers
+        // (such as #p5-map-canvas-container, .leaflet-container, or any bounded container
+        // with overflow:hidden/clip) from genuine viewport-leaking elements.
+        // If an ancestor clips overflow AND that clipping ancestor itself fits inside the viewport
+        // (ancestorRect.right <= winWidth + 2), the content is safely clipped.
+        // We do NOT treat the root scroll viewports (body, html, main-content-container, app-root)
+        // as clipping ancestors because unclipped page content extending beyond the screen is a real bug.
+        function isClippedWithinViewport(el) {
+            let curr = el.parentElement;
+            while (curr && curr !== root && curr !== mainContent && curr !== document.body && curr !== document.documentElement) {
+                const style = window.getComputedStyle(curr);
+                const ox = style.overflowX;
+                const o = style.overflow;
+                if (ox === 'hidden' || ox === 'clip' || o === 'hidden' || o === 'clip') {
+                    const ancestorRect = curr.getBoundingClientRect();
+                    if (ancestorRect.right <= winWidth + 2) {
+                        return true;
+                    }
+                }
+                curr = curr.parentElement;
+            }
+            return false;
+        }
 
         const overflowing = [];
         document.querySelectorAll('*').forEach(el => {
@@ -415,6 +440,8 @@ def inspect_viewport_and_layout(page, phase_name, logger):
             if (el.closest('.overflow-x-auto, .overflow-x-scroll')) return;
             const rect = el.getBoundingClientRect();
             if (rect.right > winWidth + 2 && rect.width > 0 && rect.height > 0) {
+                if (isClippedWithinViewport(el)) return;
+
                 overflowing.push({
                     tag: el.tagName.toLowerCase(),
                     id: el.id || '',
@@ -426,6 +453,22 @@ def inspect_viewport_and_layout(page, phase_name, logger):
             }
         });
 
+        // Test horizontal sideways scroll resistance (Customer page must never scroll sideways)
+        const initialWindowScrollLeft = window.scrollX || document.documentElement.scrollLeft || document.body.scrollLeft || 0;
+        window.scrollTo(100, window.scrollY);
+        const attemptedWindowScrollLeft = window.scrollX || document.documentElement.scrollLeft || document.body.scrollLeft || 0;
+        window.scrollTo(initialWindowScrollLeft, window.scrollY);
+
+        let attemptedMainScrollLeft = 0;
+        if (mainContent) {
+            const initialMainScrollLeft = mainContent.scrollLeft || 0;
+            mainContent.scrollLeft = 100;
+            attemptedMainScrollLeft = mainContent.scrollLeft || 0;
+            mainContent.scrollLeft = initialMainScrollLeft;
+        }
+
+        const canScrollSideways = (attemptedWindowScrollLeft > initialWindowScrollLeft + 1) || (attemptedMainScrollLeft > 1);
+
         const isSqueezed = rootRect.width < (winWidth * 0.95);
         const blankSpaceRight = Math.max(0, Math.round(winWidth - rootRect.width));
 
@@ -435,6 +478,7 @@ def inspect_viewport_and_layout(page, phase_name, logger):
             bodyWidth,
             rootWidth: Math.round(rootRect.width),
             hasHorizontalOverflow: docWidth > (winWidth + 2) || bodyWidth > (winWidth + 2),
+            canScrollSideways,
             isSqueezed,
             blankSpaceRight,
             overflowingCount: overflowing.length,
@@ -442,18 +486,30 @@ def inspect_viewport_and_layout(page, phase_name, logger):
         };
     }""")
 
-    # Verify Horizontal Overflow
-    if not metrics["hasHorizontalOverflow"] and metrics["overflowingCount"] == 0:
+    # Verify Horizontal Overflow and Sideways Scroll Resistance
+    has_overflow = (
+        metrics["hasHorizontalOverflow"]
+        or metrics["overflowingCount"] > 0
+        or metrics["canScrollSideways"]
+    )
+    if not has_overflow:
         logger.record_test(
             f"{phase_name} - No Horizontal Overflow",
             True,
-            f"doc: {metrics['docWidth']}px, viewport: {metrics['winWidth']}px"
+            f"doc: {metrics['docWidth']}px, viewport: {metrics['winWidth']}px, sideways scroll: blocked"
         )
     else:
+        err_details = []
+        if metrics["hasHorizontalOverflow"]:
+            err_details.append(f"doc width {metrics['docWidth']}px / body width {metrics['bodyWidth']}px exceeds viewport {metrics['winWidth']}px")
+        if metrics["overflowingCount"] > 0:
+            err_details.append(f"leaking: {json.dumps(metrics['sampleOverflow'])}")
+        if metrics["canScrollSideways"]:
+            err_details.append("page allowed sideways horizontal scrolling")
         logger.record_test(
             f"{phase_name} - Horizontal Overflow Detected",
             False,
-            f"doc width {metrics['docWidth']}px exceeds viewport {metrics['winWidth']}px. Leaking: {json.dumps(metrics['sampleOverflow'])}"
+            " | ".join(err_details)
         )
 
     # Verify Layout Squeeze
@@ -1140,14 +1196,49 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
 
     capture_human_ux_screenshot(page, dev_name, "step8_01_live_tracking", logger)
 
+    # Verify repeated vertical scrolling on Live Order Tracking
+    logger.log(f"  [Scroll Audit] Performing repeated vertical swipes/scrolls on {dev_name} Tracking screen...")
+
+    # Scroll down 350px
+    page.evaluate("() => { const c = document.getElementById('main-content-container') || window; if (c.scrollBy) c.scrollBy(0, 350); else window.scrollBy(0, 350); }")
+    page.wait_for_timeout(250)
+    scroll_pos_mid = page.evaluate("() => { const c = document.getElementById('main-content-container'); return c ? c.scrollTop : window.scrollY; }")
+    logger.record_test(f"[{dev_name}] Phase 5 Tracking Vertical Scroll Down", scroll_pos_mid > 0, f"Scrolled to {scroll_pos_mid}px")
+
+    # Scroll back to top
+    page.evaluate("() => { const c = document.getElementById('main-content-container') || window; if (c.scrollTo) c.scrollTo(0, 0); else window.scrollTo(0, 0); }")
+    page.wait_for_timeout(200)
+
+    # Scroll to bottom to reveal the primary action button
+    page.evaluate("() => { const c = document.getElementById('main-content-container') || window; if (c.scrollTo) c.scrollTo(0, 2000); else window.scrollTo(0, 2000); }")
+    page.wait_for_timeout(300)
+    scroll_pos_bottom = page.evaluate("() => { const c = document.getElementById('main-content-container'); return c ? c.scrollTop : window.scrollY; }")
+    logger.record_test(f"[{dev_name}] Phase 5 Tracking Vertical Scroll to Bottom", scroll_pos_bottom > 0, f"Scrolled to bottom: {scroll_pos_bottom}px")
+
+    # Verify that bottom green tracking action is fully visible, unoccluded, and above bottom navigation
+    check_human_ux_bounds(page, "#p5-back-home-btn", "Tracking Bottom Back to Market CTA", dev_name, logger)
+    capture_human_ux_screenshot(page, dev_name, "step8_02_tracking_bottom_cta", logger)
+
+    # Verify Dark Theme rendering in Phase 5 Tracking
+    page.evaluate("if (typeof setAppTheme === 'function') setAppTheme('dark')")
+    page.wait_for_timeout(250)
+    inspect_viewport_and_layout(page, f"[{dev_name}] Phase 5 Tracking (Dark Mode)", logger)
+    capture_human_ux_screenshot(page, dev_name, "step8_03_tracking_dark_mode", logger)
+
+    # Restore Light Theme
+    page.evaluate("if (typeof setAppTheme === 'function') setAppTheme('light')")
+    page.wait_for_timeout(200)
+
     # =========================================================================
     # Phase 5.5: My Account View & AI Customer Support Chatbot Module
     # =========================================================================
     logger.log(f"\n--- [{dev_name}] Testing Phase 5.5: My Account & AI Customer Support Module ---")
 
-    # 1. Navigate back to Main Dashboard via 'Back to Village Market' CTA
-    page.eval_on_selector("#p5-back-home-btn", "el => el.click()")
+    # 1. Navigate back to Main Dashboard via 'Back to Village Market' CTA (real Playwright click)
+    page.click("#p5-back-home-btn")
     page.wait_for_timeout(400)
+    is_dash_after_tracking = page.is_visible("#view-p2-dashboard")
+    logger.record_test(f"[{dev_name}] Tracking Bottom CTA Real Click Navigation", is_dash_after_tracking)
 
     # 2. Verify Bottom Navigation Bar touch bounds (Stores, Cart / Categories, Orders)
     check_human_ux_bounds(page, "#nav-btn-stores", "Bottom Nav Stores Tab", dev_name, logger)
