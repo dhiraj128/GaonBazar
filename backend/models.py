@@ -75,7 +75,7 @@ class Store(Base):
     photo_url = Column(Text, nullable=True)
     payout_upi = Column(String(100), default="sharma.kirana@okaxis")
     bank_account_name = Column(String(150), nullable=True, default=None)
-    bank_account_number = Column(String(50), nullable=True, default=None)
+    bank_account_number = Column(Text, nullable=True, default=None)
     bank_ifsc = Column(String(20), nullable=True, default=None)
     bank_verification_status = Column(String(20), default="pending")  # "pending", "verified", "rejected"
     status = Column(String(30), default="approved")  # "approved", "pending_approval", "rejected"
@@ -190,7 +190,7 @@ class Runner(Base):
     vehicle_number = Column(String(50), default="UP-14-EA-4921")
     payout_upi = Column(String(100), default="kamal.singh@ybl")
     bank_account_name = Column(String(150), nullable=True, default=None)
-    bank_account_number = Column(String(50), nullable=True, default=None)
+    bank_account_number = Column(Text, nullable=True, default=None)
     bank_ifsc = Column(String(20), nullable=True, default=None)
     bank_verification_status = Column(String(20), default="pending")  # "pending", "verified", "rejected"
     status = Column(String(30), default="approved")  # "approved", "pending_approval", "rejected"

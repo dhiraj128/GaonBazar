@@ -107,6 +107,10 @@ from .security import (
     SecurityHeadersMiddleware,
     otp_rate_limiter,
     checkout_rate_limiter,
+    encrypt_sensitive_field,
+    decrypt_sensitive_field,
+    mask_bank_account,
+    is_production_environment,
 )
 
 # Root directory of the application
@@ -522,7 +526,13 @@ def admin_login_endpoint(payload: Optional[AdminLoginRequest] = None):
     if not provided:
         raise HTTPException(status_code=401, detail="Invalid admin credentials")
 
-    expected = os.getenv("ADMIN_SECRET_KEY", "gaonbazar_super_admin_secret_2026").strip()
+    is_prod = is_production_environment()
+    expected = os.getenv("ADMIN_SECRET_KEY", "" if is_prod else "gaonbazar_super_admin_secret_2026").strip()
+    if is_prod and (not expected or expected == "gaonbazar_super_admin_secret_2026"):
+        raise HTTPException(
+            status_code=500,
+            detail="Admin authentication unconfigured or insecure default in production (deny-by-default)"
+        )
     if not expected:
         raise HTTPException(status_code=401, detail="Admin authentication unconfigured (deny-by-default)")
 
@@ -1091,9 +1101,25 @@ def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
         if item_input.qty <= 0:
             continue
         db_prod = db.query(Product).filter(Product.id == item_input.id).first()
-        unit_price = db_prod.price if db_prod else item_input.price
-        mrp = db_prod.mrp if db_prod else unit_price
-        name = db_prod.name_en if db_prod else (item_input.name or "Item")
+        if not db_prod:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Product '{item_input.id}' not found in catalog / उत्पाद सूची में उपलब्ध नहीं है."
+            )
+        if db_prod.store_id != payload.store_id:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Product '{db_prod.name_en}' does not belong to selected store '{payload.store_id}'."
+            )
+        if getattr(db_prod, 'in_stock', True) is False:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Product '{db_prod.name_en}' is out of stock / उत्पाद स्टॉक में नहीं है."
+            )
+
+        unit_price = float(db_prod.price)
+        mrp = float(db_prod.mrp) if db_prod.mrp else unit_price
+        name = db_prod.name_en or (item_input.name or "Item")
 
         subtotal += unit_price * item_input.qty
         savings += max(0.0, (mrp - unit_price) * item_input.qty)
@@ -1135,6 +1161,11 @@ def create_order(payload: CheckoutRequest, db: Session = Depends(get_db)):
             cust_lng = float(user_landmark.lng)
             has_explicit_coords = True
         elif payload.distance_km is not None:
+            if is_production_environment():
+                raise HTTPException(
+                    status_code=400,
+                    detail="Client-provided distance is forbidden in production. Confirmed delivery coordinates or verified landmark are required. / डिलीवरी स्थान आवश्यक है।"
+                )
             # Client provided distance_km in test or simulated mode
             effective_dist = float(payload.distance_km)
             road_dist_km = effective_dist
@@ -1654,14 +1685,7 @@ def get_user_orders(phone: str, db: Session = Depends(get_db), auth: Dict[str, A
     return results
 
 
-def mask_bank_account(acc_num: Optional[str]) -> Optional[str]:
-    """Securely masks bank account numbers for API output (e.g. ••••••••5821, showing only last 4 digits)."""
-    if not acc_num:
-        return None
-    acc_clean = str(acc_num).strip()
-    if len(acc_clean) <= 4:
-        return "•••• " + acc_clean
-    return ("•" * (len(acc_clean) - 4)) + acc_clean[-4:]
+# mask_bank_account is imported from .security
 
 
 # =============================================================================
@@ -1795,11 +1819,11 @@ def prepare_razorpay_route_split(order: Order, db: Session) -> dict:
     Prepares the payload required for Razorpay Route Linked Accounts API.
     """
     store = db.query(Store).filter(Store.id == order.store_id).first()
-    vendor_acc = getattr(store, "bank_account_number", None) or f"acc_vendor_{order.store_id}"
+    vendor_acc = decrypt_sensitive_field(getattr(store, "bank_account_number", None)) or f"acc_vendor_{order.store_id}"
     vendor_name = store.name if store else order.store_name
 
     runner = db.query(Runner).filter(Runner.is_online == True).first()
-    runner_acc = getattr(runner, "bank_account_number", None) or (f"acc_runner_{runner.id}" if runner else "acc_runner_hub_pool")
+    runner_acc = decrypt_sensitive_field(getattr(runner, "bank_account_number", None)) or (f"acc_runner_{runner.id}" if runner else "acc_runner_hub_pool")
     runner_id = runner.id if runner else "gm_pool"
 
     vendor_payout = round(float(order.vendor_payout if order.vendor_payout is not None else order.subtotal), 2)
@@ -3309,7 +3333,7 @@ def update_vendor_payout_settings(store_id: str, payload: BankPayoutSettingsRequ
         raise HTTPException(status_code=404, detail="Store not found.")
 
     store.bank_account_name = payload.account_holder_name
-    store.bank_account_number = payload.account_number
+    store.bank_account_number = encrypt_sensitive_field(payload.account_number)
     store.bank_ifsc = payload.ifsc_code
     store.payout_upi = payload.upi_id
     store.bank_verification_status = "pending"
@@ -3760,7 +3784,7 @@ def update_runner_payout_settings(runner_id: str, payload: BankPayoutSettingsReq
         raise HTTPException(status_code=404, detail="Runner not found.")
 
     runner.bank_account_name = payload.account_holder_name
-    runner.bank_account_number = payload.account_number
+    runner.bank_account_number = encrypt_sensitive_field(payload.account_number)
     runner.bank_ifsc = payload.ifsc_code
     runner.payout_upi = payload.upi_id
     runner.bank_verification_status = "pending"

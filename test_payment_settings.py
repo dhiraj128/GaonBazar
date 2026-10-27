@@ -26,7 +26,7 @@ sys.path.insert(0, str(ROOT_DIR))
 from backend.main import app, mask_bank_account
 from backend.database import SessionLocal, ensure_schema_migrations
 from backend.models import Store, Runner, SavedPaymentMethod, User
-from backend.security import issue_user_token, issue_vendor_token, issue_runner_token, issue_admin_token
+from backend.security import issue_user_token, issue_vendor_token, issue_runner_token, issue_admin_token, decrypt_sensitive_field
 ADMIN_AUTH = {'Authorization': f'Bearer {issue_admin_token()}'}
 
 VENDOR_AUTH = {"Authorization": f"Bearer {issue_vendor_token('sharma_brothers', '9876543211')}"}
@@ -141,7 +141,7 @@ def test_vendor_payout_settings_lifecycle():
     try:
         store = db.query(Store).filter(Store.id == "sharma_brothers").first()
         check(store is not None, "Store found in SQLite database")
-        check(store.bank_account_number == "50100234567890", "Raw account number safely stored in DB")
+        check(decrypt_sensitive_field(store.bank_account_number) == "50100234567890", "Account number securely encrypted at rest in DB and matches plaintext")
         check(store.bank_ifsc == "HDFC0000240", "IFSC stored in DB")
         check(store.payout_upi == "sharma.kirana@okhdfcbank", "UPI stored in DB")
         check(store.bank_verification_status == "pending", "DB verification status is 'pending'")
@@ -180,7 +180,7 @@ def test_runner_payout_settings_lifecycle():
     try:
         runner = db.query(Runner).filter(Runner.id == "gm_1").first()
         check(runner is not None, "Runner found in SQLite database")
-        check(runner.bank_account_number == "10029384756102", "Runner raw account number stored in DB")
+        check(decrypt_sensitive_field(runner.bank_account_number) == "10029384756102", "Runner account number securely encrypted at rest in DB and matches plaintext")
         check(runner.bank_ifsc == "PUNB0123400", "Runner IFSC stored in DB")
         check(runner.bank_verification_status == "pending", "Runner verification status in DB is 'pending'")
     finally:

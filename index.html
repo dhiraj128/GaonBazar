@@ -715,8 +715,8 @@
               <span class="text-[10px] text-on-surface-variant block truncate max-w-full" data-i18n="p1_badge_1_s">सक्रिय नेटवर्क</span>
             </div>
             <div class="bg-white rounded-xl p-2.5 shadow-xs flex flex-col items-center justify-center min-w-0">
-              <span class="font-bold text-secondary block truncate max-w-full text-xs" data-i18n="p1_badge_2_t">पहला ऑर्डर मुफ्त</span>
-              <span class="text-[10px] text-on-surface-variant block truncate max-w-full" data-i18n="p1_badge_2_s">निःशुल्क डिलीवरी</span>
+              <span class="font-bold text-secondary block truncate max-w-full text-xs" data-i18n="p1_badge_2_t">₹10 डिलीवरी छूट</span>
+              <span class="text-[10px] text-on-surface-variant block truncate max-w-full" data-i18n="p1_badge_2_s">₹299+ के ऑर्डर पर</span>
             </div>
           </div>
         </div>
@@ -2303,17 +2303,17 @@
 
         <!-- Suggestion Chips (Vertical list matching Reference 01) -->
         <div class="flex flex-col gap-2">
-          <button onclick="handleVoiceChipClick('1 kilo tamatar add karo')" class="w-full py-2.5 px-4 rounded-full bg-white dark:bg-[#2B4858] text-slate-700 dark:text-[#C9DCE5] hover:border-[#16B86E] border border-slate-200 dark:border-[#476476] text-xs font-semibold flex items-center gap-2.5 active:scale-98 transition-all shadow-2xs text-left cursor-pointer">
+          <button onclick="handleVoiceChipClick(this.querySelector('span[data-i18n]')?.innerText || '1 kilo tamatar add karo')" class="w-full py-2.5 px-4 rounded-full bg-white dark:bg-[#2B4858] text-slate-700 dark:text-[#C9DCE5] hover:border-[#16B86E] border border-slate-200 dark:border-[#476476] text-xs font-semibold flex items-center gap-2.5 active:scale-98 transition-all shadow-2xs text-left cursor-pointer">
             <span class="material-symbols-outlined text-[#16B86E] text-[18px]">mic</span>
-            <span>"1 kilo tamatar add karo"</span>
+            <span data-i18n="ai_chip_1">"1 किलो टमाटर जोड़ें"</span>
           </button>
-          <button onclick="handleVoiceChipClick('Mujhe doodh aur bread chahiye')" class="w-full py-2.5 px-4 rounded-full bg-white dark:bg-[#2B4858] text-slate-700 dark:text-[#C9DCE5] hover:border-[#16B86E] border border-slate-200 dark:border-[#476476] text-xs font-semibold flex items-center gap-2.5 active:scale-98 transition-all shadow-2xs text-left cursor-pointer">
+          <button onclick="handleVoiceChipClick(this.querySelector('span[data-i18n]')?.innerText || 'Mujhe doodh chahiye')" class="w-full py-2.5 px-4 rounded-full bg-white dark:bg-[#2B4858] text-slate-700 dark:text-[#C9DCE5] hover:border-[#16B86E] border border-slate-200 dark:border-[#476476] text-xs font-semibold flex items-center gap-2.5 active:scale-98 transition-all shadow-2xs text-left cursor-pointer">
             <span class="material-symbols-outlined text-[#16B86E] text-[18px]">mic</span>
-            <span>"Mujhe doodh aur bread chahiye"</span>
+            <span data-i18n="ai_chip_2">"मुझे 1 लीटर दूध चाहिए"</span>
           </button>
-          <button onclick="handleVoiceChipClick('Add rice 5 kg and cooking oil')" class="w-full py-2.5 px-4 rounded-full bg-white dark:bg-[#2B4858] text-slate-700 dark:text-[#C9DCE5] hover:border-[#16B86E] border border-slate-200 dark:border-[#476476] text-xs font-semibold flex items-center gap-2.5 active:scale-98 transition-all shadow-2xs text-left cursor-pointer">
+          <button onclick="handleVoiceChipClick(this.querySelector('span[data-i18n]')?.innerText || '5 kilo atta aur cooking oil')" class="w-full py-2.5 px-4 rounded-full bg-white dark:bg-[#2B4858] text-slate-700 dark:text-[#C9DCE5] hover:border-[#16B86E] border border-slate-200 dark:border-[#476476] text-xs font-semibold flex items-center gap-2.5 active:scale-98 transition-all shadow-2xs text-left cursor-pointer">
             <span class="material-symbols-outlined text-[#16B86E] text-[18px]">mic</span>
-            <span>"Add rice 5 kg and cooking oil"</span>
+            <span data-i18n="ai_chip_3">"5 किलो आटा और सरसों का तेल"</span>
           </button>
         </div>
 
@@ -3244,8 +3244,8 @@
         p1_trust_title: "गाँव का विश्वास, पक्का वादा",
         p1_badge_1_t: "50+ पंचायतें",
         p1_badge_1_s: "सक्रिय नेटवर्क",
-        p1_badge_2_t: "पहला ऑर्डर मुफ्त",
-        p1_badge_2_s: "निःशुल्क डिलीवरी",
+        p1_badge_2_t: "₹10 डिलीवरी छूट",
+        p1_badge_2_s: "₹299+ के ऑर्डर पर",
         p1_otp_step: "चरण 2 • सत्यापन",
         p1_otp_heading: "सत्यापन कोड",
         p1_otp_desc: "आपके पंजीकृत मोबाइल नंबर पर भेजा गया 6-अंकीय कोड दर्ज करें।",
@@ -3677,8 +3677,8 @@
         p1_trust_title: "Panchayat Trust, Unbroken Promise",
         p1_badge_1_t: "50+ Panchayats",
         p1_badge_1_s: "Active Network",
-        p1_badge_2_t: "Free 1st Order",
-        p1_badge_2_s: "Free 1st Delivery",
+        p1_badge_2_t: "₹10 Off Delivery",
+        p1_badge_2_s: "On orders over ₹299",
         p1_otp_step: "Step 2 of 2 • Secure Verification",
         p1_otp_heading: "Verify OTP",
         p1_otp_desc: "Enter the 6-digit verification code sent to your registered mobile.",
