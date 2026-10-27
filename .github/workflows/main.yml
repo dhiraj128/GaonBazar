@@ -55,7 +55,7 @@ jobs:
       run: python test_vendor_e2e.py
 
     - name: Run Runner App Tests
-      run: python test_runner_e2e.py
+      run: python test_runner_e2e.py || (python -c "with open('runner_test_report.txt') as f: print(f.read()[-3000:])" && exit 1)
       
     - name: Run Admin Dashboard Tests
       run: python test_admin_e2e.py

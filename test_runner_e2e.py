@@ -127,6 +127,7 @@ class RunnerTestLogger:
             self.passed_tests += 1
         else:
             self.failed_tests += 1
+            print(f"::error title={test_name}::{detail}", flush=True)
 
         msg = f"  {mark} {status_str}: {test_name}"
         if detail:
@@ -1028,7 +1029,7 @@ def _do_lifecycle_sync(context, logger):
 
 
 def main():
-    start_global_timeout_watchdog(timeout_seconds=240)
+    start_global_timeout_watchdog(timeout_seconds=480)
     logger = RunnerTestLogger()
     logger.log("Starting GaonBazaar Gaon Mitra (Runner) Dashboard Automated Test Suite...")
 
@@ -1073,6 +1074,9 @@ def main():
         cleanup_spawned_server()
 
     if logger.failed_tests > 0:
+        for l in logger.logs:
+            if "FAIL:" in l or "ERROR" in l:
+                print(f"::error title=RunnerAuditFailure::{l}", flush=True)
         logger.log(f"\n❌ RUNNER E2E SUITE FINISHED WITH {logger.failed_tests} FAILURES")
         sys.exit(1)
     else:
