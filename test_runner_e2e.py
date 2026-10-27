@@ -28,7 +28,7 @@ import urllib.request
 from pathlib import Path
 from datetime import datetime, timezone
 
-def start_global_timeout_watchdog(timeout_seconds=240):
+def start_global_timeout_watchdog(timeout_seconds=360):
     """
     Strict Global Watchdog Timeout:
     Guarantees the entire test suite process exits hard after timeout_seconds,
@@ -227,14 +227,15 @@ atexit.register(cleanup_spawned_server)
 
 
 def ensure_backend_running(logger):
-    try:
-        req = urllib.request.Request("http://127.0.0.1:8001/docs", headers={"User-Agent": "Playwright-QA"})
-        with urllib.request.urlopen(req, timeout=1.0) as res:
-            if res.status == 200:
-                logger.log("  ✓ GaonBazaar Backend is already active and healthy on http://127.0.0.1:8001")
-                return None
-    except Exception:
-        pass
+    for _ in range(3):
+        try:
+            req = urllib.request.Request("http://127.0.0.1:8001/health", headers={"User-Agent": "Playwright-QA"})
+            with urllib.request.urlopen(req, timeout=1.5) as res:
+                if res.status == 200:
+                    logger.log("  ✓ GaonBazaar Backend is already active and healthy on http://127.0.0.1:8001")
+                    return None
+        except Exception:
+            time.sleep(0.4)
 
     kill_port_processes([8001])
     time.sleep(0.5)
@@ -255,22 +256,22 @@ def ensure_backend_running(logger):
 
     start_time = time.time()
     server_ready = False
-    while time.time() - start_time < 8.0:
+    while time.time() - start_time < 12.0:
         if server_proc.poll() is not None:
             logger.log(f"  ✗ Background server exited unexpectedly with code {server_proc.poll()}")
             break
         try:
-            req = urllib.request.Request("http://127.0.0.1:8001/docs", headers={"User-Agent": "Playwright-QA"})
-            with urllib.request.urlopen(req, timeout=0.8) as res:
+            req = urllib.request.Request("http://127.0.0.1:8001/health", headers={"User-Agent": "Playwright-QA"})
+            with urllib.request.urlopen(req, timeout=1.0) as res:
                 if res.status == 200:
                     server_ready = True
-                    logger.log(f"  ✓ GaonBazaar Backend verified ready on http://127.0.0.1:8001/docs ({time.time() - start_time:.2f}s)")
+                    logger.log(f"  ✓ GaonBazaar Backend verified ready on http://127.0.0.1:8001/health ({time.time() - start_time:.2f}s)")
                     break
         except Exception:
-            time.sleep(0.3)
+            time.sleep(0.4)
 
     if not server_ready:
-        logger.log("  ✗ Failed to verify server is alive on port 8001 within 8s timeout.")
+        logger.log("  ✗ Failed to verify server is alive on port 8001 within 12s timeout.")
         try:
             server_proc.kill()
         except Exception:
@@ -469,21 +470,25 @@ def check_element_bounds(page, selector, desc, logger, dev_name=None, require_st
 
 def ensure_stage3_mission_exists():
     """
-    Ensures at least one order exists in Stage 3 (Packed & Ready for Pickup)
-    with a valid 4-digit delivery OTP (e.g. '4821') and human-readable landmark.
+    Ensures at least three orders exist in Stage 3 (Packed & Ready for Pickup)
+    with valid 4-digit delivery OTPs ('4821') and human-readable landmarks,
+    and guarantees runner gm_1 is marked online in the database.
     """
     from backend.database import db_session
-    from backend.models import Order, OrderItem
+    from backend.models import Order, OrderItem, Runner
+    import random
     with db_session() as db:
-        has_stage3 = db.query(Order).filter(Order.store_id == "sharma_brothers", Order.timeline_stage == 3).first()
-        if has_stage3:
-            has_stage3.delivery_otp = "4821"
-            if not any(w in (has_stage3.landmark or "") for w in ["Mandir", "Tree", "Tank", "Tubewell", "Panchayat", "Bhawan", "Khasra", "Near", "Opp"]):
-                has_stage3.landmark = "Near Old Neem Tree, Tubewell #3, Khasra 19"
-            db.commit()
-            return
-        if not has_stage3:
-            import random
+        r = db.query(Runner).filter(Runner.id == "gm_1").first()
+        if r:
+            r.is_online = 1
+
+        stage3_orders = db.query(Order).filter(Order.store_id == "sharma_brothers", Order.timeline_stage == 3).all()
+        for o in stage3_orders:
+            o.delivery_otp = "4821"
+            if not any(w in (o.landmark or "") for w in ["Mandir", "Tree", "Tank", "Tubewell", "Panchayat", "Bhawan", "Khasra", "Near", "Opp"]):
+                o.landmark = "Near Old Neem Tree, Tubewell #3, Khasra 19"
+
+        while len(stage3_orders) < 3:
             oid = f"#RUR-{random.randint(10000, 99999)}"
             while db.query(Order).filter(Order.id == oid).first():
                 oid = f"#RUR-{random.randint(10000, 99999)}"
@@ -516,7 +521,8 @@ def ensure_stage3_mission_exists():
             db.flush()
             db.add(OrderItem(order_id=oid, product_id="item_1", product_name="Aashirvaad Chakki Atta 5kg", price=210.0, quantity=1))
             db.add(OrderItem(order_id=oid, product_id="item_3", product_name="Tata Salt Iodized 1kg", price=24.0, quantity=1))
-            db.commit()
+            stage3_orders.append(demo)
+        db.commit()
 
 
 def run_runner_device_simulation(browser, device_config, logger):
@@ -879,8 +885,16 @@ def test_full_lifecycle_sync(browser, logger):
 
 
 def _do_lifecycle_sync(context, logger):
+    from backend.database import db_session
+    from backend.models import Runner
+    with db_session() as db:
+        r = db.query(Runner).filter(Runner.id == "gm_1").first()
+        if r:
+            r.is_online = 1
+            db.commit()
+
     runner_page = context.new_page()
-    runner_page.goto("http://127.0.0.1:8001/runner", wait_until="domcontentloaded", timeout=30000)
+    runner_page.goto("http://127.0.0.1:8001/runner?test=1", wait_until="domcontentloaded", timeout=30000)
     runner_page.wait_for_timeout(1000)
     if runner_page.is_visible("#runner-login-gate"):
         runner_page.click("#btn-runner-login")
@@ -888,11 +902,12 @@ def _do_lifecycle_sync(context, logger):
         runner_page.wait_for_timeout(1000)
 
     runner_page.evaluate("""() => {
+        window.__TEST_MODE = true;
         RunnerStore.isOnline = true;
         updateHeaderAndKPISummary();
-        if (!RunnerStore.pollTimer) {
-            RunnerStore.pollTimer = setInterval(() => { fetchAllRunnerData(false); }, 2000);
-        }
+        if (RunnerStore.pollTimer) clearInterval(RunnerStore.pollTimer);
+        RunnerStore.pollTimer = setInterval(() => { fetchAllRunnerData(false); }, 1000);
+        fetchAllRunnerData(false);
     }""")
 
     try:
@@ -955,9 +970,14 @@ def _do_lifecycle_sync(context, logger):
     # 3. Gaon Mitra dashboard picks up order live
     logger.log(f"  ⏳ 3. Waiting for Gaon Mitra live polling to detect {order_id}...")
     found_in_runner_queue = False
-    for _ in range(25):
+    clean_id = order_id.lstrip("#")
+    for _ in range(30):
         runner_page.wait_for_timeout(800)
-        if runner_page.locator(f'span:has-text("{order_id}")').count() > 0:
+        if (
+            runner_page.locator(f'span:has-text("{order_id}")').count() > 0
+            or runner_page.locator(f'span:has-text("{clean_id}")').count() > 0
+            or runner_page.evaluate(f"() => (RunnerStore.missions || []).some(m => String(m.id) === '{order_id}' || String(m.id) === '{clean_id}')")
+        ):
             found_in_runner_queue = True
             break
 

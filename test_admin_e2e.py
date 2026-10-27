@@ -197,14 +197,15 @@ atexit.register(cleanup_spawned_server)
 
 
 def ensure_backend_running(logger):
-    try:
-        req = urllib.request.Request("http://127.0.0.1:8001/docs", headers={"User-Agent": "Playwright-Admin-QA"})
-        with urllib.request.urlopen(req, timeout=1.0) as resp:
-            if resp.status == 200:
-                logger.log("  ✓ Backend server healthy and responding on http://127.0.0.1:8001")
-                return None
-    except Exception:
-        pass
+    for _ in range(3):
+        try:
+            req = urllib.request.Request("http://127.0.0.1:8001/health", headers={"User-Agent": "Playwright-Admin-QA"})
+            with urllib.request.urlopen(req, timeout=1.5) as resp:
+                if resp.status == 200:
+                    logger.log("  ✓ Backend server healthy and responding on http://127.0.0.1:8001")
+                    return None
+        except Exception:
+            time.sleep(0.4)
 
     kill_port_processes([8001])
     time.sleep(0.5)

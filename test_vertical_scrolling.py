@@ -131,14 +131,15 @@ def kill_port_processes(ports=[8001]):
 
 
 def ensure_backend_running(logger):
-    try:
-        req = urllib.request.Request("http://127.0.0.1:8001/health", headers={"User-Agent": "Playwright-QA"})
-        with urllib.request.urlopen(req, timeout=1.0) as res:
-            if res.status == 200:
-                logger.log("  ✓ GaonBazaar Backend is already active on http://127.0.0.1:8001")
-                return None
-    except Exception:
-        pass
+    for _ in range(3):
+        try:
+            req = urllib.request.Request("http://127.0.0.1:8001/health", headers={"User-Agent": "Playwright-QA"})
+            with urllib.request.urlopen(req, timeout=1.5) as res:
+                if res.status == 200:
+                    logger.log("  ✓ GaonBazaar Backend is already active on http://127.0.0.1:8001")
+                    return None
+        except Exception:
+            time.sleep(0.4)
 
     kill_port_processes([8001])
     time.sleep(0.5)
