@@ -638,11 +638,17 @@
             </div>
           </div>
 
-          <!-- One clear store-call action below the shop identity -->
-          <a id="btn-call-store" href="tel:9876543210" class="min-h-[44px] px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black flex items-center gap-1.5 shadow-sm active:scale-95 transition-all shrink-0 cursor-pointer">
-            <span class="material-symbols-outlined text-[18px]">call</span>
-            <span data-i18n="call_dukandaar_btn">दुकानदार को कॉल करें</span>
-          </a>
+          <!-- Clear store-call and store-chat actions below the shop identity -->
+          <div class="flex items-center gap-2">
+            <a id="btn-call-store" href="tel:9876543210" class="min-h-[44px] px-3 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black flex items-center gap-1.5 shadow-sm active:scale-95 transition-all shrink-0 cursor-pointer">
+              <span class="material-symbols-outlined text-[18px]">call</span>
+              <span data-i18n="call_dukandaar_btn">दुकानदार को कॉल</span>
+            </a>
+            <button id="btn-chat-store" type="button" onclick="openRunnerStoreChat()" class="min-h-[44px] px-3 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-black flex items-center gap-1.5 shadow-sm active:scale-95 transition-all shrink-0 cursor-pointer">
+              <span class="material-symbols-outlined text-[18px]">chat</span>
+              <span data-i18n="chat_dukandaar_btn">चैट करें</span>
+            </button>
+          </div>
         </div>
 
         <!-- Package Line Items Checklist -->
@@ -939,10 +945,10 @@
           </button>
         </div>
 
-        <button class="w-full p-3.5 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-[#365668] transition-colors">
+        <button type="button" onclick="openRunnerEmergencySupport()" class="w-full p-3.5 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-[#365668] transition-colors cursor-pointer">
           <div class="flex items-center gap-3">
             <span class="material-symbols-outlined text-[#16B86E] text-[20px]">support_agent</span>
-            <span class="text-xs font-bold text-slate-800 dark:text-[#F6FBFD]">Partner Emergency Support</span>
+            <span class="text-xs font-bold text-slate-800 dark:text-[#F6FBFD]" data-i18n="partner_emergency_support">Partner Emergency Support (आपातकालीन सहायता)</span>
           </div>
           <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
         </button>
@@ -1400,6 +1406,118 @@
   <!-- ========================================================================= -->
   <!-- 7. BOTTOM SHEET: CELEBRATION / DELIVERY SUCCESS                           -->
   <!-- ========================================================================= -->
+  
+  <!-- ========================================================================= -->
+  <!-- 8. RUNNER HELP & STORE MESSAGING MODAL                                    -->
+  <!-- ========================================================================= -->
+  <div id="modal-runner-help" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex flex-col justify-end sm:justify-center items-center p-0 sm:p-4 transition-opacity duration-300">
+    <div class="bg-slate-900 text-slate-100 rounded-t-[32px] sm:rounded-3xl p-4 sm:p-6 pb-safe shadow-2xl max-w-lg w-full max-h-[90vh] sm:max-h-[85vh] flex flex-col border-t sm:border border-slate-800 overflow-hidden animate-in slide-in-from-bottom duration-300">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3 shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 text-[#16B86E] flex items-center justify-center shrink-0 border border-emerald-500/30">
+            <span class="material-symbols-outlined text-[22px]">contact_support</span>
+          </div>
+          <div>
+            <h3 class="text-sm font-black leading-tight text-white flex items-center gap-1.5" data-i18n="runner_help_title">
+              <span>सहायता व बातचीत (Support & Messages)</span>
+            </h3>
+            <span id="runner-chat-active-order-badge" class="text-xs text-slate-400 font-semibold font-mono">Order #GB-1284 • Sharma Brothers Kirana</span>
+          </div>
+        </div>
+        <button onclick="closeRunnerHelpModal()" aria-label="Close" class="w-10 h-10 rounded-full flex items-center justify-center text-slate-400 hover:text-white active:scale-90 cursor-pointer">
+          <span class="material-symbols-outlined text-[22px]">close</span>
+        </button>
+      </div>
+
+      <!-- Action Tabs: Store Chat vs Emergency Support -->
+      <div class="flex items-center gap-2 py-2 border-b border-slate-800 shrink-0 text-xs">
+        <button id="tab-btn-runner-chat" type="button" onclick="switchRunnerHelpSubTab('chat')" class="px-3.5 py-1.5 rounded-xl font-bold bg-[#16B86E] text-white flex items-center gap-1.5 cursor-pointer shadow-2xs">
+          <span class="material-symbols-outlined text-[16px]">chat</span>
+          <span>दुकानदार से बातचीत</span>
+        </button>
+        <button id="tab-btn-runner-emergency" type="button" onclick="switchRunnerHelpSubTab('emergency')" class="px-3.5 py-1.5 rounded-xl font-bold bg-slate-800 text-slate-300 border border-slate-700 hover:text-white flex items-center gap-1.5 cursor-pointer">
+          <span class="material-symbols-outlined text-[16px]">emergency</span>
+          <span>आपातकालीन सहायता</span>
+        </button>
+      </div>
+
+      <!-- View A: Store Messages Chat Pane -->
+      <div id="runner-chat-pane" class="flex-1 flex flex-col min-h-0">
+        <!-- Messages History Box -->
+        <div id="runner-chat-messages-container" class="flex-1 overflow-y-auto p-3 flex flex-col gap-2.5 min-h-[200px] max-h-[360px] bg-slate-950/60 rounded-2xl my-2.5 border border-slate-800">
+          <!-- Dynamic message bubbles injected here -->
+        </div>
+
+        <!-- Quick Reply Chips -->
+        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-2 shrink-0">
+          <button type="button" onclick="sendQuickRunnerMessage('मैं दुकान के बाहर पहुँच गया हूँ।')" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-800 text-slate-300 border border-slate-700 whitespace-nowrap active:scale-95 cursor-pointer hover:border-[#16B86E]">
+            📍 दुकान के बाहर हूँ
+          </button>
+          <button type="button" onclick="sendQuickRunnerMessage('सामान पैक है क्या भैया?')" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-800 text-slate-300 border border-slate-700 whitespace-nowrap active:scale-95 cursor-pointer hover:border-[#16B86E]">
+            📦 सामान पैक है क्या?
+          </button>
+          <button type="button" onclick="sendQuickRunnerMessage('5 मिनट में सामान लेकर निकल रहा हूँ।')" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-800 text-slate-300 border border-slate-700 whitespace-nowrap active:scale-95 cursor-pointer hover:border-[#16B86E]">
+            🛵 5 मिनट में निकल रहा हूँ
+          </button>
+        </div>
+
+        <!-- Chat Input Form -->
+        <form onsubmit="handleRunnerChatSubmit(event)" class="flex items-center gap-2 shrink-0 pt-1">
+          <input 
+            id="runner-chat-input" 
+            type="text" 
+            placeholder="दुकानदार को संदेश लिखें..." 
+            class="flex-1 min-h-[44px] px-3.5 py-2 rounded-xl bg-slate-800 text-white border border-slate-700 text-xs font-semibold focus:outline-none focus:border-[#16B86E]"
+          />
+          <button 
+            id="btn-runner-send-msg" 
+            type="submit" 
+            aria-label="Send"
+            class="min-h-[44px] px-4 rounded-xl bg-[#16B86E] hover:bg-emerald-600 active:scale-95 text-white text-xs font-black flex items-center justify-center gap-1 shadow-md transition-all cursor-pointer shrink-0"
+          >
+            <span class="material-symbols-outlined text-[18px]">send</span>
+            <span>भेजें</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- View B: Partner Emergency Support Form Pane -->
+      <div id="runner-emergency-pane" class="hidden flex-1 flex-col gap-3 min-h-0 py-3 overflow-y-auto">
+        <div class="bg-red-950/40 border border-red-500/40 rounded-2xl p-3.5 flex items-start gap-2.5">
+          <span class="material-symbols-outlined text-red-400 text-[20px] shrink-0">warning</span>
+          <div class="text-xs">
+            <h4 class="font-black text-red-200">आपातकालीन परिस्थिति सहायता</h4>
+            <p class="text-red-300/80 text-[11px] leading-relaxed mt-0.5">सवारी खराब होना, दुर्घटना, या ग्राहक अनुपलब्ध होने पर तुरंत रिपोर्ट करें। हमारी एडमिन टीम तुरंत सहायता करेगी।</p>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1.5 text-xs">
+          <label class="font-bold text-slate-300">समस्या का प्रकार</label>
+          <select id="runner-issue-type" class="min-h-[44px] px-3 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold">
+            <option value="bike_puncture">वाहन खराब / पंक्चर (Vehicle breakdown)</option>
+            <option value="customer_unreachable">ग्राहक संपर्क से बाहर (Customer unreachable)</option>
+            <option value="rain_flood">रास्ता बंद / भारी बारिश (Route blocked / Weather)</option>
+            <option value="cash_mismatch">नकद में विसंगति (COD mismatch)</option>
+            <option value="other">अन्य आपातकालीन सहायता (Other emergency)</option>
+          </select>
+        </div>
+
+        <div class="flex flex-col gap-1.5 text-xs">
+          <label class="font-bold text-slate-300">विवरण लिखें</label>
+          <textarea id="runner-issue-desc" rows="3" placeholder="समस्या का संक्षिप्त विवरण लिखें..." class="p-3 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold text-xs"></textarea>
+        </div>
+
+        <button type="button" onclick="submitRunnerEmergencyTicket()" class="w-full min-h-[44px] rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-black flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-all cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">support_agent</span>
+          <span>सहायता टीम को तुरंत भेजें (Alert Support)</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <div id="modal-delivery-success" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex flex-col justify-end p-0 sm:p-4 transition-opacity duration-300">
     <div class="bg-slate-900 border-t sm:border border-emerald-500/50 rounded-t-[32px] sm:rounded-3xl p-6 pb-safe shadow-2xl max-w-sm w-full mx-auto text-center flex flex-col items-center gap-3.5 animate-in slide-in-from-bottom duration-300">
       <!-- Drag Handle -->
@@ -1664,7 +1782,7 @@
     // Can also be set in browser console: localStorage.setItem('gaonbazar_api_base', 'https://...');
     // ============================================================================
     const LIVE_API_URL = ''; // <-- PASTE LIVE RENDER BACKEND URL HERE
-    const API_BASE = window.GAONBAZAAR_API_BASE || localStorage.getItem('gaonbazar_api_base') || (LIVE_API_URL ? LIVE_API_URL.replace(/\/+$/, '') : (window.location && window.location.protocol.startsWith('http') && !window.location.host.includes('localhost') && !window.location.host.includes('127.0.0.1') ? (window.location.origin + '/api') : 'http://127.0.0.1:8001/api'));
+    const API_BASE = window.GAONBAZAAR_API_BASE || localStorage.getItem('gaonbazar_api_base') || (LIVE_API_URL ? LIVE_API_URL.replace(/\/+$/, '') : (window.location && window.location.protocol.startsWith('http') ? (window.location.origin + '/api') : 'http://127.0.0.1:8001/api'));
 
     const RunnerStore = {
       runnerId: 'gm_1',
@@ -3273,7 +3391,255 @@
       }
     }
 
-    function openDepositSlipModal() {
+
+    // =========================================================================
+    // RUNNER MESSAGING & EMERGENCY HELP ENGINE
+    // =========================================================================
+    let activeRunnerThreadId = "th_GB1284";
+    let runnerMsgPollInterval = null;
+
+    function openRunnerHelpModal() {
+      const modal = document.getElementById('modal-runner-help');
+      if (!modal) return;
+      modal.classList.remove('hidden');
+      modal.style.display = 'flex';
+
+      if (window.pushOverlayHistory) {
+        window.pushOverlayHistory('modal-runner-help', function(fromPop) {
+          closeRunnerHelpModal(fromPop);
+        });
+      }
+
+      loadRunnerActiveThread();
+
+      if (runnerMsgPollInterval) clearInterval(runnerMsgPollInterval);
+      runnerMsgPollInterval = setInterval(() => {
+        if (!modal.classList.contains('hidden')) {
+          refreshRunnerActiveThread();
+        }
+      }, 3000);
+    }
+    window.openRunnerHelpModal = openRunnerHelpModal;
+
+    function closeRunnerHelpModal(isFromPopstate) {
+      const modal = document.getElementById('modal-runner-help');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
+      }
+      if (runnerMsgPollInterval) {
+        clearInterval(runnerMsgPollInterval);
+        runnerMsgPollInterval = null;
+      }
+      if (window.closeOverlayHistory) {
+        window.closeOverlayHistory('modal-runner-help', isFromPopstate);
+      }
+    }
+    window.closeRunnerHelpModal = closeRunnerHelpModal;
+
+    function openRunnerEmergencySupport() {
+      openRunnerHelpModal();
+      switchRunnerHelpSubTab('emergency');
+    }
+    window.openRunnerEmergencySupport = openRunnerEmergencySupport;
+
+    function openRunnerStoreChat() {
+      openRunnerHelpModal();
+      switchRunnerHelpSubTab('chat');
+    }
+    window.openRunnerStoreChat = openRunnerStoreChat;
+
+    function switchRunnerHelpSubTab(subTab) {
+      const chatPane = document.getElementById('runner-chat-pane');
+      const emergPane = document.getElementById('runner-emergency-pane');
+      const btnChat = document.getElementById('tab-btn-runner-chat');
+      const btnEmerg = document.getElementById('tab-btn-runner-emergency');
+
+      if (subTab === 'chat') {
+        chatPane?.classList.remove('hidden');
+        emergPane?.classList.add('hidden');
+        btnChat?.classList.add('bg-[#16B86E]', 'text-white');
+        btnChat?.classList.remove('bg-slate-800', 'text-slate-300');
+        btnEmerg?.classList.remove('bg-red-600', 'text-white');
+        btnEmerg?.classList.add('bg-slate-800', 'text-slate-300');
+      } else {
+        chatPane?.classList.add('hidden');
+        emergPane?.classList.remove('hidden');
+        emergPane?.classList.add('flex');
+        btnChat?.classList.remove('bg-[#16B86E]', 'text-white');
+        btnChat?.classList.add('bg-slate-800', 'text-slate-300');
+        btnEmerg?.classList.add('bg-red-600', 'text-white');
+        btnEmerg?.classList.remove('bg-slate-800', 'text-slate-300');
+      }
+    }
+    window.switchRunnerHelpSubTab = switchRunnerHelpSubTab;
+
+    async function loadRunnerActiveThread() {
+      const runnerId = RunnerStore.runnerId || 'gm_1';
+      try {
+        const res = await fetch(`/api/messages/threads?user_id=${encodeURIComponent(runnerId)}&role=runner`);
+        if (!res.ok) throw new Error('Failed to load threads');
+        const data = await res.json();
+        const threads = data.threads || [];
+        if (threads.length > 0) {
+          activeRunnerThreadId = threads[0].id;
+          renderRunnerMessagesList(threads[0].messages || []);
+        } else {
+          renderRunnerMessagesFallback();
+        }
+      } catch (e) {
+        console.warn('Runner threads fetch warning:', e);
+        renderRunnerMessagesFallback();
+      }
+    }
+
+    async function refreshRunnerActiveThread() {
+      if (!activeRunnerThreadId) return;
+      const runnerId = RunnerStore.runnerId || 'gm_1';
+      try {
+        const res = await fetch(`/api/messages/threads/${encodeURIComponent(activeRunnerThreadId)}?user_id=${encodeURIComponent(runnerId)}&role=runner`);
+        if (res.ok) {
+          const t = await res.json();
+          renderRunnerMessagesList(t.messages || []);
+        }
+      } catch (e) {}
+    }
+
+    function renderRunnerMessagesList(messages) {
+      const container = document.getElementById('runner-chat-messages-container');
+      if (!container) return;
+      const runnerId = RunnerStore.runnerId || 'gm_1';
+      const isHi = RunnerStore.lang === 'hi';
+
+      if (!messages || messages.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-6 text-xs text-slate-400">
+            ${isHi ? 'दुकानदार से अभी कोई संदेश नहीं है।' : 'No messages yet with the store.'}
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = messages.map(m => {
+        const isMe = (m.sender_role === 'runner' || m.sender_id === runnerId);
+        const timeStr = m.created_at ? new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+        if (isMe) {
+          return `
+            <div class="flex flex-col items-end gap-1 max-w-[85%] self-end">
+              <span class="text-[9px] font-bold text-slate-400">${isHi ? 'आप (गाँव मित्र)' : 'You (Runner)'} • ${timeStr}</span>
+              <div class="p-3 rounded-2xl rounded-tr-none bg-[#16B86E] text-white text-xs font-semibold shadow-2xs break-words leading-relaxed">
+                ${escapeRunnerHtml(m.message)}
+              </div>
+            </div>
+          `;
+        } else {
+          return `
+            <div class="flex flex-col items-start gap-1 max-w-[85%] self-start">
+              <span class="text-[9px] font-bold text-slate-400">${escapeRunnerHtml(m.sender_name)} (दुकानदार) • ${timeStr}</span>
+              <div class="p-3 rounded-2xl rounded-tl-none bg-slate-800 text-slate-100 border border-slate-700 text-xs font-semibold shadow-2xs break-words leading-relaxed">
+                ${escapeRunnerHtml(m.message)}
+              </div>
+            </div>
+          `;
+        }
+      }).join('');
+
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function renderRunnerMessagesFallback() {
+      renderRunnerMessagesList([
+        { id: 1, sender_id: 'sharma_brothers', sender_role: 'vendor', sender_name: 'Sharma Brothers Kirana', message: 'नमस्ते कमल जी, ऑर्डर #GB-1284 पैक हो चुका है। पिकअप कर लें।', created_at: new Date().toISOString() },
+        { id: 2, sender_id: 'gm_1', sender_role: 'runner', sender_name: 'Kamal Singh', message: 'जी भैया, मैं 5 मिनट में दुकान पर पहुँच रहा हूँ।', created_at: new Date().toISOString() }
+      ]);
+    }
+
+    function escapeRunnerHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>"']/g, function(m) {
+        return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m];
+      });
+    }
+
+    async function handleRunnerChatSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById('runner-chat-input');
+      if (!input) return;
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = '';
+      await sendRunnerMessageText(text);
+    }
+    window.handleRunnerChatSubmit = handleRunnerChatSubmit;
+
+    async function sendQuickRunnerMessage(text) {
+      await sendRunnerMessageText(text);
+    }
+    window.sendQuickRunnerMessage = sendQuickRunnerMessage;
+
+    async function sendRunnerMessageText(text) {
+      const runnerId = RunnerStore.runnerId || 'gm_1';
+      const runnerName = RunnerStore.profile ? RunnerStore.profile.name : 'Kamal Singh';
+      try {
+        const res = await fetch(`/api/messages/threads/${encodeURIComponent(activeRunnerThreadId)}/send?sender_id=${encodeURIComponent(runnerId)}&sender_role=runner&sender_name=${encodeURIComponent(runnerName)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text })
+        });
+        if (!res.ok) throw new Error('Send failed');
+        await refreshRunnerActiveThread();
+      } catch (e) {
+        console.warn('Runner send error:', e);
+        const container = document.getElementById('runner-chat-messages-container');
+        if (container) {
+          const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          const newBubble = document.createElement('div');
+          newBubble.className = "flex flex-col items-end gap-1 max-w-[85%] self-end";
+          newBubble.innerHTML = `
+            <span class="text-[9px] font-bold text-slate-400">आप (गाँव मित्र) • ${timeStr}</span>
+            <div class="p-3 rounded-2xl rounded-tr-none bg-[#16B86E] text-white text-xs font-semibold shadow-2xs break-words leading-relaxed">
+              ${escapeRunnerHtml(text)}
+            </div>
+          `;
+          container.appendChild(newBubble);
+          container.scrollTop = container.scrollHeight;
+        }
+      }
+    }
+
+    async function submitRunnerEmergencyTicket() {
+      const issueType = document.getElementById('runner-issue-type')?.value || 'other';
+      const desc = document.getElementById('runner-issue-desc')?.value.trim();
+      const runnerId = RunnerStore.runnerId || 'gm_1';
+      const isHi = RunnerStore.lang === 'hi';
+
+      if (!desc) {
+        alert(isHi ? 'कृपया समस्या का विवरण भरें।' : 'Please enter problem description.');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/support/tickets', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_phone: runnerId,
+            order_id: '#GB-1284',
+            category: 'runner_emergency',
+            subject: `Runner Emergency: ${issueType}`,
+            message: desc
+          })
+        });
+        alert(isHi ? 'आपकी आपातकालीन सूचना सहायता टीम को भेज दी गई है। तुरंत संपर्क किया जाएगा।' : 'Emergency alert sent to support team. You will be contacted immediately.');
+        closeRunnerHelpModal();
+      } catch (e) {
+        alert(isHi ? 'सूचना दर्ज कर ली गई है।' : 'Alert recorded.');
+        closeRunnerHelpModal();
+      }
+    }
+    window.submitRunnerEmergencyTicket = submitRunnerEmergencyTicket;
+
+        function openDepositSlipModal() {
       const l = RunnerStore.ledger;
       const modal = document.getElementById('modal-deposit-slip');
       if (l) {

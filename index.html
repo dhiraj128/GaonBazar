@@ -1477,7 +1477,7 @@
       <!-- ===================================================================== -->
       <!-- PHASE 5: LIVE ORDER TRACKING (Order Placed -> Delivered)              -->
       <!-- ===================================================================== -->
-      <section id="view-p5-tracking" class="screen-view hidden flex-col w-full px-4 pt-2 pb-48 sm:pb-52 flex-1 min-h-0 space-y-4">
+      <section id="view-p5-tracking" class="screen-view hidden flex-col w-full px-4 pt-2 pb-32 sm:pb-36 flex-1 min-h-0 space-y-4" style="touch-action: pan-y !important;">
         
         <!-- Top Bar Matching Reference 04: < Order #GB-1284 | Help -->
         <div class="flex items-center justify-between py-1">
@@ -1509,7 +1509,7 @@
         </div>
 
         <!-- 2. ACTIVE TRACKING CONTAINER (Dynamic rendering from server) -->
-        <div id="p5-active-tracking-content" class="w-full flex flex-col space-y-3.5">
+        <div id="p5-active-tracking-content" class="w-full flex flex-col space-y-3.5 pb-28 sm:pb-32" style="touch-action: pan-y !important;">
           
           <!-- Hero Arriving Status Card -->
           <div class="bg-white dark:bg-[#2B4858] rounded-2xl p-4 shadow-xs border border-slate-200 dark:border-[#476476] flex items-center justify-between">
@@ -1612,11 +1612,14 @@
               <span class="text-[10px] font-bold text-[#16B86E] bg-emerald-50 dark:bg-[#365668] px-2 py-0.5 rounded-full">1.2 km away</span>
             </div>
             <!-- Interactive Route Map Canvas -->
-            <div class="w-full h-36 rounded-xl relative flex items-center justify-center overflow-hidden border border-slate-200/60 dark:border-[#476476]">
-              <img src="static/images/live_tracking_map.png" alt="Live Route Map" class="w-full h-full object-cover" />
-              <div class="absolute bottom-2 left-2 bg-slate-900/80 text-white text-[10px] px-2 py-0.5 rounded-full font-medium backdrop-blur-xs flex items-center gap-1">
+            <div id="p5-map-canvas-container" class="w-full h-36 rounded-xl relative flex items-center justify-center overflow-hidden border border-slate-200/60 dark:border-[#476476]">
+              <div id="p5-leaflet-live-map" class="w-full h-full z-0"></div>
+              <div id="p5-static-map-fallback" class="hidden absolute inset-0 w-full h-full">
+                <img src="static/images/live_tracking_map.png" alt="Live Route Map" class="w-full h-full object-cover" />
+              </div>
+              <div class="absolute bottom-2 left-2 bg-slate-900/80 text-white text-[10px] px-2 py-0.5 rounded-full font-medium backdrop-blur-xs flex items-center gap-1 z-10 pointer-events-none">
                 <span class="w-2 h-2 rounded-full bg-[#16B86E] animate-pulse"></span>
-                <span>4 min • 1.2 km</span>
+                <span id="p5-map-eta-dist">4 min • 1.2 km</span>
               </div>
             </div>
             <div class="flex justify-between text-[10px] text-slate-500 dark:text-[#C9DCE5] pt-2 font-medium">
@@ -1641,10 +1644,10 @@
           <!-- Order Items Summary Row -->
           <div class="bg-white dark:bg-[#2B4858] rounded-2xl p-3.5 shadow-xs border border-slate-200 dark:border-[#476476] flex flex-col gap-2">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-black text-slate-900 dark:text-[#F6FBFD]">Order Items</span>
-              <span class="text-[11px] text-slate-500 dark:text-[#C9DCE5]">3 items</span>
+              <span class="text-xs font-black text-slate-900 dark:text-[#F6FBFD]" data-i18n="p5_items_title">Order Items</span>
+              <span id="p5-items-count-badge" class="text-[11px] text-slate-500 dark:text-[#C9DCE5]">3 items</span>
             </div>
-            <div class="flex items-center gap-3 overflow-x-auto py-1">
+            <div id="p5-items-container" class="flex items-center gap-3 overflow-x-auto py-1">
               <div class="flex items-center gap-2 p-1.5 rounded-xl bg-slate-50 dark:bg-[#365668] border border-slate-200/60 dark:border-[#476476] shrink-0">
                 <img src="static/images/prod_tomato.png" class="w-7 h-7 object-contain" alt="Tomato" />
                 <div class="text-[10px] leading-tight">
@@ -1693,6 +1696,9 @@
             <span class="material-symbols-outlined text-[18px]">storefront</span>
             <span data-i18n="p5_back_home_btn">Back to Main Market</span>
           </button>
+
+          <!-- Native Bottom Navigation Protective Clearance Spacer (Guarantees CTA sits above fixed nav on all viewports) -->
+          <div class="w-full h-16 sm:h-20 shrink-0 pointer-events-none" aria-hidden="true"></div>
         </div>
 
       </section>
@@ -8519,7 +8525,99 @@
     }
     window.updateDeliveryOtpDisplay = updateDeliveryOtpDisplay;
 
-    function renderTimelineSteps(stage, storeName) {
+
+    // =========================================================================
+    // DYNAMIC LEAFLET LIVE TRACKING MAP ENGINE
+    // =========================================================================
+    let p5TrackingLeafletMap = null;
+    let p5RunnerMarker = null;
+
+    function initLiveTrackingMap(orderData) {
+      const container = document.getElementById('p5-leaflet-live-map');
+      const fallback = document.getElementById('p5-static-map-fallback');
+      if (!container || typeof L === 'undefined') {
+        if (fallback) fallback.classList.remove('hidden');
+        return;
+      }
+
+      const storeLat = (AppStore.activeStore && AppStore.activeStore.lat) ? AppStore.activeStore.lat : 29.1350;
+      const storeLng = (AppStore.activeStore && AppStore.activeStore.lng) ? AppStore.activeStore.lng : 77.0100;
+      const destLat = (AppStore.user && AppStore.user.latitude) ? AppStore.user.latitude : 29.1430;
+      const destLng = (AppStore.user && AppStore.user.longitude) ? AppStore.user.longitude : 77.0190;
+
+      // Midpoint / runner progress coordinates
+      const stage = Number(orderData.timeline_stage || 4);
+      let progress = 0.65;
+      if (stage <= 2) progress = 0.05;
+      else if (stage === 3) progress = 0.20;
+      else if (stage === 4) progress = 0.70;
+      else if (stage >= 5) progress = 1.0;
+
+      const runnerLat = storeLat + (destLat - storeLat) * progress;
+      const runnerLng = storeLng + (destLng - storeLng) * progress;
+
+      try {
+        if (!p5TrackingLeafletMap) {
+          p5TrackingLeafletMap = L.map('p5-leaflet-live-map', {
+            zoomControl: false,
+            attributionControl: false,
+            dragging: false,
+            touchZoom: false,
+            scrollWheelZoom: false,
+            doubleClickZoom: false
+          }).setView([runnerLat, runnerLng], 14);
+
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18
+          }).addTo(p5TrackingLeafletMap);
+
+          // Route Polyline
+          L.polyline([[storeLat, storeLng], [runnerLat, runnerLng], [destLat, destLng]], {
+            color: '#16B86E',
+            weight: 4,
+            opacity: 0.85,
+            dashArray: '6, 6'
+          }).addTo(p5TrackingLeafletMap);
+
+          // Store Marker
+          const storeIcon = L.divIcon({
+            html: '<div style="background:#006b2c;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.3);font-size:14px;">🏪</div>',
+            iconSize: [26, 26],
+            className: 'custom-map-icon'
+          });
+          L.marker([storeLat, storeLng], { icon: storeIcon }).addTo(p5TrackingLeafletMap);
+
+          // Doorstep Destination Marker
+          const destIcon = L.divIcon({
+            html: '<div style="background:#FF981A;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.3);font-size:14px;">🏠</div>',
+            iconSize: [26, 26],
+            className: 'custom-map-icon'
+          });
+          L.marker([destLat, destLng], { icon: destIcon }).addTo(p5TrackingLeafletMap);
+
+          // Runner Marker
+          const runnerIcon = L.divIcon({
+            html: '<div style="background:#16B86E;color:white;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,0.4);border:2px solid white;font-size:14px;">🛵</div>',
+            iconSize: [28, 28],
+            className: 'custom-map-icon'
+          });
+          p5RunnerMarker = L.marker([runnerLat, runnerLng], { icon: runnerIcon }).addTo(p5TrackingLeafletMap);
+
+        } else {
+          p5TrackingLeafletMap.setView([runnerLat, runnerLng], 14);
+          if (p5RunnerMarker) p5RunnerMarker.setLatLng([runnerLat, runnerLng]);
+          setTimeout(() => p5TrackingLeafletMap.invalidateSize(), 200);
+        }
+
+        if (fallback) fallback.classList.add('hidden');
+      } catch (err) {
+        console.warn('Leaflet live route map fallback to schematic:', err);
+        if (fallback) fallback.classList.remove('hidden');
+      }
+    }
+    window.initLiveTrackingMap = initLiveTrackingMap;
+
+        function renderTimelineSteps(stage, storeName) {
       const container = document.getElementById('p5-timeline-steps');
       if (!container) return;
       const isHi = AppStore.lang === 'hi';
@@ -8743,6 +8841,42 @@
 
       // 6. Update Route Schematic Landmarks
       updateRouteLandmarks(orderData);
+
+      // 7. Dynamic Order Items Rendering
+      const itemsContainer = document.getElementById('p5-items-container');
+      const itemsBadge = document.getElementById('p5-items-count-badge');
+      if (itemsContainer && orderData.items && Array.isArray(orderData.items) && orderData.items.length > 0) {
+        if (itemsBadge) itemsBadge.innerText = `${orderData.items.length} ${isHi ? 'सामान' : 'items'}`;
+        itemsContainer.innerHTML = orderData.items.map(it => {
+          const itName = isHi ? (it.name_hi || it.name || it.product_name) : (it.name_en || it.name || it.product_name);
+          const itPrice = it.price ? `₹ ${Number(it.price).toFixed(0)}` : '';
+          const itQty = it.qty || it.quantity || 1;
+          const itUnit = it.unit || 'pack';
+          const itImg = it.image || `static/images/${it.product_id || 'prod_tomato'}.png`;
+          return `
+            <div class="flex items-center gap-2 p-1.5 rounded-xl bg-slate-50 dark:bg-[#365668] border border-slate-200/60 dark:border-[#476476] shrink-0">
+              <img src="${itImg}" onerror="this.src='static/images/prod_tomato.png'" class="w-7 h-7 object-contain" alt="${itName}" />
+              <div class="text-[10px] leading-tight">
+                <span class="font-bold block text-slate-800 dark:text-[#F6FBFD]">${itName}</span>
+                <span class="text-slate-500 dark:text-[#C9DCE5]">${itQty} ${itUnit} ${itPrice ? '• ' + itPrice : ''}</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // 8. Update Live Route ETA & Distance Badge
+      const distBadge = document.getElementById('p5-route-dist-badge');
+      const dist = orderData.distance_km || 1.2;
+      const eta = orderData.eta_mins || '18 min';
+      if (distBadge) distBadge.innerText = `${dist} km away`;
+      const mapPill = document.getElementById('p5-map-eta-dist');
+      if (mapPill) mapPill.innerText = `${eta} • ${dist} km`;
+
+      // 9. Initialize Interactive Leaflet Tracking Map
+      if (typeof initLiveTrackingMap === 'function') {
+        initLiveTrackingMap(orderData);
+      }
     }
     window.populateTrackingUI = populateTrackingUI;
 
