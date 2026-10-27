@@ -53,7 +53,7 @@ from fastapi.testclient import TestClient
 from backend.main import app
 from backend.database import db_session
 from backend.models import Order, Notification, PaymentTransaction, Store, Runner
-from backend.security import issue_vendor_token, issue_runner_token, issue_user_token
+from backend.security import issue_vendor_token, issue_runner_token, issue_user_token, issue_admin_token
 from backend.pricing import (
     calculate_order_pricing,
     calculate_haversine_distance_km,
@@ -351,8 +351,19 @@ def run_tests():
         ord_db.payment_status = "PAID"
         db.commit()
 
-    # Execute split payout
-    res_split_1 = client.post(f"/api/payments/orders/{clean_order_id}/execute-split")
+    adm_headers = {"Authorization": f"Bearer {issue_admin_token('super_admin')}"}
+    v_headers = {"Authorization": f"Bearer {vendor_token}"}
+
+    # Negative authorization test: unauthenticated split execution must be rejected (401)
+    res_split_unauth = client.post(f"/api/payments/orders/{clean_order_id}/execute-split")
+    t.check("Unauthenticated /execute-split blocked with 401", res_split_unauth.status_code == 401, f"Status: {res_split_unauth.status_code}")
+
+    # Negative authorization test: vendor attempting admin split must be rejected (403)
+    res_split_v_forbidden = client.post(f"/api/payments/orders/{clean_order_id}/execute-split", headers=v_headers)
+    t.check("Vendor role calling /execute-split blocked with 403", res_split_v_forbidden.status_code == 403, f"Status: {res_split_v_forbidden.status_code}")
+
+    # Execute split payout with authorized admin token
+    res_split_1 = client.post(f"/api/payments/orders/{clean_order_id}/execute-split", headers=adm_headers)
     t.check("POST /execute-split returns HTTP 200", res_split_1.status_code == 200, f"Status: {res_split_1.status_code}")
     s1_data = res_split_1.json()
     t.check("Split payout status set to 'processed'", s1_data.get("split_payout_status") == "processed")
@@ -362,7 +373,7 @@ def run_tests():
             s1_data.get("runner_transfer_id", "").startswith("trf_r_"), s1_data.get("runner_transfer_id"))
 
     # Idempotent second call
-    res_split_2 = client.post(f"/api/payments/orders/{clean_order_id}/execute-split")
+    res_split_2 = client.post(f"/api/payments/orders/{clean_order_id}/execute-split", headers=adm_headers)
     t.check("Idempotent second call returns HTTP 200", res_split_2.status_code == 200)
     s2_data = res_split_2.json()
     t.check("Idempotency preserves exact same vendor transfer ID",

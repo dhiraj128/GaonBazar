@@ -1050,7 +1050,7 @@
               <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5]">Assigned Delivery Partner • Hero Splendor</span>
             </div>
           </div>
-          <a href="tel:9876543220" class="px-3 py-1.5 rounded-xl bg-[#16B86E] hover:bg-emerald-600 text-white text-xs font-bold flex items-center gap-1 shadow-xs active:scale-95 cursor-pointer">
+          <a id="detail-runner-call-link" href="#" class="px-3 py-1.5 rounded-xl bg-[#16B86E] hover:bg-emerald-600 text-white text-xs font-bold flex items-center gap-1 shadow-xs active:scale-95 cursor-pointer">
             <span class="material-symbols-outlined text-[16px]">call</span>
             <span>Call Mitra</span>
           </a>
@@ -3806,13 +3806,16 @@
         modal.style.display = 'flex';
       }
       const order = (VendorStore.orders || []).find(o => String(o.id) === String(orderId) || String(o.order_id) === String(orderId)) || (DEFAULT_REFERENCE_ORDERS && DEFAULT_REFERENCE_ORDERS[0]);
-      if (order) {
-        const link = document.getElementById('detail-runner-call-link');
-        if (link) {
-          link.href = `tel:${order.runner_phone || '9876543220'}`;
+      const link = document.getElementById('detail-runner-call-link');
+      if (link) {
+        if (order && order.runner_phone) {
+          link.href = `tel:${order.runner_phone}`;
+          link.style.display = 'flex';
+        } else {
+          link.removeAttribute('href');
+          link.style.display = 'none';
         }
       }
-    }
     function closeVendorOrderDetailModal() {
       const modal = document.getElementById('modal-order-detail');
       if (modal) {
@@ -3827,10 +3830,14 @@
         modal.style.display = 'flex';
       }
       const order = (VendorStore.orders || []).find(o => String(o.id) === String(orderId) || String(o.order_id) === String(orderId)) || (DEFAULT_REFERENCE_ORDERS && DEFAULT_REFERENCE_ORDERS[0]);
-      if (order) {
-        const link = document.getElementById('handover-runner-call-link');
-        if (link) {
-          link.href = `tel:${order.runner_phone || '9876543220'}`;
+      const link = document.getElementById('handover-runner-call-link');
+      if (link) {
+        if (order && order.runner_phone) {
+          link.href = `tel:${order.runner_phone}`;
+          link.style.display = 'flex';
+        } else {
+          link.removeAttribute('href');
+          link.style.display = 'none';
         }
       }
     }
