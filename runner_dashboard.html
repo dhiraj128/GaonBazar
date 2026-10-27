@@ -1122,7 +1122,7 @@
             <span class="text-[10px] text-[#16B86E] font-bold mt-0.5">📍 400m away (2 mins)</span>
           </div>
         </div>
-        <a href="tel:9876543210" class="px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-[#365668] text-[#16B86E] text-xs font-bold flex items-center gap-1 active:scale-95 shrink-0">
+        <a id="runner-screen-pickup-call-link" href="tel:9876543210" class="px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-[#365668] text-[#16B86E] text-xs font-bold flex items-center gap-1 active:scale-95 shrink-0">
           <span class="material-symbols-outlined text-[16px]">call</span>
           <span>Call</span>
         </a>
@@ -1224,7 +1224,7 @@
             <span class="text-[10px] text-amber-600 dark:text-amber-400 font-bold">Collect: ₹245 (Cash)</span>
           </div>
         </div>
-        <a href="tel:9876543210" class="px-3.5 py-2 rounded-xl bg-[#16B86E] text-white text-xs font-bold flex items-center gap-1 shadow-xs active:scale-95 shrink-0">
+        <a id="runner-screen-map-call-link" href="tel:9876543210" class="px-3.5 py-2 rounded-xl bg-[#16B86E] text-white text-xs font-bold flex items-center gap-1 shadow-xs active:scale-95 shrink-0">
           <span class="material-symbols-outlined text-[16px]">call</span>
           <span>Call</span>
         </a>
@@ -3937,9 +3937,14 @@
         sec.classList.remove('hidden');
         sec.style.display = 'flex';
       }
+      const mission = (RunnerStore.missions || []).find(m => String(m.id) === String(missionId) || String(m.order_id) === String(missionId)) || (RunnerStore.missions && RunnerStore.missions[0]);
+      if (mission) {
+        const clink = document.getElementById('runner-screen-pickup-call-link');
+        if (clink) clink.href = `tel:${mission.store_phone || '9876543210'}`;
+      }
     }
 
-    function showRunnerMapView() {
+    function showRunnerMapView(missionId) {
       hideAllRunnerSections();
       const hdr = document.getElementById('runner-header');
       if (hdr) { hdr.classList.add('hidden'); hdr.style.display = 'none'; }
@@ -3948,9 +3953,14 @@
         sec.classList.remove('hidden');
         sec.style.display = 'flex';
       }
+      const mission = (RunnerStore.missions || []).find(m => String(m.id) === String(missionId) || String(m.order_id) === String(missionId)) || (RunnerStore.missions && RunnerStore.missions[0]);
+      if (mission) {
+        const clink = document.getElementById('runner-screen-map-call-link');
+        if (clink) clink.href = `tel:${mission.user_phone || mission.customer_phone || '9876543210'}`;
+      }
     }
 
-    function showRunnerDeliverySuccess() {
+    function showRunnerDeliverySuccess(missionId) {
       hideAllRunnerSections();
       const hdr = document.getElementById('runner-header');
       if (hdr) { hdr.classList.add('hidden'); hdr.style.display = 'none'; }

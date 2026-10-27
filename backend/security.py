@@ -20,6 +20,7 @@ from typing import Optional, Dict, Any, Tuple
 from fastapi import Request, HTTPException, Header, Depends
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
+from cryptography.fernet import Fernet
 
 # -----------------------------------------------------------------------------
 # 1. CRYPTOGRAPHIC CONFIGURATION
@@ -29,6 +30,73 @@ JWT_ALGORITHM = "HS256"
 DEFAULT_EXPIRATION_DAYS = 30
 TEST_MODE = os.getenv("TEST_MODE", "0").lower() in ("1", "true", "yes")
 CI_MODE = os.getenv("CI", "0").lower() in ("1", "true", "yes")
+
+def is_production_environment() -> bool:
+    """Returns True if the application is running in production mode."""
+    env = os.getenv("ENVIRONMENT", "").strip().lower()
+    return env in ("production", "prod")
+
+
+def _check_jwt_secret_integrity(secret: str):
+    """Fails closed in production if JWT secret is missing or uses insecure default."""
+    if is_production_environment():
+        if not secret or secret == "gb-bankgrade-production-secret-9a8b7c6d5e4f3a2b1c-2026":
+            raise HTTPException(
+                status_code=500,
+                detail="Production security violation: JWT_SECRET unconfigured or using insecure default (fail closed)."
+            )
+
+
+# -----------------------------------------------------------------------------
+# 1.1 SENSITIVE DATA ENCRYPTION AT REST (Bank Accounts & Identity Confidentiality)
+# -----------------------------------------------------------------------------
+def get_fernet_cipher() -> Fernet:
+    """Derives a deterministic 32-byte URL-safe base64 encryption key from secrets."""
+    secret = os.getenv("BANK_ENCRYPTION_KEY") or os.getenv("JWT_SECRET", "gb-bankgrade-production-secret-9a8b7c6d5e4f3a2b1c-2026")
+    key = base64.urlsafe_b64encode(hashlib.sha256(secret.encode("utf-8")).digest())
+    return Fernet(key)
+
+
+def encrypt_sensitive_field(plaintext: Optional[str]) -> Optional[str]:
+    """Encrypts sensitive plaintext (e.g. bank account numbers) at rest using AES-128-CBC Fernet."""
+    if not plaintext:
+        return plaintext
+    text_val = str(plaintext).strip()
+    if not text_val or text_val.startswith("enc::"):
+        return text_val
+    cipher = get_fernet_cipher()
+    encrypted_bytes = cipher.encrypt(text_val.encode("utf-8"))
+    return f"enc::{encrypted_bytes.decode('utf-8')}"
+
+
+def decrypt_sensitive_field(ciphertext: Optional[str]) -> Optional[str]:
+    """Decrypts ciphertext at rest back to plaintext."""
+    if not ciphertext:
+        return ciphertext
+    text_val = str(ciphertext).strip()
+    if not text_val.startswith("enc::"):
+        return text_val
+    try:
+        cipher = get_fernet_cipher()
+        encrypted_token = text_val[5:]
+        decrypted_bytes = cipher.decrypt(encrypted_token.encode("utf-8"))
+        return decrypted_bytes.decode("utf-8")
+    except Exception:
+        return text_val
+
+
+def mask_bank_account(acc_num: Optional[str]) -> Optional[str]:
+    """Securely masks bank account numbers for API output (e.g. ••••••••5821, showing only last 4 digits)."""
+    if not acc_num:
+        return None
+    decrypted = decrypt_sensitive_field(acc_num)
+    if not decrypted:
+        return None
+    acc_clean = str(decrypted).strip()
+    if len(acc_clean) <= 4:
+        return "•••• " + acc_clean
+    return ("•" * (len(acc_clean) - 4)) + acc_clean[-4:]
+
 
 
 # -----------------------------------------------------------------------------
@@ -51,6 +119,7 @@ def create_jwt_token(payload: Dict[str, Any], secret: str = JWT_SECRET, expires_
     """
     Creates a signed JSON Web Token using HMAC-SHA256 according to RFC 7519.
     """
+    _check_jwt_secret_integrity(secret)
     now = time.time()
     header = {
         "alg": JWT_ALGORITHM,
@@ -84,6 +153,7 @@ def decode_jwt_token(token: str, secret: str = JWT_SECRET) -> Dict[str, Any]:
     Validates signature, algorithm, and expiration of a JWT token.
     Raises HTTPException(401) on invalid signature, tampering, or expiration.
     """
+    _check_jwt_secret_integrity(secret)
     if not token or not isinstance(token, str):
         raise HTTPException(status_code=401, detail="Missing or invalid authentication token")
 
@@ -424,7 +494,10 @@ def enforce_otp_rate_limit(
     client_ip = request.client.host if request.client else "127.0.0.1"
     
     # In general test mode, bypass unless explicitly testing rate limits
-    is_bypass = (TEST_MODE or CI_MODE or x_test_bypass == "1") and (x_enforce_rate_limit != "1")
+    if is_production_environment():
+        is_bypass = False
+    else:
+        is_bypass = (TEST_MODE or CI_MODE or x_test_bypass == "1") and (x_enforce_rate_limit != "1")
 
     allowed, retry_after = otp_rate_limiter.check_rate_limit(client_ip, is_test_bypass=is_bypass)
     if not allowed:
@@ -443,7 +516,10 @@ def enforce_checkout_rate_limit(
     """Dependency that enforces rate limit on /api/orders/checkout."""
     client_ip = request.client.host if request.client else "127.0.0.1"
 
-    is_bypass = (TEST_MODE or CI_MODE or x_test_bypass == "1") and (x_enforce_rate_limit != "1")
+    if is_production_environment():
+        is_bypass = False
+    else:
+        is_bypass = (TEST_MODE or CI_MODE or x_test_bypass == "1") and (x_enforce_rate_limit != "1")
 
     allowed, retry_after = checkout_rate_limiter.check_rate_limit(client_ip, is_test_bypass=is_bypass)
     if not allowed:

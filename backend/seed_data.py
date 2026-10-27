@@ -91,6 +91,78 @@ DEFAULT_STORE_CATEGORIES = [
 ]
 
 DEFAULT_PRODUCTS = [
+    {
+        "id": "item_mov_test_50",
+        "store_id": "sharma_brothers",
+        "name_en": "Small Test Item",
+        "name_hi": "छोटा परीक्षण सामान",
+        "category": "kirana",
+        "weight": "500 g",
+        "price": 50.0,
+        "mrp": 60.0,
+        "icon": "inventory_2",
+        "in_stock": True
+    },
+    {
+        "id": "item_mov_test_150",
+        "store_id": "sharma_brothers",
+        "name_en": "Medium Test Item",
+        "name_hi": "मध्यम परीक्षण सामान",
+        "category": "kirana",
+        "weight": "1 kg",
+        "price": 150.0,
+        "mrp": 180.0,
+        "icon": "inventory_2",
+        "in_stock": True
+    },
+    {
+        "id": "item_mov_test_250",
+        "store_id": "sharma_brothers",
+        "name_en": "Large Test Item",
+        "name_hi": "बड़ा परीक्षण सामान",
+        "category": "kirana",
+        "weight": "2 kg",
+        "price": 250.0,
+        "mrp": 290.0,
+        "icon": "inventory_2",
+        "in_stock": True
+    },
+    {
+        "id": "item_discount_test",
+        "store_id": "sharma_brothers",
+        "name_en": "Bulk Test Item",
+        "name_hi": "थोक परीक्षण सामान",
+        "category": "kirana",
+        "weight": "3 kg",
+        "price": 300.0,
+        "mrp": 350.0,
+        "icon": "inventory_2",
+        "in_stock": True
+    },
+    {
+        "id": "item_mov_test_out",
+        "store_id": "sharma_brothers",
+        "name_en": "Item Out of Zone",
+        "name_hi": "बाहरी क्षेत्र सामान",
+        "category": "kirana",
+        "weight": "1 kg",
+        "price": 150.0,
+        "mrp": 180.0,
+        "icon": "inventory_2",
+        "in_stock": True
+    },
+    {
+        "id": "item_atta",
+        "store_id": "sharma_brothers",
+        "name_en": "Chakki Fresh Atta",
+        "name_hi": "चक्की ताज़ा आटा",
+        "category": "atta",
+        "weight": "5 kg • शुद्ध गेहूं आटा",
+        "price": 120.0,
+        "mrp": 140.0,
+        "icon": "grain",
+        "in_stock": True
+    },
     # Sharma Brothers Kirana Products (including Home Featured Products)
     {
         "id": "item_tomato",
