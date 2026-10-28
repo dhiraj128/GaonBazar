@@ -51,6 +51,12 @@ jobs:
     - name: Run Customer App Tests
       run: python test_mobile_e2e.py
 
+    - name: Run Customer Navigation, Voice and Dark-Mode Regressions
+      run: |
+        python test_customer_navigation_hierarchy.py
+        node test_customer_voice_logic.js
+        python test_customer_voice_browser.py
+
     - name: Run Vendor App Tests
       run: python test_vendor_e2e.py
 
