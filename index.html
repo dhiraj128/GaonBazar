@@ -94,44 +94,44 @@
   <style>
         /* ======================================================== */
     /* APPROVED THEME SYSTEM STYLES (Soft Blue-Teal Slate Dark) */
-    /* Design Tokens: Page #203846 | Card #2B4858 | Elevated #365668 */
-    /* Text #F6FBFD | Secondary #C9DCE5 | Brand #16B86E | Orange #FF981A */
+    /* Design Tokens: Page #111418 | Card #1D232B | Elevated #2A323D */
+    /* Text #F8FAFC | Secondary #CBD5E1 | Brand #16B86E | Orange #FF981A */
     /* ======================================================== */
     html.dark {
       color-scheme: dark;
-      background-color: #203846 !important;
+      background-color: #111418 !important;
     }
     html.dark body {
-      background-color: #203846 !important;
-      color: #F6FBFD !important;
+      background-color: #111418 !important;
+      color: #F8FAFC !important;
     }
     html.dark #app-root {
-      background-color: #203846 !important;
-      color: #F6FBFD !important;
+      background-color: #111418 !important;
+      color: #F8FAFC !important;
     }
     html.dark #main-content-container,
     html.dark .bg-surface {
-      background-color: #203846 !important;
-      color: #F6FBFD !important;
+      background-color: #111418 !important;
+      color: #F8FAFC !important;
     }
     html.dark .bg-white,
     html.dark .bg-surface-card {
-      background-color: #2B4858 !important;
-      color: #F6FBFD !important;
-      border-color: #476476 !important;
+      background-color: #1D232B !important;
+      color: #F8FAFC !important;
+      border-color: #465362 !important;
     }
     html.dark .bg-slate-50,
     html.dark .bg-slate-100,
     html.dark .bg-surface-container-low,
     html.dark .bg-surface-container {
-      background-color: #365668 !important;
-      color: #F6FBFD !important;
-      border-color: #476476 !important;
+      background-color: #2A323D !important;
+      color: #F8FAFC !important;
+      border-color: #465362 !important;
     }
     html.dark .bg-slate-100\/80,
     html.dark .bg-slate-50\/90 {
-      background-color: #2B4858 !important;
-      border-color: #476476 !important;
+      background-color: #1D232B !important;
+      border-color: #465362 !important;
     }
     html.dark .border-slate-200,
     html.dark .border-slate-100,
@@ -140,53 +140,53 @@
     html.dark .border-surface-container-high,
     html.dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
     html.dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
-      border-color: #476476 !important;
+      border-color: #465362 !important;
     }
     html.dark .text-slate-900,
     html.dark .text-slate-800,
     html.dark .text-on-surface {
-      color: #F6FBFD !important;
+      color: #F8FAFC !important;
     }
     html.dark .text-slate-700 {
-      color: #E2EEF4 !important;
+      color: #E2E8F0 !important;
     }
     html.dark .text-slate-600,
     html.dark .text-slate-500,
     html.dark .text-on-surface-variant {
-      color: #C9DCE5 !important;
+      color: #CBD5E1 !important;
     }
     html.dark .text-slate-400 {
-      color: #9FB9C7 !important;
+      color: #B4C1D1 !important;
     }
     html.dark #customer-header,
     html.dark #customer-bottom-nav,
     html.dark #sidebar-drawer {
-      background-color: #203846 !important;
-      border-color: #476476 !important;
+      background-color: #111418 !important;
+      border-color: #465362 !important;
     }
     html.dark input:not([type="checkbox"]):not([type="radio"]),
     html.dark select,
     html.dark textarea {
-      background-color: #365668 !important;
-      color: #F6FBFD !important;
-      border-color: #476476 !important;
+      background-color: #2A323D !important;
+      color: #F8FAFC !important;
+      border-color: #465362 !important;
     }
     html.dark input::placeholder,
     html.dark textarea::placeholder {
-      color: #8CAAB9 !important;
+      color: #94A3B8 !important;
     }
     html.dark #otp-modal-container > div,
     html.dark #add-payment-modal > div,
     html.dark #voice-search-modal-container > div,
     html.dark #cart-slide-tray,
     html.dark #order-tracking-modal > div {
-      background-color: #2B4858 !important;
-      color: #F6FBFD !important;
-      border-color: #476476 !important;
+      background-color: #1D232B !important;
+      color: #F8FAFC !important;
+      border-color: #465362 !important;
     }
     html.dark .theme-segmented-container {
-      background-color: #203846 !important;
-      border: 1px solid #476476 !important;
+      background-color: #111418 !important;
+      border: 1px solid #465362 !important;
     }
     html.dark .theme-icon-badge {
       background-color: rgba(255, 152, 26, 0.15) !important;
@@ -347,6 +347,66 @@
       scroll-margin-bottom: 120px;
       scroll-margin-top: 75px;
     }
+  
+    /* GAONBAZAAR DARK CONTRAST FIX v1 — neutral charcoal, approved layout intact. */
+    html.dark {
+      --gb-night-bg: #111418;
+      --gb-night-card: #1D232B;
+      --gb-night-raised: #2A323D;
+      --gb-night-divider: #465362;
+      --gb-night-primary: #F8FAFC;
+      --gb-night-secondary: #CBD5E1;
+    }
+    /* Brand green is an ACCENT, not a dark-mode page/card background. */
+    html.dark .bg-emerald-50,
+    html.dark .bg-amber-50,
+    html.dark .bg-emerald-500\/10 {
+      background-color: #27313B !important;
+      border-color: #465362 !important;
+    }
+    html.dark #chat-messages-container,
+    html.dark #vendor-chat-messages-container,
+    html.dark #runner-chat-messages-container {
+      background-color: #151B23 !important;
+      border-color: #465362 !important;
+      color: #F8FAFC !important;
+    }
+    /* Outgoing bubbles must NOT use vivid green + white (poor text contrast). */
+    html.dark .gb-chat-outgoing {
+      background-color: #14523C !important;
+      color: #FFFFFF !important;
+      border: 1px solid #287053 !important;
+    }
+    html.dark .gb-chat-outgoing p { color: #FFFFFF !important; }
+    html.dark .gb-chat-outgoing .text-emerald-100 { color: #D1FAE5 !important; }
+    html.dark #modal-support-chat .bg-emerald-50\/60 {
+      background-color: #27313B !important;
+      color: #F8FAFC !important;
+      border-color: #465362 !important;
+    }
+    html.dark #modal-support-chat .text-emerald-950,
+    html.dark #modal-support-chat .text-emerald-700 {
+      color: #D1FAE5 !important;
+    }
+    html.dark #chat-messages-container .bg-white,
+    html.dark #vendor-chat-messages-container .bg-white {
+      background-color: #26303A !important;
+      color: #F8FAFC !important;
+      border-color: #465362 !important;
+    }
+    /* Former mobile vendor ledger rule forced white cards even in dark mode. */
+    @media (max-width: 640px) {
+      html.dark .vendor-ledger-card {
+        background: #1D232B !important;
+        background-color: #1D232B !important;
+        color: #F8FAFC !important;
+        border-color: #465362 !important;
+      }
+      html.dark .vendor-ledger-card td {
+        border-bottom-color: #465362 !important;
+      }
+    }
+
   </style>
 </head>
 
@@ -358,12 +418,12 @@
   <div id="app-root" class="w-full h-full min-h-[100dvh] flex flex-col bg-surface relative">
 
     <!-- App Global Sticky Header (Native Top App Bar - Blinkit Centered Standard) -->
-    <header id="customer-header" class="w-full max-w-full h-16 min-h-[60px] bg-white dark:bg-[#203846] border-b border-slate-200 dark:border-[#476476] sticky top-0 z-40 px-3.5 flex items-center justify-between transition-colors shadow-2xs">
+    <header id="customer-header" class="w-full max-w-full h-16 min-h-[60px] bg-white dark:bg-[#111418] border-b border-slate-200 dark:border-[#465362] sticky top-0 z-40 px-3.5 flex items-center justify-between transition-colors shadow-2xs">
       
       <!-- Left: Back Button (shown in subviews) OR GaonBazaar Brand Logo & Location Pill -->
       <div class="flex items-center gap-2 min-w-0">
         <!-- Native Back Arrow (visible when navigated away from home) -->
-        <button id="global-nav-back" onclick="navigateBack()" aria-label="Go Back" class="hidden w-10 h-10 min-w-[40px] min-h-[40px] rounded-full text-slate-800 dark:text-[#F6FBFD] hover:bg-slate-100 dark:hover:bg-[#365668] active:scale-90 flex items-center justify-center shrink-0 cursor-pointer transition-all">
+        <button id="global-nav-back" onclick="navigateBack()" aria-label="Go Back" class="hidden w-10 h-10 min-w-[40px] min-h-[40px] rounded-full text-slate-800 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#2A323D] active:scale-90 flex items-center justify-center shrink-0 cursor-pointer transition-all">
           <span class="material-symbols-outlined text-[24px]">arrow_back</span>
         </button>
 
@@ -373,13 +433,13 @@
             <div class="w-7 h-7 rounded-lg bg-[#16B86E] text-white flex items-center justify-center shadow-xs shrink-0">
               <span class="material-symbols-outlined text-[18px]">eco</span>
             </div>
-            <span class="font-black text-base tracking-tight font-sans text-slate-900 dark:text-[#F6FBFD]">GaonBazaar</span>
+            <span class="font-black text-base tracking-tight font-sans text-slate-900 dark:text-[#F8FAFC]">GaonBazaar</span>
           </button>
           <!-- Delivery Village Pill -->
-          <button id="header-delivery-pill" onclick="navigateToPhase('landmark')" type="button" aria-label="Change Delivery Village" class="min-h-[38px] flex items-center gap-1 text-[11px] text-slate-600 dark:text-[#C9DCE5] hover:text-[#16B86E] font-medium text-left truncate cursor-pointer transition-colors">
+          <button id="header-delivery-pill" onclick="navigateToPhase('landmark')" type="button" aria-label="Change Delivery Village" class="min-h-[38px] flex items-center gap-1 text-[11px] text-slate-600 dark:text-[#CBD5E1] hover:text-[#16B86E] font-medium text-left truncate cursor-pointer transition-colors">
             <span class="material-symbols-outlined text-[13px] text-[#16B86E] shrink-0">location_on</span>
-            <span class="text-slate-500 dark:text-[#9FB9C7]">Deliver to:</span>
-            <span id="header-delivery-village-name" class="font-extrabold text-slate-800 dark:text-[#F6FBFD] truncate">Rampur village</span>
+            <span class="text-slate-500 dark:text-[#B4C1D1]">Deliver to:</span>
+            <span id="header-delivery-village-name" class="font-extrabold text-slate-800 dark:text-[#F8FAFC] truncate">Rampur village</span>
             <span class="material-symbols-outlined text-[14px] text-slate-400 shrink-0">expand_more</span>
           </button>
         </div>
@@ -388,7 +448,7 @@
       <!-- Right: Approved 4-Square Grid Menu Icon (Opens Side Drawer) -->
       <div class="flex items-center gap-1 shrink-0">
         <!-- 4-Square Grid Icon (Opens Sidebar Drawer) -->
-        <button id="btn-open-sidebar" onclick="openSidebarDrawer()" aria-label="Open navigation menu" title="Menu" class="w-10 h-10 min-w-[40px] min-h-[40px] rounded-xl bg-slate-100 dark:bg-[#365668] hover:bg-slate-200 dark:hover:bg-[#476476] text-slate-800 dark:text-[#F6FBFD] flex items-center justify-center active:scale-95 transition-all cursor-pointer shadow-2xs">
+        <button id="btn-open-sidebar" onclick="openSidebarDrawer()" aria-label="Open navigation menu" title="Menu" class="w-10 h-10 min-w-[40px] min-h-[40px] rounded-xl bg-slate-100 dark:bg-[#2A323D] hover:bg-slate-200 dark:hover:bg-[#465362] text-slate-800 dark:text-[#F8FAFC] flex items-center justify-center active:scale-95 transition-all cursor-pointer shadow-2xs">
           <span class="material-symbols-outlined text-[22px]">grid_view</span>
         </button>
 
@@ -416,35 +476,35 @@
     <div id="sidebar-overlay" onclick="closeSidebarDrawer()" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-[45] transition-opacity duration-300 opacity-0 pointer-events-none" aria-hidden="true"></div>
 
     <!-- Slide-out Sidebar Panel -->
-    <aside id="sidebar-drawer" class="fixed top-0 bottom-0 left-0 w-[84%] max-w-[320px] bg-white dark:bg-[#203846] z-50 shadow-2xl flex flex-col transform -translate-x-full transition-transform duration-300 ease-out overflow-hidden border-r border-slate-200 dark:border-[#476476]" aria-label="Main Navigation">
+    <aside id="sidebar-drawer" class="fixed top-0 bottom-0 left-0 w-[84%] max-w-[320px] bg-white dark:bg-[#111418] z-50 shadow-2xl flex flex-col transform -translate-x-full transition-transform duration-300 ease-out overflow-hidden border-r border-slate-200 dark:border-[#465362]" aria-label="Main Navigation">
       
       <!-- Drawer Header Matching Reference 05: Brand + Slogan + X Close -->
-      <div class="p-4 pt-safe border-b border-slate-100 dark:border-[#476476] flex items-center justify-between shrink-0 bg-slate-50 dark:bg-[#2B4858]">
+      <div class="p-4 pt-safe border-b border-slate-100 dark:border-[#465362] flex items-center justify-between shrink-0 bg-slate-50 dark:bg-[#1D232B]">
         <div class="flex items-center gap-2">
           <div class="w-8 h-8 rounded-lg bg-[#16B86E] text-white flex items-center justify-center shadow-xs">
             <span class="material-symbols-outlined text-[18px]">eco</span>
           </div>
           <div class="flex flex-col">
-            <span class="font-black text-sm text-slate-900 dark:text-[#F6FBFD]">GaonBazaar</span>
-            <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5]">Good food. Stronger villages.</span>
+            <span class="font-black text-sm text-slate-900 dark:text-[#F8FAFC]">GaonBazaar</span>
+            <span class="text-[10px] text-slate-500 dark:text-[#CBD5E1]">Good food. Stronger villages.</span>
           </div>
         </div>
-        <button id="btn-close-sidebar" onclick="closeSidebarDrawer()" aria-label="Close menu" class="w-9 h-9 rounded-full flex items-center justify-center text-slate-500 hover:text-slate-900 dark:text-[#C9DCE5] dark:hover:text-white hover:bg-slate-200 dark:hover:bg-[#365668] active:scale-90 transition-all cursor-pointer">
+        <button id="btn-close-sidebar" onclick="closeSidebarDrawer()" aria-label="Close menu" class="w-9 h-9 rounded-full flex items-center justify-center text-slate-500 hover:text-slate-900 dark:text-[#CBD5E1] dark:hover:text-white hover:bg-slate-200 dark:hover:bg-[#2A323D] active:scale-90 transition-all cursor-pointer">
           <span class="material-symbols-outlined text-[20px]">close</span>
         </button>
       </div>
 
       <!-- User Profile Card -->
-      <div class="p-3.5 border-b border-slate-100 dark:border-[#476476] bg-white dark:bg-[#203846]">
-        <div onclick="navigateToPhase('profile'); closeSidebarDrawer();" class="flex items-center gap-3 p-2.5 rounded-2xl bg-slate-50 dark:bg-[#2B4858] border border-slate-100 dark:border-[#476476] cursor-pointer hover:border-[#16B86E] active:scale-98 transition-all">
+      <div class="p-3.5 border-b border-slate-100 dark:border-[#465362] bg-white dark:bg-[#111418]">
+        <div onclick="navigateToPhase('profile'); closeSidebarDrawer();" class="flex items-center gap-3 p-2.5 rounded-2xl bg-slate-50 dark:bg-[#1D232B] border border-slate-100 dark:border-[#465362] cursor-pointer hover:border-[#16B86E] active:scale-98 transition-all">
           <div class="w-10 h-10 rounded-full bg-[#16B86E]/15 text-[#16B86E] font-black text-sm flex items-center justify-center shadow-2xs shrink-0 uppercase" id="drawer-user-avatar">
             <span id="drawer-user-initial">RK</span>
           </div>
           <div class="flex flex-col min-w-0 flex-1">
-            <span id="drawer-user-name" class="font-black text-xs text-slate-900 dark:text-[#F6FBFD] truncate">Ramesh Kumar</span>
-            <span id="drawer-user-phone" class="text-[11px] text-slate-500 dark:text-[#C9DCE5] font-mono truncate">+91 98765 43210</span>
+            <span id="drawer-user-name" class="font-black text-xs text-slate-900 dark:text-[#F8FAFC] truncate">Ramesh Kumar</span>
+            <span id="drawer-user-phone" class="text-[11px] text-slate-500 dark:text-[#CBD5E1] font-mono truncate">+91 98765 43210</span>
           </div>
-          <span class="material-symbols-outlined text-slate-400 dark:text-[#8CAAB9] text-[18px]">chevron_right</span>
+          <span class="material-symbols-outlined text-slate-400 dark:text-[#94A3B8] text-[18px]">chevron_right</span>
         </div>
       </div>
 
@@ -452,28 +512,28 @@
       <nav class="flex-1 overflow-y-auto p-3 space-y-1">
         
         <!-- My Profile -->
-        <button id="drawer-account-btn" onclick="navigateToPhase('profile'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F6FBFD] hover:bg-slate-100 dark:hover:bg-[#2B4858] active:bg-slate-200 text-xs font-bold transition-colors cursor-pointer">
+        <button id="drawer-account-btn" onclick="navigateToPhase('profile'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] active:bg-slate-200 text-xs font-bold transition-colors cursor-pointer">
           <span class="material-symbols-outlined text-[#FF981A] text-[20px]">person</span>
           <span class="flex-1 text-left" data-i18n="drawer_profile">My Profile & Account</span>
           <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
         </button>
 
         <!-- My Cart -->
-        <button id="drawer-cart-btn" onclick="navigateToPhase('cart'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F6FBFD] hover:bg-slate-100 dark:hover:bg-[#2B4858] active:bg-slate-200 text-xs font-bold transition-colors cursor-pointer">
+        <button id="drawer-cart-btn" onclick="navigateToPhase('cart'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] active:bg-slate-200 text-xs font-bold transition-colors cursor-pointer">
           <span class="material-symbols-outlined text-[#16B86E] text-[20px]">shopping_cart</span>
           <span class="flex-1 text-left" data-i18n="drawer_cart">My Cart</span>
           <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
         </button>
 
         <!-- My Orders -->
-        <button id="drawer-orders-btn" onclick="navigateToPhase('tracking'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F6FBFD] hover:bg-slate-100 dark:hover:bg-[#2B4858] active:bg-slate-200 text-xs font-bold transition-colors cursor-pointer">
+        <button id="drawer-orders-btn" onclick="navigateToPhase('tracking'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] active:bg-slate-200 text-xs font-bold transition-colors cursor-pointer">
           <span class="material-symbols-outlined text-blue-500 text-[20px]">receipt_long</span>
           <span class="flex-1 text-left" data-i18n="drawer_orders">My Orders</span>
           <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
         </button>
 
         <!-- Saved Addresses -->
-        <button id="drawer-addresses-btn" onclick="navigateToPhase('landmark'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F6FBFD] hover:bg-slate-100 dark:hover:bg-[#2B4858] active:bg-slate-200 text-xs font-bold transition-colors cursor-pointer">
+        <button id="drawer-addresses-btn" onclick="navigateToPhase('landmark'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] active:bg-slate-200 text-xs font-bold transition-colors cursor-pointer">
           <span class="material-symbols-outlined text-[#FF981A] text-[20px]">location_on</span>
           <span class="flex-1 text-left" data-i18n="drawer_addresses">Saved Addresses</span>
           <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
@@ -481,7 +541,7 @@
 
         <!-- Saved Payments -->
         <div id="profile-saved-payments-section" class="w-full">
-          <button id="drawer-payments-btn" onclick="openAddPaymentModal(); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F6FBFD] hover:bg-slate-100 dark:hover:bg-[#2B4858] active:bg-slate-200 text-xs font-bold transition-colors cursor-pointer">
+          <button id="drawer-payments-btn" onclick="openAddPaymentModal(); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] active:bg-slate-200 text-xs font-bold transition-colors cursor-pointer">
             <span class="material-symbols-outlined text-[#FF981A] text-[20px]">credit_card</span>
             <span class="flex-1 text-left" data-i18n="drawer_payments">Saved Payments</span>
             <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
@@ -490,7 +550,7 @@
         </div>
 
         <!-- Highlighted AI Order Support Card -->
-        <button id="drawer-support-btn" onclick="openSupportModal(); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 bg-emerald-50 dark:bg-[#2B4858] text-[#16B86E] dark:text-[#4ADE80] border border-emerald-200/60 dark:border-[#16B86E]/40 text-xs font-bold transition-all cursor-pointer">
+        <button id="drawer-support-btn" onclick="openSupportModal(); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 bg-emerald-50 dark:bg-[#1D232B] text-[#16B86E] dark:text-[#4ADE80] border border-emerald-200/60 dark:border-[#16B86E]/40 text-xs font-bold transition-all cursor-pointer">
           <span class="material-symbols-outlined text-[20px]">smart_toy</span>
           <span class="flex-1 text-left" data-i18n="drawer_support_ai">AI Order Support</span>
           <span class="text-[10px] font-black uppercase bg-[#16B86E] text-white px-2 py-0.5 rounded-full">New</span>
@@ -498,28 +558,28 @@
         <button id="drawer-chat-btn" onclick="openSupportModal(); closeSidebarDrawer();" class="hidden" aria-hidden="true"></button>
 
         <!-- Help Center & FAQs -->
-        <button id="drawer-help-center-btn" onclick="navigateToPhase('support'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F6FBFD] hover:bg-slate-100 dark:hover:bg-[#2B4858] text-xs font-bold transition-colors cursor-pointer">
+        <button id="drawer-help-center-btn" onclick="navigateToPhase('support'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] text-xs font-bold transition-colors cursor-pointer">
           <span class="material-symbols-outlined text-amber-500 text-[20px]">help_outline</span>
           <span class="flex-1 text-left" data-i18n="drawer_help_center">Help Center & FAQs</span>
           <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
         </button>
 
         <!-- Raise a Complaint -->
-        <button onclick="openComplaintModal(); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F6FBFD] hover:bg-slate-100 dark:hover:bg-[#2B4858] text-xs font-bold transition-colors cursor-pointer">
+        <button onclick="openComplaintModal(); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] text-xs font-bold transition-colors cursor-pointer">
           <span class="material-symbols-outlined text-rose-500 text-[20px]">report_problem</span>
           <span class="flex-1 text-left" data-i18n="drawer_complaint">Raise a Complaint</span>
           <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
         </button>
 
         <!-- My Support Tickets -->
-        <button onclick="viewCustomerTickets(); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F6FBFD] hover:bg-slate-100 dark:hover:bg-[#2B4858] text-xs font-bold transition-colors cursor-pointer">
+        <button onclick="viewCustomerTickets(); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] text-xs font-bold transition-colors cursor-pointer">
           <span class="material-symbols-outlined text-amber-600 text-[20px]">confirmation_number</span>
           <span class="flex-1 text-left" data-i18n="drawer_tickets">My Support Tickets</span>
           <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
         </button>
 
         <!-- Language Switcher Row -->
-        <button id="drawer-lang-btn" onclick="window.toggleGlobalLanguage()" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center justify-between text-slate-700 dark:text-[#F6FBFD] hover:bg-slate-100 dark:hover:bg-[#2B4858] text-xs font-bold transition-colors cursor-pointer">
+        <button id="drawer-lang-btn" onclick="window.toggleGlobalLanguage()" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center justify-between text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] text-xs font-bold transition-colors cursor-pointer">
           <div class="flex items-center gap-3">
             <span class="material-symbols-outlined text-blue-500 text-[20px]">language</span>
             <span data-i18n="drawer_lang">Language</span>
@@ -531,7 +591,7 @@
         </button>
 
         <!-- Theme Switcher Row -->
-        <button onclick="toggleCustomerTheme()" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center justify-between text-slate-700 dark:text-[#F6FBFD] hover:bg-slate-100 dark:hover:bg-[#2B4858] text-xs font-bold transition-colors cursor-pointer">
+        <button onclick="toggleCustomerTheme()" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center justify-between text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] text-xs font-bold transition-colors cursor-pointer">
           <div class="flex items-center gap-3">
             <span class="material-symbols-outlined text-amber-500 text-[20px]">wb_sunny</span>
             <span data-i18n="drawer_theme">Theme</span>
@@ -543,21 +603,21 @@
         </button>
 
         <!-- Past Orders -->
-        <button id="drawer-orders-btn" onclick="navigateToPhase('tracking'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F6FBFD] hover:bg-slate-100 dark:hover:bg-[#2B4858] text-xs font-bold transition-colors cursor-pointer">
+        <button id="drawer-orders-btn" onclick="navigateToPhase('tracking'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] text-xs font-bold transition-colors cursor-pointer">
           <span class="material-symbols-outlined text-blue-600 text-[20px]">receipt_long</span>
           <span class="flex-1 text-left" data-i18n="drawer_orders">Past Orders</span>
           <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
         </button>
 
         <!-- Privacy & Terms -->
-        <button onclick="openTermsModal(); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F6FBFD] hover:bg-slate-100 dark:hover:bg-[#2B4858] text-xs font-bold transition-colors cursor-pointer">
+        <button onclick="openTermsModal(); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] text-xs font-bold transition-colors cursor-pointer">
           <span class="material-symbols-outlined text-slate-500 text-[20px]">description</span>
           <span class="flex-1 text-left" data-i18n="drawer_terms">Privacy & Terms</span>
           <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
         </button>
 
         <!-- About GaonBazaar -->
-        <button onclick="alert('GaonBazaar Rural Hyperlocal v2.5 — Empowering rural India with simple, fast, fresh local delivery.');" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F6FBFD] hover:bg-slate-100 dark:hover:bg-[#2B4858] text-xs font-bold transition-colors cursor-pointer">
+        <button onclick="alert('GaonBazaar Rural Hyperlocal v2.5 — Empowering rural India with simple, fast, fresh local delivery.');" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] text-xs font-bold transition-colors cursor-pointer">
           <span class="material-symbols-outlined text-slate-500 text-[20px]">info</span>
           <span class="flex-1 text-left" data-i18n="drawer_about">About GaonBazaar</span>
           <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
@@ -569,7 +629,7 @@
       </nav>
 
       <!-- Drawer Footer: Logout CTA -->
-      <div class="p-3 border-t border-slate-100 dark:border-[#476476] bg-slate-50 dark:bg-[#2B4858] shrink-0">
+      <div class="p-3 border-t border-slate-100 dark:border-[#465362] bg-slate-50 dark:bg-[#1D232B] shrink-0">
         <button onclick="logoutCustomer(); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-xs font-black flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer">
           <span class="material-symbols-outlined text-[18px]">logout</span>
           <span data-i18n="drawer_logout">Logout</span>
@@ -1018,9 +1078,9 @@
 
         <!-- Search Bar with Circular Green Mic Button Inside -->
         <div class="relative">
-          <div class="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-white dark:bg-[#2B4858] shadow-xs border border-slate-200 dark:border-[#476476] relative z-20">
-            <span class="material-symbols-outlined text-slate-400 dark:text-[#9FB9C7] text-[20px] ml-1 shrink-0">search</span>
-            <input id="p2-search-input" oninput="filterStoreCatalog(this.value)" onfocus="if(this.value) filterStoreCatalog(this.value)" type="text" placeholder="Search for groceries..." data-i18n-ph="p2_search_placeholder" class="w-full h-10 py-2 bg-transparent text-xs font-semibold text-slate-900 dark:text-[#F6FBFD] focus:outline-none placeholder:text-slate-400 dark:placeholder:text-[#8CAAB9]"/>
+          <div class="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-white dark:bg-[#1D232B] shadow-xs border border-slate-200 dark:border-[#465362] relative z-20">
+            <span class="material-symbols-outlined text-slate-400 dark:text-[#B4C1D1] text-[20px] ml-1 shrink-0">search</span>
+            <input id="p2-search-input" oninput="filterStoreCatalog(this.value)" onfocus="if(this.value) filterStoreCatalog(this.value)" type="text" placeholder="Search for groceries..." data-i18n-ph="p2_search_placeholder" class="w-full h-10 py-2 bg-transparent text-xs font-semibold text-slate-900 dark:text-[#F8FAFC] focus:outline-none placeholder:text-slate-400 dark:placeholder:text-[#94A3B8]"/>
             <button type="button" id="p2-search-clear-btn" onclick="clearStoreSearch()" class="hidden w-8 h-8 min-w-[32px] min-h-[32px] items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-white active:scale-90 cursor-pointer shrink-0">
               <span class="material-symbols-outlined text-[18px]">close</span>
             </button>
@@ -1033,7 +1093,7 @@
             </button>
           </div>
           <!-- Smart Product & Store Discovery Overlay -->
-          <div id="p2-search-results" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-white dark:bg-[#2B4858] rounded-2xl shadow-2xl border border-slate-200 dark:border-[#476476] p-3 z-30 max-h-80 overflow-y-auto">
+          <div id="p2-search-results" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-white dark:bg-[#1D232B] rounded-2xl shadow-2xl border border-slate-200 dark:border-[#465362] p-3 z-30 max-h-80 overflow-y-auto">
           </div>
         </div>
 
@@ -1043,35 +1103,35 @@
             <button type="button" onclick="filterStoresByCategory('all')" id="cat-chip-all" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-black bg-[#16B86E] text-white shadow-xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer">
               <span id="cat-lbl-all" data-i18n="cat_all">All</span>
             </button>
-            <button type="button" onclick="filterStoresByCategory('kirana')" id="cat-chip-kirana" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-800 dark:text-[#F6FBFD] border border-slate-200 dark:border-[#476476] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
+            <button type="button" onclick="filterStoresByCategory('kirana')" id="cat-chip-kirana" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
               <span id="cat-lbl-kirana" data-i18n="cat_kirana">Grocery</span>
             </button>
-            <button type="button" onclick="filterStoresByCategory('dairy')" id="cat-chip-dairy" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-800 dark:text-[#F6FBFD] border border-slate-200 dark:border-[#476476] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
+            <button type="button" onclick="filterStoresByCategory('dairy')" id="cat-chip-dairy" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
               <span id="cat-lbl-dairy" data-i18n="cat_dairy">Dairy</span>
             </button>
-            <button type="button" onclick="filterStoresByCategory('sabzi')" id="cat-chip-sabzi" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-800 dark:text-[#F6FBFD] border border-slate-200 dark:border-[#476476] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
+            <button type="button" onclick="filterStoresByCategory('sabzi')" id="cat-chip-sabzi" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
               <span id="cat-lbl-sabzi" data-i18n="cat_sabzi">Veg</span>
             </button>
-            <button type="button" onclick="filterStoresByCategory('fruits')" id="cat-chip-fruits" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-800 dark:text-[#F6FBFD] border border-slate-200 dark:border-[#476476] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
+            <button type="button" onclick="filterStoresByCategory('fruits')" id="cat-chip-fruits" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
               <span id="cat-lbl-fruits" data-i18n="cat_fruits">Fruits</span>
             </button>
-            <button type="button" onclick="filterStoresByCategory('medicines')" id="cat-chip-medicines" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-800 dark:text-[#F6FBFD] border border-slate-200 dark:border-[#476476] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
+            <button type="button" onclick="filterStoresByCategory('medicines')" id="cat-chip-medicines" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
               <span id="cat-lbl-medicines" data-i18n="cat_medicines">Medicines</span>
             </button>
-            <button type="button" onclick="filterStoresByCategory('agri')" id="cat-chip-agri" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-800 dark:text-[#F6FBFD] border border-slate-200 dark:border-[#476476] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
+            <button type="button" onclick="filterStoresByCategory('agri')" id="cat-chip-agri" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
               <span id="cat-lbl-agri" data-i18n="cat_agri">Agri</span>
             </button>
-            <button type="button" onclick="filterStoresByCategory('tools')" id="cat-chip-tools" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-800 dark:text-[#F6FBFD] border border-slate-200 dark:border-[#476476] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
+            <button type="button" onclick="filterStoresByCategory('tools')" id="cat-chip-tools" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
               <span id="cat-lbl-tools" data-i18n="cat_tools">Tools</span>
             </button>
           </div>
         </div>
 
         <!-- Hero Banner: Fresh Essentials from Local Shops (Light Cream Warm Card) -->
-        <div id="p2-guarantee-banner" class="w-full shrink-0 rounded-3xl bg-[#FFF6EB] dark:bg-[#2B4858] border border-amber-200/60 dark:border-[#476476] p-4 sm:p-5 shadow-xs relative overflow-hidden flex items-center justify-between gap-3 mt-4 mb-3.5">
+        <div id="p2-guarantee-banner" class="w-full shrink-0 rounded-3xl bg-[#FFF6EB] dark:bg-[#1D232B] border border-amber-200/60 dark:border-[#465362] p-4 sm:p-5 shadow-xs relative overflow-hidden flex items-center justify-between gap-3 mt-4 mb-3.5">
           <div class="flex flex-col gap-1 z-10">
-            <h2 class="text-base font-black text-slate-900 dark:text-[#F6FBFD] leading-tight" data-i18n="p2_hero_title">Fresh essentials<br>from local shops</h2>
-            <p class="text-xs text-slate-600 dark:text-[#C9DCE5] font-medium" data-i18n="p2_hero_sub">Good food. Stronger villages.</p>
+            <h2 class="text-base font-black text-slate-900 dark:text-[#F8FAFC] leading-tight" data-i18n="p2_hero_title">Fresh essentials<br>from local shops</h2>
+            <p class="text-xs text-slate-600 dark:text-[#CBD5E1] font-medium" data-i18n="p2_hero_sub">Good food. Stronger villages.</p>
             <button onclick="scrollToProducts()" class="mt-2 min-h-[38px] px-4 py-1.5 rounded-full bg-[#16B86E] text-white text-xs font-bold shadow-xs flex items-center gap-1 w-max active:scale-95 transition-all cursor-pointer">
               <span data-i18n="p2_hero_btn">Shop now</span>
             </button>
@@ -1084,7 +1144,7 @@
         <!-- 2-Column Product Cards Section 1: "Popular near you" -->
         <div class="space-y-2.5 pt-1" id="home-popular-section">
           <div class="flex items-center justify-between">
-            <h3 class="text-sm font-black text-slate-900 dark:text-[#F6FBFD]" data-i18n="p2_popular_title">Popular near you</h3>
+            <h3 class="text-sm font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="p2_popular_title">Popular near you</h3>
             <button onclick="showAllFeaturedProducts('all')" aria-label="See all popular products" class="min-h-[38px] px-2 text-xs font-bold text-[#16B86E] hover:underline flex items-center gap-0.5 cursor-pointer">
               <span data-i18n="p2_see_all">See all</span>
               <span class="material-symbols-outlined text-[14px]">chevron_right</span>
@@ -1093,18 +1153,18 @@
           
           <div class="grid grid-cols-2 gap-3" id="home-popular-grid">
             <!-- Product Card 1: Fresh Tomato -->
-            <div class="rounded-2xl bg-white dark:bg-[#2B4858] p-3 border border-slate-200 dark:border-[#476476] shadow-xs flex flex-col justify-between relative">
+            <div class="rounded-2xl bg-white dark:bg-[#1D232B] p-3 border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col justify-between relative">
               <button type="button" data-favorite-item="item_tomato" onclick="toggleProductFavorite('item_tomato', event)" aria-label="Add Fresh Tomato to favorites" class="absolute top-2.5 right-2.5 w-9 h-9 min-w-[36px] min-h-[36px] flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors cursor-pointer">
                 <span class="material-symbols-outlined text-[18px]">favorite_border</span>
               </button>
-              <div class="w-full h-24 rounded-xl bg-slate-50 dark:bg-[#365668] flex items-center justify-center p-2 mb-2">
+              <div class="w-full h-24 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2 mb-2">
                 <img src="static/images/prod_tomato.png" alt="Fresh Tomato" class="max-h-full max-w-full object-contain" />
               </div>
               <div class="flex flex-col">
-                <span id="feat-title-tomato" data-i18n="feat_tomato_name" class="text-xs font-black text-slate-900 dark:text-[#F6FBFD] truncate">Fresh Tomato</span>
-                <span id="feat-sub-tomato" data-i18n="feat_tomato_sub" class="text-[10px] text-slate-500 dark:text-[#C9DCE5] truncate">Local Farm</span>
-                <div class="flex items-center justify-between mt-2 pt-1 border-t border-slate-100 dark:border-[#476476]">
-                  <span id="feat-price-tomato" data-i18n="feat_tomato_price" class="text-xs font-black text-slate-900 dark:text-[#F6FBFD]">₹ 30 / kg</span>
+                <span id="feat-title-tomato" data-i18n="feat_tomato_name" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">Fresh Tomato</span>
+                <span id="feat-sub-tomato" data-i18n="feat_tomato_sub" class="text-[10px] text-slate-500 dark:text-[#CBD5E1] truncate">Local Farm</span>
+                <div class="flex items-center justify-between mt-2 pt-1 border-t border-slate-100 dark:border-[#465362]">
+                  <span id="feat-price-tomato" data-i18n="feat_tomato_price" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC]">₹ 30 / kg</span>
                   <button type="button" onclick="quickAddFeaturedItem('item_tomato')" aria-label="Add Fresh Tomato to cart" class="w-9 h-9 min-w-[36px] min-h-[36px] rounded-full bg-[#16B86E] text-white flex items-center justify-center shadow-xs active:scale-90 transition-all cursor-pointer">
                     <span class="material-symbols-outlined text-[16px]">add</span>
                   </button>
@@ -1113,18 +1173,18 @@
             </div>
 
             <!-- Product Card 2: Banana -->
-            <div class="rounded-2xl bg-white dark:bg-[#2B4858] p-3 border border-slate-200 dark:border-[#476476] shadow-xs flex flex-col justify-between relative">
+            <div class="rounded-2xl bg-white dark:bg-[#1D232B] p-3 border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col justify-between relative">
               <button type="button" data-favorite-item="item_banana" onclick="toggleProductFavorite('item_banana', event)" aria-label="Add Banana to favorites" class="absolute top-2.5 right-2.5 w-9 h-9 min-w-[36px] min-h-[36px] flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors cursor-pointer">
                 <span class="material-symbols-outlined text-[18px]">favorite_border</span>
               </button>
-              <div class="w-full h-24 rounded-xl bg-slate-50 dark:bg-[#365668] flex items-center justify-center p-2 mb-2">
+              <div class="w-full h-24 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2 mb-2">
                 <img src="static/images/prod_banana.png" alt="Banana" class="max-h-full max-w-full object-contain" />
               </div>
               <div class="flex flex-col">
-                <span id="feat-title-banana" data-i18n="feat_banana_name" class="text-xs font-black text-slate-900 dark:text-[#F6FBFD] truncate">Banana</span>
-                <span id="feat-sub-banana" data-i18n="feat_banana_sub" class="text-[10px] text-slate-500 dark:text-[#C9DCE5] truncate">Farm Fresh</span>
-                <div class="flex items-center justify-between mt-2 pt-1 border-t border-slate-100 dark:border-[#476476]">
-                  <span id="feat-price-banana" data-i18n="feat_banana_price" class="text-xs font-black text-slate-900 dark:text-[#F6FBFD]">₹ 40 / kg</span>
+                <span id="feat-title-banana" data-i18n="feat_banana_name" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">Banana</span>
+                <span id="feat-sub-banana" data-i18n="feat_banana_sub" class="text-[10px] text-slate-500 dark:text-[#CBD5E1] truncate">Farm Fresh</span>
+                <div class="flex items-center justify-between mt-2 pt-1 border-t border-slate-100 dark:border-[#465362]">
+                  <span id="feat-price-banana" data-i18n="feat_banana_price" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC]">₹ 40 / kg</span>
                   <button type="button" onclick="quickAddFeaturedItem('item_banana')" aria-label="Add Banana to cart" class="w-9 h-9 min-w-[36px] min-h-[36px] rounded-full bg-[#16B86E] text-white flex items-center justify-center shadow-xs active:scale-90 transition-all cursor-pointer">
                     <span class="material-symbols-outlined text-[16px]">add</span>
                   </button>
@@ -1137,7 +1197,7 @@
         <!-- 2-Column Product Cards Section 2: "More for you" -->
         <div class="space-y-2.5 pt-1" id="home-more-section">
           <div class="flex items-center justify-between">
-            <h3 class="text-sm font-black text-slate-900 dark:text-[#F6FBFD]" data-i18n="p2_more_title">More for you</h3>
+            <h3 class="text-sm font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="p2_more_title">More for you</h3>
             <button onclick="showAllFeaturedProducts('all')" aria-label="See all products" class="min-h-[38px] px-2 text-xs font-bold text-[#16B86E] hover:underline flex items-center gap-0.5 cursor-pointer">
               <span data-i18n="p2_see_all">See all</span>
               <span class="material-symbols-outlined text-[14px]">chevron_right</span>
@@ -1146,18 +1206,18 @@
           
           <div class="grid grid-cols-2 gap-3" id="home-more-grid">
             <!-- Product Card 3: Amul Taaza -->
-            <div class="rounded-2xl bg-white dark:bg-[#2B4858] p-3 border border-slate-200 dark:border-[#476476] shadow-xs flex flex-col justify-between relative">
+            <div class="rounded-2xl bg-white dark:bg-[#1D232B] p-3 border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col justify-between relative">
               <button type="button" data-favorite-item="item_milk" onclick="toggleProductFavorite('item_milk', event)" aria-label="Add Amul Taaza to favorites" class="absolute top-2.5 right-2.5 w-9 h-9 min-w-[36px] min-h-[36px] flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors cursor-pointer">
                 <span class="material-symbols-outlined text-[18px]">favorite_border</span>
               </button>
-              <div class="w-full h-24 rounded-xl bg-slate-50 dark:bg-[#365668] flex items-center justify-center p-2 mb-2">
+              <div class="w-full h-24 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2 mb-2">
                 <img src="static/images/prod_milk.png" alt="Amul Taaza" class="max-h-full max-w-full object-contain" />
               </div>
               <div class="flex flex-col">
-                <span id="feat-title-milk" data-i18n="feat_milk_name" class="text-xs font-black text-slate-900 dark:text-[#F6FBFD] truncate">Amul Taaza</span>
-                <span id="feat-sub-milk" data-i18n="feat_milk_sub" class="text-[10px] text-slate-500 dark:text-[#C9DCE5] truncate">1 L pack</span>
-                <div class="flex items-center justify-between mt-2 pt-1 border-t border-slate-100 dark:border-[#476476]">
-                  <span id="feat-price-milk" data-i18n="feat_milk_price" class="text-xs font-black text-slate-900 dark:text-[#F6FBFD]">₹ 60</span>
+                <span id="feat-title-milk" data-i18n="feat_milk_name" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">Amul Taaza</span>
+                <span id="feat-sub-milk" data-i18n="feat_milk_sub" class="text-[10px] text-slate-500 dark:text-[#CBD5E1] truncate">1 L pack</span>
+                <div class="flex items-center justify-between mt-2 pt-1 border-t border-slate-100 dark:border-[#465362]">
+                  <span id="feat-price-milk" data-i18n="feat_milk_price" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC]">₹ 60</span>
                   <button type="button" onclick="quickAddFeaturedItem('item_milk')" aria-label="Add Amul Taaza Milk to cart" class="w-9 h-9 min-w-[36px] min-h-[36px] rounded-full bg-[#16B86E] text-white flex items-center justify-center shadow-xs active:scale-90 transition-all cursor-pointer">
                     <span class="material-symbols-outlined text-[16px]">add</span>
                   </button>
@@ -1166,18 +1226,18 @@
             </div>
 
             <!-- Product Card 4: Onion -->
-            <div class="rounded-2xl bg-white dark:bg-[#2B4858] p-3 border border-slate-200 dark:border-[#476476] shadow-xs flex flex-col justify-between relative">
+            <div class="rounded-2xl bg-white dark:bg-[#1D232B] p-3 border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col justify-between relative">
               <button type="button" data-favorite-item="item_onion" onclick="toggleProductFavorite('item_onion', event)" aria-label="Add Onion to favorites" class="absolute top-2.5 right-2.5 w-9 h-9 min-w-[36px] min-h-[36px] flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors cursor-pointer">
                 <span class="material-symbols-outlined text-[18px]">favorite_border</span>
               </button>
-              <div class="w-full h-24 rounded-xl bg-slate-50 dark:bg-[#365668] flex items-center justify-center p-2 mb-2">
+              <div class="w-full h-24 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2 mb-2">
                 <img src="static/images/prod_onion.png" alt="Onion" class="max-h-full max-w-full object-contain" />
               </div>
               <div class="flex flex-col">
-                <span id="feat-title-onion" data-i18n="feat_onion_name" class="text-xs font-black text-slate-900 dark:text-[#F6FBFD] truncate">Onion</span>
-                <span id="feat-sub-onion" data-i18n="feat_onion_sub" class="text-[10px] text-slate-500 dark:text-[#C9DCE5] truncate">Fresh Harvest</span>
-                <div class="flex items-center justify-between mt-2 pt-1 border-t border-slate-100 dark:border-[#476476]">
-                  <span id="feat-price-onion" data-i18n="feat_onion_price" class="text-xs font-black text-slate-900 dark:text-[#F6FBFD]">₹ 25 / kg</span>
+                <span id="feat-title-onion" data-i18n="feat_onion_name" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">Onion</span>
+                <span id="feat-sub-onion" data-i18n="feat_onion_sub" class="text-[10px] text-slate-500 dark:text-[#CBD5E1] truncate">Fresh Harvest</span>
+                <div class="flex items-center justify-between mt-2 pt-1 border-t border-slate-100 dark:border-[#465362]">
+                  <span id="feat-price-onion" data-i18n="feat_onion_price" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC]">₹ 25 / kg</span>
                   <button type="button" onclick="quickAddFeaturedItem('item_onion')" aria-label="Add Onion to cart" class="w-9 h-9 min-w-[36px] min-h-[36px] rounded-full bg-[#16B86E] text-white flex items-center justify-center shadow-xs active:scale-90 transition-all cursor-pointer">
                     <span class="material-symbols-outlined text-[16px]">add</span>
                   </button>
@@ -1267,10 +1327,10 @@
         <!-- Cart Header Matching Reference 01 Frame 3 -->
         <div class="flex items-center justify-between py-1">
           <div class="flex items-center gap-2">
-            <button onclick="navigateToPhase('dashboard')" class="w-9 h-9 rounded-full flex items-center justify-center hover:bg-slate-100 dark:hover:bg-[#365668] text-slate-700 dark:text-[#F6FBFD] cursor-pointer">
+            <button onclick="navigateToPhase('dashboard')" class="w-9 h-9 rounded-full flex items-center justify-center hover:bg-slate-100 dark:hover:bg-[#2A323D] text-slate-700 dark:text-[#F8FAFC] cursor-pointer">
               <span class="material-symbols-outlined text-[20px]">arrow_back</span>
             </button>
-            <h1 class="text-sm font-black text-slate-900 dark:text-[#F6FBFD]" data-i18n="p4_cart_title">Your Cart (3)</h1>
+            <h1 class="text-sm font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="p4_cart_title">Your Cart (3)</h1>
           </div>
           <button onclick="clearFullCart()" class="text-xs font-bold text-slate-500 hover:text-rose-600 transition-colors cursor-pointer" data-i18n="p4_clear_all">Clear All</button>
         </div>
@@ -1488,13 +1548,13 @@
         <!-- Top Bar Matching Reference 04: < Order #GB-1284 | Help -->
         <div class="flex items-center justify-between py-1">
           <div class="flex items-center gap-2">
-            <button onclick="navigateToPhase('dashboard')" aria-label="Back to Home" class="w-9 h-9 rounded-full text-slate-700 dark:text-[#F6FBFD] hover:bg-slate-100 dark:hover:bg-[#365668] flex items-center justify-center cursor-pointer">
+            <button onclick="navigateToPhase('dashboard')" aria-label="Back to Home" class="w-9 h-9 rounded-full text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#2A323D] flex items-center justify-center cursor-pointer">
               <span class="material-symbols-outlined text-[22px]">arrow_back</span>
             </button>
-            <h1 class="text-sm font-black text-slate-900 dark:text-[#F6FBFD] flex items-center gap-1.5">
+            <h1 class="text-sm font-black text-slate-900 dark:text-[#F8FAFC] flex items-center gap-1.5">
               <span>Order</span>
               <span id="p5-order-id" class="font-mono text-[#16B86E]">#GB-1284</span>
-              <button onclick="copyOrderId()" class="text-[10px] bg-slate-100 dark:bg-[#365668] px-2 py-0.5 rounded text-slate-600 dark:text-[#C9DCE5] hover:bg-slate-200">Copy</button>
+              <button onclick="copyOrderId()" class="text-[10px] bg-slate-100 dark:bg-[#2A323D] px-2 py-0.5 rounded text-slate-600 dark:text-[#CBD5E1] hover:bg-slate-200">Copy</button>
             </h1>
           </div>
           <!-- Help link (opens support modal) -->
@@ -1502,12 +1562,12 @@
         </div>
 
         <!-- 1. EMPTY STATE CONTAINER (Visible when NO active order exists) -->
-        <div id="p5-tracking-empty-state" class="hidden w-full bg-white dark:bg-[#2B4858] rounded-3xl p-6 text-center shadow-xs border border-slate-200 dark:border-[#476476] flex flex-col items-center justify-center my-auto py-12">
+        <div id="p5-tracking-empty-state" class="hidden w-full bg-white dark:bg-[#1D232B] rounded-3xl p-6 text-center shadow-xs border border-slate-200 dark:border-[#465362] flex flex-col items-center justify-center my-auto py-12">
           <div class="w-20 h-20 rounded-full bg-[#16B86E]/10 flex items-center justify-center mb-4 text-[#16B86E]">
             <span class="material-symbols-outlined text-[40px]">local_shipping</span>
           </div>
-          <h3 id="p5-empty-title" data-i18n="p5_empty_title" class="text-base font-black text-slate-900 dark:text-[#F6FBFD] mb-1.5">No active orders right now</h3>
-          <p id="p5-empty-sub" data-i18n="p5_empty_sub" class="text-xs text-slate-500 dark:text-[#C9DCE5] max-w-xs mb-6 font-medium leading-relaxed">Visit stores to place an order.</p>
+          <h3 id="p5-empty-title" data-i18n="p5_empty_title" class="text-base font-black text-slate-900 dark:text-[#F8FAFC] mb-1.5">No active orders right now</h3>
+          <p id="p5-empty-sub" data-i18n="p5_empty_sub" class="text-xs text-slate-500 dark:text-[#CBD5E1] max-w-xs mb-6 font-medium leading-relaxed">Visit stores to place an order.</p>
           <button id="p5-empty-goto-stores-btn" onclick="navigateToPhase('dashboard')" class="w-full max-w-xs min-h-[44px] rounded-full bg-[#16B86E] text-white text-xs font-bold shadow-md flex items-center justify-center gap-2 active:scale-95 transition-all">
             <span class="material-symbols-outlined text-[18px]">storefront</span>
             <span id="p5-empty-btn-text" data-i18n="p5_empty_btn">Shop now</span>
@@ -1518,10 +1578,10 @@
         <div id="p5-active-tracking-content" class="w-full flex flex-col space-y-3.5 pb-28 sm:pb-32" style="touch-action: pan-y !important;">
           
           <!-- Hero Arriving Status Card -->
-          <div class="bg-white dark:bg-[#2B4858] rounded-2xl p-4 shadow-xs border border-slate-200 dark:border-[#476476] flex items-center justify-between">
+          <div class="bg-white dark:bg-[#1D232B] rounded-2xl p-4 shadow-xs border border-slate-200 dark:border-[#465362] flex items-center justify-between">
             <div class="flex flex-col">
-              <h2 id="p5-eta-time" class="text-base sm:text-lg font-black text-slate-900 dark:text-[#F6FBFD]">Arriving in 18 minutes</h2>
-              <p class="text-xs text-slate-500 dark:text-[#C9DCE5]" data-i18n="p5_eta_sub">Your order is on the way</p>
+              <h2 id="p5-eta-time" class="text-base sm:text-lg font-black text-slate-900 dark:text-[#F8FAFC]">Arriving in 18 minutes</h2>
+              <p class="text-xs text-slate-500 dark:text-[#CBD5E1]" data-i18n="p5_eta_sub">Your order is on the way</p>
             </div>
             <span class="px-2.5 py-1 rounded-full bg-[#FF981A] text-white text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-2xs">
               <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>
@@ -1530,9 +1590,9 @@
           </div>
 
           <!-- 5-Stage Horizontal Tracker -->
-          <div id="p5-timeline-card" class="bg-white dark:bg-[#2B4858] rounded-2xl p-4 shadow-xs border border-slate-200 dark:border-[#476476] flex flex-col gap-3">
-            <div class="flex items-center justify-between border-b border-slate-100 dark:border-[#476476] pb-2">
-              <h3 class="text-xs font-black text-slate-900 dark:text-[#F6FBFD] uppercase tracking-wider" data-i18n="p5_timeline_title">Order Status</h3>
+          <div id="p5-timeline-card" class="bg-white dark:bg-[#1D232B] rounded-2xl p-4 shadow-xs border border-slate-200 dark:border-[#465362] flex flex-col gap-3">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-[#465362] pb-2">
+              <h3 class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] uppercase tracking-wider" data-i18n="p5_timeline_title">Order Status</h3>
               <button onclick="advanceTimelineStep()" class="text-[11px] font-bold text-[#FF981A] hover:underline" id="p5-sim-step-btn" class="hidden" data-i18n="p5_sim_step">Next Step ⚡</button>
             </div>
 
@@ -1542,22 +1602,22 @@
                 <!-- Step 1: Confirmed -->
                 <div class="flex flex-col items-center text-center z-10">
                   <div class="w-7 h-7 rounded-full bg-[#16B86E] text-white flex items-center justify-center text-xs font-bold shadow-xs">✓</div>
-                  <span class="text-[10px] font-bold text-slate-800 dark:text-[#F6FBFD] mt-1">Confirmed</span>
-                  <span class="text-[9px] text-slate-400 dark:text-[#8CAAB9]">10:15 AM</span>
+                  <span class="text-[10px] font-bold text-slate-800 dark:text-[#F8FAFC] mt-1">Confirmed</span>
+                  <span class="text-[9px] text-slate-400 dark:text-[#94A3B8]">10:15 AM</span>
                 </div>
                 <div class="h-0.5 bg-[#16B86E] flex-1 -mt-5"></div>
                 <!-- Step 2: Packed -->
                 <div class="flex flex-col items-center text-center z-10">
                   <div class="w-7 h-7 rounded-full bg-[#16B86E] text-white flex items-center justify-center text-xs font-bold shadow-xs">✓</div>
-                  <span class="text-[10px] font-bold text-slate-800 dark:text-[#F6FBFD] mt-1">Packed</span>
-                  <span class="text-[9px] text-slate-400 dark:text-[#8CAAB9]">10:22 AM</span>
+                  <span class="text-[10px] font-bold text-slate-800 dark:text-[#F8FAFC] mt-1">Packed</span>
+                  <span class="text-[9px] text-slate-400 dark:text-[#94A3B8]">10:22 AM</span>
                 </div>
                 <div class="h-0.5 bg-[#16B86E] flex-1 -mt-5"></div>
                 <!-- Step 3: Picked Up -->
                 <div class="flex flex-col items-center text-center z-10">
                   <div class="w-7 h-7 rounded-full bg-[#16B86E] text-white flex items-center justify-center text-xs font-bold shadow-xs">✓</div>
-                  <span class="text-[10px] font-bold text-slate-800 dark:text-[#F6FBFD] mt-1">Picked Up</span>
-                  <span class="text-[9px] text-slate-400 dark:text-[#8CAAB9]">10:30 AM</span>
+                  <span class="text-[10px] font-bold text-slate-800 dark:text-[#F8FAFC] mt-1">Picked Up</span>
+                  <span class="text-[9px] text-slate-400 dark:text-[#94A3B8]">10:30 AM</span>
                 </div>
                 <div class="h-0.5 bg-[#16B86E] flex-1 -mt-5"></div>
                 <!-- Step 4: On the Way -->
@@ -1566,13 +1626,13 @@
                     <span class="material-symbols-outlined text-[14px]">local_shipping</span>
                   </div>
                   <span class="text-[10px] font-black text-[#16B86E] mt-1">On the Way</span>
-                  <span class="text-[9px] text-slate-400 dark:text-[#8CAAB9]">10:37 AM</span>
+                  <span class="text-[9px] text-slate-400 dark:text-[#94A3B8]">10:37 AM</span>
                 </div>
-                <div class="h-0.5 bg-slate-200 dark:bg-[#476476] flex-1 -mt-5"></div>
+                <div class="h-0.5 bg-slate-200 dark:bg-[#465362] flex-1 -mt-5"></div>
                 <!-- Step 5: Delivered -->
                 <div class="flex flex-col items-center text-center z-10">
-                  <div class="w-7 h-7 rounded-full bg-slate-200 dark:bg-[#365668] text-slate-500 dark:text-[#8CAAB9] flex items-center justify-center text-xs font-bold">5</div>
-                  <span class="text-[10px] font-medium text-slate-400 dark:text-[#8CAAB9] mt-1">Delivered</span>
+                  <div class="w-7 h-7 rounded-full bg-slate-200 dark:bg-[#2A323D] text-slate-500 dark:text-[#94A3B8] flex items-center justify-center text-xs font-bold">5</div>
+                  <span class="text-[10px] font-medium text-slate-400 dark:text-[#94A3B8] mt-1">Delivered</span>
                 </div>
               </div>
             </div>
@@ -1581,14 +1641,14 @@
           </div>
 
           <!-- Assigned Delivery Partner Card Matching Reference 04 -->
-          <div id="p5-call-runner-card" class="bg-white dark:bg-[#2B4858] rounded-2xl p-3.5 shadow-xs border border-slate-200 dark:border-[#476476] flex items-center justify-between">
+          <div id="p5-call-runner-card" class="bg-white dark:bg-[#1D232B] rounded-2xl p-3.5 shadow-xs border border-slate-200 dark:border-[#465362] flex items-center justify-between">
             <div class="flex items-center gap-3 min-w-0">
-              <div class="w-12 h-12 rounded-full overflow-hidden shrink-0 shadow-xs border-2 border-white dark:border-[#365668]">
+              <div class="w-12 h-12 rounded-full overflow-hidden shrink-0 shadow-xs border-2 border-white dark:border-[#2A323D]">
                 <img src="static/images/runner_ramesh.png" alt="Ramesh Kumar" class="w-full h-full object-cover" />
               </div>
               <div class="flex flex-col min-w-0">
-                <span id="p5-runner-name" class="text-xs font-black text-slate-900 dark:text-[#F6FBFD] truncate">Ramesh Kumar</span>
-                <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5]">Your delivery partner</span>
+                <span id="p5-runner-name" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">Ramesh Kumar</span>
+                <span class="text-[10px] text-slate-500 dark:text-[#CBD5E1]">Your delivery partner</span>
                 <div class="flex items-center gap-1 text-[10px] text-amber-500 font-bold mt-0.5">
                   <span>★ 4.8</span>
                   <span class="text-slate-400 font-normal">(320 deliveries)</span>
@@ -1598,10 +1658,10 @@
 
             <!-- Call & Chat Actions -->
             <div class="flex items-center gap-2 shrink-0">
-              <a href="tel:9876543210" id="btn-call-runner" class="w-10 h-10 rounded-full bg-emerald-50 dark:bg-[#365668] text-[#16B86E] hover:bg-[#16B86E] hover:text-white flex items-center justify-center transition-all shadow-xs cursor-pointer" title="Call Delivery Partner">
+              <a href="tel:9876543210" id="btn-call-runner" class="w-10 h-10 rounded-full bg-emerald-50 dark:bg-[#2A323D] text-[#16B86E] hover:bg-[#16B86E] hover:text-white flex items-center justify-center transition-all shadow-xs cursor-pointer" title="Call Delivery Partner">
                 <span class="material-symbols-outlined text-[20px]">call</span>
               </a>
-              <button onclick="openSupportModal()" class="w-10 h-10 rounded-full bg-emerald-50 dark:bg-[#365668] text-[#16B86E] hover:bg-[#16B86E] hover:text-white flex items-center justify-center transition-all shadow-xs cursor-pointer" title="Chat with Partner">
+              <button onclick="openSupportModal()" class="w-10 h-10 rounded-full bg-emerald-50 dark:bg-[#2A323D] text-[#16B86E] hover:bg-[#16B86E] hover:text-white flex items-center justify-center transition-all shadow-xs cursor-pointer" title="Chat with Partner">
                 <span class="material-symbols-outlined text-[20px]">chat</span>
               </button>
             </div>
@@ -1609,16 +1669,16 @@
           </div>
 
           <!-- Live Route Mini-Map Card -->
-          <div id="p5-route-card" class="bg-white dark:bg-[#2B4858] rounded-2xl p-4 shadow-xs border border-slate-200 dark:border-[#476476] relative overflow-hidden mt-3">
+          <div id="p5-route-card" class="bg-white dark:bg-[#1D232B] rounded-2xl p-4 shadow-xs border border-slate-200 dark:border-[#465362] relative overflow-hidden mt-3">
             <div class="flex items-center justify-between mb-2">
-              <span class="text-xs font-black text-slate-900 dark:text-[#F6FBFD] flex items-center gap-1">
+              <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] flex items-center gap-1">
                 <span class="material-symbols-outlined text-[#16B86E] text-[18px]">near_me</span>
                 <span id="p5-route-lbl">Live Route</span>
               </span>
-              <span class="text-[10px] font-bold text-[#16B86E] bg-emerald-50 dark:bg-[#365668] px-2 py-0.5 rounded-full">1.2 km away</span>
+              <span class="text-[10px] font-bold text-[#16B86E] bg-emerald-50 dark:bg-[#2A323D] px-2 py-0.5 rounded-full">1.2 km away</span>
             </div>
             <!-- Interactive Route Map Canvas -->
-            <div id="p5-map-canvas-container" class="w-full h-36 rounded-xl relative flex items-center justify-center overflow-hidden border border-slate-200/60 dark:border-[#476476]" style="overflow: hidden !important;">
+            <div id="p5-map-canvas-container" class="w-full h-36 rounded-xl relative flex items-center justify-center overflow-hidden border border-slate-200/60 dark:border-[#465362]" style="overflow: hidden !important;">
               <div id="p5-leaflet-live-map" class="w-full h-full z-0 overflow-hidden rounded-xl" style="overflow: hidden !important;"></div>
               <div id="p5-static-map-fallback" class="hidden absolute inset-0 w-full h-full">
                 <img src="static/images/live_tracking_map.png" alt="Live Route Map" class="w-full h-full object-cover" />
@@ -1628,7 +1688,7 @@
                 <span id="p5-map-eta-dist">4 min • 1.2 km</span>
               </div>
             </div>
-            <div class="flex justify-between text-[10px] text-slate-500 dark:text-[#C9DCE5] pt-2 font-medium">
+            <div class="flex justify-between text-[10px] text-slate-500 dark:text-[#CBD5E1] pt-2 font-medium">
               <span id="p5-lm-store">Sharma Kirana Store</span>
               <span id="p5-lm-transit">Sonpur Main Road</span>
               <span id="p5-lm-dest">Rampur village</span>
@@ -1636,57 +1696,57 @@
           </div>
 
           <!-- Delivery Address Card -->
-          <div class="bg-white dark:bg-[#2B4858] rounded-2xl p-3.5 shadow-xs border border-slate-200 dark:border-[#476476] flex items-center justify-between">
+          <div class="bg-white dark:bg-[#1D232B] rounded-2xl p-3.5 shadow-xs border border-slate-200 dark:border-[#465362] flex items-center justify-between">
             <div class="flex items-start gap-2.5 min-w-0">
               <span class="material-symbols-outlined text-[#FF981A] text-[20px] shrink-0 mt-0.5">location_on</span>
               <div class="flex flex-col min-w-0">
-                <span class="text-xs font-black text-slate-900 dark:text-[#F6FBFD]">Delivery to Home (Rampur village)</span>
-                <span class="text-[11px] text-slate-500 dark:text-[#C9DCE5] truncate">Sharma House, Main Road, Sonpur</span>
+                <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC]">Delivery to Home (Rampur village)</span>
+                <span class="text-[11px] text-slate-500 dark:text-[#CBD5E1] truncate">Sharma House, Main Road, Sonpur</span>
               </div>
             </div>
             <button onclick="navigateToPhase('landmark')" class="text-xs font-bold text-[#16B86E] hover:underline shrink-0">Change</button>
           </div>
 
           <!-- Order Items Summary Row -->
-          <div class="bg-white dark:bg-[#2B4858] rounded-2xl p-3.5 shadow-xs border border-slate-200 dark:border-[#476476] flex flex-col gap-2">
+          <div class="bg-white dark:bg-[#1D232B] rounded-2xl p-3.5 shadow-xs border border-slate-200 dark:border-[#465362] flex flex-col gap-2">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-black text-slate-900 dark:text-[#F6FBFD]" data-i18n="p5_items_title">Order Items</span>
-              <span id="p5-items-count-badge" class="text-[11px] text-slate-500 dark:text-[#C9DCE5]">3 items</span>
+              <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="p5_items_title">Order Items</span>
+              <span id="p5-items-count-badge" class="text-[11px] text-slate-500 dark:text-[#CBD5E1]">3 items</span>
             </div>
             <div id="p5-items-container" class="flex items-center gap-3 overflow-x-auto py-1">
-              <div class="flex items-center gap-2 p-1.5 rounded-xl bg-slate-50 dark:bg-[#365668] border border-slate-200/60 dark:border-[#476476] shrink-0">
+              <div class="flex items-center gap-2 p-1.5 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200/60 dark:border-[#465362] shrink-0">
                 <img src="static/images/prod_tomato.png" class="w-7 h-7 object-contain" alt="Tomato" />
                 <div class="text-[10px] leading-tight">
-                  <span class="font-bold block text-slate-800 dark:text-[#F6FBFD]">Tomato</span>
-                  <span class="text-slate-500 dark:text-[#C9DCE5]">2 kg • ₹ 60</span>
+                  <span class="font-bold block text-slate-800 dark:text-[#F8FAFC]">Tomato</span>
+                  <span class="text-slate-500 dark:text-[#CBD5E1]">2 kg • ₹ 60</span>
                 </div>
               </div>
-              <div class="flex items-center gap-2 p-1.5 rounded-xl bg-slate-50 dark:bg-[#365668] border border-slate-200/60 dark:border-[#476476] shrink-0">
+              <div class="flex items-center gap-2 p-1.5 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200/60 dark:border-[#465362] shrink-0">
                 <img src="static/images/prod_milk.png" class="w-7 h-7 object-contain" alt="Milk" />
                 <div class="text-[10px] leading-tight">
-                  <span class="font-bold block text-slate-800 dark:text-[#F6FBFD]">Milk</span>
-                  <span class="text-slate-500 dark:text-[#C9DCE5]">1 pack • ₹ 60</span>
+                  <span class="font-bold block text-slate-800 dark:text-[#F8FAFC]">Milk</span>
+                  <span class="text-slate-500 dark:text-[#CBD5E1]">1 pack • ₹ 60</span>
                 </div>
               </div>
-              <div class="flex items-center gap-2 p-1.5 rounded-xl bg-slate-50 dark:bg-[#365668] border border-slate-200/60 dark:border-[#476476] shrink-0">
+              <div class="flex items-center gap-2 p-1.5 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200/60 dark:border-[#465362] shrink-0">
                 <img src="static/images/prod_onion.png" class="w-7 h-7 object-contain" alt="Onion" />
                 <div class="text-[10px] leading-tight">
-                  <span class="font-bold block text-slate-800 dark:text-[#F6FBFD]">Onion</span>
-                  <span class="text-slate-500 dark:text-[#C9DCE5]">1 kg • ₹ 25</span>
+                  <span class="font-bold block text-slate-800 dark:text-[#F8FAFC]">Onion</span>
+                  <span class="text-slate-500 dark:text-[#CBD5E1]">1 kg • ₹ 25</span>
                 </div>
               </div>
             </div>
           </div>
 
           <!-- Secure Delivery OTP Box -->
-          <div id="p5-otp-box" class="bg-emerald-50/80 dark:bg-[#365668] border border-emerald-200 dark:border-[#476476] rounded-2xl p-3.5 flex items-center justify-between">
+          <div id="p5-otp-box" class="bg-emerald-50/80 dark:bg-[#2A323D] border border-emerald-200 dark:border-[#465362] rounded-2xl p-3.5 flex items-center justify-between">
             <div>
               <span class="text-[10px] font-black uppercase tracking-wider text-[#16B86E]">Security Code</span>
-              <p class="text-[11px] text-slate-600 dark:text-[#C9DCE5]">Share with partner at delivery</p>
+              <p class="text-[11px] text-slate-600 dark:text-[#CBD5E1]">Share with partner at delivery</p>
             </div>
             <div class="flex items-center gap-2">
-              <span class="text-xs font-bold text-slate-500 dark:text-[#C9DCE5]">DELIVERY OTP:</span>
-              <div id="p5-delivery-otp-digits" class="flex gap-1.5 font-mono font-black text-sm text-[#16B86E] bg-white dark:bg-[#203846] px-2.5 py-1 rounded-lg border border-emerald-200 dark:border-[#476476]">
+              <span class="text-xs font-bold text-slate-500 dark:text-[#CBD5E1]">DELIVERY OTP:</span>
+              <div id="p5-delivery-otp-digits" class="flex gap-1.5 font-mono font-black text-sm text-[#16B86E] bg-white dark:bg-[#111418] px-2.5 py-1 rounded-lg border border-emerald-200 dark:border-[#465362]">
                 <span>3</span><span>7</span><span>2</span><span>1</span>
               </div>
             </div>
@@ -2257,16 +2317,16 @@
         <!-- Top Title Bar Matching Reference Image 01 -->
         <div class="flex items-center justify-between py-1">
           <div class="flex items-center gap-2">
-            <button onclick="navigateBack()" aria-label="Go Back" class="w-9 h-9 rounded-full text-slate-700 dark:text-[#F6FBFD] hover:bg-slate-100 dark:hover:bg-[#365668] flex items-center justify-center cursor-pointer">
+            <button onclick="navigateBack()" aria-label="Go Back" class="w-9 h-9 rounded-full text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#2A323D] flex items-center justify-center cursor-pointer">
               <span class="material-symbols-outlined text-[22px]">arrow_back</span>
             </button>
-            <h1 class="text-sm font-black text-slate-900 dark:text-[#F6FBFD]" data-i18n="ai_commerce_title">AI Shopping Assistant</h1>
+            <h1 class="text-sm font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="ai_commerce_title">AI Shopping Assistant</h1>
           </div>
           <!-- Language Toggle Pill [EN | HI] -->
-          <button onclick="window.toggleGlobalLanguage()" type="button" class="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-[#365668] text-slate-700 dark:text-[#C9DCE5] border border-slate-200 dark:border-[#476476] text-[11px] font-black flex items-center gap-1 cursor-pointer shadow-2xs">
+          <button onclick="window.toggleGlobalLanguage()" type="button" class="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-[#2A323D] text-slate-700 dark:text-[#CBD5E1] border border-slate-200 dark:border-[#465362] text-[11px] font-black flex items-center gap-1 cursor-pointer shadow-2xs">
             <span class="text-[#16B86E]">EN</span>
-            <span class="text-slate-300 dark:text-[#476476]">|</span>
-            <span class="text-slate-500 dark:text-[#8CAAB9]">HI</span>
+            <span class="text-slate-300 dark:text-[#465362]">|</span>
+            <span class="text-slate-500 dark:text-[#94A3B8]">HI</span>
           </button>
         </div>
 
@@ -2274,14 +2334,14 @@
         <div class="flex flex-col items-center text-center pt-2">
           <!-- Robot Mascot with soundwaves -->
           <div class="relative flex items-center justify-center mb-2">
-            <span class="text-slate-300 dark:text-[#476476] font-mono text-sm mr-2 select-none">((•))</span>
+            <span class="text-slate-300 dark:text-[#465362] font-mono text-sm mr-2 select-none">((•))</span>
             <div class="w-28 h-20 flex items-center justify-center">
               <img src="static/images/ai_robot.png" alt="AI Shopping Assistant" class="max-h-full max-w-full object-contain drop-shadow-sm" />
             </div>
-            <span class="text-slate-300 dark:text-[#476476] font-mono text-sm ml-2 select-none">((•))</span>
+            <span class="text-slate-300 dark:text-[#465362] font-mono text-sm ml-2 select-none">((•))</span>
           </div>
-          <h2 class="text-base font-black text-slate-900 dark:text-[#F6FBFD]" data-i18n="ai_greeting_title">Tell me what you need</h2>
-          <p class="text-xs text-slate-500 dark:text-[#C9DCE5] mt-0.5" data-i18n="ai_greeting_sub">Speak naturally in Hindi or English</p>
+          <h2 class="text-base font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="ai_greeting_title">Tell me what you need</h2>
+          <p class="text-xs text-slate-500 dark:text-[#CBD5E1] mt-0.5" data-i18n="ai_greeting_sub">Speak naturally in Hindi or English</p>
         </div>
 
         <!-- Large Glowing Voice Button -->
@@ -2293,40 +2353,40 @@
               id="commerce-ai-mic-btn" 
               onclick="toggleCommerceVoiceRecognition()" 
               aria-label="Tap to speak"
-              class="relative z-10 w-20 h-20 rounded-full bg-gradient-to-tr from-[#16B86E] to-emerald-500 text-white flex items-center justify-center shadow-lg active:scale-95 transition-all cursor-pointer border-4 border-white dark:border-[#203846]"
+              class="relative z-10 w-20 h-20 rounded-full bg-gradient-to-tr from-[#16B86E] to-emerald-500 text-white flex items-center justify-center shadow-lg active:scale-95 transition-all cursor-pointer border-4 border-white dark:border-[#111418]"
             >
               <span id="commerce-mic-icon" class="material-symbols-outlined text-[36px]">mic</span>
             </button>
           </div>
-          <span class="text-xs font-black text-slate-700 dark:text-[#C9DCE5] mt-2" data-i18n="ai_tap_speak">Tap to speak</span>
+          <span class="text-xs font-black text-slate-700 dark:text-[#CBD5E1] mt-2" data-i18n="ai_tap_speak">Tap to speak</span>
           <!-- Soundwaves indicator -->
           <div class="flex items-center gap-1 mt-1 text-[#16B86E] select-none text-xs">
             <span>•</span><span>|</span><span>|</span><span>|</span><span>•</span>
           </div>
-          <div id="commerce-ai-status-text" class="text-[11px] font-bold text-slate-500 dark:text-[#8CAAB9] mt-0.5" data-i18n="ai_mic_status_ready">Ready to listen</div>
+          <div id="commerce-ai-status-text" class="text-[11px] font-bold text-slate-500 dark:text-[#94A3B8] mt-0.5" data-i18n="ai_mic_status_ready">Ready to listen</div>
         </div>
 
         <!-- Suggestion Chips (Vertical list matching Reference 01) -->
         <div class="flex flex-col gap-2">
-          <button onclick="handleVoiceChipClick(this.querySelector('span[data-i18n]')?.innerText || '1 kilo tamatar add karo')" class="w-full py-2.5 px-4 rounded-full bg-white dark:bg-[#2B4858] text-slate-700 dark:text-[#C9DCE5] hover:border-[#16B86E] border border-slate-200 dark:border-[#476476] text-xs font-semibold flex items-center gap-2.5 active:scale-98 transition-all shadow-2xs text-left cursor-pointer">
+          <button onclick="handleVoiceChipClick(this.querySelector('span[data-i18n]')?.innerText || '1 kilo tamatar add karo')" class="w-full py-2.5 px-4 rounded-full bg-white dark:bg-[#1D232B] text-slate-700 dark:text-[#CBD5E1] hover:border-[#16B86E] border border-slate-200 dark:border-[#465362] text-xs font-semibold flex items-center gap-2.5 active:scale-98 transition-all shadow-2xs text-left cursor-pointer">
             <span class="material-symbols-outlined text-[#16B86E] text-[18px]">mic</span>
             <span data-i18n="ai_chip_1">"1 किलो टमाटर जोड़ें"</span>
           </button>
-          <button onclick="handleVoiceChipClick(this.querySelector('span[data-i18n]')?.innerText || 'Mujhe doodh chahiye')" class="w-full py-2.5 px-4 rounded-full bg-white dark:bg-[#2B4858] text-slate-700 dark:text-[#C9DCE5] hover:border-[#16B86E] border border-slate-200 dark:border-[#476476] text-xs font-semibold flex items-center gap-2.5 active:scale-98 transition-all shadow-2xs text-left cursor-pointer">
+          <button onclick="handleVoiceChipClick(this.querySelector('span[data-i18n]')?.innerText || 'Mujhe doodh chahiye')" class="w-full py-2.5 px-4 rounded-full bg-white dark:bg-[#1D232B] text-slate-700 dark:text-[#CBD5E1] hover:border-[#16B86E] border border-slate-200 dark:border-[#465362] text-xs font-semibold flex items-center gap-2.5 active:scale-98 transition-all shadow-2xs text-left cursor-pointer">
             <span class="material-symbols-outlined text-[#16B86E] text-[18px]">mic</span>
             <span data-i18n="ai_chip_2">"मुझे 1 लीटर दूध चाहिए"</span>
           </button>
-          <button onclick="handleVoiceChipClick(this.querySelector('span[data-i18n]')?.innerText || '5 kilo atta aur cooking oil')" class="w-full py-2.5 px-4 rounded-full bg-white dark:bg-[#2B4858] text-slate-700 dark:text-[#C9DCE5] hover:border-[#16B86E] border border-slate-200 dark:border-[#476476] text-xs font-semibold flex items-center gap-2.5 active:scale-98 transition-all shadow-2xs text-left cursor-pointer">
+          <button onclick="handleVoiceChipClick(this.querySelector('span[data-i18n]')?.innerText || '5 kilo atta aur cooking oil')" class="w-full py-2.5 px-4 rounded-full bg-white dark:bg-[#1D232B] text-slate-700 dark:text-[#CBD5E1] hover:border-[#16B86E] border border-slate-200 dark:border-[#465362] text-xs font-semibold flex items-center gap-2.5 active:scale-98 transition-all shadow-2xs text-left cursor-pointer">
             <span class="material-symbols-outlined text-[#16B86E] text-[18px]">mic</span>
             <span data-i18n="ai_chip_3">"5 किलो आटा और सरसों का तेल"</span>
           </button>
         </div>
 
         <!-- Real-Time Voice Transcript Box (when recognized) -->
-        <div id="commerce-ai-transcript-box" class="w-full bg-white dark:bg-[#2B4858] rounded-2xl p-2.5 border border-slate-200 dark:border-[#476476] text-left min-h-[40px] flex items-center justify-between shadow-2xs">
+        <div id="commerce-ai-transcript-box" class="w-full bg-white dark:bg-[#1D232B] rounded-2xl p-2.5 border border-slate-200 dark:border-[#465362] text-left min-h-[40px] flex items-center justify-between shadow-2xs">
           <div class="flex items-center gap-2 flex-1 min-w-0">
             <span class="material-symbols-outlined text-slate-400 text-[18px]">graphic_eq</span>
-            <span id="commerce-ai-transcript" class="text-xs font-semibold text-slate-700 dark:text-[#C9DCE5] italic truncate" data-i18n="ai_transcript_placeholder">"Speak or tap chips above..."</span>
+            <span id="commerce-ai-transcript" class="text-xs font-semibold text-slate-700 dark:text-[#CBD5E1] italic truncate" data-i18n="ai_transcript_placeholder">"Speak or tap chips above..."</span>
           </div>
           <button id="commerce-transcript-clear" onclick="clearCommerceAiInput()" class="text-slate-400 hover:text-slate-600 p-1 rounded-full cursor-pointer">
             <span class="material-symbols-outlined text-[16px]">close</span>
@@ -2335,9 +2395,9 @@
 
         <!-- Divider: "Or type your request" -->
         <div class="flex items-center gap-2 my-1">
-          <div class="h-px bg-slate-200 dark:bg-[#476476] flex-1"></div>
-          <span class="text-[11px] font-medium text-slate-400 dark:text-[#8CAAB9]" data-i18n="ai_or_type">Or type your request</span>
-          <div class="h-px bg-slate-200 dark:bg-[#476476] flex-1"></div>
+          <div class="h-px bg-slate-200 dark:bg-[#465362] flex-1"></div>
+          <span class="text-[11px] font-medium text-slate-400 dark:text-[#94A3B8]" data-i18n="ai_or_type">Or type your request</span>
+          <div class="h-px bg-slate-200 dark:bg-[#465362] flex-1"></div>
         </div>
 
         <!-- Text Fallback Input Bar with send arrow button -->
@@ -2347,7 +2407,7 @@
             type="text" 
             placeholder="Type in Hindi or English..." 
             data-i18n-ph="ai_input_placeholder"
-            class="flex-1 h-11 bg-white dark:bg-[#2B4858] rounded-full px-4 text-xs font-medium text-slate-900 dark:text-[#F6FBFD] border border-slate-200 dark:border-[#476476] focus:outline-none focus:border-[#16B86E]"
+            class="flex-1 h-11 bg-white dark:bg-[#1D232B] rounded-full px-4 text-xs font-medium text-slate-900 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] focus:outline-none focus:border-[#16B86E]"
             onkeydown="if(event.key === 'Enter') submitCommerceAiInput()"
           />
           <button 
@@ -2363,7 +2423,7 @@
         <!-- Matched Product Inventory Cards Container -->
         <div class="space-y-2 pt-1">
           <div class="flex items-center justify-between px-1">
-            <span id="commerce-results-heading" class="text-xs font-black text-slate-800 dark:text-[#F6FBFD]" data-i18n="ai_results_heading">Inventory Matches</span>
+            <span id="commerce-results-heading" class="text-xs font-black text-slate-800 dark:text-[#F8FAFC]" data-i18n="ai_results_heading">Inventory Matches</span>
             <button id="commerce-add-all-btn" onclick="addAllCommerceAiMatchesToCart()" class="hidden text-xs font-extrabold text-[#16B86E] hover:underline cursor-pointer" data-i18n="ai_add_all">+ Add All to Cart</button>
           </div>
           <div id="commerce-ai-results" class="space-y-2.5">
@@ -8154,29 +8214,29 @@
         const imgSrc = imgMap[item.id] || imgMap[item.id.replace('item_', '')] || '';
 
         const row = document.createElement('div');
-        row.className = 'bg-white dark:bg-[#2B4858] rounded-2xl p-3.5 shadow-xs border border-slate-200 dark:border-[#476476] flex items-center justify-between gap-3';
+        row.className = 'bg-white dark:bg-[#1D232B] rounded-2xl p-3.5 shadow-xs border border-slate-200 dark:border-[#465362] flex items-center justify-between gap-3';
         row.innerHTML = `
           <div class="flex items-center gap-3 min-w-0 flex-1">
-            <div class="w-12 h-12 rounded-xl bg-slate-50 dark:bg-[#365668] flex items-center justify-center p-1.5 shrink-0 overflow-hidden border border-slate-100 dark:border-[#476476]">
+            <div class="w-12 h-12 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-1.5 shrink-0 overflow-hidden border border-slate-100 dark:border-[#465362]">
               ${imgSrc ? `<img src="${imgSrc}" alt="${escapeHtml(title)}" class="w-full h-full object-contain" />` : `<span class="material-symbols-outlined text-[22px] text-[#16B86E]">${item.icon || 'inventory_2'}</span>`}
             </div>
             <div class="flex flex-col min-w-0 flex-1">
-              <span class="text-xs font-black text-slate-900 dark:text-[#F6FBFD] truncate">${escapeHtml(title)}</span>
-              <span class="text-[11px] text-slate-500 dark:text-[#C9DCE5]">${escapeHtml(weight)}</span>
-              <span class="text-xs font-bold text-slate-800 dark:text-[#F6FBFD] mt-0.5">₹ ${price} / ${weight.includes('L') ? 'L' : 'kg'}</span>
+              <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">${escapeHtml(title)}</span>
+              <span class="text-[11px] text-slate-500 dark:text-[#CBD5E1]">${escapeHtml(weight)}</span>
+              <span class="text-xs font-bold text-slate-800 dark:text-[#F8FAFC] mt-0.5">₹ ${price} / ${weight.includes('L') ? 'L' : 'kg'}</span>
             </div>
           </div>
           <div class="flex items-center gap-2 shrink-0">
-            <div class="flex items-center bg-slate-100 dark:bg-[#365668] rounded-full p-0.5 shadow-2xs border border-slate-200/60 dark:border-[#476476]">
-              <button onclick="modifyItemQty('${item.id}', -1)" aria-label="Decrease quantity" class="w-7 h-7 rounded-full bg-white dark:bg-[#2B4858] text-slate-700 dark:text-[#F6FBFD] flex items-center justify-center active:scale-90 cursor-pointer shadow-2xs">
+            <div class="flex items-center bg-slate-100 dark:bg-[#2A323D] rounded-full p-0.5 shadow-2xs border border-slate-200/60 dark:border-[#465362]">
+              <button onclick="modifyItemQty('${item.id}', -1)" aria-label="Decrease quantity" class="w-7 h-7 rounded-full bg-white dark:bg-[#1D232B] text-slate-700 dark:text-[#F8FAFC] flex items-center justify-center active:scale-90 cursor-pointer shadow-2xs">
                 <span class="material-symbols-outlined text-[14px]">remove</span>
               </button>
-              <span class="w-8 text-center font-black text-xs text-slate-800 dark:text-[#F6FBFD]">${qty}</span>
+              <span class="w-8 text-center font-black text-xs text-slate-800 dark:text-[#F8FAFC]">${qty}</span>
               <button onclick="modifyItemQty('${item.id}', 1)" aria-label="Increase quantity" class="w-7 h-7 rounded-full bg-[#16B86E] text-white flex items-center justify-center active:scale-90 cursor-pointer shadow-2xs">
                 <span class="material-symbols-outlined text-[14px]">add</span>
               </button>
             </div>
-            <span class="text-xs font-black text-slate-900 dark:text-[#F6FBFD] w-12 text-right">₹ ${lineTotal}</span>
+            <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] w-12 text-right">₹ ${lineTotal}</span>
             <button onclick="modifyItemQty('${item.id}', -999)" aria-label="Remove item" class="w-7 h-7 rounded-full text-slate-400 hover:text-rose-500 flex items-center justify-center transition-colors cursor-pointer">
               <span class="material-symbols-outlined text-[16px]">delete</span>
             </button>
@@ -8860,11 +8920,11 @@
           const itUnit = it.unit || 'pack';
           const itImg = it.image || `static/images/${it.product_id || 'prod_tomato'}.png`;
           return `
-            <div class="flex items-center gap-2 p-1.5 rounded-xl bg-slate-50 dark:bg-[#365668] border border-slate-200/60 dark:border-[#476476] shrink-0">
+            <div class="flex items-center gap-2 p-1.5 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200/60 dark:border-[#465362] shrink-0">
               <img src="${itImg}" onerror="this.src='static/images/prod_tomato.png'" class="w-7 h-7 object-contain" alt="${itName}" />
               <div class="text-[10px] leading-tight">
-                <span class="font-bold block text-slate-800 dark:text-[#F6FBFD]">${itName}</span>
-                <span class="text-slate-500 dark:text-[#C9DCE5]">${itQty} ${itUnit} ${itPrice ? '• ' + itPrice : ''}</span>
+                <span class="font-bold block text-slate-800 dark:text-[#F8FAFC]">${itName}</span>
+                <span class="text-slate-500 dark:text-[#CBD5E1]">${itQty} ${itUnit} ${itPrice ? '• ' + itPrice : ''}</span>
               </div>
             </div>
           `;
@@ -9108,13 +9168,13 @@
       window.activeCategoryFilter = cat;
       document.querySelectorAll('.cat-chip').forEach(el => {
         el.classList.remove('active', 'bg-primary', 'bg-[#16B86E]', 'text-white');
-        el.classList.add('bg-white', 'dark:bg-[#2B4858]', 'text-slate-800', 'dark:text-[#F6FBFD]');
+        el.classList.add('bg-white', 'dark:bg-[#1D232B]', 'text-slate-800', 'dark:text-[#F8FAFC]');
       });
       const targetId = cat === 'all' ? 'cat-chip-all' : 'cat-chip-' + cat;
       const activeEl = document.getElementById(targetId);
       if (activeEl) {
         activeEl.classList.add('active', 'bg-[#16B86E]', 'text-white');
-        activeEl.classList.remove('bg-white', 'dark:bg-[#2B4858]', 'text-slate-800', 'dark:text-[#F6FBFD]');
+        activeEl.classList.remove('bg-white', 'dark:bg-[#1D232B]', 'text-slate-800', 'dark:text-[#F8FAFC]');
       }
 
       const allStores = AppStore.stores || [];
@@ -9896,7 +9956,7 @@
       const userBubble = document.createElement('div');
       userBubble.className = "flex justify-end";
       userBubble.innerHTML = `
-        <div class="bg-emerald-600 text-white px-2.5 py-1.5 rounded-xl rounded-tr-xs shadow-xs max-w-[82%] sm:max-w-[78%] space-y-0.5">
+        <div class="gb-chat-outgoing bg-emerald-600 text-white px-2.5 py-1.5 rounded-xl rounded-tr-xs shadow-xs max-w-[82%] sm:max-w-[78%] space-y-0.5">
           <p class="font-medium text-[11px] leading-snug">${escapeHtml(text)}</p>
           <p class="text-[8px] text-emerald-100 text-right">${timeStr}</p>
         </div>

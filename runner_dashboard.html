@@ -149,58 +149,58 @@
 
         /* ======================================================== */
     /* APPROVED THEME SYSTEM STYLES (Soft Blue-Teal Slate Dark) */
-    /* Page #203846 | Card #2B4858 | Elevated #365668 | Text #F6FBFD */
+    /* Page #111418 | Card #1D232B | Elevated #2A323D | Text #F8FAFC */
     /* ======================================================== */
     html.dark {
       color-scheme: dark;
-      background-color: #203846 !important;
-      color: #F6FBFD !important;
+      background-color: #111418 !important;
+      color: #F8FAFC !important;
     }
     html.dark body {
-      background-color: #203846 !important;
-      color: #F6FBFD !important;
+      background-color: #111418 !important;
+      color: #F8FAFC !important;
     }
     html.dark .bg-slate-900,
     html.dark .bg-slate-950 {
-      background-color: #203846 !important;
-      color: #F6FBFD !important;
+      background-color: #111418 !important;
+      color: #F8FAFC !important;
     }
     html.dark .bg-slate-850,
     html.dark .bg-slate-800 {
-      background-color: #2B4858 !important;
-      border-color: #476476 !important;
-      color: #F6FBFD !important;
+      background-color: #1D232B !important;
+      border-color: #465362 !important;
+      color: #F8FAFC !important;
     }
     html.dark .bg-slate-700 {
-      background-color: #365668 !important;
-      border-color: #476476 !important;
-      color: #F6FBFD !important;
+      background-color: #2A323D !important;
+      border-color: #465362 !important;
+      color: #F8FAFC !important;
     }
     html.dark .border-slate-800,
     html.dark .border-slate-700 {
-      border-color: #476476 !important;
+      border-color: #465362 !important;
     }
     html.dark .text-white {
-      color: #F6FBFD !important;
+      color: #F8FAFC !important;
     }
     html.dark .text-slate-300,
     html.dark .text-slate-400 {
-      color: #C9DCE5 !important;
+      color: #CBD5E1 !important;
     }
     html.dark .text-slate-500 {
-      color: #9FB9C7 !important;
+      color: #B4C1D1 !important;
     }
     html.dark input,
     html.dark select,
     html.dark textarea {
-      background-color: #365668 !important;
-      color: #F6FBFD !important;
-      border-color: #476476 !important;
+      background-color: #2A323D !important;
+      color: #F8FAFC !important;
+      border-color: #465362 !important;
     }
     html.dark #runner-header,
     html.dark #runner-bottom-nav {
-      background-color: #203846 !important;
-      border-color: #476476 !important;
+      background-color: #111418 !important;
+      border-color: #465362 !important;
     }
     html.dark .bg-emerald-500\/10 {
       background-color: rgba(22, 184, 110, 0.2) !important;
@@ -283,6 +283,66 @@
     .active-scale-btn:active {
       transform: scale(0.97);
     }
+  
+    /* GAONBAZAAR DARK CONTRAST FIX v1 — neutral charcoal, approved layout intact. */
+    html.dark {
+      --gb-night-bg: #111418;
+      --gb-night-card: #1D232B;
+      --gb-night-raised: #2A323D;
+      --gb-night-divider: #465362;
+      --gb-night-primary: #F8FAFC;
+      --gb-night-secondary: #CBD5E1;
+    }
+    /* Brand green is an ACCENT, not a dark-mode page/card background. */
+    html.dark .bg-emerald-50,
+    html.dark .bg-amber-50,
+    html.dark .bg-emerald-500\/10 {
+      background-color: #27313B !important;
+      border-color: #465362 !important;
+    }
+    html.dark #chat-messages-container,
+    html.dark #vendor-chat-messages-container,
+    html.dark #runner-chat-messages-container {
+      background-color: #151B23 !important;
+      border-color: #465362 !important;
+      color: #F8FAFC !important;
+    }
+    /* Outgoing bubbles must NOT use vivid green + white (poor text contrast). */
+    html.dark .gb-chat-outgoing {
+      background-color: #14523C !important;
+      color: #FFFFFF !important;
+      border: 1px solid #287053 !important;
+    }
+    html.dark .gb-chat-outgoing p { color: #FFFFFF !important; }
+    html.dark .gb-chat-outgoing .text-emerald-100 { color: #D1FAE5 !important; }
+    html.dark #modal-support-chat .bg-emerald-50\/60 {
+      background-color: #27313B !important;
+      color: #F8FAFC !important;
+      border-color: #465362 !important;
+    }
+    html.dark #modal-support-chat .text-emerald-950,
+    html.dark #modal-support-chat .text-emerald-700 {
+      color: #D1FAE5 !important;
+    }
+    html.dark #chat-messages-container .bg-white,
+    html.dark #vendor-chat-messages-container .bg-white {
+      background-color: #26303A !important;
+      color: #F8FAFC !important;
+      border-color: #465362 !important;
+    }
+    /* Former mobile vendor ledger rule forced white cards even in dark mode. */
+    @media (max-width: 640px) {
+      html.dark .vendor-ledger-card {
+        background: #1D232B !important;
+        background-color: #1D232B !important;
+        color: #F8FAFC !important;
+        border-color: #465362 !important;
+      }
+      html.dark .vendor-ledger-card td {
+        border-bottom-color: #465362 !important;
+      }
+    }
+
   </style>
 </head>
 
@@ -382,7 +442,7 @@
   <!-- ========================================================================= -->
   <!-- 2. NATIVE TOP APP BAR & SHIFT STATUS (Mobile-First Android Minimal)       -->
   <!-- ========================================================================= -->
-  <header id="runner-header" class="hidden sticky top-0 z-40 shrink-0 bg-white dark:bg-[#203846] border-b border-slate-200 dark:border-[#476476] shadow-2xs px-3.5 h-16 flex items-center transition-colors">
+  <header id="runner-header" class="hidden sticky top-0 z-40 shrink-0 bg-white dark:bg-[#111418] border-b border-slate-200 dark:border-[#465362] shadow-2xs px-3.5 h-16 flex items-center transition-colors">
     <div class="max-w-4xl w-full mx-auto flex items-center justify-between gap-2">
       
       <!-- Brand & Role Subtitle -->
@@ -391,21 +451,21 @@
           <span class="material-symbols-outlined text-[20px]">two_wheeler</span>
         </div>
         <div class="flex flex-col min-w-0 justify-center">
-          <span class="text-sm font-black text-slate-900 dark:text-[#F6FBFD] tracking-tight leading-tight">GaonBazaar</span>
-          <span id="runner-header-role" class="text-[10px] text-slate-500 dark:text-[#C9DCE5] font-semibold truncate" data-i18n="runner_role_subtitle">Delivery Partner • Gaon Mitra</span>
+          <span class="text-sm font-black text-slate-900 dark:text-[#F8FAFC] tracking-tight leading-tight">GaonBazaar</span>
+          <span id="runner-header-role" class="text-[10px] text-slate-500 dark:text-[#CBD5E1] font-semibold truncate" data-i18n="runner_role_subtitle">Delivery Partner • Gaon Mitra</span>
         </div>
       </div>
 
       <!-- Quick Action Controls: Bell with Count Badge + 4-Square Grid Menu Icon -->
       <div class="flex items-center gap-1.5 shrink-0">
         <!-- Notifications Bell with Red Badge -->
-        <button id="btn-runner-header-notifs" type="button" onclick="openRunnerNotificationsModal()" title="Notifications" aria-label="Notifications" class="relative w-10 h-10 min-w-[40px] min-h-[40px] rounded-xl bg-slate-100 dark:bg-[#365668] hover:bg-slate-200 dark:hover:bg-[#476476] text-slate-700 dark:text-[#F6FBFD] border border-slate-200 dark:border-[#476476] flex items-center justify-center active:scale-95 shrink-0 cursor-pointer shadow-2xs">
+        <button id="btn-runner-header-notifs" type="button" onclick="openRunnerNotificationsModal()" title="Notifications" aria-label="Notifications" class="relative w-10 h-10 min-w-[40px] min-h-[40px] rounded-xl bg-slate-100 dark:bg-[#2A323D] hover:bg-slate-200 dark:hover:bg-[#465362] text-slate-700 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] flex items-center justify-center active:scale-95 shrink-0 cursor-pointer shadow-2xs">
           <span class="material-symbols-outlined text-[22px]">notifications</span>
           <span id="runner-notif-dot" class="absolute top-2 right-2 min-w-[16px] h-[16px] px-1 bg-red-600 text-white text-[10px] font-black rounded-full flex items-center justify-center border border-white">1</span>
         </button>
 
         <!-- 4-Square Grid Menu Icon (Opens Settings / Profile View) -->
-        <button id="btn-runner-header-settings" type="button" onclick="switchTab('settings')" title="Menu" aria-label="Menu" class="w-10 h-10 min-w-[40px] min-h-[40px] rounded-xl bg-slate-100 dark:bg-[#365668] hover:bg-slate-200 dark:hover:bg-[#476476] text-slate-800 dark:text-[#F6FBFD] border border-slate-200 dark:border-[#476476] flex items-center justify-center active:scale-95 shrink-0 cursor-pointer shadow-2xs">
+        <button id="btn-runner-header-settings" type="button" onclick="switchTab('settings')" title="Menu" aria-label="Menu" class="w-10 h-10 min-w-[40px] min-h-[40px] rounded-xl bg-slate-100 dark:bg-[#2A323D] hover:bg-slate-200 dark:hover:bg-[#465362] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] flex items-center justify-center active:scale-95 shrink-0 cursor-pointer shadow-2xs">
           <span class="material-symbols-outlined text-[22px]">grid_view</span>
         </button>
       </div>
@@ -484,12 +544,12 @@
       <!-- Runner Profile Row Matching Reference 03 -->
       <div class="flex items-center justify-between p-1">
         <div class="flex items-center gap-2.5 min-w-0">
-          <div class="w-11 h-11 rounded-full overflow-hidden shrink-0 shadow-xs border-2 border-white dark:border-[#365668]">
+          <div class="w-11 h-11 rounded-full overflow-hidden shrink-0 shadow-xs border-2 border-white dark:border-[#2A323D]">
             <img src="static/images/runner_avatar.png" alt="Ram Kumar" class="w-full h-full object-cover" />
           </div>
           <div class="flex flex-col min-w-0">
-            <span id="runner-name-display" class="text-sm font-black text-slate-900 dark:text-[#F6FBFD] leading-tight truncate">Ram Kumar</span>
-            <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5]">Gaon Mitra • ID: GB-DP-1021</span>
+            <span id="runner-name-display" class="text-sm font-black text-slate-900 dark:text-[#F8FAFC] leading-tight truncate">Ram Kumar</span>
+            <span class="text-[10px] text-slate-500 dark:text-[#CBD5E1]">Gaon Mitra • ID: GB-DP-1021</span>
           </div>
         </div>
         <div class="flex items-center gap-2">
@@ -500,44 +560,44 @@
             <span class="material-symbols-outlined text-[14px]">expand_more</span>
           </button>
           <!-- Language Toggle Pill -->
-          <button onclick="toggleRunnerLanguage()" type="button" class="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-[#365668] text-slate-700 dark:text-[#C9DCE5] border border-slate-200 dark:border-[#476476] text-[11px] font-black flex items-center gap-1 cursor-pointer">
+          <button onclick="toggleRunnerLanguage()" type="button" class="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-[#2A323D] text-slate-700 dark:text-[#CBD5E1] border border-slate-200 dark:border-[#465362] text-[11px] font-black flex items-center gap-1 cursor-pointer">
             <span class="text-[#16B86E]">HI</span>
-            <span class="text-slate-300 dark:text-[#476476]">|</span>
-            <span class="text-slate-500 dark:text-[#8CAAB9]">EN</span>
+            <span class="text-slate-300 dark:text-[#465362]">|</span>
+            <span class="text-slate-500 dark:text-[#94A3B8]">EN</span>
           </button>
         </div>
       </div>
 
       <!-- "I am on duty" Big Toggle Card Matching Reference 03 -->
-      <div class="rounded-2xl bg-white dark:bg-[#2B4858] p-3.5 border border-slate-200 dark:border-[#476476] shadow-xs flex items-center justify-between">
+      <div class="rounded-2xl bg-white dark:bg-[#1D232B] p-3.5 border border-slate-200 dark:border-[#465362] shadow-xs flex items-center justify-between">
         <div class="flex flex-col">
-          <span id="runner-duty-title" class="text-xs font-black text-slate-900 dark:text-[#F6FBFD]" data-i18n="runner_duty_title">I am on duty</span>
-          <span id="runner-duty-sub" class="text-[11px] text-slate-500 dark:text-[#C9DCE5]" data-i18n="runner_duty_sub">Ready to receive orders</span>
+          <span id="runner-duty-title" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="runner_duty_title">I am on duty</span>
+          <span id="runner-duty-sub" class="text-[11px] text-slate-500 dark:text-[#CBD5E1]" data-i18n="runner_duty_sub">Ready to receive orders</span>
         </div>
         <!-- Big Green Toggle Switch -->
         <label class="relative inline-flex items-center cursor-pointer">
           <input type="checkbox" id="runner-duty-toggle" checked onchange="toggleRunnerShift()" class="sr-only peer">
-          <div class="w-12 h-6 bg-slate-200 dark:bg-[#365668] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#16B86E]"></div>
+          <div class="w-12 h-6 bg-slate-200 dark:bg-[#2A323D] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#16B86E]"></div>
         </label>
       </div>
 
       <!-- Current Area Card -->
-      <div class="rounded-2xl bg-white dark:bg-[#2B4858] p-3.5 border border-slate-200 dark:border-[#476476] shadow-xs flex items-center justify-between">
+      <div class="rounded-2xl bg-white dark:bg-[#1D232B] p-3.5 border border-slate-200 dark:border-[#465362] shadow-xs flex items-center justify-between">
         <div class="flex items-center gap-2.5 min-w-0">
           <span class="material-symbols-outlined text-[#3B82F6] text-[22px] shrink-0">location_on</span>
           <div class="flex flex-col min-w-0">
-            <div class="text-[10px] text-slate-400 dark:text-[#8CAAB9] font-medium uppercase tracking-wider" data-i18n="runner_current_area_lbl">Current Area</div>
-            <span id="runner-current-area-name" class="text-xs font-black text-slate-900 dark:text-[#F6FBFD] truncate" data-i18n="runner_service_hub">Sonpur Hub</span>
-            <span id="runner-current-area-range" class="text-[10px] text-slate-500 dark:text-[#C9DCE5]" data-i18n="runner_service_range">Delivering in Sonpur • 0-8.0 km radius</span>
+            <div class="text-[10px] text-slate-400 dark:text-[#94A3B8] font-medium uppercase tracking-wider" data-i18n="runner_current_area_lbl">Current Area</div>
+            <span id="runner-current-area-name" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate" data-i18n="runner_service_hub">Sonpur Hub</span>
+            <span id="runner-current-area-range" class="text-[10px] text-slate-500 dark:text-[#CBD5E1]" data-i18n="runner_service_range">Delivering in Sonpur • 0-8.0 km radius</span>
           </div>
         </div>
         <button id="btn-change-area" type="button" onclick="openRunnerChangeAreaModal()" class="text-xs font-bold text-[#3B82F6] dark:text-[#60A5FA] hover:underline shrink-0 min-h-[36px] flex items-center px-1 cursor-pointer" data-i18n="btn_change_area">Change</button>
       </div>
 
       <!-- Today's Missions Summary Matching Reference 03 -->
-      <div class="rounded-2xl bg-white dark:bg-[#2B4858] p-3.5 border border-slate-200 dark:border-[#476476] shadow-xs flex flex-col gap-2.5">
+      <div class="rounded-2xl bg-white dark:bg-[#1D232B] p-3.5 border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col gap-2.5">
         <div class="flex items-center justify-between">
-          <span class="text-xs font-black text-slate-900 dark:text-[#F6FBFD]" data-i18n="runner_todays_missions">Today's Missions</span>
+          <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="runner_todays_missions">Today's Missions</span>
           <button onclick="switchTab('ledger')" class="text-xs font-bold text-[#16B86E] hover:underline flex items-center gap-0.5">
             <span data-i18n="runner_view_all">View all</span>
             <span class="material-symbols-outlined text-[14px]">chevron_right</span>
@@ -546,21 +606,21 @@
 
         <div id="runner-kpi-board" class="grid grid-cols-3 gap-2">
           <!-- Card 1: Assigned / Active Missions -->
-          <div onclick="switchTab('missions')" class="p-2.5 rounded-xl bg-emerald-50 dark:bg-[#365668] border border-emerald-200/60 dark:border-[#476476] flex flex-col cursor-pointer">
+          <div onclick="switchTab('missions')" class="p-2.5 rounded-xl bg-emerald-50 dark:bg-[#2A323D] border border-emerald-200/60 dark:border-[#465362] flex flex-col cursor-pointer">
             <span id="kpi-active-missions" class="text-base font-black text-[#16B86E]">5</span>
-            <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5] font-semibold" data-i18n="kpi_active_missions">Assigned</span>
+            <span class="text-[10px] text-slate-500 dark:text-[#CBD5E1] font-semibold" data-i18n="kpi_active_missions">Assigned</span>
             <span id="stat-pending-missions" class="hidden">5</span>
           </div>
           <!-- Card 2: Completed -->
-          <div onclick="switchTab('ledger')" class="p-2.5 rounded-xl bg-blue-50 dark:bg-[#365668] border border-blue-200/60 dark:border-[#476476] flex flex-col cursor-pointer">
+          <div onclick="switchTab('ledger')" class="p-2.5 rounded-xl bg-blue-50 dark:bg-[#2A323D] border border-blue-200/60 dark:border-[#465362] flex flex-col cursor-pointer">
             <span id="kpi-completed-today" class="text-base font-black text-[#3B82F6]">3</span>
-            <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5] font-semibold" data-i18n="kpi_delivered_today">Completed</span>
+            <span class="text-[10px] text-slate-500 dark:text-[#CBD5E1] font-semibold" data-i18n="kpi_delivered_today">Completed</span>
             <span id="stat-completed-missions" class="hidden">3</span>
           </div>
           <!-- Card 3: Earnings -->
-          <div onclick="switchTab('ledger')" class="p-2.5 rounded-xl bg-amber-50 dark:bg-[#365668] border border-amber-200/60 dark:border-[#476476] flex flex-col cursor-pointer">
+          <div onclick="switchTab('ledger')" class="p-2.5 rounded-xl bg-amber-50 dark:bg-[#2A323D] border border-amber-200/60 dark:border-[#465362] flex flex-col cursor-pointer">
             <span id="kpi-today-earnings" class="text-base font-black text-[#FF981A]">₹320</span>
-            <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5] font-semibold" data-i18n="kpi_shift_earnings">Earnings</span>
+            <span class="text-[10px] text-slate-500 dark:text-[#CBD5E1] font-semibold" data-i18n="kpi_shift_earnings">Earnings</span>
             <span id="stat-daily-earnings" class="hidden">₹320</span>
           </div>
           <!-- Card 4: Cash in Hand (Hidden hook for tests) -->
@@ -575,10 +635,10 @@
         <button onclick="filterRunnerMissions('current')" id="rf-current-btn" class="px-3.5 py-1.5 rounded-full text-xs font-black bg-[#16B86E] text-white shadow-xs shrink-0 cursor-pointer">
           Current (2)
         </button>
-        <button onclick="filterRunnerMissions('upcoming')" id="rf-upcoming-btn" class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-700 dark:text-[#C9DCE5] border border-slate-200 dark:border-[#476476] shadow-2xs shrink-0 cursor-pointer">
+        <button onclick="filterRunnerMissions('upcoming')" id="rf-upcoming-btn" class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-700 dark:text-[#CBD5E1] border border-slate-200 dark:border-[#465362] shadow-2xs shrink-0 cursor-pointer">
           Upcoming (3)
         </button>
-        <button onclick="filterRunnerMissions('completed')" id="rf-completed-btn" class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-700 dark:text-[#C9DCE5] border border-slate-200 dark:border-[#476476] shadow-2xs shrink-0 cursor-pointer">
+        <button onclick="filterRunnerMissions('completed')" id="rf-completed-btn" class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-700 dark:text-[#CBD5E1] border border-slate-200 dark:border-[#465362] shadow-2xs shrink-0 cursor-pointer">
           Completed
         </button>
       </div>
@@ -865,18 +925,18 @@
 
       <!-- Screen 5: Runner Profile & Earnings Header (Matching Reference 03 Frame 5) -->
       <div class="flex items-center justify-between py-1">
-        <span class="font-black text-sm text-slate-900 dark:text-[#F6FBFD]">My Profile & Earnings</span>
-        <span class="text-[11px] font-bold text-[#16B86E] bg-emerald-50 dark:bg-[#365668] px-2.5 py-0.5 rounded-full">Gaon Mitra</span>
+        <span class="font-black text-sm text-slate-900 dark:text-[#F8FAFC]">My Profile & Earnings</span>
+        <span class="text-[11px] font-bold text-[#16B86E] bg-emerald-50 dark:bg-[#2A323D] px-2.5 py-0.5 rounded-full">Gaon Mitra</span>
       </div>
 
       <!-- Profile Card -->
-      <div class="p-4 rounded-3xl bg-white dark:bg-[#2B4858] border border-slate-200 dark:border-[#476476] shadow-xs flex items-center gap-3.5">
-        <div class="w-14 h-14 rounded-full overflow-hidden shrink-0 shadow-xs border-2 border-white dark:border-[#365668]">
+      <div class="p-4 rounded-3xl bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-[#465362] shadow-xs flex items-center gap-3.5">
+        <div class="w-14 h-14 rounded-full overflow-hidden shrink-0 shadow-xs border-2 border-white dark:border-[#2A323D]">
           <img src="static/images/runner_avatar.png" alt="Ram Kumar" class="w-full h-full object-cover" />
         </div>
         <div class="flex flex-col min-w-0">
-          <span class="font-black text-sm text-slate-900 dark:text-[#F6FBFD]">Ram Kumar</span>
-          <span class="text-xs text-slate-500 dark:text-[#C9DCE5]">Gaon Mitra Partner • ID: GB-DP-1021</span>
+          <span class="font-black text-sm text-slate-900 dark:text-[#F8FAFC]">Ram Kumar</span>
+          <span class="text-xs text-slate-500 dark:text-[#CBD5E1]">Gaon Mitra Partner • ID: GB-DP-1021</span>
           <div class="flex items-center gap-2 mt-1">
             <span class="text-[11px] font-bold text-amber-500 flex items-center gap-0.5">
               <span>★ 4.9</span>
@@ -889,48 +949,48 @@
 
       <!-- Earnings Overview 3 Cards Single Row -->
       <div class="flex flex-col gap-2">
-        <span class="text-xs font-black uppercase text-slate-500 dark:text-[#8CAAB9] tracking-wider">Earnings Overview</span>
+        <span class="text-xs font-black uppercase text-slate-500 dark:text-[#94A3B8] tracking-wider">Earnings Overview</span>
         <div class="grid grid-cols-3 gap-2">
           <!-- Today -->
-          <div class="p-3 rounded-2xl bg-white dark:bg-[#2B4858] border border-slate-200 dark:border-[#476476] shadow-xs flex flex-col items-center text-center">
-            <span class="text-[10px] font-bold text-slate-500 dark:text-[#C9DCE5]">Today</span>
+          <div class="p-3 rounded-2xl bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col items-center text-center">
+            <span class="text-[10px] font-bold text-slate-500 dark:text-[#CBD5E1]">Today</span>
             <span class="text-base font-black text-[#16B86E] mt-0.5">₹320</span>
           </div>
           <!-- This Week -->
-          <div class="p-3 rounded-2xl bg-white dark:bg-[#2B4858] border border-slate-200 dark:border-[#476476] shadow-xs flex flex-col items-center text-center">
-            <span class="text-[10px] font-bold text-slate-500 dark:text-[#C9DCE5]">This Week</span>
+          <div class="p-3 rounded-2xl bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col items-center text-center">
+            <span class="text-[10px] font-bold text-slate-500 dark:text-[#CBD5E1]">This Week</span>
             <span class="text-base font-black text-blue-600 dark:text-blue-400 mt-0.5">₹1,280</span>
           </div>
           <!-- This Month -->
-          <div class="p-3 rounded-2xl bg-white dark:bg-[#2B4858] border border-slate-200 dark:border-[#476476] shadow-xs flex flex-col items-center text-center">
-            <span class="text-[10px] font-bold text-slate-500 dark:text-[#C9DCE5]">This Month</span>
+          <div class="p-3 rounded-2xl bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col items-center text-center">
+            <span class="text-[10px] font-bold text-slate-500 dark:text-[#CBD5E1]">This Month</span>
             <span class="text-base font-black text-amber-600 dark:text-amber-400 mt-0.5">₹4,650</span>
           </div>
         </div>
       </div>
 
       <!-- Options Menu List -->
-      <div class="rounded-3xl bg-white dark:bg-[#2B4858] border border-slate-200 dark:border-[#476476] shadow-xs overflow-hidden flex flex-col divide-y divide-slate-100 dark:divide-[#476476]">
-        <button class="w-full p-3.5 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-[#365668] transition-colors">
+      <div class="rounded-3xl bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-[#465362] shadow-xs overflow-hidden flex flex-col divide-y divide-slate-100 dark:divide-[#465362]">
+        <button class="w-full p-3.5 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-[#2A323D] transition-colors">
           <div class="flex items-center gap-3">
             <span class="material-symbols-outlined text-[#16B86E] text-[20px]">history</span>
-            <span class="text-xs font-bold text-slate-800 dark:text-[#F6FBFD]">Daily Trip History</span>
+            <span class="text-xs font-bold text-slate-800 dark:text-[#F8FAFC]">Daily Trip History</span>
           </div>
           <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
         </button>
 
-        <button class="w-full p-3.5 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-[#365668] transition-colors">
+        <button class="w-full p-3.5 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-[#2A323D] transition-colors">
           <div class="flex items-center gap-3">
             <span class="material-symbols-outlined text-[#16B86E] text-[20px]">account_balance</span>
-            <span class="text-xs font-bold text-slate-800 dark:text-[#F6FBFD]">Bank Account & Payout UPI</span>
+            <span class="text-xs font-bold text-slate-800 dark:text-[#F8FAFC]">Bank Account & Payout UPI</span>
           </div>
           <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
         </button>
 
-        <button class="w-full p-3.5 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-[#365668] transition-colors">
+        <button class="w-full p-3.5 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-[#2A323D] transition-colors">
           <div class="flex items-center gap-3">
             <span class="material-symbols-outlined text-[#16B86E] text-[20px]">pedal_bike</span>
-            <span class="text-xs font-bold text-slate-800 dark:text-[#F6FBFD]">Vehicle Details (Bicycle)</span>
+            <span class="text-xs font-bold text-slate-800 dark:text-[#F8FAFC]">Vehicle Details (Bicycle)</span>
           </div>
           <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
         </button>
@@ -938,17 +998,17 @@
         <div class="w-full p-3.5 flex items-center justify-between text-left">
           <div class="flex items-center gap-3">
             <span class="material-symbols-outlined text-[#16B86E] text-[20px]">translate</span>
-            <span class="text-xs font-bold text-slate-800 dark:text-[#F6FBFD]">Language / भाषा</span>
+            <span class="text-xs font-bold text-slate-800 dark:text-[#F8FAFC]">Language / भाषा</span>
           </div>
-          <button onclick="toggleRunnerLanguage()" class="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-[#365668] text-[11px] font-black border border-slate-200 dark:border-[#476476]">
+          <button onclick="toggleRunnerLanguage()" class="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-[#2A323D] text-[11px] font-black border border-slate-200 dark:border-[#465362]">
             <span class="text-[#16B86E]">हिंदी</span> / EN
           </button>
         </div>
 
-        <button type="button" onclick="openRunnerEmergencySupport()" class="w-full p-3.5 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-[#365668] transition-colors cursor-pointer">
+        <button type="button" onclick="openRunnerEmergencySupport()" class="w-full p-3.5 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-[#2A323D] transition-colors cursor-pointer">
           <div class="flex items-center gap-3">
             <span class="material-symbols-outlined text-[#16B86E] text-[20px]">support_agent</span>
-            <span class="text-xs font-bold text-slate-800 dark:text-[#F6FBFD]" data-i18n="partner_emergency_support">Partner Emergency Support (आपातकालीन सहायता)</span>
+            <span class="text-xs font-bold text-slate-800 dark:text-[#F8FAFC]" data-i18n="partner_emergency_support">Partner Emergency Support (आपातकालीन सहायता)</span>
           </div>
           <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
         </button>
@@ -1108,38 +1168,38 @@
       <!-- Top Header -->
       <div class="flex items-center justify-between py-1">
         <div class="flex items-center gap-2">
-          <button onclick="switchTab('missions')" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-[#365668] text-slate-800 dark:text-[#F6FBFD] flex items-center justify-center cursor-pointer">
+          <button onclick="switchTab('missions')" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-[#2A323D] text-slate-800 dark:text-[#F8FAFC] flex items-center justify-center cursor-pointer">
             <span class="material-symbols-outlined text-[20px]">arrow_back</span>
           </button>
-          <span class="font-black text-sm text-slate-900 dark:text-[#F6FBFD]">Pickup: Sharma Brothers Kirana</span>
+          <span class="font-black text-sm text-slate-900 dark:text-[#F8FAFC]">Pickup: Sharma Brothers Kirana</span>
         </div>
-        <span class="text-[11px] font-bold text-[#16B86E] bg-emerald-50 dark:bg-[#365668] px-2 py-0.5 rounded-full">#GB-1850</span>
+        <span class="text-[11px] font-bold text-[#16B86E] bg-emerald-50 dark:bg-[#2A323D] px-2 py-0.5 rounded-full">#GB-1850</span>
       </div>
 
       <!-- Store Card with store_sharma.png -->
-      <div class="rounded-2xl bg-white dark:bg-[#2B4858] p-3.5 border border-slate-200 dark:border-[#476476] shadow-xs flex items-center justify-between">
+      <div class="rounded-2xl bg-white dark:bg-[#1D232B] p-3.5 border border-slate-200 dark:border-[#465362] shadow-xs flex items-center justify-between">
         <div class="flex items-center gap-3 min-w-0">
-          <div class="w-14 h-14 rounded-xl overflow-hidden shrink-0 border border-slate-200 dark:border-[#476476]">
+          <div class="w-14 h-14 rounded-xl overflow-hidden shrink-0 border border-slate-200 dark:border-[#465362]">
             <img src="static/images/store_sharma.png" alt="Sharma Store" class="w-full h-full object-cover" />
           </div>
           <div class="flex flex-col min-w-0">
-            <span class="font-black text-xs text-slate-900 dark:text-[#F6FBFD] truncate">Sharma Brothers Kirana Store</span>
-            <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5]">Shop 4, Market Chowk, Rampur</span>
+            <span class="font-black text-xs text-slate-900 dark:text-[#F8FAFC] truncate">Sharma Brothers Kirana Store</span>
+            <span class="text-[10px] text-slate-500 dark:text-[#CBD5E1]">Shop 4, Market Chowk, Rampur</span>
             <span class="text-[10px] text-[#16B86E] font-bold mt-0.5">📍 400m away (2 mins)</span>
           </div>
         </div>
-        <a id="runner-screen-pickup-call-link" href="tel:9876543210" class="px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-[#365668] text-[#16B86E] text-xs font-bold flex items-center gap-1 active:scale-95 shrink-0">
+        <a id="runner-screen-pickup-call-link" href="tel:9876543210" class="px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-[#2A323D] text-[#16B86E] text-xs font-bold flex items-center gap-1 active:scale-95 shrink-0">
           <span class="material-symbols-outlined text-[16px]">call</span>
           <span>Call</span>
         </a>
       </div>
 
       <!-- Order & Customer Info -->
-      <div class="p-3.5 rounded-2xl bg-white dark:bg-[#2B4858] border border-slate-200 dark:border-[#476476] shadow-xs flex items-center justify-between">
+      <div class="p-3.5 rounded-2xl bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-[#465362] shadow-xs flex items-center justify-between">
         <div class="flex flex-col">
-          <span class="text-[10px] text-slate-400 dark:text-[#8CAAB9] uppercase tracking-wider font-bold">Deliver To</span>
-          <span class="text-xs font-black text-slate-900 dark:text-[#F6FBFD]">Ram Kumar</span>
-          <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5]">House 12, Rampur Main Gali</span>
+          <span class="text-[10px] text-slate-400 dark:text-[#94A3B8] uppercase tracking-wider font-bold">Deliver To</span>
+          <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC]">Ram Kumar</span>
+          <span class="text-[10px] text-slate-500 dark:text-[#CBD5E1]">House 12, Rampur Main Gali</span>
         </div>
         <span class="px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800 text-[10px] font-black">
           Collect Cash: ₹245
@@ -1148,30 +1208,30 @@
 
       <!-- Items to Collect Checklist -->
       <div class="flex flex-col gap-2">
-        <span class="text-xs font-black uppercase text-slate-500 dark:text-[#8CAAB9] tracking-wider">Items to Pick Up (2)</span>
+        <span class="text-xs font-black uppercase text-slate-500 dark:text-[#94A3B8] tracking-wider">Items to Pick Up (2)</span>
         
-        <div class="p-3 rounded-2xl bg-white dark:bg-[#2B4858] border border-slate-200 dark:border-[#476476] flex items-center justify-between shadow-2xs">
+        <div class="p-3 rounded-2xl bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-[#465362] flex items-center justify-between shadow-2xs">
           <div class="flex items-center gap-2.5">
             <div class="w-6 h-6 rounded-full bg-[#16B86E] text-white flex items-center justify-center text-xs font-bold">✓</div>
-            <img src="static/images/prod_rice.png" alt="Basmati Rice" class="w-10 h-10 object-contain rounded-xl bg-slate-50 dark:bg-[#365668] p-1" />
+            <img src="static/images/prod_rice.png" alt="Basmati Rice" class="w-10 h-10 object-contain rounded-xl bg-slate-50 dark:bg-[#2A323D] p-1" />
             <div class="flex flex-col">
-              <span class="text-xs font-bold text-slate-900 dark:text-[#F6FBFD]">Basmati Rice (1 kg)</span>
-              <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5]">Sealed Packet • Checked</span>
+              <span class="text-xs font-bold text-slate-900 dark:text-[#F8FAFC]">Basmati Rice (1 kg)</span>
+              <span class="text-[10px] text-slate-500 dark:text-[#CBD5E1]">Sealed Packet • Checked</span>
             </div>
           </div>
-          <span class="text-xs font-black text-slate-900 dark:text-[#F6FBFD]">₹110</span>
+          <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC]">₹110</span>
         </div>
 
-        <div class="p-3 rounded-2xl bg-white dark:bg-[#2B4858] border border-slate-200 dark:border-[#476476] flex items-center justify-between shadow-2xs">
+        <div class="p-3 rounded-2xl bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-[#465362] flex items-center justify-between shadow-2xs">
           <div class="flex items-center gap-2.5">
             <div class="w-6 h-6 rounded-full bg-[#16B86E] text-white flex items-center justify-center text-xs font-bold">✓</div>
-            <img src="static/images/prod_oil.png" alt="Sunflower Oil" class="w-10 h-10 object-contain rounded-xl bg-slate-50 dark:bg-[#365668] p-1" />
+            <img src="static/images/prod_oil.png" alt="Sunflower Oil" class="w-10 h-10 object-contain rounded-xl bg-slate-50 dark:bg-[#2A323D] p-1" />
             <div class="flex flex-col">
-              <span class="text-xs font-bold text-slate-900 dark:text-[#F6FBFD]">Sunflower Oil (1 L)</span>
-              <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5]">Bottle • Checked</span>
+              <span class="text-xs font-bold text-slate-900 dark:text-[#F8FAFC]">Sunflower Oil (1 L)</span>
+              <span class="text-[10px] text-slate-500 dark:text-[#CBD5E1]">Bottle • Checked</span>
             </div>
           </div>
-          <span class="text-xs font-black text-slate-900 dark:text-[#F6FBFD]">₹135</span>
+          <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC]">₹135</span>
         </div>
       </div>
 
@@ -1189,44 +1249,44 @@
       <!-- Top Header -->
       <div class="flex items-center justify-between py-1">
         <div class="flex items-center gap-2">
-          <button onclick="switchTab('missions')" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-[#365668] text-slate-800 dark:text-[#F6FBFD] flex items-center justify-center cursor-pointer">
+          <button onclick="switchTab('missions')" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-[#2A323D] text-slate-800 dark:text-[#F8FAFC] flex items-center justify-center cursor-pointer">
             <span class="material-symbols-outlined text-[20px]">arrow_back</span>
           </button>
-          <span class="font-black text-sm text-slate-900 dark:text-[#F6FBFD]">Delivering to Ram Kumar</span>
+          <span class="font-black text-sm text-slate-900 dark:text-[#F8FAFC]">Delivering to Ram Kumar</span>
         </div>
-        <span class="text-[11px] font-bold text-[#16B86E] bg-emerald-50 dark:bg-[#365668] px-2 py-0.5 rounded-full">#GB-1850</span>
+        <span class="text-[11px] font-bold text-[#16B86E] bg-emerald-50 dark:bg-[#2A323D] px-2 py-0.5 rounded-full">#GB-1850</span>
       </div>
 
       <!-- Route Navigation Map Card with runner_nav_map.png -->
-      <div class="w-full rounded-2xl overflow-hidden shadow-xs border border-slate-200 dark:border-[#476476] relative">
+      <div class="w-full rounded-2xl overflow-hidden shadow-xs border border-slate-200 dark:border-[#465362] relative">
         <img src="static/images/runner_nav_map.png" alt="Live Route Navigation" class="w-full h-64 object-cover" />
         
         <!-- Floating ETA banner -->
-        <div class="absolute top-3 left-3 right-3 bg-white/95 dark:bg-[#203846]/95 backdrop-blur-xs p-3 rounded-2xl shadow-md border border-slate-200 dark:border-[#476476] flex items-center justify-between">
+        <div class="absolute top-3 left-3 right-3 bg-white/95 dark:bg-[#111418]/95 backdrop-blur-xs p-3 rounded-2xl shadow-md border border-slate-200 dark:border-[#465362] flex items-center justify-between">
           <div class="flex items-center gap-2.5">
             <div class="w-8 h-8 rounded-full bg-[#16B86E] text-white flex items-center justify-center">
               <span class="material-symbols-outlined text-[18px]">navigation</span>
             </div>
             <div class="flex flex-col">
-              <span class="text-xs font-black text-slate-900 dark:text-[#F6FBFD]">4 mins (1.2 km)</span>
-              <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5]">Turn right onto Rampur Main Gali</span>
+              <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC]">4 mins (1.2 km)</span>
+              <span class="text-[10px] text-slate-500 dark:text-[#CBD5E1]">Turn right onto Rampur Main Gali</span>
             </div>
           </div>
-          <button class="px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-[#365668] text-[11px] font-bold text-slate-700 dark:text-[#F6FBFD]">
+          <button class="px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-[#2A323D] text-[11px] font-bold text-slate-700 dark:text-[#F8FAFC]">
             Re-center
           </button>
         </div>
       </div>
 
       <!-- Customer Bottom Card -->
-      <div class="p-3.5 rounded-2xl bg-white dark:bg-[#2B4858] border border-slate-200 dark:border-[#476476] shadow-xs flex items-center justify-between">
+      <div class="p-3.5 rounded-2xl bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-[#465362] shadow-xs flex items-center justify-between">
         <div class="flex items-center gap-3 min-w-0">
           <div class="w-11 h-11 rounded-full bg-[#16B86E]/15 text-[#16B86E] font-black flex items-center justify-center text-sm shrink-0">
             RK
           </div>
           <div class="flex flex-col min-w-0">
-            <span class="font-black text-xs text-slate-900 dark:text-[#F6FBFD] truncate">Ram Kumar</span>
-            <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5]">House 12, Rampur Main Gali</span>
+            <span class="font-black text-xs text-slate-900 dark:text-[#F8FAFC] truncate">Ram Kumar</span>
+            <span class="text-[10px] text-slate-500 dark:text-[#CBD5E1]">House 12, Rampur Main Gali</span>
             <span class="text-[10px] text-amber-600 dark:text-amber-400 font-bold">Collect: ₹245 (Cash)</span>
           </div>
         </div>
@@ -1250,21 +1310,21 @@
       <!-- Top Header -->
       <div class="flex items-center justify-between py-1">
         <div class="flex items-center gap-2">
-          <button onclick="switchTab('missions')" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-[#365668] text-slate-800 dark:text-[#F6FBFD] flex items-center justify-center cursor-pointer">
+          <button onclick="switchTab('missions')" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-[#2A323D] text-slate-800 dark:text-[#F8FAFC] flex items-center justify-center cursor-pointer">
             <span class="material-symbols-outlined text-[20px]">arrow_back</span>
           </button>
-          <span class="font-black text-sm text-slate-900 dark:text-[#F6FBFD]">Complete Delivery #GB-1850</span>
+          <span class="font-black text-sm text-slate-900 dark:text-[#F8FAFC]">Complete Delivery #GB-1850</span>
         </div>
-        <span class="text-[11px] font-bold text-[#16B86E] bg-emerald-50 dark:bg-[#365668] px-2 py-0.5 rounded-full">Step 4 of 4</span>
+        <span class="text-[11px] font-bold text-[#16B86E] bg-emerald-50 dark:bg-[#2A323D] px-2 py-0.5 rounded-full">Step 4 of 4</span>
       </div>
 
       <!-- Celebration / Hero Banner with delivery_complete_banner.png -->
-      <div class="w-full rounded-2xl overflow-hidden shadow-xs border border-slate-200 dark:border-[#476476] bg-emerald-50 dark:bg-[#2B4858] p-4 flex flex-col items-center text-center">
+      <div class="w-full rounded-2xl overflow-hidden shadow-xs border border-slate-200 dark:border-[#465362] bg-emerald-50 dark:bg-[#1D232B] p-4 flex flex-col items-center text-center">
         <div class="w-24 h-24 mb-2 flex items-center justify-center">
           <img src="static/images/delivery_complete_banner.png" alt="Delivered" class="max-h-full max-w-full object-contain" />
         </div>
-        <span class="text-base font-black text-slate-900 dark:text-[#F6FBFD]">Delivering Order #GB-1850</span>
-        <span class="text-xs text-slate-500 dark:text-[#C9DCE5] mt-0.5">Collect payment and enter OTP from customer</span>
+        <span class="text-base font-black text-slate-900 dark:text-[#F8FAFC]">Delivering Order #GB-1850</span>
+        <span class="text-xs text-slate-500 dark:text-[#CBD5E1] mt-0.5">Collect payment and enter OTP from customer</span>
       </div>
 
       <!-- Cash Collection Box -->
@@ -1277,17 +1337,17 @@
       </div>
 
       <!-- 4-Box OTP Input Section -->
-      <div class="p-4 rounded-2xl bg-white dark:bg-[#2B4858] border border-slate-200 dark:border-[#476476] shadow-xs flex flex-col items-center text-center gap-2">
-        <span class="text-xs font-black text-slate-900 dark:text-[#F6FBFD]">Customer Delivery OTP</span>
-        <span class="text-[11px] text-slate-500 dark:text-[#C9DCE5]">Ask customer for the 4-digit code shown in their app</span>
+      <div class="p-4 rounded-2xl bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col items-center text-center gap-2">
+        <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC]">Customer Delivery OTP</span>
+        <span class="text-[11px] text-slate-500 dark:text-[#CBD5E1]">Ask customer for the 4-digit code shown in their app</span>
         <div class="flex items-center gap-3 my-2">
-          <input type="text" maxlength="1" value="3" class="w-12 h-14 rounded-2xl bg-slate-50 dark:bg-[#365668] border-2 border-[#16B86E] text-center font-mono font-black text-xl text-slate-900 dark:text-white" />
-          <input type="text" maxlength="1" value="7" class="w-12 h-14 rounded-2xl bg-slate-50 dark:bg-[#365668] border-2 border-[#16B86E] text-center font-mono font-black text-xl text-slate-900 dark:text-white" />
-          <input type="text" maxlength="1" value="2" class="w-12 h-14 rounded-2xl bg-slate-50 dark:bg-[#365668] border-2 border-[#16B86E] text-center font-mono font-black text-xl text-slate-900 dark:text-white" />
-          <input type="text" maxlength="1" value="1" class="w-12 h-14 rounded-2xl bg-slate-50 dark:bg-[#365668] border-2 border-[#16B86E] text-center font-mono font-black text-xl text-slate-900 dark:text-white" />
+          <input type="text" maxlength="1" value="3" class="w-12 h-14 rounded-2xl bg-slate-50 dark:bg-[#2A323D] border-2 border-[#16B86E] text-center font-mono font-black text-xl text-slate-900 dark:text-white" />
+          <input type="text" maxlength="1" value="7" class="w-12 h-14 rounded-2xl bg-slate-50 dark:bg-[#2A323D] border-2 border-[#16B86E] text-center font-mono font-black text-xl text-slate-900 dark:text-white" />
+          <input type="text" maxlength="1" value="2" class="w-12 h-14 rounded-2xl bg-slate-50 dark:bg-[#2A323D] border-2 border-[#16B86E] text-center font-mono font-black text-xl text-slate-900 dark:text-white" />
+          <input type="text" maxlength="1" value="1" class="w-12 h-14 rounded-2xl bg-slate-50 dark:bg-[#2A323D] border-2 border-[#16B86E] text-center font-mono font-black text-xl text-slate-900 dark:text-white" />
         </div>
         <!-- Payout Pill -->
-        <div class="px-3 py-1 rounded-full bg-emerald-50 dark:bg-[#365668] text-[#16B86E] text-xs font-black flex items-center gap-1">
+        <div class="px-3 py-1 rounded-full bg-emerald-50 dark:bg-[#2A323D] text-[#16B86E] text-xs font-black flex items-center gap-1">
           <span class="material-symbols-outlined text-[16px]">payments</span>
           <span>+ ₹40 Payout for this mission</span>
         </div>
@@ -1309,13 +1369,13 @@
   <!-- RUNNER SERVICE AREA SELECTION MODAL (8.0 KM RURAL GEOFENCE)               -->
   <!-- ========================================================================= -->
   <div id="modal-runner-change-area" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-white dark:bg-[#203846] text-slate-900 dark:text-[#F6FBFD] rounded-3xl max-w-md w-full shadow-2xl border border-slate-200 dark:border-[#476476] overflow-hidden flex flex-col">
-      <div class="p-4 border-b border-slate-100 dark:border-[#365668] flex items-center justify-between">
+    <div class="bg-white dark:bg-[#111418] text-slate-900 dark:text-[#F8FAFC] rounded-3xl max-w-md w-full shadow-2xl border border-slate-200 dark:border-[#465362] overflow-hidden flex flex-col">
+      <div class="p-4 border-b border-slate-100 dark:border-[#2A323D] flex items-center justify-between">
         <div class="flex items-center gap-2.5">
           <span class="material-symbols-outlined text-[#3B82F6] text-[22px]">location_on</span>
           <div>
-            <h3 class="font-black text-sm text-slate-900 dark:text-[#F6FBFD]" data-i18n="modal_change_area_title">कार्य क्षेत्र चुनें (Select Hub)</h3>
-            <p class="text-[10px] text-slate-500 dark:text-[#C9DCE5]" data-i18n="modal_change_area_sub">अधिकतम 8.0 किमी ग्रामीण डिलीवरी दायरा</p>
+            <h3 class="font-black text-sm text-slate-900 dark:text-[#F8FAFC]" data-i18n="modal_change_area_title">कार्य क्षेत्र चुनें (Select Hub)</h3>
+            <p class="text-[10px] text-slate-500 dark:text-[#CBD5E1]" data-i18n="modal_change_area_sub">अधिकतम 8.0 किमी ग्रामीण डिलीवरी दायरा</p>
           </div>
         </div>
         <button type="button" onclick="closeRunnerChangeAreaModal()" class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-white cursor-pointer">
@@ -1325,50 +1385,50 @@
 
       <div class="p-4 space-y-3">
         <!-- Area 1: Sonpur Hub -->
-        <label class="flex items-center justify-between p-3.5 rounded-2xl border border-slate-200 dark:border-[#476476] bg-slate-50 dark:bg-[#2B4858] cursor-pointer hover:border-[#3B82F6] transition-all">
+        <label class="flex items-center justify-between p-3.5 rounded-2xl border border-slate-200 dark:border-[#465362] bg-slate-50 dark:bg-[#1D232B] cursor-pointer hover:border-[#3B82F6] transition-all">
           <div class="flex items-center gap-3">
             <input type="radio" name="runner-hub-radio" value="sonpur" checked class="w-4 h-4 text-[#16B86E] focus:ring-0">
             <div class="flex flex-col">
-              <span class="text-xs font-black text-slate-900 dark:text-[#F6FBFD]">Sonpur Hub (सोनपुर हब)</span>
-              <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5]">Delivering in Sonpur • 0-8.0 km radius</span>
+              <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC]">Sonpur Hub (सोनपुर हब)</span>
+              <span class="text-[10px] text-slate-500 dark:text-[#CBD5E1]">Delivering in Sonpur • 0-8.0 km radius</span>
             </div>
           </div>
           <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/40 px-2 py-0.5 rounded-full">Active</span>
         </label>
 
         <!-- Area 2: Rampur Mandi Hub -->
-        <label class="flex items-center justify-between p-3.5 rounded-2xl border border-slate-200 dark:border-[#476476] bg-slate-50 dark:bg-[#2B4858] cursor-pointer hover:border-[#3B82F6] transition-all">
+        <label class="flex items-center justify-between p-3.5 rounded-2xl border border-slate-200 dark:border-[#465362] bg-slate-50 dark:bg-[#1D232B] cursor-pointer hover:border-[#3B82F6] transition-all">
           <div class="flex items-center gap-3">
             <input type="radio" name="runner-hub-radio" value="rampur" class="w-4 h-4 text-[#16B86E] focus:ring-0">
             <div class="flex flex-col">
-              <span class="text-xs font-black text-slate-900 dark:text-[#F6FBFD]">Rampur Mandi Hub (रामपुर मंडी हब)</span>
-              <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5]">Delivering in Rampur • 0-8.0 km radius</span>
+              <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC]">Rampur Mandi Hub (रामपुर मंडी हब)</span>
+              <span class="text-[10px] text-slate-500 dark:text-[#CBD5E1]">Delivering in Rampur • 0-8.0 km radius</span>
             </div>
           </div>
-          <span class="text-[10px] font-bold text-slate-500 dark:text-[#8CAAB9] bg-slate-200/60 dark:bg-[#365668] px-2 py-0.5 rounded-full">Available</span>
+          <span class="text-[10px] font-bold text-slate-500 dark:text-[#94A3B8] bg-slate-200/60 dark:bg-[#2A323D] px-2 py-0.5 rounded-full">Available</span>
         </label>
 
         <!-- Area 3: Haridaspur Hub -->
-        <label class="flex items-center justify-between p-3.5 rounded-2xl border border-slate-200 dark:border-[#476476] bg-slate-50 dark:bg-[#2B4858] cursor-pointer hover:border-[#3B82F6] transition-all">
+        <label class="flex items-center justify-between p-3.5 rounded-2xl border border-slate-200 dark:border-[#465362] bg-slate-50 dark:bg-[#1D232B] cursor-pointer hover:border-[#3B82F6] transition-all">
           <div class="flex items-center gap-3">
             <input type="radio" name="runner-hub-radio" value="haridaspur" class="w-4 h-4 text-[#16B86E] focus:ring-0">
             <div class="flex flex-col">
-              <span class="text-xs font-black text-slate-900 dark:text-[#F6FBFD]">Haridaspur Hub (हरिदासपुर हब)</span>
-              <span class="text-[10px] text-slate-500 dark:text-[#C9DCE5]">Delivering in Haridaspur • 0-8.0 km radius</span>
+              <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC]">Haridaspur Hub (हरिदासपुर हब)</span>
+              <span class="text-[10px] text-slate-500 dark:text-[#CBD5E1]">Delivering in Haridaspur • 0-8.0 km radius</span>
             </div>
           </div>
-          <span class="text-[10px] font-bold text-slate-500 dark:text-[#8CAAB9] bg-slate-200/60 dark:bg-[#365668] px-2 py-0.5 rounded-full">Available</span>
+          <span class="text-[10px] font-bold text-slate-500 dark:text-[#94A3B8] bg-slate-200/60 dark:bg-[#2A323D] px-2 py-0.5 rounded-full">Available</span>
         </label>
       </div>
 
-      <div class="p-4 border-t border-slate-100 dark:border-[#365668] flex items-center justify-end gap-2">
-        <button type="button" onclick="closeRunnerChangeAreaModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-[#C9DCE5] hover:bg-slate-100 dark:hover:bg-[#2B4858] cursor-pointer" data-i18n="btn_cancel">रद्द करें</button>
+      <div class="p-4 border-t border-slate-100 dark:border-[#2A323D] flex items-center justify-end gap-2">
+        <button type="button" onclick="closeRunnerChangeAreaModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-[#CBD5E1] hover:bg-slate-100 dark:hover:bg-[#1D232B] cursor-pointer" data-i18n="btn_cancel">रद्द करें</button>
         <button type="button" onclick="confirmRunnerAreaSelection()" class="px-5 py-2.5 rounded-xl bg-[#16B86E] text-white text-xs font-bold shadow-xs hover:bg-emerald-600 active:scale-95 transition-all cursor-pointer" data-i18n="btn_activate_hub">हब सक्रिय करें</button>
       </div>
     </div>
   </div>
 
-  <nav id="runner-bottom-nav" class="hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#203846]/95 backdrop-blur-xl border-t border-slate-200/90 dark:border-[#476476] shadow-[0_-4px_25px_rgba(0,0,0,0.08)] px-2 sm:px-6 py-1.5 flex items-center justify-around max-w-4xl mx-auto pb-safe">
+  <nav id="runner-bottom-nav" class="hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#111418]/95 backdrop-blur-xl border-t border-slate-200/90 dark:border-[#465362] shadow-[0_-4px_25px_rgba(0,0,0,0.08)] px-2 sm:px-6 py-1.5 flex items-center justify-around max-w-4xl mx-auto pb-safe">
     
     <!-- Tab 1: Missions -->
     <button id="nav-btn-missions" onclick="switchTab('missions')" class="flex-1 min-w-0 max-w-[75px] flex flex-col items-center justify-center py-1 px-1 rounded-xl text-[#16B86E] font-black transition-all min-h-[48px] active:scale-95 cursor-pointer">
@@ -1377,26 +1437,26 @@
     </button>
 
     <!-- Tab 2: Map / Detail -->
-    <button id="nav-btn-detail" onclick="switchTab('detail')" class="flex-1 min-w-0 max-w-[75px] flex flex-col items-center justify-center py-1 px-1 rounded-xl text-slate-500 dark:text-[#C9DCE5] hover:text-slate-800 dark:hover:text-white font-bold transition-all min-h-[48px] active:scale-95 cursor-pointer">
+    <button id="nav-btn-detail" onclick="switchTab('detail')" class="flex-1 min-w-0 max-w-[75px] flex flex-col items-center justify-center py-1 px-1 rounded-xl text-slate-500 dark:text-[#CBD5E1] hover:text-slate-800 dark:hover:text-white font-bold transition-all min-h-[48px] active:scale-95 cursor-pointer">
       <span class="material-symbols-outlined text-[22px]">map</span>
       <span class="text-[10px] font-bold mt-0.5" data-i18n="nav_map">Map</span>
     </button>
     <button id="nav-btn-map" onclick="switchTab('detail')" class="hidden" aria-hidden="true"></button>
 
     <!-- Tab 3: Earnings -->
-    <button id="nav-btn-ledger" onclick="switchTab('ledger')" class="flex-1 min-w-0 max-w-[75px] flex flex-col items-center justify-center py-1 px-1 rounded-xl text-slate-500 dark:text-[#C9DCE5] hover:text-slate-800 dark:hover:text-white font-bold transition-all min-h-[48px] active:scale-95 cursor-pointer">
+    <button id="nav-btn-ledger" onclick="switchTab('ledger')" class="flex-1 min-w-0 max-w-[75px] flex flex-col items-center justify-center py-1 px-1 rounded-xl text-slate-500 dark:text-[#CBD5E1] hover:text-slate-800 dark:hover:text-white font-bold transition-all min-h-[48px] active:scale-95 cursor-pointer">
       <span class="material-symbols-outlined text-[22px]">account_balance_wallet</span>
       <span class="text-[10px] font-bold mt-0.5" data-i18n="nav_earnings">Earnings</span>
     </button>
 
     <!-- Tab 4: Help -->
-    <button id="nav-btn-help" onclick="openRunnerHelpModal()" class="flex-1 min-w-0 max-w-[75px] flex flex-col items-center justify-center py-1 px-1 rounded-xl text-slate-500 dark:text-[#C9DCE5] hover:text-slate-800 dark:hover:text-white font-bold transition-all min-h-[48px] active:scale-95 cursor-pointer">
+    <button id="nav-btn-help" onclick="openRunnerHelpModal()" class="flex-1 min-w-0 max-w-[75px] flex flex-col items-center justify-center py-1 px-1 rounded-xl text-slate-500 dark:text-[#CBD5E1] hover:text-slate-800 dark:hover:text-white font-bold transition-all min-h-[48px] active:scale-95 cursor-pointer">
       <span class="material-symbols-outlined text-[22px]">help_outline</span>
       <span class="text-[10px] font-bold mt-0.5" data-i18n="nav_help">Help</span>
     </button>
 
     <!-- Tab 5: Profile -->
-    <button id="nav-btn-settings" onclick="switchTab('settings')" class="flex-1 min-w-0 max-w-[75px] flex flex-col items-center justify-center py-1 px-1 rounded-xl text-slate-500 dark:text-[#C9DCE5] hover:text-slate-800 dark:hover:text-white font-bold transition-all min-h-[48px] active:scale-95 cursor-pointer">
+    <button id="nav-btn-settings" onclick="switchTab('settings')" class="flex-1 min-w-0 max-w-[75px] flex flex-col items-center justify-center py-1 px-1 rounded-xl text-slate-500 dark:text-[#CBD5E1] hover:text-slate-800 dark:hover:text-white font-bold transition-all min-h-[48px] active:scale-95 cursor-pointer">
       <span class="material-symbols-outlined text-[22px]">person</span>
       <span class="text-[10px] font-bold mt-0.5" data-i18n="nav_profile">Profile</span>
     </button>
@@ -2788,7 +2848,7 @@
           if (shiftDot) shiftDot.className = "w-2 h-2 rounded-full bg-white animate-pulse";
           if (shiftLabel) shiftLabel.innerText = isHi ? "चालू" : "Online";
         } else {
-          shiftBtn.className = "min-h-[38px] px-3 py-1 rounded-full text-xs font-black transition-all flex items-center gap-1.5 shadow-xs cursor-pointer select-none active:scale-95 bg-slate-200 text-slate-700 dark:bg-[#365668] dark:text-[#C9DCE5] hover:bg-slate-300";
+          shiftBtn.className = "min-h-[38px] px-3 py-1 rounded-full text-xs font-black transition-all flex items-center gap-1.5 shadow-xs cursor-pointer select-none active:scale-95 bg-slate-200 text-slate-700 dark:bg-[#2A323D] dark:text-[#CBD5E1] hover:bg-slate-300";
           if (shiftDot) shiftDot.className = "w-2 h-2 rounded-full bg-slate-400";
           if (shiftLabel) shiftLabel.innerText = isHi ? "बंद" : "Offline";
         }
@@ -2936,7 +2996,7 @@
           if (f === filter) {
             btn.className = "px-3.5 py-1.5 rounded-full text-xs font-black bg-[#16B86E] text-white shadow-xs shrink-0 cursor-pointer";
           } else {
-            btn.className = "px-3.5 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-[#2B4858] text-slate-700 dark:text-[#C9DCE5] border border-slate-200 dark:border-[#476476] shadow-2xs shrink-0 cursor-pointer";
+            btn.className = "px-3.5 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-700 dark:text-[#CBD5E1] border border-slate-200 dark:border-[#465362] shadow-2xs shrink-0 cursor-pointer";
           }
         }
       });
@@ -2994,35 +3054,35 @@
         const timeStr = mission.time_str || '10:30 AM';
 
         return `
-          <div onclick="selectMission('${mission.id}')" class="rounded-2xl bg-white dark:bg-[#2B4858] p-4 border border-slate-200 dark:border-[#476476] shadow-xs flex flex-col gap-2.5 transition-all hover:border-[#16B86E] cursor-pointer active:scale-98">
+          <div onclick="selectMission('${mission.id}')" class="rounded-2xl bg-white dark:bg-[#1D232B] p-4 border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col gap-2.5 transition-all hover:border-[#16B86E] cursor-pointer active:scale-98">
             <!-- Header: Badge | #GB-XXXX | Time -->
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <span class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${badgeClass}">
                   ${badgeText}
                 </span>
-                <span class="font-mono font-black text-xs text-slate-800 dark:text-[#F6FBFD]">${(function(){ const rawId = String(mission.id || ''); if (!rawId) return idx === 0 ? '#GB-1850' : '#GB-1849'; if (rawId.startsWith('#')) return rawId; if (rawId.startsWith('RUR-') || rawId.startsWith('GB-')) return '#' + rawId; return '#GB-' + rawId; })()}</span>
+                <span class="font-mono font-black text-xs text-slate-800 dark:text-[#F8FAFC]">${(function(){ const rawId = String(mission.id || ''); if (!rawId) return idx === 0 ? '#GB-1850' : '#GB-1849'; if (rawId.startsWith('#')) return rawId; if (rawId.startsWith('RUR-') || rawId.startsWith('GB-')) return '#' + rawId; return '#GB-' + rawId; })()}</span>
               </div>
-              <span class="text-[11px] text-slate-400 dark:text-[#8CAAB9]">${timeStr}</span>
+              <span class="text-[11px] text-slate-400 dark:text-[#94A3B8]">${timeStr}</span>
             </div>
 
             <!-- Content Row with icon, title, subtitle & arrow -->
             <div class="flex items-center justify-between">
               <div class="flex items-start gap-2.5 min-w-0">
-                <div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-[#365668] flex items-center justify-center text-base shrink-0 mt-0.5">
+                <div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-[#2A323D] flex items-center justify-center text-base shrink-0 mt-0.5">
                   ${isPickup ? '🏪' : '👤'}
                 </div>
                 <div class="flex flex-col min-w-0">
-                  <span class="text-xs font-black text-slate-900 dark:text-[#F6FBFD] truncate">${title}</span>
-                  <span class="text-[11px] text-slate-500 dark:text-[#C9DCE5] truncate">${subtitle}</span>
-                  <div class="flex items-center gap-1.5 text-[11px] font-bold text-slate-700 dark:text-[#C9DCE5] mt-1">
+                  <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">${title}</span>
+                  <span class="text-[11px] text-slate-500 dark:text-[#CBD5E1] truncate">${subtitle}</span>
+                  <div class="flex items-center gap-1.5 text-[11px] font-bold text-slate-700 dark:text-[#CBD5E1] mt-1">
                     <span>${items} items</span>
                     <span>•</span>
                     <span class="text-[#FF981A]">₹${amount} ${payType}</span>
                   </div>
                 </div>
               </div>
-              <span class="material-symbols-outlined text-slate-400 dark:text-[#8CAAB9] text-[20px] shrink-0">chevron_right</span>
+              <span class="material-symbols-outlined text-slate-400 dark:text-[#94A3B8] text-[20px] shrink-0">chevron_right</span>
             </div>
           </div>
         `;
@@ -3527,7 +3587,7 @@
           return `
             <div class="flex flex-col items-end gap-1 max-w-[85%] self-end">
               <span class="text-[9px] font-bold text-slate-400">${isHi ? 'आप (गाँव मित्र)' : 'You (Runner)'} • ${timeStr}</span>
-              <div class="p-3 rounded-2xl rounded-tr-none bg-[#16B86E] text-white text-xs font-semibold shadow-2xs break-words leading-relaxed">
+              <div class="gb-chat-outgoing p-3 rounded-2xl rounded-tr-none bg-[#16B86E] text-white text-xs font-semibold shadow-2xs break-words leading-relaxed">
                 ${escapeRunnerHtml(m.message)}
               </div>
             </div>
@@ -3597,7 +3657,7 @@
           newBubble.className = "flex flex-col items-end gap-1 max-w-[85%] self-end";
           newBubble.innerHTML = `
             <span class="text-[9px] font-bold text-slate-400">आप (गाँव मित्र) • ${timeStr}</span>
-            <div class="p-3 rounded-2xl rounded-tr-none bg-[#16B86E] text-white text-xs font-semibold shadow-2xs break-words leading-relaxed">
+            <div class="gb-chat-outgoing p-3 rounded-2xl rounded-tr-none bg-[#16B86E] text-white text-xs font-semibold shadow-2xs break-words leading-relaxed">
               ${escapeRunnerHtml(text)}
             </div>
           `;
