@@ -57,7 +57,7 @@ const engine = sandbox.engine;
   assert.ok(html.includes('background-color: #2A323D !important;'));
   console.log('PASS: login hero badge has explicit dark-mode contrast styling');
 
-  for (const filename of ['prod_tomato.png', 'prod_banana.png']) {
+  for (const filename of ['prod_tomato.png', 'prod_banana.png', 'hero_banner.png']) {
     const buffer = fs.readFileSync(path.join(__dirname, 'static/images', filename));
     assert.equal(buffer.subarray(1, 4).toString('utf8'), 'PNG');
     assert.ok(buffer.readUInt32BE(16) >= 300 && buffer.readUInt32BE(20) >= 300);

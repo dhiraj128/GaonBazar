@@ -103,6 +103,10 @@ def main():
               page.locator("#home-popular-grid img").evaluate_all("""images =>
                 images.every(img => img.complete && img.naturalWidth >= 300 && img.naturalHeight >= 300)
               """))
+        check("Homepage promotion image is complete and high resolution",
+              page.locator("#p2-guarantee-banner img").evaluate("""img =>
+                img.complete && img.naturalWidth >= 300 && img.naturalHeight >= 300
+              """))
         print(f"\n{len(passes)} CUSTOMER BROWSER CHECKS PASS (synthetic voice input)")
         browser.close()
 
