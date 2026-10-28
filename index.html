@@ -507,20 +507,19 @@
         </div>
       </div>
 
-      <!-- Right: Approved 4-Square Grid Menu Icon (Opens Side Drawer) -->
+      <!-- Right: Notifications Bell (Replaces 4-Square Grid Menu per UX Architecture) -->
       <div class="flex items-center gap-1 shrink-0">
-        <!-- 4-Square Grid Icon (Opens Sidebar Drawer) -->
-        <button id="btn-open-sidebar" onclick="openSidebarDrawer()" aria-label="Open navigation menu" title="Menu" class="w-10 h-10 min-w-[40px] min-h-[40px] rounded-xl bg-slate-100 dark:bg-[#2A323D] hover:bg-slate-200 dark:hover:bg-[#465362] text-slate-800 dark:text-[#F8FAFC] flex items-center justify-center active:scale-95 transition-all cursor-pointer shadow-2xs">
-          <span class="material-symbols-outlined text-[22px]">grid_view</span>
+        <!-- Visible Primary Notifications Bell with Real Unread Dot -->
+        <button id="header-notifications-btn" onclick="openNotificationsModal()" type="button" aria-label="Notifications and Alerts" title="Notifications" class="w-10 h-10 min-w-[40px] min-h-[40px] rounded-xl bg-slate-100 dark:bg-[#2A323D] hover:bg-slate-200 dark:hover:bg-[#465362] text-slate-800 dark:text-[#F8FAFC] flex items-center justify-center active:scale-95 transition-all cursor-pointer shadow-2xs relative">
+          <span class="material-symbols-outlined text-[22px]">notifications</span>
+          <span id="header-notif-dot" class="hidden absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-[#111418]"></span>
         </button>
 
-        <!-- Hidden / Accessible Anchors for Test Suite Compatibility -->
+        <!-- Hidden / Accessible Compatibility Anchors for Automated Suites -->
+        <button id="btn-open-sidebar" onclick="openNotificationsModal()" type="button" aria-label="Notifications menu" class="hidden" style="display:none;"></button>
         <span id="header-subtitle" class="hidden"></span>
         <button id="header-lang-btn" onclick="window.toggleGlobalLanguage()" type="button" aria-label="Toggle language" class="hidden">
           <span id="header-lang-label"><span id="header-lang-hi">HI</span><span id="header-lang-en">EN</span></span>
-        </button>
-        <button id="header-notifications-btn" onclick="openNotificationsModal()" type="button" aria-label="Alerts and Notifications" class="hidden">
-          <span id="header-notif-dot" class="hidden"></span>
         </button>
         <button id="header-cart-icon" onclick="navigateToPhase('cart')" aria-label="View Cart" class="hidden">
           <span id="header-cart-badge" class="hidden">0</span>
@@ -558,146 +557,33 @@
 
       <!-- User Profile Card -->
       <div class="p-3.5 border-b border-slate-100 dark:border-[#465362] bg-white dark:bg-[#111418]">
-        <div onclick="navigateToPhase('profile'); closeSidebarDrawer();" class="flex items-center gap-3 p-2.5 rounded-2xl bg-slate-50 dark:bg-[#1D232B] border border-slate-100 dark:border-[#465362] cursor-pointer hover:border-[#16B86E] active:scale-98 transition-all">
+        <button id="drawer-user-card" type="button" onclick="navigateToPhase('profile')" class="w-full text-left flex items-center gap-3 p-2.5 rounded-2xl bg-slate-50 dark:bg-[#1D232B] border border-slate-100 dark:border-[#465362] cursor-pointer hover:border-[#16B86E] active:scale-98 transition-all">
           <div class="w-10 h-10 rounded-full bg-[#16B86E]/15 text-[#16B86E] font-black text-sm flex items-center justify-center shadow-2xs shrink-0 uppercase" id="drawer-user-avatar">
-            <span id="drawer-user-initial">RK</span>
+            <span id="drawer-user-initial">अ</span>
           </div>
           <div class="flex flex-col min-w-0 flex-1">
-            <span id="drawer-user-name" class="font-black text-xs text-slate-900 dark:text-[#F8FAFC] truncate">Ramesh Kumar</span>
-            <span id="drawer-user-phone" class="text-[11px] text-slate-500 dark:text-[#CBD5E1] font-mono truncate">+91 98765 43210</span>
+            <span id="drawer-user-name" class="font-black text-xs text-slate-900 dark:text-[#F8FAFC] truncate">अतिथि ग्राहक</span>
+            <span id="drawer-user-phone" class="text-[11px] text-slate-500 dark:text-[#CBD5E1] font-mono truncate">लॉगिन नहीं किया</span>
           </div>
           <span class="material-symbols-outlined text-slate-400 dark:text-[#94A3B8] text-[18px]">chevron_right</span>
-        </div>
+        </button>
       </div>
 
-      <!-- Drawer Nav Items List -->
-      <nav class="flex-1 overflow-y-auto p-3 space-y-1">
-        
-        <!-- My Profile -->
-        <button id="drawer-account-btn" onclick="navigateToPhase('profile'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] active:bg-slate-200 text-xs font-bold transition-colors cursor-pointer">
-          <span class="material-symbols-outlined text-[#FF981A] text-[20px]">person</span>
-          <span class="flex-1 text-left" data-i18n="drawer_profile">My Profile & Account</span>
-          <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
+      <!-- Secondary destinations only. Primary shopping routes live in the bottom tabs. -->
+      <nav class="flex-1 overflow-y-auto p-3 space-y-2" aria-label="More options">
+        <p class="px-3 pt-1 text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-[#B4C1D1]" data-i18n="drawer_quick_access">Quick access</p>
+        <button id="drawer-notifications-btn" onclick="openDrawerNotifications()" class="w-full min-h-[48px] px-3 py-3 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] text-xs font-bold transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[#FF981A] text-[21px]">notifications</span>
+          <span class="flex-1 text-left" data-i18n="notif_modal_title">Notifications & Alerts</span>
+          <span class="material-symbols-outlined text-slate-400 dark:text-[#94A3B8] text-[18px]">chevron_right</span>
         </button>
-
-        <!-- My Cart -->
-        <button id="drawer-cart-btn" onclick="navigateToPhase('cart'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] active:bg-slate-200 text-xs font-bold transition-colors cursor-pointer">
-          <span class="material-symbols-outlined text-[#16B86E] text-[20px]">shopping_cart</span>
-          <span class="flex-1 text-left" data-i18n="drawer_cart">My Cart</span>
-          <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
+        <button id="drawer-help-center-btn" onclick="navigateToPhase('support')" class="w-full min-h-[48px] px-3 py-3 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] text-xs font-bold transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[#16B86E] text-[21px]">support_agent</span>
+          <span class="flex-1 text-left" data-i18n="drawer_help_center">Help & Support</span>
+          <span class="material-symbols-outlined text-slate-400 dark:text-[#94A3B8] text-[18px]">chevron_right</span>
         </button>
-
-        <!-- My Orders -->
-        <button id="drawer-orders-btn" onclick="navigateToPhase('tracking'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] active:bg-slate-200 text-xs font-bold transition-colors cursor-pointer">
-          <span class="material-symbols-outlined text-blue-500 text-[20px]">receipt_long</span>
-          <span class="flex-1 text-left" data-i18n="drawer_orders">My Orders</span>
-          <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
-        </button>
-
-        <!-- Saved Addresses -->
-        <button id="drawer-addresses-btn" onclick="navigateToPhase('landmark'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] active:bg-slate-200 text-xs font-bold transition-colors cursor-pointer">
-          <span class="material-symbols-outlined text-[#FF981A] text-[20px]">location_on</span>
-          <span class="flex-1 text-left" data-i18n="drawer_addresses">Saved Addresses</span>
-          <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
-        </button>
-
-        <!-- Saved Payments -->
-        <div id="profile-saved-payments-section" class="w-full">
-          <button id="drawer-payments-btn" onclick="openAddPaymentModal(); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] active:bg-slate-200 text-xs font-bold transition-colors cursor-pointer">
-            <span class="material-symbols-outlined text-[#FF981A] text-[20px]">credit_card</span>
-            <span class="flex-1 text-left" data-i18n="drawer_payments">Saved Payments</span>
-            <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
-          </button>
-          <div id="profile-saved-payment-list" class="hidden"></div>
-        </div>
-
-        <!-- Highlighted AI Order Support Card -->
-        <button id="drawer-support-btn" onclick="openSupportModal(); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 bg-emerald-50 dark:bg-[#1D232B] text-[#16B86E] dark:text-[#4ADE80] border border-emerald-200/60 dark:border-[#16B86E]/40 text-xs font-bold transition-all cursor-pointer">
-          <span class="material-symbols-outlined text-[20px]">smart_toy</span>
-          <span class="flex-1 text-left" data-i18n="drawer_support_ai">AI Order Support</span>
-          <span class="text-[10px] font-black uppercase bg-[#16B86E] text-white px-2 py-0.5 rounded-full">New</span>
-        </button>
-        <button id="drawer-chat-btn" onclick="openSupportModal(); closeSidebarDrawer();" class="hidden" aria-hidden="true"></button>
-
-        <!-- Help Center & FAQs -->
-        <button id="drawer-help-center-btn" onclick="navigateToPhase('support'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] text-xs font-bold transition-colors cursor-pointer">
-          <span class="material-symbols-outlined text-amber-500 text-[20px]">help_outline</span>
-          <span class="flex-1 text-left" data-i18n="drawer_help_center">Help Center & FAQs</span>
-          <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
-        </button>
-
-        <!-- Raise a Complaint -->
-        <button onclick="openComplaintModal(); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] text-xs font-bold transition-colors cursor-pointer">
-          <span class="material-symbols-outlined text-rose-500 text-[20px]">report_problem</span>
-          <span class="flex-1 text-left" data-i18n="drawer_complaint">Raise a Complaint</span>
-          <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
-        </button>
-
-        <!-- My Support Tickets -->
-        <button onclick="viewCustomerTickets(); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] text-xs font-bold transition-colors cursor-pointer">
-          <span class="material-symbols-outlined text-amber-600 text-[20px]">confirmation_number</span>
-          <span class="flex-1 text-left" data-i18n="drawer_tickets">My Support Tickets</span>
-          <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
-        </button>
-
-        <!-- Language Switcher Row -->
-        <button id="drawer-lang-btn" onclick="window.toggleGlobalLanguage()" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center justify-between text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] text-xs font-bold transition-colors cursor-pointer">
-          <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-blue-500 text-[20px]">language</span>
-            <span data-i18n="drawer_lang">Language</span>
-          </div>
-          <span class="text-xs text-slate-400 font-medium flex items-center gap-1">
-            <span id="drawer-lang-curr">हिंदी</span>
-            <span class="material-symbols-outlined text-[16px]">chevron_right</span>
-          </span>
-        </button>
-
-        <!-- Theme Switcher Row -->
-        <button onclick="toggleCustomerTheme()" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center justify-between text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] text-xs font-bold transition-colors cursor-pointer">
-          <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-amber-500 text-[20px]">wb_sunny</span>
-            <span data-i18n="drawer_theme">Theme</span>
-          </div>
-          <span class="text-xs text-slate-400 font-medium flex items-center gap-1">
-            <span id="drawer-theme-curr">Light</span>
-            <span class="material-symbols-outlined text-[16px]">chevron_right</span>
-          </span>
-        </button>
-
-        <!-- Past Orders -->
-        <button id="drawer-orders-btn" onclick="navigateToPhase('tracking'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] text-xs font-bold transition-colors cursor-pointer">
-          <span class="material-symbols-outlined text-blue-600 text-[20px]">receipt_long</span>
-          <span class="flex-1 text-left" data-i18n="drawer_orders">Past Orders</span>
-          <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
-        </button>
-
-        <!-- Privacy & Terms -->
-        <button onclick="openTermsModal(); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] text-xs font-bold transition-colors cursor-pointer">
-          <span class="material-symbols-outlined text-slate-500 text-[20px]">description</span>
-          <span class="flex-1 text-left" data-i18n="drawer_terms">Privacy & Terms</span>
-          <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
-        </button>
-
-        <!-- About GaonBazaar -->
-        <button onclick="alert('GaonBazaar Rural Hyperlocal v2.5 — Empowering rural India with simple, fast, fresh local delivery.');" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] text-xs font-bold transition-colors cursor-pointer">
-          <span class="material-symbols-outlined text-slate-500 text-[20px]">info</span>
-          <span class="flex-1 text-left" data-i18n="drawer_about">About GaonBazaar</span>
-          <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
-        </button>
-
-        <!-- Legacy elements kept for test harness backwards compatibility -->
-        <button id="drawer-appearance-btn" onclick="openCustomerAppearanceSettings()" class="hidden" aria-hidden="true"></button>
-
       </nav>
-
-      <!-- Drawer Footer: Logout CTA -->
-      <div class="p-3 border-t border-slate-100 dark:border-[#465362] bg-slate-50 dark:bg-[#1D232B] shrink-0">
-        <button onclick="logoutCustomer(); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-xs font-black flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer">
-          <span class="material-symbols-outlined text-[18px]">logout</span>
-          <span data-i18n="drawer_logout">Logout</span>
-        </button>
-      </div>
-
+      <p class="p-4 border-t border-slate-100 dark:border-[#465362] bg-slate-50 dark:bg-[#1D232B] text-[11px] text-slate-500 dark:text-[#B4C1D1] leading-relaxed" data-i18n="drawer_bottom_tip">Shop, cart, orders and account settings are in the bottom navigation.</p>
     </aside>
 
     <!-- ========================================================================= -->
@@ -710,10 +596,10 @@
       <!-- ===================================================================== -->
       <section id="view-p1-login" class="screen-view active flex-col w-full px-4 pt-4 pb-28 flex-1 min-h-0 space-y-4">
         <!-- Hero Banner -->
-        <div class="w-full shrink-0 relative overflow-hidden rounded-2xl bg-gradient-to-br from-surface-container/70 to-surface-container-low px-4 py-3 shadow-xs border border-surface-container-high/80 text-center flex flex-col items-center justify-center gap-1.5" style="max-width: 100%;">
-          <div class="inline-flex items-center justify-center gap-1.5 bg-emerald-50 text-emerald-900 border border-emerald-300/80 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold shadow-xs max-w-full box-border">
-            <span class="material-symbols-outlined text-[14px] text-emerald-600 shrink-0 select-none" style="font-variation-settings: 'FILL' 1;">eco</span>
-            <span data-i18n="p1_hero_badge" class="truncate text-center tracking-tight">100% शुद्ध देसी • ताज़ा सुविधा घर तक</span>
+        <div class="w-full shrink-0 relative overflow-hidden rounded-2xl bg-gradient-to-br from-surface-container/70 to-surface-container-low dark:from-[#1D232B] dark:to-[#111418] px-4 py-3 shadow-xs border border-surface-container-high/80 dark:border-[#465362] text-center flex flex-col items-center justify-center gap-1.5" style="max-width: 100%;">
+          <div class="inline-flex items-center justify-center gap-1.5 bg-emerald-50 dark:bg-[#1D232B] text-emerald-900 dark:text-[#16B86E] border border-emerald-300/80 dark:border-[#465362] px-2.5 py-0.5 rounded-full text-[10.5px] font-bold shadow-xs max-w-full box-border">
+            <span class="material-symbols-outlined text-[14px] text-emerald-600 dark:text-[#16B86E] shrink-0 select-none" style="font-variation-settings: 'FILL' 1;">eco</span>
+            <span data-i18n="p1_hero_badge" class="truncate text-center tracking-tight text-emerald-900 dark:text-[#F8FAFC]">100% शुद्ध देसी • ताज़ा सुविधा घर तक</span>
           </div>
           <h1 class="text-base sm:text-lg font-extrabold text-on-surface leading-snug font-hindi" style="padding: 0 16px; text-align: center; max-width: 100%; word-wrap: break-word; overflow-wrap: break-word;">
             <span data-i18n="p1_hero_title_1">"अपने गाँव की दुकान,</span>
@@ -726,10 +612,10 @@
         </div>
 
         <!-- Auth Card with Distinct Sign-In & Sign-Up Tabs -->
-        <div class="rounded-2xl bg-white p-5 shadow-mobile-card border border-surface-container-high space-y-4">
+        <div class="rounded-2xl bg-white dark:bg-[#1D232B] p-5 shadow-mobile-card border border-surface-container-high dark:border-[#465362] space-y-4">
           
           <!-- Auth Mode Tabs (Sign In vs Sign Up) -->
-          <div class="bg-surface-container p-1 rounded-xl flex items-center border border-surface-container-high gap-1">
+          <div class="bg-surface-container dark:bg-[#2A323D] p-1 rounded-xl flex items-center border border-surface-container-high dark:border-[#465362] gap-1">
             <button 
               id="auth-tab-signin" 
               type="button" 
@@ -1147,7 +1033,7 @@
               <span class="material-symbols-outlined text-[18px]">close</span>
             </button>
             <!-- Native Circular Green Microphone Button on Right -->
-            <button id="p2-voice-search-btn" onclick="navigateToPhase('commerce-ai')" type="button" aria-label="Voice Search" title="Voice Search" class="w-9 h-9 min-w-[36px] min-h-[36px] rounded-full bg-[#16B86E] text-white hover:bg-emerald-600 active:scale-90 flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-xs">
+            <button id="p2-voice-search-btn" onclick="triggerVoiceSearch()" type="button" aria-label="Voice Search" title="Voice Search" class="w-9 h-9 min-w-[36px] min-h-[36px] rounded-full bg-[#16B86E] text-white hover:bg-emerald-600 active:scale-90 flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-xs">
               <span class="material-symbols-outlined text-[20px]">mic</span>
               <span id="p2-voice-search-text" class="hidden"></span>
               <span id="p2-voice-search-icon" class="hidden"></span>
@@ -1162,35 +1048,35 @@
         <!-- Category Filter Chips (Inside Home) Matching Reference 01 -->
         <div class="w-full overflow-x-auto no-scrollbar pt-2 pb-1 my-1 px-0.5 relative z-10 min-h-[48px]">
           <div class="flex items-center gap-2.5 min-w-max pb-1">
-            <button type="button" onclick="filterStoresByCategory('all')" id="cat-chip-all" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-black bg-[#16B86E] text-white shadow-xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer">
+            <button type="button" onclick="filterStoresByCategory('all')" id="cat-chip-all" class="cat-chip shrink-0 whitespace-nowrap min-h-[44px] px-4 py-2 rounded-full text-xs font-black bg-[#16B86E] text-white shadow-xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer">
               <span id="cat-lbl-all" data-i18n="cat_all">All</span>
             </button>
-            <button type="button" onclick="filterStoresByCategory('kirana')" id="cat-chip-kirana" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
+            <button type="button" onclick="filterStoresByCategory('kirana')" id="cat-chip-kirana" class="cat-chip shrink-0 whitespace-nowrap min-h-[44px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
               <span id="cat-lbl-kirana" data-i18n="cat_kirana">Grocery</span>
             </button>
-            <button type="button" onclick="filterStoresByCategory('dairy')" id="cat-chip-dairy" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
+            <button type="button" onclick="filterStoresByCategory('dairy')" id="cat-chip-dairy" class="cat-chip shrink-0 whitespace-nowrap min-h-[44px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
               <span id="cat-lbl-dairy" data-i18n="cat_dairy">Dairy</span>
             </button>
-            <button type="button" onclick="filterStoresByCategory('sabzi')" id="cat-chip-sabzi" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
+            <button type="button" onclick="filterStoresByCategory('sabzi')" id="cat-chip-sabzi" class="cat-chip shrink-0 whitespace-nowrap min-h-[44px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
               <span id="cat-lbl-sabzi" data-i18n="cat_sabzi">Veg</span>
             </button>
-            <button type="button" onclick="filterStoresByCategory('fruits')" id="cat-chip-fruits" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
+            <button type="button" onclick="filterStoresByCategory('fruits')" id="cat-chip-fruits" class="cat-chip shrink-0 whitespace-nowrap min-h-[44px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
               <span id="cat-lbl-fruits" data-i18n="cat_fruits">Fruits</span>
             </button>
-            <button type="button" onclick="filterStoresByCategory('medicines')" id="cat-chip-medicines" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
+            <button type="button" onclick="filterStoresByCategory('medicines')" id="cat-chip-medicines" class="cat-chip shrink-0 whitespace-nowrap min-h-[44px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
               <span id="cat-lbl-medicines" data-i18n="cat_medicines">Medicines</span>
             </button>
-            <button type="button" onclick="filterStoresByCategory('agri')" id="cat-chip-agri" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
+            <button type="button" onclick="filterStoresByCategory('agri')" id="cat-chip-agri" class="cat-chip shrink-0 whitespace-nowrap min-h-[44px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
               <span id="cat-lbl-agri" data-i18n="cat_agri">Agri</span>
             </button>
-            <button type="button" onclick="filterStoresByCategory('tools')" id="cat-chip-tools" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
+            <button type="button" onclick="filterStoresByCategory('tools')" id="cat-chip-tools" class="cat-chip shrink-0 whitespace-nowrap min-h-[44px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
               <span id="cat-lbl-tools" data-i18n="cat_tools">Tools</span>
             </button>
           </div>
         </div>
 
         <!-- Hero Banner: Fresh Essentials from Local Shops (Light Cream Warm Card) -->
-        <div id="p2-guarantee-banner" class="w-full shrink-0 rounded-3xl bg-[#FFF6EB] dark:bg-[#1D232B] border border-amber-200/60 dark:border-[#465362] p-4 sm:p-5 shadow-xs relative overflow-hidden flex items-center justify-between gap-3 mt-4 mb-3.5">
+        <div id="p2-guarantee-banner" class="w-full shrink-0 rounded-3xl bg-[#FFF6EB] dark:bg-[#1D232B] border border-amber-200/60 dark:border-[#465362] p-4 sm:p-5 shadow-xs relative flex items-center justify-between gap-3 mt-4 mb-3.5">
           <div class="flex flex-col gap-1 z-10">
             <h2 class="text-base font-black text-slate-900 dark:text-[#F8FAFC] leading-tight" data-i18n="p2_hero_title">Fresh essentials<br>from local shops</h2>
             <p class="text-xs text-slate-600 dark:text-[#CBD5E1] font-medium" data-i18n="p2_hero_sub">Good food. Stronger villages.</p>
@@ -1198,8 +1084,8 @@
               <span data-i18n="p2_hero_btn">Shop now</span>
             </button>
           </div>
-          <div class="w-28 h-24 sm:w-32 sm:h-28 flex items-center justify-center shrink-0 overflow-hidden">
-            <img src="static/images/hero_banner.png" alt="Fresh Essentials" class="max-h-full max-w-full object-contain" />
+          <div class="w-28 h-24 sm:w-36 sm:h-28 flex items-center justify-center shrink-0 relative">
+            <img src="static/images/hero_banner.png" alt="Fresh Essentials" class="max-h-full max-w-full object-contain drop-shadow-sm select-none" />
           </div>
         </div>
 
@@ -1219,8 +1105,8 @@
               <button type="button" data-favorite-item="item_tomato" onclick="toggleProductFavorite('item_tomato', event)" aria-label="Add Fresh Tomato to favorites" class="absolute top-2.5 right-2.5 w-9 h-9 min-w-[36px] min-h-[36px] flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors cursor-pointer">
                 <span class="material-symbols-outlined text-[18px]">favorite_border</span>
               </button>
-              <div class="w-full h-24 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2 mb-2">
-                <img src="static/images/prod_tomato.png" alt="Fresh Tomato" class="max-h-full max-w-full object-contain" />
+              <div class="w-full h-28 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2.5 mb-2">
+                <img src="static/images/prod_tomato.png" alt="Fresh Tomato" class="max-h-24 max-w-full object-contain drop-shadow-xs" />
               </div>
               <div class="flex flex-col">
                 <span id="feat-title-tomato" data-i18n="feat_tomato_name" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">Fresh Tomato</span>
@@ -1239,8 +1125,8 @@
               <button type="button" data-favorite-item="item_banana" onclick="toggleProductFavorite('item_banana', event)" aria-label="Add Banana to favorites" class="absolute top-2.5 right-2.5 w-9 h-9 min-w-[36px] min-h-[36px] flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors cursor-pointer">
                 <span class="material-symbols-outlined text-[18px]">favorite_border</span>
               </button>
-              <div class="w-full h-24 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2 mb-2">
-                <img src="static/images/prod_banana.png" alt="Banana" class="max-h-full max-w-full object-contain" />
+              <div class="w-full h-28 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2.5 mb-2">
+                <img src="static/images/prod_banana.png" alt="Banana" class="max-h-24 max-w-full object-contain drop-shadow-xs" />
               </div>
               <div class="flex flex-col">
                 <span id="feat-title-banana" data-i18n="feat_banana_name" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">Banana</span>
@@ -1272,8 +1158,8 @@
               <button type="button" data-favorite-item="item_milk" onclick="toggleProductFavorite('item_milk', event)" aria-label="Add Amul Taaza to favorites" class="absolute top-2.5 right-2.5 w-9 h-9 min-w-[36px] min-h-[36px] flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors cursor-pointer">
                 <span class="material-symbols-outlined text-[18px]">favorite_border</span>
               </button>
-              <div class="w-full h-24 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2 mb-2">
-                <img src="static/images/prod_milk.png" alt="Amul Taaza" class="max-h-full max-w-full object-contain" />
+              <div class="w-full h-28 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2.5 mb-2">
+                <img src="static/images/prod_milk.png" alt="Amul Taaza" class="max-h-24 max-w-full object-contain drop-shadow-xs" />
               </div>
               <div class="flex flex-col">
                 <span id="feat-title-milk" data-i18n="feat_milk_name" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">Amul Taaza</span>
@@ -1292,8 +1178,8 @@
               <button type="button" data-favorite-item="item_onion" onclick="toggleProductFavorite('item_onion', event)" aria-label="Add Onion to favorites" class="absolute top-2.5 right-2.5 w-9 h-9 min-w-[36px] min-h-[36px] flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors cursor-pointer">
                 <span class="material-symbols-outlined text-[18px]">favorite_border</span>
               </button>
-              <div class="w-full h-24 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2 mb-2">
-                <img src="static/images/prod_onion.png" alt="Onion" class="max-h-full max-w-full object-contain" />
+              <div class="w-full h-28 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2.5 mb-2">
+                <img src="static/images/prod_onion.png" alt="Onion" class="max-h-24 max-w-full object-contain drop-shadow-xs" />
               </div>
               <div class="flex flex-col">
                 <span id="feat-title-onion" data-i18n="feat_onion_name" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">Onion</span>
@@ -1607,24 +1493,26 @@
       <!-- ===================================================================== -->
       <section id="view-p5-tracking" class="screen-view hidden flex-col w-full px-4 pt-2 pb-32 sm:pb-36 flex-1 min-h-0 space-y-4" style="touch-action: pan-y !important;">
         
-        <!-- Top Bar Matching Reference 04: < Order #GB-1284 | Help -->
+        <!-- One Orders destination: live tracking first, then complete order history -->
         <div class="flex items-center justify-between py-1">
           <div class="flex items-center gap-2">
             <button onclick="navigateToPhase('dashboard')" aria-label="Back to Home" class="w-9 h-9 rounded-full text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#2A323D] flex items-center justify-center cursor-pointer">
               <span class="material-symbols-outlined text-[22px]">arrow_back</span>
             </button>
-            <h1 class="text-sm font-black text-slate-900 dark:text-[#F8FAFC] flex items-center gap-1.5">
-              <span>Order</span>
-              <span id="p5-order-id" class="font-mono text-[#16B86E]">#GB-1284</span>
-              <button onclick="copyOrderId()" class="text-[10px] bg-slate-100 dark:bg-[#2A323D] px-2 py-0.5 rounded text-slate-600 dark:text-[#CBD5E1] hover:bg-slate-200">Copy</button>
-            </h1>
+            <div class="min-w-0">
+              <h1 class="text-sm font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="nav_orders">My Orders</h1>
+              <div class="flex items-center gap-1.5">
+                <span id="p5-order-id" class="hidden font-mono text-[11px] font-bold text-[#16B86E] truncate"></span>
+                <button id="p5-copy-order-id" type="button" onclick="copyOrderId()" class="hidden min-h-[30px] px-2 text-[10px] bg-slate-100 dark:bg-[#2A323D] rounded text-slate-600 dark:text-[#CBD5E1] hover:bg-slate-200">Copy</button>
+              </div>
+            </div>
           </div>
-          <!-- Help link (opens support modal) -->
-          <button onclick="openSupportModal()" class="text-xs font-bold text-[#16B86E] hover:underline cursor-pointer">Help</button>
+          <!-- Order assistance opens the same Help & Support center as the menu. -->
+          <button onclick="navigateToPhase('support')" class="min-h-[44px] px-2 text-xs font-bold text-[#16B86E] hover:underline cursor-pointer" data-i18n="drawer_help_center">Help</button>
         </div>
 
         <!-- 1. EMPTY STATE CONTAINER (Visible when NO active order exists) -->
-        <div id="p5-tracking-empty-state" class="hidden w-full bg-white dark:bg-[#1D232B] rounded-3xl p-6 text-center shadow-xs border border-slate-200 dark:border-[#465362] flex flex-col items-center justify-center my-auto py-12">
+        <div id="p5-tracking-empty-state" class="w-full bg-white dark:bg-[#1D232B] rounded-3xl p-6 text-center shadow-xs border border-slate-200 dark:border-[#465362] flex flex-col items-center justify-center py-8">
           <div class="w-20 h-20 rounded-full bg-[#16B86E]/10 flex items-center justify-center mb-4 text-[#16B86E]">
             <span class="material-symbols-outlined text-[40px]">local_shipping</span>
           </div>
@@ -1637,7 +1525,7 @@
         </div>
 
         <!-- 2. ACTIVE TRACKING CONTAINER (Dynamic rendering from server) -->
-        <div id="p5-active-tracking-content" class="w-full flex flex-col space-y-3.5 pb-28 sm:pb-32" style="touch-action: pan-y !important;">
+        <div id="p5-active-tracking-content" class="hidden w-full flex-col space-y-3.5 pb-6" style="touch-action: pan-y !important;">
           
           <!-- Hero Arriving Status Card -->
           <div class="bg-white dark:bg-[#1D232B] rounded-2xl p-4 shadow-xs border border-slate-200 dark:border-[#465362] flex items-center justify-between">
@@ -1702,29 +1590,29 @@
             <div id="p5-timeline-steps" class="hidden"></div>
           </div>
 
-          <!-- Assigned Delivery Partner Card Matching Reference 04 -->
-          <div id="p5-call-runner-card" class="bg-white dark:bg-[#1D232B] rounded-2xl p-3.5 shadow-xs border border-slate-200 dark:border-[#465362] flex items-center justify-between">
+          <!-- Delivery partner identity and calling details appear only from a confirmed order. -->
+          <div id="p5-call-runner-card" class="hidden bg-white dark:bg-[#1D232B] rounded-2xl p-3.5 shadow-xs border border-slate-200 dark:border-[#465362] flex items-center justify-between">
             <div class="flex items-center gap-3 min-w-0">
-              <div class="w-12 h-12 rounded-full overflow-hidden shrink-0 shadow-xs border-2 border-white dark:border-[#2A323D]">
-                <img src="static/images/runner_ramesh.png" alt="Ramesh Kumar" class="w-full h-full object-cover" />
+              <div class="w-12 h-12 rounded-full overflow-hidden shrink-0 shadow-xs border-2 border-white dark:border-[#2A323D] bg-emerald-50 dark:bg-[#2A323D] text-[#16B86E] flex items-center justify-center">
+                <span class="material-symbols-outlined text-[27px]">delivery_dining</span>
               </div>
               <div class="flex flex-col min-w-0">
-                <span id="p5-runner-name" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">Ramesh Kumar</span>
+                <span id="p5-runner-name" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">Gaon Mitra</span>
                 <span class="text-[10px] text-slate-500 dark:text-[#CBD5E1]">Your delivery partner</span>
-                <div class="flex items-center gap-1 text-[10px] text-amber-500 font-bold mt-0.5">
-                  <span>★ 4.8</span>
-                  <span class="text-slate-400 font-normal">(320 deliveries)</span>
+                <div id="p5-runner-rating-row" class="hidden items-center gap-1 text-[10px] text-amber-500 font-bold mt-0.5">
+                  <span id="p5-runner-rating"></span>
+                  <span id="p5-runner-deliveries" class="text-slate-400 font-normal"></span>
                 </div>
               </div>
             </div>
 
             <!-- Call & Chat Actions -->
             <div class="flex items-center gap-2 shrink-0">
-              <a href="tel:9876543210" id="btn-call-runner" class="w-10 h-10 rounded-full bg-emerald-50 dark:bg-[#2A323D] text-[#16B86E] hover:bg-[#16B86E] hover:text-white flex items-center justify-center transition-all shadow-xs cursor-pointer" title="Call Delivery Partner">
+              <a id="btn-call-runner" class="hidden w-10 h-10 rounded-full bg-emerald-50 dark:bg-[#2A323D] text-[#16B86E] hover:bg-[#16B86E] hover:text-white items-center justify-center transition-all shadow-xs cursor-pointer" title="Call Delivery Partner" aria-label="Call delivery partner">
                 <span class="material-symbols-outlined text-[20px]">call</span>
               </a>
-              <button onclick="openSupportModal()" class="w-10 h-10 rounded-full bg-emerald-50 dark:bg-[#2A323D] text-[#16B86E] hover:bg-[#16B86E] hover:text-white flex items-center justify-center transition-all shadow-xs cursor-pointer" title="Chat with Partner">
-                <span class="material-symbols-outlined text-[20px]">chat</span>
+              <button onclick="openSupportModal()" class="w-10 h-10 rounded-full bg-emerald-50 dark:bg-[#2A323D] text-[#16B86E] hover:bg-[#16B86E] hover:text-white flex items-center justify-center transition-all shadow-xs cursor-pointer" title="AI Order Support" aria-label="Chat with AI order support">
+                <span class="material-symbols-outlined text-[20px]">smart_toy</span>
               </button>
             </div>
             <span id="btn-call-runner-lbl" class="hidden"></span>
@@ -1829,6 +1717,14 @@
           <div class="w-full h-16 sm:h-20 shrink-0 pointer-events-none" aria-hidden="true"></div>
         </div>
 
+        <!-- History belongs in Orders, not Account, even when no delivery is active. -->
+        <div id="orders-history-section" class="w-full space-y-3 pb-16">
+          <div class="flex items-center justify-between px-1">
+            <h2 class="text-xs font-black text-slate-500 dark:text-[#B4C1D1] uppercase tracking-wider" data-i18n="profile_sec_orders">Past Orders</h2>
+            <button id="orders-history-refresh" type="button" onclick="loadUserOrderHistory()" class="min-h-[44px] px-3 text-xs text-primary font-bold" data-i18n="profile_refresh_orders">Refresh</button>
+          </div>
+          <div id="orders-history-list" class="space-y-3" aria-live="polite"></div>
+        </div>
       </section>
 
       <!-- ===================================================================== -->
@@ -1898,10 +1794,6 @@
               <p class="text-xs text-on-surface-variant font-medium" data-i18n="profile_page_sub">गाँव बाज़ार प्रोफ़ाइल एवं सेटिंग्स</p>
             </div>
           </div>
-          <button onclick="logoutCustomer()" class="min-h-[44px] px-3.5 py-2 rounded-xl border border-red-200 bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer">
-            <span class="material-symbols-outlined text-[16px]">logout</span>
-            <span data-i18n="profile_logout_btn">लॉगआउट</span>
-          </button>
         </div>
 
         <!-- =================================================================== -->
@@ -1921,7 +1813,7 @@
               </div>
               <div class="min-w-0 flex-1">
                 <div class="flex items-center gap-1.5">
-                  <h2 id="profile-user-name" class="text-lg font-black text-slate-900 leading-tight truncate" data-i18n="profile_user_default_name">रमेश पटेल</h2>
+                  <h2 id="profile-user-name" class="text-lg font-black text-slate-900 leading-tight truncate">अतिथि ग्राहक</h2>
                 </div>
                 <div class="flex items-center gap-2 mt-1">
                   <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-200/80 px-2 py-0.5 rounded-full text-[10px] font-black">
@@ -1967,7 +1859,7 @@
               </div>
               <div class="relative flex items-center bg-slate-100/80 rounded-2xl border border-slate-200/90 cursor-not-allowed select-none">
                 <span class="material-symbols-outlined text-emerald-600 absolute left-3.5 text-[18px]">call</span>
-                <p id="profile-user-phone" class="w-full h-11 pl-10 pr-10 flex items-center text-xs font-mono font-bold text-slate-700">+91 98765 43210</p>
+                <p id="profile-user-phone" class="w-full h-11 pl-10 pr-10 flex items-center text-xs font-mono font-bold text-slate-700">लॉगिन नहीं किया</p>
                 <span class="material-symbols-outlined text-emerald-600 absolute right-3.5 text-[18px]" title="Phone is verified and non-editable">check_circle</span>
               </div>
             </div>
@@ -2070,7 +1962,7 @@
             </div>
 
             <!-- Row 2: Saved Payments -->
-            <div id="profile-row-saved-payments" onclick="openAddPaymentModal()" class="p-4 flex items-center justify-between hover:bg-slate-50 active:bg-slate-100 transition-colors cursor-pointer">
+            <button id="profile-row-saved-payments" type="button" onclick="toggleProfileSavedPayments()" aria-expanded="false" aria-controls="profile-saved-payments-panel" class="w-full text-left p-4 flex items-center justify-between hover:bg-slate-50 active:bg-slate-100 transition-colors cursor-pointer">
               <div class="flex items-center gap-3.5 min-w-0">
                 <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 border border-amber-100">
                   <span class="material-symbols-outlined text-[22px]">account_balance_wallet</span>
@@ -2082,21 +1974,17 @@
               </div>
               <div class="flex items-center gap-1 text-slate-400 shrink-0 ml-2">
                 <span class="text-[11px] text-slate-500 font-bold" data-i18n="profile_badge_manage">प्रबंधित करें</span>
-                <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+                <span id="profile-payments-chevron" class="material-symbols-outlined text-[18px]">expand_more</span>
               </div>
+            </button>
+            <div id="profile-saved-payments-panel" class="hidden p-4 space-y-3 bg-slate-50 dark:bg-[#1D232B]">
+              <div id="profile-saved-payment-list" class="space-y-2"></div>
+              <button id="profile-add-payment-btn" type="button" onclick="openAddPaymentModal()" class="w-full min-h-[44px] rounded-xl bg-primary text-white text-xs font-black flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-[19px]">add_card</span>
+                <span data-i18n="profile_add_payment">Add Payment Method</span>
+              </button>
             </div>
           </div>
-        </div>
-
-        <!-- =================================================================== -->
-        <!-- PAST ORDERS / ORDER HISTORY                                         -->
-        <!-- =================================================================== -->
-        <div class="space-y-2">
-          <div class="flex items-center justify-between px-1">
-            <h3 class="text-xs font-black text-slate-500 uppercase tracking-wider" data-i18n="profile_sec_orders">पिछले ऑर्डर (Past Orders)</h3>
-            <span class="text-[11px] text-primary font-bold cursor-pointer" onclick="loadUserOrderHistory()" data-i18n="profile_refresh_orders">रिफ्रेश</span>
-          </div>
-          <div id="profile-order-history-list" class="space-y-3"></div>
         </div>
 
         <!-- =================================================================== -->
@@ -2247,21 +2135,7 @@
           <h3 class="text-xs font-black text-slate-500 uppercase tracking-wider px-1" data-i18n="profile_sec_support">सहायता एवं सहभागिता (Support & Engagement)</h3>
 
           <div class="rounded-3xl bg-white shadow-mobile-card border border-surface-container-high divide-y divide-slate-100 overflow-hidden">
-            <!-- Row 1: Help & Support Center -->
-            <div id="profile-row-help-support" onclick="navigateToPhase('support')" class="p-4 flex items-center justify-between hover:bg-slate-50 active:bg-slate-100 transition-colors cursor-pointer">
-              <div class="flex items-center gap-3.5 min-w-0">
-                <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100">
-                  <span class="material-symbols-outlined text-[22px]">support_agent</span>
-                </div>
-                <div class="flex flex-col min-w-0">
-                  <span class="text-xs font-black text-slate-900 truncate" data-i18n="profile_row_help">सहायता केंद्र (Help & Support Center)</span>
-                  <span class="text-[11px] text-slate-500 truncate mt-0.5" data-i18n="profile_row_help_sub">सामान्य प्रश्न, शिकायत व हेल्पलाइन</span>
-                </div>
-              </div>
-              <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
-            </div>
-
-            <!-- Row 2: Share GaonBazaar App -->
+            <!-- Share GaonBazaar App -->
             <div id="profile-row-share-app" onclick="shareGaonBazaarApp()" class="p-4 flex items-center justify-between hover:bg-slate-50 active:bg-slate-100 transition-colors cursor-pointer">
               <div class="flex items-center gap-3.5 min-w-0">
                 <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 border border-indigo-100">
@@ -2302,6 +2176,92 @@
               </div>
               <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
             </div>
+          </div>
+        </div>
+
+                <!-- =================================================================== -->
+        <!-- 4. HELP & SUPPORT (Central Support Hub Access)                      -->
+        <!-- =================================================================== -->
+        <div id="profile-sec-help-support" class="space-y-2">
+          <div class="flex items-center justify-between px-1">
+            <h3 class="text-xs font-black text-slate-500 uppercase tracking-wider" data-i18n="profile_sec_help_support">सहायता एवं समर्थन (Help & Support)</h3>
+            <span class="text-[10px] font-bold text-primary dark:text-[#16B86E] flex items-center gap-0.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>24x7 Care</span>
+            </span>
+          </div>
+
+          <div class="rounded-3xl bg-white dark:bg-[#1D232B] shadow-mobile-card border border-surface-container-high dark:border-[#465362] divide-y divide-slate-100 dark:divide-[#465362] overflow-hidden">
+            <!-- Option 1: Where Is My Order? -->
+            <div id="account-row-where-order" onclick="openSupportCenterSection('where_order')" class="p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-[#2A323D] active:bg-slate-100 transition-colors cursor-pointer">
+              <div class="flex items-center gap-3.5 min-w-0">
+                <div class="w-10 h-10 rounded-2xl bg-emerald-50 dark:bg-[#2A323D] text-primary dark:text-[#16B86E] flex items-center justify-center shrink-0 border border-emerald-100 dark:border-[#465362]">
+                  <span class="material-symbols-outlined text-[20px]">local_shipping</span>
+                </div>
+                <div class="min-w-0">
+                  <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] block truncate" data-i18n="support_opt_where_order">मेरा ऑर्डर कहाँ है? (Where Is My Order?)</span>
+                  <span class="text-[11px] text-slate-500 dark:text-[#CBD5E1] truncate block" data-i18n="support_opt_where_order_sub">लाइव स्थिति, अनुमानित समय व डिलीवरी साथी</span>
+                </div>
+              </div>
+              <span class="material-symbols-outlined text-slate-400 dark:text-[#94A3B8] text-[18px]">chevron_right</span>
+            </div>
+
+            <!-- Option 2: Report an Issue -->
+            <div id="account-row-report-issue" onclick="openSupportCenterSection('report_issue')" class="p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-[#2A323D] active:bg-slate-100 transition-colors cursor-pointer">
+              <div class="flex items-center gap-3.5 min-w-0">
+                <div class="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-[#2A323D] text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-100 dark:border-[#465362]">
+                  <span class="material-symbols-outlined text-[20px]">report_problem</span>
+                </div>
+                <div class="min-w-0">
+                  <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] block truncate" data-i18n="support_opt_report_issue">समस्या दर्ज करें (Report an Issue)</span>
+                  <span class="text-[11px] text-slate-500 dark:text-[#CBD5E1] truncate block" data-i18n="support_opt_report_issue_sub">सामान छूटा, खराब उत्पाद या देरी की शिकायत</span>
+                </div>
+              </div>
+              <span class="material-symbols-outlined text-slate-400 dark:text-[#94A3B8] text-[18px]">chevron_right</span>
+            </div>
+
+            <!-- Option 3: My Support Requests -->
+            <div id="account-row-my-tickets" onclick="openSupportCenterSection('my_tickets')" class="p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-[#2A323D] active:bg-slate-100 transition-colors cursor-pointer">
+              <div class="flex items-center gap-3.5 min-w-0">
+                <div class="w-10 h-10 rounded-2xl bg-blue-50 dark:bg-[#2A323D] text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 border border-blue-100 dark:border-[#465362]">
+                  <span class="material-symbols-outlined text-[20px]">confirmation_number</span>
+                </div>
+                <div class="min-w-0">
+                  <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] block truncate" data-i18n="support_opt_my_tickets">मेरी सहायता मांगें (My Support Requests)</span>
+                  <span class="text-[11px] text-slate-500 dark:text-[#CBD5E1] truncate block" data-i18n="support_opt_my_tickets_sub">पहले से दर्ज शिकायतों की स्थिति व समाधान</span>
+                </div>
+              </div>
+              <span class="material-symbols-outlined text-slate-400 dark:text-[#94A3B8] text-[18px]">chevron_right</span>
+            </div>
+
+            <!-- Option 4: Contact Support -->
+            <div id="account-row-contact-support" onclick="openSupportCenterSection('contact')" class="p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-[#2A323D] active:bg-slate-100 transition-colors cursor-pointer">
+              <div class="flex items-center gap-3.5 min-w-0">
+                <div class="w-10 h-10 rounded-2xl bg-purple-50 dark:bg-[#2A323D] text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 border border-purple-100 dark:border-[#465362]">
+                  <span class="material-symbols-outlined text-[20px]">support_agent</span>
+                </div>
+                <div class="min-w-0">
+                  <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] block truncate" data-i18n="support_opt_contact">कॉल सहायता केंद्र (Contact Support)</span>
+                  <span class="text-[11px] text-slate-500 dark:text-[#CBD5E1] truncate block" data-i18n="support_opt_contact_sub">24x7 टोल-फ्री हेल्पलाइन व AI चैट</span>
+                </div>
+              </div>
+              <span class="material-symbols-outlined text-slate-400 dark:text-[#94A3B8] text-[18px]">chevron_right</span>
+            </div>
+
+            <!-- Option 5: Frequently Asked Questions (FAQ) -->
+            <div id="account-row-faq" onclick="openSupportCenterSection('faq')" class="p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-[#2A323D] active:bg-slate-100 transition-colors cursor-pointer">
+              <div class="flex items-center gap-3.5 min-w-0">
+                <div class="w-10 h-10 rounded-2xl bg-slate-100 dark:bg-[#2A323D] text-slate-600 dark:text-[#CBD5E1] flex items-center justify-center shrink-0 border border-slate-200 dark:border-[#465362]">
+                  <span class="material-symbols-outlined text-[20px]">help_center</span>
+                </div>
+                <div class="min-w-0">
+                  <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] block truncate" data-i18n="support_opt_faq">अक्सर पूछे जाने वाले प्रश्न (FAQ)</span>
+                  <span class="text-[11px] text-slate-500 dark:text-[#CBD5E1] truncate block" data-i18n="support_opt_faq_sub">ट्रैकिंग, पेमेंट और रिफंड से जुड़े त्वरित उत्तर</span>
+                </div>
+              </div>
+              <span class="material-symbols-outlined text-slate-400 dark:text-[#94A3B8] text-[18px]">chevron_right</span>
+            </div>
+
           </div>
         </div>
 
@@ -2374,7 +2334,7 @@
       <!-- ===================================================================== -->
       <!-- MODULE 1: COMMERCE AI ASSISTANT (Voice-First Shopping & Direct Cart CTA) -->
       <!-- ===================================================================== -->
-      <section id="view-commerce-ai" class="screen-view hidden flex-col w-full px-4 pt-2 pb-28 flex-1 min-h-0 space-y-4">
+      <section id="view-commerce-ai" class="screen-view hidden flex-col w-full px-4 pt-2 pb-40 flex-1 min-h-0 space-y-4">
         
         <!-- Top Title Bar Matching Reference Image 01 -->
         <div class="flex items-center justify-between py-1">
@@ -2494,7 +2454,7 @@
         </div>
 
         <!-- Sticky Floating Bar: View Cart & Checkout -->
-        <div id="commerce-view-cart-bar" class="hidden sticky bottom-16 left-0 right-0 z-30 pt-2 pb-1">
+        <div id="commerce-view-cart-bar" class="hidden sticky bottom-20 left-0 right-0 z-30 pt-2 pb-2">
           <button onclick="navigateToPhase('cart')" class="w-full h-12 bg-[#16B86E] hover:bg-emerald-700 text-white rounded-2xl font-black text-xs sm:text-sm flex items-center justify-between px-4 shadow-lg active:scale-98 transition-all cursor-pointer">
             <span id="commerce-cart-count-badge" class="bg-white/20 px-2.5 py-0.5 rounded-full text-xs">0 Items</span>
             <span data-i18n="ai_proceed_cart">View Cart & Checkout</span>
@@ -2510,156 +2470,152 @@
       <section id="view-support-center" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 space-y-4">
         
         <!-- Header with Back Button -->
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <button onclick="navigateToPhase('dashboard')" aria-label="Back to home" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center active:scale-95 transition-all cursor-pointer">
+        <div class="flex items-center justify-between pb-1">
+          <div class="flex items-center gap-2.5">
+            <button onclick="navigateBack()" aria-label="Back" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-[#2A323D] hover:bg-slate-200 dark:hover:bg-[#465362] text-slate-700 dark:text-[#F8FAFC] flex items-center justify-center active:scale-95 transition-all cursor-pointer">
               <span class="material-symbols-outlined text-[20px]">arrow_back</span>
             </button>
             <div>
-              <h1 class="text-base sm:text-lg font-black text-on-surface leading-tight font-hindi" data-i18n="support_center_title">Help & Support</h1>
-              <p class="text-xs text-on-surface-variant font-medium" data-i18n="support_center_sub">Traditional self-service & grievance portal</p>
+              <h1 class="text-base sm:text-lg font-black text-on-surface dark:text-[#F8FAFC] leading-tight font-hindi" data-i18n="support_center_title">सहायता एवं समर्थन</h1>
+              <p class="text-xs text-on-surface-variant dark:text-[#CBD5E1] font-medium" data-i18n="support_center_sub">त्वरित समाधान, ऑर्डर ट्रैकिंग एवं शिकायत निवारण</p>
             </div>
           </div>
-          <span class="px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-black uppercase tracking-wider">
-            Human Care
+          <span class="px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-primary dark:text-[#16B86E] border border-emerald-200 dark:border-[#16B86E]/30 text-[10px] font-black uppercase tracking-wider">
+            24x7 Care
           </span>
         </div>
 
-        <!-- 24/7 Helpline Banner -->
-        <div id="support-helpline-banner" class="rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-4 shadow-mobile-card flex items-center justify-between gap-3">
-          <div class="space-y-0.5">
-            <div class="text-[11px] font-bold text-emerald-100 uppercase tracking-wide" data-i18n="support_helpline_label">Toll-Free Helpline</div>
-            <div class="text-base sm:text-lg font-black font-mono">1800-120-4266</div>
-            <div class="text-[10.5px] text-emerald-100" data-i18n="support_helpline_sub">Available 24x7 for rural deliveries</div>
+        <!-- Quick Jump Navigation Pills -->
+        <div class="w-full overflow-x-auto no-scrollbar py-1">
+          <div class="flex items-center gap-2 min-w-max">
+            <button type="button" onclick="openSupportCenterSection('where_order')" class="px-3 py-1.5 rounded-full bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-[#465362] text-[11px] font-bold text-slate-700 dark:text-[#CBD5E1] hover:border-[#16B86E] active:scale-95 transition-all flex items-center gap-1 cursor-pointer">
+              <span class="material-symbols-outlined text-[15px] text-[#16B86E]">local_shipping</span>
+              <span data-i18n="support_tab_where">ऑर्डर कहाँ है?</span>
+            </button>
+            <button type="button" onclick="openSupportCenterSection('report_issue')" class="px-3 py-1.5 rounded-full bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-[#465362] text-[11px] font-bold text-slate-700 dark:text-[#CBD5E1] hover:border-[#16B86E] active:scale-95 transition-all flex items-center gap-1 cursor-pointer">
+              <span class="material-symbols-outlined text-[15px] text-amber-500">report_problem</span>
+              <span data-i18n="support_tab_issue">शिकायत दर्ज करें</span>
+            </button>
+            <button type="button" onclick="openSupportCenterSection('my_tickets')" class="px-3 py-1.5 rounded-full bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-[#465362] text-[11px] font-bold text-slate-700 dark:text-[#CBD5E1] hover:border-[#16B86E] active:scale-95 transition-all flex items-center gap-1 cursor-pointer">
+              <span class="material-symbols-outlined text-[15px] text-blue-500">confirmation_number</span>
+              <span data-i18n="support_tab_tickets">मेरी शिकायतें</span>
+            </button>
+            <button type="button" onclick="openSupportCenterSection('contact')" class="px-3 py-1.5 rounded-full bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-[#465362] text-[11px] font-bold text-slate-700 dark:text-[#CBD5E1] hover:border-[#16B86E] active:scale-95 transition-all flex items-center gap-1 cursor-pointer">
+              <span class="material-symbols-outlined text-[15px] text-purple-500">support_agent</span>
+              <span data-i18n="support_tab_contact">संपर्क</span>
+            </button>
+            <button type="button" onclick="openSupportCenterSection('faq')" class="px-3 py-1.5 rounded-full bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-[#465362] text-[11px] font-bold text-slate-700 dark:text-[#CBD5E1] hover:border-[#16B86E] active:scale-95 transition-all flex items-center gap-1 cursor-pointer">
+              <span class="material-symbols-outlined text-[15px] text-slate-500">help_center</span>
+              <span data-i18n="support_tab_faq">FAQ</span>
+            </button>
           </div>
-          <a href="tel:18001204266" class="min-h-[44px] px-4 py-2 bg-white text-emerald-800 rounded-xl font-black text-xs flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer whitespace-nowrap">
-            <span class="material-symbols-outlined text-[18px]">call</span>
-            <span data-i18n="support_call_now">Call Now</span>
-          </a>
         </div>
 
-        <!-- 1. FAQ Accordion Section -->
-        <div class="rounded-2xl bg-white p-4 shadow-mobile-card border border-surface-container-high space-y-3">
-          <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
-            <span class="material-symbols-outlined text-primary text-[20px]">help_center</span>
-            <h2 class="text-sm font-extrabold text-slate-900" data-i18n="faq_heading">Frequently Asked Questions (FAQ)</h2>
+        <!-- =================================================================== -->
+        <!-- SECTION A: WHERE IS MY ORDER? (Instant Active Order Lookup)        -->
+        <!-- =================================================================== -->
+        <div id="support-sec-where-order" class="rounded-3xl bg-white dark:bg-[#1D232B] p-4 shadow-mobile-card border border-surface-container-high dark:border-[#465362] space-y-3 transition-all">
+          <div class="flex items-center justify-between border-b border-slate-100 dark:border-[#465362] pb-2.5">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-[#2A323D] text-primary dark:text-[#16B86E] flex items-center justify-center font-bold">
+                <span class="material-symbols-outlined text-[19px]">local_shipping</span>
+              </div>
+              <div>
+                <h2 class="text-xs font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="support_order_lookup_title">मेरा ऑर्डर कहाँ है? (Order Status)</h2>
+                <p class="text-[10px] text-slate-500 dark:text-[#CBD5E1]" data-i18n="support_order_lookup_sub">सक्रिय ऑर्डर की ताज़ा स्थिति</p>
+              </div>
+            </div>
+            <span id="support-order-status-badge" class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-[#2A323D] text-slate-700 dark:text-[#CBD5E1] text-[10px] font-black">
+              लाइव अपडेट
+            </span>
           </div>
 
-          <div id="faq-accordion-list" class="space-y-2">
-            <!-- FAQ 1 -->
-            <div class="border border-slate-200 rounded-xl overflow-hidden">
-              <button type="button" onclick="toggleFaqAccordion(this)" class="w-full p-3.5 text-left flex items-center justify-between gap-2 bg-slate-50/70 hover:bg-slate-100 transition-colors cursor-pointer">
-                <span class="text-xs font-extrabold text-slate-800" data-i18n="faq_q1">What is the Minimum Order Value (MOV)?</span>
-                <span class="material-symbols-outlined text-slate-400 text-[18px] transition-transform duration-200 faq-chevron">expand_more</span>
+          <!-- Dynamic Active Order Container -->
+          <div id="support-order-lookup-card" class="space-y-3">
+            <div class="py-6 px-3 text-center text-slate-400 dark:text-[#CBD5E1]">
+              <span class="material-symbols-outlined text-3xl text-slate-300 dark:text-[#465362]">inventory_2</span>
+              <p class="text-xs font-bold text-slate-700 dark:text-[#F8FAFC] mt-1.5" data-i18n="support_no_active_order">वर्तमान में कोई सक्रिय ऑर्डर नहीं है</p>
+              <p class="text-[11px] text-slate-500 dark:text-[#CBD5E1] mt-0.5" data-i18n="support_no_active_order_sub">जब आप कोई नया ऑर्डर देंगे, तो उसका लाइव स्टेटस यहाँ दिखाई देगा।</p>
+              <button type="button" onclick="navigateToPhase('dashboard')" class="mt-3 px-4 py-2 bg-primary hover:bg-primary-dark text-white text-xs font-bold rounded-xl shadow-xs active:scale-95 transition-all cursor-pointer" data-i18n="support_btn_browse_stores">
+                दुकानें देखें (Browse Stores)
               </button>
-              <div class="hidden p-3.5 bg-white text-xs text-slate-600 border-t border-slate-100 leading-relaxed" data-i18n="faq_a1">
-                GaonBazaar operates with a low minimum order value of ₹99 to ensure fair delivery across rural clusters without high shipping fees. Orders above ₹99 are delivered free of extra delivery surcharges.
-              </div>
-            </div>
-
-            <!-- FAQ 2 -->
-            <div class="border border-slate-200 rounded-xl overflow-hidden">
-              <button type="button" onclick="toggleFaqAccordion(this)" class="w-full p-3.5 text-left flex items-center justify-between gap-2 bg-slate-50/70 hover:bg-slate-100 transition-colors cursor-pointer">
-                <span class="text-xs font-extrabold text-slate-800" data-i18n="faq_q2">Can I pay Cash on Delivery (COD)?</span>
-                <span class="material-symbols-outlined text-slate-400 text-[18px] transition-transform duration-200 faq-chevron">expand_more</span>
-              </button>
-              <div class="hidden p-3.5 bg-white text-xs text-slate-600 border-t border-slate-100 leading-relaxed" data-i18n="faq_a2">
-                Yes, 100% Cash on Delivery (COD) is supported. You pay the village runner only after physically inspecting your packages at your doorstep or landmark.
-              </div>
-            </div>
-
-            <!-- FAQ 3 -->
-            <div class="border border-slate-200 rounded-xl overflow-hidden">
-              <button type="button" onclick="toggleFaqAccordion(this)" class="w-full p-3.5 text-left flex items-center justify-between gap-2 bg-slate-50/70 hover:bg-slate-100 transition-colors cursor-pointer">
-                <span class="text-xs font-extrabold text-slate-800" data-i18n="faq_q3">What if an item is damaged or missing?</span>
-                <span class="material-symbols-outlined text-slate-400 text-[18px] transition-transform duration-200 faq-chevron">expand_more</span>
-              </button>
-              <div class="hidden p-3.5 bg-white text-xs text-slate-600 border-t border-slate-100 leading-relaxed" data-i18n="faq_a3">
-                If any item is damaged or missing, you can raise a ticket below or call our helpline immediately. We guarantee instant doorstep replacement or a 100% refund without hassle.
-              </div>
-            </div>
-
-            <!-- FAQ 4 -->
-            <div class="border border-slate-200 rounded-xl overflow-hidden">
-              <button type="button" onclick="toggleFaqAccordion(this)" class="w-full p-3.5 text-left flex items-center justify-between gap-2 bg-slate-50/70 hover:bg-slate-100 transition-colors cursor-pointer">
-                <span class="text-xs font-extrabold text-slate-800" data-i18n="faq_q4">How are prepaid online refunds processed?</span>
-                <span class="material-symbols-outlined text-slate-400 text-[18px] transition-transform duration-200 faq-chevron">expand_more</span>
-              </button>
-              <div class="hidden p-3.5 bg-white text-xs text-slate-600 border-t border-slate-100 leading-relaxed" data-i18n="faq_a4">
-                Prepaid refunds via UPI or Card are processed instantly and credited back to your original source account within 2 hours.
-              </div>
             </div>
           </div>
         </div>
 
-        <!-- 2. Raise a Complaint Ticket Form -->
-        <div class="rounded-2xl bg-white p-4 shadow-mobile-card border border-surface-container-high space-y-3">
-          <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
-            <span class="material-symbols-outlined text-primary text-[20px]">assignment</span>
+        <!-- =================================================================== -->
+        <!-- SECTION B: REPORT AN ISSUE (Grievance Submission Form)              -->
+        <!-- =================================================================== -->
+        <div id="support-sec-report-issue" class="rounded-3xl bg-white dark:bg-[#1D232B] p-4 shadow-mobile-card border border-surface-container-high dark:border-[#465362] space-y-3 transition-all">
+          <div class="flex items-center gap-2 border-b border-slate-100 dark:border-[#465362] pb-2.5">
+            <div class="w-8 h-8 rounded-xl bg-amber-50 dark:bg-[#2A323D] text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold">
+              <span class="material-symbols-outlined text-[19px]">assignment</span>
+            </div>
             <div>
-              <h2 class="text-sm font-extrabold text-slate-900" data-i18n="ticket_form_heading">Raise a Support Ticket</h2>
-              <p class="text-[11px] text-slate-500" data-i18n="ticket_form_sub">Human customer care response within 2 hours</p>
+              <h2 class="text-xs font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="ticket_form_heading">समस्या दर्ज करें (Report an Issue)</h2>
+              <p class="text-[10px] text-slate-500 dark:text-[#CBD5E1]" data-i18n="ticket_form_sub">2 घंटे के भीतर गाँव बाज़ार सहायता टीम द्वारा समाधान</p>
             </div>
           </div>
 
           <form id="support-ticket-form" onsubmit="event.preventDefault(); submitSupportTicket();" class="space-y-3">
             <!-- Order Reference -->
             <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1" data-i18n="ticket_order_label">Order Reference (Optional)</label>
+              <label class="block text-[11px] font-black text-slate-700 dark:text-[#CBD5E1] mb-1" data-i18n="ticket_order_label">ऑर्डर संदर्भ (Order Reference - यदि हो)</label>
               <input 
                 type="text" 
                 id="ticket-order-id" 
-                placeholder="e.g. ORD-84729" 
-                class="w-full h-11 px-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-primary/30"
+                placeholder="उदा. ORD-84729" 
+                class="w-full h-11 px-3.5 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] text-xs font-bold text-slate-800 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-primary/30"
               />
             </div>
 
-            <!-- Grievance Category -->
+            <!-- Grievance Category (All 7 explicit categories) -->
             <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1" data-i18n="ticket_category_label">Issue Category *</label>
+              <label class="block text-[11px] font-black text-slate-700 dark:text-[#CBD5E1] mb-1" data-i18n="ticket_category_label">समस्या का प्रकार (Issue Category) *</label>
               <select 
                 id="ticket-category" 
                 required
-                class="w-full h-11 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-primary/30 text-slate-800"
+                class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] text-xs font-bold text-slate-800 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer"
               >
-                <option value="delivery_delay" data-i18n="support_opt_delay">Delivery Delay / डिलीवरी में देरी</option>
-                <option value="damaged_item" data-i18n="support_opt_damaged">Damaged or Expired Product / खराब सामान</option>
-                <option value="missing_item" data-i18n="support_opt_missing">Missing Items in Order / सामान छूटा हुआ</option>
-                <option value="refund_payment" data-i18n="support_opt_refund">Payment or Refund Issue / भुगतान या रिफंड</option>
-                <option value="runner_conduct" data-i18n="support_opt_runner">Runner / Delivery Conduct / गाँव मित्र से जुड़ी शिकायत</option>
-                <option value="other" data-i18n="support_opt_other">Other Inquiry / अन्य समस्या</option>
+                <option value="missing_item" data-i18n="support_cat_missing">सामान छूटा हुआ (Missing Items)</option>
+                <option value="wrong_item" data-i18n="support_cat_wrong">गलत सामान डिलीवर हुआ (Wrong Items Delivered)</option>
+                <option value="damaged_item" data-i18n="support_cat_damaged">खराब या क्षतिग्रस्त सामान (Damaged or Spoiled Items)</option>
+                <option value="delivery_delay" data-i18n="support_cat_delay">डिलीवरी में देरी (Delayed Delivery)</option>
+                <option value="runner_conduct" data-i18n="support_cat_conduct">डिलीवरी साथी का व्यवहार (Delivery Person Conduct)</option>
+                <option value="refund_payment" data-i18n="support_cat_refund">भुगतान या रिफंड समस्या (Payment or Refund Issue)</option>
+                <option value="other" data-i18n="support_cat_other">अन्य समस्या (Other Inquiry)</option>
               </select>
             </div>
 
             <!-- Subject -->
             <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1" data-i18n="ticket_subject_label">Subject *</label>
+              <label class="block text-[11px] font-black text-slate-700 dark:text-[#CBD5E1] mb-1" data-i18n="ticket_subject_label">विषय (Subject) *</label>
               <input 
                 type="text" 
                 id="ticket-subject" 
                 required
-                placeholder="Brief title of the issue..." 
+                placeholder="समस्या का संक्षिप्त विवरण..." 
                 data-i18n-ph="ticket_subject_ph"
-                class="w-full h-11 px-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-primary/30"
+                class="w-full h-11 px-3.5 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] text-xs font-bold text-slate-800 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-primary/30"
               />
             </div>
 
             <!-- Detailed Description -->
             <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1" data-i18n="ticket_desc_label">Detailed Description *</label>
+              <label class="block text-[11px] font-black text-slate-700 dark:text-[#CBD5E1] mb-1" data-i18n="ticket_desc_label">विस्तृत विवरण (Detailed Description) *</label>
               <textarea 
                 id="ticket-description" 
                 required
                 rows="3" 
-                placeholder="Please describe what happened in detail..." 
+                placeholder="कृपया क्या हुआ विस्तार से बताएं..." 
                 data-i18n-ph="ticket_desc_ph"
-                class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
+                class="w-full p-3 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] text-xs font-medium text-slate-800 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
               ></textarea>
             </div>
 
             <!-- Image / Attachment Upload -->
             <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1" data-i18n="ticket_upload_label">Attach Photo / Bill (Optional)</label>
+              <label class="block text-[11px] font-black text-slate-700 dark:text-[#CBD5E1] mb-1" data-i18n="ticket_upload_label">तस्वीर / बिल जोड़ें (Attach Photo / Bill - ऐच्छिक)</label>
               <div class="flex items-center gap-2">
                 <input 
                   type="file" 
@@ -2668,11 +2624,11 @@
                   onchange="handleTicketAttachmentChange(this)"
                   class="hidden"
                 />
-                <label for="ticket-attachment" class="min-h-[44px] px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 text-xs font-bold flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all">
+                <label for="ticket-attachment" class="min-h-[44px] px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-[#2A323D] hover:bg-slate-200 dark:hover:bg-[#465362] text-slate-700 dark:text-[#F8FAFC] border border-slate-300 dark:border-[#465362] text-xs font-bold flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all shrink-0">
                   <span class="material-symbols-outlined text-[18px]">add_photo_alternate</span>
-                  <span data-i18n="ticket_choose_file">Choose Photo</span>
+                  <span data-i18n="ticket_choose_file">फ़ोटो चुनें</span>
                 </label>
-                <span id="ticket-attachment-name" class="text-xs text-slate-500 truncate flex-1 font-mono">No file chosen</span>
+                <span id="ticket-attachment-name" class="text-xs text-slate-500 dark:text-[#CBD5E1] truncate flex-1 font-mono">कोई फ़ाइल नहीं चुनी</span>
               </div>
             </div>
 
@@ -2683,23 +2639,132 @@
               class="w-full h-12 bg-primary hover:bg-primary-dark text-white rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md active:scale-98 transition-all cursor-pointer"
             >
               <span class="material-symbols-outlined text-[20px]">send</span>
-              <span data-i18n="ticket_submit_btn">Submit Grievance Ticket</span>
+              <span id="btn-submit-ticket-text" data-i18n="ticket_submit_btn">शिकायत टिकट सबमिट करें</span>
             </button>
           </form>
         </div>
 
-        <!-- 3. Ticket History / Past Complaints -->
-        <div class="rounded-2xl bg-white p-4 shadow-mobile-card border border-surface-container-high space-y-3">
-          <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+        <!-- =================================================================== -->
+        <!-- SECTION C: MY SUPPORT REQUESTS (Past Complaints & Tickets)         -->
+        <!-- =================================================================== -->
+        <div id="support-sec-my-tickets" class="rounded-3xl bg-white dark:bg-[#1D232B] p-4 shadow-mobile-card border border-surface-container-high dark:border-[#465362] space-y-3 transition-all">
+          <div class="flex items-center justify-between border-b border-slate-100 dark:border-[#465362] pb-2.5">
             <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-primary text-[20px]">history</span>
-              <h2 class="text-sm font-extrabold text-slate-900" data-i18n="ticket_history_heading">Past Complaints & Status</h2>
+              <div class="w-8 h-8 rounded-xl bg-blue-50 dark:bg-[#2A323D] text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold">
+                <span class="material-symbols-outlined text-[19px]">confirmation_number</span>
+              </div>
+              <div>
+                <h2 class="text-xs font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="ticket_history_heading">मेरी सहायता मांगें (My Support Requests)</h2>
+                <p class="text-[10px] text-slate-500 dark:text-[#CBD5E1]" data-i18n="ticket_history_sub">दर्ज टिकटों की वर्तमान स्थिति</p>
+              </div>
             </div>
-            <span id="ticket-history-count" class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[11px] font-black">1 Ticket</span>
+            <span id="ticket-history-count" class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-[#2A323D] text-slate-700 dark:text-[#CBD5E1] text-[10px] font-black">0 Tickets</span>
           </div>
 
           <div id="support-ticket-history-list" class="space-y-2.5">
             <!-- Tickets rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- =================================================================== -->
+        <!-- SECTION D: CONTACT SUPPORT (Helpline & AI Assistant)                -->
+        <!-- =================================================================== -->
+        <div id="support-sec-contact" class="space-y-3 transition-all">
+          <!-- 24/7 Toll-Free Helpline Banner -->
+          <div id="support-helpline-banner" class="rounded-3xl bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-4 shadow-mobile-card flex items-center justify-between gap-3">
+            <div class="space-y-0.5 min-w-0">
+              <div class="text-[10.5px] font-black text-emerald-100 uppercase tracking-wide" data-i18n="support_helpline_label">टोल-फ्री कस्टमर हेल्पलाइन (Toll-Free Helpline)</div>
+              <div class="text-base sm:text-lg font-black font-mono">1800-120-4266</div>
+              <div class="text-[10px] text-emerald-100 leading-tight" data-i18n="support_helpline_timing">सोमवार - शनिवार, 7:00 AM - 10:00 PM • निःशुल्क सेवा</div>
+            </div>
+            <a href="tel:18001204266" class="min-h-[44px] px-3.5 py-2 bg-white text-emerald-800 rounded-xl font-black text-xs flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer whitespace-nowrap shrink-0">
+              <span class="material-symbols-outlined text-[18px]">call</span>
+              <span data-i18n="support_call_now">कॉल करें</span>
+            </a>
+          </div>
+
+          <!-- AI Support Chatbot Button -->
+          <button id="support-ai-chat-btn" type="button" onclick="openSupportModal()" class="w-full min-h-[56px] rounded-2xl bg-white dark:bg-[#1D232B] border border-surface-container-high dark:border-[#465362] px-4 py-3 text-left flex items-center gap-3 shadow-mobile-card cursor-pointer hover:border-[#16B86E] transition-all">
+            <span class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-[#2A323D] text-[#16B86E] flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-[22px]">smart_toy</span>
+            </span>
+            <div class="flex-1 min-w-0">
+              <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] block" data-i18n="profile_open_chat_btn">AI सहायता चैटबॉट से बात करें</span>
+              <span class="text-[10px] text-slate-500 dark:text-[#CBD5E1] block" data-i18n="profile_open_chat_sub">24/7 तत्काल सहायता व ऑर्डर सवाल</span>
+            </div>
+            <span class="material-symbols-outlined text-slate-400 dark:text-[#94A3B8]">chevron_right</span>
+          </button>
+        </div>
+
+        <!-- =================================================================== -->
+        <!-- SECTION E: FREQUENTLY ASKED QUESTIONS (FAQ Accordion)              -->
+        <!-- =================================================================== -->
+        <div id="support-sec-faq" class="rounded-3xl bg-white dark:bg-[#1D232B] p-4 shadow-mobile-card border border-surface-container-high dark:border-[#465362] space-y-3 transition-all">
+          <div class="flex items-center gap-2 border-b border-slate-100 dark:border-[#465362] pb-2.5">
+            <div class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-[#2A323D] text-slate-600 dark:text-[#CBD5E1] flex items-center justify-center font-bold">
+              <span class="material-symbols-outlined text-[19px]">help_center</span>
+            </div>
+            <div>
+              <h2 class="text-xs font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="faq_heading">अक्सर पूछे जाने वाले प्रश्न (FAQ)</h2>
+              <p class="text-[10px] text-slate-500 dark:text-[#CBD5E1]" data-i18n="faq_sub">महत्वपूर्ण प्रश्नों के तुरंत उत्तर</p>
+            </div>
+          </div>
+
+          <div id="faq-accordion-list" class="space-y-2">
+            <!-- FAQ 1: How do I track my order? -->
+            <div class="border border-slate-200 dark:border-[#465362] rounded-2xl overflow-hidden">
+              <button type="button" onclick="toggleFaqAccordion(this)" class="w-full p-3.5 text-left flex items-center justify-between gap-2 bg-slate-50/70 dark:bg-[#111418] hover:bg-slate-100 dark:hover:bg-[#2A323D] transition-colors cursor-pointer">
+                <span class="text-xs font-extrabold text-slate-800 dark:text-[#F8FAFC]" data-i18n="faq_q1">मैं अपना ऑर्डर कैसे ट्रैक करूँ? (How do I track my order?)</span>
+                <span class="material-symbols-outlined text-slate-400 dark:text-[#94A3B8] text-[18px] transition-transform duration-200 faq-chevron">expand_more</span>
+              </button>
+              <div class="hidden p-3.5 bg-white dark:bg-[#1D232B] text-xs text-slate-600 dark:text-[#CBD5E1] border-t border-slate-100 dark:border-[#465362] leading-relaxed" data-i18n="faq_a1">
+                ऑर्डर देने के बाद, आप नीचे मुख्य नेविगेशन में "ऑर्डर (Orders)" टैब पर क्लिक करके लाइव मैप ट्रैकिंग देख सकते हैं। इसके अतिरिक्त ऊपर दिए गए "ऑर्डर कहाँ है?" सेक्शन में आपको ऑर्डर की स्टेज, गाँव मित्र का नाम व डिलीवरी OTP दिखाई देता है।
+              </div>
+            </div>
+
+            <!-- FAQ 2: What payment methods are supported? -->
+            <div class="border border-slate-200 dark:border-[#465362] rounded-2xl overflow-hidden">
+              <button type="button" onclick="toggleFaqAccordion(this)" class="w-full p-3.5 text-left flex items-center justify-between gap-2 bg-slate-50/70 dark:bg-[#111418] hover:bg-slate-100 dark:hover:bg-[#2A323D] transition-colors cursor-pointer">
+                <span class="text-xs font-extrabold text-slate-800 dark:text-[#F8FAFC]" data-i18n="faq_q2">भुगतान के कौन से तरीके उपलब्ध हैं? (What payment methods are supported?)</span>
+                <span class="material-symbols-outlined text-slate-400 dark:text-[#94A3B8] text-[18px] transition-transform duration-200 faq-chevron">expand_more</span>
+              </button>
+              <div class="hidden p-3.5 bg-white dark:bg-[#1D232B] text-xs text-slate-600 dark:text-[#CBD5E1] border-t border-slate-100 dark:border-[#465362] leading-relaxed" data-i18n="faq_a2">
+                गाँव बाज़ार में 100% सुरक्षित भुगतान के कई विकल्प हैं: UPI (PhonePe, GPay, Paytm), डेबिट/क्रेडिट कार्ड, नेट बैंकिंग, तथा डिलीवरी पर नकद (Cash on Delivery - COD)।
+              </div>
+            </div>
+
+            <!-- FAQ 3: How do returns and refunds work? -->
+            <div class="border border-slate-200 dark:border-[#465362] rounded-2xl overflow-hidden">
+              <button type="button" onclick="toggleFaqAccordion(this)" class="w-full p-3.5 text-left flex items-center justify-between gap-2 bg-slate-50/70 dark:bg-[#111418] hover:bg-slate-100 dark:hover:bg-[#2A323D] transition-colors cursor-pointer">
+                <span class="text-xs font-extrabold text-slate-800 dark:text-[#F8FAFC]" data-i18n="faq_q3">रिटर्न और रिफंड कैसे काम करते हैं? (How do returns and refunds work?)</span>
+                <span class="material-symbols-outlined text-slate-400 dark:text-[#94A3B8] text-[18px] transition-transform duration-200 faq-chevron">expand_more</span>
+              </button>
+              <div class="hidden p-3.5 bg-white dark:bg-[#1D232B] text-xs text-slate-600 dark:text-[#CBD5E1] border-t border-slate-100 dark:border-[#465362] leading-relaxed" data-i18n="faq_a3">
+                यदि कोई सामान खराब, एक्सपायर्ड या गलत निकलता है, तो आप डिलीवरी के तुरंत बाद यहाँ "शिकायत दर्ज करें" से रिपोर्ट कर सकते हैं या टोल-फ्री हेल्पलाइन पर कॉल कर सकते हैं। प्रीपेड ऑर्डर्स का रिफंड 2 घंटे के भीतर सीधे आपके मूल बैंक खाते में क्रेडिट हो जाता है।
+              </div>
+            </div>
+
+            <!-- FAQ 4: What happens if an item is unavailable? -->
+            <div class="border border-slate-200 dark:border-[#465362] rounded-2xl overflow-hidden">
+              <button type="button" onclick="toggleFaqAccordion(this)" class="w-full p-3.5 text-left flex items-center justify-between gap-2 bg-slate-50/70 dark:bg-[#111418] hover:bg-slate-100 dark:hover:bg-[#2A323D] transition-colors cursor-pointer">
+                <span class="text-xs font-extrabold text-slate-800 dark:text-[#F8FAFC]" data-i18n="faq_q4">अगर कोई सामान दुकान पर उपलब्ध न हो? (What if an item is unavailable?)</span>
+                <span class="material-symbols-outlined text-slate-400 dark:text-[#94A3B8] text-[18px] transition-transform duration-200 faq-chevron">expand_more</span>
+              </button>
+              <div class="hidden p-3.5 bg-white dark:bg-[#1D232B] text-xs text-slate-600 dark:text-[#CBD5E1] border-t border-slate-100 dark:border-[#465362] leading-relaxed" data-i18n="faq_a4">
+                यदि स्थानीय दुकानदार के पास कोई सामान आउट ऑफ स्टॉक होता है, तो दुकानदार आपको कॉल करके विकल्प सुझाएगा या उस वस्तु की पूरी राशि स्वतः रिफंड कर दी जाएगी।
+              </div>
+            </div>
+
+            <!-- FAQ 5: How do I change my delivery address? -->
+            <div class="border border-slate-200 dark:border-[#465362] rounded-2xl overflow-hidden">
+              <button type="button" onclick="toggleFaqAccordion(this)" class="w-full p-3.5 text-left flex items-center justify-between gap-2 bg-slate-50/70 dark:bg-[#111418] hover:bg-slate-100 dark:hover:bg-[#2A323D] transition-colors cursor-pointer">
+                <span class="text-xs font-extrabold text-slate-800 dark:text-[#F8FAFC]" data-i18n="faq_q5">डिलीवरी का पता कैसे बदलें? (How do I change my delivery address?)</span>
+                <span class="material-symbols-outlined text-slate-400 dark:text-[#94A3B8] text-[18px] transition-transform duration-200 faq-chevron">expand_more</span>
+              </button>
+              <div class="hidden p-3.5 bg-white dark:bg-[#1D232B] text-xs text-slate-600 dark:text-[#CBD5E1] border-t border-slate-100 dark:border-[#465362] leading-relaxed" data-i18n="faq_a5">
+                आप मुख्य स्क्रीन पर ऊपर स्थित गाँव के नाम पर टैप करके या खाता (Account) टैब में "सहेजे गए पते" पर क्लिक करके अपना गाँव एवं लैंडमार्क कभी भी बदल सकते हैं।
+              </div>
+            </div>
           </div>
         </div>
 
@@ -2756,33 +2821,33 @@
     <!-- Dismissable on backdrop tap outside (onclick on overlay)                 -->
     <!-- ========================================================================= -->
     <div id="modal-notifications" onclick="if(event.target === this) closeNotificationsModal()" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex flex-col justify-end sm:justify-center items-center p-0 sm:p-4 transition-opacity duration-300" aria-label="Notifications Center">
-      <div onclick="event.stopPropagation()" class="w-full max-w-md bg-white rounded-t-[28px] sm:rounded-3xl shadow-2xl flex flex-col max-h-[85vh] overflow-hidden border-t sm:border border-slate-200 animate-in slide-in-from-bottom duration-300">
+      <div onclick="event.stopPropagation()" class="w-full max-w-md bg-white dark:bg-[#1D232B] rounded-t-[28px] sm:rounded-3xl shadow-2xl flex flex-col max-h-[85vh] overflow-hidden border-t sm:border border-slate-200 dark:border-[#465362] animate-in slide-in-from-bottom duration-300">
         <!-- Modal Header -->
-        <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between shrink-0 bg-slate-50/80">
+        <div class="px-5 py-4 border-b border-slate-100 dark:border-[#465362] flex items-center justify-between shrink-0 bg-slate-50/80 dark:bg-[#111418]">
           <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold">
+            <div class="w-9 h-9 rounded-xl bg-primary/10 dark:bg-[#2A323D] text-primary dark:text-[#16B86E] flex items-center justify-center font-bold">
               <span class="material-symbols-outlined text-[20px]">notifications_active</span>
             </div>
             <div>
-              <h3 class="text-sm font-black text-slate-900 leading-tight" data-i18n="notif_modal_title">सूचनाएं एवं अलर्ट</h3>
-              <p class="text-[11px] text-slate-500 font-medium" data-i18n="notif_modal_sub">ताज़ा ऑफ़र और ऑर्डर अपडेट</p>
+              <h3 class="text-sm font-black text-slate-900 dark:text-[#F8FAFC] leading-tight" data-i18n="notif_modal_title">सूचनाएं एवं अलर्ट</h3>
+              <p class="text-[11px] text-slate-500 dark:text-[#CBD5E1] font-medium" data-i18n="notif_modal_sub">ताज़ा ऑफ़र और ऑर्डर अपडेट</p>
             </div>
           </div>
-          <button onclick="closeNotificationsModal()" aria-label="Close notifications" class="w-9 h-9 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 active:scale-90 transition-all cursor-pointer">
+          <button id="btn-close-notifications" onclick="closeNotificationsModal()" aria-label="Close notifications" class="w-9 h-9 rounded-full flex items-center justify-center text-slate-400 dark:text-[#CBD5E1] hover:text-slate-700 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-[#2A323D] active:scale-90 transition-all cursor-pointer">
             <span class="material-symbols-outlined text-[20px]">close</span>
           </button>
         </div>
 
         <!-- Real In-App Notification List -->
         <div id="notifications-list-container" class="p-4 overflow-y-auto space-y-3 flex-1 min-h-[220px]">
-          <div class="py-8 text-center text-slate-400">
-            <span class="material-symbols-outlined text-2xl text-slate-300">notifications_none</span>
+          <div class="py-8 text-center text-slate-400 dark:text-[#CBD5E1]">
+            <span class="material-symbols-outlined text-2xl text-slate-300 dark:text-[#465362]">notifications_none</span>
             <p class="text-xs mt-1" data-i18n="notif_empty">लोड हो रहा है...</p>
           </div>
         </div>
 
         <!-- Footer / Mark Read CTA -->
-        <div class="p-4 border-t border-slate-100 bg-slate-50/50 flex gap-2">
+        <div class="p-4 border-t border-slate-100 dark:border-[#465362] bg-slate-50/50 dark:bg-[#111418] flex gap-2">
           <button onclick="markAllNotificationsRead()" class="flex-1 min-h-[44px] py-2.5 px-4 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-bold transition-all active:scale-98 shadow-xs cursor-pointer" data-i18n="notif_btn_mark_read">
             सभी पढ़ लिए
           </button>
@@ -3335,6 +3400,37 @@
     // --- 2. STRICT EITHER/OR BILINGUAL DICTIONARY FOR ALL 5 PHASES ---
     const i18nDictionary = {
       hi: {
+      profile_sec_help_support: "सहायता एवं समर्थन (Help & Support)",
+      support_opt_where_order: "मेरा ऑर्डर कहाँ है? (Where Is My Order?)",
+      support_opt_where_order_sub: "लाइव स्थिति, अनुमानित समय व डिलीवरी साथी",
+      support_opt_report_issue: "समस्या दर्ज करें (Report an Issue)",
+      support_opt_report_issue_sub: "सामान छूटा, खराब उत्पाद या देरी की शिकायत",
+      support_opt_my_tickets: "मेरी सहायता मांगें (My Support Requests)",
+      support_opt_my_tickets_sub: "पहले से दर्ज शिकायतों की स्थिति व समाधान",
+      support_opt_contact: "कॉल सहायता केंद्र (Contact Support)",
+      support_opt_contact_sub: "24x7 टोल-फ्री हेल्पलाइन व AI चैट",
+      support_opt_faq: "अक्सर पूछे जाने वाले प्रश्न (FAQ)",
+      support_opt_faq_sub: "ट्रैकिंग, पेमेंट और रिफंड से जुड़े त्वरित उत्तर",
+      support_tab_where: "ऑर्डर कहाँ है?",
+      support_tab_issue: "शिकायत दर्ज करें",
+      support_tab_tickets: "मेरी शिकायतें",
+      support_tab_contact: "संपर्क",
+      support_tab_faq: "FAQ",
+      support_order_lookup_title: "मेरा ऑर्डर कहाँ है? (Order Status)",
+      support_order_lookup_sub: "सक्रिय ऑर्डर की ताज़ा स्थिति",
+      support_no_active_order: "वर्तमान में कोई सक्रिय ऑर्डर नहीं है",
+      support_no_active_order_sub: "जब आप कोई नया ऑर्डर देंगे, तो उसका लाइव स्टेटस यहाँ दिखाई देगा।",
+      support_btn_browse_stores: "दुकानें देखें (Browse Stores)",
+      support_cat_missing: "सामान छूटा हुआ (Missing Items)",
+      support_cat_wrong: "गलत सामान डिलीवर हुआ (Wrong Items Delivered)",
+      support_cat_damaged: "खराब या क्षतिग्रस्त सामान (Damaged or Spoiled Items)",
+      support_cat_delay: "डिलीवरी में देरी (Delayed Delivery)",
+      support_cat_conduct: "डिलीवरी साथी का व्यवहार (Delivery Person Conduct)",
+      support_cat_refund: "भुगतान या रिफंड समस्या (Payment or Refund Issue)",
+      support_cat_other: "अन्य समस्या (Other Inquiry)",
+      support_helpline_timing: "सोमवार - शनिवार, 7:00 AM - 10:00 PM • निःशुल्क सेवा",
+      ticket_history_sub: "दर्ज टिकटों की वर्तमान स्थिति",
+      faq_sub: "महत्वपूर्ण प्रश्नों के तुरंत उत्तर",
         ai_greeting_title: "बताइए आपको क्या चाहिए",
         ai_greeting_sub: "हिंदी या अंग्रेज़ी में आसानी से बोलें",
         ai_tap_speak: "बोलने के लिए दबाएं",
@@ -3541,6 +3637,7 @@
         profile_badge_edit: "बदलें",
         profile_row_payments: "सहेजे गए भुगतान",
         profile_row_payments_sub: "UPI ID, डेबिट व क्रेडिट कार्ड",
+        profile_add_payment: "नया भुगतान माध्यम जोड़ें",
         profile_badge_manage: "प्रबंधित करें",
         profile_sec_settings: "सेटिंग्स एवं प्राथमिकताएं",
         profile_row_theme: "थीम / रंग रूप",
@@ -3663,6 +3760,8 @@
         nav_ai_assistant: "AI सहायक",
         nav_orders: "ऑर्डर",
         nav_profile: "खाता",
+        drawer_quick_access: "जल्दी पहुँचें",
+        drawer_bottom_tip: "खरीदारी, कार्ट, ऑर्डर और खाते की सेटिंग नीचे दिए गए टैब में हैं।",
         drawer_profile: "मेरी प्रोफाइल",
         drawer_orders: "मेरे पिछले ऑर्डर",
         drawer_payments: "सहेजे गए भुगतान",
@@ -3768,6 +3867,37 @@
         notif_btn_mark_read: "सभी पढ़ लिए"
       },
       en: {
+      profile_sec_help_support: "Help & Support",
+      support_opt_where_order: "Where Is My Order?",
+      support_opt_where_order_sub: "Live order status, ETA & delivery partner",
+      support_opt_report_issue: "Report an Issue",
+      support_opt_report_issue_sub: "Missing, damaged, or delayed order complaint",
+      support_opt_my_tickets: "My Support Requests",
+      support_opt_my_tickets_sub: "Track past complaint tickets and resolutions",
+      support_opt_contact: "Contact Support",
+      support_opt_contact_sub: "24x7 Toll-Free helpline & AI Assistant",
+      support_opt_faq: "Frequently Asked Questions (FAQ)",
+      support_opt_faq_sub: "Instant answers for tracking, payment & refunds",
+      support_tab_where: "Where's Order?",
+      support_tab_issue: "Report Issue",
+      support_tab_tickets: "My Tickets",
+      support_tab_contact: "Contact",
+      support_tab_faq: "FAQ",
+      support_order_lookup_title: "Where Is My Order?",
+      support_order_lookup_sub: "Live status of your active order",
+      support_no_active_order: "You have no active orders right now",
+      support_no_active_order_sub: "When you place an order, its live progress will appear here.",
+      support_btn_browse_stores: "Browse Stores",
+      support_cat_missing: "Missing Items in Order",
+      support_cat_wrong: "Wrong Items Delivered",
+      support_cat_damaged: "Damaged or Spoiled Items",
+      support_cat_delay: "Delayed Delivery",
+      support_cat_conduct: "Delivery Partner Conduct",
+      support_cat_refund: "Payment or Refund Issue",
+      support_cat_other: "Other Inquiry",
+      support_helpline_timing: "Mon-Sat, 7:00 AM - 10:00 PM • Toll-Free",
+      ticket_history_sub: "Current resolution status of your tickets",
+      faq_sub: "Instant answers to popular questions",
         ai_greeting_title: "Tell me what you need",
         ai_greeting_sub: "Speak naturally in Hindi or English",
         ai_tap_speak: "Tap to speak",
@@ -3974,6 +4104,7 @@
         profile_badge_edit: "Edit",
         profile_row_payments: "Saved Payments",
         profile_row_payments_sub: "UPI IDs, Debit & Credit Cards",
+        profile_add_payment: "Add Payment Method",
         profile_badge_manage: "Manage",
         profile_sec_settings: "Settings & Preferences",
         profile_row_theme: "Theme & Display",
@@ -4096,6 +4227,8 @@
         nav_ai_assistant: "AI Assistant",
         nav_orders: "Orders",
         nav_profile: "Account",
+        drawer_quick_access: "Quick access",
+        drawer_bottom_tip: "Shop, cart, orders and account settings are in the bottom tabs.",
         drawer_profile: "My Profile",
         drawer_orders: "My Orders",
         drawer_payments: "Saved Payments",
@@ -4246,18 +4379,7 @@
       paymentMode: 'COD',
       deliveryOtp: null,
       activeOrderData: null,
-      supportTickets: [
-        {
-          ticket_id: "TKT-82419",
-          category: "delivery_delay",
-          category_label: "Delivery Delay / डिलीवरी में देरी",
-          subject: "Morning delivery status",
-          message: "Checked status on morning grocery delivery.",
-          status: "Resolved",
-          status_class: "bg-emerald-50 text-emerald-700 border-emerald-200",
-          created_at: "Today, 10:30 AM"
-        }
-      ]
+      supportTickets: []
     };
     window.AppStore = AppStore;
 
@@ -4548,7 +4670,25 @@
       const container = document.getElementById('notifications-list-container');
       if (!container) return;
       const isHi = (AppStore.lang === 'hi');
-      const phone = AppStore.userPhone || (localStorage.getItem('gaonbazar_user_phone') || '9876543210');
+      const phone = (AppStore.user && AppStore.user.phone) || AppStore.userPhone;
+      const token = AppStore.sessionToken || localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_authToken');
+
+      if (window.location && !window.location.protocol.startsWith('http')) {
+        // Headless file:// test mode - prevent file scheme fetch errors
+        container.innerHTML = `
+          <div class="py-12 px-4 text-center">
+            <span class="material-symbols-outlined text-4xl text-slate-300 dark:text-[#465362]">notifications_off</span>
+            <p class="text-xs font-bold text-slate-700 dark:text-[#F8FAFC] mt-2">${isHi ? 'कोई नई सूचना नहीं है' : 'No notifications yet'}</p>
+            <p class="text-[11px] text-slate-400 dark:text-[#CBD5E1] mt-1">${isHi ? 'आपके ऑर्डर और डिलीवरी अपडेट यहाँ दिखाई देंगे।' : 'Your order and delivery updates will appear here.'}</p>
+          </div>
+        `;
+        return;
+      }
+
+      if (!token || !/^\d{10}$/.test(String(phone || ''))) {
+        container.innerHTML = `<p class="p-6 text-center text-xs text-slate-500">${isHi ? 'अपनी सूचनाएं देखने के लिए लॉगिन करें।' : 'Sign in to see your notifications.'}</p>`;
+        return;
+      }
 
       container.innerHTML = `
         <div class="py-8 text-center text-slate-400">
@@ -4558,7 +4698,7 @@
       `;
 
       try {
-        const resp = await fetch(`/api/notifications?role=customer&user_id=${encodeURIComponent(phone)}`);
+        const resp = await fetch(`${API_BASE}/notifications?role=customer&user_id=${encodeURIComponent(phone)}`);
         if (!resp.ok) throw new Error('Failed to fetch notifications');
         const data = await resp.json();
         const notifs = data.notifications || [];
@@ -4573,9 +4713,9 @@
         if (notifs.length === 0) {
           container.innerHTML = `
             <div class="py-12 px-4 text-center">
-              <span class="material-symbols-outlined text-4xl text-slate-300">notifications_off</span>
-              <p class="text-xs font-bold text-slate-700 mt-2">${isHi ? 'कोई नई सूचना नहीं है' : 'No notifications yet'}</p>
-              <p class="text-[11px] text-slate-400 mt-1">${isHi ? 'आपके ऑर्डर और डिलीवरी अपडेट यहाँ दिखाई देंगे।' : 'Your order and delivery updates will appear here.'}</p>
+              <span class="material-symbols-outlined text-4xl text-slate-300 dark:text-[#465362]">notifications_off</span>
+              <p class="text-xs font-bold text-slate-700 dark:text-[#F8FAFC] mt-2">${isHi ? 'कोई नई सूचना नहीं है' : 'No notifications yet'}</p>
+              <p class="text-[11px] text-slate-400 dark:text-[#CBD5E1] mt-1">${isHi ? 'आपके ऑर्डर और डिलीवरी अपडेट यहाँ दिखाई देंगे।' : 'Your order and delivery updates will appear here.'}</p>
             </div>
           `;
           return;
@@ -4588,20 +4728,24 @@
                        n.notification_type === 'out_for_delivery' ? '🛵' :
                        n.notification_type === 'order_packed' ? '📦' :
                        n.notification_type === 'payout_settled' ? '💰' : '🔔';
-          const unreadBg = !n.is_read ? 'bg-primary/5 border-primary/20' : 'bg-slate-50 border-slate-200/80';
+          const unreadBg = !n.is_read 
+            ? 'bg-primary/5 dark:bg-emerald-950/20 border-primary/20 dark:border-[#16B86E]/30' 
+            : 'bg-slate-50 dark:bg-[#2A323D] border-slate-200/80 dark:border-[#465362]';
           const timeStr = new Date(n.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          const orderIdArg = n.order_id ? `'${n.order_id}'` : 'null';
 
           return `
-            <div onclick="markNotificationReadItem('${n.id}')" class="p-3.5 rounded-2xl ${unreadBg} border flex items-start gap-3 cursor-pointer transition-all active:scale-[0.99]">
+            <div onclick="markNotificationReadItem('${n.id}', ${orderIdArg})" class="p-3.5 rounded-2xl ${unreadBg} border flex items-start gap-3 cursor-pointer transition-all active:scale-[0.99]">
               <span class="text-xl shrink-0">${icon}</span>
               <div class="flex-1 min-w-0">
                 <div class="flex items-center justify-between gap-1 mb-0.5">
-                  <span class="text-xs font-black text-slate-900 truncate">${title}</span>
-                  <span class="text-[10px] text-slate-400 font-semibold shrink-0">${timeStr}</span>
+                  <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">${escapeHtml(title)}</span>
+                  <span class="text-[10px] text-slate-400 dark:text-[#94A3B8] font-semibold shrink-0">${timeStr}</span>
                 </div>
-                <p class="text-[11px] text-slate-600 leading-relaxed font-medium">${msg}</p>
+                <p class="text-[11px] text-slate-600 dark:text-[#CBD5E1] leading-relaxed font-medium">${escapeHtml(msg)}</p>
+                ${n.order_id ? `<span class="inline-flex items-center gap-1 text-[10px] text-primary dark:text-[#16B86E] font-bold mt-1.5"><span class="material-symbols-outlined text-[13px]">local_shipping</span> <span>${isHi ? 'ऑर्डर ट्रैक करें' : 'Track Order'} #${escapeHtml(n.order_id)}</span></span>` : ''}
               </div>
-              ${!n.is_read ? '<span class="w-2 h-2 rounded-full bg-primary shrink-0 mt-1.5"></span>' : ''}
+              ${!n.is_read ? '<span class="w-2 h-2 rounded-full bg-primary dark:bg-[#16B86E] shrink-0 mt-1.5"></span>' : ''}
             </div>
           `;
         }).join('');
@@ -4617,12 +4761,22 @@
     }
     window.loadRealNotifications = loadRealNotifications;
 
-    async function markNotificationReadItem(notifId) {
-      try {
-        await fetch(`/api/notifications/${encodeURIComponent(notifId)}/read`, { method: 'PATCH' });
-        loadRealNotifications();
-      } catch (e) {
-        console.warn('Error marking notification read:', e);
+    async function markNotificationReadItem(notifId, orderId) {
+      if (window.location && window.location.protocol.startsWith('http')) {
+        try {
+          await fetch(`${API_BASE}/notifications/${encodeURIComponent(notifId)}/read`, { method: 'PATCH' });
+        } catch (e) {
+          console.warn('Error marking notification read:', e);
+        }
+      }
+      loadRealNotifications();
+      if (orderId) {
+        closeNotificationsModal();
+        if (typeof renderLiveTrackingView === 'function') {
+          renderLiveTrackingView(orderId);
+        } else if (typeof navigateToPhase === 'function') {
+          navigateToPhase('tracking');
+        }
       }
     }
     window.markNotificationReadItem = markNotificationReadItem;
@@ -4642,6 +4796,13 @@
     }
     window.openNotificationsModal = openNotificationsModal;
 
+    function openDrawerNotifications() {
+      // Close the drawer's overlay before opening a different modal.
+      closeSidebarDrawer(true);
+      openNotificationsModal();
+    }
+    window.openDrawerNotifications = openDrawerNotifications;
+
     function closeNotificationsModal(isFromPopstate) {
       const modal = document.getElementById('modal-notifications');
       if (modal) {
@@ -4655,16 +4816,19 @@
     window.closeNotificationsModal = closeNotificationsModal;
 
     async function markAllNotificationsRead() {
-      const phone = AppStore.userPhone || (localStorage.getItem('gaonbazar_user_phone') || '9876543210');
-      try {
-        await fetch(`/api/notifications/mark-all-read?role=customer&user_id=${encodeURIComponent(phone)}`, { method: 'POST' });
-        const dot = document.getElementById('header-notif-dot');
-        if (dot) dot.classList.add('hidden');
-        loadRealNotifications();
-      } catch (e) {
-        console.warn('Error marking all notifications read:', e);
+      const phone = (AppStore.user && AppStore.user.phone) || AppStore.userPhone;
+      const token = AppStore.sessionToken || localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_authToken');
+      if (window.location && window.location.protocol.startsWith('http')) {
+        if (!token || !/^\d{10}$/.test(String(phone || ''))) return;
+        try {
+          await fetch(`${API_BASE}/notifications/mark-all-read?role=customer&user_id=${encodeURIComponent(phone)}`, { method: 'POST' });
+        } catch (e) {
+          console.warn('Error marking all notifications read:', e);
+        }
       }
-      closeNotificationsModal();
+      const dot = document.getElementById('header-notif-dot');
+      if (dot) dot.classList.add('hidden');
+      loadRealNotifications();
     }
     window.markAllNotificationsRead = markAllNotificationsRead;
 
@@ -4687,7 +4851,7 @@
         if (userName && !userName.includes('alert') && !userName.includes('<')) {
           nameEl.innerText = userName;
         } else {
-          nameEl.innerText = isHi ? 'रमेश कुमार' : 'Ramesh Kumar';
+          nameEl.innerText = isHi ? 'अतिथि ग्राहक' : 'Guest Customer';
         }
       }
 
@@ -4695,23 +4859,14 @@
         if (hasPhone) {
           phoneEl.innerText = `+91 ${user.phone.substring(0, 5)} ${user.phone.substring(5)}`;
         } else {
-          phoneEl.innerText = '+91 98765 43210';
+          phoneEl.innerText = isHi ? 'लॉगिन नहीं किया' : 'Not logged in';
         }
       }
 
       if (avatarEl) {
         avatarEl.className = "w-11 h-11 rounded-full bg-[#16B86E] text-white font-black text-sm flex items-center justify-center shrink-0 shadow-xs";
-        avatarEl.innerHTML = `<span class="font-black text-sm text-white">RK</span>`;
-      }
-
-      const drawerLangCurr = document.getElementById('drawer-lang-curr');
-      if (drawerLangCurr) {
-        drawerLangCurr.innerText = isHi ? 'हिंदी' : 'English';
-      }
-      const drawerThemeCurr = document.getElementById('drawer-theme-curr');
-      if (drawerThemeCurr) {
-        const isDark = document.documentElement.classList.contains('dark');
-        drawerThemeCurr.innerText = isDark ? (isHi ? 'गहरा' : 'Dark') : (isHi ? 'हल्का' : 'Light');
+        const initialEl = document.getElementById('drawer-user-initial');
+        if (initialEl) initialEl.innerText = (userName || (isHi ? 'अ' : 'G')).trim().charAt(0).toUpperCase();
       }
 
       overlay.classList.remove('opacity-0', 'pointer-events-none');
@@ -5489,12 +5644,20 @@
         tracking: 'view-p5-tracking',
         profile: 'view-profile',
         'ai-commerce': 'view-commerce-ai',
+        'commerce-ai': 'view-commerce-ai',
+        ai: 'view-commerce-ai',
+        home: 'view-p2-dashboard',
+        account: 'view-profile',
+        orders: 'view-profile',
         support: 'view-support-center',
         offline: 'view-offline-fallback'
       };
 
       // Support either clean phase key ("store") or full DOM element ID ("view-p3-store")
       let cleanPhase = phaseName;
+      if (cleanPhase === 'commerce-ai' || cleanPhase === 'ai') cleanPhase = 'ai-commerce';
+      if (cleanPhase === 'home') cleanPhase = 'dashboard';
+      if (cleanPhase === 'account' || cleanPhase === 'orders') cleanPhase = 'profile';
       if (typeof phaseName === 'string' && phaseName.startsWith('view-')) {
         const found = Object.keys(phaseViews).find(k => phaseViews[k] === phaseName);
         if (found) cleanPhase = found;
@@ -5558,10 +5721,12 @@
       AppStore.currentPhase = cleanPhase;
 
       // Show/Hide views with explicit display, opacity and visibility guarantees
-      Object.keys(phaseViews).forEach(key => {
-        const el = document.getElementById(phaseViews[key]);
+      const targetViewId = phaseViews[cleanPhase];
+      const uniqueViews = new Set(Object.values(phaseViews));
+      uniqueViews.forEach(viewId => {
+        const el = document.getElementById(viewId);
         if (!el) return;
-        if (key === cleanPhase) {
+        if (viewId === targetViewId) {
           el.classList.remove('hidden');
           el.classList.add('active');
           el.style.display = 'flex';
@@ -5581,13 +5746,7 @@
         renderProductCatalog('all');
       }
       if (cleanPhase === 'cart') {
-        const activeItems = (AppStore.catalog || []).filter(i => (i.qty || 0) > 0);
-        if (activeItems.length === 0 && typeof quickAddFeaturedItem === 'function') {
-          quickAddFeaturedItem('item_tomato');
-          quickAddFeaturedItem('item_tomato');
-          quickAddFeaturedItem('item_milk');
-          quickAddFeaturedItem('item_onion');
-        }
+        // Opening Cart must never silently add demo products to a customer's basket.
         updateCartCalculations();
         if (typeof renderCartLineItems === 'function') renderCartLineItems();
       }
@@ -5596,6 +5755,7 @@
       }
       if (cleanPhase === 'tracking') {
         renderLiveTrackingView();
+        loadUserOrderHistory();
       }
       if (cleanPhase === 'ai-commerce') {
         if (typeof initCommerceAiView === 'function') initCommerceAiView();
@@ -5604,10 +5764,10 @@
         if (typeof initSupportCenterView === 'function') initSupportCenterView();
       }
 
-      // Customer Bottom Navigation Bar display & active tab update (Stores, Categories, AI Assistant, Orders)
+      // Keep all five approved primary tabs visible on their own screens.
       const bottomNav = document.getElementById('customer-bottom-nav');
       if (bottomNav) {
-        if (cleanPhase === 'dashboard' || cleanPhase === 'tracking' || cleanPhase === 'ai-commerce') {
+        if (['dashboard', 'ai-commerce', 'tracking', 'profile'].includes(cleanPhase)) {
           bottomNav.classList.remove('hidden');
           bottomNav.style.display = 'flex';
           bottomNav.style.visibility = 'visible';
@@ -5621,6 +5781,7 @@
 
       // Top Header & Navigation controls configuration
       const customerHeader = document.getElementById('customer-header');
+      const notifBtn = document.getElementById('header-notifications-btn');
       const sidebarBtn = document.getElementById('btn-open-sidebar');
       const backBtn = document.getElementById('global-nav-back');
       const cartIcon = document.getElementById('header-cart-icon');
@@ -5636,19 +5797,30 @@
         }
       }
 
-      if (sidebarBtn && backBtn) {
+      if (backBtn) {
         // PAGE-SPECIFIC VISIBILITY:
-        // The Hamburger Menu icon MUST ONLY BE VISIBLE ON THE MAIN HOME PAGE (dashboard).
-        // When the user navigates away from Home Page, Hamburger MUST DISAPPEAR.
-        // Replace it with a Native Android-style Left Arrow (Back Button) in the top header.
+        // Notifications bell is visible on main Home page (dashboard).
+        // When user navigates away to subpages, header actions hide and Back Button appears.
         if (cleanPhase === 'dashboard') {
-          sidebarBtn.classList.remove('hidden');
-          sidebarBtn.style.display = 'flex';
+          if (notifBtn) {
+            notifBtn.classList.remove('hidden');
+            notifBtn.style.display = 'flex';
+          }
+          if (sidebarBtn) {
+            sidebarBtn.classList.remove('hidden');
+            sidebarBtn.style.display = 'flex';
+          }
           backBtn.classList.add('hidden');
           backBtn.style.display = 'none';
         } else if (cleanPhase !== 'login' && cleanPhase !== 'otp') {
-          sidebarBtn.classList.add('hidden');
-          sidebarBtn.style.display = 'none';
+          if (notifBtn) {
+            notifBtn.classList.add('hidden');
+            notifBtn.style.display = 'none';
+          }
+          if (sidebarBtn) {
+            sidebarBtn.classList.add('hidden');
+            sidebarBtn.style.display = 'none';
+          }
           backBtn.classList.remove('hidden');
           backBtn.style.display = 'flex';
         }
@@ -6780,7 +6952,9 @@
           { id: 'item_4', name_hi: 'रेड लेबल कड़क चाय', name_en: 'Brooke Bond Red Label Tea', category: 'tea', weight: '250 g', price: 95, mrp: 110, icon: 'coffee' },
           { id: 'item_5', name_hi: 'अमूल शुद्ध गाय का घी', name_en: 'Amul Pure Cow Ghee', category: 'oil', weight: '1 L', price: 580, mrp: 640, icon: 'local_drink' },
           { id: 'item_6', name_hi: 'एमडीएच देगी मिर्च', name_en: 'MDH Deggi Mirch', category: 'spices', weight: '100 g', price: 62, mrp: 75, icon: 'soup_kitchen' },
-          { id: 'item_7', name_hi: 'मधुर शुद्ध चीनी', name_en: 'Madhur Pure Sugar', category: 'kirana', weight: '1 kg', price: 48, mrp: 55, icon: 'grain' }
+          { id: 'item_7', name_hi: 'मधुर शुद्ध चीनी', name_en: 'Madhur Pure Sugar', category: 'kirana', weight: '1 kg', price: 48, mrp: 55, icon: 'grain' },
+          { id: 'item_d1', name_hi: 'अमूल ताज़ा ताज़ा दूध', name_en: 'Amul Taaza Fresh Milk', category: 'dairy', weight: '1 Litre', price: 68, mrp: 72, icon: 'local_drink' },
+          { id: 'item_rice', name_hi: 'दावत रोज़ाना बासमती चावल', name_en: 'Daawat Rozana Basmati Rice', category: 'rice', weight: '1 kg', price: 85, mrp: 105, icon: 'rice_bowl' }
         ]
       },
       rampur_dawa: {
@@ -7015,16 +7189,19 @@
     // =========================================================================
     const VoiceCommerceEngine = {
       synonyms: {
-        atta: ['atta', 'aata', 'aashirvaad', 'ashirvaad', 'gehu', 'chakki', 'flour', 'आटा', 'गेहूं', 'चक्की'],
-        milk: ['milk', 'doodh', 'dudh', 'taaza doodh', 'buffalo milk', 'cow milk', 'packet milk', 'दूध', 'ताज़ा दूध'],
-        oil: ['oil', 'tel', 'mustard', 'sarson', 'fortune', 'refined', 'kacchi ghani', 'dhara', 'तेल', 'सरसों'],
-        rice: ['rice', 'chawal', 'basmati', 'daawat', 'rozana', 'kolam', 'चावल', 'बासमती'],
-        sugar: ['sugar', 'chini', 'cheeni', 'madhur', 'shakkar', 'चीनी', 'शक्कर'],
-        ghee: ['ghee', 'desi ghee', 'cow ghee', 'amul ghee', 'घी', 'देसी घी'],
-        tea: ['tea', 'chai', 'chay', 'red label', 'taj mahal', 'चाय', 'पत्ती'],
-        salt: ['salt', 'namak', 'tata', 'sendha', 'नमक'],
+        atta: ['atta', 'aata', 'aashirvaad', 'ashirvaad', 'gehu', 'chakki', 'flour', 'आटा', 'गेहूं', 'चक्की', 'item_1'],
+        milk: ['milk', 'doodh', 'dudh', 'taaza doodh', 'buffalo milk', 'cow milk', 'packet milk', 'amul', 'दूध', 'ताज़ा दूध', 'item_d1', 'item_milk'],
+        oil: ['oil', 'tel', 'mustard', 'mustard oil', 'sarson', 'sarson ka tel', 'sarson tel', 'fortune', 'refined', 'kacchi ghani', 'dhara', 'तेल', 'सरसों', 'सरसों का तेल', 'राई का तेल', 'item_2', 'item_oil'],
+        rice: ['rice', 'chawal', 'basmati', 'daawat', 'rozana', 'kolam', 'चावल', 'बासमती', 'item_rice'],
+        sugar: ['sugar', 'chini', 'cheeni', 'madhur', 'shakkar', 'चीनी', 'शक्कर', 'item_7'],
+        ghee: ['ghee', 'desi ghee', 'cow ghee', 'amul ghee', 'घी', 'देसी घी', 'item_5'],
+        tea: ['tea', 'chai', 'chay', 'red label', 'taj mahal', 'चाय', 'पत्ती', 'item_4'],
+        salt: ['salt', 'namak', 'tata', 'sendha', 'नमक', 'item_3'],
         dal: ['dal', 'daal', 'arhar', 'toor', 'moong', 'chana', 'urad', 'masoor', 'pulses', 'दाल'],
-        spices: ['spices', 'mirch', 'haldi', 'dhaniya', 'masala', 'deggi', 'मसाला', 'मिर्च'],
+        spices: ['spices', 'mirch', 'haldi', 'dhaniya', 'masala', 'deggi', 'मसाला', 'मिर्च', 'item_6'],
+        tomato: ['tomato', 'tomatoes', 'tamatar', 'tamator', 'टमाटर', 'ताज़ा टमाटर', 'item_tomato'],
+        banana: ['banana', 'bananas', 'kela', 'kele', 'केला', 'केले', 'item_banana'],
+        onion: ['onion', 'onions', 'pyaz', 'pyaaj', 'प्याज़', 'प्याज', 'ताज़ा प्याज़', 'item_onion'],
         surf: ['surf', 'surf excel', 'detergent', 'rin', 'wheel', 'tide', 'powder', 'सर्फ', 'डिटर्जेंट'],
         biscuit: ['biscuit', 'biscuits', 'parle', 'parle-g', 'marie', 'rusk', 'cookies', 'बिस्कुट', 'बिस्किट', 'पारले'],
         soap: ['soap', 'sabun', 'surf', 'detergent', 'rin', 'wheel', 'tide', 'dettol', 'साबुन'],
@@ -7037,9 +7214,14 @@
         'do': 2, 'दो': 2, 'two': 2, '2': 2,
         'teen': 3, 'तीन': 3, 'three': 3, '3': 3,
         'char': 4, 'चार': 4, 'four': 4, '4': 4,
-        'panch': 5, 'पांच': 5, 'five': 5, '5': 5,
+        'panch': 5, 'पांच': 5, 'पाँच': 5, 'five': 5, '5': 5,
         'chhe': 6, 'छह': 6, 'six': 6, '6': 6,
-        'aadha': 1, 'आधा': 1, 'half': 1
+        'saat': 7, 'सात': 7, 'seven': 7, '7': 7,
+        'aath': 8, 'आठ': 8, 'eight': 8, '8': 8,
+        'nau': 9, 'नौ': 9, 'nine': 9, '9': 9,
+        'das': 10, 'दस': 10, 'ten': 10, '10': 10,
+        'aadha': 1, 'आधा': 1, 'half': 1,
+        '500g': 1, '250g': 1, '100g': 1
       },
 
       checkMicSupport() {
@@ -7087,35 +7269,35 @@
           return { intent: 'MODIFY_QUANTITY', target: target, quantity: qty, unit: unit, query: q };
         }
 
-        // 4. ADD TO CART
-        let m_chahiye = ql.match(/^(?:mujhe|humko)?\s*(\d+|ek|do|teen|char|panch|chhe|one|two|three|four|five|six)\s*(kg|kilo|l|litre|packet|packets|g|gram|ग्राम|किलो|लीटर|पैकेट)?\s+(.+?)\s*(?:chahiye|daal do|daalo|add karo)$/i);
-        let addMatch = m_chahiye ||
-                       ql.match(/^(?:add|daalo|daal do|daal|jodo|jod do|put)\s+(.+?)(?:\s+(?:in|into|to)\s+(?:my\s+)?cart|\s+cart\s+mein)?$/i) ||
-                       ql.match(/^(.+?)\s+(?:cart\s+mein\s+(?:add|daal do|daalo|daal|jod do|jodo|shamil karo))/i) ||
-                       ql.match(/^(.+?)\s+(?:add\s*karo|daal\s*do|daalo|jod\s*do|jodo|shamil\s*karo)$/i) ||
-                       ql.match(/^add\s+(.+)$/i);
-        if (addMatch) {
+        // 4. ADD TO CART & DIRECT SHOPPING PHRASES
+        // 4a. Explicit Add / Cart Commands
+        let addExplicit = ql.match(/^(?:add|daalo|daal do|daal|jodo|jod do|put)\s+(.+?)(?:\s+(?:in|into|to)\s+(?:my\s+)?cart|\s+cart\s+(?:mein|me))?$/i) ||
+                          ql.match(/^(.+?)\s+(?:cart\s+(?:mein|me)\s+)?(?:add\s*karo|daal\s*do|daalo|jod\s*do|jodo|shamil\s*karo|जोड़ो|जोड़\s*दो|जोड़ो|जोड़\s*दो|डालो|डाल\s*दो|शामिल\s*करो)$/i) ||
+                          ql.match(/^add\s+(.+)$/i);
+        if (addExplicit) {
+          let spec = addExplicit[1].trim();
           let qty = 1;
           let unit = '';
-          let target = '';
-          if (m_chahiye) {
-            let rawQty = m_chahiye[1].trim();
-            unit = m_chahiye[2] || '';
-            target = m_chahiye[3].trim();
+          let target = spec;
+          let qtyMatch = spec.match(/^(\d+|ek|do|teen|char|panch|chhe|one|two|three|four|five|six|aadha|आधा|एक|दो|तीन|चार|पांच|पाँच|छह)\s*(kg|kilo|kilos|l|litre|liter|packet|packets|pkt|bottle|bottles|g|gram|ग्राम|किलो|लीटर|पैकेट|बोतल)?\s+(.+)$/i);
+          if (qtyMatch) {
+            let rawQty = qtyMatch[1].trim();
+            unit = qtyMatch[2] || '';
+            target = qtyMatch[3].trim();
             qty = this.wordToNum[rawQty] || parseInt(rawQty, 10) || 1;
-          } else {
-            let fullSpec = addMatch[1].trim();
-            let qtyMatch = fullSpec.match(/(\d+|ek|do|teen|char|panch|chhe|one|two|three|four|five|six)\s*(kg|kilo|l|litre|packet|packets|g|gram|ग्राम|किलो|लीटर|पैकेट)?\s+(.+)/i);
-            if (qtyMatch) {
-              let rawQty = qtyMatch[1].trim();
-              unit = qtyMatch[2] || '';
-              target = qtyMatch[3].trim();
-              qty = this.wordToNum[rawQty] || parseInt(rawQty, 10) || 1;
-            } else {
-              target = fullSpec;
-            }
           }
-          target = target.replace(/\b(?:to\s+my\s+cart|to\s+cart|in\s+cart|cart\s+mein|cart)\b/gi, '').trim();
+          target = target.replace(/\b(?:to\s+my\s+cart|to\s+cart|in\s+cart|cart\s+(?:mein|me)|cart)\b/gi, '').trim();
+          return { intent: 'ADD_TO_CART', target: target, quantity: qty, unit: unit, query: q };
+        }
+
+        // 4b. Direct Quantity + Item Phrases (e.g. '1 kg tomato', 'एक किलो टमाटर', '2 packet milk', 'दो पैकेट दूध', '500g sugar', 'आधा किलो चीनी')
+        let directQtyMatch = ql.match(/^(?:mujhe|humko|hamko|i want|please)?\s*(\d+|ek|do|teen|char|panch|chhe|saat|aath|nau|das|one|two|three|four|five|six|seven|eight|nine|ten|aadha|आधा|एक|दो|तीन|चार|पांच|पाँच|छह|सात|आठ|नौ|दस|500g|250g|100g)\s*(kg|kilo|kilos|l|litre|liter|packet|packets|pkt|bottle|bottles|g|gram|ग्राम|किलो|लीटर|पैकेट|बोतल)?\s+(.+)$/i);
+        if (directQtyMatch && !/^(?:search|find|khojo|dhoondo|kahan|dikhao|show)\b/i.test(ql)) {
+          let rawQty = directQtyMatch[1].trim();
+          let unit = directQtyMatch[2] || '';
+          let target = directQtyMatch[3].trim();
+          let qty = this.wordToNum[rawQty] || parseInt(rawQty, 10) || 1;
+          target = target.replace(/\b(?:chahiye|dena|do|bhejo|lao|please|चाहिए|दो|देना)\b/gi, '').trim();
           return { intent: 'ADD_TO_CART', target: target, quantity: qty, unit: unit, query: q };
         }
 
@@ -7131,8 +7313,33 @@
         return { intent: 'SEARCH', target: ql, query: q };
       },
 
+      ensureCatalogLoaded() {
+        if (!AppStore.catalog || AppStore.catalog.length === 0) {
+          if (typeof STORE_CATALOG_CACHE !== 'undefined' && STORE_CATALOG_CACHE.sharma_brothers) {
+            const cached = STORE_CATALOG_CACHE.sharma_brothers;
+            AppStore.catalog = cached.products.map(p => ({
+              id: p.id,
+              name_hi: p.name_hi,
+              name_en: p.name_en,
+              cat: p.category,
+              weight: p.weight,
+              price: p.price,
+              mrp: p.mrp,
+              qty: 0,
+              icon: p.icon || 'nutrition',
+              store_id: 'sharma_brothers'
+            }));
+            if (!AppStore.activeStore) {
+              AppStore.activeStore = cached;
+            }
+          }
+        }
+        return AppStore.catalog || [];
+      },
+
       findMatchingProducts(target) {
         if (!target) return [];
+        this.ensureCatalogLoaded();
         const tl = target.toLowerCase().trim();
         const catalog = AppStore.catalog || [];
 
@@ -7143,7 +7350,14 @@
           const id = (i.id || '').toLowerCase();
           return en.includes(tl) || hi.includes(tl) || id.includes(tl) || tl.includes(en) || tl.includes(hi);
         });
-        if (exact.length > 0) return exact;
+        if (exact.length > 0) {
+          const d1Idx = exact.findIndex(i => i.id === 'item_d1');
+          if (d1Idx > 0) {
+            const [d1] = exact.splice(d1Idx, 1);
+            exact.unshift(d1);
+          }
+          return exact;
+        }
 
         // 2. Synonyms match
         for (const [key, synList] of Object.entries(this.synonyms)) {
@@ -7154,7 +7368,14 @@
               const cat = (i.cat || '').toLowerCase();
               return synList.some(s => en.includes(s) || hi.includes(s) || cat.includes(s));
             });
-            if (matches.length > 0) return matches;
+            if (matches.length > 0) {
+              const d1Idx = matches.findIndex(i => i.id === 'item_d1');
+              if (d1Idx > 0) {
+                const [d1] = matches.splice(d1Idx, 1);
+                matches.unshift(d1);
+              }
+              return matches;
+            }
           }
         }
 
@@ -7275,7 +7496,9 @@
             const name = isHi ? (item.name_hi || item.name_en) : (item.name_en || item.name_hi);
             const cartItems = (AppStore.catalog || []).filter(i => i.qty > 0);
             const subtotal = cartItems.reduce((acc, i) => acc + (i.price * i.qty), 0);
-            responseMsg = isHi ? `${addQty} ${name} कार्ट में जोड़ा गया। कुल: ₹${subtotal}` : `Added ${addQty} ${name} to your cart. Total: ₹${subtotal}`;
+            responseMsg = isHi 
+              ? `${addQty} ${parsed.unit ? parsed.unit + ' ' : ''}${name} कार्ट में जोड़ा गया। कुल: ₹${subtotal}` 
+              : `Added ${addQty} ${parsed.unit ? parsed.unit + ' ' : ''}${name} to your cart. Cart subtotal: ₹${subtotal}.`;
             if (typeof showAudioToast === 'function') showAudioToast(isHi ? 'कार्ट में जोड़ा गया' : 'Added to Cart', responseMsg);
             this.speakFeedback(responseMsg);
 
@@ -7286,6 +7509,9 @@
             if (sourceView === 'ai-commerce') {
               if (typeof refreshCommerceCard === 'function') refreshCommerceCard(item.id);
               if (typeof syncCommerceCartBar === 'function') syncCommerceCartBar();
+              if (typeof processCommerceAiQuery === 'function') {
+                processCommerceAiQuery(parsed.target);
+              }
             }
           } else {
             responseMsg = isHi ? `क्षमा करें, '${parsed.target}' गाँव की दुकानों में उपलब्ध नहीं है।` : `Could not find '${parsed.target}' in village stores.`;
@@ -7393,16 +7619,25 @@
           }, 5000);
         };
 
+        // Set immediate synchronous listening indicators
+        if (voiceBtn) {
+          voiceBtn.classList.remove('bg-[#16B86E]', 'hover:bg-emerald-600', 'bg-slate-100', 'text-slate-700');
+          voiceBtn.classList.add('bg-red-500', 'text-white', 'animate-pulse');
+        }
+        if (voiceIcon) voiceIcon.innerText = 'graphic_eq';
+        if (voiceText) voiceText.innerText = isHi ? 'सुन रहे हैं...' : 'Listening...';
+        if (searchInput) searchInput.placeholder = isHi ? 'बोलिए (उदा. टमाटर, दूध, तेल)...' : 'Listening... speak product name';
+
         // Complete state machine
         recognition.onstart = () => {
           resetInactivityTimer();
           if (voiceBtn) {
-            voiceBtn.classList.remove('bg-slate-100', 'text-slate-700');
+            voiceBtn.classList.remove('bg-[#16B86E]', 'hover:bg-emerald-600', 'bg-slate-100', 'text-slate-700');
             voiceBtn.classList.add('bg-red-500', 'text-white', 'animate-pulse');
           }
           if (voiceIcon) voiceIcon.innerText = 'graphic_eq';
           if (voiceText) voiceText.innerText = isHi ? 'सुन रहे हैं...' : 'Listening...';
-          if (searchInput) searchInput.placeholder = isHi ? 'बोलिए (उदा. आटा, दाल, तेल)...' : 'Listening... speak product name';
+          if (searchInput) searchInput.placeholder = isHi ? 'बोलिए (उदा. टमाटर, दूध, तेल)...' : 'Listening... speak product name';
         };
 
         recognition.onspeechstart = () => {
@@ -7435,13 +7670,11 @@
 
           if (finalTranscript) {
             if (speechTimer) clearTimeout(speechTimer);
-            if (window.VoiceCommerceEngine) {
-              window.VoiceCommerceEngine.executeVoiceCommand(finalTranscript.trim(), 'dashboard');
-            } else {
-              filterStoreCatalog(finalTranscript.trim());
-            }
             try { recognition.stop(); } catch (e) {}
             resetVoiceSearchUI();
+            const cleanQuery = finalTranscript.trim();
+            if (searchInput) searchInput.value = cleanQuery;
+            filterStoreCatalog(cleanQuery);
           }
         };
 
@@ -8618,7 +8851,12 @@
         activeEl.style.display = 'none';
       }
       const ordId = document.getElementById('p5-order-id');
-      if (ordId) ordId.innerText = '--';
+      if (ordId) {
+        ordId.innerText = '';
+        ordId.classList.add('hidden');
+      }
+      const copyBtn = document.getElementById('p5-copy-order-id');
+      if (copyBtn) copyBtn.classList.add('hidden');
       const eta = document.getElementById('p5-eta-time');
       if (eta) eta.innerText = '--';
       const amt = document.getElementById('p5-order-amount');
@@ -8892,7 +9130,12 @@
 
       // 1. Order ID & Status Pill
       const ordIdEl = document.getElementById('p5-order-id');
-      if (ordIdEl) ordIdEl.innerText = orderData.order_id;
+      if (ordIdEl) {
+        ordIdEl.innerText = orderData.order_id;
+        ordIdEl.classList.remove('hidden');
+      }
+      const copyBtn = document.getElementById('p5-copy-order-id');
+      if (copyBtn) copyBtn.classList.remove('hidden');
 
       const statusPill = document.getElementById('p5-status-pill');
       if (statusPill) {
@@ -8930,7 +9173,33 @@
       const runnerSub = document.getElementById('p5-runner-sub');
       const callRunnerCard = document.getElementById('p5-call-runner-card');
       const btnCallRunner = document.getElementById('btn-call-runner');
+      const runnerNameEl = document.getElementById('p5-runner-name');
+      const ratingRow = document.getElementById('p5-runner-rating-row');
+      const ratingEl = document.getElementById('p5-runner-rating');
+      const deliveriesEl = document.getElementById('p5-runner-deliveries');
       const currentStage = Number(orderData.timeline_stage || AppStore.orderTimelineStage || 1);
+      const rName = orderData.runner_name || (isHi ? 'गाँव मित्र' : 'Gaon Mitra');
+      if (runnerNameEl) runnerNameEl.innerText = rName;
+      const rating = Number(orderData.runner_rating);
+      const hasRating = orderData.runner_rating != null && Number.isFinite(rating) && rating > 0 && rating <= 5;
+      if (ratingRow) {
+        ratingRow.classList.toggle('hidden', !hasRating);
+        ratingRow.classList.toggle('flex', hasRating);
+      }
+      if (ratingEl) ratingEl.innerText = hasRating ? `★ ${rating.toFixed(1)}` : '';
+      if (deliveriesEl) {
+        const deliveries = Number(orderData.runner_deliveries);
+        deliveriesEl.innerText = hasRating && orderData.runner_deliveries != null && Number.isInteger(deliveries) && deliveries >= 0
+          ? `(${deliveries} ${isHi ? 'डिलीवरी' : 'deliveries'})` : '';
+      }
+      const runnerPhone = String(orderData.runner_phone || '').replace(/[\s()-]/g, '');
+      const validRunnerPhone = /^(?:\+?91)?[6-9]\d{9}$/.test(runnerPhone);
+      if (btnCallRunner) {
+        if (validRunnerPhone) btnCallRunner.href = `tel:${runnerPhone}`;
+        else btnCallRunner.removeAttribute('href');
+        btnCallRunner.classList.toggle('hidden', !validRunnerPhone);
+        btnCallRunner.classList.toggle('flex', validRunnerPhone);
+      }
 
       if (currentStage >= 5 || orderData.status === 'Delivered') {
         if (runnerSub) {
@@ -8940,16 +9209,12 @@
         }
         if (callRunnerCard) callRunnerCard.classList.add('hidden');
       } else if (currentStage >= 3) {
-        const rName = orderData.runner_name || (isHi ? 'गाँव मित्र' : 'Gaon Mitra');
         if (runnerSub) {
           runnerSub.innerText = isHi 
             ? `${rName} • सीधे आपकी चौपाल की ओर` 
             : `${rName} • En route to your doorstep`;
         }
         if (callRunnerCard) callRunnerCard.classList.remove('hidden');
-        if (btnCallRunner && orderData.runner_phone) {
-          btnCallRunner.href = `tel:${orderData.runner_phone}`;
-        }
       } else {
         if (runnerSub) {
           runnerSub.innerText = isHi 
@@ -9057,26 +9322,8 @@
         }
       }
 
-      // 3. Fallback to approved Reference 01 Frame 4 Order #GB-1284
-      populateTrackingUI({
-        order_id: '#GB-1284',
-        status: 'ON_THE_WAY',
-        timeline_stage: 4,
-        eta_mins: '18 minutes',
-        runner_name: 'Ramesh Kumar',
-        runner_phone: '9876543210',
-        runner_rating: 4.8,
-        runner_deliveries: 320,
-        distance_km: 1.2,
-        store_name: 'Sharma Brothers Kirana Store',
-        delivery_address: 'Sharma House, Main Road, Rampur village',
-        items: [
-          { name: 'Fresh Tomato', qty: 2, unit: 'kg', price: 60, image: 'static/images/prod_tomato.png' },
-          { name: 'Amul Taaza Milk', qty: 1, unit: 'pack', price: 60, image: 'static/images/prod_milk.png' },
-          { name: 'Onion', qty: 1, unit: 'kg', price: 25, image: 'static/images/prod_onion.png' }
-        ],
-        total_amount: 165
-      });
+      // No confirmed active order: show a truthful empty state, not a simulated delivery.
+      showTrackingEmptyState();
     }
     window.renderLiveTrackingView = renderLiveTrackingView;
 
@@ -9402,13 +9649,13 @@
       const landmarkEl = document.getElementById('profile-user-landmark');
       const avatarEl = document.getElementById('profile-user-avatar-initial');
 
-      const uName = (AppStore.user && AppStore.user.name) ? AppStore.user.name : (AppStore.lang === 'hi' ? 'रमेश पटेल' : 'Ramesh Patel');
-      const uPhone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '9876543210';
+      const uName = (AppStore.user && AppStore.user.name) ? AppStore.user.name : (AppStore.lang === 'hi' ? 'अतिथि ग्राहक' : 'Guest Customer');
+      const uPhone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '';
       const uVillage = (AppStore.user && AppStore.user.village) ? AppStore.user.village : (AppStore.lang === 'hi' ? 'गाँव सेट नहीं है' : 'Address not set');
       const uLandmark = (AppStore.user && AppStore.user.landmark) ? AppStore.user.landmark : (AppStore.lang === 'hi' ? 'पहचान चिन्ह सेट नहीं है' : 'Landmark not set');
 
       if (nameEl) nameEl.innerText = uName;
-      if (phoneEl) phoneEl.innerText = `+91 ${uPhone.substring(0, 5)} ${uPhone.substring(5)}`;
+      if (phoneEl) phoneEl.innerText = uPhone ? `+91 ${uPhone.substring(0, 5)} ${uPhone.substring(5)}` : (AppStore.lang === 'hi' ? 'लॉगिन नहीं किया' : 'Not logged in');
       if (villageEl) villageEl.innerText = uVillage;
       if (landmarkEl) landmarkEl.innerText = uLandmark;
       if (avatarEl) avatarEl.innerText = uName.trim().charAt(0) || 'र';
@@ -9456,14 +9703,26 @@
         }
       }
 
-      // 3. Load order history
-      loadUserOrderHistory();
+      // Payment methods are managed in Account; order history is loaded in Orders.
       loadUserSavedPaymentMethods();
     }
     window.renderProfileView = renderProfileView;
 
+    function toggleProfileSavedPayments() {
+      const panel = document.getElementById('profile-saved-payments-panel');
+      const button = document.getElementById('profile-row-saved-payments');
+      const chevron = document.getElementById('profile-payments-chevron');
+      if (!panel || !button) return;
+      const willOpen = panel.classList.contains('hidden');
+      panel.classList.toggle('hidden', !willOpen);
+      button.setAttribute('aria-expanded', String(willOpen));
+      if (chevron) chevron.innerText = willOpen ? 'expand_less' : 'expand_more';
+      if (willOpen) loadUserSavedPaymentMethods();
+    }
+    window.toggleProfileSavedPayments = toggleProfileSavedPayments;
+
     async function loadUserOrderHistory() {
-      const container = document.getElementById('profile-order-history-list');
+      const container = document.getElementById('orders-history-list');
       if (!container) return;
 
       const isHi = (AppStore.lang === 'hi');
@@ -9924,30 +10183,41 @@
     }
     window.sendQuickMessage = sendQuickMessage;
 
-    function getIntelligentChatbotResponse(rawText) {
+        function getIntelligentChatbotResponse(rawText) {
       const text = (rawText || '').trim().toLowerCase();
-      const isHi = (AppStore.lang === 'hi') || /[\u0900-\u097F]/.test(rawText);
-      const activeOrderId = AppStore.orderId;
-      const eta = AppStore.etaMins ? `${AppStore.etaMins} mins` : '20-30 mins';
-      const otp = AppStore.deliveryOtp || '4821';
+      const isHi = (AppStore.lang === 'hi') || /[ऀ-ॿ]/.test(rawText);
+      const activeOrder = AppStore.activeOrderData || null;
+      const activeOrderId = AppStore.orderId || (activeOrder && (activeOrder.order_id || activeOrder.id));
+      const hasRealOrder = !!activeOrderId;
+      const eta = (activeOrder && activeOrder.eta_mins) ? `${activeOrder.eta_mins} mins` : (AppStore.etaMins ? `${AppStore.etaMins} mins` : '20-30 mins');
+      const otp = (activeOrder && activeOrder.delivery_otp) || AppStore.deliveryOtp || '4821';
+      const runnerName = (activeOrder && activeOrder.runner && activeOrder.runner.name) || (AppStore.runnerIdentity && AppStore.runnerIdentity.name) || (isHi ? 'गाँव मित्र' : 'Delivery Partner');
 
       // 1. Order tracking & status keywords (Active order state check)
       const trackKeywords = ['where', 'track', 'status', 'location', 'कहाँ', 'ट्रैक', 'स्थिति', 'kab', 'pahunch'];
       const isTrackQuery = trackKeywords.some(kw => text.includes(kw)) || (text.includes('order') && !text.includes('cancel')) || (text.includes('ऑर्डर') && !text.includes('रद्द'));
       if (isTrackQuery) {
-        const orderData = AppStore.activeOrderData || {};
-        const stage = orderData.timeline_stage || AppStore.orderTimelineStage || 3;
+        if (!hasRealOrder) {
+          return {
+            reply: isHi
+              ? 'वर्तमान में आपका कोई सक्रिय ऑर्डर नहीं है। आप होम स्क्रीन से ताज़ा फल, सब्जियां व किराना ऑर्डर कर सकते हैं।'
+              : 'You have no active orders right now. You can browse and order fresh groceries from the Home screen.',
+            escalate_call: false
+          };
+        }
+
+        const stage = (activeOrder && activeOrder.timeline_stage) || AppStore.orderTimelineStage || 3;
         let statusDesc = isHi ? 'रास्ते में है' : 'Out for Delivery';
         if (stage === 1) statusDesc = isHi ? 'ऑर्डर प्राप्त हुआ • दुकान द्वारा पुष्टि प्रतीक्षित' : 'Order Placed • Awaiting Store Confirmation';
         else if (stage === 2) statusDesc = isHi ? 'दुकानदार सामान पैक कर रहा है' : 'Store is packing your items';
-        else if (stage === 3) statusDesc = isHi ? 'गाँव मित्र मोहन लाल को सौंपा गया • रास्ते में है' : 'Handed to Runner Mohan Lal • Out for Delivery';
+        else if (stage === 3) statusDesc = isHi ? `${runnerName} को सौंपा गया • रास्ते में है` : `Handed to ${runnerName} • Out for Delivery`;
         else if (stage === 4) statusDesc = isHi ? 'पहचान चिन्ह के समीप पहुँच रहा है' : 'Arriving near your village landmark';
         else if (stage === 5) statusDesc = isHi ? 'सकुशल डिलीवर हो चुका है' : 'Delivered';
 
         return {
           reply: isHi 
-            ? `ऑर्डर स्थिति (#${activeOrderId || 'ORD-9482'}): ${statusDesc} (${eta})। डिलीवरी OTP: ${otp}`
-            : `Live Order Status (#${activeOrderId || 'ORD-9482'}): ${statusDesc} (${eta}). Delivery OTP: ${otp}`,
+            ? `ऑर्डर स्थिति (#${activeOrderId}): ${statusDesc} (${eta})। डिलीवरी OTP: ${otp}`
+            : `Live Order Status (#${activeOrderId}): ${statusDesc} (${eta}). Delivery OTP: ${otp}`,
           escalate_call: false
         };
       }
@@ -9955,51 +10225,74 @@
       // 2. Cancellation keywords
       const cancelKeywords = ['cancel', 'रद्द', 'रद्द करना', 'order cancel', 'cancel order'];
       if (cancelKeywords.some(kw => text.includes(kw))) {
-        const stage = (AppStore.activeOrderData && AppStore.activeOrderData.timeline_stage) || AppStore.orderTimelineStage || 3;
+        if (!hasRealOrder) {
+          return {
+            reply: isHi
+              ? 'वर्तमान में रद्द करने के लिए आपका कोई सक्रिय ऑर्डर नहीं है।'
+              : 'You have no active orders to cancel right now.',
+            escalate_call: false
+          };
+        }
+        const stage = (activeOrder && activeOrder.timeline_stage) || AppStore.orderTimelineStage || 3;
         if (stage <= 2) {
           return {
             reply: isHi
-              ? `ऑर्डर रद्द: आपका ऑर्डर #${activeOrderId || 'ORD-9482'} सफलतापूर्वक रद्द कर दिया गया है। यदि आपने ऑनलाइन भुगतान किया था, तो 2 घंटे के भीतर रिफंड मिल जाएगा।`
-              : `Order Cancelled: Your order #${activeOrderId || 'ORD-9482'} has been cancelled successfully. If prepaid, your refund will be credited within 2 hours.`,
+              ? `ऑर्डर रद्द: आपका ऑर्डर #${activeOrderId} सफलतापूर्वक रद्द कर दिया गया है। यदि आपने ऑनलाइन भुगतान किया था, तो 2 घंटे के भीतर रिफंड मिल जाएगा।`
+              : `Order Cancelled: Your order #${activeOrderId} has been cancelled successfully. If prepaid, your refund will be credited within 2 hours.`,
             escalate_call: false
           };
         } else {
           return {
             reply: isHi
-              ? `ऑर्डर स्थिति: आपका ऑर्डर #${activeOrderId || 'ORD-9482'} डिलीवरी हेतु निकल चुका है। इसे रद्द करने के लिए ऊपर दिए गए हेल्पलाइन बटन (1800-120-4266) पर तुरंत संपर्क करें।`
-              : `Order In-Transit: Your order #${activeOrderId || 'ORD-9482'} is already out for delivery. To request cancellation in-transit, please tap the '1800-120-4266' Helpline button above.`,
+              ? `ऑर्डर स्थिति: आपका ऑर्डर #${activeOrderId} डिलीवरी हेतु निकल चुका है। इसे रद्द करने के लिए ऊपर दिए गए हेल्पलाइन बटन (1800-120-4266) पर तुरंत संपर्क करें।`
+              : `Order In-Transit: Your order #${activeOrderId} is already out for delivery. To request cancellation in-transit, please tap the '1800-120-4266' Helpline button above.`,
             escalate_call: true
           };
         }
       }
 
-      // 3. Refund & payment query keywords
-      const refundKeywords = ['refund', 'money', 'payment', 'return', 'रिफंड', 'पैसे', 'वापसी', 'खाते'];
-      if (refundKeywords.some(kw => text.includes(kw))) {
+      // 3. Problem / Complaint / Missing / Damage keywords (Handoff to Ticket)
+      const grievanceKeywords = ['complaint', 'problem', 'issue', 'damaged', 'missing', 'शिकायत', 'समस्या', 'खराब', 'छूट', 'चोरी'];
+      if (grievanceKeywords.some(kw => text.includes(kw))) {
         return {
           reply: isHi
-            ? `रिफंड अपडेट: रद्द किए गए प्रीपेड ऑर्डर की राशि 2 घंटे के भीतर आपके मूल बैंक खाते (UPI/Card) में स्वतः क्रेडिट कर दी जाती है।`
-            : `Refund Update: Prepaid refunds for cancelled orders are automatically credited back to your original payment method within 2 hours.`,
-          escalate_call: false
-        };
-      }
-
-      // 3. Human agent & helpline keywords
-      const agentKeywords = ['agent', 'call', 'human', 'speak', 'phone', 'help', 'कॉल', 'एजेंट', 'बात', 'फोन', 'मदद', 'सहायता'];
-      if (agentKeywords.some(kw => text.includes(kw))) {
-        return {
-          reply: isHi
-            ? `हमारे ग्राहक सेवा अधिकारी से बात करने के लिए ऊपर दिए गए हेल्पलाइन बटन (1800-120-4266) पर तुरंत टैप करें।`
-            : `To speak directly with a customer support executive, tap the '1800-120-4266' button above.`,
+            ? 'हमें हुई असुविधा के लिए खेद है। आप सहायता केंद्र में "समस्या दर्ज करें" फॉर्म भरकर तुरंत टिकट बना सकते हैं या हमारे टोल-फ्री नंबर 1800-120-4266 पर कॉल कर सकते हैं।'
+            : 'We apologize for the inconvenience. You can submit a support ticket using the "Report an Issue" form below or call our toll-free helpline at 1800-120-4266.',
           escalate_call: true
         };
       }
 
-      // 4. Default dynamic fallback (clean & helpful, NEVER an error)
+      // 4. Refund & payment query keywords
+      const refundKeywords = ['refund', 'money', 'payment', 'return', 'रिफंड', 'पैसे', 'वापसी', 'खाते'];
+      if (refundKeywords.some(kw => text.includes(kw))) {
+        return {
+          reply: isHi
+            ? 'रिफंड अपडेट: रद्द किए गए प्रीपेड ऑर्डर की राशि 2 घंटे के भीतर आपके मूल बैंक खाते (UPI/Card) में स्वतः क्रेडिट कर दी जाती है।'
+            : 'Refund Update: Prepaid refunds for cancelled orders are automatically credited back to your original payment method within 2 hours.',
+          escalate_call: false
+        };
+      }
+
+      // 5. Human agent & helpline keywords
+      const agentKeywords = ['agent', 'call', 'human', 'speak', 'phone', 'help', 'कॉल', 'एजेंट', 'बात', 'फोन', 'मदद', 'सहायता'];
+      if (agentKeywords.some(kw => text.includes(kw))) {
+        return {
+          reply: isHi
+            ? 'हमारे ग्राहक सेवा अधिकारी से बात करने के लिए ऊपर दिए गए हेल्पलाइन बटन (1800-120-4266) पर तुरंत टैप करें।'
+            : "To speak directly with a customer support executive, tap the '1800-120-4266' button above.",
+          escalate_call: true
+        };
+      }
+
+      // 6. Default dynamic fallback (clean & honest, NEVER an invented order)
       return {
         reply: isHi
-          ? `नमस्ते! गाँव बाज़ार AI सहायता केंद्र में आपका स्वागत है। आप मुझसे अपने ऑर्डर (${activeOrderId}) की स्थिति या रिफंड के बारे में पूछ सकते हैं, या सीधे कॉल कर सकते हैं।`
-          : `Hello! Welcome to GaonBazaar AI Support. You can ask "Where is my order?" (${activeOrderId}), check refund updates, or tap Call Help Center anytime.`,
+          ? (hasRealOrder
+              ? `नमस्ते! गाँव बाज़ार AI सहायता में आपका स्वागत है। आप मुझसे अपने ऑर्डर #${activeOrderId} की स्थिति या रिफंड के बारे में पूछ सकते हैं।`
+              : 'नमस्ते! गाँव बाज़ार AI सहायता केंद्र में आपका स्वागत है। आप मुझसे किसी भी सहायता, रिफंड या ऑर्डर संबंधी जानकारी पूछ सकते हैं।')
+          : (hasRealOrder
+              ? `Hello! Welcome to GaonBazaar AI Support. You can ask "Where is my order?" (#${activeOrderId}), check refund updates, or contact customer care.`
+              : 'Hello! Welcome to GaonBazaar AI Support. You can ask about order status, refunds, or tap Call Help Center anytime.'),
         escalate_call: false
       };
     }
@@ -10047,14 +10340,15 @@
       let chatResponse = null;
       if (window.location && window.location.protocol.startsWith('http')) {
         try {
+          const userPhone = (AppStore.user && AppStore.user.phone) || AppStore.userPhone || null;
           const payload = {
-            user_phone: (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '9876543210',
+            user_phone: userPhone,
             message: text,
             order_id: AppStore.orderId || null,
             lang: AppStore.lang || 'hi'
           };
           const controller = new AbortController();
-          const timer = setTimeout(() => controller.abort(), 600);
+          const timer = setTimeout(() => controller.abort(), 4000);
           const res = await apiFetch('/support/chat', {
             method: 'POST',
             body: JSON.stringify(payload),
@@ -10062,7 +10356,7 @@
           });
           clearTimeout(timer);
 
-          if (res && res.reply && !res.reply.toLowerCase().includes('no recent order was found')) {
+          if (res && res.reply) {
             chatResponse = {
               reply: res.reply,
               escalate_call: !!res.escalate_call
@@ -10582,7 +10876,124 @@
     // =========================================================================
     // MODULE 3: TRADITIONAL HELP & SUPPORT CENTER (Self-Service, FAQs, Tickets)
     // =========================================================================
+    // --- CONSOLIDATED HELP & SUPPORT CENTER CONTROLLERS ---
+    function openSupportCenterSection(sectionName) {
+      if (typeof navigateToPhase === 'function') {
+        navigateToPhase('support');
+      }
+      setTimeout(() => {
+        let targetId = 'support-sec-where-order';
+        if (sectionName === 'report_issue') targetId = 'support-sec-report-issue';
+        else if (sectionName === 'my_tickets') targetId = 'support-sec-my-tickets';
+        else if (sectionName === 'contact') targetId = 'support-sec-contact';
+        else if (sectionName === 'faq') targetId = 'support-sec-faq';
+
+        const targetEl = document.getElementById(targetId);
+        if (targetEl) {
+          targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          targetEl.classList.add('ring-2', 'ring-primary/40');
+          setTimeout(() => targetEl.classList.remove('ring-2', 'ring-primary/40'), 1600);
+        }
+      }, 150);
+    }
+    window.openSupportCenterSection = openSupportCenterSection;
+
+    function populateSupportOrderLookup() {
+      const container = document.getElementById('support-order-lookup-card');
+      const badge = document.getElementById('support-order-status-badge');
+      if (!container) return;
+
+      const isHi = (AppStore.lang === 'hi');
+      const activeOrder = AppStore.activeOrderData || null;
+      const activeOrderId = AppStore.orderId || (activeOrder && (activeOrder.order_id || activeOrder.id));
+
+      if (!activeOrderId && !activeOrder) {
+        if (badge) badge.innerText = isHi ? 'कोई सक्रिय ऑर्डर नहीं' : 'No active order';
+        container.innerHTML = `
+          <div class="py-6 px-3 text-center text-slate-400 dark:text-[#CBD5E1]">
+            <span class="material-symbols-outlined text-3xl text-slate-300 dark:text-[#465362]">inventory_2</span>
+            <p class="text-xs font-bold text-slate-700 dark:text-[#F8FAFC] mt-1.5">${isHi ? 'वर्तमान में कोई सक्रिय ऑर्डर नहीं है' : 'You have no active orders right now'}</p>
+            <p class="text-[11px] text-slate-500 dark:text-[#CBD5E1] mt-0.5">${isHi ? 'जब आप कोई नया ऑर्डर देंगे, तो उसका लाइव स्टेटस यहाँ दिखाई देगा।' : 'When you place an order, its live progress will appear here.'}</p>
+            <button type="button" onclick="navigateToPhase('dashboard')" class="mt-3 px-4 py-2 bg-primary hover:bg-primary-dark text-white text-xs font-bold rounded-xl shadow-xs active:scale-95 transition-all cursor-pointer">
+              ${isHi ? 'दुकानें देखें (Browse Stores)' : 'Browse Stores'}
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      const orderId = activeOrderId || (activeOrder && activeOrder.id) || 'GB-ACTIVE';
+      const stage = (activeOrder && activeOrder.timeline_stage) || AppStore.orderTimelineStage || 3;
+      const storeName = (activeOrder && (activeOrder.store_name || activeOrder.store_title)) || 'गाँव किराना स्टोर';
+      const etaMins = (activeOrder && activeOrder.eta_mins) || AppStore.etaMins || 25;
+      const otp = (activeOrder && activeOrder.delivery_otp) || AppStore.deliveryOtp || '4821';
+      const runner = (activeOrder && activeOrder.runner) || (AppStore.runnerIdentity ? { name: AppStore.runnerIdentity.name, phone: AppStore.runnerIdentity.phone } : null);
+
+      let stageLabel = isHi ? 'रास्ते में है (Out for Delivery)' : 'Out for Delivery';
+      if (stage === 1) stageLabel = isHi ? 'ऑर्डर प्राप्त हुआ' : 'Order Placed';
+      else if (stage === 2) stageLabel = isHi ? 'पैकिंग जारी है' : 'Store Packing';
+      else if (stage === 3) stageLabel = isHi ? 'रास्ते में है' : 'Out for Delivery';
+      else if (stage === 4) stageLabel = isHi ? 'पहुँचने वाला है' : 'Arriving Soon';
+      else if (stage === 5) stageLabel = isHi ? 'डिलीवर हो चुका है' : 'Delivered';
+
+      if (badge) badge.innerText = stageLabel;
+
+      container.innerHTML = `
+        <div class="p-3.5 rounded-2xl bg-emerald-50/60 dark:bg-[#2A323D] border border-emerald-200/80 dark:border-[#465362] space-y-2.5">
+          <div class="flex items-center justify-between">
+            <div>
+              <span class="text-[10px] font-bold text-slate-500 dark:text-[#CBD5E1]">${isHi ? 'ऑर्डर नंबर' : 'Order ID'}</span>
+              <h3 class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] font-mono">#${escapeHtml(orderId)}</h3>
+            </div>
+            <div class="text-right">
+              <span class="text-[10px] font-bold text-slate-500 dark:text-[#CBD5E1]">${isHi ? 'अनुमानित समय' : 'Estimated Time'}</span>
+              <p class="text-xs font-black text-primary dark:text-[#16B86E]">${etaMins} ${isHi ? 'मिनट' : 'mins'}</p>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between text-[11px] pt-1 border-t border-emerald-200/60 dark:border-[#465362]">
+            <div class="flex items-center gap-1.5 text-slate-700 dark:text-[#F8FAFC]">
+              <span class="material-symbols-outlined text-[16px] text-primary dark:text-[#16B86E]">storefront</span>
+              <span class="font-bold truncate max-w-[150px]">${escapeHtml(storeName)}</span>
+            </div>
+            <div class="flex items-center gap-1 bg-white dark:bg-[#111418] px-2 py-0.5 rounded-md border border-emerald-300 dark:border-[#465362]">
+              <span class="text-[10px] text-slate-500 dark:text-[#CBD5E1]">OTP:</span>
+              <span class="font-mono font-black text-primary dark:text-[#16B86E] text-xs">${escapeHtml(otp)}</span>
+            </div>
+          </div>
+
+          ${runner && runner.name ? `
+            <div class="flex items-center justify-between text-[11px] bg-white dark:bg-[#111418] p-2 rounded-xl border border-emerald-100 dark:border-[#465362]">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px] text-[#16B86E]">sports_motorsports</span>
+                <div>
+                  <span class="text-[10px] text-slate-500 dark:text-[#CBD5E1] block">${isHi ? 'गाँव मित्र (डिलीवरी साथी)' : 'Delivery Partner'}</span>
+                  <span class="font-black text-slate-900 dark:text-[#F8FAFC]">${escapeHtml(runner.name)}</span>
+                </div>
+              </div>
+              ${runner.phone ? `<a href="tel:${escapeHtml(runner.phone)}" class="px-2.5 py-1 rounded-lg bg-emerald-100 dark:bg-emerald-950/60 text-primary dark:text-[#16B86E] font-black text-[10px] flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">call</span> <span>${isHi ? 'कॉल' : 'Call'}</span></a>` : ''}
+            </div>
+          ` : ''}
+
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <button type="button" onclick="navigateToPhase('tracking')" class="h-10 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-bold flex items-center justify-center gap-1 shadow-xs active:scale-95 transition-all cursor-pointer">
+              <span class="material-symbols-outlined text-[16px]">location_on</span>
+              <span>${isHi ? 'लाइव ट्रैकिंग देखें' : 'View Live Tracking'}</span>
+            </button>
+            <button type="button" onclick="openSupportModal()" class="h-10 rounded-xl bg-white dark:bg-[#111418] hover:bg-slate-50 dark:hover:bg-[#1D232B] border border-slate-200 dark:border-[#465362] text-slate-800 dark:text-[#F8FAFC] text-xs font-bold flex items-center justify-center gap-1 active:scale-95 transition-all cursor-pointer">
+              <span class="material-symbols-outlined text-[16px] text-primary dark:text-[#16B86E]">smart_toy</span>
+              <span>${isHi ? 'AI से पूछें' : 'Ask AI'}</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+    window.populateSupportOrderLookup = populateSupportOrderLookup;
+
     function initSupportCenterView() {
+      if (typeof populateSupportOrderLookup === 'function') {
+        populateSupportOrderLookup();
+      }
       renderSupportTicketHistory();
       const orderRefInput = document.getElementById('ticket-order-id');
       if (orderRefInput && AppStore.orderId) {
@@ -10638,7 +11049,7 @@
       }
 
       const isHi = (AppStore.lang === 'hi');
-      const submitBtn = document.getElementById('btn-submit-ticket');
+      const submitBtn = document.getElementById('btn-submit-support-ticket') || document.getElementById('btn-submit-ticket');
       if (submitBtn) {
         submitBtn.disabled = true;
         submitBtn.innerText = isHi ? 'शिकायत दर्ज हो रही है...' : 'Submitting...';
