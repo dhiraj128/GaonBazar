@@ -558,146 +558,33 @@
 
       <!-- User Profile Card -->
       <div class="p-3.5 border-b border-slate-100 dark:border-[#465362] bg-white dark:bg-[#111418]">
-        <div onclick="navigateToPhase('profile'); closeSidebarDrawer();" class="flex items-center gap-3 p-2.5 rounded-2xl bg-slate-50 dark:bg-[#1D232B] border border-slate-100 dark:border-[#465362] cursor-pointer hover:border-[#16B86E] active:scale-98 transition-all">
+        <button id="drawer-user-card" type="button" onclick="navigateToPhase('profile')" class="w-full text-left flex items-center gap-3 p-2.5 rounded-2xl bg-slate-50 dark:bg-[#1D232B] border border-slate-100 dark:border-[#465362] cursor-pointer hover:border-[#16B86E] active:scale-98 transition-all">
           <div class="w-10 h-10 rounded-full bg-[#16B86E]/15 text-[#16B86E] font-black text-sm flex items-center justify-center shadow-2xs shrink-0 uppercase" id="drawer-user-avatar">
-            <span id="drawer-user-initial">RK</span>
+            <span id="drawer-user-initial">अ</span>
           </div>
           <div class="flex flex-col min-w-0 flex-1">
-            <span id="drawer-user-name" class="font-black text-xs text-slate-900 dark:text-[#F8FAFC] truncate">Ramesh Kumar</span>
-            <span id="drawer-user-phone" class="text-[11px] text-slate-500 dark:text-[#CBD5E1] font-mono truncate">+91 98765 43210</span>
+            <span id="drawer-user-name" class="font-black text-xs text-slate-900 dark:text-[#F8FAFC] truncate">अतिथि ग्राहक</span>
+            <span id="drawer-user-phone" class="text-[11px] text-slate-500 dark:text-[#CBD5E1] font-mono truncate">लॉगिन नहीं किया</span>
           </div>
           <span class="material-symbols-outlined text-slate-400 dark:text-[#94A3B8] text-[18px]">chevron_right</span>
-        </div>
+        </button>
       </div>
 
-      <!-- Drawer Nav Items List -->
-      <nav class="flex-1 overflow-y-auto p-3 space-y-1">
-        
-        <!-- My Profile -->
-        <button id="drawer-account-btn" onclick="navigateToPhase('profile'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] active:bg-slate-200 text-xs font-bold transition-colors cursor-pointer">
-          <span class="material-symbols-outlined text-[#FF981A] text-[20px]">person</span>
-          <span class="flex-1 text-left" data-i18n="drawer_profile">My Profile & Account</span>
-          <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
+      <!-- Secondary destinations only. Primary shopping routes live in the bottom tabs. -->
+      <nav class="flex-1 overflow-y-auto p-3 space-y-2" aria-label="More options">
+        <p class="px-3 pt-1 text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-[#B4C1D1]" data-i18n="drawer_quick_access">Quick access</p>
+        <button id="drawer-notifications-btn" onclick="openDrawerNotifications()" class="w-full min-h-[48px] px-3 py-3 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] text-xs font-bold transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[#FF981A] text-[21px]">notifications</span>
+          <span class="flex-1 text-left" data-i18n="notif_modal_title">Notifications & Alerts</span>
+          <span class="material-symbols-outlined text-slate-400 dark:text-[#94A3B8] text-[18px]">chevron_right</span>
         </button>
-
-        <!-- My Cart -->
-        <button id="drawer-cart-btn" onclick="navigateToPhase('cart'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] active:bg-slate-200 text-xs font-bold transition-colors cursor-pointer">
-          <span class="material-symbols-outlined text-[#16B86E] text-[20px]">shopping_cart</span>
-          <span class="flex-1 text-left" data-i18n="drawer_cart">My Cart</span>
-          <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
+        <button id="drawer-help-center-btn" onclick="navigateToPhase('support')" class="w-full min-h-[48px] px-3 py-3 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] text-xs font-bold transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[#16B86E] text-[21px]">support_agent</span>
+          <span class="flex-1 text-left" data-i18n="drawer_help_center">Help & Support</span>
+          <span class="material-symbols-outlined text-slate-400 dark:text-[#94A3B8] text-[18px]">chevron_right</span>
         </button>
-
-        <!-- My Orders -->
-        <button id="drawer-orders-btn" onclick="navigateToPhase('tracking'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] active:bg-slate-200 text-xs font-bold transition-colors cursor-pointer">
-          <span class="material-symbols-outlined text-blue-500 text-[20px]">receipt_long</span>
-          <span class="flex-1 text-left" data-i18n="drawer_orders">My Orders</span>
-          <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
-        </button>
-
-        <!-- Saved Addresses -->
-        <button id="drawer-addresses-btn" onclick="navigateToPhase('landmark'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] active:bg-slate-200 text-xs font-bold transition-colors cursor-pointer">
-          <span class="material-symbols-outlined text-[#FF981A] text-[20px]">location_on</span>
-          <span class="flex-1 text-left" data-i18n="drawer_addresses">Saved Addresses</span>
-          <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
-        </button>
-
-        <!-- Saved Payments -->
-        <div id="profile-saved-payments-section" class="w-full">
-          <button id="drawer-payments-btn" onclick="openAddPaymentModal(); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] active:bg-slate-200 text-xs font-bold transition-colors cursor-pointer">
-            <span class="material-symbols-outlined text-[#FF981A] text-[20px]">credit_card</span>
-            <span class="flex-1 text-left" data-i18n="drawer_payments">Saved Payments</span>
-            <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
-          </button>
-          <div id="profile-saved-payment-list" class="hidden"></div>
-        </div>
-
-        <!-- Highlighted AI Order Support Card -->
-        <button id="drawer-support-btn" onclick="openSupportModal(); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 bg-emerald-50 dark:bg-[#1D232B] text-[#16B86E] dark:text-[#4ADE80] border border-emerald-200/60 dark:border-[#16B86E]/40 text-xs font-bold transition-all cursor-pointer">
-          <span class="material-symbols-outlined text-[20px]">smart_toy</span>
-          <span class="flex-1 text-left" data-i18n="drawer_support_ai">AI Order Support</span>
-          <span class="text-[10px] font-black uppercase bg-[#16B86E] text-white px-2 py-0.5 rounded-full">New</span>
-        </button>
-        <button id="drawer-chat-btn" onclick="openSupportModal(); closeSidebarDrawer();" class="hidden" aria-hidden="true"></button>
-
-        <!-- Help Center & FAQs -->
-        <button id="drawer-help-center-btn" onclick="navigateToPhase('support'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] text-xs font-bold transition-colors cursor-pointer">
-          <span class="material-symbols-outlined text-amber-500 text-[20px]">help_outline</span>
-          <span class="flex-1 text-left" data-i18n="drawer_help_center">Help Center & FAQs</span>
-          <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
-        </button>
-
-        <!-- Raise a Complaint -->
-        <button onclick="openComplaintModal(); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] text-xs font-bold transition-colors cursor-pointer">
-          <span class="material-symbols-outlined text-rose-500 text-[20px]">report_problem</span>
-          <span class="flex-1 text-left" data-i18n="drawer_complaint">Raise a Complaint</span>
-          <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
-        </button>
-
-        <!-- My Support Tickets -->
-        <button onclick="viewCustomerTickets(); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] text-xs font-bold transition-colors cursor-pointer">
-          <span class="material-symbols-outlined text-amber-600 text-[20px]">confirmation_number</span>
-          <span class="flex-1 text-left" data-i18n="drawer_tickets">My Support Tickets</span>
-          <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
-        </button>
-
-        <!-- Language Switcher Row -->
-        <button id="drawer-lang-btn" onclick="window.toggleGlobalLanguage()" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center justify-between text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] text-xs font-bold transition-colors cursor-pointer">
-          <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-blue-500 text-[20px]">language</span>
-            <span data-i18n="drawer_lang">Language</span>
-          </div>
-          <span class="text-xs text-slate-400 font-medium flex items-center gap-1">
-            <span id="drawer-lang-curr">हिंदी</span>
-            <span class="material-symbols-outlined text-[16px]">chevron_right</span>
-          </span>
-        </button>
-
-        <!-- Theme Switcher Row -->
-        <button onclick="toggleCustomerTheme()" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center justify-between text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] text-xs font-bold transition-colors cursor-pointer">
-          <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-amber-500 text-[20px]">wb_sunny</span>
-            <span data-i18n="drawer_theme">Theme</span>
-          </div>
-          <span class="text-xs text-slate-400 font-medium flex items-center gap-1">
-            <span id="drawer-theme-curr">Light</span>
-            <span class="material-symbols-outlined text-[16px]">chevron_right</span>
-          </span>
-        </button>
-
-        <!-- Past Orders -->
-        <button id="drawer-orders-btn" onclick="navigateToPhase('tracking'); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] text-xs font-bold transition-colors cursor-pointer">
-          <span class="material-symbols-outlined text-blue-600 text-[20px]">receipt_long</span>
-          <span class="flex-1 text-left" data-i18n="drawer_orders">Past Orders</span>
-          <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
-        </button>
-
-        <!-- Privacy & Terms -->
-        <button onclick="openTermsModal(); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] text-xs font-bold transition-colors cursor-pointer">
-          <span class="material-symbols-outlined text-slate-500 text-[20px]">description</span>
-          <span class="flex-1 text-left" data-i18n="drawer_terms">Privacy & Terms</span>
-          <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
-        </button>
-
-        <!-- About GaonBazaar -->
-        <button onclick="alert('GaonBazaar Rural Hyperlocal v2.5 — Empowering rural India with simple, fast, fresh local delivery.');" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl flex items-center gap-3 text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#1D232B] text-xs font-bold transition-colors cursor-pointer">
-          <span class="material-symbols-outlined text-slate-500 text-[20px]">info</span>
-          <span class="flex-1 text-left" data-i18n="drawer_about">About GaonBazaar</span>
-          <span class="material-symbols-outlined text-slate-400 text-[16px]">chevron_right</span>
-        </button>
-
-        <!-- Legacy elements kept for test harness backwards compatibility -->
-        <button id="drawer-appearance-btn" onclick="openCustomerAppearanceSettings()" class="hidden" aria-hidden="true"></button>
-
       </nav>
-
-      <!-- Drawer Footer: Logout CTA -->
-      <div class="p-3 border-t border-slate-100 dark:border-[#465362] bg-slate-50 dark:bg-[#1D232B] shrink-0">
-        <button onclick="logoutCustomer(); closeSidebarDrawer();" class="w-full min-h-[44px] px-3 py-2.5 rounded-xl text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-xs font-black flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer">
-          <span class="material-symbols-outlined text-[18px]">logout</span>
-          <span data-i18n="drawer_logout">Logout</span>
-        </button>
-      </div>
-
+      <p class="p-4 border-t border-slate-100 dark:border-[#465362] bg-slate-50 dark:bg-[#1D232B] text-[11px] text-slate-500 dark:text-[#B4C1D1] leading-relaxed" data-i18n="drawer_bottom_tip">Shop, cart, orders and account settings are in the bottom navigation.</p>
     </aside>
 
     <!-- ========================================================================= -->
@@ -1607,24 +1494,26 @@
       <!-- ===================================================================== -->
       <section id="view-p5-tracking" class="screen-view hidden flex-col w-full px-4 pt-2 pb-32 sm:pb-36 flex-1 min-h-0 space-y-4" style="touch-action: pan-y !important;">
         
-        <!-- Top Bar Matching Reference 04: < Order #GB-1284 | Help -->
+        <!-- One Orders destination: live tracking first, then complete order history -->
         <div class="flex items-center justify-between py-1">
           <div class="flex items-center gap-2">
             <button onclick="navigateToPhase('dashboard')" aria-label="Back to Home" class="w-9 h-9 rounded-full text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#2A323D] flex items-center justify-center cursor-pointer">
               <span class="material-symbols-outlined text-[22px]">arrow_back</span>
             </button>
-            <h1 class="text-sm font-black text-slate-900 dark:text-[#F8FAFC] flex items-center gap-1.5">
-              <span>Order</span>
-              <span id="p5-order-id" class="font-mono text-[#16B86E]">#GB-1284</span>
-              <button onclick="copyOrderId()" class="text-[10px] bg-slate-100 dark:bg-[#2A323D] px-2 py-0.5 rounded text-slate-600 dark:text-[#CBD5E1] hover:bg-slate-200">Copy</button>
-            </h1>
+            <div class="min-w-0">
+              <h1 class="text-sm font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="nav_orders">My Orders</h1>
+              <div class="flex items-center gap-1.5">
+                <span id="p5-order-id" class="hidden font-mono text-[11px] font-bold text-[#16B86E] truncate"></span>
+                <button id="p5-copy-order-id" type="button" onclick="copyOrderId()" class="hidden min-h-[30px] px-2 text-[10px] bg-slate-100 dark:bg-[#2A323D] rounded text-slate-600 dark:text-[#CBD5E1] hover:bg-slate-200">Copy</button>
+              </div>
+            </div>
           </div>
-          <!-- Help link (opens support modal) -->
-          <button onclick="openSupportModal()" class="text-xs font-bold text-[#16B86E] hover:underline cursor-pointer">Help</button>
+          <!-- Order assistance opens the same Help & Support center as the menu. -->
+          <button onclick="navigateToPhase('support')" class="min-h-[44px] px-2 text-xs font-bold text-[#16B86E] hover:underline cursor-pointer" data-i18n="drawer_help_center">Help</button>
         </div>
 
         <!-- 1. EMPTY STATE CONTAINER (Visible when NO active order exists) -->
-        <div id="p5-tracking-empty-state" class="hidden w-full bg-white dark:bg-[#1D232B] rounded-3xl p-6 text-center shadow-xs border border-slate-200 dark:border-[#465362] flex flex-col items-center justify-center my-auto py-12">
+        <div id="p5-tracking-empty-state" class="w-full bg-white dark:bg-[#1D232B] rounded-3xl p-6 text-center shadow-xs border border-slate-200 dark:border-[#465362] flex flex-col items-center justify-center py-8">
           <div class="w-20 h-20 rounded-full bg-[#16B86E]/10 flex items-center justify-center mb-4 text-[#16B86E]">
             <span class="material-symbols-outlined text-[40px]">local_shipping</span>
           </div>
@@ -1637,7 +1526,7 @@
         </div>
 
         <!-- 2. ACTIVE TRACKING CONTAINER (Dynamic rendering from server) -->
-        <div id="p5-active-tracking-content" class="w-full flex flex-col space-y-3.5 pb-28 sm:pb-32" style="touch-action: pan-y !important;">
+        <div id="p5-active-tracking-content" class="hidden w-full flex-col space-y-3.5 pb-6" style="touch-action: pan-y !important;">
           
           <!-- Hero Arriving Status Card -->
           <div class="bg-white dark:bg-[#1D232B] rounded-2xl p-4 shadow-xs border border-slate-200 dark:border-[#465362] flex items-center justify-between">
@@ -1829,6 +1718,14 @@
           <div class="w-full h-16 sm:h-20 shrink-0 pointer-events-none" aria-hidden="true"></div>
         </div>
 
+        <!-- History belongs in Orders, not Account, even when no delivery is active. -->
+        <div id="orders-history-section" class="w-full space-y-3 pb-16">
+          <div class="flex items-center justify-between px-1">
+            <h2 class="text-xs font-black text-slate-500 dark:text-[#B4C1D1] uppercase tracking-wider" data-i18n="profile_sec_orders">Past Orders</h2>
+            <button id="orders-history-refresh" type="button" onclick="loadUserOrderHistory()" class="min-h-[44px] px-3 text-xs text-primary font-bold" data-i18n="profile_refresh_orders">Refresh</button>
+          </div>
+          <div id="orders-history-list" class="space-y-3" aria-live="polite"></div>
+        </div>
       </section>
 
       <!-- ===================================================================== -->
@@ -1898,10 +1795,6 @@
               <p class="text-xs text-on-surface-variant font-medium" data-i18n="profile_page_sub">गाँव बाज़ार प्रोफ़ाइल एवं सेटिंग्स</p>
             </div>
           </div>
-          <button onclick="logoutCustomer()" class="min-h-[44px] px-3.5 py-2 rounded-xl border border-red-200 bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer">
-            <span class="material-symbols-outlined text-[16px]">logout</span>
-            <span data-i18n="profile_logout_btn">लॉगआउट</span>
-          </button>
         </div>
 
         <!-- =================================================================== -->
@@ -1921,7 +1814,7 @@
               </div>
               <div class="min-w-0 flex-1">
                 <div class="flex items-center gap-1.5">
-                  <h2 id="profile-user-name" class="text-lg font-black text-slate-900 leading-tight truncate" data-i18n="profile_user_default_name">रमेश पटेल</h2>
+                  <h2 id="profile-user-name" class="text-lg font-black text-slate-900 leading-tight truncate">अतिथि ग्राहक</h2>
                 </div>
                 <div class="flex items-center gap-2 mt-1">
                   <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-200/80 px-2 py-0.5 rounded-full text-[10px] font-black">
@@ -1967,7 +1860,7 @@
               </div>
               <div class="relative flex items-center bg-slate-100/80 rounded-2xl border border-slate-200/90 cursor-not-allowed select-none">
                 <span class="material-symbols-outlined text-emerald-600 absolute left-3.5 text-[18px]">call</span>
-                <p id="profile-user-phone" class="w-full h-11 pl-10 pr-10 flex items-center text-xs font-mono font-bold text-slate-700">+91 98765 43210</p>
+                <p id="profile-user-phone" class="w-full h-11 pl-10 pr-10 flex items-center text-xs font-mono font-bold text-slate-700">लॉगिन नहीं किया</p>
                 <span class="material-symbols-outlined text-emerald-600 absolute right-3.5 text-[18px]" title="Phone is verified and non-editable">check_circle</span>
               </div>
             </div>
@@ -2070,7 +1963,7 @@
             </div>
 
             <!-- Row 2: Saved Payments -->
-            <div id="profile-row-saved-payments" onclick="openAddPaymentModal()" class="p-4 flex items-center justify-between hover:bg-slate-50 active:bg-slate-100 transition-colors cursor-pointer">
+            <button id="profile-row-saved-payments" type="button" onclick="toggleProfileSavedPayments()" aria-expanded="false" aria-controls="profile-saved-payments-panel" class="w-full text-left p-4 flex items-center justify-between hover:bg-slate-50 active:bg-slate-100 transition-colors cursor-pointer">
               <div class="flex items-center gap-3.5 min-w-0">
                 <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 border border-amber-100">
                   <span class="material-symbols-outlined text-[22px]">account_balance_wallet</span>
@@ -2082,21 +1975,17 @@
               </div>
               <div class="flex items-center gap-1 text-slate-400 shrink-0 ml-2">
                 <span class="text-[11px] text-slate-500 font-bold" data-i18n="profile_badge_manage">प्रबंधित करें</span>
-                <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+                <span id="profile-payments-chevron" class="material-symbols-outlined text-[18px]">expand_more</span>
               </div>
+            </button>
+            <div id="profile-saved-payments-panel" class="hidden p-4 space-y-3 bg-slate-50 dark:bg-[#1D232B]">
+              <div id="profile-saved-payment-list" class="space-y-2"></div>
+              <button id="profile-add-payment-btn" type="button" onclick="openAddPaymentModal()" class="w-full min-h-[44px] rounded-xl bg-primary text-white text-xs font-black flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-[19px]">add_card</span>
+                <span data-i18n="profile_add_payment">Add Payment Method</span>
+              </button>
             </div>
           </div>
-        </div>
-
-        <!-- =================================================================== -->
-        <!-- PAST ORDERS / ORDER HISTORY                                         -->
-        <!-- =================================================================== -->
-        <div class="space-y-2">
-          <div class="flex items-center justify-between px-1">
-            <h3 class="text-xs font-black text-slate-500 uppercase tracking-wider" data-i18n="profile_sec_orders">पिछले ऑर्डर (Past Orders)</h3>
-            <span class="text-[11px] text-primary font-bold cursor-pointer" onclick="loadUserOrderHistory()" data-i18n="profile_refresh_orders">रिफ्रेश</span>
-          </div>
-          <div id="profile-order-history-list" class="space-y-3"></div>
         </div>
 
         <!-- =================================================================== -->
@@ -2247,21 +2136,7 @@
           <h3 class="text-xs font-black text-slate-500 uppercase tracking-wider px-1" data-i18n="profile_sec_support">सहायता एवं सहभागिता (Support & Engagement)</h3>
 
           <div class="rounded-3xl bg-white shadow-mobile-card border border-surface-container-high divide-y divide-slate-100 overflow-hidden">
-            <!-- Row 1: Help & Support Center -->
-            <div id="profile-row-help-support" onclick="navigateToPhase('support')" class="p-4 flex items-center justify-between hover:bg-slate-50 active:bg-slate-100 transition-colors cursor-pointer">
-              <div class="flex items-center gap-3.5 min-w-0">
-                <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100">
-                  <span class="material-symbols-outlined text-[22px]">support_agent</span>
-                </div>
-                <div class="flex flex-col min-w-0">
-                  <span class="text-xs font-black text-slate-900 truncate" data-i18n="profile_row_help">सहायता केंद्र (Help & Support Center)</span>
-                  <span class="text-[11px] text-slate-500 truncate mt-0.5" data-i18n="profile_row_help_sub">सामान्य प्रश्न, शिकायत व हेल्पलाइन</span>
-                </div>
-              </div>
-              <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
-            </div>
-
-            <!-- Row 2: Share GaonBazaar App -->
+            <!-- Share GaonBazaar App -->
             <div id="profile-row-share-app" onclick="shareGaonBazaarApp()" class="p-4 flex items-center justify-between hover:bg-slate-50 active:bg-slate-100 transition-colors cursor-pointer">
               <div class="flex items-center gap-3.5 min-w-0">
                 <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 border border-indigo-100">
@@ -2512,7 +2387,7 @@
         <!-- Header with Back Button -->
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
-            <button onclick="navigateToPhase('dashboard')" aria-label="Back to home" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center active:scale-95 transition-all cursor-pointer">
+            <button onclick="navigateBack()" aria-label="Back" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center active:scale-95 transition-all cursor-pointer">
               <span class="material-symbols-outlined text-[20px]">arrow_back</span>
             </button>
             <div>
@@ -2524,6 +2399,13 @@
             Human Care
           </span>
         </div>
+
+        <!-- All support methods start here: AI, telephone, FAQs, complaints and tickets. -->
+        <button id="support-ai-chat-btn" type="button" onclick="openSupportModal()" class="w-full min-h-[60px] rounded-2xl bg-white dark:bg-[#1D232B] border border-surface-container-high dark:border-[#465362] px-4 py-3 text-left flex items-center gap-3 shadow-mobile-card cursor-pointer">
+          <span class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-[#2A323D] text-[#16B86E] flex items-center justify-center"><span class="material-symbols-outlined text-[23px]">smart_toy</span></span>
+          <span class="flex-1 text-xs font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="profile_open_chat_btn">Chat with AI Support</span>
+          <span class="material-symbols-outlined text-slate-400 dark:text-[#94A3B8]">chevron_right</span>
+        </button>
 
         <!-- 24/7 Helpline Banner -->
         <div id="support-helpline-banner" class="rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-4 shadow-mobile-card flex items-center justify-between gap-3">
@@ -2695,7 +2577,7 @@
               <span class="material-symbols-outlined text-primary text-[20px]">history</span>
               <h2 class="text-sm font-extrabold text-slate-900" data-i18n="ticket_history_heading">Past Complaints & Status</h2>
             </div>
-            <span id="ticket-history-count" class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[11px] font-black">1 Ticket</span>
+            <span id="ticket-history-count" class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[11px] font-black">0 Tickets</span>
           </div>
 
           <div id="support-ticket-history-list" class="space-y-2.5">
@@ -3541,6 +3423,7 @@
         profile_badge_edit: "बदलें",
         profile_row_payments: "सहेजे गए भुगतान",
         profile_row_payments_sub: "UPI ID, डेबिट व क्रेडिट कार्ड",
+        profile_add_payment: "नया भुगतान माध्यम जोड़ें",
         profile_badge_manage: "प्रबंधित करें",
         profile_sec_settings: "सेटिंग्स एवं प्राथमिकताएं",
         profile_row_theme: "थीम / रंग रूप",
@@ -3663,6 +3546,8 @@
         nav_ai_assistant: "AI सहायक",
         nav_orders: "ऑर्डर",
         nav_profile: "खाता",
+        drawer_quick_access: "जल्दी पहुँचें",
+        drawer_bottom_tip: "खरीदारी, कार्ट, ऑर्डर और खाते की सेटिंग नीचे दिए गए टैब में हैं।",
         drawer_profile: "मेरी प्रोफाइल",
         drawer_orders: "मेरे पिछले ऑर्डर",
         drawer_payments: "सहेजे गए भुगतान",
@@ -3974,6 +3859,7 @@
         profile_badge_edit: "Edit",
         profile_row_payments: "Saved Payments",
         profile_row_payments_sub: "UPI IDs, Debit & Credit Cards",
+        profile_add_payment: "Add Payment Method",
         profile_badge_manage: "Manage",
         profile_sec_settings: "Settings & Preferences",
         profile_row_theme: "Theme & Display",
@@ -4096,6 +3982,8 @@
         nav_ai_assistant: "AI Assistant",
         nav_orders: "Orders",
         nav_profile: "Account",
+        drawer_quick_access: "Quick access",
+        drawer_bottom_tip: "Shop, cart, orders and account settings are in the bottom tabs.",
         drawer_profile: "My Profile",
         drawer_orders: "My Orders",
         drawer_payments: "Saved Payments",
@@ -4246,18 +4134,7 @@
       paymentMode: 'COD',
       deliveryOtp: null,
       activeOrderData: null,
-      supportTickets: [
-        {
-          ticket_id: "TKT-82419",
-          category: "delivery_delay",
-          category_label: "Delivery Delay / डिलीवरी में देरी",
-          subject: "Morning delivery status",
-          message: "Checked status on morning grocery delivery.",
-          status: "Resolved",
-          status_class: "bg-emerald-50 text-emerald-700 border-emerald-200",
-          created_at: "Today, 10:30 AM"
-        }
-      ]
+      supportTickets: []
     };
     window.AppStore = AppStore;
 
@@ -4548,7 +4425,12 @@
       const container = document.getElementById('notifications-list-container');
       if (!container) return;
       const isHi = (AppStore.lang === 'hi');
-      const phone = AppStore.userPhone || (localStorage.getItem('gaonbazar_user_phone') || '9876543210');
+      const phone = (AppStore.user && AppStore.user.phone) || AppStore.userPhone;
+      const token = AppStore.sessionToken || localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_authToken');
+      if (!token || !/^\d{10}$/.test(String(phone || ''))) {
+        container.innerHTML = `<p class="p-6 text-center text-xs text-slate-500">${isHi ? 'अपनी सूचनाएं देखने के लिए लॉगिन करें।' : 'Sign in to see your notifications.'}</p>`;
+        return;
+      }
 
       container.innerHTML = `
         <div class="py-8 text-center text-slate-400">
@@ -4642,6 +4524,13 @@
     }
     window.openNotificationsModal = openNotificationsModal;
 
+    function openDrawerNotifications() {
+      // Close the drawer's overlay before opening a different modal.
+      closeSidebarDrawer(true);
+      openNotificationsModal();
+    }
+    window.openDrawerNotifications = openDrawerNotifications;
+
     function closeNotificationsModal(isFromPopstate) {
       const modal = document.getElementById('modal-notifications');
       if (modal) {
@@ -4655,7 +4544,9 @@
     window.closeNotificationsModal = closeNotificationsModal;
 
     async function markAllNotificationsRead() {
-      const phone = AppStore.userPhone || (localStorage.getItem('gaonbazar_user_phone') || '9876543210');
+      const phone = (AppStore.user && AppStore.user.phone) || AppStore.userPhone;
+      const token = AppStore.sessionToken || localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_authToken');
+      if (!token || !/^\d{10}$/.test(String(phone || ''))) return;
       try {
         await fetch(`/api/notifications/mark-all-read?role=customer&user_id=${encodeURIComponent(phone)}`, { method: 'POST' });
         const dot = document.getElementById('header-notif-dot');
@@ -4687,7 +4578,7 @@
         if (userName && !userName.includes('alert') && !userName.includes('<')) {
           nameEl.innerText = userName;
         } else {
-          nameEl.innerText = isHi ? 'रमेश कुमार' : 'Ramesh Kumar';
+          nameEl.innerText = isHi ? 'अतिथि ग्राहक' : 'Guest Customer';
         }
       }
 
@@ -4695,23 +4586,14 @@
         if (hasPhone) {
           phoneEl.innerText = `+91 ${user.phone.substring(0, 5)} ${user.phone.substring(5)}`;
         } else {
-          phoneEl.innerText = '+91 98765 43210';
+          phoneEl.innerText = isHi ? 'लॉगिन नहीं किया' : 'Not logged in';
         }
       }
 
       if (avatarEl) {
         avatarEl.className = "w-11 h-11 rounded-full bg-[#16B86E] text-white font-black text-sm flex items-center justify-center shrink-0 shadow-xs";
-        avatarEl.innerHTML = `<span class="font-black text-sm text-white">RK</span>`;
-      }
-
-      const drawerLangCurr = document.getElementById('drawer-lang-curr');
-      if (drawerLangCurr) {
-        drawerLangCurr.innerText = isHi ? 'हिंदी' : 'English';
-      }
-      const drawerThemeCurr = document.getElementById('drawer-theme-curr');
-      if (drawerThemeCurr) {
-        const isDark = document.documentElement.classList.contains('dark');
-        drawerThemeCurr.innerText = isDark ? (isHi ? 'गहरा' : 'Dark') : (isHi ? 'हल्का' : 'Light');
+        const initialEl = document.getElementById('drawer-user-initial');
+        if (initialEl) initialEl.innerText = (userName || (isHi ? 'अ' : 'G')).trim().charAt(0).toUpperCase();
       }
 
       overlay.classList.remove('opacity-0', 'pointer-events-none');
@@ -5581,13 +5463,7 @@
         renderProductCatalog('all');
       }
       if (cleanPhase === 'cart') {
-        const activeItems = (AppStore.catalog || []).filter(i => (i.qty || 0) > 0);
-        if (activeItems.length === 0 && typeof quickAddFeaturedItem === 'function') {
-          quickAddFeaturedItem('item_tomato');
-          quickAddFeaturedItem('item_tomato');
-          quickAddFeaturedItem('item_milk');
-          quickAddFeaturedItem('item_onion');
-        }
+        // Opening Cart must never silently add demo products to a customer's basket.
         updateCartCalculations();
         if (typeof renderCartLineItems === 'function') renderCartLineItems();
       }
@@ -5596,6 +5472,7 @@
       }
       if (cleanPhase === 'tracking') {
         renderLiveTrackingView();
+        loadUserOrderHistory();
       }
       if (cleanPhase === 'ai-commerce') {
         if (typeof initCommerceAiView === 'function') initCommerceAiView();
@@ -5604,10 +5481,10 @@
         if (typeof initSupportCenterView === 'function') initSupportCenterView();
       }
 
-      // Customer Bottom Navigation Bar display & active tab update (Stores, Categories, AI Assistant, Orders)
+      // Keep all five approved primary tabs visible on their own screens.
       const bottomNav = document.getElementById('customer-bottom-nav');
       if (bottomNav) {
-        if (cleanPhase === 'dashboard' || cleanPhase === 'tracking' || cleanPhase === 'ai-commerce') {
+        if (['dashboard', 'ai-commerce', 'cart', 'tracking', 'profile'].includes(cleanPhase)) {
           bottomNav.classList.remove('hidden');
           bottomNav.style.display = 'flex';
           bottomNav.style.visibility = 'visible';
@@ -8618,7 +8495,12 @@
         activeEl.style.display = 'none';
       }
       const ordId = document.getElementById('p5-order-id');
-      if (ordId) ordId.innerText = '--';
+      if (ordId) {
+        ordId.innerText = '';
+        ordId.classList.add('hidden');
+      }
+      const copyBtn = document.getElementById('p5-copy-order-id');
+      if (copyBtn) copyBtn.classList.add('hidden');
       const eta = document.getElementById('p5-eta-time');
       if (eta) eta.innerText = '--';
       const amt = document.getElementById('p5-order-amount');
@@ -8892,7 +8774,12 @@
 
       // 1. Order ID & Status Pill
       const ordIdEl = document.getElementById('p5-order-id');
-      if (ordIdEl) ordIdEl.innerText = orderData.order_id;
+      if (ordIdEl) {
+        ordIdEl.innerText = orderData.order_id;
+        ordIdEl.classList.remove('hidden');
+      }
+      const copyBtn = document.getElementById('p5-copy-order-id');
+      if (copyBtn) copyBtn.classList.remove('hidden');
 
       const statusPill = document.getElementById('p5-status-pill');
       if (statusPill) {
@@ -9057,26 +8944,8 @@
         }
       }
 
-      // 3. Fallback to approved Reference 01 Frame 4 Order #GB-1284
-      populateTrackingUI({
-        order_id: '#GB-1284',
-        status: 'ON_THE_WAY',
-        timeline_stage: 4,
-        eta_mins: '18 minutes',
-        runner_name: 'Ramesh Kumar',
-        runner_phone: '9876543210',
-        runner_rating: 4.8,
-        runner_deliveries: 320,
-        distance_km: 1.2,
-        store_name: 'Sharma Brothers Kirana Store',
-        delivery_address: 'Sharma House, Main Road, Rampur village',
-        items: [
-          { name: 'Fresh Tomato', qty: 2, unit: 'kg', price: 60, image: 'static/images/prod_tomato.png' },
-          { name: 'Amul Taaza Milk', qty: 1, unit: 'pack', price: 60, image: 'static/images/prod_milk.png' },
-          { name: 'Onion', qty: 1, unit: 'kg', price: 25, image: 'static/images/prod_onion.png' }
-        ],
-        total_amount: 165
-      });
+      // No confirmed active order: show a truthful empty state, not a simulated delivery.
+      showTrackingEmptyState();
     }
     window.renderLiveTrackingView = renderLiveTrackingView;
 
@@ -9402,13 +9271,13 @@
       const landmarkEl = document.getElementById('profile-user-landmark');
       const avatarEl = document.getElementById('profile-user-avatar-initial');
 
-      const uName = (AppStore.user && AppStore.user.name) ? AppStore.user.name : (AppStore.lang === 'hi' ? 'रमेश पटेल' : 'Ramesh Patel');
-      const uPhone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '9876543210';
+      const uName = (AppStore.user && AppStore.user.name) ? AppStore.user.name : (AppStore.lang === 'hi' ? 'अतिथि ग्राहक' : 'Guest Customer');
+      const uPhone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '';
       const uVillage = (AppStore.user && AppStore.user.village) ? AppStore.user.village : (AppStore.lang === 'hi' ? 'गाँव सेट नहीं है' : 'Address not set');
       const uLandmark = (AppStore.user && AppStore.user.landmark) ? AppStore.user.landmark : (AppStore.lang === 'hi' ? 'पहचान चिन्ह सेट नहीं है' : 'Landmark not set');
 
       if (nameEl) nameEl.innerText = uName;
-      if (phoneEl) phoneEl.innerText = `+91 ${uPhone.substring(0, 5)} ${uPhone.substring(5)}`;
+      if (phoneEl) phoneEl.innerText = uPhone ? `+91 ${uPhone.substring(0, 5)} ${uPhone.substring(5)}` : (AppStore.lang === 'hi' ? 'लॉगिन नहीं किया' : 'Not logged in');
       if (villageEl) villageEl.innerText = uVillage;
       if (landmarkEl) landmarkEl.innerText = uLandmark;
       if (avatarEl) avatarEl.innerText = uName.trim().charAt(0) || 'र';
@@ -9456,14 +9325,26 @@
         }
       }
 
-      // 3. Load order history
-      loadUserOrderHistory();
+      // Payment methods are managed in Account; order history is loaded in Orders.
       loadUserSavedPaymentMethods();
     }
     window.renderProfileView = renderProfileView;
 
+    function toggleProfileSavedPayments() {
+      const panel = document.getElementById('profile-saved-payments-panel');
+      const button = document.getElementById('profile-row-saved-payments');
+      const chevron = document.getElementById('profile-payments-chevron');
+      if (!panel || !button) return;
+      const willOpen = panel.classList.contains('hidden');
+      panel.classList.toggle('hidden', !willOpen);
+      button.setAttribute('aria-expanded', String(willOpen));
+      if (chevron) chevron.innerText = willOpen ? 'expand_less' : 'expand_more';
+      if (willOpen) loadUserSavedPaymentMethods();
+    }
+    window.toggleProfileSavedPayments = toggleProfileSavedPayments;
+
     async function loadUserOrderHistory() {
-      const container = document.getElementById('profile-order-history-list');
+      const container = document.getElementById('orders-history-list');
       if (!container) return;
 
       const isHi = (AppStore.lang === 'hi');

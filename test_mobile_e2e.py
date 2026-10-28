@@ -1240,28 +1240,29 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     is_dash_after_tracking = page.is_visible("#view-p2-dashboard")
     logger.record_test(f"[{dev_name}] Tracking Bottom CTA Real Click Navigation", is_dash_after_tracking)
 
-    # 2. Verify Bottom Navigation Bar touch bounds (Stores, Cart / Categories, Orders)
+    # 2. Verify the five distinct primary destinations.
     check_human_ux_bounds(page, "#nav-btn-stores", "Bottom Nav Stores Tab", dev_name, logger)
-    if page.locator("#nav-btn-cart").is_visible():
-        check_human_ux_bounds(page, "#nav-btn-cart", "Bottom Nav Cart Tab", dev_name, logger)
-    elif page.locator("#nav-btn-categories").is_visible():
-        check_human_ux_bounds(page, "#nav-btn-categories", "Bottom Nav Categories Tab", dev_name, logger)
+    check_human_ux_bounds(page, "#nav-btn-ai", "Bottom Nav AI Tab", dev_name, logger)
+    check_human_ux_bounds(page, "#nav-btn-cart", "Bottom Nav Cart Tab", dev_name, logger)
     check_human_ux_bounds(page, "#nav-btn-orders", "Bottom Nav Orders Tab", dev_name, logger)
+    check_human_ux_bounds(page, "#nav-btn-profile", "Bottom Nav Account Tab", dev_name, logger)
 
     # 3. Open Side Drawer Navigation via Hamburger Menu on Dashboard
     check_human_ux_bounds(page, "#btn-open-sidebar", "Header Hamburger Menu Button", dev_name, logger)
     page.click("#btn-open-sidebar")
     page.wait_for_timeout(350)
     
-    # Verify side drawer options touch bounds
-    check_human_ux_bounds(page, "#drawer-account-btn", "Side Drawer Account Option", dev_name, logger)
-    check_human_ux_bounds(page, "#drawer-cart-btn", "Side Drawer Cart Option", dev_name, logger)
-    check_human_ux_bounds(page, "#drawer-orders-btn", "Side Drawer Orders Option", dev_name, logger)
-    check_human_ux_bounds(page, "#drawer-payments-btn", "Side Drawer Payments Option", dev_name, logger)
-    check_human_ux_bounds(page, "#drawer-support-btn", "Side Drawer Support Option", dev_name, logger)
+    # Drawer offers only secondary destinations; bottom tabs own shopping/order routes.
+    check_human_ux_bounds(page, "#drawer-user-card", "Side Drawer Profile Identity Card", dev_name, logger)
+    check_human_ux_bounds(page, "#drawer-notifications-btn", "Drawer Notifications", dev_name, logger)
+    check_human_ux_bounds(page, "#drawer-help-center-btn", "Drawer Help & Support", dev_name, logger)
+    duplicate_drawer_routes = any(page.locator(selector).count() for selector in (
+        "#drawer-account-btn", "#drawer-cart-btn", "#drawer-orders-btn", "#drawer-payments-btn",
+        "#drawer-support-btn", "#drawer-lang-btn", "#drawer-theme-curr"))
+    logger.record_test(f"[{dev_name}] Drawer has no duplicate primary routes/settings", not duplicate_drawer_routes)
 
     # 4. Navigate to Profile View via Side Drawer
-    page.click("#drawer-account-btn")
+    page.click("#drawer-user-card")
     page.wait_for_timeout(400)
 
     # 5. Assert Profile View is active and in viewport
@@ -1289,14 +1290,21 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
         f"Name: {user_name} | Phone: {user_phone} | Village: {user_village}"
     )
 
-    # 5.3 Verify Clean Single-Card Architecture & Logout CTA Button
+    # 5.3 Account owns payment settings, language and theme; Orders owns history.
     check_human_ux_bounds(page, "#profile-primary-logout-btn", "Profile Logout CTA Button", dev_name, logger)
-    has_clutter_cards = page.locator("#view-profile #profile-support-entry-card").count() > 0 or page.locator("#view-profile #profile-saved-payments-section").count() > 0
+    has_settings = all(page.locator(sel).count() == 1 for sel in (
+        "#profile-row-saved-payments", "#btn-profile-lang-hi", "#btn-profile-lang-en",
+        "#btn-theme-light", "#btn-theme-dark", "#btn-theme-system"))
+    no_orders_in_account = page.locator("#view-profile #profile-order-history-list").count() == 0
+    logger.record_test(f"[{dev_name}] Account keeps settings, not duplicate Orders", has_settings and no_orders_in_account)
+    page.click("#profile-row-saved-payments")
+    payment_management_visible = page.is_visible("#profile-saved-payments-panel") and page.is_visible("#profile-add-payment-btn")
     logger.record_test(
-        f"[{dev_name}] Profile Clutter Cleaned (Support & Payment Cards Deleted)",
-        not has_clutter_cards,
-        "Account page retains only clean user profile card and logout button"
+        f"[{dev_name}] Saved Payments expands inside Account",
+        payment_management_visible,
+        "Saved payment methods and Add Payment action are available within Account"
     )
+    logger.record_test(f"[{dev_name}] Bottom Account tab stays visible", page.is_visible("#nav-btn-profile"))
 
     # 5.4 Strict Invisible Risk Metrics & Trust Score Purge Verification
     profile_text = page.inner_text("#view-profile").lower()
@@ -1313,14 +1321,22 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     page.click("#global-nav-back")
     page.wait_for_timeout(400)
 
-    # 7. Open Side Drawer and launch Help & Support Chatbot
+    # 7. Open the unified Help & Support screen, then its AI chat option.
     page.click("#btn-open-sidebar")
     page.wait_for_timeout(350)
-    page.click("#drawer-support-btn")
+    page.click("#drawer-help-center-btn")
+    page.wait_for_timeout(300)
+    support_visible = page.is_visible("#view-support-center")
+    ticket_form_visible = page.is_visible("#btn-submit-support-ticket")
+    tickets_visible = page.is_visible("#support-ticket-history-list")
+    logger.record_test(f"[{dev_name}] Help consolidates FAQ, complaints and ticket history",
+                       support_visible and ticket_form_visible and tickets_visible)
+    check_human_ux_bounds(page, "#support-ai-chat-btn", "Help Center AI Chat", dev_name, logger)
+    page.click("#support-ai-chat-btn")
     page.wait_for_timeout(300)
 
     is_modal_visible = page.is_visible("#modal-support-chat")
-    logger.record_test(f"[{dev_name}] Support Chatbot Modal Opened via Drawer", is_modal_visible)
+    logger.record_test(f"[{dev_name}] Support Chatbot Modal Opened within Help", is_modal_visible)
 
     # 8. Type query 'Where is my order?' and submit
     page.fill("#chat-input-message", "Where is my order?")
