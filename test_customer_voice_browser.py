@@ -20,7 +20,14 @@ class MockSpeechRecognition {
     this.onresult?.({ resultIndex: 0, results: [item] });
   }
 }
-window.webkitSpeechRecognition = MockSpeechRecognition;
+// Chromium may expose an unprefixed native constructor. Override BOTH names,
+// otherwise the page takes the real recognizer instead of our mock.
+Object.defineProperty(window, 'SpeechRecognition', {
+  configurable: true, value: MockSpeechRecognition
+});
+Object.defineProperty(window, 'webkitSpeechRecognition', {
+  configurable: true, value: MockSpeechRecognition
+});
 """
 
 
@@ -48,7 +55,10 @@ def main():
           AppStore.catalog.forEach(item => { item.qty = 0; });
         }""")
         page.click("#p2-voice-search-btn")
-        page.wait_for_timeout(50)
+        page.wait_for_function("""() =>
+          !!window.__latestSpeech &&
+          document.getElementById('p2-voice-search-btn').getAttribute('aria-pressed') === 'true'
+        """, timeout=3000)
         check("Home mic listens on Home; no redirect to AI",
               page.is_visible("#view-p2-dashboard") and
               page.get_attribute("#p2-voice-search-btn", "aria-pressed") == "true")
@@ -64,7 +74,10 @@ def main():
 
         page.evaluate("navigateToPhase('ai-commerce')")
         page.click("#commerce-ai-mic-btn")
-        page.wait_for_timeout(50)
+        page.wait_for_function("""() =>
+          !!window.__latestSpeech &&
+          document.getElementById('commerce-ai-status-text').textContent.includes('सुन')
+        """, timeout=3000)
         check("AI microphone has listening status on AI view",
               page.is_visible("#view-commerce-ai") and
               "सुन" in page.inner_text("#commerce-ai-status-text"))
