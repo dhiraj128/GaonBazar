@@ -48,6 +48,9 @@ jobs:
     - name: Run Razorpay Payment Tests
       run: python test_razorpay_payments.py
 
+    - name: Run Central Catalog, Vendor & Runner KYC E2E Tests
+      run: python test_central_catalog_and_kyc_e2e.py
+
     - name: Run Customer App Tests
       run: python test_mobile_e2e.py
 
@@ -63,9 +66,6 @@ jobs:
     - name: Run Runner App Tests
       run: python test_runner_e2e.py
       
-    - name: Run Central Catalog, Vendor & Runner KYC E2E Tests
-      run: python test_central_catalog_and_kyc_e2e.py
-
     - name: Run Admin Dashboard Tests
       run: python test_admin_e2e.py
 
