@@ -75,7 +75,7 @@ class Store(Base):
     photo_url = Column(Text, nullable=True)
     payout_upi = Column(String(100), default="sharma.kirana@okaxis")
     bank_account_name = Column(String(150), nullable=True, default=None)
-    bank_account_number = Column(String(50), nullable=True, default=None)
+    bank_account_number = Column(Text, nullable=True, default=None)
     bank_ifsc = Column(String(20), nullable=True, default=None)
     bank_verification_status = Column(String(20), default="pending")  # "pending", "verified", "rejected"
     status = Column(String(30), default="approved")  # "approved", "pending_approval", "rejected"
@@ -123,6 +123,7 @@ class Order(Base):
     landmark = Column(Text, nullable=False)
     customer_lat = Column(Float, nullable=True)
     customer_lng = Column(Float, nullable=True)
+    runner_id = Column(String(50), ForeignKey("runners.id"), nullable=True)
     store_id = Column(String(50), ForeignKey("stores.id"), nullable=False)
     store_name = Column(String(100), nullable=False)
     subtotal = Column(Float, nullable=False)
@@ -136,6 +137,7 @@ class Order(Base):
     runner_payout = Column(Float, default=0.0)
     admin_profit = Column(Float, default=13.0)
     distance_km = Column(Float, default=1.5)
+    distance_type = Column(String(50), default="road_routing_estimate")
     eta_mins = Column(String(50), default="30 Mins")
     payment_mode = Column(String(20), default="COD")
     status = Column(String(50), default="Order Placed")
@@ -149,6 +151,8 @@ class Order(Base):
     razorpay_payment_id = Column(String(100), nullable=True)
     razorpay_signature = Column(String(255), nullable=True)
     split_payout_status = Column(String(30), default="unprocessed")  # "unprocessed", "prepared", "settled"
+    vendor_transfer_id = Column(String(100), nullable=True)
+    runner_transfer_id = Column(String(100), nullable=True)
     paid_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
@@ -186,7 +190,7 @@ class Runner(Base):
     vehicle_number = Column(String(50), default="UP-14-EA-4921")
     payout_upi = Column(String(100), default="kamal.singh@ybl")
     bank_account_name = Column(String(150), nullable=True, default=None)
-    bank_account_number = Column(String(50), nullable=True, default=None)
+    bank_account_number = Column(Text, nullable=True, default=None)
     bank_ifsc = Column(String(20), nullable=True, default=None)
     bank_verification_status = Column(String(20), default="pending")  # "pending", "verified", "rejected"
     status = Column(String(30), default="approved")  # "approved", "pending_approval", "rejected"
@@ -244,7 +248,12 @@ class PaymentTransaction(Base):
     runner_split_amount = Column(Float, default=0.0)
     admin_platform_fee = Column(Float, default=3.0)
     admin_margin = Column(Float, default=0.0)
-    route_transfer_status = Column(String(30), default="prepared")  # "prepared", "settled"
+    route_transfer_status = Column(String(30), default="prepared")  # "prepared", "settled", "failed"
+    vendor_transfer_id = Column(String(100), nullable=True)
+    runner_transfer_id = Column(String(100), nullable=True)
+    settlement_id = Column(String(100), nullable=True)
+    settled_at = Column(DateTime, nullable=True)
+    failure_reason = Column(Text, nullable=True)
 
     created_at = Column(DateTime, default=datetime.utcnow)
 
@@ -253,3 +262,49 @@ class PaymentTransaction(Base):
 
 
 
+
+
+class Notification(Base):
+    __tablename__ = "notifications"
+
+    id = Column(String(50), primary_key=True, index=True)  # e.g. "ntf_..."
+    user_id = Column(String(50), nullable=True, index=True)  # phone, store_id, runner_id, or "admin"
+    user_role = Column(String(20), index=True, nullable=False)  # "customer", "vendor", "runner", "admin"
+    order_id = Column(String(50), nullable=True, index=True)
+    title = Column(String(200), nullable=False)
+    title_hi = Column(String(200), nullable=False)
+    message = Column(Text, nullable=False)
+    message_hi = Column(Text, nullable=False)
+    notification_type = Column(String(50), nullable=False)  # "order_placed", "order_packed", etc.
+    is_read = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class MessageThread(Base):
+    __tablename__ = "message_threads"
+
+    id = Column(String(50), primary_key=True, index=True)
+    order_id = Column(String(50), ForeignKey("orders.id"), nullable=True, index=True)
+    vendor_id = Column(String(50), nullable=False, index=True)
+    runner_id = Column(String(50), nullable=True, index=True)
+    customer_phone = Column(String(20), nullable=True)
+    subject = Column(String(200), default="Order Coordination")
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    messages = relationship("ChatMessage", back_populates="thread", cascade="all, delete-orphan", order_by="ChatMessage.created_at")
+
+
+class ChatMessage(Base):
+    __tablename__ = "chat_messages"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    thread_id = Column(String(50), ForeignKey("message_threads.id"), nullable=False, index=True)
+    sender_id = Column(String(50), nullable=False)
+    sender_role = Column(String(20), nullable=False)  # "vendor", "runner", "customer", "admin"
+    sender_name = Column(String(100), nullable=False)
+    message = Column(Text, nullable=False)
+    is_read = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    thread = relationship("MessageThread", back_populates="messages")
