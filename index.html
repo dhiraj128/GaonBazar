@@ -1591,29 +1591,29 @@
             <div id="p5-timeline-steps" class="hidden"></div>
           </div>
 
-          <!-- Assigned Delivery Partner Card Matching Reference 04 -->
-          <div id="p5-call-runner-card" class="bg-white dark:bg-[#1D232B] rounded-2xl p-3.5 shadow-xs border border-slate-200 dark:border-[#465362] flex items-center justify-between">
+          <!-- Delivery partner identity and calling details appear only from a confirmed order. -->
+          <div id="p5-call-runner-card" class="hidden bg-white dark:bg-[#1D232B] rounded-2xl p-3.5 shadow-xs border border-slate-200 dark:border-[#465362] flex items-center justify-between">
             <div class="flex items-center gap-3 min-w-0">
-              <div class="w-12 h-12 rounded-full overflow-hidden shrink-0 shadow-xs border-2 border-white dark:border-[#2A323D]">
-                <img src="static/images/runner_ramesh.png" alt="Ramesh Kumar" class="w-full h-full object-cover" />
+              <div class="w-12 h-12 rounded-full overflow-hidden shrink-0 shadow-xs border-2 border-white dark:border-[#2A323D] bg-emerald-50 dark:bg-[#2A323D] text-[#16B86E] flex items-center justify-center">
+                <span class="material-symbols-outlined text-[27px]">delivery_dining</span>
               </div>
               <div class="flex flex-col min-w-0">
-                <span id="p5-runner-name" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">Ramesh Kumar</span>
+                <span id="p5-runner-name" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">Gaon Mitra</span>
                 <span class="text-[10px] text-slate-500 dark:text-[#CBD5E1]">Your delivery partner</span>
-                <div class="flex items-center gap-1 text-[10px] text-amber-500 font-bold mt-0.5">
-                  <span>★ 4.8</span>
-                  <span class="text-slate-400 font-normal">(320 deliveries)</span>
+                <div id="p5-runner-rating-row" class="hidden items-center gap-1 text-[10px] text-amber-500 font-bold mt-0.5">
+                  <span id="p5-runner-rating"></span>
+                  <span id="p5-runner-deliveries" class="text-slate-400 font-normal"></span>
                 </div>
               </div>
             </div>
 
             <!-- Call & Chat Actions -->
             <div class="flex items-center gap-2 shrink-0">
-              <a href="tel:9876543210" id="btn-call-runner" class="w-10 h-10 rounded-full bg-emerald-50 dark:bg-[#2A323D] text-[#16B86E] hover:bg-[#16B86E] hover:text-white flex items-center justify-center transition-all shadow-xs cursor-pointer" title="Call Delivery Partner">
+              <a id="btn-call-runner" class="hidden w-10 h-10 rounded-full bg-emerald-50 dark:bg-[#2A323D] text-[#16B86E] hover:bg-[#16B86E] hover:text-white items-center justify-center transition-all shadow-xs cursor-pointer" title="Call Delivery Partner" aria-label="Call delivery partner">
                 <span class="material-symbols-outlined text-[20px]">call</span>
               </a>
-              <button onclick="openSupportModal()" class="w-10 h-10 rounded-full bg-emerald-50 dark:bg-[#2A323D] text-[#16B86E] hover:bg-[#16B86E] hover:text-white flex items-center justify-center transition-all shadow-xs cursor-pointer" title="Chat with Partner">
-                <span class="material-symbols-outlined text-[20px]">chat</span>
+              <button onclick="openSupportModal()" class="w-10 h-10 rounded-full bg-emerald-50 dark:bg-[#2A323D] text-[#16B86E] hover:bg-[#16B86E] hover:text-white flex items-center justify-center transition-all shadow-xs cursor-pointer" title="AI Order Support" aria-label="Chat with AI order support">
+                <span class="material-symbols-outlined text-[20px]">smart_toy</span>
               </button>
             </div>
             <span id="btn-call-runner-lbl" class="hidden"></span>
@@ -8817,7 +8817,33 @@
       const runnerSub = document.getElementById('p5-runner-sub');
       const callRunnerCard = document.getElementById('p5-call-runner-card');
       const btnCallRunner = document.getElementById('btn-call-runner');
+      const runnerNameEl = document.getElementById('p5-runner-name');
+      const ratingRow = document.getElementById('p5-runner-rating-row');
+      const ratingEl = document.getElementById('p5-runner-rating');
+      const deliveriesEl = document.getElementById('p5-runner-deliveries');
       const currentStage = Number(orderData.timeline_stage || AppStore.orderTimelineStage || 1);
+      const rName = orderData.runner_name || (isHi ? 'गाँव मित्र' : 'Gaon Mitra');
+      if (runnerNameEl) runnerNameEl.innerText = rName;
+      const rating = Number(orderData.runner_rating);
+      const hasRating = orderData.runner_rating != null && Number.isFinite(rating) && rating > 0 && rating <= 5;
+      if (ratingRow) {
+        ratingRow.classList.toggle('hidden', !hasRating);
+        ratingRow.classList.toggle('flex', hasRating);
+      }
+      if (ratingEl) ratingEl.innerText = hasRating ? `★ ${rating.toFixed(1)}` : '';
+      if (deliveriesEl) {
+        const deliveries = Number(orderData.runner_deliveries);
+        deliveriesEl.innerText = hasRating && orderData.runner_deliveries != null && Number.isInteger(deliveries) && deliveries >= 0
+          ? `(${deliveries} ${isHi ? 'डिलीवरी' : 'deliveries'})` : '';
+      }
+      const runnerPhone = String(orderData.runner_phone || '').replace(/[\s()-]/g, '');
+      const validRunnerPhone = /^(?:\+?91)?[6-9]\d{9}$/.test(runnerPhone);
+      if (btnCallRunner) {
+        if (validRunnerPhone) btnCallRunner.href = `tel:${runnerPhone}`;
+        else btnCallRunner.removeAttribute('href');
+        btnCallRunner.classList.toggle('hidden', !validRunnerPhone);
+        btnCallRunner.classList.toggle('flex', validRunnerPhone);
+      }
 
       if (currentStage >= 5 || orderData.status === 'Delivered') {
         if (runnerSub) {
@@ -8827,16 +8853,12 @@
         }
         if (callRunnerCard) callRunnerCard.classList.add('hidden');
       } else if (currentStage >= 3) {
-        const rName = orderData.runner_name || (isHi ? 'गाँव मित्र' : 'Gaon Mitra');
         if (runnerSub) {
           runnerSub.innerText = isHi 
             ? `${rName} • सीधे आपकी चौपाल की ओर` 
             : `${rName} • En route to your doorstep`;
         }
         if (callRunnerCard) callRunnerCard.classList.remove('hidden');
-        if (btnCallRunner && orderData.runner_phone) {
-          btnCallRunner.href = `tel:${orderData.runner_phone}`;
-        }
       } else {
         if (runnerSub) {
           runnerSub.innerText = isHi 
