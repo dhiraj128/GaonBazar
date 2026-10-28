@@ -200,6 +200,15 @@
       color: #4ADE80 !important;
       border-color: rgba(22, 184, 110, 0.3) !important;
     }
+    /* Keep the login trust badge readable in both themes, including its nested text. */
+    html.dark #p1-hero-badge {
+      background-color: #2A323D !important;
+      color: #F8FAFC !important;
+      border-color: #465362 !important;
+    }
+    html.dark #p1-hero-badge [data-i18n="p1_hero_badge"] {
+      color: #F8FAFC !important;
+    }
     html.dark .bg-amber-50 {
       background-color: rgba(255, 152, 26, 0.2) !important;
       color: #FFB347 !important;
@@ -597,9 +606,9 @@
       <section id="view-p1-login" class="screen-view active flex-col w-full px-4 pt-4 pb-28 flex-1 min-h-0 space-y-4">
         <!-- Hero Banner -->
         <div class="w-full shrink-0 relative overflow-hidden rounded-2xl bg-gradient-to-br from-surface-container/70 to-surface-container-low px-4 py-3 shadow-xs border border-surface-container-high/80 text-center flex flex-col items-center justify-center gap-1.5" style="max-width: 100%;">
-          <div class="inline-flex items-center justify-center gap-1.5 bg-emerald-50 text-emerald-900 border border-emerald-300/80 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold shadow-xs max-w-full box-border">
-            <span class="material-symbols-outlined text-[14px] text-emerald-600 shrink-0 select-none" style="font-variation-settings: 'FILL' 1;">eco</span>
-            <span data-i18n="p1_hero_badge" class="truncate text-center tracking-tight">100% शुद्ध देसी • ताज़ा सुविधा घर तक</span>
+          <div id="p1-hero-badge" class="inline-flex items-center justify-center gap-1.5 bg-emerald-50 text-emerald-900 dark:!bg-[#2A323D] dark:!text-[#F8FAFC] border border-emerald-300/80 dark:!border-[#465362] px-2.5 py-1 rounded-full text-[10.5px] font-bold shadow-xs max-w-full box-border">
+            <span class="material-symbols-outlined text-[14px] text-emerald-600 dark:!text-[#4ADE80] shrink-0 select-none" style="font-variation-settings: 'FILL' 1;">eco</span>
+            <span data-i18n="p1_hero_badge" class="text-center tracking-tight whitespace-normal leading-snug">100% शुद्ध देसी • ताज़ा सुविधा घर तक</span>
           </div>
           <h1 class="text-base sm:text-lg font-extrabold text-on-surface leading-snug font-hindi" style="padding: 0 16px; text-align: center; max-width: 100%; word-wrap: break-word; overflow-wrap: break-word;">
             <span data-i18n="p1_hero_title_1">"अपने गाँव की दुकान,</span>
@@ -1033,21 +1042,22 @@
               <span class="material-symbols-outlined text-[18px]">close</span>
             </button>
             <!-- Native Circular Green Microphone Button on Right -->
-            <button id="p2-voice-search-btn" onclick="navigateToPhase('commerce-ai')" type="button" aria-label="Voice Search" title="Voice Search" class="w-9 h-9 min-w-[36px] min-h-[36px] rounded-full bg-[#16B86E] text-white hover:bg-emerald-600 active:scale-90 flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-xs">
+            <button id="p2-voice-search-btn" onclick="triggerVoiceSearch()" type="button" aria-label="Voice Search" aria-pressed="false" title="Voice Search" class="w-9 h-9 min-w-[36px] min-h-[36px] rounded-full bg-[#16B86E] text-white hover:bg-emerald-600 active:scale-90 flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-xs">
               <span class="material-symbols-outlined text-[20px]">mic</span>
               <span id="p2-voice-search-text" class="hidden"></span>
               <span id="p2-voice-search-icon" class="hidden"></span>
               <span id="p2-voice-search-svg" class="hidden"></span>
             </button>
           </div>
+          <p id="p2-voice-search-status" class="hidden mt-1.5 px-2 text-[11px] font-semibold text-emerald-700 dark:text-[#B4F8CC]" role="status" aria-live="polite"></p>
           <!-- Smart Product & Store Discovery Overlay -->
           <div id="p2-search-results" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-white dark:bg-[#1D232B] rounded-2xl shadow-2xl border border-slate-200 dark:border-[#465362] p-3 z-30 max-h-80 overflow-y-auto">
           </div>
         </div>
 
         <!-- Category Filter Chips (Inside Home) Matching Reference 01 -->
-        <div class="w-full overflow-x-auto no-scrollbar pt-2 pb-1 my-1 px-0.5 relative z-10 min-h-[48px]">
-          <div class="flex items-center gap-2.5 min-w-max pb-1">
+        <div class="w-full pt-2 pb-1 my-1 px-0.5 relative z-10">
+          <div class="flex flex-wrap items-center gap-2 pb-1">
             <button type="button" onclick="filterStoresByCategory('all')" id="cat-chip-all" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-black bg-[#16B86E] text-white shadow-xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer">
               <span id="cat-lbl-all" data-i18n="cat_all">All</span>
             </button>
@@ -1077,14 +1087,14 @@
 
         <!-- Hero Banner: Fresh Essentials from Local Shops (Light Cream Warm Card) -->
         <div id="p2-guarantee-banner" class="w-full shrink-0 rounded-3xl bg-[#FFF6EB] dark:bg-[#1D232B] border border-amber-200/60 dark:border-[#465362] p-4 sm:p-5 shadow-xs relative overflow-hidden flex items-center justify-between gap-3 mt-4 mb-3.5">
-          <div class="flex flex-col gap-1 z-10">
+          <div class="flex flex-col gap-1 z-10 min-w-0 flex-1">
             <h2 class="text-base font-black text-slate-900 dark:text-[#F8FAFC] leading-tight" data-i18n="p2_hero_title">Fresh essentials<br>from local shops</h2>
             <p class="text-xs text-slate-600 dark:text-[#CBD5E1] font-medium" data-i18n="p2_hero_sub">Good food. Stronger villages.</p>
             <button onclick="scrollToProducts()" class="mt-2 min-h-[38px] px-4 py-1.5 rounded-full bg-[#16B86E] text-white text-xs font-bold shadow-xs flex items-center gap-1 w-max active:scale-95 transition-all cursor-pointer">
               <span data-i18n="p2_hero_btn">Shop now</span>
             </button>
           </div>
-          <div class="w-28 h-24 sm:w-32 sm:h-28 flex items-center justify-center shrink-0 overflow-hidden">
+          <div class="w-24 h-24 sm:w-32 sm:h-28 flex items-center justify-center shrink-0 overflow-hidden">
             <img src="static/images/hero_banner.png" alt="Fresh Essentials" class="max-h-full max-w-full object-contain" />
           </div>
         </div>
@@ -1105,8 +1115,8 @@
               <button type="button" data-favorite-item="item_tomato" onclick="toggleProductFavorite('item_tomato', event)" aria-label="Add Fresh Tomato to favorites" class="absolute top-2.5 right-2.5 w-9 h-9 min-w-[36px] min-h-[36px] flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors cursor-pointer">
                 <span class="material-symbols-outlined text-[18px]">favorite_border</span>
               </button>
-              <div class="w-full h-24 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2 mb-2">
-                <img src="static/images/prod_tomato.png" alt="Fresh Tomato" class="max-h-full max-w-full object-contain" />
+              <div class="w-full h-28 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2 mb-2 overflow-hidden">
+                <img src="static/images/prod_tomato.png" alt="Fresh Tomato" class="w-full h-full object-contain" />
               </div>
               <div class="flex flex-col">
                 <span id="feat-title-tomato" data-i18n="feat_tomato_name" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">Fresh Tomato</span>
@@ -1125,8 +1135,8 @@
               <button type="button" data-favorite-item="item_banana" onclick="toggleProductFavorite('item_banana', event)" aria-label="Add Banana to favorites" class="absolute top-2.5 right-2.5 w-9 h-9 min-w-[36px] min-h-[36px] flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors cursor-pointer">
                 <span class="material-symbols-outlined text-[18px]">favorite_border</span>
               </button>
-              <div class="w-full h-24 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2 mb-2">
-                <img src="static/images/prod_banana.png" alt="Banana" class="max-h-full max-w-full object-contain" />
+              <div class="w-full h-28 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2 mb-2 overflow-hidden">
+                <img src="static/images/prod_banana.png" alt="Banana" class="w-full h-full object-contain" />
               </div>
               <div class="flex flex-col">
                 <span id="feat-title-banana" data-i18n="feat_banana_name" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">Banana</span>
@@ -7191,7 +7201,11 @@
         biscuit: ['biscuit', 'biscuits', 'parle', 'parle-g', 'marie', 'rusk', 'cookies', 'बिस्कुट', 'बिस्किट', 'पारले'],
         soap: ['soap', 'sabun', 'surf', 'detergent', 'rin', 'wheel', 'tide', 'dettol', 'साबुन'],
         paneer: ['paneer', 'fresh paneer', 'पनीर'],
-        chaas: ['chaas', 'buttermilk', 'matka chaas', 'छाछ']
+        chaas: ['chaas', 'buttermilk', 'matka chaas', 'छाछ'],
+        tomato: ['tomato', 'tamatar', 'टमाटर'],
+        banana: ['banana', 'kela', 'केला'],
+        potato: ['potato', 'aloo', 'alu', 'आलू'],
+        onion: ['onion', 'pyaz', 'pyaaz', 'प्याज', 'प्याज़']
       },
 
       wordToNum: {
@@ -7250,9 +7264,10 @@
         }
 
         // 4. ADD TO CART
-        let m_chahiye = ql.match(/^(?:mujhe|humko)?\s*(\d+|ek|do|teen|char|panch|chhe|one|two|three|four|five|six)\s*(kg|kilo|l|litre|packet|packets|g|gram|ग्राम|किलो|लीटर|पैकेट)?\s+(.+?)\s*(?:chahiye|daal do|daalo|add karo)$/i);
+        let m_chahiye = ql.match(/^(?:mujhe|humko|मुझे|हमको)?\s*(\d+|ek|do|teen|char|panch|chhe|one|two|three|four|five|six|एक|दो|तीन|चार|पांच|छह)\s*(kg|kilo|l|litre|packet|packets|g|gram|ग्राम|किलो|लीटर|पैकेट)?\s+(.+?)\s*(?:chahiye|daal do|daalo|add karo|चाहिए|डालो|जोड़ो|जोड़ें)$/i);
         let addMatch = m_chahiye ||
                        ql.match(/^(?:add|daalo|daal do|daal|jodo|jod do|put)\s+(.+?)(?:\s+(?:in|into|to)\s+(?:my\s+)?cart|\s+cart\s+mein)?$/i) ||
+                       ql.match(/^(?:मुझे|हमको)?\s*(.+?)\s+(?:चाहिए|डालो|जोड़ो|जोड़ें|कार्ट में डालो|कार्ट में जोड़ो)$/i) ||
                        ql.match(/^(.+?)\s+(?:cart\s+mein\s+(?:add|daal do|daalo|daal|jod do|jodo|shamil karo))/i) ||
                        ql.match(/^(.+?)\s+(?:add\s*karo|daal\s*do|daalo|jod\s*do|jodo|shamil\s*karo)$/i) ||
                        ql.match(/^add\s+(.+)$/i);
@@ -7267,7 +7282,7 @@
             qty = this.wordToNum[rawQty] || parseInt(rawQty, 10) || 1;
           } else {
             let fullSpec = addMatch[1].trim();
-            let qtyMatch = fullSpec.match(/(\d+|ek|do|teen|char|panch|chhe|one|two|three|four|five|six)\s*(kg|kilo|l|litre|packet|packets|g|gram|ग्राम|किलो|लीटर|पैकेट)?\s+(.+)/i);
+            let qtyMatch = fullSpec.match(/(\d+|ek|do|teen|char|panch|chhe|one|two|three|four|five|six|एक|दो|तीन|चार|पांच|छह)\s*(kg|kilo|l|litre|packet|packets|g|gram|ग्राम|किलो|लीटर|पैकेट)?\s+(.+)/i);
             if (qtyMatch) {
               let rawQty = qtyMatch[1].trim();
               unit = qtyMatch[2] || '';
@@ -7303,7 +7318,8 @@
           const en = (i.name_en || '').toLowerCase();
           const hi = (i.name_hi || '').toLowerCase();
           const id = (i.id || '').toLowerCase();
-          return en.includes(tl) || hi.includes(tl) || id.includes(tl) || tl.includes(en) || tl.includes(hi);
+          return (en && (en.includes(tl) || tl.includes(en))) ||
+            (hi && (hi.includes(tl) || tl.includes(hi))) || (id && id.includes(tl));
         });
         if (exact.length > 0) return exact;
 
@@ -7331,6 +7347,34 @@
         }
 
         return [];
+      },
+
+      // The AI microphone builds a shopping list. The Home microphone deliberately
+      // does not call this method: it searches without changing the cart.
+      async executeAiVoiceShoppingList(transcript) {
+        const request = (transcript || '').trim();
+        if (!request) return { success: false, added: 0 };
+        const action = this.parseIntent(request);
+        if (['SHOW_CART', 'REMOVE_FROM_CART', 'MODIFY_QUANTITY'].includes(action.intent)) {
+          return this.executeVoiceCommand(request, 'ai-commerce');
+        }
+
+        const parts = request.split(/\s*(?:,|\+|\b(?:and|aur)\b|और)\s*/i).filter(Boolean);
+        let added = 0;
+        for (const part of parts) {
+          const itemSpec = part
+            .replace(/^(?:मुझे|हमको|i\s+want|i\s+need|mujhe|humko|please|add|daalo|jodo|डालो|जोड़ो)\s*/i, '')
+            .replace(/\s*(?:चाहिए|chahiye|कार्ट में डालो|कार्ट में जोड़ो|जोड़ो|जोड़ें|डालो|add karo|daal do|please)\s*$/i, '')
+            .trim();
+          if (!itemSpec) continue;
+          const outcome = await this.executeVoiceCommand('add ' + itemSpec, 'ai-commerce');
+          if (outcome && outcome.success) added++;
+        }
+
+        // Show actual matched inventory cards, including the updated cart counts.
+        if (typeof processCommerceAiQuery === 'function') await processCommerceAiQuery(request);
+        if (typeof syncCommerceCartBar === 'function') syncCommerceCartBar();
+        return { success: added > 0, added };
       },
 
       speakFeedback(text) {
@@ -7494,8 +7538,9 @@
       const isHi = AppStore.lang === 'hi';
 
       if (voiceBtn) {
-        voiceBtn.classList.remove('bg-red-500', 'bg-red-600', 'text-white', 'animate-pulse', 'bg-secondary');
-        voiceBtn.classList.add('bg-slate-100', 'text-slate-700');
+        voiceBtn.classList.remove('bg-red-500', 'bg-red-600', 'bg-slate-100', 'text-slate-700', 'animate-pulse', 'bg-secondary');
+        voiceBtn.classList.add('bg-[#16B86E]', 'text-white');
+        voiceBtn.setAttribute('aria-pressed', 'false');
       }
       if (voiceSvg) {
         voiceSvg.classList.remove('text-white');
@@ -7513,6 +7558,22 @@
       activeVoiceRecognition = null;
     }
 
+    function setHomeVoiceSearchStatus(message) {
+      const status = document.getElementById('p2-voice-search-status');
+      if (!status) return;
+      status.textContent = message || '';
+      status.classList.toggle('hidden', !message);
+    }
+
+    // Home voice input is search-only; never perform cart actions or change screens.
+    function normalizeHomeVoiceSearch(transcript) {
+      const cleaned = (transcript || '').trim()
+        .replace(/^(?:search for|search|find|show me|show|look for|मुझे|खोजो|ढूंढो|दिखाओ|सर्च करो)\s+/i, '')
+        .replace(/\s+(?:दिखाओ|खोजो|ढूंढो|search karo|dikhao|chahiye|चाहिए)\s*$/i, '')
+        .trim();
+      return cleaned || transcript.trim();
+    }
+
     function triggerVoiceSearch() {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       const voiceBtn = document.getElementById('p2-voice-search-btn');
@@ -7523,7 +7584,7 @@
 
       if (!SpeechRecognition) {
         showAudioToast("Mic Notice", isHi ? 'माइक ब्राउज़र द्वारा समर्थित नहीं है। कृपया लिखकर खोजें।' : 'Microphone speech recognition not supported. Please type.');
-        if (searchInput) searchInput.focus();
+        setHomeVoiceSearchStatus(isHi ? 'यह ब्राउज़र आवाज़ पहचानने का समर्थन नहीं करता। कृपया लिखकर खोजें।' : 'Voice recognition is unavailable here. Please type your search.');
         return;
       }
 
@@ -7543,6 +7604,7 @@
         recognition.maxAlternatives = 1;
         // Language choice follows user toggle (hi-IN for Hindi, en-IN for English)
         recognition.lang = isHi ? 'hi-IN' : 'en-IN';
+        setHomeVoiceSearchStatus(isHi ? 'माइक शुरू हो रहा है…' : 'Starting microphone…');
 
         let speechTimer = null;
         const resetInactivityTimer = () => {
@@ -7552,7 +7614,7 @@
               try { recognition.stop(); } catch (e) {}
               resetVoiceSearchUI();
             }
-          }, 5000);
+          }, 12000);
         };
 
         // Complete state machine
@@ -7561,10 +7623,12 @@
           if (voiceBtn) {
             voiceBtn.classList.remove('bg-slate-100', 'text-slate-700');
             voiceBtn.classList.add('bg-red-500', 'text-white', 'animate-pulse');
+            voiceBtn.setAttribute('aria-pressed', 'true');
           }
           if (voiceIcon) voiceIcon.innerText = 'graphic_eq';
           if (voiceText) voiceText.innerText = isHi ? 'सुन रहे हैं...' : 'Listening...';
           if (searchInput) searchInput.placeholder = isHi ? 'बोलिए (उदा. आटा, दाल, तेल)...' : 'Listening... speak product name';
+          setHomeVoiceSearchStatus(isHi ? 'सुन रहे हैं… सामान का नाम बोलें।' : 'Listening… say a product name.');
         };
 
         recognition.onspeechstart = () => {
@@ -7575,9 +7639,7 @@
           resetInactivityTimer();
           let interimTranscript = '';
           let finalTranscript = '';
-          const startIndex = (typeof event.resultIndex === 'number') ? event.resultIndex : 0;
-
-          for (let i = startIndex; i < (event.results ? event.results.length : 0); ++i) {
+          for (let i = 0; i < (event.results ? event.results.length : 0); ++i) {
             const res = event.results[i];
             const text = (res && res[0] && res[0].transcript) ? res[0].transcript : '';
             if (res && res.isFinal) {
@@ -7590,18 +7652,17 @@
             }
           }
 
-          const currentText = (finalTranscript || interimTranscript).trim();
+          const currentText = (finalTranscript + ' ' + interimTranscript).trim();
           if (searchInput && currentText) {
             searchInput.value = currentText;
           }
 
           if (finalTranscript) {
             if (speechTimer) clearTimeout(speechTimer);
-            if (window.VoiceCommerceEngine) {
-              window.VoiceCommerceEngine.executeVoiceCommand(finalTranscript.trim(), 'dashboard');
-            } else {
-              filterStoreCatalog(finalTranscript.trim());
-            }
+            const productQuery = normalizeHomeVoiceSearch(finalTranscript);
+            if (searchInput) searchInput.value = productQuery;
+            filterStoreCatalog(productQuery);
+            setHomeVoiceSearchStatus(isHi ? `“${productQuery}” के नतीजे` : `Showing results for “${productQuery}”`);
             try { recognition.stop(); } catch (e) {}
             resetVoiceSearchUI();
           }
@@ -7619,6 +7680,7 @@
             userErr = isHi ? 'नेटवर्क समस्या। कृपया लिखकर खोजें।' : 'Voice network error. Please type.';
           }
           showAudioToast("Mic Alert", userErr);
+          setHomeVoiceSearchStatus(userErr);
           resetVoiceSearchUI();
         };
 
@@ -7631,7 +7693,7 @@
       } catch (err) {
         console.warn('SpeechRecognition start failed:', err);
         resetVoiceSearchUI();
-        if (searchInput) searchInput.focus();
+        setHomeVoiceSearchStatus(isHi ? 'माइक शुरू नहीं हुआ। साइट की माइक्रोफ़ोन अनुमति जांचें।' : 'Microphone could not start. Check this site’s mic permission.');
       }
     }
 
@@ -10392,7 +10454,6 @@
 
       if (!SpeechRecognition) {
         setCommerceVoiceStatus(isHi ? 'इस ब्राउज़र में वॉइस सर्च उपलब्ध नहीं है। नीचे टाइप करें।' : 'Voice search is unavailable in this browser. Please type below.');
-        if (input) input.focus();
         return;
       }
       if (activeCommerceRecognition) {
@@ -10405,6 +10466,7 @@
         const recognition = new SpeechRecognition();
         activeCommerceRecognition = recognition;
         commerceVoiceHadError = false;
+        let recognizedFinal = false;
         recognition.lang = isHi ? 'hi-IN' : 'en-IN';
         recognition.continuous = false;
         recognition.interimResults = true;
@@ -10436,10 +10498,15 @@
             setCommerceVoiceStatus(isHi ? 'आपने कहा:' : 'You said:', transcript);
             if (input) input.value = transcript;
           }
-          if (final && transcript) {
-            recognition.stop();
+          if (final && transcript && !recognizedFinal) {
+            recognizedFinal = true;
+            try { recognition.stop(); } catch (_) {}
             if (window.VoiceCommerceEngine) {
-              window.VoiceCommerceEngine.executeVoiceCommand(transcript, 'ai-commerce');
+              window.VoiceCommerceEngine.executeAiVoiceShoppingList(transcript).then(result => {
+                setCommerceVoiceStatus(result.added
+                  ? (isHi ? `${result.added} सामान कार्ट में जोड़े गए।` : `${result.added} item(s) added to cart.`)
+                  : (isHi ? 'मिलते-जुलते सामान देखें; कार्ट में कुछ नहीं जोड़ा गया।' : 'Check matching products; nothing was added to cart.'));
+              }).catch(() => setCommerceVoiceStatus(isHi ? 'सामान जोड़ने में समस्या हुई।' : 'Could not process the shopping list.'));
             } else {
               processCommerceAiQuery(transcript);
             }
@@ -10462,17 +10529,15 @@
           }
           resetCommerceVoiceUI(true);
           setCommerceVoiceStatus(msg);
-          if (input) input.focus();
         };
         recognition.onend = function() {
           if (activeCommerceRecognition !== recognition) return;
-          resetCommerceVoiceUI(commerceVoiceHadError);
+          resetCommerceVoiceUI(commerceVoiceHadError || recognizedFinal);
         };
         recognition.start();
       } catch (error) {
         resetCommerceVoiceUI(true);
         setCommerceVoiceStatus(isHi ? 'माइक शुरू नहीं हुआ। अनुमति जांचें या टाइप करें।' : 'Microphone could not start. Check permissions or type below.');
-        if (input) input.focus();
       }
     }
     window.toggleCommerceVoiceRecognition = toggleCommerceVoiceRecognition;
