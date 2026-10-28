@@ -35,6 +35,15 @@ class CustomerNavigationHierarchyTests(unittest.TestCase):
         duplicates = [name for name, count in Counter(parser.ids).items() if count != 1]
         self.assertEqual(duplicates, [], f"Duplicate DOM ids: {duplicates}")
 
+    def test_header_notifications_bell_and_modal(self):
+        header = section('<header id="customer-header"', "</header>")
+        self.assertIn('id="header-notifications-btn"', header)
+        self.assertIn('id="header-notif-dot"', header)
+        modal = section('id="modal-notifications"', '<!-- HELP & SUPPORT AI CHATBOT')
+        self.assertIn('id="btn-close-notifications"', modal)
+        self.assertIn('id="notifications-list-container"', modal)
+        self.assertIn('dark:bg-[#1D232B]', modal)
+
     def test_drawer_is_secondary_navigation_only(self):
         drawer = section('id="sidebar-drawer"', "</aside>")
         for old_route in (
@@ -65,14 +74,45 @@ class CustomerNavigationHierarchyTests(unittest.TestCase):
         self.assertNotIn('id="profile-row-help-support"', account)
         self.assertEqual(account.count('onclick="logoutCustomer()"'), 1)
 
+    def test_account_reorganization_has_dedicated_support_options(self):
+        account = section('id="view-profile"', 'id="view-commerce-ai"')
+        self.assertIn('id="profile-sec-help-support"', account)
+        for row in (
+            'id="account-row-where-order"',
+            'id="account-row-report-issue"',
+            'id="account-row-my-tickets"',
+            'id="account-row-contact-support"',
+            'id="account-row-faq"',
+        ):
+            self.assertIn(row, account)
+
     def test_help_is_single_hub_for_all_support_options(self):
         help_center = section('id="view-support-center"', "</section>")
         for action in (
-            'id="support-ai-chat-btn"', 'id="support-helpline-banner"',
-            'id="faq-accordion-list"', 'id="btn-submit-support-ticket"',
+            'id="support-sec-where-order"',
+            'id="support-sec-report-issue"',
+            'id="support-sec-my-tickets"',
+            'id="support-sec-contact"',
+            'id="support-sec-faq"',
+            'id="support-ai-chat-btn"',
+            'id="support-helpline-banner"',
+            'id="faq-accordion-list"',
+            'id="btn-submit-support-ticket"',
             'id="support-ticket-history-list"',
         ):
             self.assertIn(action, help_center)
+
+        # 7 issue categories
+        for cat in (
+            'value="missing_item"', 'value="wrong_item"', 'value="damaged_item"',
+            'value="delivery_delay"', 'value="runner_conduct"', 'value="refund_payment"',
+            'value="other"'
+        ):
+            self.assertIn(cat, help_center)
+
+        # 5 distinct FAQs
+        for q in ('faq_q1', 'faq_q2', 'faq_q3', 'faq_q4', 'faq_q5'):
+            self.assertIn(q, help_center)
 
     def test_primary_tabs_remain_persistent_and_no_fake_orders_or_cart(self):
         navigation = section("function navigateToPhase(", "window.navigateToPhase = navigateToPhase")
@@ -88,11 +128,17 @@ class CustomerNavigationHierarchyTests(unittest.TestCase):
         self.assertIn("btnCallRunner.removeAttribute('href')", populate)
         self.assertIn("supportTickets: []", HTML)
         self.assertNotIn("TKT-82419", HTML)
+        self.assertNotIn("ORD-9482", HTML)
         notifications = section("async function loadRealNotifications()", "window.loadRealNotifications = loadRealNotifications")
         self.assertNotIn("'9876543210'", notifications)
 
     def test_new_labels_are_translated_in_both_languages(self):
-        for key in ("drawer_quick_access", "drawer_bottom_tip", "profile_add_payment"):
+        for key in (
+            "drawer_quick_access", "drawer_bottom_tip", "profile_add_payment",
+            "profile_sec_help_support", "support_opt_where_order", "support_opt_report_issue",
+            "support_opt_my_tickets", "support_opt_contact", "support_opt_faq",
+            "support_cat_missing", "support_cat_wrong", "support_cat_damaged"
+        ):
             self.assertEqual(len(re.findall(r"\b" + key + r":\s*\"", HTML)), 2, key)
 
 

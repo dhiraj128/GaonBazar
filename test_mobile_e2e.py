@@ -597,7 +597,7 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     logger.log(f"Loading application: {file_url}")
     page.goto(file_url, timeout=30000, wait_until="domcontentloaded")
     try:
-        page.wait_for_selector("#btn-open-sidebar", state="visible", timeout=10000)
+        page.wait_for_selector("#header-notifications-btn", state="visible", timeout=10000)
     except Exception:
         pass
     page.wait_for_timeout(1000)
@@ -613,8 +613,8 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     inspect_viewport_and_layout(page, f"[{dev_name}] Phase 1.1 Login", logger)
     capture_human_ux_screenshot(page, dev_name, "step1_01_login_initial", logger)
 
-    # Check Hamburger Menu Button and Language Switching
-    check_human_ux_bounds(page, "#btn-open-sidebar", "Hamburger Menu Button", dev_name, logger)
+    # Check Header Notifications Bell and Language Switching
+    check_human_ux_bounds(page, "#header-notifications-btn", "Header Notifications Bell", dev_name, logger)
 
     initial_lang = page.evaluate("AppStore.lang")
     page.evaluate("window.toggleGlobalLanguage()")
@@ -1247,36 +1247,33 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     check_human_ux_bounds(page, "#nav-btn-orders", "Bottom Nav Orders Tab", dev_name, logger)
     check_human_ux_bounds(page, "#nav-btn-profile", "Bottom Nav Account Tab", dev_name, logger)
 
-    # 3. Open Side Drawer Navigation via Hamburger Menu on Dashboard
-    check_human_ux_bounds(page, "#btn-open-sidebar", "Header Hamburger Menu Button", dev_name, logger)
-    page.click("#btn-open-sidebar")
+    # 3. Verify Header Notifications Bell & Open Modal
+    check_human_ux_bounds(page, "#header-notifications-btn", "Header Notifications Bell", dev_name, logger)
+    page.click("#header-notifications-btn")
     page.wait_for_timeout(350)
     
-    # Drawer offers only secondary destinations; bottom tabs own shopping/order routes.
-    check_human_ux_bounds(page, "#drawer-user-card", "Side Drawer Profile Identity Card", dev_name, logger)
-    check_human_ux_bounds(page, "#drawer-notifications-btn", "Drawer Notifications", dev_name, logger)
-    check_human_ux_bounds(page, "#drawer-help-center-btn", "Drawer Help & Support", dev_name, logger)
-    duplicate_drawer_routes = any(page.locator(selector).count() for selector in (
-        "#drawer-account-btn", "#drawer-cart-btn", "#drawer-orders-btn", "#drawer-payments-btn",
-        "#drawer-support-btn", "#drawer-lang-btn", "#drawer-theme-curr"))
-    logger.record_test(f"[{dev_name}] Drawer has no duplicate primary routes/settings", not duplicate_drawer_routes)
+    # Notifications modal opens with close button and real container
+    check_human_ux_bounds(page, "#btn-close-notifications", "Notifications Modal Close Button", dev_name, logger)
+    page.click("#btn-close-notifications")
+    page.wait_for_timeout(300)
 
-    # 4. Navigate to Profile View via Side Drawer
-    page.click("#drawer-user-card")
+    # 4. Navigate to Profile / Account View via Bottom Navigation Tab
+    check_human_ux_bounds(page, "#nav-btn-profile", "Bottom Nav Account Tab", dev_name, logger)
+    page.click("#nav-btn-profile")
     page.wait_for_timeout(400)
 
     # 5. Assert Profile View is active and in viewport
     is_profile_visible = page.is_visible("#view-profile")
-    logger.record_test(f"[{dev_name}] Transition to My Account & Profile View via Drawer", is_profile_visible)
+    logger.record_test(f"[{dev_name}] Transition to My Account & Profile View via Bottom Tab", is_profile_visible)
     inspect_viewport_and_layout(page, f"[{dev_name}] Phase Profile", logger)
 
-    # 5.1 Verify page-specific header visibility: Hamburger disappears, Left Arrow appears
-    is_hamburger_hidden = not page.is_visible("#btn-open-sidebar")
+    # 5.1 Verify page-specific header visibility: Notifications Bell disappears, Left Arrow appears
+    is_notif_hidden = not page.is_visible("#header-notifications-btn")
     is_back_arrow_visible = page.is_visible("#global-nav-back")
     logger.record_test(
-        f"[{dev_name}] Page-Specific Header Visibility (Back Arrow Replaces Hamburger on Subpages)",
-        is_hamburger_hidden and is_back_arrow_visible,
-        f"Hamburger hidden: {is_hamburger_hidden} | Back arrow visible: {is_back_arrow_visible}"
+        f"[{dev_name}] Page-Specific Header Visibility (Back Arrow Replaces Header Actions on Subpages)",
+        is_notif_hidden and is_back_arrow_visible,
+        f"Notifications hidden: {is_notif_hidden} | Back arrow visible: {is_back_arrow_visible}"
     )
 
     # 5.2 Verify User Details & Primary Village Landmark rendered
@@ -1290,13 +1287,19 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
         f"Name: {user_name} | Phone: {user_phone} | Village: {user_village}"
     )
 
-    # 5.3 Account owns payment settings, language and theme; Orders owns history.
+    # 5.3 Account owns payment settings, language, theme and Help & Support hub; Orders owns history.
     check_human_ux_bounds(page, "#profile-primary-logout-btn", "Profile Logout CTA Button", dev_name, logger)
     has_settings = all(page.locator(sel).count() == 1 for sel in (
         "#profile-row-saved-payments", "#btn-profile-lang-hi", "#btn-profile-lang-en",
         "#btn-theme-light", "#btn-theme-dark", "#btn-theme-system"))
+    has_support_options = all(page.locator(sel).count() == 1 for sel in (
+        "#account-row-where-order", "#account-row-report-issue", "#account-row-my-tickets",
+        "#account-row-contact-support", "#account-row-faq"))
     no_orders_in_account = page.locator("#view-profile #profile-order-history-list").count() == 0
-    logger.record_test(f"[{dev_name}] Account keeps settings, not duplicate Orders", has_settings and no_orders_in_account)
+    logger.record_test(
+        f"[{dev_name}] Account keeps settings and support hub, not duplicate Orders",
+        has_settings and has_support_options and no_orders_in_account
+    )
     page.click("#profile-row-saved-payments")
     payment_management_visible = page.is_visible("#profile-saved-payments-panel") and page.is_visible("#profile-add-payment-btn")
     logger.record_test(
@@ -1321,16 +1324,20 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     page.click("#global-nav-back")
     page.wait_for_timeout(400)
 
-    # 7. Open the unified Help & Support screen, then its AI chat option.
-    page.click("#btn-open-sidebar")
+    # 7. Open the unified Help & Support screen from Account
+    page.click("#nav-btn-profile")
     page.wait_for_timeout(350)
-    page.click("#drawer-help-center-btn")
+    page.click("#account-row-contact-support")
     page.wait_for_timeout(300)
     support_visible = page.is_visible("#view-support-center")
     ticket_form_visible = page.is_visible("#btn-submit-support-ticket")
     tickets_visible = page.is_visible("#support-ticket-history-list")
-    logger.record_test(f"[{dev_name}] Help consolidates FAQ, complaints and ticket history",
-                       support_visible and ticket_form_visible and tickets_visible)
+    where_order_visible = page.is_visible("#support-sec-where-order")
+    faq_visible = page.is_visible("#support-sec-faq")
+    logger.record_test(
+        f"[{dev_name}] Help consolidates Where-Order, FAQ, complaints and ticket history",
+        support_visible and ticket_form_visible and tickets_visible and where_order_visible and faq_visible
+    )
     check_human_ux_bounds(page, "#support-ai-chat-btn", "Help Center AI Chat", dev_name, logger)
     page.click("#support-ai-chat-btn")
     page.wait_for_timeout(300)
