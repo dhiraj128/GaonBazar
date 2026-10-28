@@ -83,6 +83,8 @@
         if (isDark) {
           document.documentElement.classList.add('dark');
           document.documentElement.classList.remove('light');
+          const metaTheme = document.querySelector('meta[name="theme-color"]');
+          if (metaTheme) metaTheme.setAttribute('content', '#111418');
         } else {
           document.documentElement.classList.remove('dark');
           document.documentElement.classList.add('light');
@@ -405,6 +407,66 @@
       html.dark .vendor-ledger-card td {
         border-bottom-color: #465362 !important;
       }
+    }
+
+    /* Customer dark mode: complete the neutral surfaces missed by the v1 palette.
+       Pale emerald utilities are used in dynamic badges, GPS notices and checkout;
+       keep their green status text, but not their green-tinted backgrounds. */
+    html.dark .bg-emerald-50\/40,
+    html.dark .bg-emerald-50\/50,
+    html.dark .bg-emerald-50\/60,
+    html.dark .bg-emerald-50\/70,
+    html.dark .bg-emerald-50\/80,
+    html.dark .bg-emerald-100,
+    html.dark .bg-emerald-100\/90,
+    html.dark .bg-emerald-200,
+    html.dark .bg-emerald-500\/10,
+    html.dark .bg-emerald-500\/15,
+    html.dark .bg-green-50,
+    html.dark .bg-primary\/5,
+    html.dark .bg-primary\/10,
+    html.dark .bg-primary\/15,
+    html.dark .bg-primary-fixed\/20,
+    html.dark .bg-primary-fixed\/25,
+    html.dark .hover\:bg-emerald-100:hover,
+    html.dark .hover\:bg-emerald-200:hover,
+    html.dark .active\:bg-emerald-50:active {
+      background-color: var(--gb-night-raised) !important;
+      border-color: var(--gb-night-divider) !important;
+    }
+    html.dark .border-emerald-100,
+    html.dark .border-emerald-200,
+    html.dark .border-emerald-200\/60,
+    html.dark .border-emerald-300,
+    html.dark .border-emerald-300\/80 {
+      border-color: var(--gb-night-divider) !important;
+    }
+    html.dark .text-primary,
+    html.dark .text-emerald-950,
+    html.dark .text-emerald-900,
+    html.dark .text-emerald-800,
+    html.dark .text-emerald-700,
+    html.dark .text-emerald-600,
+    html.dark .text-green-900 {
+      color: #6EE7B7 !important;
+    }
+    /* Brighter emerald CTAs need dark ink for accessible button contrast. */
+    html.dark .bg-\[\#16B86E\].text-white,
+    html.dark .bg-emerald-600.text-white:not(.gb-chat-outgoing) {
+      color: #05180E !important;
+    }
+    /* Large help banner and chat messages are surfaces, not brand-green buttons. */
+    html.dark #support-helpline-banner {
+      background-image: none !important;
+      background-color: var(--gb-night-card) !important;
+      border: 1px solid var(--gb-night-divider);
+      color: var(--gb-night-primary) !important;
+    }
+    html.dark .gb-chat-outgoing {
+      background-color: var(--gb-night-raised) !important;
+      color: var(--gb-night-primary) !important;
+      border-color: var(--gb-night-divider) !important;
+      border-left: 2px solid #16B86E !important;
     }
 
   </style>
@@ -2464,7 +2526,7 @@
         </div>
 
         <!-- 24/7 Helpline Banner -->
-        <div class="rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-4 shadow-mobile-card flex items-center justify-between gap-3">
+        <div id="support-helpline-banner" class="rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-4 shadow-mobile-card flex items-center justify-between gap-3">
           <div class="space-y-0.5">
             <div class="text-[11px] font-bold text-emerald-100 uppercase tracking-wide" data-i18n="support_helpline_label">Toll-Free Helpline</div>
             <div class="text-base sm:text-lg font-black font-mono">1800-120-4266</div>
@@ -4868,7 +4930,7 @@
         document.documentElement.classList.add('dark');
         document.documentElement.classList.remove('light');
         const metaTheme = document.querySelector('meta[name="theme-color"]');
-        if (metaTheme) metaTheme.setAttribute('content', '#0b1120');
+        if (metaTheme) metaTheme.setAttribute('content', '#111418');
       } else {
         document.documentElement.classList.remove('dark');
         document.documentElement.classList.add('light');

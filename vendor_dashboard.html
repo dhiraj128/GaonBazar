@@ -23,6 +23,8 @@
         if (isDark) {
           document.documentElement.classList.add('dark');
           document.documentElement.classList.remove('light');
+          const metaTheme = document.querySelector('meta[name="theme-color"]');
+          if (metaTheme) metaTheme.setAttribute('content', '#111418');
         } else {
           document.documentElement.classList.remove('dark');
           document.documentElement.classList.add('light');
@@ -400,6 +402,52 @@
       html.dark .vendor-ledger-card td {
         border-bottom-color: #465362 !important;
       }
+    }
+
+    /* Vendor dark mode: remove residual pale-green backgrounds from badges,
+       inventory states, notifications and ledger cards without changing light mode. */
+    html.dark .bg-emerald-50\/40,
+    html.dark .bg-emerald-50\/50,
+    html.dark .bg-emerald-50\/60,
+    html.dark .bg-emerald-50\/70,
+    html.dark .bg-emerald-50\/80,
+    html.dark .bg-emerald-100,
+    html.dark .bg-emerald-100\/90,
+    html.dark .bg-emerald-200,
+    html.dark .bg-emerald-500\/10,
+    html.dark .bg-emerald-500\/15,
+    html.dark .bg-green-50,
+    html.dark .bg-\[\#16B86E\]\/15,
+    html.dark .hover\:bg-emerald-100:hover,
+    html.dark .hover\:bg-emerald-200:hover {
+      background-color: var(--gb-night-raised) !important;
+      border-color: var(--gb-night-divider) !important;
+    }
+    html.dark .border-emerald-100,
+    html.dark .border-emerald-200,
+    html.dark .border-emerald-200\/60,
+    html.dark .border-emerald-300,
+    html.dark .border-emerald-300\/80 {
+      border-color: var(--gb-night-divider) !important;
+    }
+    html.dark .text-primary,
+    html.dark .text-emerald-950,
+    html.dark .text-emerald-900,
+    html.dark .text-emerald-800,
+    html.dark .text-emerald-700,
+    html.dark .text-emerald-600,
+    html.dark .text-green-900 {
+      color: #6EE7B7 !important;
+    }
+    html.dark .bg-\[\#16B86E\].text-white,
+    html.dark .bg-emerald-600.text-white:not(.gb-chat-outgoing) {
+      color: #05180E !important;
+    }
+    html.dark .gb-chat-outgoing {
+      background-color: var(--gb-night-raised) !important;
+      color: var(--gb-night-primary) !important;
+      border-color: var(--gb-night-divider) !important;
+      border-left: 2px solid #16B86E !important;
     }
 
   </style>
@@ -817,7 +865,7 @@
           <span class="font-black text-sm text-slate-900 dark:text-[#F8FAFC] truncate">Sharma Brothers Kirana Store</span>
           <span class="text-xs text-slate-500 dark:text-[#CBD5E1]">Owner: Mahesh Sharma • Rampur Chowk</span>
           <div class="flex items-center gap-2 mt-1">
-            <span class="text-[10px] bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-300 font-black px-1.5 py-0.5 rounded">GST Verified</span>
+            <span class="text-[10px] bg-emerald-100 dark:bg-[#2A323D] text-emerald-800 dark:text-emerald-300 font-black px-1.5 py-0.5 rounded">GST Verified</span>
             <span class="text-[10px] text-slate-400">ID: #SHR-01</span>
           </div>
         </div>
@@ -1414,7 +1462,7 @@
           <div>
             <h3 class="text-sm font-black leading-tight flex items-center gap-1.5" data-i18n="vendor_msg_title">
               <span>संदेश व बातचीत</span>
-              <span id="vendor-chat-active-order-badge" class="text-[10px] font-mono bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 px-2 py-0.5 rounded-full font-bold">#GB-1284</span>
+              <span id="vendor-chat-active-order-badge" class="text-[10px] font-mono bg-emerald-100 dark:bg-[#2A323D] text-emerald-800 dark:text-emerald-300 px-2 py-0.5 rounded-full font-bold">#GB-1284</span>
             </h3>
             <span id="vendor-chat-partner-name" class="text-xs text-slate-500 dark:text-[#CBD5E1] font-semibold">कमल सिंह • गाँव मित्र (डिलीवरी पार्टनर)</span>
           </div>
@@ -3949,7 +3997,7 @@
         document.documentElement.classList.add('dark');
         document.documentElement.classList.remove('light');
         const metaTheme = document.querySelector('meta[name="theme-color"]');
-        if (metaTheme) metaTheme.setAttribute('content', '#0b1120');
+        if (metaTheme) metaTheme.setAttribute('content', '#111418');
       } else {
         document.documentElement.classList.remove('dark');
         document.documentElement.classList.add('light');
