@@ -1,0 +1,2450 @@
+{
+  "Customer App": {
+    "filepath": "index.html",
+    "count": 145,
+    "elements": [
+      {
+        "tag": "button",
+        "id": "btn-open-sidebar",
+        "type": "",
+        "onclick": "openSidebarDrawer()",
+        "href": "",
+        "text": "menu"
+      },
+      {
+        "tag": "button",
+        "id": "global-nav-back",
+        "type": "",
+        "onclick": "navigateBack()",
+        "href": "",
+        "text": "arrow_back"
+      },
+      {
+        "tag": "button",
+        "id": "header-logo-icon",
+        "type": "",
+        "onclick": "navigateToPhase('dashboard')",
+        "href": "",
+        "text": "storefront"
+      },
+      {
+        "tag": "button",
+        "id": "header-delivery-pill",
+        "type": "button",
+        "onclick": "navigateToPhase('landmark')",
+        "href": "",
+        "text": "location_onरामपुरexpand_more"
+      },
+      {
+        "tag": "button",
+        "id": "header-lang-btn",
+        "type": "button",
+        "onclick": "window.toggleGlobalLanguage()",
+        "href": "",
+        "text": "translateHI|EN"
+      },
+      {
+        "tag": "button",
+        "id": "header-notifications-btn",
+        "type": "button",
+        "onclick": "openNotificationsModal()",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "header-cart-icon",
+        "type": "",
+        "onclick": "navigateToPhase('cart')",
+        "href": "",
+        "text": "shopping_cart0"
+      },
+      {
+        "tag": "button",
+        "id": "header-user-icon",
+        "type": "",
+        "onclick": "navigateToPhase('profile')",
+        "href": "",
+        "text": "र"
+      },
+      {
+        "tag": "button",
+        "id": "btn-close-sidebar",
+        "type": "",
+        "onclick": "closeSidebarDrawer()",
+        "href": "",
+        "text": "close"
+      },
+      {
+        "tag": "button",
+        "id": "drawer-account-btn",
+        "type": "",
+        "onclick": "navigateToPhase('profile'); closeSidebarDrawer();",
+        "href": "",
+        "text": "personमेरी प्रोफाइल (My Account)chevron_right"
+      },
+      {
+        "tag": "button",
+        "id": "drawer-appearance-btn",
+        "type": "button",
+        "onclick": "openCustomerAppearanceSettings()",
+        "href": "",
+        "text": "dark_modeTheme & Display / थीमchevron_right"
+      },
+      {
+        "tag": "button",
+        "id": "drawer-cart-btn",
+        "type": "",
+        "onclick": "navigateToPhase('cart'); closeSidebarDrawer();",
+        "href": "",
+        "text": "shopping_cartशॉपिंग कार्ट (Cart)0chevron_right"
+      },
+      {
+        "tag": "button",
+        "id": "drawer-orders-btn",
+        "type": "",
+        "onclick": "navigateToPhase('tracking'); closeSidebarDrawer();",
+        "href": "",
+        "text": "receipt_longमेरे पिछले ऑर्डरchevron_right"
+      },
+      {
+        "tag": "button",
+        "id": "drawer-payments-btn",
+        "type": "",
+        "onclick": "openAddPaymentModal(); closeSidebarDrawer();",
+        "href": "",
+        "text": "account_balance_walletसहेजे गए भुगतान (Saved Payments)chevro"
+      },
+      {
+        "tag": "button",
+        "id": "drawer-support-btn",
+        "type": "",
+        "onclick": "openSupportModal(); closeSidebarDrawer();",
+        "href": "",
+        "text": "smart_toyAI ऑर्डर सहायताchevron_right"
+      },
+      {
+        "tag": "button",
+        "id": "drawer-chat-btn",
+        "type": "",
+        "onclick": "openSupportModal(); closeSidebarDrawer();",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "drawer-help-center-btn",
+        "type": "",
+        "onclick": "navigateToPhase('support'); closeSidebarDrawer();",
+        "href": "",
+        "text": "contact_supportसहायता केंद्रchevron_right"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "openTermsModal(); closeSidebarDrawer();",
+        "href": "",
+        "text": "descriptionनियम व शर्तेंchevron_right"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "logoutCustomer(); closeSidebarDrawer();",
+        "href": "",
+        "text": "logoutलॉगआउट करें"
+      },
+      {
+        "tag": "button",
+        "id": "auth-tab-signin",
+        "type": "button",
+        "onclick": "window.switchAuthMode('signin')",
+        "href": "",
+        "text": "loginलॉगिन करें"
+      },
+      {
+        "tag": "button",
+        "id": "auth-tab-signup",
+        "type": "button",
+        "onclick": "window.switchAuthMode('signup')",
+        "href": "",
+        "text": "person_addनया खाता बनाएं"
+      },
+      {
+        "tag": "input",
+        "id": "p1-phone-input",
+        "type": "tel",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "p1-phone-clear",
+        "type": "button",
+        "onclick": "clearPhoneInput()",
+        "href": "",
+        "text": "close"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "button",
+        "onclick": "speakVoiceHelp('login')",
+        "href": "",
+        "text": "volume_up"
+      },
+      {
+        "tag": "button",
+        "id": "p1-send-otp-btn",
+        "type": "button",
+        "onclick": "submitPhoneLogin()",
+        "href": "",
+        "text": "send_to_mobileOTP भेजेंarrow_forward"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "navigateToPhase('login')",
+        "href": "",
+        "text": "editबदलें"
+      },
+      {
+        "tag": "button",
+        "id": "p1-resend-btn",
+        "type": "",
+        "onclick": "resendOtpCode()",
+        "href": "",
+        "text": "पुनः कोड भेजें"
+      },
+      {
+        "tag": "button",
+        "id": "p1-verify-otp-btn",
+        "type": "",
+        "onclick": "submitVerifyOtp()",
+        "href": "",
+        "text": "सत्यापित करें और आगे बढ़ेंarrow_forward"
+      },
+      {
+        "tag": "input",
+        "id": "p1-name-input",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "p1-locate-btn",
+        "type": "button",
+        "onclick": "detectGpsLocation()",
+        "href": "",
+        "text": "near_meवर्तमान लोकेशन लें"
+      },
+      {
+        "tag": "input",
+        "id": "p1-district-input",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "p1-village-input",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "button",
+        "onclick": "selectVillageChip('चतुर्सी')",
+        "href": "",
+        "text": "चतुर्सी"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "button",
+        "onclick": "selectVillageChip('मीनपुर')",
+        "href": "",
+        "text": "मीनपुर"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "button",
+        "onclick": "selectVillageChip('रामपुर')",
+        "href": "",
+        "text": "रामपुर"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "button",
+        "onclick": "selectVillageChip('कांटी')",
+        "href": "",
+        "text": "कांटी"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "button",
+        "onclick": "selectVillageChip('मोतीपुर')",
+        "href": "",
+        "text": "मोतीपुर"
+      },
+      {
+        "tag": "input",
+        "id": "p1-village-search-input",
+        "type": "hidden",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "p1-latitude-input",
+        "type": "hidden",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "p1-longitude-input",
+        "type": "hidden",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "latitude",
+        "type": "hidden",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "longitude",
+        "type": "hidden",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "p1-lat-input",
+        "type": "hidden",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "p1-lng-input",
+        "type": "hidden",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "select",
+        "id": "p1-village-select",
+        "type": "",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "p1-chip-shiv",
+        "type": "button",
+        "onclick": "appendNamedChip('shiv_mandir')",
+        "href": "",
+        "text": "🛕शिव मंदिर"
+      },
+      {
+        "tag": "button",
+        "id": "p1-chip-school",
+        "type": "button",
+        "onclick": "appendNamedChip('school')",
+        "href": "",
+        "text": "🏫प्राथमिक स्कूल"
+      },
+      {
+        "tag": "button",
+        "id": "p1-chip-tank",
+        "type": "button",
+        "onclick": "appendNamedChip('tank')",
+        "href": "",
+        "text": "💧पानी की टंकी"
+      },
+      {
+        "tag": "button",
+        "id": "p1-chip-choupal",
+        "type": "button",
+        "onclick": "appendNamedChip('choupal')",
+        "href": "",
+        "text": "🌳चौपाल"
+      },
+      {
+        "tag": "button",
+        "id": "p1-map-recenter-btn",
+        "type": "button",
+        "onclick": "recenterMapToGps()",
+        "href": "",
+        "text": "my_locationGPS पर जाएं"
+      },
+      {
+        "tag": "button",
+        "id": "p1-confirm-location-btn",
+        "type": "button",
+        "onclick": "confirmPinnedLocation()",
+        "href": "",
+        "text": "verified✅ इस सटीक पते की पुष्टि करें (Confirm Doorstep)"
+      },
+      {
+        "tag": "button",
+        "id": "p1-save-landmark-btn",
+        "type": "",
+        "onclick": "submitLandmarkSetup()",
+        "href": "",
+        "text": "पता सहेजें और आगे बढ़ेंarrow_forward"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "navigateToPhase('landmark')",
+        "href": "",
+        "text": "बदलें"
+      },
+      {
+        "tag": "input",
+        "id": "p2-search-input",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "p2-search-clear-btn",
+        "type": "button",
+        "onclick": "clearStoreSearch()",
+        "href": "",
+        "text": "close"
+      },
+      {
+        "tag": "button",
+        "id": "p2-voice-search-btn",
+        "type": "button",
+        "onclick": "triggerVoiceSearch()",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "a",
+        "id": "p3-store-call-btn",
+        "type": "",
+        "onclick": "",
+        "href": "#",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "filterCatalogCategory('all', this)",
+        "href": "",
+        "text": "सभी"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "navigateToPhase('cart')",
+        "href": "",
+        "text": "थैला देखेंView Cartarrow_forward"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "navigateToPhase('dashboard')",
+        "href": "",
+        "text": "storefrontगाँव बाज़ार देखें"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "clearFullCart()",
+        "href": "",
+        "text": "delete_sweepखाली करें"
+      },
+      {
+        "tag": "button",
+        "id": "p4-btn-proceed",
+        "type": "",
+        "onclick": "navigateToPhase('checkout')",
+        "href": "",
+        "text": "कुल ₹0.00पता चुनें और भुगतान करेंआगे बढ़ेंarrow_forward"
+      },
+      {
+        "tag": "input",
+        "id": "pref-call-arrival",
+        "type": "checkbox",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "pref-leave-neighbor",
+        "type": "checkbox",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "btn-place-order",
+        "type": "",
+        "onclick": "submitFinalOrder()",
+        "href": "",
+        "text": "shopping_bagऑर्डर कन्फर्म करेंarrow_forward"
+      },
+      {
+        "tag": "button",
+        "id": "p5-empty-goto-stores-btn",
+        "type": "",
+        "onclick": "navigateToPhase('dashboard')",
+        "href": "",
+        "text": "storefrontदुकानें देखें"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "copyOrderId()",
+        "href": "",
+        "text": "Copy"
+      },
+      {
+        "tag": "button",
+        "id": "p5-sim-step-btn",
+        "type": "",
+        "onclick": "advanceTimelineStep()",
+        "href": "",
+        "text": "अगला चरण देखें ⚡"
+      },
+      {
+        "tag": "a",
+        "id": "btn-call-runner",
+        "type": "",
+        "onclick": "",
+        "href": "tel:9876543210",
+        "text": "callडिलीवरी पार्टनर को कॉल करें"
+      },
+      {
+        "tag": "button",
+        "id": "p5-back-home-btn",
+        "type": "",
+        "onclick": "navigateToPhase('dashboard')",
+        "href": "",
+        "text": "storefrontमुख्य बाज़ार पर वापस जाएँ"
+      },
+      {
+        "tag": "button",
+        "id": "offline-retry-btn",
+        "type": "button",
+        "onclick": "retryConnection()",
+        "href": "",
+        "text": "refreshपुनः प्रयास करें"
+      },
+      {
+        "tag": "button",
+        "id": "offline-home-btn",
+        "type": "button",
+        "onclick": "navigateToPhase('dashboard')",
+        "href": "",
+        "text": "storefrontसुरक्षित बाज़ार देखें"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "logoutCustomer()",
+        "href": "",
+        "text": "logoutलॉगआउट"
+      },
+      {
+        "tag": "input",
+        "id": "profile-user-name-input",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "profile-email-input",
+        "type": "email",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "profile-dob-input",
+        "type": "date",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "select",
+        "id": "profile-gender-select",
+        "type": "",
+        "onclick": "",
+        "href": "",
+        "text": "चुनें / Selectपुरुष (Male)महिला (Female)अन्य (Other)"
+      },
+      {
+        "tag": "button",
+        "id": "profile-save-details-btn",
+        "type": "button",
+        "onclick": "saveUserProfileDetails()",
+        "href": "",
+        "text": "checkविवरण सहेजें (Save Changes)"
+      },
+      {
+        "tag": "button",
+        "id": "btn-theme-light",
+        "type": "button",
+        "onclick": "setAppTheme('light')",
+        "href": "",
+        "text": "light_modeहल्का (Light)"
+      },
+      {
+        "tag": "button",
+        "id": "btn-theme-dark",
+        "type": "button",
+        "onclick": "setAppTheme('dark')",
+        "href": "",
+        "text": "dark_modeगहरा (Dark)"
+      },
+      {
+        "tag": "button",
+        "id": "btn-theme-system",
+        "type": "button",
+        "onclick": "setAppTheme('system')",
+        "href": "",
+        "text": "settings_suggestसिस्टम (System)"
+      },
+      {
+        "tag": "button",
+        "id": "btn-profile-lang-hi",
+        "type": "button",
+        "onclick": "window.toggleGlobalLanguage('hi')",
+        "href": "",
+        "text": "🇮🇳हिंदी (Hindi)"
+      },
+      {
+        "tag": "button",
+        "id": "btn-profile-lang-en",
+        "type": "button",
+        "onclick": "window.toggleGlobalLanguage('en')",
+        "href": "",
+        "text": "🌐English"
+      },
+      {
+        "tag": "input",
+        "id": "toggle-notif-push",
+        "type": "checkbox",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "toggle-notif-sms",
+        "type": "checkbox",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "toggle-notif-email",
+        "type": "checkbox",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "profile-primary-logout-btn",
+        "type": "button",
+        "onclick": "logoutCustomer()",
+        "href": "",
+        "text": "logoutलॉगआउट (Log Out)"
+      },
+      {
+        "tag": "button",
+        "id": "profile-delete-account-btn",
+        "type": "button",
+        "onclick": "openDeleteAccountModal()",
+        "href": "",
+        "text": "delete_foreverखाता व डेटा हटाएं (Delete Account)"
+      },
+      {
+        "tag": "button",
+        "id": "commerce-ai-mic-btn",
+        "type": "",
+        "onclick": "toggleCommerceVoiceRecognition()",
+        "href": "",
+        "text": "mic"
+      },
+      {
+        "tag": "button",
+        "id": "commerce-transcript-clear",
+        "type": "",
+        "onclick": "clearCommerceAiInput()",
+        "href": "",
+        "text": "close"
+      },
+      {
+        "tag": "input",
+        "id": "commerce-ai-input",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "commerce-ai-send-btn",
+        "type": "",
+        "onclick": "submitCommerceAiInput()",
+        "href": "",
+        "text": "send"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "handleVoiceChipClick('I want 1kg Aata and 1 packet Milk')",
+        "href": "",
+        "text": "🌾 1kg Aata + 1 packet Milk"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "handleVoiceChipClick('2kg Basmati Rice and 1L Mustard Oil')",
+        "href": "",
+        "text": "🍚 2kg Rice + 1L Oil"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "handleVoiceChipClick('Tata Salt 1kg and Red Label Tea')",
+        "href": "",
+        "text": "🧂 Tata Salt + Tea"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "handleVoiceChipClick('Amul Pure Cow Ghee 1L')",
+        "href": "",
+        "text": "🥛 Amul Cow Ghee 1L"
+      },
+      {
+        "tag": "button",
+        "id": "commerce-add-all-btn",
+        "type": "",
+        "onclick": "addAllCommerceAiMatchesToCart()",
+        "href": "",
+        "text": "+ Add All to Cart"
+      },
+      {
+        "tag": "a",
+        "id": "",
+        "type": "",
+        "onclick": "",
+        "href": "tel:18001204266",
+        "text": "callCall Now"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "button",
+        "onclick": "toggleFaqAccordion(this)",
+        "href": "",
+        "text": "What is the Minimum Order Value (MOV)?expand_more"
+      },
+      {
+        "tag": "input",
+        "id": "ticket-order-id",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "select",
+        "id": "ticket-category",
+        "type": "",
+        "onclick": "",
+        "href": "",
+        "text": "Delivery Delay / डिलीवरी में देरीDamaged or Expired Product "
+      },
+      {
+        "tag": "input",
+        "id": "ticket-subject",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "ticket-attachment",
+        "type": "file",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "btn-submit-support-ticket",
+        "type": "submit",
+        "onclick": "",
+        "href": "",
+        "text": "sendSubmit Grievance Ticket"
+      },
+      {
+        "tag": "button",
+        "id": "nav-btn-stores",
+        "type": "",
+        "onclick": "navigateToPhase('dashboard')",
+        "href": "",
+        "text": "storefrontदुकानें"
+      },
+      {
+        "tag": "button",
+        "id": "nav-btn-categories",
+        "type": "",
+        "onclick": "navigateToPhase('dashboard'); setTimeout(() => document.getElementById('p2-categories-container')?.scrollIntoView({behavior: 'smooth'}), 100)",
+        "href": "",
+        "text": "categoryश्रेणियाँ"
+      },
+      {
+        "tag": "button",
+        "id": "nav-btn-ai",
+        "type": "",
+        "onclick": "navigateToPhase('ai-commerce')",
+        "href": "",
+        "text": "micAI सहायक"
+      },
+      {
+        "tag": "button",
+        "id": "nav-btn-orders",
+        "type": "",
+        "onclick": "navigateToPhase('tracking')",
+        "href": "",
+        "text": "receipt_longऑर्डर"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "closeNotificationsModal()",
+        "href": "",
+        "text": "close"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "markAllNotificationsRead()",
+        "href": "",
+        "text": "सभी पढ़ लिए"
+      },
+      {
+        "tag": "button",
+        "id": "btn-close-support",
+        "type": "",
+        "onclick": "closeSupportModal()",
+        "href": "",
+        "text": "arrow_back"
+      },
+      {
+        "tag": "a",
+        "id": "btn-call-support",
+        "type": "",
+        "onclick": "",
+        "href": "tel:18001204266",
+        "text": "call1800-120-4266"
+      },
+      {
+        "tag": "button",
+        "id": "chip-order-status",
+        "type": "",
+        "onclick": "sendQuickMessage((AppStore.lang === 'hi') ? 'मेरा ऑर्डर कहाँ है?' : 'Where is my order?')",
+        "href": "",
+        "text": "📦 मेरा ऑर्डर कहाँ है?"
+      },
+      {
+        "tag": "button",
+        "id": "chip-refund-status",
+        "type": "",
+        "onclick": "sendQuickMessage((AppStore.lang === 'hi') ? 'रिफंड की स्थिति' : 'Refund status')",
+        "href": "",
+        "text": "💰 रिफंड की स्थिति"
+      },
+      {
+        "tag": "button",
+        "id": "chip-cancel-order",
+        "type": "",
+        "onclick": "sendQuickMessage((AppStore.lang === 'hi') ? 'ऑर्डर रद्द करना है' : 'Cancel order')",
+        "href": "",
+        "text": "❌ ऑर्डर रद्द करें"
+      },
+      {
+        "tag": "button",
+        "id": "chip-call-agent",
+        "type": "",
+        "onclick": "sendQuickMessage((AppStore.lang === 'hi') ? 'एजेंट से बात करनी है' : 'Speak to agent')",
+        "href": "",
+        "text": "📞 एजेंट से बात करें"
+      },
+      {
+        "tag": "input",
+        "id": "chat-input-message",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "btn-send-chat",
+        "type": "",
+        "onclick": "sendChatMessage()",
+        "href": "",
+        "text": "send"
+      },
+      {
+        "tag": "a",
+        "id": "btn-call-support-bottom",
+        "type": "",
+        "onclick": "",
+        "href": "tel:18001204266",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "closeTermsModal()",
+        "href": "",
+        "text": "close"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "closePrivacyModal()",
+        "href": "",
+        "text": "close"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "closeAboutModal()",
+        "href": "",
+        "text": "close"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "closeDeleteAccountModal()",
+        "href": "",
+        "text": "close"
+      },
+      {
+        "tag": "button",
+        "id": "btn-confirm-delete-account",
+        "type": "button",
+        "onclick": "confirmDeleteAccount()",
+        "href": "",
+        "text": "हाँ, खाता मिटाएं"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "closeAddPaymentModal()",
+        "href": "",
+        "text": "close"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "button",
+        "onclick": "selectPaymentOnboardMethod('upi')",
+        "href": "",
+        "text": "paymentsUPI IDतेज़Google Pay, PhonePe, Paytm, BHIMchevron_ri"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "button",
+        "onclick": "selectPaymentOnboardMethod('card')",
+        "href": "",
+        "text": "credit_cardडेबिट या क्रेडिट कार्डVisa, Mastercard, RuPay एवं"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "button",
+        "onclick": "backToPaymentMethodSelect()",
+        "href": "",
+        "text": "arrow_backवापस जाएं"
+      },
+      {
+        "tag": "input",
+        "id": "upi-input-vpa",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "upi-input-title",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "cb-upi-default",
+        "type": "checkbox",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "btn-save-upi",
+        "type": "button",
+        "onclick": "submitUPIPaymentMethod()",
+        "href": "",
+        "text": "checkसहेजें और सत्यापित करें"
+      },
+      {
+        "tag": "input",
+        "id": "card-input-number",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "card-input-expiry",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "card-input-cvv",
+        "type": "password",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "card-input-name",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "cb-card-default",
+        "type": "checkbox",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "btn-save-card",
+        "type": "button",
+        "onclick": "submitCardPaymentMethod()",
+        "href": "",
+        "text": "checkसहेजें और सत्यापित करें"
+      },
+      {
+        "tag": "input",
+        "id": "new-payment-title",
+        "type": "hidden",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "new-payment-val",
+        "type": "hidden",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "cb-payment-default",
+        "type": "hidden",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "closeAudioToast()",
+        "href": "",
+        "text": "close"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "closeQaModal()",
+        "href": "",
+        "text": "close"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "executeFullQaAudit()",
+        "href": "",
+        "text": "play_circleRun Full 5-Phase QA Suite"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "resetFullAppDemo()",
+        "href": "",
+        "text": "Reset Demo"
+      }
+    ]
+  },
+  "Vendor App": {
+    "filepath": "vendor_dashboard.html",
+    "count": 75,
+    "elements": [
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "fetchAllVendorData(true)",
+        "href": "",
+        "text": "पुनः प्रयास"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "button",
+        "onclick": "toggleLanguage()",
+        "href": "",
+        "text": "translateहिंदी"
+      },
+      {
+        "tag": "input",
+        "id": "login-vendor-store-name",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "login-vendor-store-select",
+        "type": "hidden",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "login-vendor-phone",
+        "type": "tel",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "btn-send-login-vendor-otp",
+        "type": "button",
+        "onclick": "handleSendLoginVendorOtp()",
+        "href": "",
+        "text": "OTP भेजें"
+      },
+      {
+        "tag": "input",
+        "id": "login-vendor-otp",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "btn-vendor-login",
+        "type": "button",
+        "onclick": "handleVendorLogin()",
+        "href": "",
+        "text": "loginलॉगिन करें"
+      },
+      {
+        "tag": "button",
+        "id": "btn-open-vendor-register",
+        "type": "button",
+        "onclick": "openVendorRegisterModal()",
+        "href": "",
+        "text": "add_business+ नया पंजीकरण"
+      },
+      {
+        "tag": "button",
+        "id": "store-open-btn",
+        "type": "",
+        "onclick": "toggleStoreOpenStatus()",
+        "href": "",
+        "text": "चालूचालू"
+      },
+      {
+        "tag": "button",
+        "id": "btn-vendor-header-notifs",
+        "type": "button",
+        "onclick": "openVendorNotificationsModal()",
+        "href": "",
+        "text": "notifications"
+      },
+      {
+        "tag": "button",
+        "id": "btn-vendor-header-settings",
+        "type": "button",
+        "onclick": "switchMainTab('settings')",
+        "href": "",
+        "text": "settings"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "dismissToast()",
+        "href": "",
+        "text": "close"
+      },
+      {
+        "tag": "button",
+        "id": "btn-check-vendor-status",
+        "type": "",
+        "onclick": "checkCurrentVendorApprovalStatus()",
+        "href": "",
+        "text": "refreshस्वीकृति स्थिति जांचें"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "switchStore('sharma_brothers')",
+        "href": "",
+        "text": "शर्मा ब्रदर्स पर स्विच करें"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "refreshCurrentWorkspace()",
+        "href": "",
+        "text": "syncरीफ़्रेश"
+      },
+      {
+        "tag": "button",
+        "id": "filter-btn-all",
+        "type": "",
+        "onclick": "switchOrderFilter('all')",
+        "href": "",
+        "text": "सभी ऑर्डर"
+      },
+      {
+        "tag": "button",
+        "id": "filter-btn-new",
+        "type": "",
+        "onclick": "switchOrderFilter('new')",
+        "href": "",
+        "text": "नए ऑर्डर"
+      },
+      {
+        "tag": "button",
+        "id": "filter-btn-packing",
+        "type": "",
+        "onclick": "switchOrderFilter('packing')",
+        "href": "",
+        "text": "स्वीकृत / पैकिंग"
+      },
+      {
+        "tag": "button",
+        "id": "filter-btn-ready",
+        "type": "",
+        "onclick": "switchOrderFilter('ready')",
+        "href": "",
+        "text": "तैयार सामान"
+      },
+      {
+        "tag": "button",
+        "id": "filter-btn-transit",
+        "type": "",
+        "onclick": "switchOrderFilter('transit')",
+        "href": "",
+        "text": "रास्ते में"
+      },
+      {
+        "tag": "button",
+        "id": "filter-btn-delivered",
+        "type": "",
+        "onclick": "switchOrderFilter('delivered')",
+        "href": "",
+        "text": "पूर्ण"
+      },
+      {
+        "tag": "input",
+        "id": "inventory-search-input",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "openAddProductModal()",
+        "href": "",
+        "text": "add_circle+ नया सामान जोड़ें"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "filterInventoryCategory('all')",
+        "href": "",
+        "text": "सभी"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "filterInventoryCategory('atta')",
+        "href": "",
+        "text": "आटा व अनाज"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "filterInventoryCategory('oil')",
+        "href": "",
+        "text": "तेल व घी"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "filterInventoryCategory('spices')",
+        "href": "",
+        "text": "मसाले"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "filterInventoryCategory('tea')",
+        "href": "",
+        "text": "चाय व पेय"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "filterInventoryCategory('dairy')",
+        "href": "",
+        "text": "डेयरी उत्पाद"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "filterInventoryCategory('fertilizer')",
+        "href": "",
+        "text": "खाद व कृषि"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "filterInventoryCategory('pharma')",
+        "href": "",
+        "text": "दवाइयां"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "window.print()",
+        "href": "",
+        "text": "printप्रिंट"
+      },
+      {
+        "tag": "input",
+        "id": "setting-store-name",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "setting-store-hi",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "setting-store-phone",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "lang-toggle-btn",
+        "type": "",
+        "onclick": "toggleLanguage()",
+        "href": "",
+        "text": "translateEnglish"
+      },
+      {
+        "tag": "select",
+        "id": "store-switcher-select",
+        "type": "",
+        "onclick": "",
+        "href": "",
+        "text": "Sharma Brothers Kirana StoreKisan Seva KendraRampur Dawa & H"
+      },
+      {
+        "tag": "button",
+        "id": "btn-vendor-theme-light",
+        "type": "button",
+        "onclick": "setVendorTheme('light')",
+        "href": "",
+        "text": "light_modeहल्का"
+      },
+      {
+        "tag": "button",
+        "id": "btn-vendor-theme-dark",
+        "type": "button",
+        "onclick": "setVendorTheme('dark')",
+        "href": "",
+        "text": "dark_modeगहरा"
+      },
+      {
+        "tag": "button",
+        "id": "btn-vendor-theme-system",
+        "type": "button",
+        "onclick": "setVendorTheme('system')",
+        "href": "",
+        "text": "settings_suggestसिस्टम"
+      },
+      {
+        "tag": "input",
+        "id": "vendor-bank-account-name",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "vendor-bank-account-number",
+        "type": "password",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "vendor-bank-confirm-account-number",
+        "type": "password",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "vendor-bank-ifsc",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "vendor-bank-upi",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "btn-save-vendor-bank",
+        "type": "",
+        "onclick": "saveVendorPayoutSettings()",
+        "href": "",
+        "text": "verifiedबैंक विवरण सहेजें"
+      },
+      {
+        "tag": "button",
+        "id": "btn-vendor-logout",
+        "type": "button",
+        "onclick": "handleVendorLogout()",
+        "href": "",
+        "text": "logoutलॉगआउट करें (Log out)"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "markAllVendorNotifsRead()",
+        "href": "",
+        "text": "सभी पढ़े गए"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "closeVendorNotificationsModal()",
+        "href": "",
+        "text": "close"
+      },
+      {
+        "tag": "button",
+        "id": "nav-btn-orders",
+        "type": "",
+        "onclick": "switchMainTab('orders')",
+        "href": "",
+        "text": "list_alt0नए ऑर्डर"
+      },
+      {
+        "tag": "button",
+        "id": "nav-btn-inventory",
+        "type": "",
+        "onclick": "switchMainTab('inventory')",
+        "href": "",
+        "text": "inventory_2सामान"
+      },
+      {
+        "tag": "button",
+        "id": "nav-btn-ledger",
+        "type": "",
+        "onclick": "switchMainTab('ledger')",
+        "href": "",
+        "text": "receipt_longबहीखाता"
+      },
+      {
+        "tag": "button",
+        "id": "nav-btn-settings",
+        "type": "",
+        "onclick": "switchMainTab('settings')",
+        "href": "",
+        "text": "storeप्रोफ़ाइल"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "closeAddProductModal()",
+        "href": "",
+        "text": "close"
+      },
+      {
+        "tag": "input",
+        "id": "new-prod-en",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "new-prod-hi",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "select",
+        "id": "new-prod-cat",
+        "type": "",
+        "onclick": "",
+        "href": "",
+        "text": "Atta & GrainsOil & GheeSpicesTea & SnacksDairyAgri / Fertili"
+      },
+      {
+        "tag": "input",
+        "id": "new-prod-weight",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "new-prod-price",
+        "type": "number",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "new-prod-mrp",
+        "type": "number",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "submitNewProduct()",
+        "href": "",
+        "text": "सुरक्षित करें"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "closeVendorRegisterModal()",
+        "href": "",
+        "text": "close"
+      },
+      {
+        "tag": "input",
+        "id": "reg-vendor-phone",
+        "type": "tel",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "btn-send-vendor-otp",
+        "type": "button",
+        "onclick": "handleSendVendorOtp()",
+        "href": "",
+        "text": "OTP भेजें"
+      },
+      {
+        "tag": "input",
+        "id": "reg-vendor-otp",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "reg-vendor-shop",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "reg-vendor-owner",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "select",
+        "id": "reg-vendor-category",
+        "type": "",
+        "onclick": "",
+        "href": "",
+        "text": "किराना एवं जनरल स्टोरदवा एवं जन औषधिकिसान सेवा केंद्रडेयरी ए"
+      },
+      {
+        "tag": "input",
+        "id": "reg-vendor-village",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "select",
+        "id": "reg-vendor-id-type",
+        "type": "",
+        "onclick": "",
+        "href": "",
+        "text": "आधार कार्डवोटर कार्डपैन कार्ड"
+      },
+      {
+        "tag": "input",
+        "id": "reg-vendor-id",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "reg-vendor-photo",
+        "type": "url",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "reg-vendor-upi",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "btn-submit-vendor-register",
+        "type": "button",
+        "onclick": "submitVendorRegistration()",
+        "href": "",
+        "text": "sendसत्यापन हेतु भेजें"
+      }
+    ]
+  },
+  "Runner App": {
+    "filepath": "runner_dashboard.html",
+    "count": 57,
+    "elements": [
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "fetchAllRunnerData(true)",
+        "href": "",
+        "text": "पुनः प्रयास"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "button",
+        "onclick": "toggleLanguage()",
+        "href": "",
+        "text": "translateहिंदी"
+      },
+      {
+        "tag": "input",
+        "id": "login-runner-name-input",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "login-runner-id-select",
+        "type": "hidden",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "login-runner-phone",
+        "type": "tel",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "btn-send-login-runner-otp",
+        "type": "button",
+        "onclick": "handleSendLoginRunnerOtp()",
+        "href": "",
+        "text": "OTP भेजें"
+      },
+      {
+        "tag": "input",
+        "id": "login-runner-otp",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "btn-runner-login",
+        "type": "button",
+        "onclick": "handleRunnerLogin()",
+        "href": "",
+        "text": "two_wheelerलॉगिन करके ड्यूटी शुरू करें"
+      },
+      {
+        "tag": "button",
+        "id": "btn-open-runner-register",
+        "type": "button",
+        "onclick": "openRunnerRegisterModal()",
+        "href": "",
+        "text": "person_add+ नया पंजीकरण"
+      },
+      {
+        "tag": "button",
+        "id": "shift-toggle-btn",
+        "type": "",
+        "onclick": "toggleRunnerShift()",
+        "href": "",
+        "text": "ड्यूटी चालूचालू"
+      },
+      {
+        "tag": "button",
+        "id": "btn-runner-header-notifs",
+        "type": "button",
+        "onclick": "openRunnerNotificationsModal()",
+        "href": "",
+        "text": "notifications"
+      },
+      {
+        "tag": "button",
+        "id": "btn-runner-header-settings",
+        "type": "button",
+        "onclick": "switchTab('settings')",
+        "href": "",
+        "text": "settings"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "dismissToast()",
+        "href": "",
+        "text": "close"
+      },
+      {
+        "tag": "button",
+        "id": "btn-check-runner-status",
+        "type": "",
+        "onclick": "checkCurrentRunnerApprovalStatus()",
+        "href": "",
+        "text": "refreshस्वीकृति स्थिति जांचें"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "switchRunner('gm_1')",
+        "href": "",
+        "text": "कमल सिंह पर स्विच करें"
+      },
+      {
+        "tag": "button",
+        "id": "filter-btn-all",
+        "type": "",
+        "onclick": "filterMissions('all')",
+        "href": "",
+        "text": "सभी मिशन"
+      },
+      {
+        "tag": "button",
+        "id": "filter-btn-pickup",
+        "type": "",
+        "onclick": "filterMissions('pickup')",
+        "href": "",
+        "text": "पिकअप बाकी"
+      },
+      {
+        "tag": "button",
+        "id": "filter-btn-transit",
+        "type": "",
+        "onclick": "filterMissions('transit')",
+        "href": "",
+        "text": "रास्ते में"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "switchTab('missions')",
+        "href": "",
+        "text": "arrow_back"
+      },
+      {
+        "tag": "a",
+        "id": "btn-call-store",
+        "type": "",
+        "onclick": "",
+        "href": "tel:9876543210",
+        "text": "callदुकानदार को कॉल करें"
+      },
+      {
+        "tag": "button",
+        "id": "btn-confirm-pickup",
+        "type": "",
+        "onclick": "handleConfirmPickup()",
+        "href": "",
+        "text": "check_circleदुकान से सामान लिया"
+      },
+      {
+        "tag": "a",
+        "id": "btn-call-customer",
+        "type": "",
+        "onclick": "",
+        "href": "#",
+        "text": "callकॉल करें"
+      },
+      {
+        "tag": "a",
+        "id": "btn-navigate-map",
+        "type": "",
+        "onclick": "",
+        "href": "#",
+        "text": "navigationDirections"
+      },
+      {
+        "tag": "input",
+        "id": "otp-digit-1",
+        "type": "number",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "otp-digit-2",
+        "type": "number",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "otp-digit-3",
+        "type": "number",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "otp-digit-4",
+        "type": "number",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "cb-cod-confirm",
+        "type": "checkbox",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "btn-verify-handover",
+        "type": "",
+        "onclick": "handleVerifyHandover()",
+        "href": "",
+        "text": "task_altसत्यापित करें व डिलीवरी पूरी करें (+₹20 आय)"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "switchTab('settings')",
+        "href": "",
+        "text": "account_balanceबैंक सेटिंग्स"
+      },
+      {
+        "tag": "button",
+        "id": "btn-generate-slip",
+        "type": "",
+        "onclick": "openDepositSlipModal()",
+        "href": "",
+        "text": "receipt_longहब जमा रसीद"
+      },
+      {
+        "tag": "button",
+        "id": "lang-toggle-btn",
+        "type": "",
+        "onclick": "toggleLanguage()",
+        "href": "",
+        "text": "translateEnglish"
+      },
+      {
+        "tag": "button",
+        "id": "btn-runner-theme-light",
+        "type": "button",
+        "onclick": "setRunnerTheme('light')",
+        "href": "",
+        "text": "light_modeहल्का"
+      },
+      {
+        "tag": "button",
+        "id": "btn-runner-theme-dark",
+        "type": "button",
+        "onclick": "setRunnerTheme('dark')",
+        "href": "",
+        "text": "dark_modeगहरा"
+      },
+      {
+        "tag": "button",
+        "id": "btn-runner-theme-system",
+        "type": "button",
+        "onclick": "setRunnerTheme('system')",
+        "href": "",
+        "text": "settings_suggestसिस्टम"
+      },
+      {
+        "tag": "button",
+        "id": "btn-runner-logout",
+        "type": "button",
+        "onclick": "handleRunnerLogout()",
+        "href": "",
+        "text": "logoutलॉगआउट करें (Log out)"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "markAllRunnerNotifsRead()",
+        "href": "",
+        "text": "सभी पढ़े गए"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "closeRunnerNotificationsModal()",
+        "href": "",
+        "text": "close"
+      },
+      {
+        "tag": "button",
+        "id": "nav-btn-missions",
+        "type": "",
+        "onclick": "switchTab('missions')",
+        "href": "",
+        "text": "local_shippingमिशन"
+      },
+      {
+        "tag": "button",
+        "id": "nav-btn-detail",
+        "type": "",
+        "onclick": "switchTab('detail')",
+        "href": "",
+        "text": "exploreडिलीवरी"
+      },
+      {
+        "tag": "button",
+        "id": "nav-btn-ledger",
+        "type": "",
+        "onclick": "switchTab('ledger')",
+        "href": "",
+        "text": "account_balance_walletबहीखाता"
+      },
+      {
+        "tag": "button",
+        "id": "nav-btn-settings",
+        "type": "",
+        "onclick": "switchTab('settings')",
+        "href": "",
+        "text": "account_balanceसेटिंग्स"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "closeSuccessModal()",
+        "href": "",
+        "text": "अगला मिशन देखें"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "closeDepositSlipModal()",
+        "href": "",
+        "text": "close"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "closeRunnerRegisterModal()",
+        "href": "",
+        "text": "close"
+      },
+      {
+        "tag": "input",
+        "id": "reg-runner-phone",
+        "type": "tel",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "btn-send-runner-otp",
+        "type": "button",
+        "onclick": "handleSendRunnerOtp()",
+        "href": "",
+        "text": "OTP भेजें"
+      },
+      {
+        "tag": "input",
+        "id": "reg-runner-otp",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "reg-runner-name",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "reg-runner-area",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "select",
+        "id": "reg-runner-vehicle-type",
+        "type": "",
+        "onclick": "",
+        "href": "",
+        "text": "मोटरसाइकिलस्कूटरसाइकिलई-रिक्शा"
+      },
+      {
+        "tag": "input",
+        "id": "reg-runner-vehicle",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "select",
+        "id": "reg-runner-id-type",
+        "type": "",
+        "onclick": "",
+        "href": "",
+        "text": "आधार कार्डड्राइविंग लाइसेंसवोटर कार्ड"
+      },
+      {
+        "tag": "input",
+        "id": "reg-runner-id",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "reg-runner-photo",
+        "type": "url",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "input",
+        "id": "reg-runner-upi",
+        "type": "text",
+        "onclick": "",
+        "href": "",
+        "text": ""
+      },
+      {
+        "tag": "button",
+        "id": "btn-submit-runner-register",
+        "type": "button",
+        "onclick": "submitRunnerRegistration()",
+        "href": "",
+        "text": "sendसत्यापन हेतु भेजें"
+      }
+    ]
+  },
+  "Admin Dashboard": {
+    "filepath": "admin_dashboard.html",
+    "count": 26,
+    "elements": [
+      {
+        "tag": "button",
+        "id": "admin-offline-retry-btn",
+        "type": "",
+        "onclick": "refreshAdminData(false)",
+        "href": "",
+        "text": "पुनः प्रयास"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "refreshAdminData()",
+        "href": "",
+        "text": "sync"
+      },
+      {
+        "tag": "button",
+        "id": "admin-lang-toggle-btn",
+        "type": "",
+        "onclick": "toggleAdminLanguage()",
+        "href": "",
+        "text": "translateEnglish"
+      },
+      {
+        "tag": "a",
+        "id": "",
+        "type": "",
+        "onclick": "",
+        "href": "index.html",
+        "text": "smartphoneग्राहक ऐप"
+      },
+      {
+        "tag": "a",
+        "id": "",
+        "type": "",
+        "onclick": "",
+        "href": "vendor_dashboard.html",
+        "text": "storefrontदुकानदार"
+      },
+      {
+        "tag": "a",
+        "id": "",
+        "type": "",
+        "onclick": "",
+        "href": "runner_dashboard.html",
+        "text": "two_wheelerगाँव मित्र"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "dismissToast()",
+        "href": "",
+        "text": "close"
+      },
+      {
+        "tag": "button",
+        "id": "admin-tab-btn-vendors",
+        "type": "",
+        "onclick": "switchTab('vendors')",
+        "href": "",
+        "text": "storefrontदुकानदार सत्यापन कतार0"
+      },
+      {
+        "tag": "button",
+        "id": "admin-tab-btn-runners",
+        "type": "",
+        "onclick": "switchTab('runners')",
+        "href": "",
+        "text": "two_wheelerगाँव मित्र सत्यापन कतार0"
+      },
+      {
+        "tag": "button",
+        "id": "admin-tab-btn-orders",
+        "type": "",
+        "onclick": "switchTab('orders')",
+        "href": "",
+        "text": "visibilityलाइव ऑर्डर समग्र दृश्य"
+      },
+      {
+        "tag": "button",
+        "id": "admin-tab-btn-ledger",
+        "type": "",
+        "onclick": "switchTab('ledger')",
+        "href": "",
+        "text": "account_balanceप्लेटफ़ॉर्म आय व बहीखाता"
+      },
+      {
+        "tag": "button",
+        "id": "admin-tab-btn-bank",
+        "type": "",
+        "onclick": "switchTab('bank')",
+        "href": "",
+        "text": "account_balanceबैंक व पेआउट सत्यापन0"
+      },
+      {
+        "tag": "button",
+        "id": "admin-tab-btn-notifications",
+        "type": "",
+        "onclick": "switchTab('notifications')",
+        "href": "",
+        "text": "notificationsसिस्टम अलर्ट व सूचनाएं0"
+      },
+      {
+        "tag": "button",
+        "id": "admin-tab-btn-risk",
+        "type": "",
+        "onclick": "switchTab('risk')",
+        "href": "",
+        "text": "securityआंतरिक खाता जोखिम प्रबंधन"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "fetchPayoutVerifications()",
+        "href": "",
+        "text": "refreshरीफ्रेश"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "fetchPendingVendors('pending_approval')",
+        "href": "",
+        "text": "केवल लंबित"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "fetchPendingVendors('all')",
+        "href": "",
+        "text": "सभी रिकॉर्ड"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "fetchPendingRunners('pending_approval')",
+        "href": "",
+        "text": "केवल लंबित"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "fetchPendingRunners('all')",
+        "href": "",
+        "text": "सभी रिकॉर्ड"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "fetchRiskProfiles()",
+        "href": "",
+        "text": "refreshजोखिम प्रोफाइल रीफ्रेश"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "closeAdminKycModal()",
+        "href": "",
+        "text": "close"
+      },
+      {
+        "tag": "button",
+        "id": "btn-modal-ban",
+        "type": "",
+        "onclick": "executeModalBan()",
+        "href": "",
+        "text": "blockब्लॉक / बैन करें"
+      },
+      {
+        "tag": "button",
+        "id": "btn-modal-reject",
+        "type": "",
+        "onclick": "executeModalReject()",
+        "href": "",
+        "text": "closeअस्वीकार करें"
+      },
+      {
+        "tag": "button",
+        "id": "btn-modal-approve",
+        "type": "",
+        "onclick": "executeModalApprove()",
+        "href": "",
+        "text": "checkसत्यापित करें"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "markAllAdminNotifsRead()",
+        "href": "",
+        "text": "सभी पढ़े गए मार्क करें"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "type": "",
+        "onclick": "fetchAdminNotifications()",
+        "href": "",
+        "text": "refreshरीफ़्रेश"
+      }
+    ]
+  }
+}

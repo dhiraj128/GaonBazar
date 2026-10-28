@@ -91,7 +91,127 @@ DEFAULT_STORE_CATEGORIES = [
 ]
 
 DEFAULT_PRODUCTS = [
-    # Sharma Brothers Kirana Products
+    {
+        "id": "item_mov_test_50",
+        "store_id": "sharma_brothers",
+        "name_en": "Small Test Item",
+        "name_hi": "छोटा परीक्षण सामान",
+        "category": "kirana",
+        "weight": "500 g",
+        "price": 50.0,
+        "mrp": 60.0,
+        "icon": "inventory_2",
+        "in_stock": True
+    },
+    {
+        "id": "item_mov_test_150",
+        "store_id": "sharma_brothers",
+        "name_en": "Medium Test Item",
+        "name_hi": "मध्यम परीक्षण सामान",
+        "category": "kirana",
+        "weight": "1 kg",
+        "price": 150.0,
+        "mrp": 180.0,
+        "icon": "inventory_2",
+        "in_stock": True
+    },
+    {
+        "id": "item_mov_test_250",
+        "store_id": "sharma_brothers",
+        "name_en": "Large Test Item",
+        "name_hi": "बड़ा परीक्षण सामान",
+        "category": "kirana",
+        "weight": "2 kg",
+        "price": 250.0,
+        "mrp": 290.0,
+        "icon": "inventory_2",
+        "in_stock": True
+    },
+    {
+        "id": "item_discount_test",
+        "store_id": "sharma_brothers",
+        "name_en": "Bulk Test Item",
+        "name_hi": "थोक परीक्षण सामान",
+        "category": "kirana",
+        "weight": "3 kg",
+        "price": 300.0,
+        "mrp": 350.0,
+        "icon": "inventory_2",
+        "in_stock": True
+    },
+    {
+        "id": "item_mov_test_out",
+        "store_id": "sharma_brothers",
+        "name_en": "Item Out of Zone",
+        "name_hi": "बाहरी क्षेत्र सामान",
+        "category": "kirana",
+        "weight": "1 kg",
+        "price": 150.0,
+        "mrp": 180.0,
+        "icon": "inventory_2",
+        "in_stock": True
+    },
+    {
+        "id": "item_atta",
+        "store_id": "sharma_brothers",
+        "name_en": "Chakki Fresh Atta",
+        "name_hi": "चक्की ताज़ा आटा",
+        "category": "atta",
+        "weight": "5 kg • शुद्ध गेहूं आटा",
+        "price": 120.0,
+        "mrp": 140.0,
+        "icon": "grain",
+        "in_stock": True
+    },
+    # Sharma Brothers Kirana Products (including Home Featured Products)
+    {
+        "id": "item_tomato",
+        "store_id": "sharma_brothers",
+        "name_en": "Fresh Tomato",
+        "name_hi": "ताज़ा टमाटर",
+        "category": "kirana",
+        "weight": "1 kg • स्थानीय खेत की उपज",
+        "price": 30.0,
+        "mrp": 35.0,
+        "icon": "nutrition",
+        "in_stock": True
+    },
+    {
+        "id": "item_banana",
+        "store_id": "sharma_brothers",
+        "name_en": "Banana",
+        "name_hi": "केला",
+        "category": "kirana",
+        "weight": "1 kg • ताज़ा फल",
+        "price": 40.0,
+        "mrp": 50.0,
+        "icon": "nutrition",
+        "in_stock": True
+    },
+    {
+        "id": "item_onion",
+        "store_id": "sharma_brothers",
+        "name_en": "Onion",
+        "name_hi": "प्याज़",
+        "category": "kirana",
+        "weight": "1 kg • ताज़ी उपज",
+        "price": 25.0,
+        "mrp": 30.0,
+        "icon": "nutrition",
+        "in_stock": True
+    },
+    {
+        "id": "item_milk",
+        "store_id": "apna_dairy",
+        "name_en": "Amul Taaza Milk",
+        "name_hi": "अमूल ताज़ा दूध",
+        "category": "dairy",
+        "weight": "1 L • पाश्चुरीकृत टोंड दूध",
+        "price": 60.0,
+        "mrp": 65.0,
+        "icon": "water_full",
+        "in_stock": True
+    },
     {
         "id": "item_1",
         "store_id": "sharma_brothers",
@@ -173,6 +293,30 @@ DEFAULT_PRODUCTS = [
         "weight": "1 kg • सल्फर-मुक्त शुद्ध चीनी",
         "price": 48.0,
         "mrp": 55.0,
+        "icon": "cookie",
+        "in_stock": True
+    },
+    {
+        "id": "item_surf",
+        "store_id": "sharma_brothers",
+        "name_en": "Surf Excel Detergent Powder",
+        "name_hi": "सर्फ एक्सेल डिटर्जेंट पाउडर",
+        "category": "spices",
+        "weight": "1 kg • जिद्दी दाग हटाए",
+        "price": 140.0,
+        "mrp": 160.0,
+        "icon": "local_laundry_service",
+        "in_stock": True
+    },
+    {
+        "id": "item_biscuit",
+        "store_id": "sharma_brothers",
+        "name_en": "Parle-G Gold Glucose Biscuits",
+        "name_hi": "पारले-जी ग्लूकोज बिस्कुट",
+        "category": "tea",
+        "weight": "250 g • असली चाय का साथी",
+        "price": 25.0,
+        "mrp": 30.0,
         "icon": "cookie",
         "in_stock": True
     },
@@ -449,5 +593,39 @@ def seed_database(db: Session):
             total_completed_missions=142
         )
         db.add(runner_obj)
+
+
+    # 5. Seed default coordination message thread for active reference order #GB-1284
+    from .models import MessageThread, ChatMessage
+    thread = db.query(MessageThread).filter(MessageThread.id == "th_GB1284").first()
+    if not thread:
+        thread = MessageThread(
+            id="th_GB1284",
+            order_id="#GB-1284",
+            vendor_id="sharma_brothers",
+            runner_id="gm_1",
+            subject="Order #GB-1284 Coordination",
+            created_at=datetime.utcnow(),
+            updated_at=datetime.utcnow()
+        )
+        db.add(thread)
+        db.add(ChatMessage(
+            thread_id="th_GB1284",
+            sender_id="sharma_brothers",
+            sender_role="vendor",
+            sender_name="Sharma Brothers Kirana",
+            message="नमस्ते कमल जी, ऑर्डर #GB-1284 पैक हो चुका है। पिकअप कर लें।",
+            is_read=True,
+            created_at=datetime.utcnow()
+        ))
+        db.add(ChatMessage(
+            thread_id="th_GB1284",
+            sender_id="gm_1",
+            sender_role="runner",
+            sender_name="Kamal Singh",
+            message="जी भैया, मैं 5 मिनट में दुकान पर पहुँच रहा हूँ।",
+            is_read=False,
+            created_at=datetime.utcnow()
+        ))
 
     db.commit()

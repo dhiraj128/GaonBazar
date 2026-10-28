@@ -9,6 +9,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      ALLOW_TEST_BYPASS: "1"
+      TEST_MODE: "1"
 
     steps:
     - name: Checkout code
@@ -26,8 +29,11 @@ jobs:
         playwright install --with-deps chromium
 
     - name: Start FastAPI Backend
+      env:
+        ALLOW_TEST_BYPASS: "1"
+        TEST_MODE: "1"
       run: |
-        python run_server.py 8001 &
+        ALLOW_TEST_BYPASS=1 TEST_MODE=1 python run_server.py 8001 &
         sleep 5
 
     - name: Run Trust Score Tests
@@ -45,6 +51,12 @@ jobs:
     - name: Run Customer App Tests
       run: python test_mobile_e2e.py
 
+    - name: Run Customer Navigation, Voice and Dark-Mode Regressions
+      run: |
+        python test_customer_navigation_hierarchy.py
+        node test_customer_voice_logic.js
+        python test_customer_voice_browser.py
+
     - name: Run Vendor App Tests
       run: python test_vendor_e2e.py
 
@@ -53,6 +65,17 @@ jobs:
       
     - name: Run Admin Dashboard Tests
       run: python test_admin_e2e.py
+
+    - name: Run Universal Vertical Scrolling Audit
+      run: python test_vertical_scrolling.py
+
+    - name: Run Customer AI Voice Shopping Tests
+      run: |
+        python test_voice_shopping_and_ai.py
+        python test_hindi_first_and_voice_shopping.py
+
+    - name: Run Delivery Economics, Payouts & Notifications Audit
+      run: python test_delivery_economics_and_notifications.py
 
     - name: Upload Test Artifacts (Screenshots & Reports)
       if: always()
