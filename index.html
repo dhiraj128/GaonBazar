@@ -200,6 +200,15 @@
       color: #4ADE80 !important;
       border-color: rgba(22, 184, 110, 0.3) !important;
     }
+    /* Keep the login trust badge readable in both themes, including its nested text. */
+    html.dark #p1-hero-badge {
+      background-color: #2A323D !important;
+      color: #F8FAFC !important;
+      border-color: #465362 !important;
+    }
+    html.dark #p1-hero-badge [data-i18n="p1_hero_badge"] {
+      color: #F8FAFC !important;
+    }
     html.dark .bg-amber-50 {
       background-color: rgba(255, 152, 26, 0.2) !important;
       color: #FFB347 !important;
@@ -597,9 +606,9 @@
       <section id="view-p1-login" class="screen-view active flex-col w-full px-4 pt-4 pb-28 flex-1 min-h-0 space-y-4">
         <!-- Hero Banner -->
         <div class="w-full shrink-0 relative overflow-hidden rounded-2xl bg-gradient-to-br from-surface-container/70 to-surface-container-low dark:from-[#1D232B] dark:to-[#111418] px-4 py-3 shadow-xs border border-surface-container-high/80 dark:border-[#465362] text-center flex flex-col items-center justify-center gap-1.5" style="max-width: 100%;">
-          <div class="inline-flex items-center justify-center gap-1.5 bg-emerald-50 dark:bg-[#1D232B] text-emerald-900 dark:text-[#16B86E] border border-emerald-300/80 dark:border-[#465362] px-2.5 py-0.5 rounded-full text-[10.5px] font-bold shadow-xs max-w-full box-border">
-            <span class="material-symbols-outlined text-[14px] text-emerald-600 dark:text-[#16B86E] shrink-0 select-none" style="font-variation-settings: 'FILL' 1;">eco</span>
-            <span data-i18n="p1_hero_badge" class="truncate text-center tracking-tight text-emerald-900 dark:text-[#F8FAFC]">100% शुद्ध देसी • ताज़ा सुविधा घर तक</span>
+          <div id="p1-hero-badge" class="inline-flex items-center justify-center gap-1.5 bg-emerald-50 text-emerald-900 dark:!bg-[#2A323D] dark:!text-[#F8FAFC] border border-emerald-300/80 dark:!border-[#465362] px-2.5 py-1 rounded-full text-[10.5px] font-bold shadow-xs max-w-full box-border">
+            <span class="material-symbols-outlined text-[14px] text-emerald-600 dark:!text-[#4ADE80] shrink-0 select-none" style="font-variation-settings: 'FILL' 1;">eco</span>
+            <span data-i18n="p1_hero_badge" class="text-center tracking-tight whitespace-normal leading-snug">100% शुद्ध देसी • ताज़ा सुविधा घर तक</span>
           </div>
           <h1 class="text-base sm:text-lg font-extrabold text-on-surface leading-snug font-hindi" style="padding: 0 16px; text-align: center; max-width: 100%; word-wrap: break-word; overflow-wrap: break-word;">
             <span data-i18n="p1_hero_title_1">"अपने गाँव की दुकान,</span>
@@ -1033,21 +1042,22 @@
               <span class="material-symbols-outlined text-[18px]">close</span>
             </button>
             <!-- Native Circular Green Microphone Button on Right -->
-            <button id="p2-voice-search-btn" onclick="triggerVoiceSearch()" type="button" aria-label="Voice Search" title="Voice Search" class="w-9 h-9 min-w-[36px] min-h-[36px] rounded-full bg-[#16B86E] text-white hover:bg-emerald-600 active:scale-90 flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-xs">
+            <button id="p2-voice-search-btn" onclick="triggerVoiceSearch()" type="button" aria-label="Voice Search" aria-pressed="false" title="Voice Search" class="w-9 h-9 min-w-[36px] min-h-[36px] rounded-full bg-[#16B86E] text-white hover:bg-emerald-600 active:scale-90 flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-xs">
               <span class="material-symbols-outlined text-[20px]">mic</span>
               <span id="p2-voice-search-text" class="hidden"></span>
               <span id="p2-voice-search-icon" class="hidden"></span>
               <span id="p2-voice-search-svg" class="hidden"></span>
             </button>
           </div>
+          <p id="p2-voice-search-status" class="hidden mt-1.5 px-2 text-[11px] font-semibold text-emerald-700 dark:text-[#B4F8CC]" role="status" aria-live="polite"></p>
           <!-- Smart Product & Store Discovery Overlay -->
           <div id="p2-search-results" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-white dark:bg-[#1D232B] rounded-2xl shadow-2xl border border-slate-200 dark:border-[#465362] p-3 z-30 max-h-80 overflow-y-auto">
           </div>
         </div>
 
         <!-- Category Filter Chips (Inside Home) Matching Reference 01 -->
-        <div class="w-full overflow-x-auto no-scrollbar pt-2 pb-1 my-1 px-0.5 relative z-10 min-h-[48px]">
-          <div class="flex items-center gap-2.5 min-w-max pb-1">
+        <div class="w-full pt-2 pb-1 my-1 px-0.5 relative z-10">
+          <div class="flex flex-wrap items-center gap-2 pb-1">
             <button type="button" onclick="filterStoresByCategory('all')" id="cat-chip-all" class="cat-chip shrink-0 whitespace-nowrap min-h-[44px] px-4 py-2 rounded-full text-xs font-black bg-[#16B86E] text-white shadow-xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer">
               <span id="cat-lbl-all" data-i18n="cat_all">All</span>
             </button>
@@ -4362,6 +4372,10 @@
         gps: null
       },
       catalog: [
+        { id: 'item_tomato', name_hi: 'ताज़ा टमाटर', name_en: 'Fresh Tomato', cat: 'kirana', weight: '1 kg', weight_hi: '1 किग्रा', weight_en: '1 kg', price: 30, mrp: 35, qty: 0, icon: 'nutrition', store_id: 'sharma_brothers' },
+        { id: 'item_banana', name_hi: 'केला', name_en: 'Banana', cat: 'kirana', weight: '1 kg', weight_hi: '1 किग्रा', weight_en: '1 kg', price: 40, mrp: 50, qty: 0, icon: 'nutrition', store_id: 'sharma_brothers' },
+        { id: 'item_onion', name_hi: 'प्याज', name_en: 'Onion', cat: 'kirana', weight: '1 kg', weight_hi: '1 किग्रा', weight_en: '1 kg', price: 25, mrp: 30, qty: 0, icon: 'nutrition', store_id: 'sharma_brothers' },
+        { id: 'item_milk', name_hi: 'अमूल ताज़ा दूध', name_en: 'Amul Taaza Milk', cat: 'dairy', weight: '1 L', weight_hi: '1 लीटर', weight_en: '1 L', price: 60, mrp: 65, qty: 0, icon: 'water_full', store_id: 'sharma_brothers' },
         { id: 'item_1', name_hi: 'आशीर्वाद चक्की आटा', name_en: 'Aashirvaad Chakki Atta', cat: 'atta', weight: '5 kg', weight_hi: '5 किग्रा', weight_en: '5 kg', price: 210, mrp: 240, qty: 0, icon: 'grain', store_id: 'sharma_brothers' },
         { id: 'item_2', name_hi: 'फॉर्च्यून सरसों तेल', name_en: 'Fortune Mustard Oil', cat: 'oil', weight: '1 L', weight_hi: '1 लीटर', weight_en: '1 L', price: 145, mrp: 165, qty: 0, icon: 'opacity', store_id: 'sharma_brothers' },
         { id: 'item_3', name_hi: 'टाटा आयोडाइज्ड नमक', name_en: 'Tata Salt Iodized', cat: 'spices', weight: '1 kg', weight_hi: '1 किग्रा', weight_en: '1 kg', price: 24, mrp: 28, qty: 0, icon: 'science', store_id: 'sharma_brothers' },
@@ -7291,7 +7305,7 @@
         }
 
         // 4b. Direct Quantity + Item Phrases (e.g. '1 kg tomato', 'एक किलो टमाटर', '2 packet milk', 'दो पैकेट दूध', '500g sugar', 'आधा किलो चीनी')
-        let directQtyMatch = ql.match(/^(?:mujhe|humko|hamko|i want|please)?\s*(\d+|ek|do|teen|char|panch|chhe|saat|aath|nau|das|one|two|three|four|five|six|seven|eight|nine|ten|aadha|आधा|एक|दो|तीन|चार|पांच|पाँच|छह|सात|आठ|नौ|दस|500g|250g|100g)\s*(kg|kilo|kilos|l|litre|liter|packet|packets|pkt|bottle|bottles|g|gram|ग्राम|किलो|लीटर|पैकेट|बोतल)?\s+(.+)$/i);
+        let directQtyMatch = ql.match(/^(?:mujhe|humko|hamko|i want|please|मुझे|हमको)?\s*(\d+|ek|do|teen|char|panch|chhe|saat|aath|nau|das|one|two|three|four|five|six|seven|eight|nine|ten|aadha|आधा|एक|दो|तीन|चार|पांच|पाँच|छह|सात|आठ|नौ|दस|500g|250g|100g)\s*(kg|kilo|kilos|l|litre|liter|packet|packets|pkt|bottle|bottles|g|gram|ग्राम|किलो|लीटर|पैकेट|बोतल)?\s+(.+)$/i);
         if (directQtyMatch && !/^(?:search|find|khojo|dhoondo|kahan|dikhao|show)\b/i.test(ql)) {
           let rawQty = directQtyMatch[1].trim();
           let unit = directQtyMatch[2] || '';
@@ -7390,6 +7404,32 @@
         }
 
         return [];
+      },
+
+      async executeAiVoiceShoppingList(transcript) {
+        const request = (transcript || '').trim();
+        if (!request) return { success: false, added: 0 };
+        const action = this.parseIntent(request);
+        if (['SHOW_CART', 'REMOVE_FROM_CART', 'MODIFY_QUANTITY'].includes(action.intent)) {
+          return this.executeVoiceCommand(request, 'ai-commerce');
+        }
+
+        const parts = request.split(/\s*(?:,|\+|\b(?:and|aur)\b|और)\s*/i).filter(Boolean);
+        let added = 0;
+        for (const part of parts) {
+          const itemSpec = part
+            .replace(/^(?:मुझे|हमको|i\s+want|i\s+need|mujhe|humko|please|add|daalo|jodo|डालो|जोड़ो)\s*/i, '')
+            .replace(/\s*(?:चाहिए|chahiye|कार्ट में डालो|कार्ट में जोड़ो|जोड़ो|जोड़ें|डालो|add karo|daal do|please)\s*$/i, '')
+            .trim();
+          if (!itemSpec) continue;
+          const outcome = await this.executeVoiceCommand('add ' + itemSpec, 'ai-commerce');
+          if (outcome && outcome.success) added++;
+        }
+
+        // Show actual matched inventory cards, including the updated cart counts.
+        if (typeof processCommerceAiQuery === 'function') await processCommerceAiQuery(request);
+        if (typeof syncCommerceCartBar === 'function') syncCommerceCartBar();
+        return { success: added > 0, added };
       },
 
       speakFeedback(text) {
@@ -7509,9 +7549,7 @@
             if (sourceView === 'ai-commerce') {
               if (typeof refreshCommerceCard === 'function') refreshCommerceCard(item.id);
               if (typeof syncCommerceCartBar === 'function') syncCommerceCartBar();
-              if (typeof processCommerceAiQuery === 'function') {
-                processCommerceAiQuery(parsed.target);
-              }
+
             }
           } else {
             responseMsg = isHi ? `क्षमा करें, '${parsed.target}' गाँव की दुकानों में उपलब्ध नहीं है।` : `Could not find '${parsed.target}' in village stores.`;
@@ -7549,6 +7587,21 @@
 
     let activeVoiceRecognition = null;
 
+    function setHomeVoiceSearchStatus(message) {
+      const status = document.getElementById('p2-voice-search-status');
+      if (!status) return;
+      status.textContent = message || '';
+      status.classList.toggle('hidden', !message);
+    }
+
+    function normalizeHomeVoiceSearch(transcript) {
+      const cleaned = (transcript || '').trim()
+        .replace(/^(?:search for|search|find|show me|show|look for|मुझे|खोजो|ढूंढो|दिखाओ|सर्च करो)\s+/i, '')
+        .replace(/\s+(?:दिखाओ|खोजो|ढूंढो|search karo|dikhao|chahiye|चाहिए)\s*$/i, '')
+        .trim();
+      return cleaned || transcript.trim();
+    }
+
     function resetVoiceSearchUI() {
       const voiceBtn = document.getElementById('p2-voice-search-btn');
       const voiceText = document.getElementById('p2-voice-search-text');
@@ -7560,6 +7613,7 @@
       if (voiceBtn) {
         voiceBtn.classList.remove('bg-red-500', 'bg-red-600', 'text-white', 'animate-pulse', 'bg-secondary');
         voiceBtn.classList.add('bg-slate-100', 'text-slate-700');
+        voiceBtn.setAttribute('aria-pressed', 'false');
       }
       if (voiceSvg) {
         voiceSvg.classList.remove('text-white');
@@ -7601,6 +7655,7 @@
       try {
         const recognition = new SpeechRecognition();
         activeVoiceRecognition = recognition;
+        if (voiceBtn) voiceBtn.setAttribute('aria-pressed', 'true');
 
         recognition.continuous = false;
         recognition.interimResults = true; // Real-time interim feedback!
@@ -7670,11 +7725,12 @@
 
           if (finalTranscript) {
             if (speechTimer) clearTimeout(speechTimer);
+            const productQuery = normalizeHomeVoiceSearch(finalTranscript);
+            if (searchInput) searchInput.value = productQuery;
+            filterStoreCatalog(productQuery);
+            setHomeVoiceSearchStatus(isHi ? `“${productQuery}” के नतीजे` : `Showing results for “${productQuery}”`);
             try { recognition.stop(); } catch (e) {}
             resetVoiceSearchUI();
-            const cleanQuery = finalTranscript.trim();
-            if (searchInput) searchInput.value = cleanQuery;
-            filterStoreCatalog(cleanQuery);
           }
         };
 
@@ -10510,7 +10566,11 @@
           if (final && transcript) {
             recognition.stop();
             if (window.VoiceCommerceEngine) {
-              window.VoiceCommerceEngine.executeVoiceCommand(transcript, 'ai-commerce');
+              if (typeof window.VoiceCommerceEngine.executeAiVoiceShoppingList === 'function') {
+                window.VoiceCommerceEngine.executeAiVoiceShoppingList(transcript);
+              } else {
+                window.VoiceCommerceEngine.executeVoiceCommand(transcript, 'ai-commerce');
+              }
             } else {
               processCommerceAiQuery(transcript);
             }

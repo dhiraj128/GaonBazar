@@ -1069,6 +1069,10 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
         AppStore.catalog.forEach(i => i.qty = 0);
         AppStore.catalog[0].price = 150;
         AppStore.catalog[0].qty = 1;
+        if (AppStore.user) {
+            AppStore.user.village = '';
+            AppStore.user.landmark = '';
+        }
         updateCartCalculations();
     }""")
     page.wait_for_timeout(300)
