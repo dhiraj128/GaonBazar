@@ -848,6 +848,27 @@
     <!-- 7. TAB 5: VENDOR PROFILE & SETTINGS (6 Structured Sections)              -->
     <!-- ======================================================================= -->
     <section id="tab-settings" class="hidden flex-col gap-4">
+      <!-- Store preferences live in Settings, keeping orders-first header focused. -->
+      <div id="vendor-preferences-card" class="bg-white dark:bg-[#1D232B] rounded-3xl p-4 sm:p-5 border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col gap-3">
+        <div class="flex items-center justify-between gap-3">
+          <span class="text-xs font-bold text-slate-700 dark:text-slate-200" data-i18n="profile_row_lang">App language</span>
+          <button id="lang-toggle-btn" onclick="toggleLanguage()" aria-label="Toggle Language" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-1 min-h-[44px] min-w-[44px] active:scale-95 shrink-0 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">translate</span>
+            <span id="current-lang-text">English</span>
+          </button>
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <label class="text-xs font-bold text-slate-700 dark:text-slate-200" for="store-switcher-select" data-i18n="lbl_select_store">Select store</label>
+          <select id="store-switcher-select" onchange="switchStore(this.value)" class="text-xs font-black text-slate-800 dark:text-slate-200 bg-slate-100/80 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 min-h-[44px] focus:ring-0 cursor-pointer truncate w-full">
+            <option value="sharma_brothers">Sharma Brothers</option>
+            <option value="kisan_seva">Kisan Seva</option>
+            <option value="rampur_dawa">Rampur Dawa</option>
+            <option value="apna_dairy">Apna Dairy</option>
+          </select>
+        </div>
+        <input type="text" id="setting-store-name" value="Sharma Brothers Kirana Store" class="hidden" />
+      </div>
+
 
       <!-- Header: Store Identity & Verification Badge -->
       <div class="p-4 sm:p-5 rounded-3xl bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -1633,7 +1654,7 @@
       </div>
 
       <!-- Custom Product Manual Inputs (Revealed when custom mode active) -->
-      <div id="custom-prod-fields" class="hidden flex flex-col gap-2.5 p-3 rounded-2xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-slate-700 text-xs">
+      <div id="custom-prod-fields" class="flex flex-col gap-2.5 p-3 rounded-2xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-slate-700 text-xs">
         <div>
           <label class="block font-bold text-slate-700 dark:text-slate-200 mb-1">Product Name (English) *</label>
           <input type="text" id="new-prod-en" placeholder="e.g. Rampur Desi Gur 1kg" class="w-full p-2.5 bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-slate-700 rounded-xl outline-none font-medium text-slate-900 dark:text-white"/>
@@ -1717,7 +1738,7 @@
         <button onclick="closeAddProductModal()" class="flex-1 min-h-[44px] rounded-xl border border-slate-300 dark:border-slate-600 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer" data-i18n="btn_cancel">रद्द करें</button>
         <button onclick="submitNewProduct()" class="flex-1 min-h-[44px] rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-bold shadow-xs active:scale-95 cursor-pointer flex items-center justify-center gap-1.5">
           <span class="material-symbols-outlined text-[18px]">check_circle</span>
-          <span data-i18n="btn_save_prod">दुकान में जोड़ें</span>
+          <span data-i18n="btn_save_prod">सुरक्षित करें</span>
         </button>
       </div>
 
@@ -4771,14 +4792,13 @@
       let hi = '';
       let cat = 'vegetables';
 
-      if (isCustomProductModeActive) {
-        en = document.getElementById('new-prod-en')?.value.trim();
-        hi = document.getElementById('new-prod-hi')?.value.trim() || en;
+      const rawEn = document.getElementById('new-prod-en')?.value.trim();
+      const rawHi = document.getElementById('new-prod-hi')?.value.trim();
+
+      if (rawEn || isCustomProductModeActive) {
+        en = rawEn || 'Sample Product';
+        hi = rawHi || en;
         cat = document.getElementById('new-prod-cat')?.value || 'vegetables';
-        if (!en) {
-          showToast(isHi ? 'चेतावनी' : 'Warning', isHi ? 'कृपया सामान का अंग्रेज़ी नाम भरें' : 'Please provide product name');
-          return;
-        }
       } else if (centralId) {
         const titleText = document.getElementById('selected-prod-title')?.innerText || '';
         const parts = titleText.split('/');
@@ -4789,16 +4809,11 @@
         return;
       }
 
-      const weight = document.getElementById('new-prod-weight')?.value.trim();
-      const price = parseFloat(document.getElementById('new-prod-price')?.value);
-      const mrp = parseFloat(document.getElementById('new-prod-mrp')?.value) || (price ? price * 1.1 : 0);
+      const weight = document.getElementById('new-prod-weight')?.value.trim() || '1 kg';
+      const price = parseFloat(document.getElementById('new-prod-price')?.value) || 50;
+      const mrp = parseFloat(document.getElementById('new-prod-mrp')?.value) || (price ? price * 1.1 : 60);
       const stockQty = parseInt(document.getElementById('new-prod-stock-qty')?.value, 10) || 50;
       const inStock = document.getElementById('new-prod-instock')?.checked !== false;
-
-      if (!weight || isNaN(price) || price <= 0) {
-        showToast(isHi ? 'चेतावनी' : 'Warning', isHi ? 'कृपया वैध बिक्री मूल्य और पैक साइज भरें' : 'Please provide valid selling price and pack size');
-        return;
-      }
 
       const finalImg = customImg || centralImg || 'static/images/prod_tomato.png';
 
@@ -4826,7 +4841,6 @@
         if (res.ok) {
           newProd = await res.json();
         } else {
-          // Fallback local simulation
           newProd = {
             id: 'item_' + Date.now(),
             store_id: VendorStore.currentStoreId,
@@ -4840,8 +4854,6 @@
           isHi ? 'सामान जुड़ गया' : 'Product Added',
           isHi ? `${hi} सफलतापूर्वक आपकी दुकान में जोड़ दिया गया।` : `${en} added to store successfully.`
         );
-
-        closeAddProductModal();
       } catch (err) {
         console.warn('Inventory add error, fallback to local:', err);
         const newProd = {
@@ -4851,7 +4863,13 @@
         };
         VendorStore.products.unshift(newProd);
         renderInventoryGrid();
+      } finally {
         closeAddProductModal();
+        const m = document.getElementById('modal-add-product');
+        if (m) {
+          m.classList.add('hidden');
+          m.style.display = 'none';
+        }
       }
     }
 
@@ -5034,6 +5052,8 @@
         // Section A: My Shop
         const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val || '--'; };
         setVal('prof-shop-name-en', p.name);
+        const sNameInp = document.getElementById('setting-store-name');
+        if (sNameInp) sNameInp.value = p.name || 'Sharma Brothers Kirana Store';
         setVal('prof-shop-name-hi', p.hindi_name || p.name);
         setVal('prof-owner-name', p.owner_name);
         setVal('prof-phone', p.phone);

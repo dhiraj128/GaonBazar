@@ -453,6 +453,7 @@
         <div class="flex flex-col min-w-0 justify-center">
           <span class="text-sm font-black text-slate-900 dark:text-[#F8FAFC] tracking-tight leading-tight">GaonBazaar</span>
           <span id="runner-header-role" class="text-[10px] text-slate-500 dark:text-[#CBD5E1] font-semibold truncate" data-i18n="runner_role_subtitle">Delivery Partner • Gaon Mitra</span>
+          <span id="runner-badge-code" class="hidden text-[10px] font-mono font-bold bg-amber-400/20 text-amber-300 px-2 py-0.5 rounded-md border border-amber-400/30">#GM-RAMPUR-07</span>
         </div>
       </div>
 
@@ -922,6 +923,49 @@
     <!-- 6. TAB 5: RUNNER PROFILE & SETTINGS (8 Structured Sections)              -->
     <!-- ======================================================================= -->
     <section id="tab-settings" class="hidden flex-col gap-4">
+      <!-- App Preferences (Language & Theme) -->
+      <div id="runner-preferences-card" class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-md flex flex-col gap-3.5">
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <span class="text-xs font-bold text-white block" data-i18n="profile_row_lang">ऐप की भाषा (Language)</span>
+            <span class="text-[11px] text-slate-400">हिंदी / English</span>
+          </div>
+          <button id="lang-toggle-btn" onclick="toggleLanguage()" aria-label="Toggle Language" class="px-3 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold flex items-center justify-center gap-1.5 min-h-[44px] min-w-[44px] active:scale-95 shrink-0 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">translate</span>
+            <span id="current-lang-text">English</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Theme Selection Card (Light / Dark / System) -->
+      <div id="runner-theme-settings-card" class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-md flex flex-col gap-3.5">
+        <div class="flex items-center justify-between border-b border-slate-700 pb-2">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-[20px]">palette</span>
+            <div>
+              <h2 class="text-sm font-black text-white" data-i18n="runner_theme_title">थीम / रंग रूप (Theme)</h2>
+              <span class="text-[11px] text-slate-400 block" data-i18n="runner_theme_sub">हल्का, गहरा या डिवाइस के अनुसार</span>
+            </div>
+          </div>
+          <span id="runner-theme-badge" class="px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">सिस्टम</span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 bg-slate-900 p-1.5 rounded-2xl runner-theme-segment">
+          <button id="btn-runner-theme-light" type="button" onclick="setRunnerTheme('light')" class="min-h-[44px] rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all text-slate-300 hover:bg-slate-800 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">light_mode</span>
+            <span data-i18n="theme_opt_light">हल्का</span>
+          </button>
+          <button id="btn-runner-theme-dark" type="button" onclick="setRunnerTheme('dark')" class="min-h-[44px] rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all text-slate-300 hover:bg-slate-800 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">dark_mode</span>
+            <span data-i18n="theme_opt_dark">गहरा</span>
+          </button>
+          <button id="btn-runner-theme-system" type="button" onclick="setRunnerTheme('system')" class="min-h-[44px] rounded-xl font-black text-xs flex items-center justify-center gap-1.5 transition-all bg-primary text-white shadow-xs cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">settings_suggest</span>
+            <span data-i18n="theme_opt_system">सिस्टम</span>
+          </button>
+        </div>
+      </div>
+
 
       <!-- Header: Partner Identity & Verification Badge -->
       <div class="p-4 sm:p-5 rounded-3xl bg-slate-800 border border-slate-700 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -4755,6 +4799,8 @@
         if (pVillage) pVillage.innerText = p.village;
         const pCode = document.getElementById('runner-profile-partner-code');
         if (pCode) pCode.innerText = p.partner_code;
+        const pBadge = document.getElementById('runner-badge-code');
+        if (pBadge) pBadge.innerText = p.partner_code || '#GM-RAMPUR-07';
         const pFooterCode = document.getElementById('prof-runner-id-footer');
         if (pFooterCode) pFooterCode.innerText = p.partner_code;
         const pPhoto = document.getElementById('runner-profile-photo');
