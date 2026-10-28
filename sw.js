@@ -15,7 +15,7 @@
  *    - Eliminates the browser's "No Internet" dinosaur screen.
  */
 
-const CACHE_NAME = 'gaonbazar-v3-20261026';
+const CACHE_NAME = 'gaonbazar-v5-20261028';
 const PRECACHE_ASSETS = [
   '/',
   '/index.html',
@@ -160,6 +160,33 @@ self.addEventListener('fetch', (event) => {
 
           // Relative fallback
           return (await caches.match('offline.html')) || Response.error();
+        })
+    );
+    return;
+  }
+
+  // ---------------------------------------------------------------------------
+  // STRATEGY C-IMG: Network-First with Cache Fallback for Images
+  // Guarantees immediate display of fresh catalog assets and banners
+  // ---------------------------------------------------------------------------
+  const isImage = request.destination === 'image' || 
+                  url.pathname.includes('/images/') || 
+                  /\.(png|jpe?g|webp|svg|gif)(\?.*)?$/i.test(url.pathname);
+
+  if (isImage) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (response && response.status === 200 && request.method === 'GET') {
+            const responseClone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, responseClone));
+          }
+          return response;
+        })
+        .catch(async () => {
+          const cached = await caches.match(request);
+          if (cached) return cached;
+          return new Response('', { status: 408, statusText: 'Image offline' });
         })
     );
     return;

@@ -1,6 +1,28 @@
 <!DOCTYPE html>
 <html lang="hi" class="h-full w-full">
 <head>
+  <script>
+    (function() {
+      var CURRENT_VERSION = 'v5_20261028';
+      try {
+        if (localStorage.getItem('gb_cache_ver') !== CURRENT_VERSION) {
+          if ('caches' in window) {
+            caches.keys().then(function(names) {
+              return Promise.all(names.map(function(name) {
+                if (!name.includes(CURRENT_VERSION)) {
+                  return caches.delete(name);
+                }
+              }));
+            }).then(function() {
+              localStorage.setItem('gb_cache_ver', CURRENT_VERSION);
+            }).catch(function() {});
+          } else {
+            localStorage.setItem('gb_cache_ver', CURRENT_VERSION);
+          }
+        }
+      } catch (e) {}
+    })();
+  </script>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛒</text></svg>"/>
     <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
@@ -1094,8 +1116,8 @@
               <span data-i18n="p2_hero_btn">Shop now</span>
             </button>
           </div>
-          <div class="w-28 h-24 sm:w-36 sm:h-28 flex items-center justify-center shrink-0 relative">
-            <img src="static/images/hero_banner.png" alt="Fresh Essentials" class="max-h-full max-w-full object-contain drop-shadow-sm select-none" />
+          <div class="w-32 h-28 sm:w-40 sm:h-32 flex items-center justify-center shrink-0 relative">
+            <img src="static/images/hero_banner.png?v=v5_20261028" alt="Fresh Essentials" class="max-h-full max-w-full object-contain drop-shadow-sm select-none" />
           </div>
         </div>
 
@@ -1115,8 +1137,8 @@
               <button type="button" data-favorite-item="item_tomato" onclick="toggleProductFavorite('item_tomato', event)" aria-label="Add Fresh Tomato to favorites" class="absolute top-2.5 right-2.5 w-9 h-9 min-w-[36px] min-h-[36px] flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors cursor-pointer">
                 <span class="material-symbols-outlined text-[18px]">favorite_border</span>
               </button>
-              <div class="w-full h-28 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2.5 mb-2">
-                <img src="static/images/prod_tomato.png" alt="Fresh Tomato" class="max-h-24 max-w-full object-contain drop-shadow-xs" />
+              <div class="w-full h-32 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2 mb-2">
+                <img src="static/images/prod_tomato.png?v=v5_20261028" alt="Fresh Tomato" class="h-28 w-auto max-w-full object-contain drop-shadow-xs" />
               </div>
               <div class="flex flex-col">
                 <span id="feat-title-tomato" data-i18n="feat_tomato_name" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">Fresh Tomato</span>
@@ -1135,8 +1157,8 @@
               <button type="button" data-favorite-item="item_banana" onclick="toggleProductFavorite('item_banana', event)" aria-label="Add Banana to favorites" class="absolute top-2.5 right-2.5 w-9 h-9 min-w-[36px] min-h-[36px] flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors cursor-pointer">
                 <span class="material-symbols-outlined text-[18px]">favorite_border</span>
               </button>
-              <div class="w-full h-28 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2.5 mb-2">
-                <img src="static/images/prod_banana.png" alt="Banana" class="max-h-24 max-w-full object-contain drop-shadow-xs" />
+              <div class="w-full h-32 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2 mb-2">
+                <img src="static/images/prod_banana.png?v=v5_20261028" alt="Banana" class="h-28 w-auto max-w-full object-contain drop-shadow-xs" />
               </div>
               <div class="flex flex-col">
                 <span id="feat-title-banana" data-i18n="feat_banana_name" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">Banana</span>
@@ -1168,8 +1190,8 @@
               <button type="button" data-favorite-item="item_milk" onclick="toggleProductFavorite('item_milk', event)" aria-label="Add Amul Taaza to favorites" class="absolute top-2.5 right-2.5 w-9 h-9 min-w-[36px] min-h-[36px] flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors cursor-pointer">
                 <span class="material-symbols-outlined text-[18px]">favorite_border</span>
               </button>
-              <div class="w-full h-28 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2.5 mb-2">
-                <img src="static/images/prod_milk.png" alt="Amul Taaza" class="max-h-24 max-w-full object-contain drop-shadow-xs" />
+              <div class="w-full h-32 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2 mb-2">
+                <img src="static/images/prod_milk.png?v=v5_20261028" alt="Amul Taaza" class="h-28 w-auto max-w-full object-contain drop-shadow-xs" />
               </div>
               <div class="flex flex-col">
                 <span id="feat-title-milk" data-i18n="feat_milk_name" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">Amul Taaza</span>
@@ -1188,8 +1210,8 @@
               <button type="button" data-favorite-item="item_onion" onclick="toggleProductFavorite('item_onion', event)" aria-label="Add Onion to favorites" class="absolute top-2.5 right-2.5 w-9 h-9 min-w-[36px] min-h-[36px] flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors cursor-pointer">
                 <span class="material-symbols-outlined text-[18px]">favorite_border</span>
               </button>
-              <div class="w-full h-28 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2.5 mb-2">
-                <img src="static/images/prod_onion.png" alt="Onion" class="max-h-24 max-w-full object-contain drop-shadow-xs" />
+              <div class="w-full h-32 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2 mb-2">
+                <img src="static/images/prod_onion.png?v=v5_20261028" alt="Onion" class="h-28 w-auto max-w-full object-contain drop-shadow-xs" />
               </div>
               <div class="flex flex-col">
                 <span id="feat-title-onion" data-i18n="feat_onion_name" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">Onion</span>
@@ -8538,22 +8560,22 @@
 
       // Map of product IDs to approved asset images
       const imgMap = {
-        item_tomato: 'static/images/prod_tomato.png',
-        tomato: 'static/images/prod_tomato.png',
-        item_banana: 'static/images/prod_banana.png',
-        banana: 'static/images/prod_banana.png',
-        item_milk: 'static/images/prod_milk.png',
-        milk: 'static/images/prod_milk.png',
-        item_onion: 'static/images/prod_onion.png',
-        onion: 'static/images/prod_onion.png',
-        item_oil: 'static/images/prod_oil.png',
-        oil: 'static/images/prod_oil.png',
-        item_rice: 'static/images/prod_rice.png',
-        rice: 'static/images/prod_rice.png',
-        item_potato: 'static/images/prod_potato.png',
-        potato: 'static/images/prod_potato.png',
-        item_atta: 'static/images/prod_atta.png',
-        atta: 'static/images/prod_atta.png'
+        item_tomato: 'static/images/prod_tomato.png?v=v5_20261028',
+        tomato: 'static/images/prod_tomato.png?v=v5_20261028',
+        item_banana: 'static/images/prod_banana.png?v=v5_20261028',
+        banana: 'static/images/prod_banana.png?v=v5_20261028',
+        item_milk: 'static/images/prod_milk.png?v=v5_20261028',
+        milk: 'static/images/prod_milk.png?v=v5_20261028',
+        item_onion: 'static/images/prod_onion.png?v=v5_20261028',
+        onion: 'static/images/prod_onion.png?v=v5_20261028',
+        item_oil: 'static/images/prod_oil.png?v=v5_20261028',
+        oil: 'static/images/prod_oil.png?v=v5_20261028',
+        item_rice: 'static/images/prod_rice.png?v=v5_20261028',
+        rice: 'static/images/prod_rice.png?v=v5_20261028',
+        item_potato: 'static/images/prod_potato.png?v=v5_20261028',
+        potato: 'static/images/prod_potato.png?v=v5_20261028',
+        item_atta: 'static/images/prod_atta.png?v=v5_20261028',
+        atta: 'static/images/prod_atta.png?v=v5_20261028'
       };
 
       cartItems.forEach(item => {

@@ -239,9 +239,9 @@ async def preview_access_guard(request: Request, call_next):
     # Diagnostic, public static, and unlock endpoints
     public_paths = (
         "/api/version", "/version", "/health", "/favicon.ico",
-        "/api/preview/unlock", "/preview-unlock"
+        "/api/preview/unlock", "/preview-unlock", "/api/diagnostics/images"
     )
-    if request.url.path in public_paths:
+    if request.url.path in public_paths or request.url.path.startswith(("/static/", "/assets/", "/screenshots/")):
         return await call_next(request)
 
     expected = os.getenv("GAONBAZAR_PREVIEW_PASSWORD", "")
@@ -574,6 +574,28 @@ app.mount("/assets", StaticFiles(directory=str(ASSETS_DIR)), name="assets")
 SCREENSHOTS_DIR = ROOT_DIR / "screenshots"
 if SCREENSHOTS_DIR.exists():
     app.mount("/screenshots", StaticFiles(directory=str(SCREENSHOTS_DIR)), name="screenshots")
+
+
+@app.get("/api/diagnostics/images")
+def get_image_diagnostics():
+    import hashlib
+    from PIL import Image
+    res = {}
+    for p in sorted((STATIC_DIR / "images").glob("*.png")):
+        data = p.read_bytes()
+        md5 = hashlib.md5(data).hexdigest()
+        try:
+            im = Image.open(p)
+            bbox = im.getbbox()
+            res[p.name] = {
+                "size_bytes": len(data),
+                "dimensions": list(im.size),
+                "md5": md5,
+                "bbox": list(bbox) if bbox else None
+            }
+        except Exception as e:
+            res[p.name] = {"size_bytes": len(data), "md5": md5, "error": str(e)}
+    return res
 
 
 @app.get("/api/version")
