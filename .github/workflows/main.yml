@@ -2,9 +2,9 @@ name: GaonBazaar E2E Test Suite
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "feat/**", "preview/**" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "feat/**", "preview/**" ]
 
 jobs:
   test:
@@ -63,6 +63,9 @@ jobs:
     - name: Run Runner App Tests
       run: python test_runner_e2e.py
       
+    - name: Run Central Catalog, Vendor & Runner KYC E2E Tests
+      run: python test_central_catalog_and_kyc_e2e.py
+
     - name: Run Admin Dashboard Tests
       run: python test_admin_e2e.py
 

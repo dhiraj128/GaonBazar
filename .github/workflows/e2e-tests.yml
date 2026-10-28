@@ -4,9 +4,13 @@ on:
   push:
     branches:
       - main
+      - 'feat/**'
+      - 'preview/**'
   pull_request:
     branches:
       - main
+      - 'feat/**'
+      - 'preview/**'
   workflow_dispatch:
 
 concurrency:
@@ -96,6 +100,10 @@ jobs:
       - name: Run Delivery Partner (Gaon Mitra) Dashboard E2E Test Suite
         run: |
           python test_runner_e2e.py
+
+      - name: Run Central Catalog, Vendor & Runner KYC E2E Tests
+        run: |
+          python test_central_catalog_and_kyc_e2e.py
 
       - name: Run Super Admin Dashboard E2E Test Suite
         run: |

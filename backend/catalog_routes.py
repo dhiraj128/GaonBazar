@@ -356,8 +356,17 @@ def get_vendor_inventory(
     Returns products in the vendor's store with individual selling price, stock, and unit.
     """
     effective_store_id = store_id
-    if auth and auth.get("role") == "vendor":
-        effective_store_id = auth.get("store_id") or auth.get("sub") or store_id
+    if auth:
+        role = auth.get("role")
+        token_store = auth.get("store_id") or auth.get("sub")
+        if role == "vendor" and store_id and token_store and store_id != token_store:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Access Denied: Token for store '{token_store}' cannot access store '{store_id}'"
+            )
+        if role not in ("vendor", "admin"):
+            raise HTTPException(status_code=403, detail="Forbidden: Vendor or admin privileges required")
+        effective_store_id = token_store or store_id
 
     if not effective_store_id:
         effective_store_id = "sharma_brothers"  # Default active demo store
@@ -400,8 +409,17 @@ def add_product_to_vendor_inventory(
     Vendor controls their OWN selling price, unit, stock, and availability.
     """
     effective_store_id = store_id
-    if auth and auth.get("role") == "vendor":
-        effective_store_id = auth.get("store_id") or auth.get("sub") or store_id
+    if auth:
+        role = auth.get("role")
+        token_store = auth.get("store_id") or auth.get("sub")
+        if role == "vendor" and store_id and token_store and store_id != token_store:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Access Denied: Token for store '{token_store}' cannot access store '{store_id}'"
+            )
+        if role not in ("vendor", "admin"):
+            raise HTTPException(status_code=403, detail="Forbidden: Vendor or admin privileges required")
+        effective_store_id = token_store or store_id
 
     if not effective_store_id:
         effective_store_id = "sharma_brothers"
@@ -537,8 +555,17 @@ def get_vendor_profile(
 ):
     """Returns complete profile and verification status for vendor."""
     effective_store_id = store_id
-    if auth and auth.get("role") == "vendor":
-        effective_store_id = auth.get("store_id") or auth.get("sub") or store_id
+    if auth:
+        role = auth.get("role")
+        token_store = auth.get("store_id") or auth.get("sub")
+        if role == "vendor" and store_id and token_store and store_id != token_store:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Access Denied: Token for store '{token_store}' cannot access store '{store_id}'"
+            )
+        if role not in ("vendor", "admin"):
+            raise HTTPException(status_code=403, detail="Forbidden: Vendor or admin privileges required")
+        effective_store_id = token_store or store_id
 
     if not effective_store_id:
         effective_store_id = "sharma_brothers"
@@ -592,8 +619,17 @@ def update_vendor_profile(
 ):
     """Vendor updates their shop profile, operating hours, and preferences."""
     effective_store_id = store_id
-    if auth and auth.get("role") == "vendor":
-        effective_store_id = auth.get("store_id") or auth.get("sub") or store_id
+    if auth:
+        role = auth.get("role")
+        token_store = auth.get("store_id") or auth.get("sub")
+        if role == "vendor" and store_id and token_store and store_id != token_store:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Access Denied: Token for store '{token_store}' cannot access store '{store_id}'"
+            )
+        if role not in ("vendor", "admin"):
+            raise HTTPException(status_code=403, detail="Forbidden: Vendor or admin privileges required")
+        effective_store_id = token_store or store_id
 
     if not effective_store_id:
         effective_store_id = "sharma_brothers"
@@ -648,8 +684,17 @@ def submit_vendor_kyc(
     Does not require GST or trade licence.
     """
     effective_store_id = store_id
-    if auth and auth.get("role") == "vendor":
-        effective_store_id = auth.get("store_id") or auth.get("sub") or store_id
+    if auth:
+        role = auth.get("role")
+        token_store = auth.get("store_id") or auth.get("sub")
+        if role == "vendor" and store_id and token_store and store_id != token_store:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Access Denied: Token for store '{token_store}' cannot access store '{store_id}'"
+            )
+        if role not in ("vendor", "admin"):
+            raise HTTPException(status_code=403, detail="Forbidden: Vendor or admin privileges required")
+        effective_store_id = token_store or store_id
 
     if not effective_store_id:
         effective_store_id = "sharma_brothers"
@@ -670,6 +715,7 @@ def submit_vendor_kyc(
 
     # Create admin notification
     notif = Notification(
+        id=f"ntf_{uuid.uuid4().hex[:12]}",
         user_id="admin",
         user_role="admin",
         title="New Vendor KYC Submission",
@@ -698,8 +744,17 @@ def update_vendor_bank_details(
 ):
     """Vendor updates payout bank account or UPI ID securely."""
     effective_store_id = store_id
-    if auth and auth.get("role") == "vendor":
-        effective_store_id = auth.get("store_id") or auth.get("sub") or store_id
+    if auth:
+        role = auth.get("role")
+        token_store = auth.get("store_id") or auth.get("sub")
+        if role == "vendor" and store_id and token_store and store_id != token_store:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Access Denied: Token for store '{token_store}' cannot access store '{store_id}'"
+            )
+        if role not in ("vendor", "admin"):
+            raise HTTPException(status_code=403, detail="Forbidden: Vendor or admin privileges required")
+        effective_store_id = token_store or store_id
 
     if not effective_store_id:
         effective_store_id = "sharma_brothers"
@@ -735,8 +790,17 @@ def get_runner_profile(
 ):
     """Returns complete delivery partner profile and vehicle/KYC status."""
     effective_runner_id = runner_id
-    if auth and auth.get("role") == "runner":
-        effective_runner_id = auth.get("runner_id") or auth.get("sub") or runner_id
+    if auth:
+        role = auth.get("role")
+        token_runner = auth.get("runner_id") or auth.get("sub")
+        if role == "runner" and runner_id and token_runner and runner_id != token_runner:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Access Denied: Token for runner '{token_runner}' cannot access runner '{runner_id}'"
+            )
+        if role not in ("runner", "admin"):
+            raise HTTPException(status_code=403, detail="Forbidden: Runner or admin privileges required")
+        effective_runner_id = token_runner or runner_id
 
     if not effective_runner_id:
         effective_runner_id = "gm_1"
@@ -790,8 +854,17 @@ def update_runner_profile(
 ):
     """Delivery partner updates personal details and preferences."""
     effective_runner_id = runner_id
-    if auth and auth.get("role") == "runner":
-        effective_runner_id = auth.get("runner_id") or auth.get("sub") or runner_id
+    if auth:
+        role = auth.get("role")
+        token_runner = auth.get("runner_id") or auth.get("sub")
+        if role == "runner" and runner_id and token_runner and runner_id != token_runner:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Access Denied: Token for runner '{token_runner}' cannot access runner '{runner_id}'"
+            )
+        if role not in ("runner", "admin"):
+            raise HTTPException(status_code=403, detail="Forbidden: Runner or admin privileges required")
+        effective_runner_id = token_runner or runner_id
 
     if not effective_runner_id:
         effective_runner_id = "gm_1"
@@ -835,8 +908,17 @@ def submit_runner_kyc(
     Motorcycle / EV partners provide registration & driving licence.
     """
     effective_runner_id = runner_id
-    if auth and auth.get("role") == "runner":
-        effective_runner_id = auth.get("runner_id") or auth.get("sub") or runner_id
+    if auth:
+        role = auth.get("role")
+        token_runner = auth.get("runner_id") or auth.get("sub")
+        if role == "runner" and runner_id and token_runner and runner_id != token_runner:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Access Denied: Token for runner '{token_runner}' cannot access runner '{runner_id}'"
+            )
+        if role not in ("runner", "admin"):
+            raise HTTPException(status_code=403, detail="Forbidden: Runner or admin privileges required")
+        effective_runner_id = token_runner or runner_id
 
     if not effective_runner_id:
         effective_runner_id = "gm_1"
@@ -869,6 +951,7 @@ def submit_runner_kyc(
 
     # Notify Super Admin
     notif = Notification(
+        id=f"ntf_{uuid.uuid4().hex[:12]}",
         user_id="admin",
         user_role="admin",
         title="New Partner KYC Submission",
@@ -897,8 +980,17 @@ def update_runner_bank_details(
 ):
     """Delivery partner updates bank account or UPI ID securely."""
     effective_runner_id = runner_id
-    if auth and auth.get("role") == "runner":
-        effective_runner_id = auth.get("runner_id") or auth.get("sub") or runner_id
+    if auth:
+        role = auth.get("role")
+        token_runner = auth.get("runner_id") or auth.get("sub")
+        if role == "runner" and runner_id and token_runner and runner_id != token_runner:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Access Denied: Token for runner '{token_runner}' cannot access runner '{runner_id}'"
+            )
+        if role not in ("runner", "admin"):
+            raise HTTPException(status_code=403, detail="Forbidden: Runner or admin privileges required")
+        effective_runner_id = token_runner or runner_id
 
     if not effective_runner_id:
         effective_runner_id = "gm_1"
@@ -996,6 +1088,13 @@ def review_kyc_submission(
     - resubmit: sets status='resubmission_requested', notes reason.
     """
     action = payload.action.lower()
+    if action == "approved":
+        action = "approve"
+    elif action == "rejected":
+        action = "reject"
+    elif action in ("needs_resubmission", "resubmission"):
+        action = "resubmit"
+
     if action not in ("approve", "reject", "resubmit"):
         raise HTTPException(status_code=400, detail="Action must be 'approve', 'reject', or 'resubmit'.")
 
@@ -1020,6 +1119,7 @@ def review_kyc_submission(
 
         msg = "आपका दुकानदार केवाईसी स्वीकृत हो गया है! (Verified Badge Granted)" if is_verified else f"केवाईसी समीक्षा: {payload.rejection_reason or 'दस्तावेज़ दोबारा अपलोड करें।'}"
         notif = Notification(
+            id=f"ntf_{uuid.uuid4().hex[:12]}",
             user_id=s.id,
             user_role="vendor",
             title="KYC Verification Decision",
@@ -1054,6 +1154,7 @@ def review_kyc_submission(
 
         msg = "बधाई! आपका डिलीवरी पार्टनर केवाईसी स्वीकृत हो गया है। (Verified Partner)" if is_verified else f"केवाईसी समीक्षा: {payload.rejection_reason or 'दस्तावेज़ दोबारा अपलोड करें।'}"
         notif = Notification(
+            id=f"ntf_{uuid.uuid4().hex[:12]}",
             user_id=r.id,
             user_role="runner",
             title="Partner KYC Decision",

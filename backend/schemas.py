@@ -976,7 +976,7 @@ class CentralProductDTO(BaseModel):
     variant: Optional[str] = None
     default_unit: str = "1 kg"
     default_mrp: Optional[float] = None
-    image_url: str
+    image_url: Optional[str] = None
     search_aliases: Optional[str] = None
     is_active: bool = True
 
@@ -993,7 +993,7 @@ class CentralProductCreateRequest(BaseModel):
     variant: Optional[str] = None
     default_unit: str = "1 kg"
     default_mrp: Optional[float] = None
-    image_url: str
+    image_url: Optional[str] = None
     search_aliases: Optional[str] = None
 
 
