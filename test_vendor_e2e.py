@@ -579,8 +579,15 @@ def _run_vendor_device_steps(context, dev_name, device_config, logger):
     # store/language preferences inside Settings, rather than an overcrowded bar.
     check_element_bounds(page, "#vendor-header-shop-name", "Current Store Name", logger)
     check_element_bounds(page, "#store-open-btn", "Store Open/Close Toggle CTA", logger)
-    check_element_bounds(page, "#btn-vendor-header-settings", "Header Settings Shortcut", logger)
-    page.click("#btn-vendor-header-settings")
+    # Verify duplicate header settings button is purged from header
+    header_btn_count = page.locator("#btn-vendor-header-settings").count()
+    logger.record_test(
+        f"[{dev_name}] Header Duplicate Settings Button Removed",
+        header_btn_count == 0,
+        f"Duplicate header settings count: {header_btn_count}"
+    )
+    # Open settings via canonical bottom navigation tab
+    page.click("#nav-btn-settings")
     page.wait_for_timeout(250)
     check_element_bounds(page, "#store-switcher-select", "Store Switcher in Settings", logger)
     check_element_bounds(page, "#lang-toggle-btn", "Language Control in Settings", logger)

@@ -241,7 +241,7 @@ async def preview_access_guard(request: Request, call_next):
         "/api/version", "/version", "/health", "/favicon.ico",
         "/api/preview/unlock", "/preview-unlock", "/api/diagnostics/images"
     )
-    if request.url.path in public_paths or request.url.path.startswith(("/static/", "/assets/", "/screenshots/")):
+    if request.url.path in public_paths or request.url.path.startswith(("/static/", "/assets/", "/screenshots/", "/api/catalog/")):
         return await call_next(request)
 
     expected = os.getenv("GAONBAZAR_PREVIEW_PASSWORD", "")
@@ -404,6 +404,10 @@ try:
 except Exception as e:
     print(f"Notice initializing Razorpay client: {e}")
     razorpay_client = None
+
+
+from .catalog_routes import router as catalog_router
+app.include_router(catalog_router)
 
 
 @app.on_event("startup")

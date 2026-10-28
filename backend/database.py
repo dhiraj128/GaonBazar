@@ -127,6 +127,30 @@ def ensure_schema_migrations():
     if IS_POSTGRES:
         return
     with engine.connect() as conn:
+        # Ensure new tables (e.g. central_products) exist
+        try:
+            from .models import CentralProduct
+            Base.metadata.create_all(bind=engine, tables=[CentralProduct.__table__])
+        except Exception as e:
+            print(f"Notice creating tables: {e}")
+
+        # Check products columns for central product link & inventory
+        res_prod = conn.execute(text("PRAGMA table_info(products)")).fetchall()
+        existing_prod_cols = {r[1] for r in res_prod}
+        prod_cols = [
+            ("central_product_id", "VARCHAR(50)"),
+            ("image_url", "TEXT"),
+            ("stock_qty", "INTEGER DEFAULT 50"),
+            ("is_available", "BOOLEAN DEFAULT 1")
+        ]
+        for col_name, col_type in prod_cols:
+            if col_name not in existing_prod_cols:
+                try:
+                    conn.execute(text(f"ALTER TABLE products ADD COLUMN {col_name} {col_type}"))
+                    conn.commit()
+                except Exception as e:
+                    print(f"Notice adding column {col_name} to products: {e}")
+
         # Check stores columns
         res = conn.execute(text("PRAGMA table_info(stores)")).fetchall()
         existing_cols = {r[1] for r in res}
@@ -143,9 +167,46 @@ def ensure_schema_migrations():
             ("bank_account_number", "VARCHAR(50)"),
             ("bank_ifsc", "VARCHAR(20)"),
             ("bank_verification_status", "VARCHAR(20) DEFAULT 'pending'"),
+            ("partner_code", "VARCHAR(50)"),
+            ("village", "VARCHAR(100) DEFAULT 'Rampur'"),
+            ("address", "TEXT"),
+            ("emergency_contact", "VARCHAR(15)"),
+            ("vehicle_reg_number", "VARCHAR(50)"),
+            ("driving_licence_number", "VARCHAR(50)"),
+            ("driving_licence_url", "TEXT"),
+            ("kyc_status", "VARCHAR(30) DEFAULT 'approved'"),
+            ("kyc_document_type", "VARCHAR(50) DEFAULT 'Aadhaar'"),
+            ("kyc_document_number", "VARCHAR(100) DEFAULT 'XXXX-XXXX-4821'"),
+            ("kyc_document_url", "TEXT"),
+            ("kyc_rejection_reason", "TEXT"),
+            ("kyc_submitted_at", "DATETIME"),
+            ("kyc_reviewed_at", "DATETIME"),
+            ("is_verified", "BOOLEAN DEFAULT 1"),
+            ("primary_village", "VARCHAR(100) DEFAULT 'Rampur'"),
+            ("service_radius_km", "FLOAT DEFAULT 5.0"),
+            ("theme_preference", "VARCHAR(20) DEFAULT 'system'"),
+            ("lang_preference", "VARCHAR(10) DEFAULT 'hi'"),
             ("lat", "FLOAT DEFAULT 29.1350"),
             ("lng", "FLOAT DEFAULT 77.0100"),
-            ("created_at", "DATETIME")
+            ("created_at", "DATETIME"),
+            ("store_code", "VARCHAR(50)"),
+            ("village", "VARCHAR(100) DEFAULT 'Rampur'"),
+            ("address", "TEXT"),
+            ("landmark", "VARCHAR(150)"),
+            ("pickup_location", "VARCHAR(150)"),
+            ("opening_time", "VARCHAR(20) DEFAULT '07:00 AM'"),
+            ("closing_time", "VARCHAR(20) DEFAULT '09:00 PM'"),
+            ("weekly_schedule", "VARCHAR(50) DEFAULT 'All Days'"),
+            ("kyc_status", "VARCHAR(30) DEFAULT 'approved'"),
+            ("kyc_document_type", "VARCHAR(50) DEFAULT 'Aadhaar'"),
+            ("kyc_document_number", "VARCHAR(100) DEFAULT 'XXXX-XXXX-8921'"),
+            ("kyc_document_url", "TEXT"),
+            ("kyc_rejection_reason", "TEXT"),
+            ("kyc_submitted_at", "DATETIME"),
+            ("kyc_reviewed_at", "DATETIME"),
+            ("is_verified", "BOOLEAN DEFAULT 1"),
+            ("theme_preference", "VARCHAR(20) DEFAULT 'system'"),
+            ("lang_preference", "VARCHAR(10) DEFAULT 'hi'"),
         ]
 
         for col_name, col_type in new_cols:
@@ -163,7 +224,26 @@ def ensure_schema_migrations():
             ("bank_account_name", "VARCHAR(150)"),
             ("bank_account_number", "VARCHAR(50)"),
             ("bank_ifsc", "VARCHAR(20)"),
-            ("bank_verification_status", "VARCHAR(20) DEFAULT 'pending'")
+            ("bank_verification_status", "VARCHAR(20) DEFAULT 'pending'"),
+            ("partner_code", "VARCHAR(50)"),
+            ("village", "VARCHAR(100) DEFAULT 'Rampur'"),
+            ("address", "TEXT"),
+            ("emergency_contact", "VARCHAR(15)"),
+            ("vehicle_reg_number", "VARCHAR(50)"),
+            ("driving_licence_number", "VARCHAR(50)"),
+            ("driving_licence_url", "TEXT"),
+            ("kyc_status", "VARCHAR(30) DEFAULT 'approved'"),
+            ("kyc_document_type", "VARCHAR(50) DEFAULT 'Aadhaar'"),
+            ("kyc_document_number", "VARCHAR(100) DEFAULT 'XXXX-XXXX-4821'"),
+            ("kyc_document_url", "TEXT"),
+            ("kyc_rejection_reason", "TEXT"),
+            ("kyc_submitted_at", "DATETIME"),
+            ("kyc_reviewed_at", "DATETIME"),
+            ("is_verified", "BOOLEAN DEFAULT 1"),
+            ("primary_village", "VARCHAR(100) DEFAULT 'Rampur'"),
+            ("service_radius_km", "FLOAT DEFAULT 5.0"),
+            ("theme_preference", "VARCHAR(20) DEFAULT 'system'"),
+            ("lang_preference", "VARCHAR(10) DEFAULT 'hi'"),
         ]
         for col_name, col_type in runner_cols:
             if col_name not in existing_runner_cols:
@@ -405,5 +485,30 @@ def ensure_schema_migrations():
             conn.commit()
         except Exception as bfe:
             print(f"Notice backfilling order splits: {bfe}")
+
+        # Ensure all existing stores have a unique permanent Store ID (e.g. GB-S000001)
+        try:
+            stores = conn.execute(text("SELECT id, store_code FROM stores ORDER BY rowid")).fetchall()
+            for idx, row in enumerate(stores, start=1):
+                s_id, s_code = row[0], row[1]
+                if not s_code:
+                    code = f"GB-S{idx:06d}"
+                    conn.execute(text("UPDATE stores SET store_code = :c WHERE id = :id"), {"c": code, "id": s_id})
+            conn.commit()
+        except Exception as se:
+            print(f"Notice backfilling store codes: {se}")
+
+        # Ensure all existing delivery partners have a unique permanent Partner ID (e.g. GB-DP000001)
+        try:
+            runners = conn.execute(text("SELECT id, partner_code FROM runners ORDER BY rowid")).fetchall()
+            for idx, row in enumerate(runners, start=1):
+                r_id, r_code = row[0], row[1]
+                if not r_code:
+                    code = f"GB-DP{idx:06d}"
+                    conn.execute(text("UPDATE runners SET partner_code = :c WHERE id = :id"), {"c": code, "id": r_id})
+            conn.commit()
+        except Exception as re_err:
+            print(f"Notice backfilling runner partner codes: {re_err}")
+
 
 

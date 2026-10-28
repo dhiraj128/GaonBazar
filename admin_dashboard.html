@@ -280,7 +280,14 @@
     <!-- ======================================================================= -->
     <div class="flex items-center gap-2 border-b border-slate-800 pb-3 mb-6 overflow-x-auto no-scrollbar shrink-0 relative">
       
-      <!-- Tab 1: Vendor KYC Queue -->
+            <!-- Tab 0: Central Catalog Library -->
+      <button id="admin-tab-btn-catalog" onclick="switchTab('catalog')" class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-slate-900 text-slate-300 hover:text-white border border-slate-800 transition-all whitespace-nowrap shrink-0 min-h-[38px] cursor-pointer">
+        <span class="material-symbols-outlined text-[18px]">inventory_2</span>
+        <span data-i18n="tab_catalog">सेंट्रल कैटलॉग लाइब्रेरी</span>
+        <span id="tab-catalog-badge" class="ml-1 text-[10px] bg-slate-800 text-amber-300 px-2 py-0.5 rounded-full font-bold">23</span>
+      </button>
+
+<!-- Tab 1: Vendor KYC Queue -->
       <button id="admin-tab-btn-vendors" onclick="switchTab('vendors')" class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-slate-800 text-white border border-slate-600 shadow-sm transition-all whitespace-nowrap shrink-0 min-h-[38px]">
         <span class="material-symbols-outlined text-[18px]">storefront</span>
         <span data-i18n="tab_vendors">दुकानदार सत्यापन कतार</span>
@@ -381,6 +388,98 @@
     </section>
 
     <!-- ======================================================================= -->
+        <!-- ======================================================================= -->
+    <!-- 3.5 TAB: CENTRAL CATALOG & IMAGE LIBRARY (GaonBazaar Master Products)    -->
+    <!-- ======================================================================= -->
+    <section id="tab-catalog" class="hidden mt-10 shrink-0 flex flex-col gap-6 p-4 sm:p-6 bg-slate-900/60 rounded-3xl border border-slate-800/80 shadow-lg" style="margin-top: 40px;">
+      
+      <!-- Catalog Header Controls -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-slate-800/70">
+        <div>
+          <h2 class="text-sm sm:text-base font-black text-white flex items-center gap-2.5">
+            <span class="material-symbols-outlined text-amber-400">inventory_2</span>
+            <span>मास्टर उत्पाद एवं छवि लाइब्रेरी (Central Catalog & Image Library)</span>
+          </h2>
+          <p class="text-xs text-slate-400 mt-0.5">
+            गाँव बाज़ार की केंद्रीय उत्पाद सूची • 10 ग्रामीण श्रेणियां • विक्रेता स्वतंत्र मूल्य निर्धारण
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2 flex-wrap">
+          <button onclick="openAddCentralProductModal()" class="px-3.5 py-2 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-black shadow-sm flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[17px]">add_circle</span>
+            <span>+ नया मास्टर उत्पाद जोड़ें</span>
+          </button>
+
+          <button onclick="openDeduplicateCatalogModal()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-bold border border-slate-700 flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[17px]">merge_type</span>
+            <span>डुप्लीकेट समेकन</span>
+          </button>
+
+          <button onclick="fetchCentralCatalog()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold border border-slate-700 flex items-center gap-1 active:scale-95 transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[17px]">refresh</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Search and Category Filters -->
+      <div class="flex flex-col gap-3">
+        <!-- Search Input -->
+        <div class="relative w-full">
+          <span class="material-symbols-outlined absolute left-3.5 top-3 text-slate-400 text-[20px]">search</span>
+          <input 
+            type="text" 
+            id="admin-catalog-search-input" 
+            oninput="handleAdminCatalogSearch(this.value)"
+            placeholder="उत्पाद का नाम, ब्रांड, या उपनाम खोजें (उदा. tamatar, pyaz, doodh, atta, amul, parle)..." 
+            class="w-full pl-10 pr-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs sm:text-sm font-medium text-white focus:outline-none focus:border-amber-400"
+          />
+        </div>
+
+        <!-- 10 Rural Category Filter Chips -->
+        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 text-xs font-bold">
+          <button onclick="filterAdminCatalogCategory('all')" class="admin-cat-pill px-3 py-1.5 rounded-full bg-amber-500 text-slate-950 shrink-0 cursor-pointer" data-cat="all">सभी (All)</button>
+          <button onclick="filterAdminCatalogCategory('vegetables')" class="admin-cat-pill px-3 py-1.5 rounded-full bg-slate-800 text-slate-300 hover:text-white shrink-0 cursor-pointer" data-cat="vegetables">सब्जियां व फल</button>
+          <button onclick="filterAdminCatalogCategory('grains')" class="admin-cat-pill px-3 py-1.5 rounded-full bg-slate-800 text-slate-300 hover:text-white shrink-0 cursor-pointer" data-cat="grains">चावल, आटा, दाल</button>
+          <button onclick="filterAdminCatalogCategory('dairy')" class="admin-cat-pill px-3 py-1.5 rounded-full bg-slate-800 text-slate-300 hover:text-white shrink-0 cursor-pointer" data-cat="dairy">दूध व डेयरी</button>
+          <button onclick="filterAdminCatalogCategory('oil')" class="admin-cat-pill px-3 py-1.5 rounded-full bg-slate-800 text-slate-300 hover:text-white shrink-0 cursor-pointer" data-cat="oil">तेल व घी</button>
+          <button onclick="filterAdminCatalogCategory('spices')" class="admin-cat-pill px-3 py-1.5 rounded-full bg-slate-800 text-slate-300 hover:text-white shrink-0 cursor-pointer" data-cat="spices">मसाले व नमक</button>
+          <button onclick="filterAdminCatalogCategory('snacks')" class="admin-cat-pill px-3 py-1.5 rounded-full bg-slate-800 text-slate-300 hover:text-white shrink-0 cursor-pointer" data-cat="snacks">नाश्ता व बिस्कुट</button>
+          <button onclick="filterAdminCatalogCategory('personal_care')" class="admin-cat-pill px-3 py-1.5 rounded-full bg-slate-800 text-slate-300 hover:text-white shrink-0 cursor-pointer" data-cat="personal_care">व्यक्तिगत देखभाल</button>
+          <button onclick="filterAdminCatalogCategory('cleaning')" class="admin-cat-pill px-3 py-1.5 rounded-full bg-slate-800 text-slate-300 hover:text-white shrink-0 cursor-pointer" data-cat="cleaning">सफाई उत्पाद</button>
+          <button onclick="filterAdminCatalogCategory('puja')" class="admin-cat-pill px-3 py-1.5 rounded-full bg-slate-800 text-slate-300 hover:text-white shrink-0 cursor-pointer" data-cat="puja">पूजा सामग्री</button>
+          <button onclick="filterAdminCatalogCategory('stationery')" class="admin-cat-pill px-3 py-1.5 rounded-full bg-slate-800 text-slate-300 hover:text-white shrink-0 cursor-pointer" data-cat="stationery">स्टेशनरी</button>
+        </div>
+      </div>
+
+      <!-- Master Catalog Table -->
+      <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-lg">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-slate-300">
+            <thead class="bg-slate-950 text-slate-400 font-bold border-b border-slate-800 uppercase tracking-wider text-[11px]">
+              <tr>
+                <th class="py-3 px-3.5">तस्वीर (Image)</th>
+                <th class="py-3 px-3.5">उत्पाद नाम (EN & HI)</th>
+                <th class="py-3 px-3.5">श्रेणी (Category)</th>
+                <th class="py-3 px-3.5">ब्रांड व प्रकार</th>
+                <th class="py-3 px-3.5">मानक MRP / इकाई</th>
+                <th class="py-3 px-3.5">सर्च उपनाम (Aliases)</th>
+                <th class="py-3 px-3.5">स्थिति</th>
+                <th class="py-3 px-3.5 text-right">कार्रवाई</th>
+              </tr>
+            </thead>
+            <tbody id="admin-catalog-table-body" class="divide-y divide-slate-800/80">
+              <tr>
+                <td colspan="8" class="py-8 text-center text-slate-500 font-bold">लोड हो रहा है...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+
     <!-- 4. TAB 1: VENDOR KYC APPROVAL QUEUE                                     -->
     <!-- ======================================================================= -->
     <section id="tab-vendors" class="mt-10 shrink-0 flex flex-col gap-6 p-4 sm:p-6 bg-slate-900/60 rounded-3xl border border-slate-800/80 shadow-lg" style="margin-top: 40px;">
@@ -782,6 +881,247 @@
         </div>
       </div>
     </section>
+
+    <!-- ========================================================================= -->
+  <!-- MODAL: ADD CENTRAL MASTER PRODUCT (SUPER ADMIN)                           -->
+  <!-- ========================================================================= -->
+  <div id="modal-admin-add-central-prod" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-slate-900 rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-5 sm:p-6 shadow-2xl border border-slate-700 flex flex-col gap-3.5 text-slate-100">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+        <h3 class="font-black text-sm text-white flex items-center gap-2">
+          <span class="material-symbols-outlined text-amber-400">add_box</span>
+          <span>नया सेंट्रल मास्टर उत्पाद जोड़ें (Add Central Product)</span>
+        </h3>
+        <button onclick="closeAddCentralProductModal()" class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-white cursor-pointer">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">Product Name (English) *</label>
+          <input type="text" id="admin-add-name-en" placeholder="e.g. Fresh Red Tomato" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white outline-none"/>
+        </div>
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">सामान का हिंदी नाम *</label>
+          <input type="text" id="admin-add-name-hi" placeholder="उदा. ताज़ा देशी टमाटर" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white outline-none"/>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">श्रेणी (Category) *</label>
+          <select id="admin-add-category" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-bold text-white outline-none">
+            <option value="vegetables">सब्जियां व फल (Vegetables & Fruits)</option>
+            <option value="grains">चावल, आटा, दाल व अनाज (Grains & Dal)</option>
+            <option value="dairy">दूध व डेयरी उत्पाद (Milk & Dairy)</option>
+            <option value="oil">खाद्य तेल व घी (Cooking Oil & Ghee)</option>
+            <option value="spices">मसाले व नमक (Spices & Salt)</option>
+            <option value="snacks">नाश्ता व बिस्कुट (Snacks & Biscuits)</option>
+            <option value="personal_care">व्यक्तिगत देखभाल व साबुन (Personal Care)</option>
+            <option value="cleaning">सफाई व डिटर्जेंट (Cleaning)</option>
+            <option value="puja">पूजा सामग्री (Puja Essentials)</option>
+            <option value="stationery">स्टेशनरी व कॉपी-किताबें (Stationery)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">ब्रांड (Brand, यदि लागू हो)</label>
+          <input type="text" id="admin-add-brand" placeholder="उदा. Amul / Tata / Local Farm" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white outline-none"/>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">वेरिएंट / प्रकार (Variant)</label>
+          <input type="text" id="admin-add-variant" placeholder="उदा. Taaza / Desi / Premium" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white outline-none"/>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">डिफ़ॉल्ट इकाई (Default Unit) *</label>
+          <input type="text" id="admin-add-unit" placeholder="उदा. 1 kg / 500 ml / 1 Pack" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white outline-none"/>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">मानक MRP (₹) *</label>
+          <input type="number" id="admin-add-mrp" placeholder="उदा. 35" min="1" step="0.5" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-bold text-white outline-none"/>
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class="block font-bold text-slate-300 mb-1">मास्टर उत्पाद तस्वीर (Image URL or Upload) *</label>
+          <div class="flex items-center gap-2">
+            <input type="text" id="admin-add-img-url" placeholder="उदा. static/images/prod_tomato.png" class="flex-1 p-2 bg-slate-800 border border-slate-700 rounded-xl font-mono text-[11px] text-white" />
+            <label class="px-3 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-bold cursor-pointer flex items-center gap-1 shrink-0">
+              <span class="material-symbols-outlined text-[16px]">upload</span>
+              <span>अपलोड</span>
+              <input type="file" accept="image/*" onchange="handleAdminCentralImageUpload(this, 'admin-add-img-url')" class="hidden" />
+            </label>
+          </div>
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class="block font-bold text-slate-300 mb-1">सर्च उपनाम (Search Aliases - कॉमा से अलग करें) *</label>
+          <input type="text" id="admin-add-aliases" placeholder="उदा. tamatar, tomato, tamater, टमाटर" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white outline-none"/>
+          <span class="text-[10px] text-slate-400 mt-0.5 block">ग्रामीण बोली व वर्तनी के अनुसार खोज सहायता हेतु</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 pt-2 border-t border-slate-800">
+        <button onclick="closeAddCentralProductModal()" class="flex-1 py-2.5 rounded-xl border border-slate-700 text-xs font-bold text-slate-300 cursor-pointer">रद्द करें</button>
+        <button onclick="submitNewCentralProduct()" class="flex-1 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-black shadow-sm cursor-pointer">मास्टर सूची में जोड़ें</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: EDIT CENTRAL MASTER PRODUCT (SUPER ADMIN)                          -->
+  <!-- ========================================================================= -->
+  <div id="modal-admin-edit-central-prod" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-slate-900 rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-5 sm:p-6 shadow-2xl border border-slate-700 flex flex-col gap-3.5 text-slate-100">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+        <h3 class="font-black text-sm text-white flex items-center gap-2">
+          <span class="material-symbols-outlined text-amber-400">edit_note</span>
+          <span>मास्टर उत्पाद संशोधित करें (Edit Master Product)</span>
+        </h3>
+        <button onclick="closeEditCentralProductModal()" class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-white cursor-pointer">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <input type="hidden" id="admin-edit-prod-id" value="" />
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">Product Name (English) *</label>
+          <input type="text" id="admin-edit-name-en" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white outline-none"/>
+        </div>
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">सामान का हिंदी नाम *</label>
+          <input type="text" id="admin-edit-name-hi" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white outline-none"/>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">ब्रांड (Brand)</label>
+          <input type="text" id="admin-edit-brand" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white outline-none"/>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">वेरिएंट / प्रकार</label>
+          <input type="text" id="admin-edit-variant" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white outline-none"/>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">डिफ़ॉल्ट इकाई</label>
+          <input type="text" id="admin-edit-unit" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white outline-none"/>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">मानक MRP (₹)</label>
+          <input type="number" id="admin-edit-mrp" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-bold text-white outline-none"/>
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class="block font-bold text-slate-300 mb-1">तस्वीर (Image URL or Upload)</label>
+          <div class="flex items-center gap-2">
+            <input type="text" id="admin-edit-img-url" class="flex-1 p-2 bg-slate-800 border border-slate-700 rounded-xl font-mono text-[11px] text-white" />
+            <label class="px-3 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-bold cursor-pointer flex items-center gap-1 shrink-0">
+              <span class="material-symbols-outlined text-[16px]">upload</span>
+              <span>बदलें</span>
+              <input type="file" accept="image/*" onchange="handleAdminCentralImageUpload(this, 'admin-edit-img-url')" class="hidden" />
+            </label>
+          </div>
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class="block font-bold text-slate-300 mb-1">सर्च उपनाम (Search Aliases)</label>
+          <input type="text" id="admin-edit-aliases" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white outline-none"/>
+        </div>
+
+        <div class="sm:col-span-2 flex items-center justify-between p-2.5 rounded-xl bg-slate-800 border border-slate-700">
+          <div>
+            <span class="font-bold text-white block">सक्रिय स्थिति (Active)</span>
+            <span class="text-[10px] text-slate-400">यदि निष्क्रिय करेंगे तो यह नए विक्रेताओं को नहीं दिखेगा (पुराने ऑर्डर व स्टोर सुरक्षित रहेंगे)</span>
+          </div>
+          <input type="checkbox" id="admin-edit-active" class="w-5 h-5 accent-amber-500 rounded cursor-pointer" />
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 pt-2 border-t border-slate-800">
+        <button onclick="closeEditCentralProductModal()" class="flex-1 py-2.5 rounded-xl border border-slate-700 text-xs font-bold text-slate-300 cursor-pointer">रद्द करें</button>
+        <button onclick="saveEditCentralProduct()" class="flex-1 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-black shadow-sm cursor-pointer">अपडेट सहेजें</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: DEDUPLICATE CATALOG RECORDS (SUPER ADMIN)                           -->
+  <!-- ========================================================================= -->
+  <div id="modal-admin-dedup-catalog" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-slate-900 rounded-3xl max-w-md w-full p-5 sm:p-6 shadow-2xl border border-slate-700 flex flex-col gap-3.5 text-slate-100">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+        <h3 class="font-black text-sm text-white flex items-center gap-2">
+          <span class="material-symbols-outlined text-amber-400">merge_type</span>
+          <span>डुप्लीकेट रिकॉर्ड समेकन (Deduplicate)</span>
+        </h3>
+        <button onclick="closeDeduplicateCatalogModal()" class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-white cursor-pointer">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <p class="text-xs text-slate-400 leading-relaxed">
+        यदि दो समान उत्पाद मास्टर कैटलॉग में बन गए हैं, तो डुप्लीकेट रिकॉर्ड के सभी स्टोर लिस्टिंग को मास्टर में स्थानांतरित कर दिया जाएगा और डुप्लीकेट को सुरक्षित रूप से निष्क्रिय कर दिया जाएगा।
+      </p>
+
+      <div class="flex flex-col gap-2.5 text-xs">
+        <div>
+          <label class="block font-bold text-emerald-400 mb-1">मास्टर उत्पाद ID (रखने योग्य) *</label>
+          <select id="dedup-master-select" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-bold text-white outline-none">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold text-rose-400 mb-1">डुप्लीकेट उत्पाद ID (समेकित कर निष्क्रिय करने योग्य) *</label>
+          <select id="dedup-duplicate-select" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-bold text-white outline-none">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 pt-2 border-t border-slate-800">
+        <button onclick="closeDeduplicateCatalogModal()" class="flex-1 py-2.5 rounded-xl border border-slate-700 text-xs font-bold text-slate-300 cursor-pointer">रद्द करें</button>
+        <button onclick="executeCatalogDeduplication()" class="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-black shadow-sm cursor-pointer">समेकन निष्पादित करें</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: KYC REVIEW DECISION (SUPER ADMIN)                                   -->
+  <!-- ========================================================================= -->
+  <div id="modal-admin-review-kyc" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-slate-900 rounded-3xl max-w-sm w-full p-5 shadow-2xl border border-slate-700 flex flex-col gap-3 text-slate-100">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+        <span class="font-black text-sm text-white" id="kyc-review-modal-title">केवाईसी समीक्षा निर्णय</span>
+        <button onclick="closeAdminKYCReviewModal()" class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-white cursor-pointer">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <input type="hidden" id="kyc-review-entity-type" value="" />
+      <input type="hidden" id="kyc-review-entity-id" value="" />
+      <input type="hidden" id="kyc-review-action-type" value="" />
+
+      <div class="flex flex-col gap-2 text-xs">
+        <p id="kyc-review-prompt-text" class="text-slate-300 leading-relaxed"></p>
+        <div id="kyc-review-reason-box" class="hidden flex flex-col gap-1">
+          <label class="font-bold text-slate-300">अस्वीकृति या पुनः जमा का कारण दर्ज करें: *</label>
+          <textarea id="kyc-review-reason-input" rows="3" placeholder="कारण लिखें..." class="w-full p-2 bg-slate-800 border border-slate-700 rounded-xl text-white outline-none"></textarea>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 pt-2 border-t border-slate-800">
+        <button onclick="closeAdminKYCReviewModal()" class="flex-1 py-2 rounded-xl border border-slate-700 text-xs font-bold text-slate-300 cursor-pointer">रद्द</button>
+        <button onclick="confirmAdminKYCDecision()" class="flex-1 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-black shadow-sm cursor-pointer">पुष्टि करें</button>
+      </div>
+    </div>
+  </div>
+
 
   </main>
 
@@ -1825,7 +2165,7 @@
     // --- TAB SWITCHER ---
     function switchTab(tabId) {
       AdminStore.activeTab = tabId;
-      ['vendors', 'runners', 'orders', 'ledger', 'risk', 'bank', 'notifications', 'tickets'].forEach(t => {
+      ['catalog', 'vendors', 'runners', 'orders', 'ledger', 'risk', 'bank', 'notifications', 'tickets'].forEach(t => {
         const sec = document.getElementById(`tab-${t}`);
         const btn = document.getElementById(`admin-tab-btn-${t}`);
         if (sec) sec.classList.add('hidden');
@@ -1839,6 +2179,9 @@
       if (activeSec) activeSec.classList.remove('hidden');
       if (activeBtn) {
         activeBtn.className = "px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-slate-800 text-white border border-slate-600 shadow-sm transition-all whitespace-nowrap shrink-0 min-h-[38px]";
+      }
+      if (tabId === 'catalog') {
+        fetchCentralCatalog();
       }
       if (tabId === 'risk') {
         fetchRiskProfiles();
@@ -2058,7 +2401,429 @@
         };
       }
     });
-  </script>
+  
+
+    // =========================================================================
+    // 9.15 CENTRAL CATALOG LIBRARY & DEDUPLICATION (SUPER ADMIN)
+    // =========================================================================
+    let adminCentralCatalog = [];
+    let adminCatalogFilter = 'all';
+
+    async function fetchCentralCatalog() {
+      const tbody = document.getElementById('admin-catalog-table-body');
+      if (!tbody) return;
+
+      tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-slate-500 font-bold">मास्टर कैटलॉग लोड हो रहा है...</td></tr>`;
+
+      try {
+        const res = await fetch(`${API_BASE}/catalog/products?limit=100`);
+        if (!res.ok) {
+          tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-rose-500 font-bold">कैटलॉग लोड करने में विफल</td></tr>`;
+          return;
+        }
+
+        const data = await res.json();
+        adminCentralCatalog = data || [];
+
+        // Update badge
+        const badge = document.getElementById('tab-catalog-badge');
+        if (badge) badge.innerText = adminCentralCatalog.length;
+
+        renderAdminCatalogTable();
+      } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-rose-500 font-bold">नेटवर्क त्रुटि: ${e.message}</td></tr>`;
+      }
+    }
+
+    function filterAdminCatalogCategory(cat) {
+      adminCatalogFilter = cat;
+      document.querySelectorAll('.admin-cat-pill').forEach(btn => {
+        if (btn.getAttribute('data-cat') === cat) {
+          btn.className = "admin-cat-pill px-3 py-1.5 rounded-full bg-amber-500 text-slate-950 shrink-0 font-bold";
+        } else {
+          btn.className = "admin-cat-pill px-3 py-1.5 rounded-full bg-slate-800 text-slate-300 hover:text-white shrink-0 font-bold";
+        }
+      });
+      renderAdminCatalogTable();
+    }
+
+    function handleAdminCatalogSearch(q) {
+      renderAdminCatalogTable();
+    }
+
+    function renderAdminCatalogTable() {
+      const tbody = document.getElementById('admin-catalog-table-body');
+      if (!tbody) return;
+
+      const q = (document.getElementById('admin-catalog-search-input')?.value || '').toLowerCase().trim();
+      let list = [...adminCentralCatalog];
+
+      if (adminCatalogFilter !== 'all') {
+        list = list.filter(p => p.category === adminCatalogFilter);
+      }
+      if (q) {
+        list = list.filter(p => 
+          (p.name_en && p.name_en.toLowerCase().includes(q)) ||
+          (p.name_hi && p.name_hi.includes(q)) ||
+          (p.brand && p.brand.toLowerCase().includes(q)) ||
+          (p.search_aliases && p.search_aliases.toLowerCase().includes(q))
+        );
+      }
+
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-slate-500 font-bold">कोई मास्टर उत्पाद नहीं मिला</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(p => {
+        const img = p.image_url || 'static/images/prod_tomato.png';
+        const isActive = p.is_active !== false;
+
+        return `
+          <tr class="hover:bg-slate-800/40 transition-colors">
+            <td class="py-3 px-3.5">
+              <div class="w-12 h-12 rounded-xl bg-slate-950 border border-slate-700 p-1 flex items-center justify-center shrink-0">
+                <img src="${img}" alt="${p.name_en}" class="w-full h-full object-contain" />
+              </div>
+            </td>
+            <td class="py-3 px-3.5">
+              <span class="font-bold text-white block">${p.name_en}</span>
+              <span class="text-[11px] text-slate-400 block">${p.name_hi || ''}</span>
+              <span class="text-[9px] font-mono text-slate-500">ID: ${p.id}</span>
+            </td>
+            <td class="py-3 px-3.5">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-800 text-amber-300 border border-slate-700 capitalize">
+                ${p.category}
+              </span>
+            </td>
+            <td class="py-3 px-3.5">
+              <span class="text-xs text-white block">${p.brand || '--'}</span>
+              <span class="text-[11px] text-slate-400">${p.variant || '--'}</span>
+            </td>
+            <td class="py-3 px-3.5">
+              <span class="font-bold text-amber-300 block">₹${p.default_mrp || '--'}</span>
+              <span class="text-[10px] text-slate-400">${p.default_unit || '1 kg'}</span>
+            </td>
+            <td class="py-3 px-3.5 max-w-[150px]">
+              <span class="text-[10px] text-slate-400 font-mono truncate block" title="${p.search_aliases || ''}">${p.search_aliases || '--'}</span>
+            </td>
+            <td class="py-3 px-3.5">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-black ${isActive ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-700' : 'bg-rose-950/60 text-rose-300 border border-rose-700'}">
+                ${isActive ? 'Active' : 'Disabled'}
+              </span>
+            </td>
+            <td class="py-3 px-3.5 text-right">
+              <div class="flex items-center justify-end gap-1.5">
+                <button 
+                  onclick='openEditCentralProdModal(${JSON.stringify(p).replace(/'/g, "&apos;")})'
+                  class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-all cursor-pointer"
+                  title="संशोधित करें"
+                >
+                  <span class="material-symbols-outlined text-[16px]">edit</span>
+                </button>
+
+                <button 
+                  onclick="toggleDisableCentralProd('${p.id}', ${isActive})"
+                  class="p-1.5 rounded-lg ${isActive ? 'bg-rose-950/50 hover:bg-rose-900/60 text-rose-300 border border-rose-800/60' : 'bg-emerald-950/50 hover:bg-emerald-900/60 text-emerald-300 border border-emerald-800/60'} text-xs font-bold transition-all cursor-pointer"
+                  title="${isActive ? 'सॉफ्ट डिसेबल करें' : 'पुनः सक्रिय करें'}"
+                >
+                  <span class="material-symbols-outlined text-[16px]">${isActive ? 'block' : 'check_circle'}</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Add Central Product
+    function openAddCentralProductModal() {
+      document.getElementById('admin-add-name-en').value = '';
+      document.getElementById('admin-add-name-hi').value = '';
+      document.getElementById('admin-add-brand').value = '';
+      document.getElementById('admin-add-variant').value = '';
+      document.getElementById('admin-add-unit').value = '1 kg';
+      document.getElementById('admin-add-mrp').value = '';
+      document.getElementById('admin-add-img-url').value = '';
+      document.getElementById('admin-add-aliases').value = '';
+
+      const modal = document.getElementById('modal-admin-add-central-prod');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeAddCentralProductModal() {
+      const modal = document.getElementById('modal-admin-add-central-prod');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    async function submitNewCentralProduct() {
+      const en = document.getElementById('admin-add-name-en').value.trim();
+      const hi = document.getElementById('admin-add-name-hi').value.trim();
+      const cat = document.getElementById('admin-add-category').value;
+      const brand = document.getElementById('admin-add-brand').value.trim() || null;
+      const variant = document.getElementById('admin-add-variant').value.trim() || null;
+      const unit = document.getElementById('admin-add-unit').value.trim() || '1 kg';
+      const mrp = parseFloat(document.getElementById('admin-add-mrp').value);
+      const img = document.getElementById('admin-add-img-url').value.trim() || null;
+      const aliases = document.getElementById('admin-add-aliases').value.trim() || en.toLowerCase();
+
+      if (!en || !hi || isNaN(mrp)) {
+        alert('कृपया सभी आवश्यक फ़ील्ड भरें');
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/catalog/products`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name_en: en,
+            name_hi: hi,
+            category: cat,
+            brand: brand,
+            variant: variant,
+            default_unit: unit,
+            default_mrp: mrp,
+            image_url: img,
+            search_aliases: aliases
+          })
+        });
+
+        if (res.ok) {
+          closeAddCentralProductModal();
+          fetchCentralCatalog();
+        } else {
+          alert('उत्पाद जोड़ने में विफल');
+        }
+      } catch (e) {
+        alert('त्रुटि: ' + e.message);
+      }
+    }
+
+    // Edit Central Product
+    function openEditCentralProdModal(p) {
+      document.getElementById('admin-edit-prod-id').value = p.id;
+      document.getElementById('admin-edit-name-en').value = p.name_en || '';
+      document.getElementById('admin-edit-name-hi').value = p.name_hi || '';
+      document.getElementById('admin-edit-brand').value = p.brand || '';
+      document.getElementById('admin-edit-variant').value = p.variant || '';
+      document.getElementById('admin-edit-unit').value = p.default_unit || '1 kg';
+      document.getElementById('admin-edit-mrp').value = p.default_mrp || '';
+      document.getElementById('admin-edit-img-url').value = p.image_url || '';
+      document.getElementById('admin-edit-aliases').value = p.search_aliases || '';
+      document.getElementById('admin-edit-active').checked = p.is_active !== false;
+
+      const modal = document.getElementById('modal-admin-edit-central-prod');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeEditCentralProductModal() {
+      const modal = document.getElementById('modal-admin-edit-central-prod');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    async function saveEditCentralProduct() {
+      const prodId = document.getElementById('admin-edit-prod-id').value;
+      const en = document.getElementById('admin-edit-name-en').value.trim();
+      const hi = document.getElementById('admin-edit-name-hi').value.trim();
+      const brand = document.getElementById('admin-edit-brand').value.trim() || null;
+      const variant = document.getElementById('admin-edit-variant').value.trim() || null;
+      const unit = document.getElementById('admin-edit-unit').value.trim() || '1 kg';
+      const mrp = parseFloat(document.getElementById('admin-edit-mrp').value);
+      const img = document.getElementById('admin-edit-img-url').value.trim() || null;
+      const aliases = document.getElementById('admin-edit-aliases').value.trim() || null;
+      const isActive = document.getElementById('admin-edit-active').checked;
+
+      try {
+        const res = await fetch(`${API_BASE}/catalog/products/${encodeURIComponent(prodId)}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name_en: en,
+            name_hi: hi,
+            brand: brand,
+            variant: variant,
+            default_unit: unit,
+            default_mrp: mrp,
+            image_url: img,
+            search_aliases: aliases,
+            is_active: isActive
+          })
+        });
+
+        if (res.ok) {
+          closeEditCentralProductModal();
+          fetchCentralCatalog();
+        } else {
+          alert('संशोधन सहेजने में विफल');
+        }
+      } catch (e) {
+        alert('त्रुटि: ' + e.message);
+      }
+    }
+
+    async function toggleDisableCentralProd(prodId, currentActive) {
+      const actionName = currentActive ? 'निष्क्रिय (Disable)' : 'पुनः सक्रिय (Activate)';
+      if (!confirm(`क्या आप उत्पाद ${prodId} को ${actionName} करना चाहते हैं?`)) return;
+
+      try {
+        if (currentActive) {
+          await fetch(`${API_BASE}/catalog/products/${encodeURIComponent(prodId)}`, { method: 'DELETE' });
+        } else {
+          await fetch(`${API_BASE}/catalog/products/${encodeURIComponent(prodId)}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ is_active: true })
+          });
+        }
+        fetchCentralCatalog();
+      } catch (e) {
+        alert('कार्रवाई विफल: ' + e.message);
+      }
+    }
+
+    async function handleAdminCentralImageUpload(input, targetInputId) {
+      if (!input.files || input.files.length === 0) return;
+      const file = input.files[0];
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const res = await fetch(`${API_BASE}/catalog/upload-image`, {
+          method: 'POST',
+          body: formData
+        });
+        if (res.ok) {
+          const data = await res.json();
+          document.getElementById(targetInputId).value = data.image_url;
+        } else {
+          alert('छवि अपलोड विफल');
+        }
+      } catch (e) {
+        alert('त्रुटि: ' + e.message);
+      }
+    }
+
+    // Deduplicate Products
+    function openDeduplicateCatalogModal() {
+      const masterSel = document.getElementById('dedup-master-select');
+      const dupSel = document.getElementById('dedup-duplicate-select');
+
+      const options = adminCentralCatalog.map(p => `<option value="${p.id}">${p.name_en} (${p.category} - ${p.id})</option>`).join('');
+      if (masterSel) masterSel.innerHTML = options;
+      if (dupSel) dupSel.innerHTML = options;
+
+      const modal = document.getElementById('modal-admin-dedup-catalog');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeDeduplicateCatalogModal() {
+      const modal = document.getElementById('modal-admin-dedup-catalog');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    async function executeCatalogDeduplication() {
+      const masterId = document.getElementById('dedup-master-select').value;
+      const dupId = document.getElementById('dedup-duplicate-select').value;
+
+      if (!masterId || !dupId || masterId === dupId) {
+        alert('कृपया दो अलग-अलग उत्पाद चुनें');
+        return;
+      }
+
+      if (!confirm(`क्या आप वाकई ${dupId} के सभी स्टोर लिस्टिंग को ${masterId} में समेकित करना चाहते हैं?`)) return;
+
+      try {
+        const res = await fetch(`${API_BASE}/catalog/deduplicate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            master_id: masterId,
+            duplicate_id: dupId
+          })
+        });
+
+        if (res.ok) {
+          alert('समेकन सफलतापूर्वक पूर्ण हुआ!');
+          closeDeduplicateCatalogModal();
+          fetchCentralCatalog();
+        } else {
+          alert('समेकन विफल');
+        }
+      } catch (e) {
+        alert('त्रुटि: ' + e.message);
+      }
+    }
+
+    // KYC Review Modal
+    function openAdminKYCReviewModal(entityType, entityId, actionType, name) {
+      document.getElementById('kyc-review-entity-type').value = entityType;
+      document.getElementById('kyc-review-entity-id').value = entityId;
+      document.getElementById('kyc-review-action-type').value = actionType;
+
+      const titleEl = document.getElementById('kyc-review-modal-title');
+      const promptEl = document.getElementById('kyc-review-prompt-text');
+      const reasonBox = document.getElementById('kyc-review-reason-box');
+      document.getElementById('kyc-review-reason-input').value = '';
+
+      if (actionType === 'approved') {
+        titleEl.innerText = `स्वीकृति: ${name}`;
+        promptEl.innerText = `क्या आप ${name} (${entityType === 'vendor' ? 'दुकानदार' : 'गाँव मित्र'}) के पहचान पत्र को स्वीकृत कर "गाँव बाज़ार सत्यापित" बैज प्रदान करना चाहते हैं?`;
+        reasonBox.classList.add('hidden');
+      } else if (actionType === 'rejected') {
+        titleEl.innerText = `अस्वीकृति: ${name}`;
+        promptEl.innerText = `${name} के पहचान पत्र को अस्वीकृत किया जा रहा है।`;
+        reasonBox.classList.remove('hidden');
+      } else {
+        titleEl.innerText = `पुनः जमा का अनुरोध: ${name}`;
+        promptEl.innerText = `${name} को साफ़ फ़ोटो या सही दस्तावेज़ पुनः अपलोड करने का अनुरोध भेजा जा रहा है।`;
+        reasonBox.classList.remove('hidden');
+      }
+
+      const modal = document.getElementById('modal-admin-review-kyc');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeAdminKYCReviewModal() {
+      const modal = document.getElementById('modal-admin-review-kyc');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    async function confirmAdminKYCDecision() {
+      const entityType = document.getElementById('kyc-review-entity-type').value;
+      const entityId = document.getElementById('kyc-review-entity-id').value;
+      const actionType = document.getElementById('kyc-review-action-type').value;
+      const reason = document.getElementById('kyc-review-reason-input').value.trim();
+
+      if ((actionType === 'rejected' || actionType === 'needs_resubmission') && !reason) {
+        alert('कृपया कारण दर्ज करें');
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/admin/kyc/${encodeURIComponent(entityType)}/${encodeURIComponent(entityId)}/review`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: actionType,
+            rejection_reason: reason || null
+          })
+        });
+
+        if (res.ok) {
+          alert('समीक्षा निर्णय सुरक्षित कर लिया गया!');
+          closeAdminKYCReviewModal();
+          if (typeof fetchPendingVendors === 'function') fetchPendingVendors('all');
+          if (typeof fetchPendingRunners === 'function') fetchPendingRunners('all');
+        } else {
+          alert('कार्रवाई विफल');
+        }
+      } catch (e) {
+        alert('त्रुटि: ' + e.message);
+      }
+    }
+
+</script>
 
 </body>
 </html>

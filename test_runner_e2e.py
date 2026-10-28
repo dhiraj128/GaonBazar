@@ -615,7 +615,12 @@ def _run_runner_device_steps(context, dev_name, device_config, logger):
         bool(badge_text), f"Runner badge exists: {bool(badge_text)}"
     )
     check_element_bounds(page, "#shift-toggle-btn", "Shift Online/Offline Toggle CTA", logger, min_size=30)
-    check_element_bounds(page, "#btn-runner-header-settings", "Settings Shortcut CTA", logger)
+    runner_header_btn_count = page.locator("#btn-runner-header-settings").count()
+    logger.record_test(
+        f"[{dev_name}] Header Duplicate Settings Button Removed",
+        runner_header_btn_count == 0,
+        f"Duplicate runner header settings count: {runner_header_btn_count}"
+    )
 
     # Bottom Navigation Geometry & Ergonomics Audit
     check_element_bounds(page, "#nav-btn-missions", "Bottom Nav Missions Button", logger, require_sticky=True)

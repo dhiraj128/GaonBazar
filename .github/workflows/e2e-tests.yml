@@ -4,9 +4,13 @@ on:
   push:
     branches:
       - main
+      - 'feat/**'
+      - 'preview/**'
   pull_request:
     branches:
       - main
+      - 'feat/**'
+      - 'preview/**'
   workflow_dispatch:
 
 concurrency:
@@ -78,6 +82,10 @@ jobs:
       - name: Run Razorpay Zero-Trust Payment Tests
         run: |
           python test_razorpay_payments.py
+
+      - name: Run Central Catalog, Vendor & Runner KYC E2E Tests
+        run: |
+          python test_central_catalog_and_kyc_e2e.py
 
       - name: Run Customer Mobile App E2E Test Suite (5 Mobile Devices)
         run: |

@@ -453,6 +453,7 @@
         <div class="flex flex-col min-w-0 justify-center">
           <span class="text-sm font-black text-slate-900 dark:text-[#F8FAFC] tracking-tight leading-tight">GaonBazaar</span>
           <span id="runner-header-role" class="text-[10px] text-slate-500 dark:text-[#CBD5E1] font-semibold truncate" data-i18n="runner_role_subtitle">Delivery Partner • Gaon Mitra</span>
+          <span id="runner-badge-code" class="hidden text-[10px] font-mono font-bold bg-amber-400/20 text-amber-300 px-2 py-0.5 rounded-md border border-amber-400/30">#GM-RAMPUR-07</span>
         </div>
       </div>
 
@@ -464,10 +465,7 @@
           <span id="runner-notif-dot" class="absolute top-2 right-2 min-w-[16px] h-[16px] px-1 bg-red-600 text-white text-[10px] font-black rounded-full flex items-center justify-center border border-white">1</span>
         </button>
 
-        <!-- 4-Square Grid Menu Icon (Opens Settings / Profile View) -->
-        <button id="btn-runner-header-settings" type="button" onclick="switchTab('settings')" title="Menu" aria-label="Menu" class="w-10 h-10 min-w-[40px] min-h-[40px] rounded-xl bg-slate-100 dark:bg-[#2A323D] hover:bg-slate-200 dark:hover:bg-[#465362] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] flex items-center justify-center active:scale-95 shrink-0 cursor-pointer shadow-2xs">
-          <span class="material-symbols-outlined text-[22px]">grid_view</span>
-        </button>
+        <!-- 4-Square Grid Menu Icon removed to eliminate duplicate navigation -->
       </div>
 
     </div>
@@ -921,169 +919,12 @@
     <!-- ======================================================================= -->
     <!-- 5.5 TAB 4: RUNNER BANK & UPI SETTINGS (Payout Onboarding)               -->
     <!-- ======================================================================= -->
+        <!-- ======================================================================= -->
+    <!-- 6. TAB 5: RUNNER PROFILE & SETTINGS (8 Structured Sections)              -->
+    <!-- ======================================================================= -->
     <section id="tab-settings" class="hidden flex-col gap-4">
-
-      <!-- Screen 5: Runner Profile & Earnings Header (Matching Reference 03 Frame 5) -->
-      <div class="flex items-center justify-between py-1">
-        <span class="font-black text-sm text-slate-900 dark:text-[#F8FAFC]">My Profile & Earnings</span>
-        <span class="text-[11px] font-bold text-[#16B86E] bg-emerald-50 dark:bg-[#2A323D] px-2.5 py-0.5 rounded-full">Gaon Mitra</span>
-      </div>
-
-      <!-- Profile Card -->
-      <div class="p-4 rounded-3xl bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-[#465362] shadow-xs flex items-center gap-3.5">
-        <div class="w-14 h-14 rounded-full overflow-hidden shrink-0 shadow-xs border-2 border-white dark:border-[#2A323D]">
-          <img src="static/images/runner_avatar.png" alt="Ram Kumar" class="w-full h-full object-cover" />
-        </div>
-        <div class="flex flex-col min-w-0">
-          <span class="font-black text-sm text-slate-900 dark:text-[#F8FAFC]">Ram Kumar</span>
-          <span class="text-xs text-slate-500 dark:text-[#CBD5E1]">Gaon Mitra Partner • ID: GB-DP-1021</span>
-          <div class="flex items-center gap-2 mt-1">
-            <span class="text-[11px] font-bold text-amber-500 flex items-center gap-0.5">
-              <span>★ 4.9</span>
-              <span class="text-slate-400 font-normal">(124 deliveries)</span>
-            </span>
-            <span class="text-[10px] bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-300 font-black px-1.5 py-0.5 rounded">Active</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Earnings Overview 3 Cards Single Row -->
-      <div class="flex flex-col gap-2">
-        <span class="text-xs font-black uppercase text-slate-500 dark:text-[#94A3B8] tracking-wider">Earnings Overview</span>
-        <div class="grid grid-cols-3 gap-2">
-          <!-- Today -->
-          <div class="p-3 rounded-2xl bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col items-center text-center">
-            <span class="text-[10px] font-bold text-slate-500 dark:text-[#CBD5E1]">Today</span>
-            <span class="text-base font-black text-[#16B86E] mt-0.5">₹320</span>
-          </div>
-          <!-- This Week -->
-          <div class="p-3 rounded-2xl bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col items-center text-center">
-            <span class="text-[10px] font-bold text-slate-500 dark:text-[#CBD5E1]">This Week</span>
-            <span class="text-base font-black text-blue-600 dark:text-blue-400 mt-0.5">₹1,280</span>
-          </div>
-          <!-- This Month -->
-          <div class="p-3 rounded-2xl bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col items-center text-center">
-            <span class="text-[10px] font-bold text-slate-500 dark:text-[#CBD5E1]">This Month</span>
-            <span class="text-base font-black text-amber-600 dark:text-amber-400 mt-0.5">₹4,650</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Options Menu List -->
-      <div class="rounded-3xl bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-[#465362] shadow-xs overflow-hidden flex flex-col divide-y divide-slate-100 dark:divide-[#465362]">
-        <button class="w-full p-3.5 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-[#2A323D] transition-colors">
-          <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-[#16B86E] text-[20px]">history</span>
-            <span class="text-xs font-bold text-slate-800 dark:text-[#F8FAFC]">Daily Trip History</span>
-          </div>
-          <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
-        </button>
-
-        <button class="w-full p-3.5 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-[#2A323D] transition-colors">
-          <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-[#16B86E] text-[20px]">account_balance</span>
-            <span class="text-xs font-bold text-slate-800 dark:text-[#F8FAFC]">Bank Account & Payout UPI</span>
-          </div>
-          <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
-        </button>
-
-        <button class="w-full p-3.5 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-[#2A323D] transition-colors">
-          <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-[#16B86E] text-[20px]">pedal_bike</span>
-            <span class="text-xs font-bold text-slate-800 dark:text-[#F8FAFC]">Vehicle Details (Bicycle)</span>
-          </div>
-          <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
-        </button>
-
-        <div class="w-full p-3.5 flex items-center justify-between text-left">
-          <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-[#16B86E] text-[20px]">translate</span>
-            <span class="text-xs font-bold text-slate-800 dark:text-[#F8FAFC]">Language / भाषा</span>
-          </div>
-          <button onclick="toggleRunnerLanguage()" class="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-[#2A323D] text-[11px] font-black border border-slate-200 dark:border-[#465362]">
-            <span class="text-[#16B86E]">हिंदी</span> / EN
-          </button>
-        </div>
-
-        <button type="button" onclick="openRunnerEmergencySupport()" class="w-full p-3.5 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-[#2A323D] transition-colors cursor-pointer">
-          <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-[#16B86E] text-[20px]">support_agent</span>
-            <span class="text-xs font-bold text-slate-800 dark:text-[#F8FAFC]" data-i18n="partner_emergency_support">Partner Emergency Support (आपातकालीन सहायता)</span>
-          </div>
-          <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
-        </button>
-      </div>
-
-
-      <!-- App Diagnostics & Cache Invalidation Card -->
-      <div class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-md flex flex-col gap-3 max-w-2xl">
-        <div class="flex items-center justify-between border-b border-slate-700 pb-2">
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-amber-400 text-[20px]">system_update</span>
-            <h2 class="text-sm font-black text-white">ऐप वर्ज़न व सिस्टम डायग्नोस्टिक्स</h2>
-          </div>
-          <span class="gb-build-badge text-[11px] font-black bg-slate-900 text-amber-300 px-2.5 py-1 rounded-full border border-slate-700">v2.4.0 (25a3c8c)</span>
-        </div>
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-300">
-          <p class="leading-relaxed">यदि स्क्रीन पर पुराना डिज़ाइन दिख रहा हो, तो नीचे दिए बटन से कैश साफ़ करके तुरंत नया वर्ज़न लोड करें।</p>
-          <button onclick="forceClearCacheAndReload()" type="button" class="w-full sm:w-auto px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black rounded-xl active:scale-95 transition-all shadow-sm shrink-0 flex items-center justify-center gap-1.5 cursor-pointer min-h-[40px]">
-            <span class="material-symbols-outlined text-[18px]">cached</span>
-            <span>कैश साफ़ करें व रीलोड</span>
-          </button>
-        </div>
-      </div>
-    
-      
-      <!-- Runner Profile & Hub Location Card -->
-      <div class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-md flex flex-col gap-4 max-w-2xl">
-        <div class="flex items-center justify-between border-b border-slate-700 pb-3">
-          <div class="flex items-center gap-2.5">
-            <div class="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center shrink-0">
-              <span class="material-symbols-outlined text-[24px]">sports_motorsports</span>
-            </div>
-            <div>
-              <h2 class="text-sm sm:text-base font-black text-white" data-i18n="runner_settings_title">गाँव मित्र प्रोफ़ाइल</h2>
-              <span id="runner-hub-display" class="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5">
-                <span class="material-symbols-outlined text-[13px] text-primary">hub</span>
-                <span id="runner-hub-name-text" data-i18n="runner_hub_name">रामपुर क्लस्टर हब #RMP-04</span>
-              </span>
-            </div>
-          </div>
-          <span id="runner-badge-code" class="text-[10px] font-mono font-bold bg-amber-400/20 text-amber-300 px-2 py-0.5 rounded-md border border-amber-400/30 min-h-[22px] flex items-center justify-center shrink-0">#GM-RAMPUR-07</span>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-          <div>
-            <label class="block text-slate-400 font-bold mb-1" data-i18n="lbl_runner_name">डिलिवरी पार्टनर का नाम</label>
-            <input type="text" value="राम कुमार" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-medium" readonly/>
-          </div>
-          <div>
-            <label class="block text-slate-400 font-bold mb-1" data-i18n="lbl_runner_phone">पंजीकृत फ़ोन</label>
-            <input type="text" value="+91 9876543210" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-medium" readonly/>
-          </div>
-          <div>
-            <label class="block text-slate-400 font-bold mb-1" data-i18n="lbl_runner_vehicle">वाहन प्रकार</label>
-            <input type="text" value="Hero Splendor Plus (UP-32-AB-1234)" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-medium" readonly/>
-          </div>
-          <div>
-            <label class="block text-slate-400 font-bold mb-1" data-i18n="lbl_assigned_panchayats">आवंटित पंचायतें</label>
-            <input type="text" value="रामपुर, बिशनपुर, कल्याणपुर" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-medium" readonly/>
-          </div>
-        </div>
-
-        <div class="bg-amber-500/10 rounded-2xl p-3 border border-amber-500/20 text-xs text-amber-300 flex items-center gap-2">
-          <span class="material-symbols-outlined text-[20px] text-amber-400">verified</span>
-          <span data-i18n="runner_verified_note">सत्यापित गाँव मित्र। प्रति सफल डोरस्टेप डिलीवरी ₹20 भुगतान।</span>
-        </div>
-      </div>
-
-      <!-- Language & Preferences Card -->
-      <div id="runner-preferences-card" class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-md flex flex-col gap-3.5 max-w-2xl">
-        <h2 class="text-sm font-black text-white flex items-center gap-2 border-b border-slate-700 pb-2">
-          <span class="material-symbols-outlined text-primary text-[20px]">tune</span>
-          <span data-i18n="runner_pref_title">प्राथमिकताएं</span>
-        </h2>
-
+      <!-- App Preferences (Language & Theme) -->
+      <div id="runner-preferences-card" class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-md flex flex-col gap-3.5">
         <div class="flex items-center justify-between gap-3">
           <div>
             <span class="text-xs font-bold text-white block" data-i18n="profile_row_lang">ऐप की भाषा (Language)</span>
@@ -1097,7 +938,7 @@
       </div>
 
       <!-- Theme Selection Card (Light / Dark / System) -->
-      <div id="runner-theme-settings-card" class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-md flex flex-col gap-3.5 max-w-2xl">
+      <div id="runner-theme-settings-card" class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-md flex flex-col gap-3.5">
         <div class="flex items-center justify-between border-b border-slate-700 pb-2">
           <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-primary text-[20px]">palette</span>
@@ -1125,15 +966,365 @@
         </div>
       </div>
 
-      <!-- Polite Logout Action -->
-      <div class="pt-2 pb-6 max-w-2xl">
-        <button id="btn-runner-logout" type="button" onclick="handleRunnerLogout()" class="min-h-[48px] w-full rounded-2xl border border-red-500/40 bg-red-500/10 hover:bg-red-500/20 text-red-300 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-2xs transition-all active:scale-98 cursor-pointer">
-          <span class="material-symbols-outlined text-[18px]">logout</span>
-          <span data-i18n="logout_label">लॉगआउट करें (Log out)</span>
-        </button>
+
+      <!-- Header: Partner Identity & Verification Badge -->
+      <div class="p-4 sm:p-5 rounded-3xl bg-slate-800 border border-slate-700 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="flex items-center gap-3.5">
+          <div class="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border border-slate-700 shadow-sm relative bg-slate-900">
+            <img id="runner-profile-photo" src="static/images/runner_avatar.png" alt="Delivery Partner" class="w-full h-full object-cover" />
+            <button onclick="openEditRunnerModal()" title="Change photo" class="absolute bottom-0 right-0 bg-slate-950/80 text-white p-1 rounded-tl-lg hover:bg-slate-900 cursor-pointer">
+              <span class="material-symbols-outlined text-[13px]">photo_camera</span>
+            </button>
+          </div>
+          <div class="flex flex-col min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span id="runner-profile-name" class="font-black text-base text-white truncate">Ramesh Kumar</span>
+              <span id="runner-profile-verified-badge" class="inline-flex items-center gap-1 text-[11px] bg-emerald-950/60 text-emerald-300 font-black px-2 py-0.5 rounded-full border border-emerald-600">
+                <span class="material-symbols-outlined text-[14px]">verified</span>
+                <span>गाँव मित्र सत्यापित</span>
+              </span>
+            </div>
+            <span class="text-xs text-slate-300 mt-0.5">डिलीवरी साथी • <span id="runner-profile-village" class="font-semibold text-white">Rampur</span></span>
+            <div class="flex items-center gap-2 mt-1">
+              <span id="runner-profile-partner-code" class="text-[10px] font-mono font-bold bg-slate-900 text-amber-300 px-2 py-0.5 rounded border border-slate-700">GB-DP000001</span>
+              <span id="runner-profile-vehicle-tag" class="text-[10px] font-bold text-slate-300 flex items-center gap-1">
+                <span class="material-symbols-outlined text-[13px] text-amber-400">two_wheeler</span>
+                <span id="runner-header-vehicle-type">Motorcycle</span>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 self-end sm:self-center">
+          <button onclick="openEditRunnerModal()" class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-black flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">edit</span>
+            <span>प्रोफ़ाइल बदलें</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- SECTION A: PERSONAL INFORMATION (व्यक्तिगत जानकारी) -->
+      <div class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-sm flex flex-col gap-3.5">
+        <div class="flex items-center justify-between border-b border-slate-700 pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-amber-400 text-[20px]">person</span>
+            <h2 class="text-xs sm:text-sm font-black text-white">A. व्यक्तिगत जानकारी (Personal Information)</h2>
+          </div>
+          <button onclick="openEditRunnerModal()" class="text-xs text-amber-400 font-bold hover:underline flex items-center gap-1 cursor-pointer">
+            <span class="material-symbols-outlined text-[15px]">edit_note</span>
+            <span>संशोधन करें</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs">
+          <div class="bg-slate-900 p-3 rounded-2xl border border-slate-700/80">
+            <span class="text-[10px] font-bold text-slate-400 block mb-0.5">पूरा नाम</span>
+            <span id="prof-runner-name" class="font-bold text-white">Ramesh Kumar</span>
+          </div>
+
+          <div class="bg-slate-900 p-3 rounded-2xl border border-slate-700/80">
+            <span class="text-[10px] font-bold text-slate-400 block mb-0.5">पंजीकृत फ़ोन नंबर</span>
+            <span id="prof-runner-phone" class="font-bold text-white font-mono">+91 98765 11223</span>
+          </div>
+
+          <div class="bg-slate-900 p-3 rounded-2xl border border-slate-700/80">
+            <span class="text-[10px] font-bold text-slate-400 block mb-0.5">मूल गाँव / पंचायत</span>
+            <span id="prof-runner-village" class="font-bold text-white">Rampur</span>
+          </div>
+
+          <div class="sm:col-span-2 bg-slate-900 p-3 rounded-2xl border border-slate-700/80">
+            <span class="text-[10px] font-bold text-slate-400 block mb-0.5">घर का स्थायी पता</span>
+            <span id="prof-runner-address" class="font-bold text-white">House 42, Ward 3, Rampur Village</span>
+          </div>
+
+          <div class="bg-slate-900 p-3 rounded-2xl border border-slate-700/80">
+            <span class="text-[10px] font-bold text-rose-400 block mb-0.5">आपातकालीन संपर्क (Emergency)</span>
+            <span id="prof-runner-emergency" class="font-bold text-rose-300 font-mono">+91 98765 11223</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION B: KYC & VERIFICATION (केवाईसी एवं पहचान सत्यापन) -->
+      <div class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-sm flex flex-col gap-3.5">
+        <div class="flex items-center justify-between border-b border-slate-700 pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-amber-400 text-[20px]">verified_user</span>
+            <h2 class="text-xs sm:text-sm font-black text-white">B. पहचान सत्यापन (KYC & Trust)</h2>
+          </div>
+          <span id="runner-kyc-status-pill" class="px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-950/60 text-emerald-300 border border-emerald-600 flex items-center gap-1">
+            <span class="material-symbols-outlined text-[13px]">check_circle</span>
+            <span>सत्यापित (Approved)</span>
+          </span>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-amber-950/30 border border-amber-500/40 text-xs text-amber-200 leading-relaxed">
+          <span class="font-bold block mb-1">🌾 ग्रामीण डिलीवरी साथी नीति:</span>
+          गाँव मित्र बनने हेतु केवल वैध पहचान पत्र (आधार, पैन या वोटर आईडी) आवश्यक है। सुपर एडमिन द्वारा भौतिक व दस्तावेज़ी सत्यापन के बाद आपको "गांव बाज़ार सत्यापित" बैज मिलता है।
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          <div class="bg-slate-900 p-3 rounded-2xl border border-slate-700/80">
+            <span class="text-[10px] font-bold text-slate-400 block mb-0.5">दस्तावेज़ प्रकार</span>
+            <span id="prof-runner-kyc-doc" class="font-bold text-white">Aadhaar Card</span>
+          </div>
+
+          <div class="bg-slate-900 p-3 rounded-2xl border border-slate-700/80">
+            <span class="text-[10px] font-bold text-slate-400 block mb-0.5">सुरक्षित पहचान संख्या</span>
+            <span id="prof-runner-kyc-num" class="font-mono font-bold text-white">XXXX-XXXX-9988</span>
+          </div>
+
+          <div class="bg-slate-900 p-3 rounded-2xl border border-slate-700/80 flex items-center justify-between">
+            <div>
+              <span class="text-[10px] font-bold text-slate-400 block mb-0.5">दस्तावेज़ स्थिति</span>
+              <span class="text-emerald-400 font-bold text-[11px] flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                <span>सत्यापित सुरक्षित</span>
+              </span>
+            </div>
+            <button onclick="openRunnerKYCModal()" class="px-2.5 py-1 rounded-xl bg-slate-800 text-slate-200 text-[11px] font-bold hover:bg-slate-700 cursor-pointer">
+              बदलें
+            </button>
+          </div>
+        </div>
+
+        <div class="flex justify-end pt-1">
+          <button onclick="openRunnerKYCModal()" class="px-4 py-2 bg-slate-900 hover:bg-slate-950 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all border border-slate-700 cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">upload_file</span>
+            <span>नया पहचान पत्र अपलोड करें</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- SECTION C: VEHICLE DETAILS (वाहन का विवरण — CONDITIONAL RULE) -->
+      <div class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-sm flex flex-col gap-3.5">
+        <div class="flex items-center justify-between border-b border-slate-700 pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-amber-400 text-[20px]">two_wheeler</span>
+            <h2 class="text-xs sm:text-sm font-black text-white">C. वाहन का विवरण (Vehicle & Licence)</h2>
+          </div>
+          <span id="runner-vehicle-badge" class="px-2.5 py-1 rounded-full text-[11px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/40">
+            Motorcycle
+          </span>
+        </div>
+
+        <!-- Conditional Rule Notice Box -->
+        <div id="bicycle-licence-exempt-box" class="hidden p-3.5 rounded-2xl bg-emerald-950/40 border border-emerald-600 text-xs text-emerald-200 leading-relaxed">
+          <div class="flex items-center gap-2 font-bold mb-1">
+            <span class="material-symbols-outlined text-[18px]">pedal_bike</span>
+            <span>साइकिल डिलीवरी साथी छूट:</span>
+          </div>
+          साइकिल द्वारा डिलीवरी करने वाले गाँव मित्रों के लिए ड्राइविंग लाइसेंस अनिवार्य नहीं है। आप बिना किसी वाहन पंजीकरण के तुरंत काम शुरू कर सकते हैं।
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          <div class="bg-slate-900 p-3 rounded-2xl border border-slate-700/80">
+            <span class="text-[10px] font-bold text-slate-400 block mb-0.5">वाहन का प्रकार</span>
+            <span id="prof-runner-vehicle-type" class="font-bold text-white capitalize">Motorcycle</span>
+          </div>
+
+          <div id="prof-runner-reg-box" class="bg-slate-900 p-3 rounded-2xl border border-slate-700/80">
+            <span class="text-[10px] font-bold text-slate-400 block mb-0.5">वाहन पंजीकरण संख्या</span>
+            <span id="prof-runner-vehicle-reg" class="font-mono font-bold text-white">UP-14-EA-4921</span>
+          </div>
+
+          <div id="prof-runner-dl-box" class="bg-slate-900 p-3 rounded-2xl border border-slate-700/80">
+            <span class="text-[10px] font-bold text-slate-400 block mb-0.5">ड्राइविंग लाइसेंस संख्या</span>
+            <span id="prof-runner-dl-num" class="font-mono font-bold text-white">DL-1420110012345</span>
+          </div>
+        </div>
+
+        <div class="flex justify-end pt-1">
+          <button onclick="openRunnerKYCModal()" class="px-4 py-2 bg-slate-900 hover:bg-slate-950 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all border border-slate-700 cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">edit</span>
+            <span>वाहन व लाइसेंस विवरण बदलें</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- SECTION D: BANK ACCOUNT & UPI (बैंक खाता एवं UPI सेटिंग्स) -->
+      <div class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-sm flex flex-col gap-3.5">
+        <div class="flex items-center justify-between border-b border-slate-700 pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-amber-400 text-[20px]">account_balance</span>
+            <h2 class="text-xs sm:text-sm font-black text-white">D. बैंक खाता एवं UPI (Bank & Payouts)</h2>
+          </div>
+          <span class="px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-950/60 text-emerald-300 border border-emerald-600 flex items-center gap-1">
+            <span class="material-symbols-outlined text-[13px]">verified</span>
+            <span>सत्यापित खाता</span>
+          </span>
+        </div>
+
+        <p class="text-xs text-slate-300 leading-relaxed">
+          प्रत्येक डिलीवरी का कमीशन सीधे आपके इस बैंक खाते या UPI ID में स्थानांतरित किया जाता है।
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs">
+          <div class="bg-slate-900 p-3 rounded-2xl border border-slate-700/80">
+            <span class="text-[10px] font-bold text-slate-400 block mb-0.5">खाताधारक का नाम</span>
+            <span id="prof-runner-bank-holder" class="font-bold text-white">Ramesh Kumar</span>
+          </div>
+
+          <div class="bg-slate-900 p-3 rounded-2xl border border-slate-700/80">
+            <span class="text-[10px] font-bold text-slate-400 block mb-0.5">बैंक खाता संख्या</span>
+            <span id="prof-runner-bank-acc" class="font-mono font-bold text-white">••••••••1234</span>
+          </div>
+
+          <div class="bg-slate-900 p-3 rounded-2xl border border-slate-700/80">
+            <span class="text-[10px] font-bold text-slate-400 block mb-0.5">IFSC कोड</span>
+            <span id="prof-runner-bank-ifsc" class="font-mono font-bold text-white uppercase">SBIN0001234</span>
+          </div>
+
+          <div class="sm:col-span-2 bg-slate-900 p-3 rounded-2xl border border-slate-700/80">
+            <span class="text-[10px] font-bold text-slate-400 block mb-0.5">दैनिक भुगतान UPI ID</span>
+            <span id="prof-runner-bank-upi" class="font-mono font-bold text-white">ramesh.mitra@okaxis</span>
+          </div>
+        </div>
+
+        <div class="flex justify-end pt-1">
+          <button onclick="openRunnerBankModal()" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all shadow-sm cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">edit</span>
+            <span>बैंक व UPI विवरण बदलें</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- SECTION E: WORKING AREA & CLUSTER (कार्यक्षेत्र व क्लस्टर) -->
+      <div class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-sm flex flex-col gap-3.5">
+        <div class="flex items-center justify-between border-b border-slate-700 pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-amber-400 text-[20px]">hub</span>
+            <h2 class="text-xs sm:text-sm font-black text-white">E. कार्यक्षेत्र एवं क्लस्टर हब (Service Area)</h2>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          <div class="bg-slate-900 p-3 rounded-2xl border border-slate-700/80">
+            <span class="text-[10px] font-bold text-slate-400 block mb-0.5">संबद्ध मंडी क्लस्टर हब</span>
+            <span class="font-bold text-white">Rampur Mandi Hub #RMP-04</span>
+          </div>
+
+          <div class="bg-slate-900 p-3 rounded-2xl border border-slate-700/80">
+            <span class="text-[10px] font-bold text-slate-400 block mb-0.5">प्राथमिक गाँव</span>
+            <span id="prof-runner-primary-village" class="font-bold text-white">Rampur</span>
+          </div>
+
+          <div class="bg-slate-900 p-3 rounded-2xl border border-slate-700/80">
+            <span class="text-[10px] font-bold text-slate-400 block mb-0.5">सेवा दायरा</span>
+            <span id="prof-runner-radius" class="font-bold text-white">5.0 km (4 ग्राम पंचायतें)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION F: PREFERENCES (प्राथमिकताएं) -->
+      <div class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-sm flex flex-col gap-3.5">
+        <div class="flex items-center justify-between border-b border-slate-700 pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-amber-400 text-[20px]">tune</span>
+            <h2 class="text-xs sm:text-sm font-black text-white">F. प्राथमिकताएं (Preferences & Alerts)</h2>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          <div class="bg-slate-900 p-3 rounded-2xl border border-slate-700/80 flex flex-col justify-between">
+            <div class="mb-2">
+              <span class="font-bold text-white block">ऐप की भाषा (Language)</span>
+              <span class="text-[11px] text-slate-400">हिंदी अथवा English</span>
+            </div>
+            <button onclick="toggleRunnerLanguage()" class="w-full py-2 rounded-xl bg-slate-800 border border-slate-700 text-white font-bold flex items-center justify-center gap-1.5 hover:bg-slate-700 cursor-pointer">
+              <span class="material-symbols-outlined text-[16px]">translate</span>
+              <span id="prof-runner-lang-label">हिंदी / English</span>
+            </button>
+          </div>
+
+          <div class="bg-slate-900 p-3 rounded-2xl border border-slate-700/80 flex flex-col justify-between">
+            <div class="mb-2">
+              <span class="font-bold text-white block">थीम / रंग-रूप (Theme)</span>
+              <span class="text-[11px] text-slate-400">गहरा, हल्का या सिस्टम</span>
+            </div>
+            <div class="grid grid-cols-3 gap-1 bg-slate-800 p-1 rounded-xl border border-slate-700">
+              <button onclick="setRunnerTheme('light')" class="py-1 rounded text-[10px] font-bold text-slate-300 hover:bg-slate-700 cursor-pointer">हल्का</button>
+              <button onclick="setRunnerTheme('dark')" class="py-1 rounded text-[10px] font-bold text-slate-300 hover:bg-slate-700 cursor-pointer">गहरा</button>
+              <button onclick="setRunnerTheme('system')" class="py-1 rounded text-[10px] font-bold bg-amber-500 text-slate-950 cursor-pointer">सिस्टम</button>
+            </div>
+          </div>
+
+          <div class="bg-slate-900 p-3 rounded-2xl border border-slate-700/80 flex flex-col justify-between">
+            <div class="mb-2">
+              <span class="font-bold text-white block">मिशन ध्वनि अलर्ट (Audio)</span>
+              <span class="text-[11px] text-slate-400">नया ऑर्डर आने पर चेतावनी</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-semibold text-slate-300">आवाज़ चालू रखें</span>
+              <input type="checkbox" id="runner-sound-toggle" checked class="w-5 h-5 accent-amber-500 rounded cursor-pointer" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION G: SAFETY & EMERGENCY (सुरक्षा व आपातकालीन सहायता) -->
+      <div class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-red-500/30 shadow-sm flex flex-col gap-3.5">
+        <div class="flex items-center justify-between border-b border-slate-700 pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-rose-400 text-[20px]">e911_emergency</span>
+            <h2 class="text-xs sm:text-sm font-black text-rose-300">G. सुरक्षा व आपातकालीन सहायता (Emergency SOS)</h2>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <button onclick="triggerEmergencySOS()" class="p-3.5 rounded-2xl bg-rose-950/60 hover:bg-rose-900/60 border border-rose-600 text-left flex items-center gap-3 transition-all cursor-pointer">
+            <div class="w-10 h-10 rounded-xl bg-rose-600 text-white flex items-center justify-center shrink-0 animate-pulse">
+              <span class="material-symbols-outlined text-[24px]">sos</span>
+            </div>
+            <div>
+              <span class="font-black text-rose-200 block text-sm">आपातकालीन SOS बटन</span>
+              <span class="text-[10px] text-rose-300">क्लस्टर सुपरवाइजर व सहायता टीम को तुरंत अलर्ट भेजें</span>
+            </div>
+          </button>
+
+          <a href="tel:1800123456" class="p-3.5 rounded-2xl bg-slate-900 hover:bg-slate-950 border border-slate-700 text-left flex items-center gap-3 transition-all cursor-pointer">
+            <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-[22px]">call</span>
+            </div>
+            <div>
+              <span class="font-black text-white block text-sm">हेल्पलाइन सहायता</span>
+              <span class="text-[10px] text-slate-400">1800-GAON-BAZAR (24x7 निःशुल्क)</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- SECTION H: ACCOUNT & SECURITY (खाता व सुरक्षा) -->
+      <div class="bg-slate-800 rounded-3xl p-4 sm:p-5 border border-slate-700 shadow-sm flex flex-col gap-3.5">
+        <div class="flex items-center justify-between border-b border-slate-700 pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-amber-400 text-[20px]">shield</span>
+            <h2 class="text-xs sm:text-sm font-black text-white">H. खाता एवं सुरक्षा (Account & Security)</h2>
+          </div>
+          <span class="gb-build-badge text-[10px] font-mono bg-slate-900 px-2 py-0.5 rounded text-amber-300">v2.4.0 (25a3c8c)</span>
+        </div>
+
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+          <div>
+            <span class="font-bold text-white block">स्थायी गाँव मित्र पहचान (Permanent Partner ID)</span>
+            <span class="text-[11px] text-slate-400">यह ID आपके सभी ट्रिप व कमीशन रिकॉर्ड से जुड़ी है: <b id="prof-runner-id-footer" class="font-mono text-amber-300">GB-DP000001</b></span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="forceClearCacheAndReload()" class="px-3 py-2 bg-slate-900 hover:bg-slate-950 text-slate-300 font-bold rounded-xl text-xs flex items-center gap-1 border border-slate-700 cursor-pointer">
+              <span class="material-symbols-outlined text-[15px]">cached</span>
+              <span>कैश साफ़ करें</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="pt-2 border-t border-slate-700">
+          <button id="btn-runner-logout" type="button" onclick="handleRunnerLogout()" class="w-full py-3 rounded-2xl border border-red-500/40 bg-red-950/30 hover:bg-red-900/40 text-red-300 font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-98 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">logout</span>
+            <span>गाँव मित्र खाते से लॉगआउट करें (Log out)</span>
+          </button>
+        </div>
       </div>
 
     </section>
+
 
     </div> <!-- Close #runner-main-content -->
   
@@ -1470,6 +1661,171 @@
   <!-- ========================================================================= -->
   <!-- 8. RUNNER HELP & STORE MESSAGING MODAL                                    -->
   <!-- ========================================================================= -->
+    <!-- ========================================================================= -->
+  <!-- MODAL: EDIT RUNNER PERSONAL PROFILE (SECTION A)                           -->
+  <!-- ========================================================================= -->
+  <div id="modal-edit-runner-profile" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-slate-900 rounded-3xl max-w-md w-full p-5 shadow-2xl border border-slate-700 flex flex-col gap-3.5 text-slate-100">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+        <h3 class="font-black text-sm text-white flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-amber-400">person</span>
+          <span>व्यक्तिगत जानकारी संशोधित करें</span>
+        </h3>
+        <button onclick="closeEditRunnerModal()" class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-white cursor-pointer">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <div class="flex flex-col gap-2.5 text-xs">
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">पूरा नाम *</label>
+          <input type="text" id="edit-runner-name" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white"/>
+        </div>
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">गाँव / पंचायत *</label>
+          <input type="text" id="edit-runner-village" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white"/>
+        </div>
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">स्थायी पता *</label>
+          <input type="text" id="edit-runner-address" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white"/>
+        </div>
+        <div>
+          <label class="block font-bold text-rose-300 mb-1">आपातकालीन संपर्क फ़ोन *</label>
+          <input type="text" id="edit-runner-emergency" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-mono text-white"/>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 pt-2 border-t border-slate-800">
+        <button onclick="closeEditRunnerModal()" class="flex-1 py-2.5 rounded-xl border border-slate-700 text-xs font-bold text-slate-300 cursor-pointer">रद्द करें</button>
+        <button onclick="saveRunnerProfileForm()" class="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-black shadow-sm cursor-pointer">सहेजें</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: SUBMIT / UPDATE RUNNER KYC & VEHICLE DETAILS (SECTION B & C)       -->
+  <!-- ========================================================================= -->
+  <div id="modal-submit-runner-kyc" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-slate-900 rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto p-5 shadow-2xl border border-slate-700 flex flex-col gap-3.5 text-slate-100">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+        <h3 class="font-black text-sm text-white flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-amber-400">verified_user</span>
+          <span>पहचान व वाहन सत्यापन (KYC)</span>
+        </h3>
+        <button onclick="closeRunnerKYCModal()" class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-white cursor-pointer">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <div class="flex flex-col gap-2.5 text-xs">
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">पहचान पत्र प्रकार *</label>
+          <select id="runner-kyc-doc-type" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-bold text-white">
+            <option value="Aadhaar">आधार कार्ड (Aadhaar Card)</option>
+            <option value="PAN">पैन कार्ड (PAN Card)</option>
+            <option value="Voter ID">वोटर कार्ड (Voter ID)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">पहचान पत्र संख्या *</label>
+          <input type="text" id="runner-kyc-doc-number" placeholder="उदा. 5544-2211-9988" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-mono text-white"/>
+        </div>
+
+        <!-- Vehicle Type Selector with Conditional Logic -->
+        <div class="pt-1 border-t border-slate-800">
+          <label class="block font-bold text-slate-300 mb-1">वाहन का प्रकार (Vehicle Type) *</label>
+          <select id="runner-vehicle-select" onchange="onRunnerVehicleChange(this.value)" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-bold text-white">
+            <option value="Motorcycle">मोटरसाइकिल (Motorcycle)</option>
+            <option value="Bicycle">साइकिल (Bicycle) — DL की आवश्यकता नहीं</option>
+            <option value="Electric Vehicle">ई-रिक्शा / ईवी (Electric Vehicle)</option>
+          </select>
+        </div>
+
+        <!-- Bicycle Exemption Banner -->
+        <div id="modal-bicycle-exemption-note" class="hidden p-2.5 rounded-xl bg-emerald-950/40 border border-emerald-600 text-[11px] text-emerald-200">
+          ✓ साइकिल श्रेणी हेतु ड्राइविंग लाइसेंस और वाहन पंजीकरण अनिवार्य नहीं है।
+        </div>
+
+        <!-- Conditional Motor Vehicle Fields -->
+        <div id="modal-motor-vehicle-fields" class="flex flex-col gap-2.5">
+          <div>
+            <label class="block font-bold text-slate-300 mb-1">वाहन पंजीकरण संख्या (Vehicle Reg Number) *</label>
+            <input type="text" id="runner-vehicle-reg-input" placeholder="उदा. UP-14-EA-4921" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-mono uppercase text-white"/>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-300 mb-1">ड्राइविंग लाइसेंस संख्या (DL Number) *</label>
+            <input type="text" id="runner-dl-number-input" placeholder="उदा. DL-1420110012345" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-mono uppercase text-white"/>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">दस्तावेज़ फोटो / प्रतिलिपि (वैकल्पिक)</label>
+          <div class="flex items-center gap-2">
+            <input type="text" id="runner-doc-url-input" placeholder="फोटो लिंक या अपलोड करें" class="flex-1 p-2 bg-slate-800 border border-slate-700 rounded-xl font-mono text-[11px] text-white" />
+            <label class="px-3 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-bold cursor-pointer flex items-center gap-1 shrink-0">
+              <span class="material-symbols-outlined text-[16px]">upload</span>
+              <span>अपलोड</span>
+              <input type="file" id="file-upload-runner-doc" accept="image/*,.pdf" onchange="handleRunnerDocUpload(this)" class="hidden" />
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 pt-2 border-t border-slate-800">
+        <button onclick="closeRunnerKYCModal()" class="flex-1 py-2.5 rounded-xl border border-slate-700 text-xs font-bold text-slate-300 cursor-pointer">रद्द करें</button>
+        <button onclick="submitRunnerKYCForm()" class="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-black shadow-sm cursor-pointer">सत्यापन हेतु भेजें</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: EDIT RUNNER BANK & UPI (SECTION D)                                 -->
+  <!-- ========================================================================= -->
+  <div id="modal-edit-runner-bank" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-slate-900 rounded-3xl max-w-md w-full p-5 shadow-2xl border border-slate-700 flex flex-col gap-3.5 text-slate-100">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+        <h3 class="font-black text-sm text-white flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-amber-400">account_balance</span>
+          <span>बैंक खाता एवं UPI विवरण बदलें</span>
+        </h3>
+        <button onclick="closeRunnerBankModal()" class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-white cursor-pointer">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <div class="flex flex-col gap-2.5 text-xs">
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">खाताधारक का पूरा नाम *</label>
+          <input type="text" id="runner-bank-holder-input" placeholder="उदा. Ramesh Kumar" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white"/>
+        </div>
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">बैंक खाता संख्या *</label>
+          <input type="password" id="runner-bank-acc-input" placeholder="खाता संख्या दर्ज करें" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-mono text-white"/>
+        </div>
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">पुनः खाता संख्या दर्ज करें *</label>
+          <input type="password" id="runner-bank-acc-confirm-input" placeholder="पुनः खाता संख्या दर्ज करें" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-mono text-white"/>
+        </div>
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">बैंक IFSC कोड *</label>
+          <input type="text" id="runner-bank-ifsc-input" placeholder="उदा. SBIN0001234" maxlength="11" oninput="this.value = this.value.toUpperCase()" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-mono uppercase text-white"/>
+        </div>
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">दैनिक भुगतान UPI ID *</label>
+          <input type="text" id="runner-bank-upi-input" placeholder="उदा. ramesh.mitra@okaxis" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-mono text-white"/>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 pt-2 border-t border-slate-800">
+        <button onclick="closeRunnerBankModal()" class="flex-1 py-2.5 rounded-xl border border-slate-700 text-xs font-bold text-slate-300 cursor-pointer">रद्द करें</button>
+        <button onclick="saveRunnerBankForm()" class="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-black shadow-sm cursor-pointer">सहेजें</button>
+      </div>
+    </div>
+  </div>
+
+
   <div id="modal-runner-help" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex flex-col justify-end sm:justify-center items-center p-0 sm:p-4 transition-opacity duration-300">
     <div class="bg-slate-900 text-slate-100 rounded-t-[32px] sm:rounded-3xl p-4 sm:p-6 pb-safe shadow-2xl max-w-lg w-full max-h-[90vh] sm:max-h-[85vh] flex flex-col border-t sm:border border-slate-800 overflow-hidden animate-in slide-in-from-bottom duration-300">
       
@@ -4421,6 +4777,295 @@
       alert(RunnerStore.lang === 'hi' ? 'डिलीवरी सफलतापूर्वक पूरी हुई! ₹40 आपके खाते में जोड़े गए।' : 'Delivery successfully completed! ₹40 added to your account.');
       switchTab('missions');
     }
+
+
+
+    // =========================================================================
+    // 9.15 DELIVERY PARTNER (RUNNER) PROFILE, VEHICLE RULES & KYC
+    // =========================================================================
+    async function loadRunnerProfile() {
+      try {
+        const runnerId = (window.RunnerStore && window.RunnerStore.currentRunnerId) || 'gm_1';
+        const res = await fetch(`${API_BASE}/runner/profile?runner_id=${encodeURIComponent(runnerId)}`);
+        if (!res.ok) return;
+
+        const p = await res.json();
+        if (window.RunnerStore) window.RunnerStore.runnerProfile = p;
+
+        // Header
+        const pName = document.getElementById('runner-profile-name');
+        if (pName) pName.innerText = p.name;
+        const pVillage = document.getElementById('runner-profile-village');
+        if (pVillage) pVillage.innerText = p.village;
+        const pCode = document.getElementById('runner-profile-partner-code');
+        if (pCode) pCode.innerText = p.partner_code;
+        const pBadge = document.getElementById('runner-badge-code');
+        if (pBadge) pBadge.innerText = p.partner_code || '#GM-RAMPUR-07';
+        const pFooterCode = document.getElementById('prof-runner-id-footer');
+        if (pFooterCode) pFooterCode.innerText = p.partner_code;
+        const pPhoto = document.getElementById('runner-profile-photo');
+        if (pPhoto && p.photo_url) pPhoto.src = p.photo_url;
+        const vTag = document.getElementById('runner-header-vehicle-type');
+        if (vTag) vTag.innerText = p.vehicle_type;
+
+        // Section A: Personal Information
+        const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val || '--'; };
+        setVal('prof-runner-name', p.name);
+        setVal('prof-runner-phone', p.phone);
+        setVal('prof-runner-village', p.village);
+        setVal('prof-runner-address', p.address);
+        setVal('prof-runner-emergency', p.emergency_contact);
+
+        // Section B: KYC & Trust
+        setVal('prof-runner-kyc-doc', p.kyc_document_type);
+        setVal('prof-runner-kyc-num', p.kyc_document_number_masked);
+        const kycBadge = document.getElementById('runner-kyc-status-pill');
+        if (kycBadge) {
+          const isVer = p.kyc_status === 'approved' || p.is_verified;
+          kycBadge.className = isVer 
+            ? 'px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-950/60 text-emerald-300 border border-emerald-600 flex items-center gap-1'
+            : 'px-2.5 py-1 rounded-full text-[11px] font-black bg-amber-950/60 text-amber-300 border border-amber-600 flex items-center gap-1';
+          kycBadge.innerHTML = `<span class="material-symbols-outlined text-[13px]">${isVer ? 'check_circle' : 'hourglass_top'}</span><span>${isVer ? 'सत्यापित (Approved)' : 'सत्यापन विचाराधीन (Under Review)'}</span>`;
+        }
+
+        // Section C: Vehicle Details (CONDITIONAL RULE)
+        const isBicycle = (p.vehicle_type || '').toLowerCase() === 'bicycle';
+        const exemptBox = document.getElementById('bicycle-licence-exempt-box');
+        const regBox = document.getElementById('prof-runner-reg-box');
+        const dlBox = document.getElementById('prof-runner-dl-box');
+        const vBadge = document.getElementById('runner-vehicle-badge');
+
+        setVal('prof-runner-vehicle-type', p.vehicle_type);
+        if (vBadge) vBadge.innerText = p.vehicle_type;
+
+        if (isBicycle) {
+          if (exemptBox) exemptBox.classList.remove('hidden');
+          if (regBox) regBox.classList.add('hidden');
+          if (dlBox) dlBox.classList.add('hidden');
+        } else {
+          if (exemptBox) exemptBox.classList.add('hidden');
+          if (regBox) regBox.classList.remove('hidden');
+          if (dlBox) dlBox.classList.remove('hidden');
+          setVal('prof-runner-vehicle-reg', p.vehicle_reg_number || 'UP-14-EA-4921');
+          setVal('prof-runner-dl-num', p.driving_licence_number || 'DL-1420110012345');
+        }
+
+        // Section D: Bank Account & UPI
+        setVal('prof-runner-bank-holder', p.bank_account_name || p.name);
+        setVal('prof-runner-bank-acc', p.bank_account_number_masked || '••••••••1234');
+        setVal('prof-runner-bank-ifsc', p.bank_ifsc || 'SBIN0001234');
+        setVal('prof-runner-bank-upi', p.payout_upi || 'ramesh.mitra@okaxis');
+
+        // Section E: Working Area
+        setVal('prof-runner-primary-village', p.primary_village || p.village);
+        setVal('prof-runner-radius', `${p.service_radius_km || 5.0} km (4 ग्राम पंचायतें)`);
+
+      } catch (e) {
+        console.warn('Error loading runner profile:', e);
+      }
+    }
+
+    // Modal Helpers for Runner
+    function openEditRunnerModal() {
+      const p = (window.RunnerStore && window.RunnerStore.runnerProfile) || {};
+      document.getElementById('edit-runner-name').value = p.name || 'Ramesh Kumar';
+      document.getElementById('edit-runner-village').value = p.village || 'Rampur';
+      document.getElementById('edit-runner-address').value = p.address || 'House 42, Ward 3, Rampur Village';
+      document.getElementById('edit-runner-emergency').value = p.emergency_contact || '+91 98765 11223';
+
+      const modal = document.getElementById('modal-edit-runner-profile');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeEditRunnerModal() {
+      const modal = document.getElementById('modal-edit-runner-profile');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    async function saveRunnerProfileForm() {
+      const runnerId = (window.RunnerStore && window.RunnerStore.currentRunnerId) || 'gm_1';
+      const payload = {
+        name: document.getElementById('edit-runner-name').value.trim(),
+        village: document.getElementById('edit-runner-village').value.trim(),
+        address: document.getElementById('edit-runner-address').value.trim(),
+        emergency_contact: document.getElementById('edit-runner-emergency').value.trim()
+      };
+
+      try {
+        await fetch(`${API_BASE}/runner/profile?runner_id=${encodeURIComponent(runnerId)}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        showToast('सफल', 'व्यक्तिगत जानकारी सुरक्षित हो गई');
+        closeEditRunnerModal();
+        loadRunnerProfile();
+      } catch (e) {
+        showToast('त्रुटि', 'अपडेट विफल: ' + e.message);
+      }
+    }
+
+    function openRunnerKYCModal() {
+      const p = (window.RunnerStore && window.RunnerStore.runnerProfile) || {};
+      const sel = document.getElementById('runner-vehicle-select');
+      if (sel) {
+        sel.value = p.vehicle_type || 'Motorcycle';
+        onRunnerVehicleChange(sel.value);
+      }
+      const modal = document.getElementById('modal-submit-runner-kyc');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeRunnerKYCModal() {
+      const modal = document.getElementById('modal-submit-runner-kyc');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function onRunnerVehicleChange(vType) {
+      const isBicycle = (vType || '').toLowerCase() === 'bicycle';
+      const exemptNote = document.getElementById('modal-bicycle-exemption-note');
+      const motorFields = document.getElementById('modal-motor-vehicle-fields');
+
+      if (isBicycle) {
+        if (exemptNote) exemptNote.classList.remove('hidden');
+        if (motorFields) motorFields.classList.add('hidden');
+      } else {
+        if (exemptNote) exemptNote.classList.add('hidden');
+        if (motorFields) motorFields.classList.remove('hidden');
+      }
+    }
+
+    async function handleRunnerDocUpload(input) {
+      if (!input.files || input.files.length === 0) return;
+      const file = input.files[0];
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        showToast('अपलोड जारी...', 'दस्तावेज़ अपलोड हो रहा है');
+        const res = await fetch(`${API_BASE}/catalog/upload-image`, {
+          method: 'POST',
+          body: formData
+        });
+        if (res.ok) {
+          const data = await res.json();
+          document.getElementById('runner-doc-url-input').value = data.image_url;
+          showToast('सफल', 'दस्तावेज़ सफलतापूर्वक अपलोड हो गया');
+        } else {
+          showToast('त्रुटि', 'अपलोड विफल');
+        }
+      } catch (e) {
+        showToast('त्रुटि', 'नेटवर्क त्रुटि: ' + e.message);
+      }
+    }
+
+    async function submitRunnerKYCForm() {
+      const docType = document.getElementById('runner-kyc-doc-type').value;
+      const docNum = document.getElementById('runner-kyc-doc-number').value.trim();
+      const vType = document.getElementById('runner-vehicle-select').value;
+      const docUrl = document.getElementById('runner-doc-url-input').value.trim() || null;
+
+      if (!docNum) {
+        showToast('चेतावनी', 'कृपया पहचान पत्र संख्या भरें');
+        return;
+      }
+
+      let regNum = null;
+      let dlNum = null;
+      if (vType.toLowerCase() !== 'bicycle') {
+        regNum = document.getElementById('runner-vehicle-reg-input').value.trim();
+        dlNum = document.getElementById('runner-dl-number-input').value.trim();
+        if (!regNum || !dlNum) {
+          showToast('चेतावनी', 'मोटरसाइकिल/ईवी हेतु वाहन नंबर और ड्राइविंग लाइसेंस अनिवार्य है');
+          return;
+        }
+      }
+
+      const runnerId = (window.RunnerStore && window.RunnerStore.currentRunnerId) || 'gm_1';
+      try {
+        await fetch(`${API_BASE}/runner/kyc/submit?runner_id=${encodeURIComponent(runnerId)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            document_type: docType,
+            document_number: docNum,
+            document_url: docUrl,
+            vehicle_type: vType,
+            vehicle_reg_number: regNum,
+            driving_licence_number: dlNum
+          })
+        });
+        showToast('सफल', 'सत्यापन विवरण जमा हो गया। सुपर एडमिन समीक्षा जारी है।');
+        closeRunnerKYCModal();
+        loadRunnerProfile();
+      } catch (e) {
+        showToast('त्रुटि', 'केवाईसी जमा विफल: ' + e.message);
+      }
+    }
+
+    function openRunnerBankModal() {
+      const p = (window.RunnerStore && window.RunnerStore.runnerProfile) || {};
+      document.getElementById('runner-bank-holder-input').value = p.bank_account_name || p.name || '';
+      document.getElementById('runner-bank-acc-input').value = '';
+      document.getElementById('runner-bank-acc-confirm-input').value = '';
+      document.getElementById('runner-bank-ifsc-input').value = p.bank_ifsc || '';
+      document.getElementById('runner-bank-upi-input').value = p.payout_upi || '';
+
+      const modal = document.getElementById('modal-edit-runner-bank');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeRunnerBankModal() {
+      const modal = document.getElementById('modal-edit-runner-bank');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    async function saveRunnerBankForm() {
+      const holder = document.getElementById('runner-bank-holder-input').value.trim();
+      const acc = document.getElementById('runner-bank-acc-input').value.trim();
+      const accConfirm = document.getElementById('runner-bank-acc-confirm-input').value.trim();
+      const ifsc = document.getElementById('runner-bank-ifsc-input').value.trim();
+      const upi = document.getElementById('runner-bank-upi-input').value.trim();
+
+      if (!holder || !acc || !ifsc) {
+        showToast('चेतावनी', 'कृपया सभी आवश्यक बैंक विवरण भरें');
+        return;
+      }
+      if (acc !== accConfirm) {
+        showToast('त्रुटि', 'बैंक खाता संख्या मेल नहीं खाती');
+        return;
+      }
+
+      const runnerId = (window.RunnerStore && window.RunnerStore.currentRunnerId) || 'gm_1';
+      try {
+        await fetch(`${API_BASE}/runner/bank?runner_id=${encodeURIComponent(runnerId)}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            account_holder: holder,
+            account_number: acc,
+            ifsc: ifsc,
+            upi_id: upi
+          })
+        });
+        showToast('सफल', 'बैंक व UPI विवरण सुरक्षित हो गया');
+        closeRunnerBankModal();
+        loadRunnerProfile();
+      } catch (e) {
+        showToast('त्रुटि', 'बैंक विवरण सुरक्षित विफल: ' + e.message);
+      }
+    }
+
+    function triggerEmergencySOS() {
+      showToast('🚨 आपातकालीन अलर्ट भेजा गया', 'क्लस्टर सुपरवाइजर व कंट्रोल रूम को आपका स्थान भेज दिया गया है।');
+    }
+
+    // Startup Hook
+    const origInitRunnerApp = window.initRunnerApp;
+    window.initRunnerApp = async function() {
+      if (typeof origInitRunnerApp === 'function') await origInitRunnerApp();
+      loadRunnerProfile();
+    };
 
 </script>
 </body>
