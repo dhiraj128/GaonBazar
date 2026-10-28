@@ -596,10 +596,10 @@
       <!-- ===================================================================== -->
       <section id="view-p1-login" class="screen-view active flex-col w-full px-4 pt-4 pb-28 flex-1 min-h-0 space-y-4">
         <!-- Hero Banner -->
-        <div class="w-full shrink-0 relative overflow-hidden rounded-2xl bg-gradient-to-br from-surface-container/70 to-surface-container-low px-4 py-3 shadow-xs border border-surface-container-high/80 text-center flex flex-col items-center justify-center gap-1.5" style="max-width: 100%;">
-          <div class="inline-flex items-center justify-center gap-1.5 bg-emerald-50 text-emerald-900 border border-emerald-300/80 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold shadow-xs max-w-full box-border">
-            <span class="material-symbols-outlined text-[14px] text-emerald-600 shrink-0 select-none" style="font-variation-settings: 'FILL' 1;">eco</span>
-            <span data-i18n="p1_hero_badge" class="truncate text-center tracking-tight">100% शुद्ध देसी • ताज़ा सुविधा घर तक</span>
+        <div class="w-full shrink-0 relative overflow-hidden rounded-2xl bg-gradient-to-br from-surface-container/70 to-surface-container-low dark:from-[#1D232B] dark:to-[#111418] px-4 py-3 shadow-xs border border-surface-container-high/80 dark:border-[#465362] text-center flex flex-col items-center justify-center gap-1.5" style="max-width: 100%;">
+          <div class="inline-flex items-center justify-center gap-1.5 bg-emerald-50 dark:bg-[#1D232B] text-emerald-900 dark:text-[#16B86E] border border-emerald-300/80 dark:border-[#465362] px-2.5 py-0.5 rounded-full text-[10.5px] font-bold shadow-xs max-w-full box-border">
+            <span class="material-symbols-outlined text-[14px] text-emerald-600 dark:text-[#16B86E] shrink-0 select-none" style="font-variation-settings: 'FILL' 1;">eco</span>
+            <span data-i18n="p1_hero_badge" class="truncate text-center tracking-tight text-emerald-900 dark:text-[#F8FAFC]">100% शुद्ध देसी • ताज़ा सुविधा घर तक</span>
           </div>
           <h1 class="text-base sm:text-lg font-extrabold text-on-surface leading-snug font-hindi" style="padding: 0 16px; text-align: center; max-width: 100%; word-wrap: break-word; overflow-wrap: break-word;">
             <span data-i18n="p1_hero_title_1">"अपने गाँव की दुकान,</span>
@@ -612,10 +612,10 @@
         </div>
 
         <!-- Auth Card with Distinct Sign-In & Sign-Up Tabs -->
-        <div class="rounded-2xl bg-white p-5 shadow-mobile-card border border-surface-container-high space-y-4">
+        <div class="rounded-2xl bg-white dark:bg-[#1D232B] p-5 shadow-mobile-card border border-surface-container-high dark:border-[#465362] space-y-4">
           
           <!-- Auth Mode Tabs (Sign In vs Sign Up) -->
-          <div class="bg-surface-container p-1 rounded-xl flex items-center border border-surface-container-high gap-1">
+          <div class="bg-surface-container dark:bg-[#2A323D] p-1 rounded-xl flex items-center border border-surface-container-high dark:border-[#465362] gap-1">
             <button 
               id="auth-tab-signin" 
               type="button" 
@@ -1033,7 +1033,7 @@
               <span class="material-symbols-outlined text-[18px]">close</span>
             </button>
             <!-- Native Circular Green Microphone Button on Right -->
-            <button id="p2-voice-search-btn" onclick="navigateToPhase('commerce-ai')" type="button" aria-label="Voice Search" title="Voice Search" class="w-9 h-9 min-w-[36px] min-h-[36px] rounded-full bg-[#16B86E] text-white hover:bg-emerald-600 active:scale-90 flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-xs">
+            <button id="p2-voice-search-btn" onclick="triggerVoiceSearch()" type="button" aria-label="Voice Search" title="Voice Search" class="w-9 h-9 min-w-[36px] min-h-[36px] rounded-full bg-[#16B86E] text-white hover:bg-emerald-600 active:scale-90 flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-xs">
               <span class="material-symbols-outlined text-[20px]">mic</span>
               <span id="p2-voice-search-text" class="hidden"></span>
               <span id="p2-voice-search-icon" class="hidden"></span>
@@ -1048,35 +1048,35 @@
         <!-- Category Filter Chips (Inside Home) Matching Reference 01 -->
         <div class="w-full overflow-x-auto no-scrollbar pt-2 pb-1 my-1 px-0.5 relative z-10 min-h-[48px]">
           <div class="flex items-center gap-2.5 min-w-max pb-1">
-            <button type="button" onclick="filterStoresByCategory('all')" id="cat-chip-all" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-black bg-[#16B86E] text-white shadow-xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer">
+            <button type="button" onclick="filterStoresByCategory('all')" id="cat-chip-all" class="cat-chip shrink-0 whitespace-nowrap min-h-[44px] px-4 py-2 rounded-full text-xs font-black bg-[#16B86E] text-white shadow-xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer">
               <span id="cat-lbl-all" data-i18n="cat_all">All</span>
             </button>
-            <button type="button" onclick="filterStoresByCategory('kirana')" id="cat-chip-kirana" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
+            <button type="button" onclick="filterStoresByCategory('kirana')" id="cat-chip-kirana" class="cat-chip shrink-0 whitespace-nowrap min-h-[44px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
               <span id="cat-lbl-kirana" data-i18n="cat_kirana">Grocery</span>
             </button>
-            <button type="button" onclick="filterStoresByCategory('dairy')" id="cat-chip-dairy" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
+            <button type="button" onclick="filterStoresByCategory('dairy')" id="cat-chip-dairy" class="cat-chip shrink-0 whitespace-nowrap min-h-[44px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
               <span id="cat-lbl-dairy" data-i18n="cat_dairy">Dairy</span>
             </button>
-            <button type="button" onclick="filterStoresByCategory('sabzi')" id="cat-chip-sabzi" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
+            <button type="button" onclick="filterStoresByCategory('sabzi')" id="cat-chip-sabzi" class="cat-chip shrink-0 whitespace-nowrap min-h-[44px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
               <span id="cat-lbl-sabzi" data-i18n="cat_sabzi">Veg</span>
             </button>
-            <button type="button" onclick="filterStoresByCategory('fruits')" id="cat-chip-fruits" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
+            <button type="button" onclick="filterStoresByCategory('fruits')" id="cat-chip-fruits" class="cat-chip shrink-0 whitespace-nowrap min-h-[44px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
               <span id="cat-lbl-fruits" data-i18n="cat_fruits">Fruits</span>
             </button>
-            <button type="button" onclick="filterStoresByCategory('medicines')" id="cat-chip-medicines" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
+            <button type="button" onclick="filterStoresByCategory('medicines')" id="cat-chip-medicines" class="cat-chip shrink-0 whitespace-nowrap min-h-[44px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
               <span id="cat-lbl-medicines" data-i18n="cat_medicines">Medicines</span>
             </button>
-            <button type="button" onclick="filterStoresByCategory('agri')" id="cat-chip-agri" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
+            <button type="button" onclick="filterStoresByCategory('agri')" id="cat-chip-agri" class="cat-chip shrink-0 whitespace-nowrap min-h-[44px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
               <span id="cat-lbl-agri" data-i18n="cat_agri">Agri</span>
             </button>
-            <button type="button" onclick="filterStoresByCategory('tools')" id="cat-chip-tools" class="cat-chip min-h-[38px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
+            <button type="button" onclick="filterStoresByCategory('tools')" id="cat-chip-tools" class="cat-chip shrink-0 whitespace-nowrap min-h-[44px] px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shadow-2xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer hover:border-[#16B86E]">
               <span id="cat-lbl-tools" data-i18n="cat_tools">Tools</span>
             </button>
           </div>
         </div>
 
         <!-- Hero Banner: Fresh Essentials from Local Shops (Light Cream Warm Card) -->
-        <div id="p2-guarantee-banner" class="w-full shrink-0 rounded-3xl bg-[#FFF6EB] dark:bg-[#1D232B] border border-amber-200/60 dark:border-[#465362] p-4 sm:p-5 shadow-xs relative overflow-hidden flex items-center justify-between gap-3 mt-4 mb-3.5">
+        <div id="p2-guarantee-banner" class="w-full shrink-0 rounded-3xl bg-[#FFF6EB] dark:bg-[#1D232B] border border-amber-200/60 dark:border-[#465362] p-4 sm:p-5 shadow-xs relative flex items-center justify-between gap-3 mt-4 mb-3.5">
           <div class="flex flex-col gap-1 z-10">
             <h2 class="text-base font-black text-slate-900 dark:text-[#F8FAFC] leading-tight" data-i18n="p2_hero_title">Fresh essentials<br>from local shops</h2>
             <p class="text-xs text-slate-600 dark:text-[#CBD5E1] font-medium" data-i18n="p2_hero_sub">Good food. Stronger villages.</p>
@@ -1084,8 +1084,8 @@
               <span data-i18n="p2_hero_btn">Shop now</span>
             </button>
           </div>
-          <div class="w-28 h-24 sm:w-32 sm:h-28 flex items-center justify-center shrink-0 overflow-hidden">
-            <img src="static/images/hero_banner.png" alt="Fresh Essentials" class="max-h-full max-w-full object-contain" />
+          <div class="w-28 h-24 sm:w-36 sm:h-28 flex items-center justify-center shrink-0 relative">
+            <img src="static/images/hero_banner.png" alt="Fresh Essentials" class="max-h-full max-w-full object-contain drop-shadow-sm select-none" />
           </div>
         </div>
 
@@ -1105,8 +1105,8 @@
               <button type="button" data-favorite-item="item_tomato" onclick="toggleProductFavorite('item_tomato', event)" aria-label="Add Fresh Tomato to favorites" class="absolute top-2.5 right-2.5 w-9 h-9 min-w-[36px] min-h-[36px] flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors cursor-pointer">
                 <span class="material-symbols-outlined text-[18px]">favorite_border</span>
               </button>
-              <div class="w-full h-24 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2 mb-2">
-                <img src="static/images/prod_tomato.png" alt="Fresh Tomato" class="max-h-full max-w-full object-contain" />
+              <div class="w-full h-28 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2.5 mb-2">
+                <img src="static/images/prod_tomato.png" alt="Fresh Tomato" class="max-h-24 max-w-full object-contain drop-shadow-xs" />
               </div>
               <div class="flex flex-col">
                 <span id="feat-title-tomato" data-i18n="feat_tomato_name" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">Fresh Tomato</span>
@@ -1125,8 +1125,8 @@
               <button type="button" data-favorite-item="item_banana" onclick="toggleProductFavorite('item_banana', event)" aria-label="Add Banana to favorites" class="absolute top-2.5 right-2.5 w-9 h-9 min-w-[36px] min-h-[36px] flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors cursor-pointer">
                 <span class="material-symbols-outlined text-[18px]">favorite_border</span>
               </button>
-              <div class="w-full h-24 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2 mb-2">
-                <img src="static/images/prod_banana.png" alt="Banana" class="max-h-full max-w-full object-contain" />
+              <div class="w-full h-28 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2.5 mb-2">
+                <img src="static/images/prod_banana.png" alt="Banana" class="max-h-24 max-w-full object-contain drop-shadow-xs" />
               </div>
               <div class="flex flex-col">
                 <span id="feat-title-banana" data-i18n="feat_banana_name" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">Banana</span>
@@ -1158,8 +1158,8 @@
               <button type="button" data-favorite-item="item_milk" onclick="toggleProductFavorite('item_milk', event)" aria-label="Add Amul Taaza to favorites" class="absolute top-2.5 right-2.5 w-9 h-9 min-w-[36px] min-h-[36px] flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors cursor-pointer">
                 <span class="material-symbols-outlined text-[18px]">favorite_border</span>
               </button>
-              <div class="w-full h-24 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2 mb-2">
-                <img src="static/images/prod_milk.png" alt="Amul Taaza" class="max-h-full max-w-full object-contain" />
+              <div class="w-full h-28 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2.5 mb-2">
+                <img src="static/images/prod_milk.png" alt="Amul Taaza" class="max-h-24 max-w-full object-contain drop-shadow-xs" />
               </div>
               <div class="flex flex-col">
                 <span id="feat-title-milk" data-i18n="feat_milk_name" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">Amul Taaza</span>
@@ -1178,8 +1178,8 @@
               <button type="button" data-favorite-item="item_onion" onclick="toggleProductFavorite('item_onion', event)" aria-label="Add Onion to favorites" class="absolute top-2.5 right-2.5 w-9 h-9 min-w-[36px] min-h-[36px] flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors cursor-pointer">
                 <span class="material-symbols-outlined text-[18px]">favorite_border</span>
               </button>
-              <div class="w-full h-24 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2 mb-2">
-                <img src="static/images/prod_onion.png" alt="Onion" class="max-h-full max-w-full object-contain" />
+              <div class="w-full h-28 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2.5 mb-2">
+                <img src="static/images/prod_onion.png" alt="Onion" class="max-h-24 max-w-full object-contain drop-shadow-xs" />
               </div>
               <div class="flex flex-col">
                 <span id="feat-title-onion" data-i18n="feat_onion_name" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">Onion</span>
@@ -2334,7 +2334,7 @@
       <!-- ===================================================================== -->
       <!-- MODULE 1: COMMERCE AI ASSISTANT (Voice-First Shopping & Direct Cart CTA) -->
       <!-- ===================================================================== -->
-      <section id="view-commerce-ai" class="screen-view hidden flex-col w-full px-4 pt-2 pb-28 flex-1 min-h-0 space-y-4">
+      <section id="view-commerce-ai" class="screen-view hidden flex-col w-full px-4 pt-2 pb-40 flex-1 min-h-0 space-y-4">
         
         <!-- Top Title Bar Matching Reference Image 01 -->
         <div class="flex items-center justify-between py-1">
@@ -2454,7 +2454,7 @@
         </div>
 
         <!-- Sticky Floating Bar: View Cart & Checkout -->
-        <div id="commerce-view-cart-bar" class="hidden sticky bottom-16 left-0 right-0 z-30 pt-2 pb-1">
+        <div id="commerce-view-cart-bar" class="hidden sticky bottom-20 left-0 right-0 z-30 pt-2 pb-2">
           <button onclick="navigateToPhase('cart')" class="w-full h-12 bg-[#16B86E] hover:bg-emerald-700 text-white rounded-2xl font-black text-xs sm:text-sm flex items-center justify-between px-4 shadow-lg active:scale-98 transition-all cursor-pointer">
             <span id="commerce-cart-count-badge" class="bg-white/20 px-2.5 py-0.5 rounded-full text-xs">0 Items</span>
             <span data-i18n="ai_proceed_cart">View Cart & Checkout</span>
@@ -5644,12 +5644,20 @@
         tracking: 'view-p5-tracking',
         profile: 'view-profile',
         'ai-commerce': 'view-commerce-ai',
+        'commerce-ai': 'view-commerce-ai',
+        ai: 'view-commerce-ai',
+        home: 'view-p2-dashboard',
+        account: 'view-profile',
+        orders: 'view-profile',
         support: 'view-support-center',
         offline: 'view-offline-fallback'
       };
 
       // Support either clean phase key ("store") or full DOM element ID ("view-p3-store")
       let cleanPhase = phaseName;
+      if (cleanPhase === 'commerce-ai' || cleanPhase === 'ai') cleanPhase = 'ai-commerce';
+      if (cleanPhase === 'home') cleanPhase = 'dashboard';
+      if (cleanPhase === 'account' || cleanPhase === 'orders') cleanPhase = 'profile';
       if (typeof phaseName === 'string' && phaseName.startsWith('view-')) {
         const found = Object.keys(phaseViews).find(k => phaseViews[k] === phaseName);
         if (found) cleanPhase = found;
@@ -5713,10 +5721,12 @@
       AppStore.currentPhase = cleanPhase;
 
       // Show/Hide views with explicit display, opacity and visibility guarantees
-      Object.keys(phaseViews).forEach(key => {
-        const el = document.getElementById(phaseViews[key]);
+      const targetViewId = phaseViews[cleanPhase];
+      const uniqueViews = new Set(Object.values(phaseViews));
+      uniqueViews.forEach(viewId => {
+        const el = document.getElementById(viewId);
         if (!el) return;
-        if (key === cleanPhase) {
+        if (viewId === targetViewId) {
           el.classList.remove('hidden');
           el.classList.add('active');
           el.style.display = 'flex';
@@ -6942,7 +6952,9 @@
           { id: 'item_4', name_hi: 'रेड लेबल कड़क चाय', name_en: 'Brooke Bond Red Label Tea', category: 'tea', weight: '250 g', price: 95, mrp: 110, icon: 'coffee' },
           { id: 'item_5', name_hi: 'अमूल शुद्ध गाय का घी', name_en: 'Amul Pure Cow Ghee', category: 'oil', weight: '1 L', price: 580, mrp: 640, icon: 'local_drink' },
           { id: 'item_6', name_hi: 'एमडीएच देगी मिर्च', name_en: 'MDH Deggi Mirch', category: 'spices', weight: '100 g', price: 62, mrp: 75, icon: 'soup_kitchen' },
-          { id: 'item_7', name_hi: 'मधुर शुद्ध चीनी', name_en: 'Madhur Pure Sugar', category: 'kirana', weight: '1 kg', price: 48, mrp: 55, icon: 'grain' }
+          { id: 'item_7', name_hi: 'मधुर शुद्ध चीनी', name_en: 'Madhur Pure Sugar', category: 'kirana', weight: '1 kg', price: 48, mrp: 55, icon: 'grain' },
+          { id: 'item_d1', name_hi: 'अमूल ताज़ा ताज़ा दूध', name_en: 'Amul Taaza Fresh Milk', category: 'dairy', weight: '1 Litre', price: 68, mrp: 72, icon: 'local_drink' },
+          { id: 'item_rice', name_hi: 'दावत रोज़ाना बासमती चावल', name_en: 'Daawat Rozana Basmati Rice', category: 'rice', weight: '1 kg', price: 85, mrp: 105, icon: 'rice_bowl' }
         ]
       },
       rampur_dawa: {
@@ -7177,16 +7189,19 @@
     // =========================================================================
     const VoiceCommerceEngine = {
       synonyms: {
-        atta: ['atta', 'aata', 'aashirvaad', 'ashirvaad', 'gehu', 'chakki', 'flour', 'आटा', 'गेहूं', 'चक्की'],
-        milk: ['milk', 'doodh', 'dudh', 'taaza doodh', 'buffalo milk', 'cow milk', 'packet milk', 'दूध', 'ताज़ा दूध'],
-        oil: ['oil', 'tel', 'mustard', 'sarson', 'fortune', 'refined', 'kacchi ghani', 'dhara', 'तेल', 'सरसों'],
-        rice: ['rice', 'chawal', 'basmati', 'daawat', 'rozana', 'kolam', 'चावल', 'बासमती'],
-        sugar: ['sugar', 'chini', 'cheeni', 'madhur', 'shakkar', 'चीनी', 'शक्कर'],
-        ghee: ['ghee', 'desi ghee', 'cow ghee', 'amul ghee', 'घी', 'देसी घी'],
-        tea: ['tea', 'chai', 'chay', 'red label', 'taj mahal', 'चाय', 'पत्ती'],
-        salt: ['salt', 'namak', 'tata', 'sendha', 'नमक'],
+        atta: ['atta', 'aata', 'aashirvaad', 'ashirvaad', 'gehu', 'chakki', 'flour', 'आटा', 'गेहूं', 'चक्की', 'item_1'],
+        milk: ['milk', 'doodh', 'dudh', 'taaza doodh', 'buffalo milk', 'cow milk', 'packet milk', 'amul', 'दूध', 'ताज़ा दूध', 'item_d1', 'item_milk'],
+        oil: ['oil', 'tel', 'mustard', 'mustard oil', 'sarson', 'sarson ka tel', 'sarson tel', 'fortune', 'refined', 'kacchi ghani', 'dhara', 'तेल', 'सरसों', 'सरसों का तेल', 'राई का तेल', 'item_2', 'item_oil'],
+        rice: ['rice', 'chawal', 'basmati', 'daawat', 'rozana', 'kolam', 'चावल', 'बासमती', 'item_rice'],
+        sugar: ['sugar', 'chini', 'cheeni', 'madhur', 'shakkar', 'चीनी', 'शक्कर', 'item_7'],
+        ghee: ['ghee', 'desi ghee', 'cow ghee', 'amul ghee', 'घी', 'देसी घी', 'item_5'],
+        tea: ['tea', 'chai', 'chay', 'red label', 'taj mahal', 'चाय', 'पत्ती', 'item_4'],
+        salt: ['salt', 'namak', 'tata', 'sendha', 'नमक', 'item_3'],
         dal: ['dal', 'daal', 'arhar', 'toor', 'moong', 'chana', 'urad', 'masoor', 'pulses', 'दाल'],
-        spices: ['spices', 'mirch', 'haldi', 'dhaniya', 'masala', 'deggi', 'मसाला', 'मिर्च'],
+        spices: ['spices', 'mirch', 'haldi', 'dhaniya', 'masala', 'deggi', 'मसाला', 'मिर्च', 'item_6'],
+        tomato: ['tomato', 'tomatoes', 'tamatar', 'tamator', 'टमाटर', 'ताज़ा टमाटर', 'item_tomato'],
+        banana: ['banana', 'bananas', 'kela', 'kele', 'केला', 'केले', 'item_banana'],
+        onion: ['onion', 'onions', 'pyaz', 'pyaaj', 'प्याज़', 'प्याज', 'ताज़ा प्याज़', 'item_onion'],
         surf: ['surf', 'surf excel', 'detergent', 'rin', 'wheel', 'tide', 'powder', 'सर्फ', 'डिटर्जेंट'],
         biscuit: ['biscuit', 'biscuits', 'parle', 'parle-g', 'marie', 'rusk', 'cookies', 'बिस्कुट', 'बिस्किट', 'पारले'],
         soap: ['soap', 'sabun', 'surf', 'detergent', 'rin', 'wheel', 'tide', 'dettol', 'साबुन'],
@@ -7199,9 +7214,14 @@
         'do': 2, 'दो': 2, 'two': 2, '2': 2,
         'teen': 3, 'तीन': 3, 'three': 3, '3': 3,
         'char': 4, 'चार': 4, 'four': 4, '4': 4,
-        'panch': 5, 'पांच': 5, 'five': 5, '5': 5,
+        'panch': 5, 'पांच': 5, 'पाँच': 5, 'five': 5, '5': 5,
         'chhe': 6, 'छह': 6, 'six': 6, '6': 6,
-        'aadha': 1, 'आधा': 1, 'half': 1
+        'saat': 7, 'सात': 7, 'seven': 7, '7': 7,
+        'aath': 8, 'आठ': 8, 'eight': 8, '8': 8,
+        'nau': 9, 'नौ': 9, 'nine': 9, '9': 9,
+        'das': 10, 'दस': 10, 'ten': 10, '10': 10,
+        'aadha': 1, 'आधा': 1, 'half': 1,
+        '500g': 1, '250g': 1, '100g': 1
       },
 
       checkMicSupport() {
@@ -7249,35 +7269,35 @@
           return { intent: 'MODIFY_QUANTITY', target: target, quantity: qty, unit: unit, query: q };
         }
 
-        // 4. ADD TO CART
-        let m_chahiye = ql.match(/^(?:mujhe|humko)?\s*(\d+|ek|do|teen|char|panch|chhe|one|two|three|four|five|six)\s*(kg|kilo|l|litre|packet|packets|g|gram|ग्राम|किलो|लीटर|पैकेट)?\s+(.+?)\s*(?:chahiye|daal do|daalo|add karo)$/i);
-        let addMatch = m_chahiye ||
-                       ql.match(/^(?:add|daalo|daal do|daal|jodo|jod do|put)\s+(.+?)(?:\s+(?:in|into|to)\s+(?:my\s+)?cart|\s+cart\s+mein)?$/i) ||
-                       ql.match(/^(.+?)\s+(?:cart\s+mein\s+(?:add|daal do|daalo|daal|jod do|jodo|shamil karo))/i) ||
-                       ql.match(/^(.+?)\s+(?:add\s*karo|daal\s*do|daalo|jod\s*do|jodo|shamil\s*karo)$/i) ||
-                       ql.match(/^add\s+(.+)$/i);
-        if (addMatch) {
+        // 4. ADD TO CART & DIRECT SHOPPING PHRASES
+        // 4a. Explicit Add / Cart Commands
+        let addExplicit = ql.match(/^(?:add|daalo|daal do|daal|jodo|jod do|put)\s+(.+?)(?:\s+(?:in|into|to)\s+(?:my\s+)?cart|\s+cart\s+(?:mein|me))?$/i) ||
+                          ql.match(/^(.+?)\s+(?:cart\s+(?:mein|me)\s+)?(?:add\s*karo|daal\s*do|daalo|jod\s*do|jodo|shamil\s*karo|जोड़ो|जोड़\s*दो|जोड़ो|जोड़\s*दो|डालो|डाल\s*दो|शामिल\s*करो)$/i) ||
+                          ql.match(/^add\s+(.+)$/i);
+        if (addExplicit) {
+          let spec = addExplicit[1].trim();
           let qty = 1;
           let unit = '';
-          let target = '';
-          if (m_chahiye) {
-            let rawQty = m_chahiye[1].trim();
-            unit = m_chahiye[2] || '';
-            target = m_chahiye[3].trim();
+          let target = spec;
+          let qtyMatch = spec.match(/^(\d+|ek|do|teen|char|panch|chhe|one|two|three|four|five|six|aadha|आधा|एक|दो|तीन|चार|पांच|पाँच|छह)\s*(kg|kilo|kilos|l|litre|liter|packet|packets|pkt|bottle|bottles|g|gram|ग्राम|किलो|लीटर|पैकेट|बोतल)?\s+(.+)$/i);
+          if (qtyMatch) {
+            let rawQty = qtyMatch[1].trim();
+            unit = qtyMatch[2] || '';
+            target = qtyMatch[3].trim();
             qty = this.wordToNum[rawQty] || parseInt(rawQty, 10) || 1;
-          } else {
-            let fullSpec = addMatch[1].trim();
-            let qtyMatch = fullSpec.match(/(\d+|ek|do|teen|char|panch|chhe|one|two|three|four|five|six)\s*(kg|kilo|l|litre|packet|packets|g|gram|ग्राम|किलो|लीटर|पैकेट)?\s+(.+)/i);
-            if (qtyMatch) {
-              let rawQty = qtyMatch[1].trim();
-              unit = qtyMatch[2] || '';
-              target = qtyMatch[3].trim();
-              qty = this.wordToNum[rawQty] || parseInt(rawQty, 10) || 1;
-            } else {
-              target = fullSpec;
-            }
           }
-          target = target.replace(/\b(?:to\s+my\s+cart|to\s+cart|in\s+cart|cart\s+mein|cart)\b/gi, '').trim();
+          target = target.replace(/\b(?:to\s+my\s+cart|to\s+cart|in\s+cart|cart\s+(?:mein|me)|cart)\b/gi, '').trim();
+          return { intent: 'ADD_TO_CART', target: target, quantity: qty, unit: unit, query: q };
+        }
+
+        // 4b. Direct Quantity + Item Phrases (e.g. '1 kg tomato', 'एक किलो टमाटर', '2 packet milk', 'दो पैकेट दूध', '500g sugar', 'आधा किलो चीनी')
+        let directQtyMatch = ql.match(/^(?:mujhe|humko|hamko|i want|please)?\s*(\d+|ek|do|teen|char|panch|chhe|saat|aath|nau|das|one|two|three|four|five|six|seven|eight|nine|ten|aadha|आधा|एक|दो|तीन|चार|पांच|पाँच|छह|सात|आठ|नौ|दस|500g|250g|100g)\s*(kg|kilo|kilos|l|litre|liter|packet|packets|pkt|bottle|bottles|g|gram|ग्राम|किलो|लीटर|पैकेट|बोतल)?\s+(.+)$/i);
+        if (directQtyMatch && !/^(?:search|find|khojo|dhoondo|kahan|dikhao|show)\b/i.test(ql)) {
+          let rawQty = directQtyMatch[1].trim();
+          let unit = directQtyMatch[2] || '';
+          let target = directQtyMatch[3].trim();
+          let qty = this.wordToNum[rawQty] || parseInt(rawQty, 10) || 1;
+          target = target.replace(/\b(?:chahiye|dena|do|bhejo|lao|please|चाहिए|दो|देना)\b/gi, '').trim();
           return { intent: 'ADD_TO_CART', target: target, quantity: qty, unit: unit, query: q };
         }
 
@@ -7293,8 +7313,33 @@
         return { intent: 'SEARCH', target: ql, query: q };
       },
 
+      ensureCatalogLoaded() {
+        if (!AppStore.catalog || AppStore.catalog.length === 0) {
+          if (typeof STORE_CATALOG_CACHE !== 'undefined' && STORE_CATALOG_CACHE.sharma_brothers) {
+            const cached = STORE_CATALOG_CACHE.sharma_brothers;
+            AppStore.catalog = cached.products.map(p => ({
+              id: p.id,
+              name_hi: p.name_hi,
+              name_en: p.name_en,
+              cat: p.category,
+              weight: p.weight,
+              price: p.price,
+              mrp: p.mrp,
+              qty: 0,
+              icon: p.icon || 'nutrition',
+              store_id: 'sharma_brothers'
+            }));
+            if (!AppStore.activeStore) {
+              AppStore.activeStore = cached;
+            }
+          }
+        }
+        return AppStore.catalog || [];
+      },
+
       findMatchingProducts(target) {
         if (!target) return [];
+        this.ensureCatalogLoaded();
         const tl = target.toLowerCase().trim();
         const catalog = AppStore.catalog || [];
 
@@ -7305,7 +7350,14 @@
           const id = (i.id || '').toLowerCase();
           return en.includes(tl) || hi.includes(tl) || id.includes(tl) || tl.includes(en) || tl.includes(hi);
         });
-        if (exact.length > 0) return exact;
+        if (exact.length > 0) {
+          const d1Idx = exact.findIndex(i => i.id === 'item_d1');
+          if (d1Idx > 0) {
+            const [d1] = exact.splice(d1Idx, 1);
+            exact.unshift(d1);
+          }
+          return exact;
+        }
 
         // 2. Synonyms match
         for (const [key, synList] of Object.entries(this.synonyms)) {
@@ -7316,7 +7368,14 @@
               const cat = (i.cat || '').toLowerCase();
               return synList.some(s => en.includes(s) || hi.includes(s) || cat.includes(s));
             });
-            if (matches.length > 0) return matches;
+            if (matches.length > 0) {
+              const d1Idx = matches.findIndex(i => i.id === 'item_d1');
+              if (d1Idx > 0) {
+                const [d1] = matches.splice(d1Idx, 1);
+                matches.unshift(d1);
+              }
+              return matches;
+            }
           }
         }
 
@@ -7437,7 +7496,9 @@
             const name = isHi ? (item.name_hi || item.name_en) : (item.name_en || item.name_hi);
             const cartItems = (AppStore.catalog || []).filter(i => i.qty > 0);
             const subtotal = cartItems.reduce((acc, i) => acc + (i.price * i.qty), 0);
-            responseMsg = isHi ? `${addQty} ${name} कार्ट में जोड़ा गया। कुल: ₹${subtotal}` : `Added ${addQty} ${name} to your cart. Total: ₹${subtotal}`;
+            responseMsg = isHi 
+              ? `${addQty} ${parsed.unit ? parsed.unit + ' ' : ''}${name} कार्ट में जोड़ा गया। कुल: ₹${subtotal}` 
+              : `Added ${addQty} ${parsed.unit ? parsed.unit + ' ' : ''}${name} to your cart. Cart subtotal: ₹${subtotal}.`;
             if (typeof showAudioToast === 'function') showAudioToast(isHi ? 'कार्ट में जोड़ा गया' : 'Added to Cart', responseMsg);
             this.speakFeedback(responseMsg);
 
@@ -7448,6 +7509,9 @@
             if (sourceView === 'ai-commerce') {
               if (typeof refreshCommerceCard === 'function') refreshCommerceCard(item.id);
               if (typeof syncCommerceCartBar === 'function') syncCommerceCartBar();
+              if (typeof processCommerceAiQuery === 'function') {
+                processCommerceAiQuery(parsed.target);
+              }
             }
           } else {
             responseMsg = isHi ? `क्षमा करें, '${parsed.target}' गाँव की दुकानों में उपलब्ध नहीं है।` : `Could not find '${parsed.target}' in village stores.`;
@@ -7555,16 +7619,25 @@
           }, 5000);
         };
 
+        // Set immediate synchronous listening indicators
+        if (voiceBtn) {
+          voiceBtn.classList.remove('bg-[#16B86E]', 'hover:bg-emerald-600', 'bg-slate-100', 'text-slate-700');
+          voiceBtn.classList.add('bg-red-500', 'text-white', 'animate-pulse');
+        }
+        if (voiceIcon) voiceIcon.innerText = 'graphic_eq';
+        if (voiceText) voiceText.innerText = isHi ? 'सुन रहे हैं...' : 'Listening...';
+        if (searchInput) searchInput.placeholder = isHi ? 'बोलिए (उदा. टमाटर, दूध, तेल)...' : 'Listening... speak product name';
+
         // Complete state machine
         recognition.onstart = () => {
           resetInactivityTimer();
           if (voiceBtn) {
-            voiceBtn.classList.remove('bg-slate-100', 'text-slate-700');
+            voiceBtn.classList.remove('bg-[#16B86E]', 'hover:bg-emerald-600', 'bg-slate-100', 'text-slate-700');
             voiceBtn.classList.add('bg-red-500', 'text-white', 'animate-pulse');
           }
           if (voiceIcon) voiceIcon.innerText = 'graphic_eq';
           if (voiceText) voiceText.innerText = isHi ? 'सुन रहे हैं...' : 'Listening...';
-          if (searchInput) searchInput.placeholder = isHi ? 'बोलिए (उदा. आटा, दाल, तेल)...' : 'Listening... speak product name';
+          if (searchInput) searchInput.placeholder = isHi ? 'बोलिए (उदा. टमाटर, दूध, तेल)...' : 'Listening... speak product name';
         };
 
         recognition.onspeechstart = () => {
@@ -7597,13 +7670,11 @@
 
           if (finalTranscript) {
             if (speechTimer) clearTimeout(speechTimer);
-            if (window.VoiceCommerceEngine) {
-              window.VoiceCommerceEngine.executeVoiceCommand(finalTranscript.trim(), 'dashboard');
-            } else {
-              filterStoreCatalog(finalTranscript.trim());
-            }
             try { recognition.stop(); } catch (e) {}
             resetVoiceSearchUI();
+            const cleanQuery = finalTranscript.trim();
+            if (searchInput) searchInput.value = cleanQuery;
+            filterStoreCatalog(cleanQuery);
           }
         };
 
