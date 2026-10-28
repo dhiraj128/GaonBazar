@@ -79,6 +79,24 @@ class Store(Base):
     bank_ifsc = Column(String(20), nullable=True, default=None)
     bank_verification_status = Column(String(20), default="pending")  # "pending", "verified", "rejected"
     status = Column(String(30), default="approved")  # "approved", "pending_approval", "rejected"
+    store_code = Column(String(50), unique=True, nullable=True)  # e.g. "GB-S000001"
+    village = Column(String(100), default="Rampur")
+    address = Column(Text, nullable=True)
+    landmark = Column(String(150), nullable=True)
+    pickup_location = Column(String(150), nullable=True)
+    opening_time = Column(String(20), default="07:00 AM")
+    closing_time = Column(String(20), default="09:00 PM")
+    weekly_schedule = Column(String(50), default="All Days")
+    kyc_status = Column(String(30), default="approved")  # "pending", "under_review", "approved", "rejected", "resubmission_requested"
+    kyc_document_type = Column(String(50), default="Aadhaar")
+    kyc_document_number = Column(String(100), default="XXXX-XXXX-8921")
+    kyc_document_url = Column(Text, nullable=True)
+    kyc_rejection_reason = Column(Text, nullable=True)
+    kyc_submitted_at = Column(DateTime, nullable=True)
+    kyc_reviewed_at = Column(DateTime, nullable=True)
+    is_verified = Column(Boolean, default=True)  # GaonBazaar Verified badge
+    theme_preference = Column(String(20), default="system")
+    lang_preference = Column(String(10), default="hi")
     created_at = Column(DateTime, default=datetime.utcnow)
 
     products = relationship("Product", back_populates="store", cascade="all, delete-orphan")
@@ -95,6 +113,26 @@ class StoreCategory(Base):
     icon = Column(String(50), default="category")
 
 
+class CentralProduct(Base):
+    __tablename__ = "central_products"
+
+    id = Column(String(50), primary_key=True, index=True)  # e.g. "PROD-VEG-001"
+    name_en = Column(String(150), nullable=False, index=True)
+    name_hi = Column(String(150), nullable=False, index=True)
+    category = Column(String(50), nullable=False, index=True)  # "vegetables", "dairy", "grains", "oil", etc.
+    category_name = Column(String(100), nullable=True)
+    brand = Column(String(100), nullable=True)
+    variant = Column(String(100), nullable=True)
+    default_unit = Column(String(50), default="1 kg")
+    default_mrp = Column(Float, nullable=True, default=None)
+    image_url = Column(Text, nullable=False)
+    search_aliases = Column(Text, nullable=True)  # e.g. "tamatar, pyaz, doodh"
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    store_listings = relationship("Product", back_populates="central_product")
+
+
 class Product(Base):
     __tablename__ = "products"
 
@@ -108,8 +146,13 @@ class Product(Base):
     mrp = Column(Float, nullable=False)
     icon = Column(String(50), default="inventory_2")
     in_stock = Column(Boolean, default=True)
+    central_product_id = Column(String(50), ForeignKey("central_products.id"), nullable=True)
+    image_url = Column(Text, nullable=True)
+    stock_qty = Column(Integer, default=50)
+    is_available = Column(Boolean, default=True)
 
     store = relationship("Store", back_populates="products")
+    central_product = relationship("CentralProduct", back_populates="store_listings")
 
 
 class Order(Base):
@@ -197,6 +240,25 @@ class Runner(Base):
     is_online = Column(Boolean, default=True)
     rating = Column(Float, default=4.9)
     total_completed_missions = Column(Integer, default=142)
+    partner_code = Column(String(50), unique=True, nullable=True)  # e.g. "GB-DP-000001"
+    village = Column(String(100), default="Rampur")
+    address = Column(Text, nullable=True)
+    emergency_contact = Column(String(15), nullable=True)
+    vehicle_reg_number = Column(String(50), nullable=True)
+    driving_licence_number = Column(String(50), nullable=True)
+    driving_licence_url = Column(Text, nullable=True)
+    kyc_status = Column(String(30), default="approved")  # "pending", "under_review", "approved", "rejected", "resubmission_requested"
+    kyc_document_type = Column(String(50), default="Aadhaar")
+    kyc_document_number = Column(String(100), default="XXXX-XXXX-4821")
+    kyc_document_url = Column(Text, nullable=True)
+    kyc_rejection_reason = Column(Text, nullable=True)
+    kyc_submitted_at = Column(DateTime, nullable=True)
+    kyc_reviewed_at = Column(DateTime, nullable=True)
+    is_verified = Column(Boolean, default=True)  # GaonBazaar Verified badge
+    primary_village = Column(String(100), default="Rampur")
+    service_radius_km = Column(Float, default=5.0)
+    theme_preference = Column(String(20), default="system")
+    lang_preference = Column(String(10), default="hi")
     created_at = Column(DateTime, default=datetime.utcnow)
 
 

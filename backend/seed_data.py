@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from .models import Store, Product, Runner, StoreCategory
+from .models import Store, Product, Runner, StoreCategory, CentralProduct
 
 DEFAULT_STORES = [
     {
@@ -517,6 +517,308 @@ DEFAULT_PRODUCTS = [
     }
 ]
 
+DEFAULT_CENTRAL_PRODUCTS = [
+    {
+        "id": "PROD-VEG-001",
+        "name_en": "Fresh Tomato",
+        "name_hi": "ताज़ा टमाटर",
+        "category": "vegetables",
+        "category_name": "Vegetables & Fruits",
+        "brand": None,
+        "variant": "Grade A Farm Fresh",
+        "default_unit": "1 kg",
+        "default_mrp": 40.0,
+        "image_url": "static/images/prod_tomato.png?v=v5_20261028",
+        "search_aliases": "tamatar, tamater, tomato, ताज़ा टमाटर, लाल टमाटर, sabzi, sabji"
+    },
+    {
+        "id": "PROD-VEG-002",
+        "name_en": "Fresh Red Onion",
+        "name_hi": "ताज़ा लाल प्याज",
+        "category": "vegetables",
+        "category_name": "Vegetables & Fruits",
+        "brand": None,
+        "variant": "Nashik Harvest",
+        "default_unit": "1 kg",
+        "default_mrp": 35.0,
+        "image_url": "static/images/prod_onion.png?v=v5_20261028",
+        "search_aliases": "pyaz, pyaaz, onion, कांदा, प्याज, लाल प्याज"
+    },
+    {
+        "id": "PROD-VEG-003",
+        "name_en": "Pahari Potato",
+        "name_hi": "पहाड़ी आलू",
+        "category": "vegetables",
+        "category_name": "Vegetables & Fruits",
+        "brand": None,
+        "variant": "Medium Fresh",
+        "default_unit": "1 kg",
+        "default_mrp": 30.0,
+        "image_url": "static/images/prod_potato.png?v=v5_20261028",
+        "search_aliases": "aloo, potato, alu, आलू, नया आलू, पहाड़ी आलू"
+    },
+    {
+        "id": "PROD-FRU-001",
+        "name_en": "Ripe Banana",
+        "name_hi": "पके मीठे केले",
+        "category": "fruits",
+        "category_name": "Vegetables & Fruits",
+        "brand": None,
+        "variant": "Robusta Dozen",
+        "default_unit": "1 dozen",
+        "default_mrp": 60.0,
+        "image_url": "static/images/prod_banana.png?v=v5_20261028",
+        "search_aliases": "banana, kela, केले, केला, दर्जन, फल"
+    },
+    {
+        "id": "PROD-DAI-001",
+        "name_en": "Amul Taaza Toned Milk",
+        "name_hi": "अमूल ताज़ा टोन्ड दूध",
+        "category": "dairy",
+        "category_name": "Milk & Dairy",
+        "brand": "Amul",
+        "variant": "500 ml Pouch",
+        "default_unit": "500 ml",
+        "default_mrp": 27.0,
+        "image_url": "static/images/prod_milk.png?v=v5_20261028",
+        "search_aliases": "milk, doodh, dudh, amul, taaza, अमूल, दूध, पाउच"
+    },
+    {
+        "id": "PROD-DAI-002",
+        "name_en": "Amul Pure Cow Ghee",
+        "name_hi": "अमूल शुद्ध गाय का घी",
+        "category": "dairy",
+        "category_name": "Milk & Dairy",
+        "brand": "Amul",
+        "variant": "1 L Tin",
+        "default_unit": "1 L",
+        "default_mrp": 650.0,
+        "image_url": "static/images/prod_oil.png?v=v5_20261028",
+        "search_aliases": "ghee, amul ghee, cow ghee, गाय का घी, शुद्ध घी"
+    },
+    {
+        "id": "PROD-DAI-003",
+        "name_en": "Farm Fresh Brown Eggs",
+        "name_hi": "देसी ताज़े अंडे",
+        "category": "dairy",
+        "category_name": "Milk & Dairy",
+        "brand": None,
+        "variant": "6 Egg Carton",
+        "default_unit": "6 pcs",
+        "default_mrp": 50.0,
+        "image_url": "static/images/prod_eggs.png?v=v5_20261028",
+        "search_aliases": "egg, anda, ande, अंडे, अंडा, ट्रे"
+    },
+    {
+        "id": "PROD-GRN-001",
+        "name_en": "Aashirvaad Shudh Chakki Atta",
+        "name_hi": "आशीर्वाद शुद्ध चक्की आटा",
+        "category": "grains",
+        "category_name": "Rice, Atta, Dal & Grains",
+        "brand": "Aashirvaad",
+        "variant": "5 kg Bag",
+        "default_unit": "5 kg",
+        "default_mrp": 245.0,
+        "image_url": "static/images/prod_atta.png?v=v5_20261028",
+        "search_aliases": "atta, aashirvaad, gehun, आटा, आशीर्वाद, चक्की आटा, 5kg"
+    },
+    {
+        "id": "PROD-GRN-002",
+        "name_en": "India Gate Basmati Rice",
+        "name_hi": "इंडिया गेट बासमती चावल",
+        "category": "grains",
+        "category_name": "Rice, Atta, Dal & Grains",
+        "brand": "India Gate",
+        "variant": "1 kg Premium",
+        "default_unit": "1 kg",
+        "default_mrp": 130.0,
+        "image_url": "static/images/prod_rice.png?v=v5_20261028",
+        "search_aliases": "rice, chawal, basmati, india gate, चावल, बासमती"
+    },
+    {
+        "id": "PROD-GRN-003",
+        "name_en": "Tata Sampann Toor Dal",
+        "name_hi": "टाटा सम्पन्न तुअर दाल",
+        "category": "grains",
+        "category_name": "Rice, Atta, Dal & Grains",
+        "brand": "Tata Sampann",
+        "variant": "1 kg Unpolished",
+        "default_unit": "1 kg",
+        "default_mrp": 175.0,
+        "image_url": "static/images/prod_atta.png?v=v5_20261028",
+        "search_aliases": "dal, toor dal, arhar, tata, दाल, अरहर, तुवर"
+    },
+    {
+        "id": "PROD-OIL-001",
+        "name_en": "Fortune Kachi Ghani Mustard Oil",
+        "name_hi": "फॉर्च्यून कच्ची घानी सरसों तेल",
+        "category": "oil",
+        "category_name": "Cooking Oil & Spices",
+        "brand": "Fortune",
+        "variant": "1 L Bottle",
+        "default_unit": "1 L",
+        "default_mrp": 165.0,
+        "image_url": "static/images/prod_oil.png?v=v5_20261028",
+        "search_aliases": "mustard oil, sarson tel, kachi ghani, fortune, सरसों का तेल, फॉर्च्यून"
+    },
+    {
+        "id": "PROD-SPC-001",
+        "name_en": "Tata Iodized Salt",
+        "name_hi": "टाटा वैक्यूम इवैपोरेटेड नमक",
+        "category": "spices",
+        "category_name": "Cooking Oil & Spices",
+        "brand": "Tata",
+        "variant": "1 kg Pack",
+        "default_unit": "1 kg",
+        "default_mrp": 28.0,
+        "image_url": "static/images/prod_atta.png?v=v5_20261028",
+        "search_aliases": "salt, namak, tata salt, नमक, टाटा नमक"
+    },
+    {
+        "id": "PROD-SPC-002",
+        "name_en": "MDH Deggi Mirch Powder",
+        "name_hi": "एमडीएच देगी मिर्च पाउडर",
+        "category": "spices",
+        "category_name": "Cooking Oil & Spices",
+        "brand": "MDH",
+        "variant": "100 g Box",
+        "default_unit": "100 g",
+        "default_mrp": 85.0,
+        "image_url": "static/images/prod_tomato.png?v=v5_20261028",
+        "search_aliases": "mirch, deggi mirch, mdh, chilli powder, मिर्च, देगी मिर्च"
+    },
+    {
+        "id": "PROD-SNK-001",
+        "name_en": "Parle-G Original Glucose Biscuits",
+        "name_hi": "पारले-जी ग्लूकोज बिस्कुट",
+        "category": "snacks",
+        "category_name": "Snacks & Biscuits",
+        "brand": "Parle",
+        "variant": "250 g Family Pack",
+        "default_unit": "1 pack",
+        "default_mrp": 25.0,
+        "image_url": "static/images/prod_atta.png?v=v5_20261028",
+        "search_aliases": "parle g, biscuit, parle, ग्लूकोज, बिस्कुट, पारले जी"
+    },
+    {
+        "id": "PROD-SNK-002",
+        "name_en": "Maggi 2-Minute Masala Noodles",
+        "name_hi": "मैगी 2-मिनट मसाला नूडल्स",
+        "category": "snacks",
+        "category_name": "Snacks & Biscuits",
+        "brand": "Maggi",
+        "variant": "70 g Single Pack",
+        "default_unit": "1 pack",
+        "default_mrp": 14.0,
+        "image_url": "static/images/prod_atta.png?v=v5_20261028",
+        "search_aliases": "maggi, noodles, masala, मैगी, नूडल्स"
+    },
+    {
+        "id": "PROD-PER-001",
+        "name_en": "Dettol Original Bathing Soap",
+        "name_hi": "डेटॉल ओरिजिनल साबुन",
+        "category": "personal_care",
+        "category_name": "Personal-Care Products",
+        "brand": "Dettol",
+        "variant": "75 g Single Bar",
+        "default_unit": "1 bar",
+        "default_mrp": 40.0,
+        "image_url": "static/images/prod_atta.png?v=v5_20261028",
+        "search_aliases": "soap, sabun, dettol, डेटॉल, साबुन, नहाने का साबुन"
+    },
+    {
+        "id": "PROD-PER-002",
+        "name_en": "Parachute 100% Pure Coconut Hair Oil",
+        "name_hi": "पैराशूट शुद्ध नारियल तेल",
+        "category": "personal_care",
+        "category_name": "Personal-Care Products",
+        "brand": "Parachute",
+        "variant": "200 ml Bottle",
+        "default_unit": "200 ml",
+        "default_mrp": 95.0,
+        "image_url": "static/images/prod_oil.png?v=v5_20261028",
+        "search_aliases": "coconut oil, nariyal tel, parachute, नारियल तेल, पैराशूट"
+    },
+    {
+        "id": "PROD-CLN-001",
+        "name_en": "Surf Excel Easy Wash Detergent",
+        "name_hi": "सर्फ एक्सेल ईजी वॉश पाउडर",
+        "category": "cleaning",
+        "category_name": "Household Cleaning Products",
+        "brand": "Surf Excel",
+        "variant": "1 kg Pouch",
+        "default_unit": "1 kg",
+        "default_mrp": 140.0,
+        "image_url": "static/images/prod_atta.png?v=v5_20261028",
+        "search_aliases": "surf, detergent, surf excel, washing powder, सर्फ, पाउडर, कपड़े धोने का पाउडर"
+    },
+    {
+        "id": "PROD-CLN-002",
+        "name_en": "Vim Dishwash Bar",
+        "name_hi": "विम डिशवॉश बार",
+        "category": "cleaning",
+        "category_name": "Household Cleaning Products",
+        "brand": "Vim",
+        "variant": "200 g Lemon Bar",
+        "default_unit": "1 bar",
+        "default_mrp": 20.0,
+        "image_url": "static/images/prod_atta.png?v=v5_20261028",
+        "search_aliases": "vim, dishwash, sabun, बर्तन साबुन, विम"
+    },
+    {
+        "id": "PROD-PUJ-001",
+        "name_en": "Mangaldeep Fragrant Agarbatti",
+        "name_hi": "मंगलदीप सुगन्धित अगरबत्ती",
+        "category": "puja",
+        "category_name": "Puja Essentials",
+        "brand": "Mangaldeep",
+        "variant": "20 Sticks Pack",
+        "default_unit": "1 pack",
+        "default_mrp": 20.0,
+        "image_url": "static/images/prod_atta.png?v=v5_20261028",
+        "search_aliases": "agarbatti, dhoop, puja, mangaldeep, अगरबत्ती, धूप, पूजा, बत्ती"
+    },
+    {
+        "id": "PROD-PUJ-002",
+        "name_en": "Pure Bhimseni Camphor",
+        "name_hi": "शुद्ध भीमसेनी कपूर",
+        "category": "puja",
+        "category_name": "Puja Essentials",
+        "brand": None,
+        "variant": "50 g Jar",
+        "default_unit": "50 g",
+        "default_mrp": 60.0,
+        "image_url": "static/images/prod_atta.png?v=v5_20261028",
+        "search_aliases": "kapoor, kapur, camphor, कपूर, भीमसेनी कपूर, आरती"
+    },
+    {
+        "id": "PROD-STA-001",
+        "name_en": "Classmate Long Notebook 120 Pages",
+        "name_hi": "क्लासमेट लॉन्ग नोटबुक 120 पेज",
+        "category": "stationery",
+        "category_name": "Stationery",
+        "brand": "Classmate",
+        "variant": "Single Line 120p",
+        "default_unit": "1 notebook",
+        "default_mrp": 45.0,
+        "image_url": "static/images/prod_atta.png?v=v5_20261028",
+        "search_aliases": "notebook, copy, register, classmate, कॉपी, रजिस्टर, नोटबुक"
+    },
+    {
+        "id": "PROD-STA-002",
+        "name_en": "Reynolds 045 Fine Ball Pen Blue",
+        "name_hi": "रेनॉल्ड्स 045 बॉल पेन नीला",
+        "category": "stationery",
+        "category_name": "Stationery",
+        "brand": "Reynolds",
+        "variant": "Blue Ink Pack",
+        "default_unit": "1 pen",
+        "default_mrp": 10.0,
+        "image_url": "static/images/prod_atta.png?v=v5_20261028",
+        "search_aliases": "pen, ball pen, reynolds, पेन, कलम, नीला पेन"
+    }
+]
+
 def seed_database(db: Session):
     from datetime import datetime
     from .models import Order, OrderItem
@@ -552,6 +854,25 @@ def seed_database(db: Session):
             cat.name_en = c_data["name_en"]
             cat.name_hi = c_data["name_hi"]
             cat.icon = c_data["icon"]
+    db.commit()
+
+    # 2.5 Seed Central Product Library
+    for cp_data in DEFAULT_CENTRAL_PRODUCTS:
+        cp = db.query(CentralProduct).filter(CentralProduct.id == cp_data["id"]).first()
+        if not cp:
+            cp = CentralProduct(**cp_data)
+            db.add(cp)
+        else:
+            cp.name_en = cp_data["name_en"]
+            cp.name_hi = cp_data["name_hi"]
+            cp.category = cp_data["category"]
+            cp.category_name = cp_data.get("category_name", cp.category_name)
+            cp.brand = cp_data.get("brand", cp.brand)
+            cp.variant = cp_data.get("variant", cp.variant)
+            cp.default_unit = cp_data.get("default_unit", cp.default_unit)
+            cp.default_mrp = cp_data.get("default_mrp", cp.default_mrp)
+            cp.image_url = cp_data["image_url"]
+            cp.search_aliases = cp_data.get("search_aliases", cp.search_aliases)
     db.commit()
 
     # 3. Ensure all default products exist or update

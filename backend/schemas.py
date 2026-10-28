@@ -960,3 +960,242 @@ class MessageThreadListResponse(BaseModel):
     success: bool
     threads: List[MessageThreadResponse]
     total_unread: int
+
+
+# =============================================================================
+# CENTRAL CATALOG & VENDOR INVENTORY SCHEMAS (Village-First Architecture)
+# =============================================================================
+
+class CentralProductDTO(BaseModel):
+    id: str
+    name_en: str
+    name_hi: str
+    category: str
+    category_name: Optional[str] = None
+    brand: Optional[str] = None
+    variant: Optional[str] = None
+    default_unit: str = "1 kg"
+    default_mrp: Optional[float] = None
+    image_url: str
+    search_aliases: Optional[str] = None
+    is_active: bool = True
+
+    class Config:
+        from_attributes = True
+
+
+class CentralProductCreateRequest(BaseModel):
+    name_en: str
+    name_hi: str
+    category: str
+    category_name: Optional[str] = None
+    brand: Optional[str] = None
+    variant: Optional[str] = None
+    default_unit: str = "1 kg"
+    default_mrp: Optional[float] = None
+    image_url: str
+    search_aliases: Optional[str] = None
+
+
+class CentralProductUpdateRequest(BaseModel):
+    name_en: Optional[str] = None
+    name_hi: Optional[str] = None
+    category: Optional[str] = None
+    category_name: Optional[str] = None
+    brand: Optional[str] = None
+    variant: Optional[str] = None
+    default_unit: Optional[str] = None
+    default_mrp: Optional[float] = None
+    image_url: Optional[str] = None
+    search_aliases: Optional[str] = None
+    is_active: Optional[bool] = None
+
+
+class CentralProductDeduplicateRequest(BaseModel):
+    duplicate_id: str
+    master_id: str
+
+
+class VendorProductDTO(BaseModel):
+    id: str
+    store_id: str
+    name_en: str
+    name_hi: str
+    category: str
+    weight: str
+    price: float
+    mrp: float
+    stock_qty: int = 50
+    in_stock: bool = True
+    is_available: bool = True
+    image_url: Optional[str] = None
+    central_product_id: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+
+class VendorAddProductRequest(BaseModel):
+    central_product_id: Optional[str] = None
+    name_en: str
+    name_hi: str
+    category: str
+    price: float
+    weight: str
+    stock_qty: int = 50
+    in_stock: bool = True
+    mrp: Optional[float] = None
+    image_url: Optional[str] = None
+
+
+class VendorUpdateProductRequest(BaseModel):
+    price: Optional[float] = None
+    weight: Optional[str] = None
+    stock_qty: Optional[int] = None
+    in_stock: Optional[bool] = None
+    mrp: Optional[float] = None
+    image_url: Optional[str] = None
+
+
+class VendorProfileDTO(BaseModel):
+    store_id: str
+    store_code: Optional[str] = None
+    name: str
+    hindi_name: Optional[str] = None
+    owner_name: Optional[str] = None
+    phone: Optional[str] = None
+    category: str
+    village: Optional[str] = None
+    address: Optional[str] = None
+    landmark: Optional[str] = None
+    pickup_location: Optional[str] = None
+    photo_url: Optional[str] = None
+    opening_time: Optional[str] = "07:00 AM"
+    closing_time: Optional[str] = "09:00 PM"
+    weekly_schedule: Optional[str] = "All Days"
+    is_open: bool = True
+    is_verified: bool = False
+    kyc_status: str = "pending"
+    kyc_document_type: Optional[str] = None
+    kyc_document_number_masked: Optional[str] = None
+    kyc_document_url: Optional[str] = None
+    kyc_rejection_reason: Optional[str] = None
+    payout_upi: Optional[str] = None
+    bank_account_name: Optional[str] = None
+    bank_account_number_masked: Optional[str] = None
+    bank_ifsc: Optional[str] = None
+    bank_verification_status: str = "pending"
+    theme_preference: str = "system"
+    lang_preference: str = "hi"
+
+
+class VendorProfileUpdateRequest(BaseModel):
+    name: Optional[str] = None
+    owner_name: Optional[str] = None
+    phone: Optional[str] = None
+    category: Optional[str] = None
+    village: Optional[str] = None
+    address: Optional[str] = None
+    landmark: Optional[str] = None
+    pickup_location: Optional[str] = None
+    opening_time: Optional[str] = None
+    closing_time: Optional[str] = None
+    weekly_schedule: Optional[str] = None
+    photo_url: Optional[str] = None
+    theme_preference: Optional[str] = None
+    lang_preference: Optional[str] = None
+
+
+class VendorKYCSubmitRequest(BaseModel):
+    document_type: str
+    document_number: str
+    document_url: Optional[str] = None
+
+
+class VendorBankUpdateRequest(BaseModel):
+    account_holder: str
+    bank_name: Optional[str] = None
+    account_number: str
+    ifsc: str
+    upi_id: Optional[str] = None
+
+
+class RunnerProfileDetailDTO(BaseModel):
+    runner_id: str
+    partner_code: Optional[str] = None
+    name: str
+    phone: str
+    photo_url: Optional[str] = None
+    village: Optional[str] = None
+    address: Optional[str] = None
+    emergency_contact: Optional[str] = None
+    vehicle_type: str = "Motorcycle"
+    vehicle_reg_number: Optional[str] = None
+    driving_licence_number: Optional[str] = None
+    driving_licence_url: Optional[str] = None
+    is_verified: bool = False
+    kyc_status: str = "pending"
+    kyc_document_type: Optional[str] = None
+    kyc_document_number_masked: Optional[str] = None
+    kyc_document_url: Optional[str] = None
+    kyc_rejection_reason: Optional[str] = None
+    primary_village: Optional[str] = "Rampur"
+    service_radius_km: float = 5.0
+    payout_upi: Optional[str] = None
+    bank_account_name: Optional[str] = None
+    bank_account_number_masked: Optional[str] = None
+    bank_ifsc: Optional[str] = None
+    bank_verification_status: str = "pending"
+    is_online: bool = True
+    rating: float = 4.9
+    theme_preference: str = "system"
+    lang_preference: str = "hi"
+
+
+class RunnerProfileUpdateRequest(BaseModel):
+    name: Optional[str] = None
+    village: Optional[str] = None
+    address: Optional[str] = None
+    emergency_contact: Optional[str] = None
+    primary_village: Optional[str] = None
+    photo_url: Optional[str] = None
+    theme_preference: Optional[str] = None
+    lang_preference: Optional[str] = None
+
+
+class RunnerKYCSubmitRequest(BaseModel):
+    document_type: str
+    document_number: str
+    document_url: Optional[str] = None
+    vehicle_type: str = "Motorcycle"
+    vehicle_reg_number: Optional[str] = None
+    driving_licence_number: Optional[str] = None
+    driving_licence_url: Optional[str] = None
+
+
+class AdminKYCReviewRequest(BaseModel):
+    action: str  # "approve", "reject", "resubmit"
+    rejection_reason: Optional[str] = None
+
+
+class AdminKYCPendingItemDTO(BaseModel):
+    entity_type: str  # "vendor" or "runner"
+    entity_id: str
+    entity_code: str
+    name: str
+    phone: str
+    village: str
+    document_type: str
+    document_number_masked: str
+    document_url: Optional[str] = None
+    submitted_at: Optional[str] = None
+    status: str
+    vehicle_type: Optional[str] = None
+    driving_licence: Optional[str] = None
+
+class RunnerBankUpdateRequest(BaseModel):
+    account_holder: str
+    bank_name: Optional[str] = None
+    account_number: str
+    ifsc: str
+    upi_id: Optional[str] = None
