@@ -180,25 +180,39 @@ def kill_port_processes(ports=[8001]):
         except Exception:
             pass
 
-# Guarantee port cleanup on any script exit
-atexit.register(lambda: kill_port_processes([8001]))
+_SPAWNED_SERVER_PROCESS = None
+
+def cleanup_spawned_server():
+    global _SPAWNED_SERVER_PROCESS
+    if _SPAWNED_SERVER_PROCESS is not None:
+        try:
+            _SPAWNED_SERVER_PROCESS.kill()
+            _SPAWNED_SERVER_PROCESS.wait(timeout=3)
+        except Exception:
+            pass
+        kill_port_processes([8001])
+        _SPAWNED_SERVER_PROCESS = None
+
+atexit.register(cleanup_spawned_server)
 
 
 def ensure_backend_running(logger):
-    try:
-        req = urllib.request.Request("http://127.0.0.1:8001/docs", headers={"User-Agent": "Playwright-Admin-QA"})
-        with urllib.request.urlopen(req, timeout=1.0) as resp:
-            if resp.status == 200:
-                logger.log("  ✓ Backend server healthy and responding on http://127.0.0.1:8001")
-                return None
-    except Exception:
-        pass
+    for _ in range(3):
+        try:
+            req = urllib.request.Request("http://127.0.0.1:8001/health", headers={"User-Agent": "Playwright-Admin-QA"})
+            with urllib.request.urlopen(req, timeout=1.5) as resp:
+                if resp.status == 200:
+                    logger.log("  ✓ Backend server healthy and responding on http://127.0.0.1:8001")
+                    return None
+        except Exception:
+            time.sleep(0.4)
 
     kill_port_processes([8001])
     time.sleep(0.5)
 
     logger.log("  🚀 Starting GaonBazaar FastAPI backend server in background on port 8001 (no-reload)...")
     server_env = os.environ.copy()
+    server_env["ALLOW_TEST_BYPASS"] = "1"
     server_env["TEST_MODE"] = "1"
     server_env["CI"] = "1"
 
@@ -236,6 +250,8 @@ def ensure_backend_running(logger):
     else:
         logger.log("  ✓ Backend server healthy and responding on http://127.0.0.1:8001")
 
+    global _SPAWNED_SERVER_PROCESS
+    _SPAWNED_SERVER_PROCESS = server_proc
     return server_proc
 
 
@@ -412,7 +428,16 @@ def _run_admin_e2e_steps(browser, logger, contexts):
     admin_page.set_default_navigation_timeout(15000)
 
     admin_page.goto("http://127.0.0.1:8001/admin", wait_until="domcontentloaded", timeout=15000)
-    admin_page.wait_for_timeout(1200)
+    if admin_page.is_visible("#admin-login-gate"):
+        admin_page.fill("#admin-input-key", "gaonbazar_super_admin_secret_2026")
+        admin_page.click("#btn-admin-login")
+        admin_page.wait_for_selector("#admin-main-content:not(.hidden)", timeout=10000)
+    # Wait for async initial data fetch to populate DOM metrics & queues
+    try:
+        admin_page.wait_for_function('() => document.getElementById("metric-gmv") && document.getElementById("metric-gmv").innerText !== "₹0.00"', timeout=8000)
+    except Exception:
+        pass
+    admin_page.wait_for_timeout(500)
 
     # Verify Global Metrics Ribbon
     gmv_text = admin_page.locator("#metric-gmv").text_content()
@@ -430,7 +455,10 @@ def _run_admin_e2e_steps(browser, logger, contexts):
 
     # Tab 1: Vendor KYC Approvals
     logger.log("\n[STEP 3.1]: Reviewing and Approving Vendor KYC...")
-    admin_page.wait_for_timeout(500)
+    try:
+        admin_page.locator(f'text="{v_shop}"').first.wait_for(state="visible", timeout=8000)
+    except Exception:
+        pass
     vendor_card_found = admin_page.locator(f'text="{v_shop}"').count() > 0
     logger.record_test(
         "Pending Vendor Appears in Admin KYC Queue",
@@ -551,6 +579,10 @@ def _run_admin_e2e_steps(browser, logger, contexts):
     contexts.append(tablet_context)
     tablet_page = tablet_context.new_page()
     tablet_page.goto("http://127.0.0.1:8001/admin", wait_until="domcontentloaded", timeout=15000)
+    if tablet_page.is_visible("#admin-login-gate"):
+        tablet_page.fill("#admin-input-key", "gaonbazar_super_admin_secret_2026")
+        tablet_page.click("#btn-admin-login")
+        tablet_page.wait_for_selector("#admin-main-content:not(.hidden)", timeout=10000)
     tablet_page.wait_for_timeout(1000)
     tab_gmv = tablet_page.locator("#metric-gmv").text_content()
     tab_godview_btn = tablet_page.is_visible("#admin-tab-btn-orders")
@@ -642,14 +674,7 @@ def main():
                         logger.log(f"  ⚠️ Warning closing browser: {b_err}")
     finally:
         logger.save_report()
-        if server_proc:
-            logger.log("  🛑 Terminating background FastAPI server...")
-            try:
-                server_proc.kill()
-                server_proc.wait(timeout=3)
-            except Exception:
-                pass
-        kill_port_processes([8001])
+        cleanup_spawned_server()
 
     if logger.failed_tests > 0:
         logger.log(f"\n❌ E2E SUITE FINISHED WITH {logger.failed_tests} FAILURES")
