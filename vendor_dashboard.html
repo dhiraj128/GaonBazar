@@ -889,6 +889,30 @@
           </div>
         </div>
 
+        <!-- Store preferences card (Instant Language Toggle & Store Switcher) -->
+        <div id="vendor-preferences-card" class="bg-white dark:bg-[#1D232B] rounded-3xl p-4 sm:p-5 border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col gap-3">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <span class="text-xs font-bold text-slate-700 dark:text-slate-200 block" data-i18n="profile_row_lang">ऐप की भाषा</span>
+              <span id="prof-lang-label" class="text-[11px] text-slate-400">हिंदी / English</span>
+            </div>
+            <button id="lang-toggle-btn" onclick="toggleLanguage()" aria-label="Toggle Language" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-1 min-h-[44px] min-w-[44px] active:scale-95 shrink-0 cursor-pointer">
+              <span class="material-symbols-outlined text-[18px]">translate</span>
+              <span id="current-lang-text">English</span>
+            </button>
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <label class="text-xs font-bold text-slate-700 dark:text-slate-200" for="store-switcher-select" data-i18n="lbl_select_store">दुकान चुनें</label>
+            <select id="store-switcher-select" onchange="switchStore(this.value)" class="text-xs font-black text-slate-800 dark:text-slate-200 bg-slate-100/80 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 min-h-[44px] focus:ring-0 cursor-pointer truncate w-full">
+              <option value="sharma_brothers">Sharma Brothers</option>
+              <option value="kisan_seva">Kisan Seva</option>
+              <option value="rampur_dawa">Rampur Dawa</option>
+              <option value="apna_dairy">Apna Dairy</option>
+            </select>
+          </div>
+          <input type="text" id="setting-store-name" value="Sharma Brothers Kirana Store" class="hidden" />
+        </div>
+
         <!-- Tappable Settings Menu Rows (›) -->
         <div class="bg-white dark:bg-[#1D232B] rounded-3xl border border-slate-200 dark:border-[#465362] shadow-xs divide-y divide-slate-100 dark:divide-slate-800 overflow-hidden">
           
@@ -1009,10 +1033,7 @@
 
           <div class="bg-white dark:bg-[#1D232B] rounded-3xl p-4 sm:p-5 border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col gap-3.5">
             <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2.5">
-              <div class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-primary text-[20px]">person</span>
-                <h3 class="text-xs sm:text-sm font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="sec_personal_profile_title">दुकानदार की जानकारी</h3>
-              </div>
+              <div class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-[20px]">person</span><span class="text-xs sm:text-sm font-bold text-slate-600 dark:text-slate-300" data-i18n="lbl_owner_title">दुकानदार विवरण</span></div>
               <button onclick="openEditVendorPersonalModal()" class="text-xs text-primary font-bold hover:underline flex items-center gap-1 cursor-pointer">
                 <span class="material-symbols-outlined text-[15px]">edit_note</span>
                 <span data-i18n="lbl_edit">संशोधन करें</span>
@@ -1061,10 +1082,7 @@
 
           <div class="bg-white dark:bg-[#1D232B] rounded-3xl p-4 sm:p-5 border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col gap-3.5">
             <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2.5">
-              <div class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-primary text-[20px]">store</span>
-                <h3 class="text-xs sm:text-sm font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="sec_my_shop_title">दुकान की जानकारी</h3>
-              </div>
+              <div class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-[20px]">store</span><span class="text-xs sm:text-sm font-bold text-slate-600 dark:text-slate-300" data-i18n="sec_my_shop_title">दुकान विवरण</span></div>
               <button onclick="openEditShopModal()" class="text-xs text-primary font-bold hover:underline flex items-center gap-1 cursor-pointer">
                 <span class="material-symbols-outlined text-[15px]">edit_note</span>
                 <span data-i18n="lbl_edit">संशोधन करें</span>
@@ -1128,20 +1146,14 @@
 
           <div class="bg-white dark:bg-[#1D232B] rounded-3xl p-4 sm:p-5 border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col gap-3.5">
             <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2.5">
-              <div class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-primary text-[20px]">verified_user</span>
-                <h3 class="text-xs sm:text-sm font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="sec_kyc_title">पहचान एवं व्यवसाय सत्यापन</h3>
-              </div>
+              <div class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-[20px]">verified_user</span><span class="text-xs sm:text-sm font-bold text-slate-600 dark:text-slate-300" data-i18n="lbl_verification_badge">सत्यापन स्थिति</span></div>
               <span id="vendor-kyc-status-pill" class="px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 flex items-center gap-1">
                 <span class="material-symbols-outlined text-[13px]">check_circle</span>
                 <span data-i18n="badge_verified">सत्यापित</span>
               </span>
             </div>
 
-            <div class="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/40 text-xs text-amber-900 dark:text-amber-200 leading-relaxed">
-              <span class="font-bold block mb-1" data-i18n="vendor_kyc_policy_heading">🌾 ग्रामीण खुदरा व्यापार नीति:</span>
-              <span data-i18n="vendor_kyc_policy_desc">गाँव बाज़ार में दुकान चलाने हेतु केवल पहचान पत्र (आधार, पैन या वोटर आईडी) और दुकान का फोटो आवश्यक है। सुपर एडमिन द्वारा भौतिक व दस्तावेज़ी सत्यापन के बाद आपको गाँव बाज़ार सत्यापित बैज मिलता है।</span>
-            </div>
+            
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
               <div class="bg-slate-50 dark:bg-[#2A323D] p-3 rounded-2xl border border-slate-100 dark:border-slate-700">
@@ -1292,29 +1304,7 @@
             <h2 class="text-sm font-black text-slate-900 dark:text-white" data-i18n="sec_pref_title">प्राथमिकताएं व सेटिंग्स</h2>
           </div>
 
-          <!-- Store preferences card -->
-          <div id="vendor-preferences-card" class="bg-white dark:bg-[#1D232B] rounded-3xl p-4 sm:p-5 border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col gap-3">
-            <div class="flex items-center justify-between gap-3">
-              <div>
-                <span class="text-xs font-bold text-slate-700 dark:text-slate-200 block" data-i18n="profile_row_lang">ऐप की भाषा</span>
-                <span id="prof-lang-label" class="text-[11px] text-slate-400">हिंदी / English</span>
-              </div>
-              <button id="lang-toggle-btn" onclick="toggleLanguage()" aria-label="Toggle Language" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-1 min-h-[44px] min-w-[44px] active:scale-95 shrink-0 cursor-pointer">
-                <span class="material-symbols-outlined text-[18px]">translate</span>
-                <span id="current-lang-text">English</span>
-              </button>
-            </div>
-            <div class="flex flex-col gap-1.5">
-              <label class="text-xs font-bold text-slate-700 dark:text-slate-200" for="store-switcher-select" data-i18n="lbl_select_store">दुकान चुनें</label>
-              <select id="store-switcher-select" onchange="switchStore(this.value)" class="text-xs font-black text-slate-800 dark:text-slate-200 bg-slate-100/80 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 min-h-[44px] focus:ring-0 cursor-pointer truncate w-full">
-                <option value="sharma_brothers">Sharma Brothers</option>
-                <option value="kisan_seva">Kisan Seva</option>
-                <option value="rampur_dawa">Rampur Dawa</option>
-                <option value="apna_dairy">Apna Dairy</option>
-              </select>
-            </div>
-            <input type="text" id="setting-store-name" value="Sharma Brothers Kirana Store" class="hidden" />
-          </div>
+
 
           <!-- Theme & Sound Card -->
           <div class="bg-white dark:bg-[#1D232B] rounded-3xl p-4 sm:p-5 border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col gap-3.5">
