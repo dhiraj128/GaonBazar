@@ -222,6 +222,25 @@ class OrderStatusResponse(BaseModel):
     runner_phone: Optional[str] = None
     created_at: str
     items: Optional[List[Dict[str, Any]]] = None
+    customer_lat: Optional[float] = None
+    customer_lng: Optional[float] = None
+
+
+class OrderDeliveryLocationUpdate(BaseModel):
+    customer_lat: float
+    customer_lng: float
+    landmark: Optional[str] = None
+    delivery_address: Optional[str] = None
+
+
+class OrderDeliveryLocationResponse(BaseModel):
+    success: bool
+    order_id: str
+    customer_lat: float
+    customer_lng: float
+    landmark: Optional[str] = None
+    message: str
+    directions_url: str
 
 
 # --- Vendor (Dukandaar) Schemas ---

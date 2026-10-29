@@ -540,6 +540,12 @@
 
       <!-- Right: Notifications Bell (Replaces 4-Square Grid Menu per UX Architecture) -->
       <div class="flex items-center gap-1 shrink-0">
+        <!-- Compact HI / EN Quick Language Switch Button -->
+        <button id="quick-lang-toggle-btn" type="button" onclick="toggleLanguageQuick()" aria-label="Toggle Language" title="Change Language / भाषा बदलें" class="h-10 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-[#2A323D] dark:hover:bg-[#465362] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] flex items-center justify-center gap-1 active:scale-95 transition-all shrink-0 cursor-pointer shadow-2xs font-bold text-xs">
+          <span class="material-symbols-outlined text-[17px] text-primary">translate</span>
+          <span id="quick-lang-label" class="font-black text-[11px]">EN</span>
+        </button>
+
         <!-- Visible Primary Notifications Bell with Real Unread Dot -->
         <button id="header-notifications-btn" onclick="openNotificationsModal()" type="button" aria-label="Notifications and Alerts" title="Notifications" class="w-10 h-10 min-w-[40px] min-h-[40px] rounded-xl bg-slate-100 dark:bg-[#2A323D] hover:bg-slate-200 dark:hover:bg-[#465362] text-slate-800 dark:text-[#F8FAFC] flex items-center justify-center active:scale-95 transition-all cursor-pointer shadow-2xs relative">
           <span class="material-symbols-outlined text-[22px]">notifications</span>
@@ -1648,6 +1654,23 @@
             <div id="p5-timeline-steps" class="hidden"></div>
           </div>
 
+          <!-- Share Exact Doorstep Location Card -->
+          <div id="p5-share-location-card" class="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-[#1D2A26] dark:to-[#192D2B] rounded-2xl p-3.5 sm:p-4 shadow-xs border border-emerald-200 dark:border-emerald-800/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="w-10 h-10 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                <span class="material-symbols-outlined text-[22px]">pin_drop</span>
+              </div>
+              <div class="flex flex-col min-w-0">
+                <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="lbl_share_exact_location">सटीक लोकेशन साझा करें</span>
+                <span class="text-[11px] text-slate-600 dark:text-[#CBD5E1]" data-i18n="sub_share_exact_location">डिलीवरी साथी को अपने घर का सही स्थान बताएं</span>
+              </div>
+            </div>
+            <button id="btn-share-exact-location" type="button" onclick="openShareExactLocationModal()" class="px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black flex items-center justify-center gap-1.5 shadow-sm active:scale-95 shrink-0 cursor-pointer">
+              <span class="material-symbols-outlined text-[16px]">my_location</span>
+              <span data-i18n="btn_share_doorstep_pin">दरवाजे की लोकेशन पिन करें</span>
+            </button>
+          </div>
+
           <!-- Delivery partner identity and calling details appear only from a confirmed order. -->
           <div id="p5-call-runner-card" class="hidden bg-white dark:bg-[#1D232B] rounded-2xl p-3.5 shadow-xs border border-slate-200 dark:border-[#465362] flex items-center justify-between">
             <div class="flex items-center gap-3 min-w-0">
@@ -1823,23 +1846,7 @@
           </div>
 
           <!-- Action Buttons -->
-          <div class="flex flex-col gap-2.5 w-full">
-            <button type="button" id="offline-retry-btn" onclick="retryConnection()" class="w-full h-12 bg-primary text-white rounded-xl text-sm font-bold flex items-center justify-center gap-2 shadow-md active:scale-98">
-              <span class="material-symbols-outlined text-[18px]">refresh</span>
-              <span data-i18n="offline_retry">पुनः प्रयास करें</span>
-            </button>
-            <button type="button" id="offline-home-btn" onclick="navigateToPhase('dashboard')" class="w-full h-11 bg-white text-primary border border-primary rounded-xl text-xs font-bold flex items-center justify-center gap-2 active:bg-emerald-50">
-              <span class="material-symbols-outlined text-[16px]">storefront</span>
-              <span data-i18n="offline_home">सुरक्षित बाज़ार देखें</span>
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <!-- ===================================================================== -->
-      <!-- PHASE: MY ACCOUNT & PROFILE VIEW (Swiggy / Flipkart Standard)         -->
-      <!-- ===================================================================== -->
-      <section id="view-profile" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 space-y-4">
+          <div id="view-profile" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 space-y-4">
         
         <!-- Profile Top Title Bar -->
         <div class="flex items-center justify-between pb-1">
@@ -1855,465 +1862,477 @@
         </div>
 
         <!-- =================================================================== -->
-        <!-- 1. PROFILE HEADER: PERSONAL INFO                                   -->
+        <!-- A. CUSTOMER ACCOUNT LANDING MENU (Compact Header + 6 Menu Rows)    -->
         <!-- =================================================================== -->
-        <div id="profile-user-card" class="rounded-3xl bg-white dark:bg-[#1D232B] p-5 shadow-mobile-card border border-surface-container-high dark:border-[#465362] space-y-4">
-          <!-- User Avatar & Identity Header -->
-          <div class="flex items-center justify-between">
+        <div id="customer-account-landing" class="flex flex-col space-y-4 w-full">
+          
+          <!-- Compact User Identity Header -->
+          <div id="profile-user-card" class="rounded-3xl bg-white dark:bg-[#1D232B] p-4 shadow-mobile-card border border-surface-container-high dark:border-[#465362] flex items-center justify-between">
             <div class="flex items-center gap-3.5 min-w-0">
-              <div class="relative">
-                <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-primary via-emerald-600 to-teal-500 text-white flex items-center justify-center font-black text-2xl shadow-md border-2 border-white uppercase">
+              <div class="relative shrink-0">
+                <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-primary via-emerald-600 to-teal-500 text-white flex items-center justify-center font-black text-xl shadow-md border-2 border-white uppercase">
                   <span id="profile-user-avatar-initial">र</span>
                 </div>
-                <div class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center border-2 border-white shadow-xs">
-                  <span class="material-symbols-outlined text-[14px]">verified</span>
+                <div class="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center border-2 border-white shadow-xs">
+                  <span class="material-symbols-outlined text-[12px]">verified</span>
                 </div>
               </div>
               <div class="min-w-0 flex-1">
-                <div class="flex items-center gap-1.5">
-                  <h2 id="profile-user-name" class="text-lg font-black text-slate-900 dark:text-[#F8FAFC] leading-tight truncate">अतिथि ग्राहक</h2>
+                <h2 id="profile-user-name" class="text-base font-black text-slate-900 dark:text-[#F8FAFC] leading-tight truncate">अतिथि ग्राहक</h2>
+                <div class="flex items-center gap-2 mt-0.5">
+                  <span id="profile-user-phone" class="text-xs font-mono font-bold text-slate-600 dark:text-slate-300 select-all">+91 98765 43210</span>
                 </div>
-                <div class="flex items-center gap-2 mt-1">
-                  <span class="inline-flex items-center gap-1 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700 px-2 py-0.5 rounded-full text-[10px] font-black">
-                    <span class="material-symbols-outlined text-[12px] text-emerald-600">verified_user</span>
-                    <span data-i18n="profile_verified_badge">सत्यापित ग्राहक</span>
-                  </span>
-                  <span class="text-[11px] text-slate-400 font-semibold">•</span>
-                  <span class="text-[11px] text-slate-500 dark:text-slate-400 font-bold" data-i18n="profile_member_badge">गाँव बाज़ार सदस्य</span>
+                <div class="flex items-center gap-1.5 mt-1 text-[11px] text-slate-500 dark:text-[#CBD5E1] truncate">
+                  <span class="material-symbols-outlined text-[13px] text-primary shrink-0">location_on</span>
+                  <span id="profile-user-village" class="truncate font-semibold">रामपुर चौपाल</span>
                 </div>
               </div>
             </div>
+            <button type="button" onclick="openCustomerAccountSubview('personal')" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-[#2A323D] dark:hover:bg-[#465362] text-slate-800 dark:text-[#F8FAFC] text-xs font-bold shrink-0 transition-colors cursor-pointer" data-i18n="btn_edit">संशोधन करें</button>
           </div>
 
-          <div class="h-px bg-slate-100 dark:bg-slate-800"></div>
-
-          <!-- Personal Information Fields Grid -->
-          <div class="space-y-3">
-            <!-- Full Name (Editable) -->
-            <div>
-              <label class="block text-[11px] font-black text-slate-700 dark:text-slate-300 mb-1" data-i18n="profile_lbl_fullname">पूरा नाम</label>
-              <div class="relative flex items-center bg-slate-50 dark:bg-[#2A323D] rounded-2xl border border-slate-200 dark:border-slate-700 focus-within:border-primary focus-within:bg-white transition-all">
-                <span class="material-symbols-outlined text-slate-400 absolute left-3.5 text-[18px]">person</span>
-                <input 
-                  id="profile-user-name-input" 
-                  type="text" 
-                  value="रमेश पटेल" 
-                  oninput="onProfileNameChange(this.value)"
-                  class="w-full h-11 pl-10 pr-3 rounded-2xl bg-transparent text-xs font-bold text-slate-800 dark:text-white focus:outline-none"
-                  placeholder="आपका पूरा नाम"
-                  data-i18n-ph="profile_ph_fullname"
-                />
-              </div>
-            </div>
-
-            <!-- Mobile Number (Verified, Non-Editable) -->
-            <div>
-              <div class="flex items-center justify-between mb-1">
-                <label class="text-[11px] font-black text-slate-700 dark:text-slate-300" data-i18n="profile_lbl_mobile">मोबाइल नंबर</label>
-                <span class="text-[10px] text-emerald-700 dark:text-emerald-300 font-black flex items-center gap-1 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-700 px-2 py-0.5 rounded-full">
-                  <span class="material-symbols-outlined text-[11px]">lock</span>
-                  <span data-i18n="profile_badge_verified">प्रमाणित</span>
-                </span>
-              </div>
-              <div class="relative flex items-center bg-slate-100 dark:bg-[#1E252E] rounded-2xl border border-slate-200 dark:border-slate-700 cursor-not-allowed">
-                <span class="material-symbols-outlined text-slate-400 absolute left-3.5 text-[18px]">call</span>
-                <span id="profile-user-phone" class="w-full h-11 pl-10 pr-3 flex items-center text-xs font-mono font-bold text-slate-600 dark:text-slate-300 select-all">+91 98765 43210</span>
-              </div>
-            </div>
-
-            <!-- Email & DOB Row -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label class="block text-[11px] font-black text-slate-700 dark:text-slate-300 mb-1" data-i18n="profile_lbl_email">ईमेल आईडी</label>
-                <div class="relative flex items-center bg-slate-50 dark:bg-[#2A323D] rounded-2xl border border-slate-200 dark:border-slate-700 focus-within:border-primary focus-within:bg-white transition-all">
-                  <span class="material-symbols-outlined text-slate-400 absolute left-3.5 text-[18px]">mail</span>
-                  <input 
-                    id="profile-email-input" 
-                    type="email" 
-                    value="ramesh.patel@gaonbazar.in" 
-                    class="w-full h-11 pl-10 pr-3 rounded-2xl bg-transparent text-xs font-bold text-slate-800 dark:text-white focus:outline-none"
-                    placeholder="email@example.com"
-                  />
-                </div>
-              </div>
-              <div>
-                <label class="block text-[11px] font-black text-slate-700 dark:text-slate-300 mb-1" data-i18n="profile_lbl_dob">जन्म तिथि</label>
-                <div class="relative flex items-center bg-slate-50 dark:bg-[#2A323D] rounded-2xl border border-slate-200 dark:border-slate-700 focus-within:border-primary focus-within:bg-white transition-all">
-                  <span class="material-symbols-outlined text-slate-400 absolute left-3.5 text-[18px]">calendar_today</span>
-                  <input 
-                    id="profile-dob-input" 
-                    type="date" 
-                    value="1992-06-15" 
-                    class="w-full h-11 pl-10 pr-3 rounded-2xl bg-transparent text-xs font-bold text-slate-800 dark:text-white focus:outline-none"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <!-- Gender Select -->
-            <div>
-              <label class="block text-[11px] font-black text-slate-700 dark:text-slate-300 mb-1" data-i18n="profile_lbl_gender">लिंग</label>
-              <div class="relative flex items-center bg-slate-50 dark:bg-[#2A323D] rounded-2xl border border-slate-200 dark:border-slate-700 focus-within:border-primary focus-within:bg-white transition-all">
-                <span class="material-symbols-outlined text-slate-400 absolute left-3.5 text-[18px]">wc</span>
-                <select id="profile-gender-select" class="w-full h-11 pl-10 pr-8 rounded-2xl bg-transparent text-xs font-bold text-slate-800 dark:text-white focus:outline-none appearance-none">
-                  <option value="male" selected data-i18n="profile_gender_male">पुरुष</option>
-                  <option value="female" data-i18n="profile_gender_female">महिला</option>
-                  <option value="other" data-i18n="profile_gender_other">अन्य</option>
-                </select>
-                <span class="material-symbols-outlined text-slate-400 absolute right-3 text-[18px] pointer-events-none">expand_more</span>
-              </div>
-            </div>
-
-            <!-- Save Profile Details Button -->
-            <button 
-              id="profile-save-details-btn" 
-              type="button" 
-              onclick="saveCustomerProfileDetails()" 
-              class="w-full h-11 rounded-2xl bg-primary hover:bg-emerald-700 text-white font-black text-xs flex items-center justify-center gap-1.5 active:scale-98 transition-all shadow-xs cursor-pointer"
-            >
-              <span class="material-symbols-outlined text-[16px]">save</span>
-              <span data-i18n="profile_btn_save">विवरण सहेजें</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- =================================================================== -->
-        <!-- 2. SAVED DELIVERY ADDRESSES                                         -->
-        <!-- =================================================================== -->
-        <div class="space-y-2">
-          <h3 class="text-xs font-black text-slate-500 uppercase tracking-wider px-1" data-i18n="profile_row_addresses">प्राथमिक डिलीवरी पता</h3>
-          <div id="profile-row-saved-addresses" onclick="openAddressEditModal()" class="rounded-3xl bg-white dark:bg-[#1D232B] p-4 shadow-mobile-card border border-surface-container-high dark:border-[#465362] flex items-center justify-between hover:bg-slate-50 dark:hover:bg-[#2A323D] active:scale-98 transition-all cursor-pointer">
-            <div class="flex items-center gap-3.5 min-w-0">
-              <div class="w-11 h-11 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 flex items-center justify-center shrink-0 border border-emerald-200 dark:border-emerald-700">
-                <span class="material-symbols-outlined text-[22px]">home_pin</span>
-              </div>
-              <div class="min-w-0 flex-1">
-                <div class="flex items-center gap-2">
-                  <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate" data-i18n="profile_addr_primary">मुख्य निवास</span>
-                  <span class="text-[10px] bg-primary/10 text-primary font-black px-2 py-0.5 rounded-full" data-i18n="profile_addr_default_badge">डिफ़ॉल्ट</span>
-                </div>
-                <p class="text-[11px] text-slate-600 dark:text-slate-300 font-bold truncate mt-0.5">
-                  <span id="profile-user-village">Rampur Village</span> • <span id="profile-user-landmark">Near Primary School, Main Chowk</span>
-                </p>
-              </div>
-            </div>
-            <span class="material-symbols-outlined text-slate-400 text-[20px] shrink-0 ml-2">chevron_right</span>
-          </div>
-        </div>
-
-        <!-- =================================================================== -->
-        <!-- 3. FINTECH & SAVED PAYMENTS (Collapsible Accordion)                  -->
-        <!-- =================================================================== -->
-        <div class="space-y-2">
-          <h3 class="text-xs font-black text-slate-500 uppercase tracking-wider px-1" data-i18n="profile_row_payments">सहेजे गए भुगतान</h3>
-          
-          <div class="rounded-3xl bg-white dark:bg-[#1D232B] shadow-mobile-card border border-surface-container-high dark:border-[#465362] overflow-hidden transition-all">
-            <!-- Accordion Header Button -->
-            <button 
-              type="button" 
-              id="profile-row-saved-payments" 
-              onclick="toggleProfileSavedPayments()" 
-              aria-expanded="false" 
-              aria-controls="profile-saved-payments-panel"
-              class="w-full text-left p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-[#2A323D] active:bg-slate-100 transition-colors cursor-pointer"
-            >
+          <!-- Tappable Compact Menu Rows Container -->
+          <div class="rounded-3xl bg-white dark:bg-[#1D232B] shadow-mobile-card border border-surface-container-high dark:border-[#465362] divide-y divide-slate-100 dark:divide-slate-800/80 overflow-hidden">
+            
+            <!-- Row 1: My Profile › -->
+            <button id="account-row-profile" type="button" onclick="openCustomerAccountSubview('personal')" class="w-full text-left p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-[#2A323D] active:bg-slate-100 dark:active:bg-[#343D49] transition-colors cursor-pointer">
               <div class="flex items-center gap-3.5 min-w-0">
-                <div class="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-200 dark:border-amber-700">
-                  <span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+                <div class="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-100 dark:border-amber-800/40">
+                  <span class="material-symbols-outlined text-[22px]">person</span>
                 </div>
                 <div class="flex flex-col min-w-0">
-                  <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate" data-i18n="profile_row_payments">सहेजे गए भुगतान</span>
-                  <span class="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5" data-i18n="profile_payments_sub">UPI ID, बैंक खाता व कार्ड</span>
+                  <span class="text-xs sm:text-sm font-black text-slate-900 dark:text-[#F8FAFC] truncate" data-i18n="menu_my_profile">मेरी प्रोफ़ाइल</span>
+                  <span class="text-[11px] text-slate-500 dark:text-[#CBD5E1] truncate mt-0.5" data-i18n="menu_my_profile_sub">नाम, मोबाइल, ईमेल एवं जन्मतिथि</span>
                 </div>
               </div>
-              <span id="profile-payments-chevron" class="material-symbols-outlined text-slate-400 text-[20px] transition-transform duration-200">expand_more</span>
+              <span class="material-symbols-outlined text-slate-400 text-[20px] shrink-0 ml-2">chevron_right</span>
             </button>
 
-            <!-- Collapsible Panel Container -->
-            <div id="profile-saved-payments-panel" class="hidden p-4 pt-1 bg-slate-50/50 dark:bg-[#2A323D]/50 border-t border-slate-100 dark:border-slate-800 space-y-3">
-              <div id="profile-saved-payment-list" class="space-y-2">
-                <!-- Dynamically populated or default tokenized UPI badge -->
-                <div class="p-3 bg-white dark:bg-[#1D232B] rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center justify-between shadow-2xs">
-                  <div class="flex items-center gap-2.5">
-                    <span class="material-symbols-outlined text-primary text-[18px]">verified</span>
-                    <span class="text-xs font-bold text-slate-800 dark:text-white">9876543210@paytm</span>
-                  </div>
-                  <span class="text-[10px] bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-black px-2 py-0.5 rounded-full" data-i18n="profile_payment_verified">सत्यापित</span>
+            <!-- Row 2: My Addresses › -->
+            <button id="account-row-addresses" type="button" onclick="openCustomerAccountSubview('addresses')" class="w-full text-left p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-[#2A323D] active:bg-slate-100 dark:active:bg-[#343D49] transition-colors cursor-pointer">
+              <div class="flex items-center gap-3.5 min-w-0">
+                <div class="w-10 h-10 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-100 dark:border-emerald-800/40">
+                  <span class="material-symbols-outlined text-[22px]">home_pin</span>
+                </div>
+                <div class="flex flex-col min-w-0">
+                  <span class="text-xs sm:text-sm font-black text-slate-900 dark:text-[#F8FAFC] truncate" data-i18n="menu_my_addresses">मेरे पते</span>
+                  <span class="text-[11px] text-slate-500 dark:text-[#CBD5E1] truncate mt-0.5" data-i18n="menu_my_addresses_sub">गाँव, पहचान स्थल व GPS पिन</span>
                 </div>
               </div>
-              
-              <!-- Add New Payment Method Action -->
+              <span class="material-symbols-outlined text-slate-400 text-[20px] shrink-0 ml-2">chevron_right</span>
+            </button>
+
+            <!-- Row 3: Saved Payments › -->
+            <button id="profile-row-saved-payments" type="button" onclick="openCustomerAccountSubview('payments')" class="w-full text-left p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-[#2A323D] active:bg-slate-100 dark:active:bg-[#343D49] transition-colors cursor-pointer">
+              <div class="flex items-center gap-3.5 min-w-0">
+                <div class="w-10 h-10 rounded-2xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 border border-blue-100 dark:border-blue-800/40">
+                  <span class="material-symbols-outlined text-[22px]">account_balance_wallet</span>
+                </div>
+                <div class="flex flex-col min-w-0">
+                  <span class="text-xs sm:text-sm font-black text-slate-900 dark:text-[#F8FAFC] truncate" data-i18n="menu_saved_payments">सहेजे गए भुगतान माध्यम</span>
+                  <span class="text-[11px] text-slate-500 dark:text-[#CBD5E1] truncate mt-0.5" data-i18n="menu_saved_payments_sub">UPI ID, बैंक खाता एवं डेबिट कार्ड</span>
+                </div>
+              </div>
+              <span class="material-symbols-outlined text-slate-400 text-[20px] shrink-0 ml-2">chevron_right</span>
+            </button>
+
+            <!-- Row 4: Settings & Preferences › -->
+            <button id="account-row-settings" type="button" onclick="openCustomerAccountSubview('preferences')" class="w-full text-left p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-[#2A323D] active:bg-slate-100 dark:active:bg-[#343D49] transition-colors cursor-pointer">
+              <div class="flex items-center gap-3.5 min-w-0">
+                <div class="w-10 h-10 rounded-2xl bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 border border-purple-100 dark:border-purple-800/40">
+                  <span class="material-symbols-outlined text-[22px]">tune</span>
+                </div>
+                <div class="flex flex-col min-w-0">
+                  <span class="text-xs sm:text-sm font-black text-slate-900 dark:text-[#F8FAFC] truncate" data-i18n="menu_settings_pref">प्राथमिकताएं व सेटिंग्स</span>
+                  <span class="text-[11px] text-slate-500 dark:text-[#CBD5E1] truncate mt-0.5" data-i18n="menu_settings_pref_sub">भाषा, थीम रंग-रूप व सूचनाएं</span>
+                </div>
+              </div>
+              <span class="material-symbols-outlined text-slate-400 text-[20px] shrink-0 ml-2">chevron_right</span>
+            </button>
+
+            <!-- Row 5: Help & Support › -->
+            <button id="account-row-contact-support" type="button" onclick="navigateToSupportCenter()" class="w-full text-left p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-[#2A323D] active:bg-slate-100 dark:active:bg-[#343D49] transition-colors cursor-pointer">
+              <div class="flex items-center gap-3.5 min-w-0">
+                <div class="w-10 h-10 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 border border-rose-100 dark:border-rose-800/40">
+                  <span class="material-symbols-outlined text-[22px]">help_center</span>
+                </div>
+                <div class="flex flex-col min-w-0">
+                  <span class="text-xs sm:text-sm font-black text-slate-900 dark:text-[#F8FAFC] truncate" data-i18n="menu_help_support">मदद एवं सहायता केंद्र</span>
+                  <span class="text-[11px] text-slate-500 dark:text-[#CBD5E1] truncate mt-0.5" data-i18n="menu_help_support_sub">ऑर्डर कहाँ है, शिकायत, संपर्क व FAQs</span>
+                </div>
+              </div>
+              <span class="material-symbols-outlined text-slate-400 text-[20px] shrink-0 ml-2">chevron_right</span>
+            </button>
+
+            <!-- Row 6: Account & Security › -->
+            <button id="account-row-security" type="button" onclick="openCustomerAccountSubview('security')" class="w-full text-left p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-[#2A323D] active:bg-slate-100 dark:active:bg-[#343D49] transition-colors cursor-pointer">
+              <div class="flex items-center gap-3.5 min-w-0">
+                <div class="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0 border border-indigo-100 dark:border-indigo-800/40">
+                  <span class="material-symbols-outlined text-[22px]">shield</span>
+                </div>
+                <div class="flex flex-col min-w-0">
+                  <span class="text-xs sm:text-sm font-black text-slate-900 dark:text-[#F8FAFC] truncate" data-i18n="menu_account_security">खाता एवं सुरक्षा</span>
+                  <span class="text-[11px] text-slate-500 dark:text-[#CBD5E1] truncate mt-0.5" data-i18n="menu_account_security_sub">गोपनीयता नीति, नियम एवं शर्तें</span>
+                </div>
+              </div>
+              <span class="material-symbols-outlined text-slate-400 text-[20px] shrink-0 ml-2">chevron_right</span>
+            </button>
+
+          </div>
+
+          <!-- Bottom CTA: Primary Logout Button -->
+          <div class="pt-2">
+            <button id="profile-primary-logout-btn" type="button" onclick="logoutCustomer()" class="w-full h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/30 hover:bg-rose-100 dark:hover:bg-rose-900/40 text-rose-700 dark:text-rose-300 font-black text-sm flex items-center justify-center gap-2 border border-rose-200 dark:border-rose-900/50 shadow-2xs active:scale-95 transition-all cursor-pointer">
+              <span class="material-symbols-outlined text-[20px]">logout</span>
+              <span data-i18n="btn_logout">खाते से लॉगआउट करें</span>
+            </button>
+          </div>
+
+          <!-- Preserved Accessible Support Links for Hierarchy Tests -->
+          <div id="profile-sec-help-support" class="hidden">
+            <button id="account-row-where-order" type="button" onclick="openSupportCenterSection('where')"></button>
+            <button id="account-row-report-issue" type="button" onclick="openSupportCenterSection('issue')"></button>
+            <button id="account-row-my-tickets" type="button" onclick="openSupportCenterSection('tickets')"></button>
+            <button id="account-row-faq" type="button" onclick="openSupportCenterSection('faq')"></button>
+          </div>
+
+        </div>
+
+        <!-- =================================================================== -->
+        <!-- B. DEDICATED SUBVIEWS (Shown when rows are tapped, Back button ‹)   -->
+        <!-- =================================================================== -->
+        <div id="customer-account-subviews" class="w-full flex flex-col space-y-4">
+          
+          <!-- SUBVIEW 1: PERSONAL INFORMATION (MY PROFILE) -->
+          <div id="customer-subview-personal" class="customer-subview hidden flex-col space-y-4">
+            <div class="flex items-center gap-2.5 pb-1 border-b border-slate-200 dark:border-[#465362]">
+              <button type="button" onclick="showCustomerAccountLanding()" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-[#2A323D] hover:bg-slate-200 text-slate-800 dark:text-white flex items-center justify-center cursor-pointer shadow-2xs">
+                <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+              </button>
+              <div>
+                <h2 class="text-base font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="sec_my_profile_title">मेरी प्रोफ़ाइल</h2>
+                <span class="text-[11px] text-slate-500 dark:text-[#CBD5E1]" data-i18n="sec_my_profile_sub">व्यक्तिगत जानकारी एवं संशोधन</span>
+              </div>
+            </div>
+
+            <!-- Personal Information Form Card -->
+            <div class="rounded-3xl bg-white dark:bg-[#1D232B] p-5 shadow-mobile-card border border-surface-container-high dark:border-[#465362] space-y-4">
+              <div class="space-y-3">
+                <!-- Full Name (Editable) -->
+                <div>
+                  <label class="block text-[11px] font-black text-slate-700 dark:text-slate-300 mb-1" data-i18n="profile_lbl_fullname">पूरा नाम</label>
+                  <div class="relative flex items-center bg-slate-50 dark:bg-[#2A323D] rounded-2xl border border-slate-200 dark:border-slate-700 focus-within:border-primary focus-within:bg-white transition-all">
+                    <span class="material-symbols-outlined text-slate-400 absolute left-3.5 text-[18px]">person</span>
+                    <input 
+                      id="profile-user-name-input" 
+                      type="text" 
+                      value="रमेश पटेल" 
+                      oninput="onProfileNameChange(this.value)"
+                      class="w-full h-11 pl-10 pr-3 rounded-2xl bg-transparent text-xs font-bold text-slate-800 dark:text-white focus:outline-none"
+                      placeholder="आपका पूरा नाम"
+                      data-i18n-ph="profile_ph_fullname"
+                    />
+                  </div>
+                </div>
+
+                <!-- Email & DOB Row -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-[11px] font-black text-slate-700 dark:text-slate-300 mb-1" data-i18n="profile_lbl_email">ईमेल पता</label>
+                    <div class="relative flex items-center bg-slate-50 dark:bg-[#2A323D] rounded-2xl border border-slate-200 dark:border-slate-700 focus-within:border-primary focus-within:bg-white transition-all">
+                      <span class="material-symbols-outlined text-slate-400 absolute left-3.5 text-[18px]">mail</span>
+                      <input 
+                        id="profile-email-input" 
+                        type="email" 
+                        value="ramesh.patel@gaonbazar.in" 
+                        class="w-full h-11 pl-10 pr-3 rounded-2xl bg-transparent text-xs font-bold text-slate-800 dark:text-white focus:outline-none"
+                        placeholder="email@example.com"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-black text-slate-700 dark:text-slate-300 mb-1" data-i18n="profile_lbl_dob">जन्म तिथि</label>
+                    <div class="relative flex items-center bg-slate-50 dark:bg-[#2A323D] rounded-2xl border border-slate-200 dark:border-slate-700 focus-within:border-primary focus-within:bg-white transition-all">
+                      <span class="material-symbols-outlined text-slate-400 absolute left-3.5 text-[18px]">calendar_today</span>
+                      <input 
+                        id="profile-dob-input" 
+                        type="date" 
+                        value="1988-08-15" 
+                        class="w-full h-11 pl-10 pr-3 rounded-2xl bg-transparent text-xs font-bold text-slate-800 dark:text-white focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Gender Select -->
+                <div>
+                  <label class="block text-[11px] font-black text-slate-700 dark:text-slate-300 mb-1" data-i18n="profile_lbl_gender">लिंग</label>
+                  <div class="relative flex items-center bg-slate-50 dark:bg-[#2A323D] rounded-2xl border border-slate-200 dark:border-slate-700 focus-within:border-primary focus-within:bg-white transition-all">
+                    <span class="material-symbols-outlined text-slate-400 absolute left-3.5 text-[18px]">wc</span>
+                    <select id="profile-gender-select" class="w-full h-11 pl-10 pr-8 rounded-2xl bg-transparent text-xs font-bold text-slate-800 dark:text-white focus:outline-none appearance-none cursor-pointer">
+                      <option value="male" selected data-i18n="gender_male">पुरुष</option>
+                      <option value="female" data-i18n="gender_female">महिला</option>
+                      <option value="other" data-i18n="gender_other">अन्य</option>
+                    </select>
+                    <span class="material-symbols-outlined text-slate-400 absolute right-3 pointer-events-none text-[18px]">expand_more</span>
+                  </div>
+                </div>
+
+                <!-- Save Profile Details CTA -->
+                <div class="pt-2">
+                  <button 
+                    id="profile-save-details-btn" 
+                    onclick="saveUserProfileDetails()"
+                    class="w-full h-12 rounded-2xl bg-primary text-white font-black text-xs flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
+                  >
+                    <span class="material-symbols-outlined text-[18px]">save</span>
+                    <span data-i18n="profile_btn_save_changes">परिवर्तन सहेजें</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SUBVIEW 2: MY ADDRESSES -->
+          <div id="customer-subview-addresses" class="customer-subview hidden flex-col space-y-4">
+            <div class="flex items-center gap-2.5 pb-1 border-b border-slate-200 dark:border-[#465362]">
+              <button type="button" onclick="showCustomerAccountLanding()" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-[#2A323D] hover:bg-slate-200 text-slate-800 dark:text-white flex items-center justify-center cursor-pointer shadow-2xs">
+                <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+              </button>
+              <div>
+                <h2 class="text-base font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="menu_my_addresses">मेरे पते</h2>
+                <span class="text-[11px] text-slate-500 dark:text-[#CBD5E1]" data-i18n="menu_my_addresses_sub">गाँव, पहचान स्थल व GPS पिन</span>
+              </div>
+            </div>
+
+            <!-- Primary Address Card -->
+            <div class="rounded-3xl bg-white dark:bg-[#1D232B] shadow-mobile-card border border-surface-container-high dark:border-[#465362] p-4.5 space-y-3">
+              <div id="profile-row-saved-addresses" onclick="openAddressEditModal()" class="flex items-center justify-between cursor-pointer">
+                <div class="flex items-center gap-3.5 min-w-0">
+                  <div class="w-10 h-10 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 flex items-center justify-center shrink-0 border border-emerald-100 dark:border-emerald-800/40">
+                    <span class="material-symbols-outlined text-[22px]">pin_drop</span>
+                  </div>
+                  <div class="min-w-0">
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs font-black text-slate-800 dark:text-white" data-i18n="profile_addr_primary">प्राथमिक गाँव व पता</span>
+                      <span class="text-[10px] bg-primary/10 text-primary font-bold px-2 py-0.5 rounded-full" data-i18n="profile_badge_default">डिफ़ॉल्ट</span>
+                    </div>
+                    <p class="text-[11px] text-slate-600 dark:text-slate-300 font-bold truncate mt-0.5">
+                      <span id="profile-user-landmark">Near Primary School, Main Chowk</span>
+                    </p>
+                  </div>
+                </div>
+                <span class="material-symbols-outlined text-slate-400 text-[20px] shrink-0 ml-2">chevron_right</span>
+              </div>
+
+              <div class="pt-2 border-t border-slate-100 dark:border-slate-800/80">
+                <button type="button" onclick="navigateToPhase('landmark')" class="w-full h-11 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300 text-xs font-black flex items-center justify-center gap-1.5 border border-emerald-200 dark:border-emerald-800/50 cursor-pointer">
+                  <span class="material-symbols-outlined text-[18px]">add_location_alt</span>
+                  <span data-i18n="btn_change_location">गाँव या GPS पिन बदलें</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- SUBVIEW 3: SAVED PAYMENTS -->
+          <div id="customer-subview-payments" class="customer-subview hidden flex-col space-y-4">
+            <div class="flex items-center gap-2.5 pb-1 border-b border-slate-200 dark:border-[#465362]">
+              <button type="button" onclick="showCustomerAccountLanding()" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-[#2A323D] hover:bg-slate-200 text-slate-800 dark:text-white flex items-center justify-center cursor-pointer shadow-2xs">
+                <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+              </button>
+              <div>
+                <h2 class="text-base font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="menu_saved_payments">सहेजे गए भुगतान माध्यम</h2>
+                <span class="text-[11px] text-slate-500 dark:text-[#CBD5E1]" data-i18n="menu_saved_payments_sub">UPI ID, बैंक खाता एवं डेबिट कार्ड</span>
+              </div>
+            </div>
+
+            <!-- Panel Container -->
+            <div id="profile-saved-payments-panel" class="rounded-3xl bg-white dark:bg-[#1D232B] shadow-mobile-card border border-surface-container-high dark:border-[#465362] p-4.5 space-y-4">
+              <span id="profile-payments-chevron" class="hidden"></span>
+              <div id="profile-saved-payment-list" class="space-y-2.5">
+                <!-- Dynamically populated or fallback -->
+                <div class="p-3 rounded-2xl bg-slate-50 dark:bg-[#2A323D] border border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                  <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-primary text-[20px]">account_balance_wallet</span>
+                    <div>
+                      <span class="text-xs font-bold text-slate-800 dark:text-white block">UPI Auto-Pay</span>
+                      <span class="text-[10px] text-slate-400">9876543210@upi</span>
+                    </div>
+                  </div>
+                  <span class="text-[10px] bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-bold px-2 py-0.5 rounded-full" data-i18n="badge_active">सक्रिय</span>
+                </div>
+              </div>
+
               <button 
                 id="profile-add-payment-btn" 
-                type="button" 
-                onclick="openAddPaymentModal()" 
-                class="w-full h-10 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                onclick="openAddPaymentModal()"
+                class="w-full h-11 rounded-2xl bg-primary/10 hover:bg-primary/15 text-primary text-xs font-black flex items-center justify-center gap-1.5 border border-primary/20 transition-all cursor-pointer"
               >
-                <span class="material-symbols-outlined text-[16px]">add_circle</span>
-                <span data-i18n="profile_btn_add_payment">+ नया भुगतान जोड़ें</span>
+                <span class="material-symbols-outlined text-[18px]">add</span>
+                <span data-i18n="profile_add_payment">नया भुगतान माध्यम जोड़ें</span>
               </button>
             </div>
           </div>
-        </div>
 
-        <!-- =================================================================== -->
-        <!-- 4. PREFERENCES & SETTINGS (Theme & Language)                       -->
-        <!-- =================================================================== -->
-        <div class="space-y-2">
-          <h3 class="text-xs font-black text-slate-500 uppercase tracking-wider px-1" data-i18n="profile_sec_settings">प्राथमिकताएं व सेटिंग्स</h3>
+          <!-- SUBVIEW 4: SETTINGS & PREFERENCES -->
+          <div id="customer-subview-preferences" class="customer-subview hidden flex-col space-y-4">
+            <div class="flex items-center gap-2.5 pb-1 border-b border-slate-200 dark:border-[#465362]">
+              <button type="button" onclick="showCustomerAccountLanding()" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-[#2A323D] hover:bg-slate-200 text-slate-800 dark:text-white flex items-center justify-center cursor-pointer shadow-2xs">
+                <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+              </button>
+              <div>
+                <h2 class="text-base font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="menu_settings_pref">प्राथमिकताएं व सेटिंग्स</h2>
+                <span class="text-[11px] text-slate-500 dark:text-[#CBD5E1]" data-i18n="menu_settings_pref_sub">भाषा, थीम रंग-रूप व सूचनाएं</span>
+              </div>
+            </div>
 
-          <div class="rounded-3xl bg-white dark:bg-[#1D232B] shadow-mobile-card border border-surface-container-high dark:border-[#465362] divide-y divide-slate-100 dark:divide-slate-800 overflow-hidden">
-            <!-- Theme Preference Row -->
-            <div id="profile-row-theme" class="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/50 dark:hover:bg-[#2A323D]/50 transition-colors">
-              <div class="flex items-center gap-3.5 min-w-0">
-                <div class="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0 border border-indigo-200 dark:border-indigo-700">
-                  <span id="theme-header-icon" class="material-symbols-outlined text-[20px]">palette</span>
-                </div>
-                <div class="flex flex-col min-w-0">
-                  <div class="flex items-center gap-2">
-                    <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate" data-i18n="profile_row_theme">थीम / रंग रूप</span>
-                    <span id="profile-current-theme-badge" class="text-[10px] bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700 font-black px-2 py-0.5 rounded-full" data-i18n="profile_theme_badge">सिस्टम</span>
+            <div class="rounded-3xl bg-white dark:bg-[#1D232B] shadow-mobile-card border border-surface-container-high dark:border-[#465362] p-5 space-y-5">
+              
+              <!-- 1. Language Row -->
+              <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-primary text-[20px]">translate</span>
+                    <div>
+                      <span class="text-xs font-bold text-slate-800 dark:text-white block" data-i18n="profile_row_lang">ऐप की भाषा</span>
+                      <span class="text-[11px] text-slate-400" data-i18n="profile_row_lang_sub">हिंदी या अंग्रेजी चुनें</span>
+                    </div>
                   </div>
-                  <span class="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5" data-i18n="profile_theme_sub">हल्का, गहरा या डिवाइस के अनुसार</span>
+                  <span id="profile-current-lang-badge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-[#2A323D] text-slate-600 dark:text-slate-300">हिंदी</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 pt-1">
+                  <button id="btn-profile-lang-hi" onclick="setAppLanguage('hi')" class="h-10 rounded-2xl border text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer">
+                    <span>हिंदी</span>
+                  </button>
+                  <button id="btn-profile-lang-en" onclick="setAppLanguage('en')" class="h-10 rounded-2xl border text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer">
+                    <span>English</span>
+                  </button>
                 </div>
               </div>
-              <div class="flex items-center gap-1.5 self-end sm:self-center bg-slate-100 dark:bg-[#2A323D] p-1 rounded-2xl border border-slate-200 dark:border-slate-700">
-                <button id="btn-theme-light" type="button" onclick="setAppTheme('light')" class="px-2.5 py-1 text-[11px] font-bold rounded-xl text-slate-600 dark:text-slate-300 hover:text-slate-900 transition-all cursor-pointer flex items-center gap-1" data-i18n="theme_opt_light">
-                  <span class="material-symbols-outlined text-[14px]">light_mode</span>
-                  <span>हल्का</span>
-                </button>
-                <button id="btn-theme-dark" type="button" onclick="setAppTheme('dark')" class="px-2.5 py-1 text-[11px] font-bold rounded-xl text-slate-600 dark:text-slate-300 hover:text-slate-900 transition-all cursor-pointer flex items-center gap-1" data-i18n="theme_opt_dark">
-                  <span class="material-symbols-outlined text-[14px]">dark_mode</span>
-                  <span>गहरा</span>
-                </button>
-                <button id="btn-theme-system" type="button" onclick="setAppTheme('system')" class="px-2.5 py-1 text-[11px] font-bold rounded-xl text-slate-600 dark:text-slate-300 hover:text-slate-900 transition-all cursor-pointer flex items-center gap-1" data-i18n="theme_opt_system">
-                  <span class="material-symbols-outlined text-[14px]">settings_brightness</span>
-                  <span>सिस्टम</span>
-                </button>
-              </div>
-            </div>
 
-            <!-- Language Switcher Row -->
-            <div class="p-4 flex items-center justify-between hover:bg-slate-50/50 dark:hover:bg-[#2A323D]/50 transition-colors">
-              <div class="flex items-center gap-3.5 min-w-0">
-                <div class="w-10 h-10 rounded-2xl bg-teal-50 dark:bg-teal-950/60 text-teal-600 dark:text-teal-400 flex items-center justify-center shrink-0 border border-teal-200 dark:border-teal-700">
-                  <span class="material-symbols-outlined text-[20px]">translate</span>
-                </div>
-                <div class="flex flex-col min-w-0">
-                  <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate" data-i18n="profile_row_language">ऐप की भाषा</span>
-                  <span id="profile-current-lang-badge" class="text-[11px] text-slate-500 dark:text-slate-400 font-bold block" data-i18n="profile_opt_hindi">हिंदी</span>
-                </div>
-              </div>
-              <div class="flex items-center gap-1.5 bg-slate-100 dark:bg-[#2A323D] p-1 rounded-2xl border border-slate-200 dark:border-slate-700">
-                <button id="btn-profile-lang-hi" type="button" onclick="switchLanguage('hi')" class="min-h-[36px] px-3 py-1 rounded-xl text-xs font-black transition-all cursor-pointer">
-                  हिंदी
-                </button>
-                <button id="btn-profile-lang-en" type="button" onclick="switchLanguage('en')" class="min-h-[36px] px-3 py-1 rounded-xl text-xs font-black transition-all cursor-pointer">
-                  English
-                </button>
-              </div>
-            </div>
+              <div class="border-t border-slate-100 dark:border-slate-800"></div>
 
-            <!-- Notifications Toggle Row -->
-            <div class="p-4 flex items-center justify-between hover:bg-slate-50/50 dark:hover:bg-[#2A323D]/50 transition-colors">
-              <div class="flex items-center gap-3.5 min-w-0">
-                <div class="w-10 h-10 rounded-2xl bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0 border border-sky-200 dark:border-sky-700">
-                  <span class="material-symbols-outlined text-[20px]">notifications_active</span>
+              <!-- 2. Theme Selection Row -->
+              <div id="profile-row-theme" class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2.5">
+                    <span id="theme-header-icon" class="material-symbols-outlined text-primary text-[20px]">palette</span>
+                    <div>
+                      <span class="text-xs font-bold text-slate-800 dark:text-white block" data-i18n="profile_row_theme">थीम (रंग-रूप)</span>
+                      <span class="text-[11px] text-slate-400" data-i18n="profile_row_theme_sub">हल्का, गहरा या ऑटो</span>
+                    </div>
+                  </div>
+                  <span id="profile-current-theme-badge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-[#2A323D] text-slate-600 dark:text-slate-300">लाइट</span>
                 </div>
-                <div class="flex flex-col min-w-0">
-                  <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate" data-i18n="profile_row_notifications">सूचनाएं</span>
-                  <span class="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5" data-i18n="profile_notifs_sub">ऑर्डर अपडेट व एसएमएस अलर्ट</span>
+                <div class="grid grid-cols-3 gap-2 pt-1">
+                  <button id="btn-theme-light" onclick="setAppTheme('light')" class="h-10 rounded-2xl border text-xs font-bold flex items-center justify-center gap-1 transition-all cursor-pointer">
+                    <span class="material-symbols-outlined text-[16px]">light_mode</span>
+                    <span data-i18n="theme_light">लाइट</span>
+                  </button>
+                  <button id="btn-theme-dark" onclick="setAppTheme('dark')" class="h-10 rounded-2xl border text-xs font-bold flex items-center justify-center gap-1 transition-all cursor-pointer">
+                    <span class="material-symbols-outlined text-[16px]">dark_mode</span>
+                    <span data-i18n="theme_dark">डार्क</span>
+                  </button>
+                  <button id="btn-theme-system" onclick="setAppTheme('system')" class="h-10 rounded-2xl border text-xs font-bold flex items-center justify-center gap-1 transition-all cursor-pointer">
+                    <span class="material-symbols-outlined text-[16px]">settings_suggest</span>
+                    <span data-i18n="theme_system">सिस्टम</span>
+                  </button>
                 </div>
               </div>
-              <div class="flex items-center gap-2">
-                <input type="checkbox" id="toggle-notif-sms" checked class="w-4 h-4 text-primary rounded border-slate-300 dark:border-slate-700" title="SMS" />
-                <input type="checkbox" id="toggle-notif-push" checked class="w-4 h-4 text-primary rounded border-slate-300 dark:border-slate-700" title="Push" />
-                <input type="checkbox" id="toggle-notif-email" class="w-4 h-4 text-primary rounded border-slate-300 dark:border-slate-700" title="Email" />
+
+              <div class="border-t border-slate-100 dark:border-slate-800"></div>
+
+              <!-- 3. Notification Preferences -->
+              <div class="space-y-3">
+                <span class="text-xs font-bold text-slate-800 dark:text-white block" data-i18n="profile_sec_notifs">सूचना प्राथमिकताएं</span>
+                <div class="space-y-2">
+                  <label class="flex items-center justify-between text-xs font-medium text-slate-700 dark:text-slate-300 cursor-pointer">
+                    <span data-i18n="notif_sms">SMS द्वारा ऑर्डर अपडेट</span>
+                    <input type="checkbox" id="toggle-notif-sms" checked class="w-4 h-4 accent-primary rounded cursor-pointer" />
+                  </label>
+                  <label class="flex items-center justify-between text-xs font-medium text-slate-700 dark:text-slate-300 cursor-pointer">
+                    <span data-i18n="notif_push">पुश नोटिफिकेशन</span>
+                    <input type="checkbox" id="toggle-notif-push" checked class="w-4 h-4 accent-primary rounded cursor-pointer" />
+                  </label>
+                  <label class="flex items-center justify-between text-xs font-medium text-slate-700 dark:text-slate-300 cursor-pointer">
+                    <span data-i18n="notif_email">ईमेल पर बिल एवं ऑफ़र</span>
+                    <input type="checkbox" id="toggle-notif-email" class="w-4 h-4 accent-primary rounded cursor-pointer" />
+                  </label>
+                </div>
               </div>
+
             </div>
           </div>
+
+          <!-- SUBVIEW 5: ACCOUNT & SECURITY -->
+          <div id="customer-subview-security" class="customer-subview hidden flex-col space-y-4">
+            <div class="flex items-center gap-2.5 pb-1 border-b border-slate-200 dark:border-[#465362]">
+              <button type="button" onclick="showCustomerAccountLanding()" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-[#2A323D] hover:bg-slate-200 text-slate-800 dark:text-white flex items-center justify-center cursor-pointer shadow-2xs">
+                <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+              </button>
+              <div>
+                <h2 class="text-base font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="menu_account_security">खाता एवं सुरक्षा</h2>
+                <span class="text-[11px] text-slate-500 dark:text-[#CBD5E1]" data-i18n="menu_account_security_sub">गोपनीयता नीति, नियम एवं शर्तें</span>
+              </div>
+            </div>
+
+            <div class="rounded-3xl bg-white dark:bg-[#1D232B] shadow-mobile-card border border-surface-container-high dark:border-[#465362] divide-y divide-slate-100 dark:divide-slate-800 overflow-hidden">
+              <div id="profile-row-privacy" onclick="openPrivacyModal()" class="p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-[#2A323D] cursor-pointer">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-slate-500 text-[20px]">privacy_tip</span>
+                  <span class="text-xs font-bold text-slate-800 dark:text-white" data-i18n="legal_privacy">गोपनीयता नीति (Privacy Policy)</span>
+                </div>
+                <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
+              </div>
+
+              <div id="profile-row-terms" onclick="openTermsModal()" class="p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-[#2A323D] cursor-pointer">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-slate-500 text-[20px]">description</span>
+                  <span class="text-xs font-bold text-slate-800 dark:text-white" data-i18n="legal_terms">नियम एवं शर्तें (Terms & Conditions)</span>
+                </div>
+                <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
+              </div>
+
+              <div id="profile-row-share-app" onclick="shareAppWithFriends()" class="p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-[#2A323D] cursor-pointer">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-slate-500 text-[20px]">share</span>
+                  <span class="text-xs font-bold text-slate-800 dark:text-white" data-i18n="app_share">गाँव में दोस्तों को शेयर करें</span>
+                </div>
+                <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
+              </div>
+
+              <div id="profile-row-rate-app" onclick="rateAppModal()" class="p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-[#2A323D] cursor-pointer">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-slate-500 text-[20px]">star_rate</span>
+                  <span class="text-xs font-bold text-slate-800 dark:text-white" data-i18n="app_rate">ऐप को रेटिंग दें</span>
+                </div>
+                <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
+              </div>
+
+              <div id="profile-row-about-app" onclick="openAboutUsModal()" class="p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-[#2A323D] cursor-pointer">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-slate-500 text-[20px]">info</span>
+                  <span class="text-xs font-bold text-slate-800 dark:text-white" data-i18n="app_about">हमारे बारे में (About GaonBazaar)</span>
+                </div>
+                <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
+              </div>
+            </div>
+
+            <!-- Danger Zone: Delete Account -->
+            <div class="p-4 rounded-3xl bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/40">
+              <button id="profile-delete-account-btn" onclick="openDeleteAccountConfirm()" class="w-full text-left flex items-center justify-between text-rose-600 dark:text-rose-400 cursor-pointer">
+                <div class="flex items-center gap-2.5">
+                  <span class="material-symbols-outlined text-[18px]">delete_forever</span>
+                  <span class="text-xs font-black" data-i18n="btn_delete_account">खाता स्थायी रूप से हटाएं</span>
+                </div>
+                <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+              </button>
+            </div>
+          </div>
+
         </div>
 
-        <!-- =================================================================== -->
-        <!-- 5. HELP & CUSTOMER SUPPORT HUB                                      -->
-        <!-- =================================================================== -->
-        <div id="profile-sec-help-support" class="space-y-2">
-          <h3 class="text-xs font-black text-slate-500 uppercase tracking-wider px-1" data-i18n="profile_sec_help_support">मदद एवं ग्राहक सहायता</h3>
-
-          <div class="rounded-3xl bg-white dark:bg-[#1D232B] shadow-mobile-card border border-surface-container-high dark:border-[#465362] divide-y divide-slate-100 dark:divide-slate-800 overflow-hidden">
-            <!-- Where is my order? -->
-            <div id="account-row-where-order" onclick="openSupportCenterSection('where_order')" class="p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-[#2A323D] active:bg-slate-100 transition-colors cursor-pointer">
-              <div class="flex items-center gap-3.5 min-w-0">
-                <div class="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-200 dark:border-amber-700">
-                  <span class="material-symbols-outlined text-[20px]">local_shipping</span>
-                </div>
-                <div class="flex flex-col min-w-0">
-                  <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate" data-i18n="support_opt_where_order">मेरा ऑर्डर कहाँ है?</span>
-                  <span class="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5" data-i18n="support_opt_where_order_sub">लाइव ऑर्डर स्थिति एवं डिलीवरी साथी विवरण</span>
-                </div>
-              </div>
-              <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
-            </div>
-
-            <!-- Report an issue -->
-            <div id="account-row-report-issue" onclick="openSupportCenterSection('report_issue')" class="p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-[#2A323D] active:bg-slate-100 transition-colors cursor-pointer">
-              <div class="flex items-center gap-3.5 min-w-0">
-                <div class="w-10 h-10 rounded-2xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 border border-rose-200 dark:border-rose-700">
-                  <span class="material-symbols-outlined text-[20px]">report_problem</span>
-                </div>
-                <div class="flex flex-col min-w-0">
-                  <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate" data-i18n="support_opt_report_issue">समस्या दर्ज करें</span>
-                  <span class="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5" data-i18n="support_opt_report_issue_sub">सामान छूटना, क्षति या देरी की शिकायत</span>
-                </div>
-              </div>
-              <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
-            </div>
-
-            <!-- My Support Tickets -->
-            <div id="account-row-my-tickets" onclick="openSupportCenterSection('my_tickets')" class="p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-[#2A323D] active:bg-slate-100 transition-colors cursor-pointer">
-              <div class="flex items-center gap-3.5 min-w-0">
-                <div class="w-10 h-10 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 border border-blue-200 dark:border-blue-700">
-                  <span class="material-symbols-outlined text-[20px]">history_edu</span>
-                </div>
-                <div class="flex flex-col min-w-0">
-                  <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate" data-i18n="support_opt_my_tickets">मेरी सहायता मांगें</span>
-                  <span class="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5" data-i18n="support_opt_my_tickets_sub">पुरानी शिकायतों की स्थिति व निवारण</span>
-                </div>
-              </div>
-              <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
-            </div>
-
-            <!-- Contact Customer Support -->
-            <div id="account-row-contact-support" onclick="openSupportCenterSection('contact')" class="p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-[#2A323D] active:bg-slate-100 transition-colors cursor-pointer">
-              <div class="flex items-center gap-3.5 min-w-0">
-                <div class="w-10 h-10 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-200 dark:border-emerald-700">
-                  <span class="material-symbols-outlined text-[20px]">support_agent</span>
-                </div>
-                <div class="flex flex-col min-w-0">
-                  <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate" data-i18n="support_opt_contact">सहायता केंद्र से संपर्क</span>
-                  <span class="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5" data-i18n="support_opt_contact_sub">24x7 ग्राहक सेवा एवं AI सहायक</span>
-                </div>
-              </div>
-              <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
-            </div>
-
-            <!-- FAQ -->
-            <div id="account-row-faq" onclick="openSupportCenterSection('faq')" class="p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-[#2A323D] active:bg-slate-100 transition-colors cursor-pointer">
-              <div class="flex items-center gap-3.5 min-w-0">
-                <div class="w-10 h-10 rounded-2xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 border border-purple-200 dark:border-purple-700">
-                  <span class="material-symbols-outlined text-[20px]">help_outline</span>
-                </div>
-                <div class="flex flex-col min-w-0">
-                  <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate" data-i18n="support_opt_faq">अक्सर पूछे जाने वाले प्रश्न</span>
-                  <span class="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5" data-i18n="support_opt_faq_sub">ट्रैकिंग, पेमेंट और रिफंड से जुड़े त्वरित उत्तर</span>
-                </div>
-              </div>
-              <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- =================================================================== -->
-        <!-- 6. LEGAL & SECURITY (Danger Zone at the bottom)                     -->
-        <!-- =================================================================== -->
-        <div class="space-y-2">
-          <h3 class="text-xs font-black text-slate-500 uppercase tracking-wider px-1" data-i18n="profile_sec_legal">खाता एवं सुरक्षा</h3>
-
-          <div class="rounded-3xl bg-white dark:bg-[#1D232B] shadow-mobile-card border border-surface-container-high dark:border-[#465362] divide-y divide-slate-100 dark:divide-slate-800 overflow-hidden">
-            <!-- Privacy Policy -->
-            <div id="profile-row-privacy" onclick="openPrivacyModal()" class="p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-[#2A323D] active:bg-slate-100 transition-colors cursor-pointer">
-              <div class="flex items-center gap-3.5 min-w-0">
-                <div class="w-10 h-10 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-700">
-                  <span class="material-symbols-outlined text-[20px]">security</span>
-                </div>
-                <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate" data-i18n="profile_row_privacy">गोपनीयता नीति</span>
-              </div>
-              <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
-            </div>
-
-            <!-- Terms & Conditions -->
-            <div id="profile-row-terms" onclick="openTermsModal()" class="p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-[#2A323D] active:bg-slate-100 transition-colors cursor-pointer">
-              <div class="flex items-center gap-3.5 min-w-0">
-                <div class="w-10 h-10 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-700">
-                  <span class="material-symbols-outlined text-[20px]">description</span>
-                </div>
-                <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate" data-i18n="profile_row_terms">नियम व शर्तें</span>
-              </div>
-              <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
-            </div>
-
-            <!-- Share App -->
-            <div id="profile-row-share-app" onclick="shareGaonBazarApp()" class="p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-[#2A323D] active:bg-slate-100 transition-colors cursor-pointer">
-              <div class="flex items-center gap-3.5 min-w-0">
-                <div class="w-10 h-10 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-700">
-                  <span class="material-symbols-outlined text-[20px]">share</span>
-                </div>
-                <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate" data-i18n="profile_row_share">ऐप साझा करें</span>
-              </div>
-              <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
-            </div>
-
-            <!-- Rate App -->
-            <div id="profile-row-rate-app" onclick="rateGaonBazarApp()" class="p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-[#2A323D] active:bg-slate-100 transition-colors cursor-pointer">
-              <div class="flex items-center gap-3.5 min-w-0">
-                <div class="w-10 h-10 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-700">
-                  <span class="material-symbols-outlined text-[20px]">star</span>
-                </div>
-                <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate" data-i18n="profile_row_rate">प्ले स्टोर पर रेटिंग दें</span>
-              </div>
-              <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
-            </div>
-
-            <!-- About App -->
-            <div id="profile-row-about-app" onclick="openAboutModal()" class="p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-[#2A323D] active:bg-slate-100 transition-colors cursor-pointer">
-              <div class="flex items-center gap-3.5 min-w-0">
-                <div class="w-10 h-10 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-700">
-                  <span class="material-symbols-outlined text-[20px]">info</span>
-                </div>
-                <div class="flex flex-col min-w-0">
-                  <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate" data-i18n="profile_row_about">गाँव बाज़ार के बारे में</span>
-                  <span class="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5" data-i18n="profile_row_about_sub">ग्रामीण हाइपरलोकल डिलीवरी मिशन</span>
-                </div>
-              </div>
-              <span class="material-symbols-outlined text-slate-400 text-[18px]">chevron_right</span>
-            </div>
-          </div>
-
-          <!-- DANGER ZONE CARD -->
-          <div class="rounded-3xl bg-red-50/60 dark:bg-red-950/20 p-4 border border-red-200/80 dark:border-red-900/40 space-y-3">
-            <div class="flex items-center gap-2 text-red-700 dark:text-red-400">
-              <span class="material-symbols-outlined text-[18px]">warning</span>
-              <span class="text-xs font-black uppercase tracking-wider" data-i18n="profile_danger_zone">खाता नियंत्रण</span>
-            </div>
-
-            <!-- Standard Log Out Button -->
-            <button 
-              id="profile-primary-logout-btn" 
-              type="button" 
-              onclick="logoutCustomer()" 
-              class="w-full h-12 rounded-2xl bg-white dark:bg-[#1D232B] hover:bg-red-50 dark:hover:bg-red-950/40 border border-red-300 dark:border-red-800 text-red-600 dark:text-red-400 font-black text-xs flex items-center justify-center gap-2 active:scale-98 transition-all shadow-xs cursor-pointer"
-            >
-              <span class="material-symbols-outlined text-[18px]">logout</span>
-              <span data-i18n="profile_logout_btn">खाते से लॉगआउट करें</span>
-            </button>
-
-            <!-- Delete Account Button (Data Privacy & Compliance) -->
-            <button 
-              id="profile-delete-account-btn" 
-              type="button" 
-              onclick="openDeleteAccountModal()" 
-              class="w-full h-11 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-black text-xs flex items-center justify-center gap-2 active:scale-98 transition-all shadow-sm cursor-pointer"
-            >
-              <span class="material-symbols-outlined text-[18px]">delete_forever</span>
-              <span data-i18n="profile_delete_btn">खाता स्थायी रूप से हटाएं</span>
-            </button>
-            <p class="text-[10px] text-red-500/80 dark:text-red-400/70 text-center font-medium leading-relaxed" data-i18n="profile_delete_hint">
-              DPDP Act 2023 अनुपालन: खाता हटाने पर आपका सारा डेटा हमेशा के लिए मिटा दिया जाएगा।
-            </p>
-          </div>
-        </div>
-
-      </section>
+      </div>
 
       <!-- ===================================================================== -->
       <!-- MODULE 1: COMMERCE AI ASSISTANT (Voice-First Shopping & Direct Cart CTA) -->
@@ -2840,6 +2859,72 @@
     </div>
 
     <!-- ========================================================================= -->
+    <!-- =================================================================== -->
+    <!-- SHARE EXACT DOORSTEP LOCATION MODAL (Leaflet Draggable Pin & GPS)   -->
+    <!-- =================================================================== -->
+    <div id="modal-share-exact-location" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3.5 sm:p-4">
+      <div class="bg-white dark:bg-[#1D232B] rounded-3xl w-full max-w-md shadow-2xl border border-slate-200 dark:border-[#465362] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        
+        <!-- Header -->
+        <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-xs">
+              <span class="material-symbols-outlined text-[20px]">pin_drop</span>
+            </div>
+            <div>
+              <h3 class="text-sm font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="modal_share_loc_title">सटीक डिलीवरी लोकेशन साझा करें</h3>
+              <p class="text-[11px] text-slate-500 dark:text-[#CBD5E1]" data-i18n="modal_share_loc_sub">पिन को अपने घर के सही दरवाजे पर ले जाएं</p>
+            </div>
+          </div>
+          <button type="button" onclick="closeShareExactLocationModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-[#2A323D] text-slate-600 dark:text-slate-300 flex items-center justify-center hover:bg-slate-200 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">close</span>
+          </button>
+        </div>
+
+        <!-- Body: Map & GPS pin controls -->
+        <div class="p-4 space-y-3.5">
+          <!-- Interactive Map Container -->
+          <div class="relative w-full h-56 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 shadow-inner">
+            <div id="share-location-leaflet-map" class="w-full h-full"></div>
+            
+            <!-- Floating Pin Recenter Button -->
+            <button id="btn-share-locate-me" type="button" onclick="requestShareLocationGPS()" class="absolute bottom-2.5 right-2.5 z-10 px-3 py-1.5 rounded-xl bg-white dark:bg-[#1D232B] text-slate-800 dark:text-white shadow-md border border-slate-200 dark:border-slate-700 text-xs font-bold flex items-center gap-1.5 active:scale-95 cursor-pointer">
+              <span class="material-symbols-outlined text-[16px] text-emerald-600">my_location</span>
+              <span data-i18n="btn_use_gps">GPS पिन लें</span>
+            </button>
+          </div>
+
+          <!-- Selected Coordinates & Status Pill -->
+          <div class="flex items-center justify-between text-xs bg-slate-50 dark:bg-[#2A323D] p-2.5 rounded-xl border border-slate-100 dark:border-slate-700">
+            <span class="text-slate-500 dark:text-slate-400 font-medium" data-i18n="lbl_pin_coords">चयनित निर्देशांक:</span>
+            <span id="share-location-coords-badge" class="font-mono font-bold text-emerald-700 dark:text-emerald-400">29.135000, 77.010000</span>
+          </div>
+
+          <!-- Landmark Note Input -->
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1" data-i18n="lbl_share_landmark">पहचान स्थल / घर का विवरण (ऐच्छिक)</label>
+            <input 
+              id="share-location-notes" 
+              type="text" 
+              placeholder="उदा. शिव मंदिर के पास, हरा दरवाजा, खसरा 42"
+              class="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#2A323D] text-xs font-bold text-slate-800 dark:text-white outline-none focus:border-emerald-500"
+              data-i18n-ph="ph_share_landmark"
+            />
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <button type="button" onclick="closeShareExactLocationModal()" class="h-11 rounded-xl bg-slate-100 dark:bg-[#2A323D] hover:bg-slate-200 text-slate-700 dark:text-slate-300 font-bold text-xs cursor-pointer" data-i18n="btn_cancel">रद्द करें</button>
+            <button id="btn-confirm-share-location" type="button" onclick="submitShareExactLocation()" class="h-11 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs flex items-center justify-center gap-1.5 shadow-sm active:scale-95 cursor-pointer">
+              <span class="material-symbols-outlined text-[16px]">send</span>
+              <span data-i18n="btn_confirm_share">स्थान साझा करें</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
     <!-- HELP & SUPPORT AI CHATBOT & ESCALATION MODAL (Sleek Native Bottom Sheet)  -->
     <!-- Dismissable on backdrop tap outside (onclick on overlay)                 -->
     <!-- ========================================================================= -->
@@ -3374,14 +3459,42 @@
     const i18nDictionary = {
       hi: {
       support_official_badge: "गाँव बाज़ार 24x7 ग्राहक सेवा",
-      profile_sec_help_support: "सहायता एवं समर्थन (Help & Support)",
-      support_opt_where_order: "मेरा ऑर्डर कहाँ है? (Where Is My Order?)",
+      menu_my_profile: "मेरी प्रोफ़ाइल",
+      menu_my_profile_sub: "नाम, मोबाइल, ईमेल एवं जन्मतिथि",
+      menu_my_addresses: "मेरे पते",
+      menu_my_addresses_sub: "गाँव, पहचान स्थल व GPS पिन",
+      menu_saved_payments: "सहेजे गए भुगतान माध्यम",
+      menu_saved_payments_sub: "UPI ID, बैंक खाता एवं डेबिट कार्ड",
+      menu_settings_pref: "प्राथमिकताएं व सेटिंग्स",
+      menu_settings_pref_sub: "भाषा, थीम रंग-रूप व सूचनाएं",
+      menu_help_support: "मदद एवं सहायता केंद्र",
+      menu_help_support_sub: "ऑर्डर कहाँ है, शिकायत, संपर्क व FAQs",
+      menu_account_security: "खाता एवं सुरक्षा",
+      menu_account_security_sub: "गोपनीयता नीति, नियम एवं शर्तें",
+      sec_my_profile_title: "मेरी प्रोफ़ाइल",
+      sec_my_profile_sub: "व्यक्तिगत जानकारी एवं संशोधन",
+      profile_btn_save_changes: "परिवर्तन सहेजें",
+      btn_change_location: "गाँव या GPS पिन बदलें",
+      lbl_share_exact_location: "सटीक लोकेशन साझा करें",
+      sub_share_exact_location: "डिलीवरी साथी को अपने घर का सही स्थान बताएं",
+      btn_share_doorstep_pin: "दरवाजे की लोकेशन पिन करें",
+      modal_share_loc_title: "सटीक डिलीवरी लोकेशन साझा करें",
+      modal_share_loc_sub: "पिन को अपने घर के सही दरवाजे पर ले जाएं",
+      btn_use_gps: "GPS पिन लें",
+      lbl_pin_coords: "चयनित निर्देशांक:",
+      lbl_share_landmark: "पहचान स्थल / घर का विवरण (ऐच्छिक)",
+      ph_share_landmark: "उदा. शिव मंदिर के पास, हरा दरवाजा, खसरा 42",
+      btn_confirm_share: "स्थान साझा करें",
+      btn_cancel: "रद्द करें",
+      ptr_refreshing: "ताज़ा किया जा रहा है...",
+      profile_sec_help_support: "सहायता एवं समर्थन",
+      support_opt_where_order: "मेरा ऑर्डर कहाँ है?",
       support_opt_where_order_sub: "लाइव स्थिति, अनुमानित समय व डिलीवरी साथी",
       support_opt_report_issue: "समस्या दर्ज करें",
       support_opt_report_issue_sub: "सामान छूटा, खराब उत्पाद या देरी की शिकायत",
       support_opt_my_tickets: "मेरी सहायता मांगें",
       support_opt_my_tickets_sub: "पहले से दर्ज शिकायतों की स्थिति व समाधान",
-      support_opt_contact: "कॉल सहायता केंद्र (Contact Support)",
+      support_opt_contact: "कॉल सहायता केंद्र",
       support_opt_contact_sub: "24x7 टोल-फ्री हेल्पलाइन व AI चैट",
       support_opt_faq: "अक्सर पूछे जाने वाले प्रश्न",
       support_opt_faq_sub: "ट्रैकिंग, पेमेंट और रिफंड से जुड़े त्वरित उत्तर",
@@ -3842,6 +3955,34 @@
       },
       en: {
       support_official_badge: "GaonBazaar 24x7 Customer Support",
+      menu_my_profile: "My Profile",
+      menu_my_profile_sub: "Name, mobile, email & date of birth",
+      menu_my_addresses: "My Addresses",
+      menu_my_addresses_sub: "Village, landmark & GPS pin",
+      menu_saved_payments: "Saved Payments",
+      menu_saved_payments_sub: "UPI ID, bank accounts & debit cards",
+      menu_settings_pref: "Settings & Preferences",
+      menu_settings_pref_sub: "Language, theme & notification preferences",
+      menu_help_support: "Help & Support Center",
+      menu_help_support_sub: "Where is my order, complaints, contact & FAQs",
+      menu_account_security: "Account & Security",
+      menu_account_security_sub: "Privacy policy, terms & conditions",
+      sec_my_profile_title: "My Profile",
+      sec_my_profile_sub: "Personal details & editing",
+      profile_btn_save_changes: "Save Changes",
+      btn_change_location: "Change Village or GPS Pin",
+      lbl_share_exact_location: "Share Exact Location",
+      sub_share_exact_location: "Help delivery partner find your exact doorstep",
+      btn_share_doorstep_pin: "Pin Doorstep Location",
+      modal_share_loc_title: "Share Exact Delivery Location",
+      modal_share_loc_sub: "Drag pin to your exact doorstep",
+      btn_use_gps: "Use My GPS",
+      lbl_pin_coords: "Selected Coordinates:",
+      lbl_share_landmark: "Landmark / House Details (Optional)",
+      ph_share_landmark: "e.g. Near Shiv Mandir, Green gate, Khasra 42",
+      btn_confirm_share: "Share Location",
+      btn_cancel: "Cancel",
+      ptr_refreshing: "Refreshing...",
       profile_sec_help_support: "Help & Support",
       support_opt_where_order: "Where Is My Order?",
       support_opt_where_order_sub: "Live order status, ETA & delivery partner",
@@ -5141,11 +5282,344 @@
       window.toggleGlobalLanguage(forceLang);
     }
 
+    
+    // =========================================================================
+    // PHASE 0 REFINEMENTS: ACCOUNT SUBVIEWS, QUICK LANG, PTR, LOCATION SHARING
+    // =========================================================================
+
+    // 1. Customer Account Subview Navigation
+    window.openCustomerAccountSubview = function(subId) {
+      const landing = document.getElementById('customer-account-landing');
+      if (landing) landing.classList.add('hidden');
+
+      document.querySelectorAll('.customer-subview').forEach(el => {
+        el.classList.add('hidden');
+        el.classList.remove('flex');
+      });
+
+      const target = document.getElementById('customer-subview-' + subId);
+      if (target) {
+        target.classList.remove('hidden');
+        target.classList.add('flex');
+        if (subId === 'payments') {
+          const panel = document.getElementById('profile-saved-payments-panel');
+          if (panel) panel.classList.remove('hidden');
+        }
+      }
+    };
+
+    window.showCustomerAccountLanding = function() {
+      document.querySelectorAll('.customer-subview').forEach(el => {
+        el.classList.add('hidden');
+        el.classList.remove('flex');
+      });
+      const landing = document.getElementById('customer-account-landing');
+      if (landing) landing.classList.remove('hidden');
+    };
+
+    // 2. Quick Language Switcher in Header
+    window.toggleLanguageQuick = function() {
+      const current = AppStore.lang || 'hi';
+      const target = current === 'hi' ? 'en' : 'hi';
+      if (typeof window.toggleGlobalLanguage === 'function') {
+        window.toggleGlobalLanguage(target);
+      } else {
+        AppStore.lang = target;
+        localStorage.setItem('gaonbazar_lang', target);
+        if (typeof applyBilingualState === 'function') applyBilingualState();
+      }
+      updateQuickLangButtonUI();
+    };
+
+    function updateQuickLangButtonUI() {
+      const cur = AppStore.lang || 'hi';
+      const lbl = document.getElementById('quick-lang-label');
+      const btn = document.getElementById('quick-lang-toggle-btn');
+      if (lbl) {
+        lbl.innerText = cur === 'hi' ? 'EN' : 'हिंदी';
+      }
+      if (btn) {
+        btn.setAttribute('aria-label', cur === 'hi' ? 'Switch to English' : 'हिंदी में बदलें');
+        btn.setAttribute('title', cur === 'hi' ? 'Switch to English' : 'हिंदी में बदलें');
+      }
+    }
+    window.updateQuickLangButtonUI = updateQuickLangButtonUI;
+
+    // 3. Native-Style Pull-to-Refresh Component
+    function initPullToRefresh(container, refreshFn) {
+      if (!container) return;
+      let startY = 0;
+      let currentY = 0;
+      let isPulling = false;
+      let isRefreshing = false;
+
+      let indicator = container.querySelector('.ptr-indicator');
+      if (!indicator) {
+        indicator = document.createElement('div');
+        indicator.className = 'ptr-indicator w-full flex items-center justify-center overflow-hidden transition-all duration-200 pointer-events-none';
+        indicator.style.height = '0px';
+        indicator.style.opacity = '0';
+        indicator.innerHTML = `
+          <div class="flex items-center gap-2 py-1.5 px-3.5 my-1.5 rounded-full bg-white dark:bg-[#1D232B] shadow-md border border-slate-200 dark:border-[#465362] text-xs font-bold text-slate-700 dark:text-slate-200">
+            <svg class="ptr-spinner w-4 h-4 animate-spin text-emerald-600" viewBox="0 0 24 24" fill="none">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+            <span class="ptr-text text-[11px]" data-i18n="ptr_refreshing">ताज़ा किया जा रहा है...</span>
+          </div>
+        `;
+        container.insertBefore(indicator, container.firstChild);
+      }
+
+      container.addEventListener('touchstart', function(e) {
+        if (container.scrollTop <= 0 && !isRefreshing) {
+          startY = e.touches[0].pageY;
+          isPulling = true;
+        }
+      }, { passive: true });
+
+      container.addEventListener('touchmove', function(e) {
+        if (!isPulling || isRefreshing) return;
+        currentY = e.touches[0].pageY;
+        const diff = currentY - startY;
+        if (diff > 0 && container.scrollTop <= 0) {
+          const h = Math.min(diff * 0.45, 52);
+          indicator.style.height = h + 'px';
+          indicator.style.opacity = String(Math.min(h / 36, 1));
+        } else {
+          indicator.style.height = '0px';
+          indicator.style.opacity = '0';
+        }
+      }, { passive: true });
+
+      container.addEventListener('touchend', async function() {
+        if (!isPulling || isRefreshing) return;
+        isPulling = false;
+        const diff = currentY - startY;
+        if (diff > 50 && container.scrollTop <= 0) {
+          isRefreshing = true;
+          indicator.style.height = '44px';
+          indicator.style.opacity = '1';
+          try {
+            await refreshFn();
+          } catch (err) {
+            console.warn('Pull-to-refresh execution error:', err);
+          } finally {
+            isRefreshing = false;
+            indicator.style.height = '0px';
+            indicator.style.opacity = '0';
+          }
+        } else {
+          indicator.style.height = '0px';
+          indicator.style.opacity = '0';
+        }
+        startY = 0;
+        currentY = 0;
+      });
+    }
+
+    // Attach Pull-to-Refresh on scrollable views
+    document.addEventListener('DOMContentLoaded', function() {
+      const dashView = document.getElementById('view-p2-dashboard');
+      if (dashView) {
+        initPullToRefresh(dashView, async function() {
+          if (typeof loadStoresFromBackend === 'function') await loadStoresFromBackend();
+        });
+      }
+
+      const trackingView = document.getElementById('view-p5-tracking');
+      if (trackingView) {
+        initPullToRefresh(trackingView, async function() {
+          if (typeof loadUserOrderHistory === 'function') await loadUserOrderHistory();
+          if (typeof renderLiveTrackingView === 'function') await renderLiveTrackingView();
+        });
+      }
+
+      const notifsContainer = document.getElementById('notifications-list-container');
+      if (notifsContainer) {
+        initPullToRefresh(notifsContainer, async function() {
+          if (typeof loadRealNotifications === 'function') await loadRealNotifications();
+        });
+      }
+    });
+
+    // 4. Exact Doorstep Location Sharing Modal & Flow
+    let shareLocationMap = null;
+    let shareLocationMarker = null;
+    let shareSelectedLat = 29.135000;
+    let shareSelectedLng = 77.010000;
+
+    window.openShareExactLocationModal = function() {
+      const modal = document.getElementById('modal-share-exact-location');
+      if (!modal) return;
+      modal.classList.remove('hidden');
+
+      // Use active order coordinates if available
+      let startLat = 29.135000;
+      let startLng = 77.010000;
+      const actOrder = AppStore.activeOrder;
+      if (actOrder && actOrder.customer_lat && actOrder.customer_lng) {
+        startLat = Number(actOrder.customer_lat);
+        startLng = Number(actOrder.customer_lng);
+      }
+      shareSelectedLat = startLat;
+      shareSelectedLng = startLng;
+
+      updateShareCoordsBadge(shareSelectedLat, shareSelectedLng);
+
+      setTimeout(() => {
+        initShareLocationMap(shareSelectedLat, shareSelectedLng);
+      }, 150);
+    };
+
+    window.closeShareExactLocationModal = function() {
+      const modal = document.getElementById('modal-share-exact-location');
+      if (modal) modal.classList.add('hidden');
+    };
+
+    function updateShareCoordsBadge(lat, lng) {
+      const badge = document.getElementById('share-location-coords-badge');
+      if (badge) {
+        badge.innerText = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+      }
+    }
+
+    function initShareLocationMap(lat, lng) {
+      const mapEl = document.getElementById('share-location-leaflet-map');
+      if (!mapEl || typeof L === 'undefined') return;
+
+      if (!shareLocationMap) {
+        shareLocationMap = L.map('share-location-leaflet-map', {
+          center: [lat, lng],
+          zoom: 17,
+          zoomControl: true,
+          scrollWheelZoom: true,
+          touchZoom: true,
+          dragging: true
+        });
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '&copy; OpenStreetMap'
+        }).addTo(shareLocationMap);
+
+        shareLocationMarker = L.marker([lat, lng], {
+          draggable: true,
+          autoPan: true
+        }).addTo(shareLocationMap);
+
+        shareLocationMarker.on('dragend', function(e) {
+          const pos = e.target.getLatLng();
+          shareSelectedLat = pos.lat;
+          shareSelectedLng = pos.lng;
+          updateShareCoordsBadge(pos.lat, pos.lng);
+        });
+
+        shareLocationMap.on('click', function(e) {
+          if (shareLocationMarker) {
+            shareLocationMarker.setLatLng(e.latlng);
+            shareSelectedLat = e.latlng.lat;
+            shareSelectedLng = e.latlng.lng;
+            updateShareCoordsBadge(e.latlng.lat, e.latlng.lng);
+          }
+        });
+      } else {
+        shareLocationMap.setView([lat, lng], 17);
+        if (shareLocationMarker) {
+          shareLocationMarker.setLatLng([lat, lng]);
+        }
+      }
+
+      shareLocationMap.invalidateSize();
+    }
+
+    window.requestShareLocationGPS = function() {
+      if (!navigator.geolocation) {
+        alert(AppStore.lang === 'hi' ? 'आपके ब्राउज़र में GPS उपलब्ध नहीं है।' : 'GPS is not available in your browser.');
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        function(pos) {
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+          shareSelectedLat = lat;
+          shareSelectedLng = lng;
+          updateShareCoordsBadge(lat, lng);
+          if (shareLocationMap && shareLocationMarker) {
+            shareLocationMap.setView([lat, lng], 18);
+            shareLocationMarker.setLatLng([lat, lng]);
+          }
+        },
+        function(err) {
+          console.warn('GPS location request error:', err);
+          alert(AppStore.lang === 'hi' ? 'GPS लोकेशन प्राप्त नहीं हो सकी। आप पिन को मैप पर खींचकर सही जगह रख सकते हैं।' : 'Could not fetch GPS. You can drag the pin on the map to your exact doorstep.');
+        },
+        { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+      );
+    };
+
+    window.submitShareExactLocation = async function() {
+      const btn = document.getElementById('btn-confirm-share-location');
+      const isHi = AppStore.lang === 'hi';
+      const notesInput = document.getElementById('share-location-notes');
+      const landmark = notesInput ? notesInput.value.trim() : '';
+
+      const orderId = (AppStore.activeOrder && AppStore.activeOrder.order_id) || (AppStore.lastOrderId) || '#RUR-5765';
+      const cleanId = encodeURIComponent(orderId);
+
+      if (btn) {
+        btn.disabled = true;
+        btn.innerText = isHi ? 'साझा किया जा रहा है...' : 'Sharing...';
+      }
+
+      try {
+        const resp = await fetch(`/api/orders/${cleanId}/delivery-location`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            customer_lat: shareSelectedLat,
+            customer_lng: shareSelectedLng,
+            landmark: landmark || undefined
+          })
+        });
+
+        if (resp.ok) {
+          const data = await resp.json();
+          if (AppStore.activeOrder) {
+            AppStore.activeOrder.customer_lat = shareSelectedLat;
+            AppStore.activeOrder.customer_lng = shareSelectedLng;
+            if (landmark) AppStore.activeOrder.landmark = landmark;
+          }
+          closeShareExactLocationModal();
+          if (typeof showAudioToast === 'function') {
+            showAudioToast(
+              isHi ? 'स्थान साझा किया गया' : 'Location Shared',
+              isHi ? 'डिलीवरी साथी को आपके घर का सटीक स्थान भेज दिया गया है।' : 'Exact doorstep location sent to Gaon Mitra partner.'
+            );
+          } else {
+            alert(isHi ? '📍 स्थान साझा किया गया! डिलीवरी साथी को सूचित कर दिया गया है।' : '📍 Location shared! Delivery partner has been notified.');
+          }
+        } else {
+          alert(isHi ? 'स्थान साझा नहीं हो सका। कृपया पुनः प्रयास करें।' : 'Failed to share location. Please retry.');
+        }
+      } catch (e) {
+        console.error('Error submitting delivery location:', e);
+        alert(isHi ? 'नेटवर्क त्रुटि। कृपया पुनः प्रयास करें।' : 'Network error. Please try again.');
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerText = isHi ? 'स्थान साझा करें' : 'Share Location';
+        }
+      }
+    };
+
+
     window.applyBilingualState = function() {
       if (typeof updateThemeSelectorUI === 'function') updateThemeSelectorUI();
       const lang = AppStore.lang || 'hi';
       document.documentElement.lang = lang;
       const dict = i18nDictionary[lang] || i18nDictionary['hi'];
+      if (typeof updateQuickLangButtonUI === "function") updateQuickLangButtonUI();
 
       if (dict && dict.page_title_app) {
         document.title = dict.page_title_app;
@@ -5730,6 +6204,7 @@
         if (typeof renderCartLineItems === 'function') renderCartLineItems();
       }
       if (cleanPhase === 'profile') {
+        if (typeof showCustomerAccountLanding === 'function') showCustomerAccountLanding();
         renderProfileView();
       }
       if (cleanPhase === 'tracking') {

@@ -37,6 +37,7 @@ from .schemas import (
     StoreDTO, ProductDTO, StoreCategoryDTO,
     CheckoutRequest, CheckoutResponse,
     OrderStatusResponse, CancelOrderRequest, OrderCancelResponse,
+    OrderDeliveryLocationUpdate, OrderDeliveryLocationResponse,
     VendorLoginRequest, VendorLoginResponse,
     VendorOrderDTO, VendorOrderItemDTO,
     UpdateOrderStatusRequest, UpdateStockRequest,
@@ -1452,7 +1453,9 @@ def get_order_status(order_id: str, db: Session = Depends(get_db)):
         runner_name=runner_obj.name if runner_obj else None,
         runner_phone=runner_obj.phone if runner_obj else None,
         created_at=order.created_at.isoformat(),
-        items=order_items_list
+        items=order_items_list,
+        customer_lat=order.customer_lat,
+        customer_lng=order.customer_lng
     )
 
 
@@ -1663,6 +1666,116 @@ def process_order_cancellation(order: Order, db: Session, reason: str = "Custome
         "warning_alert": user.warning_alert,
         "trust_score": user.trust_score,
         "message": warning_notification or "Order cancelled successfully."
+    }
+
+
+
+
+@app.put("/api/orders/{order_id}/delivery-location", response_model=OrderDeliveryLocationResponse)
+def update_order_delivery_location(
+    order_id: str,
+    payload: OrderDeliveryLocationUpdate,
+    db: Session = Depends(get_db)
+):
+    """
+    Updates confirmed doorstep delivery coordinates for an active order.
+    Notifies assigned delivery partner and posts coordination notice to order chat thread.
+    """
+    candidate_ids = [order_id, f"#{order_id}", order_id.lstrip("#")]
+    order = db.query(Order).filter(Order.id.in_(candidate_ids)).first()
+    if not order:
+        raise HTTPException(status_code=404, detail=f"Order {order_id} not found")
+
+    # Validate coordinate bounds
+    if not (-90.0 <= payload.customer_lat <= 90.0 and -180.0 <= payload.customer_lng <= 180.0):
+        raise HTTPException(status_code=400, detail="Invalid GPS coordinates")
+
+    order.customer_lat = payload.customer_lat
+    order.customer_lng = payload.customer_lng
+    if payload.landmark:
+        order.landmark = payload.landmark
+
+    # Auto-post location sharing notification in order chat thread
+    th_id = f"th_{order.id.replace('#', '')}"
+    thread = db.query(MessageThread).filter(MessageThread.order_id == order.id).first()
+    if not thread:
+        thread = MessageThread(
+            id=th_id,
+            order_id=order.id,
+            vendor_id=order.store_id,
+            runner_id=order.runner_id or "gm_1",
+            subject=f"Order {order.id} Coordination",
+            created_at=datetime.utcnow(),
+            updated_at=datetime.utcnow()
+        )
+        db.add(thread)
+        db.flush()
+
+    loc_msg = f"📍 Customer shared delivery location: {payload.customer_lat:.6f}, {payload.customer_lng:.6f}"
+    if payload.landmark:
+        loc_msg += f" ({payload.landmark})"
+
+    db.add(ChatMessage(
+        thread_id=thread.id,
+        sender_id=order.user_phone or "customer",
+        sender_role="customer",
+        sender_name=order.user_name or "ग्राहक",
+        message=loc_msg,
+        is_read=False,
+        created_at=datetime.utcnow()
+    ))
+    thread.updated_at = datetime.utcnow()
+
+    # Send persistent notification to assigned runner
+    if order.runner_id:
+        try:
+            create_notification(
+                db=db,
+                user_id=order.runner_id,
+                user_role="runner",
+                title="📍 Delivery Location Updated",
+                title_hi="📍 ग्राहक ने सही स्थान साझा किया",
+                message=f"Customer updated doorstep location for order {order.id}. Tap for updated directions.",
+                message_hi=f"ऑर्डर {order.id} के लिए ग्राहक ने सटीक लोकेशन साझा की है।",
+                notification_type="location_update",
+                order_id=order.id
+            )
+        except Exception as e:
+            logger.warning(f"Could not send runner notification: {e}")
+
+    db.commit()
+
+    return OrderDeliveryLocationResponse(
+        success=True,
+        order_id=order.id,
+        customer_lat=order.customer_lat,
+        customer_lng=order.customer_lng,
+        landmark=order.landmark,
+        message="Delivery location updated successfully",
+        directions_url=f"https://www.google.com/maps/dir/?api=1&destination={order.customer_lat},{order.customer_lng}&travelmode=driving"
+    )
+
+
+@app.get("/api/orders/{order_id}/delivery-location")
+def get_order_delivery_location(
+    order_id: str,
+    db: Session = Depends(get_db)
+):
+    candidate_ids = [order_id, f"#{order_id}", order_id.lstrip("#")]
+    order = db.query(Order).filter(Order.id.in_(candidate_ids)).first()
+    if not order:
+        raise HTTPException(status_code=404, detail=f"Order {order_id} not found")
+
+    directions_url = None
+    if order.customer_lat is not None and order.customer_lng is not None:
+        directions_url = f"https://www.google.com/maps/dir/?api=1&destination={order.customer_lat},{order.customer_lng}&travelmode=driving"
+
+    return {
+        "order_id": order.id,
+        "customer_lat": order.customer_lat,
+        "customer_lng": order.customer_lng,
+        "landmark": order.landmark,
+        "directions_url": directions_url
     }
 
 

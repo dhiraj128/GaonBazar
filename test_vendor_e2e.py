@@ -589,6 +589,8 @@ def _run_vendor_device_steps(context, dev_name, device_config, logger):
     # Open settings via canonical bottom navigation tab
     page.click("#nav-btn-settings")
     page.wait_for_timeout(250)
+    page.click("#vendor-menu-row-preferences")
+    page.wait_for_timeout(250)
     check_element_bounds(page, "#store-switcher-select", "Store Switcher in Settings", logger)
     check_element_bounds(page, "#lang-toggle-btn", "Language Control in Settings", logger)
     page.click("#nav-btn-orders")
@@ -855,6 +857,8 @@ def _run_vendor_device_steps(context, dev_name, device_config, logger):
     logger.log(f"\n--- [{dev_name}] Step 7: Store Profile & Cluster Settings ---")
     page.click("#nav-btn-settings")
     page.wait_for_timeout(500)
+    page.click("#vendor-menu-row-preferences")
+    page.wait_for_timeout(250)
 
     is_settings_visible = page.is_visible("#tab-settings")
     store_name_val = page.input_value("#setting-store-name")
