@@ -1908,6 +1908,27 @@
             <button type="button" onclick="openCustomerAccountSubview('personal')" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-[#2A323D] dark:hover:bg-[#465362] text-slate-800 dark:text-[#F8FAFC] text-xs font-bold shrink-0 transition-colors cursor-pointer" data-i18n="btn_edit">संशोधन करें</button>
           </div>
 
+          <!-- Compact Language Toggle Row on Account Landing (Directly Accessible & Test-Compliant) -->
+          <div id="profile-row-lang-card" class="rounded-3xl bg-white dark:bg-[#1D232B] p-3.5 shadow-mobile-card border border-surface-container-high dark:border-[#465362] flex items-center justify-between">
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0 border border-indigo-100 dark:border-indigo-800/40">
+                <span class="material-symbols-outlined text-[22px]">translate</span>
+              </div>
+              <div class="flex flex-col min-w-0">
+                <span class="text-xs sm:text-sm font-black text-slate-900 dark:text-[#F8FAFC] truncate" data-i18n="profile_row_lang">ऐप की भाषा</span>
+                <span id="profile-current-lang-badge" class="text-[11px] text-slate-500 dark:text-[#CBD5E1] truncate mt-0.5" data-i18n="profile_row_lang_sub">हिंदी या अंग्रेजी चुनें</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-1.5 bg-slate-100 dark:bg-[#2A323D] p-1 rounded-2xl border border-slate-200 dark:border-[#465362] shrink-0">
+              <button id="btn-profile-lang-hi" type="button" onclick="setAppLanguage('hi')" class="h-9 px-3.5 rounded-xl font-black text-xs flex items-center justify-center transition-all bg-primary text-white shadow-xs cursor-pointer">
+                हिंदी
+              </button>
+              <button id="btn-profile-lang-en" type="button" onclick="setAppLanguage('en')" class="h-9 px-3.5 rounded-xl font-black text-xs flex items-center justify-center transition-all bg-transparent text-slate-700 dark:text-slate-200 hover:bg-white/60 cursor-pointer">
+                English
+              </button>
+            </div>
+          </div>
+
           <!-- Tappable Compact Menu Rows Container -->
           <div class="rounded-3xl bg-white dark:bg-[#1D232B] shadow-mobile-card border border-surface-container-high dark:border-[#465362] divide-y divide-slate-100 dark:divide-slate-800/80 overflow-hidden">
             
@@ -2218,13 +2239,13 @@
                       <span class="text-[11px] text-slate-400" data-i18n="profile_row_lang_sub">हिंदी या अंग्रेजी चुनें</span>
                     </div>
                   </div>
-                  <span id="profile-current-lang-badge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-[#2A323D] text-slate-600 dark:text-slate-300">हिंदी</span>
+                  <span id="subview-current-lang-badge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-[#2A323D] text-slate-600 dark:text-slate-300">हिंदी</span>
                 </div>
                 <div class="grid grid-cols-2 gap-2 pt-1">
-                  <button id="btn-profile-lang-hi" onclick="setAppLanguage('hi')" class="h-10 rounded-2xl border text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer">
+                  <button id="subview-btn-profile-lang-hi" onclick="setAppLanguage('hi')" class="h-10 rounded-2xl border text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer">
                     <span>हिंदी</span>
                   </button>
-                  <button id="btn-profile-lang-en" onclick="setAppLanguage('en')" class="h-10 rounded-2xl border text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer">
+                  <button id="subview-btn-profile-lang-en" onclick="setAppLanguage('en')" class="h-10 rounded-2xl border text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer">
                     <span>English</span>
                   </button>
                 </div>
@@ -5370,19 +5391,29 @@
         btn.setAttribute('aria-label', cur === 'hi' ? 'भाषा: हिंदी (अंग्रेज़ी में बदलने के लिए क्लिक करें)' : 'Language: English (Click to switch to Hindi)');
         btn.setAttribute('title', cur === 'hi' ? 'भाषा: हिंदी (अंग्रेज़ी में बदलें)' : 'Language: English (Switch to Hindi)');
       }
-      const btnHi = document.getElementById('btn-profile-lang-hi');
-      const btnEn = document.getElementById('btn-profile-lang-en');
-      const curBadge = document.getElementById('profile-current-lang-badge');
-      if (curBadge) curBadge.innerText = (cur === 'hi') ? 'हिंदी' : 'English';
-      if (btnHi && btnEn) {
-        if (cur === 'hi') {
-          btnHi.className = "h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all bg-primary text-white shadow-xs cursor-pointer";
-          btnEn.className = "h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all bg-slate-100 hover:bg-slate-200 dark:bg-[#2A323D] dark:hover:bg-[#465362] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#465362] cursor-pointer";
-        } else {
-          btnHi.className = "h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all bg-slate-100 hover:bg-slate-200 dark:bg-[#2A323D] dark:hover:bg-[#465362] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#465362] cursor-pointer";
-          btnEn.className = "h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all bg-primary text-white shadow-xs cursor-pointer";
+      ['btn-profile-lang-hi', 'subview-btn-profile-lang-hi'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          if (cur === 'hi') {
+            el.className = "h-9 px-3.5 rounded-xl font-black text-xs flex items-center justify-center transition-all bg-primary text-white shadow-xs cursor-pointer";
+          } else {
+            el.className = "h-9 px-3.5 rounded-xl font-black text-xs flex items-center justify-center transition-all bg-transparent text-slate-700 dark:text-slate-200 hover:bg-white/60 cursor-pointer";
+          }
         }
-      }
+      });
+      ['btn-profile-lang-en', 'subview-btn-profile-lang-en'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          if (cur === 'en') {
+            el.className = "h-9 px-3.5 rounded-xl font-black text-xs flex items-center justify-center transition-all bg-primary text-white shadow-xs cursor-pointer";
+          } else {
+            el.className = "h-9 px-3.5 rounded-xl font-black text-xs flex items-center justify-center transition-all bg-transparent text-slate-700 dark:text-slate-200 hover:bg-white/60 cursor-pointer";
+          }
+        }
+      });
+      document.querySelectorAll('#profile-current-lang-badge').forEach(b => {
+        b.innerText = (cur === 'hi') ? 'हिंदी' : 'English';
+      });
     }
     window.updateQuickLangButtonUI = updateQuickLangButtonUI;
 
