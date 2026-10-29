@@ -2026,9 +2026,6 @@
           <!-- SUBVIEW 1: PERSONAL INFORMATION (MY PROFILE) -->
           <div id="customer-subview-personal" class="customer-subview hidden flex-col space-y-4">
             <div class="flex items-center gap-2.5 pb-1 border-b border-slate-200 dark:border-[#465362]">
-              <button type="button" onclick="showCustomerAccountLanding()" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-[#2A323D] hover:bg-slate-200 text-slate-800 dark:text-white flex items-center justify-center cursor-pointer shadow-2xs">
-                <span class="material-symbols-outlined text-[20px]">arrow_back</span>
-              </button>
               <div>
                 <h2 class="text-base font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="sec_my_profile_title">मेरी प्रोफ़ाइल</h2>
                 <span class="text-[11px] text-slate-500 dark:text-[#CBD5E1]" data-i18n="sec_my_profile_sub">व्यक्तिगत जानकारी एवं संशोधन</span>
@@ -2116,9 +2113,6 @@
           <!-- SUBVIEW 2: MY ADDRESSES -->
           <div id="customer-subview-addresses" class="customer-subview hidden flex-col space-y-4">
             <div class="flex items-center gap-2.5 pb-1 border-b border-slate-200 dark:border-[#465362]">
-              <button type="button" onclick="showCustomerAccountLanding()" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-[#2A323D] hover:bg-slate-200 text-slate-800 dark:text-white flex items-center justify-center cursor-pointer shadow-2xs">
-                <span class="material-symbols-outlined text-[20px]">arrow_back</span>
-              </button>
               <div>
                 <h2 class="text-base font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="menu_my_addresses">मेरे पते</h2>
                 <span class="text-[11px] text-slate-500 dark:text-[#CBD5E1]" data-i18n="menu_my_addresses_sub">गाँव, पहचान स्थल व GPS पिन</span>
@@ -2157,9 +2151,6 @@
           <!-- SUBVIEW 3: SAVED PAYMENTS -->
           <div id="customer-subview-payments" class="customer-subview hidden flex-col space-y-4">
             <div class="flex items-center gap-2.5 pb-1 border-b border-slate-200 dark:border-[#465362]">
-              <button type="button" onclick="showCustomerAccountLanding()" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-[#2A323D] hover:bg-slate-200 text-slate-800 dark:text-white flex items-center justify-center cursor-pointer shadow-2xs">
-                <span class="material-symbols-outlined text-[20px]">arrow_back</span>
-              </button>
               <div>
                 <h2 class="text-base font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="menu_saved_payments">सहेजे गए भुगतान माध्यम</h2>
                 <span class="text-[11px] text-slate-500 dark:text-[#CBD5E1]" data-i18n="menu_saved_payments_sub">UPI ID, बैंक खाता एवं डेबिट कार्ड</span>
@@ -2199,9 +2190,6 @@
           <!-- SUBVIEW 4: SETTINGS & PREFERENCES -->
           <div id="customer-subview-preferences" class="customer-subview hidden flex-col space-y-4">
             <div class="flex items-center gap-2.5 pb-1 border-b border-slate-200 dark:border-[#465362]">
-              <button type="button" onclick="showCustomerAccountLanding()" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-[#2A323D] hover:bg-slate-200 text-slate-800 dark:text-white flex items-center justify-center cursor-pointer shadow-2xs">
-                <span class="material-symbols-outlined text-[20px]">arrow_back</span>
-              </button>
               <div>
                 <h2 class="text-base font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="menu_settings_pref">प्राथमिकताएं व सेटिंग्स</h2>
                 <span class="text-[11px] text-slate-500 dark:text-[#CBD5E1]" data-i18n="menu_settings_pref_sub">भाषा, थीम रंग-रूप व सूचनाएं</span>
@@ -2289,9 +2277,6 @@
           <!-- SUBVIEW 5: ACCOUNT & SECURITY -->
           <div id="customer-subview-security" class="customer-subview hidden flex-col space-y-4">
             <div class="flex items-center gap-2.5 pb-1 border-b border-slate-200 dark:border-[#465362]">
-              <button type="button" onclick="showCustomerAccountLanding()" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-[#2A323D] hover:bg-slate-200 text-slate-800 dark:text-white flex items-center justify-center cursor-pointer shadow-2xs">
-                <span class="material-symbols-outlined text-[20px]">arrow_back</span>
-              </button>
               <div>
                 <h2 class="text-base font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="menu_account_security">खाता एवं सुरक्षा</h2>
                 <span class="text-[11px] text-slate-500 dark:text-[#CBD5E1]" data-i18n="menu_account_security_sub">गोपनीयता नीति, नियम एवं शर्तें</span>
@@ -6720,7 +6705,7 @@
         // PAGE-SPECIFIC VISIBILITY:
         // Notifications bell is visible on main Home page (dashboard).
         // When user navigates away to subpages, header actions hide and Back Button appears.
-        if (cleanPhase === 'dashboard' || cleanPhase === 'profile') {
+        if (cleanPhase === 'dashboard') {
           if (notifBtn) {
             notifBtn.classList.remove('hidden');
             notifBtn.style.display = 'flex';
