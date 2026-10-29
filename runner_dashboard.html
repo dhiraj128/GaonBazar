@@ -516,7 +516,7 @@
           <span data-i18n="pending_security_title">सुरक्षा एवं प्रामाणिकता सूचना</span>
         </div>
         <p class="text-[11px] leading-relaxed text-slate-400" data-i18n="pending_security_desc">
-          गाँव बाज़ार में डिलीवरी पार्टनर बनने के लिए आपका आवेदन सुपर एडमिन द्वारा सत्यापन हेतु विचाराधीन है। वाहन दस्तावेज़ व पहचान पत्र के सत्यापन के बाद ही डिलीवरी मिशन आवंटित किए जाएंगे।
+          आपके दस्तावेज़ सफलतापूर्वक जमा हो गए हैं। सत्यापन जारी है। हमारा लक्ष्य 24 घंटे के भीतर समीक्षा पूरी करना है।
         </p>
         <div class="pt-2 border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between text-[11px] gap-1">
           <span class="text-slate-400"><span data-i18n="pending_id_label">पहचान पत्र:</span> <b id="pending-runner-id-badge" class="text-white font-mono">XXXX-XXXX-7788</b></span>
@@ -530,7 +530,7 @@
           <span data-i18n="btn_check_status">स्वीकृति स्थिति जांचें</span>
         </button>
         <button onclick="switchRunner('gm_1')" class="w-full sm:w-auto px-4 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-all whitespace-nowrap border border-slate-700" data-i18n="btn_switch_runner">
-          राम कुमार पर स्विच करें
+          डेमो साथी देखें (पूर्वावलोकन)
         </button>
       </div>
     </div>
@@ -707,7 +707,7 @@
 
           <!-- Clear store-call, store-chat and directions actions below the shop identity -->
           <div class="flex items-center gap-2 flex-wrap">
-            <a id="btn-call-store" href="tel:+919876543210" onclick="callStore(event)" class="min-h-[44px] px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black flex items-center gap-1.5 shadow-sm active:scale-95 transition-all shrink-0 cursor-pointer">
+            <a id="btn-call-store" href="#" onclick="callStore(event)" class="min-h-[44px] px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black flex items-center gap-1.5 shadow-sm active:scale-95 transition-all shrink-0 cursor-pointer">
               <span class="material-symbols-outlined text-[18px]">call</span>
               <span data-i18n="call_dukandaar_btn">दुकानदार को कॉल</span>
             </a>
@@ -760,7 +760,7 @@
 
           <!-- 1-Tap Call & Map Navigation CTAs -->
           <div class="grid grid-cols-2 gap-2 w-full min-w-0">
-            <a id="btn-call-customer" href="tel:+919876543210" onclick="callCustomer(event)" class="min-w-0 w-full min-h-[44px] px-2 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-[11px] sm:text-xs font-black flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer text-center">
+            <a id="btn-call-customer" href="#" onclick="callCustomer(event)" class="min-w-0 w-full min-h-[44px] px-2 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-[11px] sm:text-xs font-black flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer text-center">
               <span class="material-symbols-outlined text-[18px]">call</span>
               <span data-i18n="call_customer_btn">कॉल करें</span>
             </a>
@@ -1002,7 +1002,7 @@
               </div>
               <div class="flex flex-col min-w-0">
                 <span class="text-xs sm:text-sm font-black text-white truncate" data-i18n="sec_kyc_title">पहचान सत्यापन</span>
-                <span class="text-[11px] text-slate-400 truncate mt-0.5" data-i18n="sec_kyc_sub">दस्तावेज़ एवं सुपर एडमिन सत्यापन</span>
+                <span class="text-[11px] text-slate-400 truncate mt-0.5" data-i18n="sec_kyc_sub">दस्तावेज़ एवं पहचान सत्यापन</span>
               </div>
             </div>
             <span class="material-symbols-outlined text-slate-400 text-[20px] shrink-0 ml-2">chevron_right</span>
@@ -1163,17 +1163,21 @@
             <div class="flex items-center justify-between border-b border-slate-700 pb-2.5">
               <div class="flex items-center gap-2">
                 <span class="material-symbols-outlined text-amber-400 text-[20px]">verified_user</span>
-                <h3 class="text-xs sm:text-sm font-black text-white" data-i18n="sec_kyc_title">पहचान सत्यापन</h3>
+                <h3 class="text-xs sm:text-sm font-black text-white" data-i18n="lbl_verification_badge">सत्यापन स्थिति</h3>
               </div>
               <span id="runner-kyc-status-pill" class="px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-950/60 text-emerald-300 border border-emerald-600 flex items-center gap-1">
                 <span class="material-symbols-outlined text-[13px]">check_circle</span>
-                <span data-i18n="badge_verified">सत्यापित</span>
+                <span id="runner-kyc-status-text" data-i18n="badge_verified">सत्यापित</span>
               </span>
             </div>
 
-            <div class="p-3.5 rounded-2xl bg-amber-950/30 border border-amber-500/40 text-xs text-amber-200 leading-relaxed">
-              <span class="font-bold block mb-1" data-i18n="kyc_policy_heading">🌾 ग्रामीण डिलीवरी साथी नीति:</span>
-              <span data-i18n="kyc_policy_desc">गाँव मित्र बनने हेतु केवल वैध पहचान पत्र (आधार, पैन या वोटर आईडी) आवश्यक है। सुपर एडमिन द्वारा भौतिक व दस्तावेज़ी सत्यापन के बाद आपको "गांव बाज़ार सत्यापित" बैज मिलता है।</span>
+            <!-- Under Review Banner (Visible when submitted / under review) -->
+            <div id="runner-kyc-review-banner" class="hidden p-3.5 rounded-2xl bg-amber-950/40 border border-amber-600/50 text-xs text-amber-200 leading-relaxed">
+              <span class="font-bold block mb-1 flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px] text-amber-400">info</span>
+                <span data-i18n="kyc_review_heading">दस्तावेज़ समीक्षा</span>
+              </span>
+              <span id="runner-kyc-review-msg" data-i18n="kyc_under_review_msg">आपके दस्तावेज़ सफलतापूर्वक जमा हो गए हैं। सत्यापन जारी है। हमारा लक्ष्य 24 घंटे के भीतर समीक्षा पूरी करना है।</span>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
@@ -1184,20 +1188,17 @@
 
               <div class="bg-slate-900 p-3 rounded-2xl border border-slate-700/80">
                 <span class="text-[10px] font-bold text-slate-400 block mb-0.5" data-i18n="lbl_id_number">दस्तावेज़ संख्या</span>
-                <span id="prof-runner-kyc-num" class="font-mono font-bold text-white">XXXX-XXXX-4921</span>
+                <span id="prof-runner-kyc-num" class="font-mono font-bold text-white">•••• •••• 4921</span>
               </div>
 
               <div class="bg-slate-900 p-3 rounded-2xl border border-slate-700/80">
-                <span class="text-[10px] font-bold text-slate-400 block mb-0.5" data-i18n="lbl_verification_badge">सत्यापन स्थिति</span>
-                <span class="font-bold text-emerald-400 flex items-center gap-1">
-                  <span class="material-symbols-outlined text-[14px]">shield</span>
-                  <span data-i18n="badge_verified">सत्यापित</span>
-                </span>
+                <span class="text-[10px] font-bold text-slate-400 block mb-0.5" data-i18n="lbl_submission_date">जमा करने की तिथि</span>
+                <span id="prof-runner-kyc-sub-date" class="font-bold text-white">24 Oct 2026</span>
               </div>
             </div>
 
             <div class="flex justify-end pt-1">
-              <button onclick="openRunnerKYCModal()" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all shadow-sm cursor-pointer">
+              <button onclick="openRunnerKYCModal()" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all shadow-sm cursor-pointer active:scale-95">
                 <span class="material-symbols-outlined text-[16px]">upload_file</span>
                 <span data-i18n="btn_reupload_kyc">नया KYC दस्तावेज़ अपलोड करें</span>
               </button>
@@ -2609,7 +2610,7 @@
         sample_store_sub: "रामपुर मुख्य बाज़ार",
         sample_customer_village: "ग्राम पंचायत रामपुर",
         btn_check_status: "स्वीकृति स्थिति जांचें",
-        btn_switch_runner: "राम कुमार पर स्विच करें",
+        btn_switch_runner: "डेमो साथी देखें (पूर्वावलोकन)",
         btn_save_runner_bank: "बैंक व UPI विवरण सहेजें",
         reg_runner_title: "गाँव मित्र पंजीकरण",
         reg_runner_sub: "ग्रामीण डिलीवरी नेटवर्क से जुड़ें • KYC सत्यापन अनिवार्य",
@@ -2657,7 +2658,7 @@
         pending_runner_name: "सोनू कुमार",
         pending_runner_code: "गाँव मित्र कोड: #GM-RAMPUR-99",
         pending_security_title: "सुरक्षा एवं प्रामाणिकता सूचना",
-        pending_security_desc: "गाँव बाज़ार में डिलीवरी पार्टनर बनने के लिए आपका आवेदन सुपर एडमिन द्वारा सत्यापन हेतु विचाराधीन है। वाहन दस्तावेज़ व पहचान पत्र के सत्यापन के बाद ही डिलीवरी मिशन आवंटित किए जाएंगे।",
+        pending_security_desc: "आपके दस्तावेज़ सफलतापूर्वक जमा हो गए हैं। सत्यापन जारी है। हमारा लक्ष्य 24 घंटे के भीतर समीक्षा पूरी करना है।",
         pending_id_label: "पहचान पत्र:",
         loading_missions: "मिशन सूची लोड हो रही है...",
         detail_customer_default_name: "रमेश पटेल",
@@ -2688,8 +2689,16 @@
         lbl_perm_address: "घर का स्थायी पता",
         lbl_emergency_contact: "आपातकालीन संपर्क",
         sec_kyc_title: "पहचान सत्यापन",
-        sec_kyc_sub: "दस्तावेज़ एवं सुपर एडमिन सत्यापन",
+        sec_kyc_sub: "दस्तावेज़ एवं पहचान सत्यापन",
         badge_verified: "सत्यापित",
+      kyc_status_not_submitted: "सत्यापन पूरा करें",
+      kyc_status_submitted: "समीक्षा जारी है",
+      kyc_status_approved: "सत्यापित",
+      kyc_status_resubmission: "सुधार आवश्यक",
+      kyc_status_rejected: "सत्यापन पूरा नहीं हुआ",
+      lbl_submission_date: "जमा करने की तिथि",
+      kyc_review_heading: "दस्तावेज़ समीक्षा",
+      kyc_under_review_msg: "आपके दस्तावेज़ सफलतापूर्वक जमा हो गए हैं। सत्यापन जारी है। हमारा लक्ष्य 24 घंटे के भीतर समीक्षा पूरी करना है।",
         badge_pending: "सत्यापन लंबित",
         badge_rejected: "अस्वीकृत",
         badge_registered: "पंजीकृत वाहन",
@@ -2698,7 +2707,7 @@
         lbl_verification_badge: "सत्यापन स्थिति",
         btn_reupload_kyc: "नया KYC दस्तावेज़ अपलोड करें",
         kyc_policy_heading: "🌾 ग्रामीण डिलीवरी साथी नीति:",
-        kyc_policy_desc: "गाँव मित्र बनने हेतु केवल वैध पहचान पत्र (आधार, पैन या वोटर आईडी) आवश्यक है। सुपर एडमिन द्वारा भौतिक व दस्तावेज़ी सत्यापन के बाद आपको गाँव बाज़ार सत्यापित बैज मिलता है।",
+        kyc_policy_desc: "सत्यापन पूरा करने के लिए एक वैध पहचान पत्र (आधार, पैन, या वोटर आईडी) जमा करें।",
         sec_vehicle_title: "वाहन विवरण",
         sec_vehicle_sub: "वाहन प्रकार, रजिस्ट्रेशन व लाइसेंस",
         lbl_vehicle_type: "वाहन का प्रकार",
@@ -2883,7 +2892,7 @@
         sample_store_sub: "Rampur Main Market",
         sample_customer_village: "Rampur Village Panchayat",
         btn_check_status: "Check Approval Status",
-        btn_switch_runner: "Switch to Ram Kumar",
+        btn_switch_runner: "View Demo Partner (Preview)",
         btn_save_runner_bank: "Save Bank & UPI Details",
         reg_runner_title: "Gaon Mitra Registration",
         reg_runner_sub: "Join rural delivery network • KYC verification mandatory",
@@ -2931,7 +2940,7 @@
         pending_runner_name: "Sonu Kumar",
         pending_runner_code: "Gaon Mitra Code: #GM-RAMPUR-99",
         pending_security_title: "Verification & Security Notice",
-        pending_security_desc: "Your registration as a delivery partner is under review by Super Admin. Missions will be dispatched following document verification.",
+        pending_security_desc: "Your documents have been submitted successfully. Verification is in progress. We aim to review your application within 24 hours.",
         pending_id_label: "ID Document:",
         loading_missions: "Loading missions queue...",
         detail_customer_default_name: "Ramesh Patel",
@@ -2962,8 +2971,16 @@
         lbl_perm_address: "Permanent Home Address",
         lbl_emergency_contact: "Emergency Contact",
         sec_kyc_title: "KYC Verification",
-        sec_kyc_sub: "Document & Super Admin verification",
+        sec_kyc_sub: "Document verification & identity proof",
         badge_verified: "Verified",
+      kyc_status_not_submitted: "Complete Verification",
+      kyc_status_submitted: "Under Review",
+      kyc_status_approved: "Verified",
+      kyc_status_resubmission: "Action Required",
+      kyc_status_rejected: "Verification Unsuccessful",
+      lbl_submission_date: "Submission Date",
+      kyc_review_heading: "Document Review",
+      kyc_under_review_msg: "Your documents have been submitted successfully. Verification is in progress. We aim to review your application within 24 hours.",
         badge_pending: "Pending Verification",
         badge_rejected: "Rejected",
         badge_registered: "Registered Vehicle",
@@ -2972,7 +2989,7 @@
         lbl_verification_badge: "Verification Status",
         btn_reupload_kyc: "Upload New KYC Document",
         kyc_policy_heading: "🌾 Rural Delivery Partner Policy:",
-        kyc_policy_desc: "Only a valid government ID (Aadhaar, PAN, or Voter ID) is required. Following physical and document verification by Super Admin, you receive the GaonBazaar Verified badge.",
+        kyc_policy_desc: "Submit a valid government ID (Aadhaar, PAN, or Voter ID) to complete verification.",
         sec_vehicle_title: "Vehicle Details",
         sec_vehicle_sub: "Vehicle type, registration & license",
         lbl_vehicle_type: "Vehicle Type",
@@ -3452,7 +3469,7 @@
       try {
         const res = await runnerApiFetch(`/runner/status/${encodeURIComponent(RunnerStore.runnerId)}`);
         if (res.can_access || res.status === 'approved') {
-          showToast(isHi ? 'गाँव मित्र स्वीकृत!' : 'Gaon Mitra Approved!', isHi ? 'सुपर एडमिन द्वारा सत्यापन पूर्ण। मिशन कतार अनलॉक हो गई है।' : 'Verification completed by Super Admin. Mission queue unlocked.');
+          showToast(isHi ? 'गाँव मित्र स्वीकृत!' : 'Gaon Mitra Approved!', isHi ? 'सत्यापन पूर्ण। मिशन कतार अनलॉक हो गई है।' : 'Verification completed. Mission queue unlocked.');
           const pendingView = document.getElementById('runner-pending-view');
           if (pendingView) {
             pendingView.classList.add('hidden');
@@ -3662,9 +3679,9 @@
       const elEarnings = document.getElementById('kpi-today-earnings');
       const elCod = document.getElementById('kpi-cod-cash');
 
-      if (elActive) elActive.innerText = (m && m.length > 0) ? m.length : 5;
-      if (elCompleted) elCompleted.innerText = (l && l.completed_today > 0) ? l.completed_today : 3;
-      if (elEarnings) elEarnings.innerText = (l && l.total_earnings > 0) ? `₹${l.total_earnings}` : '₹320';
+      if (elActive) elActive.innerText = (m && m.length > 0) ? m.length : 0;
+      if (elCompleted) elCompleted.innerText = (l && l.completed_today != null) ? l.completed_today : 0;
+      if (elEarnings) elEarnings.innerText = (l && l.total_earnings != null) ? `₹${l.total_earnings}` : '₹0';
       if (elCod) elCod.innerText = `₹${l ? l.cod_cash_in_hand : 0}`;
     }
 
@@ -3911,7 +3928,7 @@
       if (elStoreName) elStoreName.innerText = m.store_name;
       if (elBtnCallStore) {
         const phone = String(m.store_phone || '').replace(/[^0-9+]/g, '');
-        const targetPhone = phone || '9876543210';
+        const targetPhone = phone || '';
         elBtnCallStore.href = `tel:${targetPhone}`;
         elBtnCallStore.setAttribute('href', `tel:${targetPhone}`);
         elBtnCallStore.setAttribute('aria-disabled', phone ? 'false' : 'true');
@@ -3921,7 +3938,7 @@
       if (elCustVillage) elCustVillage.innerText = isHi ? `ग्राम पंचायत: ${m.village}` : `Village: ${m.village}`;
       if (elBtnCallCust) {
         const phone = String(m.user_phone || '').replace(/[^0-9+]/g, '');
-        const targetPhone = phone || '9876543210';
+        const targetPhone = phone || '';
         elBtnCallCust.href = `tel:${targetPhone}`;
         elBtnCallCust.setAttribute('href', `tel:${targetPhone}`);
         elBtnCallCust.setAttribute('aria-disabled', phone ? 'false' : 'true');
@@ -3937,13 +3954,16 @@
       const destLng = coordsProvided ? Number(m.customer_lng) : NaN;
       const hasCoords = coordsProvided && Number.isFinite(destLat) && Number.isFinite(destLng) && Math.abs(destLat) <= 90 && Math.abs(destLng) <= 180 && !(destLat === 0 && destLng === 0);
       const addressText = [m.landmark, m.village].filter(Boolean).join(', ').trim();
-      const destination = hasCoords ? `${destLat},${destLng}` : addressText;
+      const destination = hasCoords ? `${destLat},${destLng}` : '';
       const navUrl = destination ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}&travelmode=driving` : '';
       if (elBtnNavMap) {
         if (navUrl) elBtnNavMap.href = navUrl;
         else elBtnNavMap.removeAttribute('href');
         elBtnNavMap.setAttribute('aria-disabled', navUrl ? 'false' : 'true');
-        elBtnNavMap.onclick = navUrl ? null : (event) => event.preventDefault();
+        elBtnNavMap.onclick = navUrl ? null : (event) => {
+          event.preventDefault();
+          showToast(isHi ? 'सूचना' : 'Notice', isHi ? 'ग्राहक ने सटीक GPS पिन साझा नहीं किया है। कृपया नीचे स्थान का अनुरोध करें।' : 'Customer has not shared exact GPS pin yet. Please request location below.');
+        };
       }
       const confidence = document.getElementById('runner-navigation-confidence');
       if (confidence) {
@@ -4665,7 +4685,7 @@
 
         if (msgEl) {
           msgEl.className = "p-3 rounded-2xl text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 block";
-          msgEl.innerText = isHi ? "✓ बैंक व UPI विवरण सफलतापूर्वक सहेजे गए। सुपर एडमिन द्वारा सत्यापन प्रक्रियाधीन है।" : "✓ Bank & UPI settings saved successfully. Verification pending.";
+          msgEl.innerText = isHi ? "✓ बैंक व UPI विवरण सफलतापूर्वक सहेजे गए। सत्यापन प्रक्रियाधीन है।" : "✓ Bank & UPI settings saved successfully. Verification pending.";
         }
         showToast(isHi ? "बैंक विवरण सहेजे गए" : "Bank Settings Saved", isHi ? "विवरण अपडेट किए गए" : "Payout settings updated");
 
@@ -5202,6 +5222,42 @@
     // =========================================================================
     // 9.15 DELIVERY PARTNER (RUNNER) PROFILE, VEHICLE RULES & KYC
     // =========================================================================
+    
+    function getRunnerKycStatusDisplay(status, isHi) {
+      const norm = String(status || '').toLowerCase().trim();
+      if (norm === 'approved' || norm === 'verified') {
+        return {
+          text: isHi ? 'सत्यापित' : 'Verified',
+          cls: 'bg-emerald-950/60 text-emerald-300 border-emerald-600',
+          icon: 'check_circle'
+        };
+      } else if (norm === 'submitted' || norm === 'pending' || norm === 'pending_approval' || norm === 'under_review') {
+        return {
+          text: isHi ? 'समीक्षा जारी है' : 'Under Review',
+          cls: 'bg-amber-950/60 text-amber-300 border-amber-600',
+          icon: 'hourglass_top'
+        };
+      } else if (norm === 'resubmission_required' || norm === 'action_required' || norm === 'action_needed') {
+        return {
+          text: isHi ? 'सुधार आवश्यक' : 'Action Required',
+          cls: 'bg-amber-950/60 text-amber-300 border-amber-600',
+          icon: 'warning'
+        };
+      } else if (norm === 'rejected' || norm === 'failed') {
+        return {
+          text: isHi ? 'सत्यापन पूरा नहीं हुआ' : 'Verification Unsuccessful',
+          cls: 'bg-rose-950/60 text-rose-300 border-rose-600',
+          icon: 'cancel'
+        };
+      } else {
+        return {
+          text: isHi ? 'सत्यापन पूरा करें' : 'Complete Verification',
+          cls: 'bg-slate-800 text-slate-300 border-slate-700',
+          icon: 'pending'
+        };
+      }
+    }
+
     async function loadRunnerProfile() {
       try {
         const runnerId = (window.RunnerStore && window.RunnerStore.currentRunnerId) || 'gm_1';
@@ -5236,15 +5292,29 @@
         setVal('prof-runner-emergency', p.emergency_contact);
 
         // Section B: KYC & Trust
-        setVal('prof-runner-kyc-doc', p.kyc_document_type);
-        setVal('prof-runner-kyc-num', p.kyc_document_number_masked);
+        setVal('prof-runner-kyc-doc', p.kyc_document_type || 'Aadhar Card');
+        let rawRNum = p.kyc_document_number_masked || p.id_number || '•••• •••• 4921';
+        if (rawRNum && !rawRNum.includes('•') && rawRNum.length >= 4) {
+          rawRNum = '•••• •••• ' + rawRNum.slice(-4);
+        }
+        setVal('prof-runner-kyc-num', rawRNum);
+        setVal('prof-runner-kyc-sub-date', p.created_at ? new Date(p.created_at).toLocaleDateString(isHi ? 'hi-IN' : 'en-GB') : '24 Oct 2026');
+
         const kycBadge = document.getElementById('runner-kyc-status-pill');
+        const kycBanner = document.getElementById('runner-kyc-review-banner');
+        const kycStatus = p.kyc_status || (p.is_verified ? 'approved' : 'submitted');
+
+        const statusDisplay = getRunnerKycStatusDisplay(kycStatus, isHi);
         if (kycBadge) {
-          const isVer = p.kyc_status === 'approved' || p.is_verified;
-          kycBadge.className = isVer 
-            ? 'px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-950/60 text-emerald-300 border border-emerald-600 flex items-center gap-1'
-            : 'px-2.5 py-1 rounded-full text-[11px] font-black bg-amber-950/60 text-amber-300 border border-amber-600 flex items-center gap-1';
-          kycBadge.innerHTML = `<span class="material-symbols-outlined text-[13px]">${isVer ? 'check_circle' : 'hourglass_top'}</span><span>${isVer ? (isHi ? 'गाँव मित्र सत्यापित' : 'Gaon Mitra Verified') : (isHi ? 'सत्यापन विचाराधीन' : 'Verification Under Review')}</span>`;
+          kycBadge.className = `px-2.5 py-1 rounded-full text-[11px] font-black border flex items-center gap-1 ${statusDisplay.cls}`;
+          kycBadge.innerHTML = `<span class="material-symbols-outlined text-[13px]">${statusDisplay.icon}</span><span>${statusDisplay.text}</span>`;
+        }
+        if (kycBanner) {
+          if (kycStatus === 'approved' || p.is_verified) {
+            kycBanner.classList.add('hidden');
+          } else {
+            kycBanner.classList.remove('hidden');
+          }
         }
 
         // Section C: Vehicle Details (CONDITIONAL RULE)
@@ -5414,7 +5484,7 @@
             driving_licence_number: dlNum
           })
         });
-        showToast('सफल', 'सत्यापन विवरण जमा हो गया। सुपर एडमिन समीक्षा जारी है।');
+        showToast('सफल', 'सत्यापन विवरण जमा हो गया। समीक्षा जारी है।');
         closeRunnerKYCModal();
         loadRunnerProfile();
       } catch (e) {
@@ -5604,6 +5674,36 @@
     }
     window.openStoreDirections = openStoreDirections;
 
+    
+    async function requestCustomerExactPin(orderId) {
+      const isHi = RunnerStore.lang === 'hi';
+      const m = RunnerStore.selectedMission;
+      const actId = orderId || (m ? (m.id || m.order_id) : null);
+      if (!actId) {
+        showToast(isHi ? 'सूचना' : 'Notice', isHi ? 'कोई ऑर्डर चयनित नहीं है।' : 'No order selected.');
+        return;
+      }
+      try {
+        const token = RunnerStore.token || localStorage.getItem('authToken');
+        const res = await fetch(`/api/orders/${actId}/request-location`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          }
+        });
+        const data = await res.json();
+        if (res.ok) {
+          showToast(isHi ? 'सफल' : 'Success', isHi ? 'ग्राहक को सटीक लोकेशन साझा करने का अनुरोध भेज दिया गया है।' : 'Location request sent to customer successfully.');
+        } else {
+          showToast(isHi ? 'सूचना' : 'Notice', data.detail || (isHi ? 'अनुरोध नहीं भेजा जा सका' : 'Could not send request'));
+        }
+      } catch (e) {
+        showToast(isHi ? 'त्रुटि' : 'Error', isHi ? 'नेटवर्क त्रुटि' : 'Network error');
+      }
+    }
+    window.requestCustomerExactPin = requestCustomerExactPin;
+
     function openCustomerDirections(event) {
       if (event) { event.preventDefault(); event.stopPropagation(); }
       const m = RunnerStore.selectedMission;
@@ -5611,11 +5711,9 @@
       let dest = '';
       if (m && m.customer_lat != null && m.customer_lng != null && !isNaN(Number(m.customer_lat)) && !isNaN(Number(m.customer_lng)) && Number(m.customer_lat) !== 0 && Number(m.customer_lng) !== 0) {
         dest = `${Number(m.customer_lat).toFixed(6)},${Number(m.customer_lng).toFixed(6)}`;
-      } else if (m && (m.landmark || m.village)) {
-        dest = [m.landmark, m.village].filter(Boolean).join(', ');
       }
       if (!dest) {
-        showToast(isHi ? 'सूचना' : 'Notice', isHi ? 'ग्राहक का सटीक पता या GPS उपलब्ध नहीं है' : 'Customer delivery coordinates are unavailable');
+        showToast(isHi ? 'सटीक स्थान आवश्यक' : 'Exact Pin Required', isHi ? 'ग्राहक ने सटीक GPS पिन साझा नहीं किया है। कृपया "सटीक स्थान का अनुरोध करें" बटन दबाएं।' : 'Customer has not shared exact GPS pin yet. Please use "Request Location" button.');
         return;
       }
       const url = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(dest)}&dir_action=navigate`;

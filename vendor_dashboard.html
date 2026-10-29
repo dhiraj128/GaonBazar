@@ -622,7 +622,7 @@
           <span data-i18n="security_notice_title">सुरक्षा एवं प्रामाणिकता सूचना</span>
         </div>
         <p class="text-[11px] leading-relaxed text-amber-900/90" data-i18n="security_notice_desc">
-          गाँव बाज़ार सहकारी नेटवर्क में ग्रामीण उपभोक्ताओं की सुरक्षा हेतु सभी नई दुकानों का भौतिक व दस्तावेज़ी सत्यापन अनिवार्य है। आपकी दुकान की जानकारी सुपर एडमिन द्वारा सत्यापन हेतु विचाराधीन है।
+          आपके दस्तावेज़ सफलतापूर्वक जमा हो गए हैं। सत्यापन जारी है। हमारा लक्ष्य 24 घंटे के भीतर समीक्षा पूरी करना है।
         </p>
         <div class="pt-2 border-t border-amber-200/60 flex flex-col sm:flex-row items-start sm:items-center justify-between text-[11px] gap-1">
           <span class="text-slate-600"><span data-i18n="lbl_doc_number">दस्तावेज़ संख्या:</span> <b id="pending-vendor-id-badge" class="text-slate-800 font-mono">XXXX-XXXX-9988</b></span>
@@ -636,7 +636,7 @@
           <span data-i18n="btn_check_status">स्वीकृति स्थिति जांचें</span>
         </button>
         <button onclick="switchStore('sharma_brothers')" class="w-full sm:w-auto px-4 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all whitespace-nowrap" data-i18n="btn_switch_sharma">
-          शर्मा ब्रदर्स पर स्विच करें
+          डेमो स्टोर देखें (पूर्वावलोकन)
         </button>
       </div>
     </div>
@@ -1128,14 +1128,24 @@
 
           <div class="bg-white dark:bg-[#1D232B] rounded-3xl p-4 sm:p-5 border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col gap-3.5">
             <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2.5">
-              <div class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-[20px]">verified_user</span><span class="text-xs sm:text-sm font-bold text-slate-600 dark:text-slate-300" data-i18n="lbl_verification_badge">सत्यापन स्थिति</span></div>
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-[20px]">verified_user</span>
+                <span class="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200" data-i18n="lbl_verification_badge">सत्यापन स्थिति</span>
+              </div>
               <span id="vendor-kyc-status-pill" class="px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 flex items-center gap-1">
                 <span class="material-symbols-outlined text-[13px]">check_circle</span>
-                <span data-i18n="badge_verified">सत्यापित</span>
+                <span id="vendor-kyc-status-text" data-i18n="badge_verified">सत्यापित</span>
               </span>
             </div>
 
-            
+            <!-- Under Review Banner (Visible when submitted / under review) -->
+            <div id="vendor-kyc-review-banner" class="hidden p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-700/60 text-xs text-amber-900 dark:text-amber-200 leading-relaxed">
+              <span class="font-bold block mb-1 flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px] text-amber-600 dark:text-amber-400">info</span>
+                <span data-i18n="kyc_review_heading">दस्तावेज़ समीक्षा</span>
+              </span>
+              <span id="vendor-kyc-review-msg" data-i18n="kyc_under_review_msg">आपके दस्तावेज़ सफलतापूर्वक जमा हो गए हैं। सत्यापन जारी है। हमारा लक्ष्य 24 घंटे के भीतर समीक्षा पूरी करना है।</span>
+            </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
               <div class="bg-slate-50 dark:bg-[#2A323D] p-3 rounded-2xl border border-slate-100 dark:border-slate-700">
@@ -1145,20 +1155,17 @@
 
               <div class="bg-slate-50 dark:bg-[#2A323D] p-3 rounded-2xl border border-slate-100 dark:border-slate-700">
                 <span class="text-[10px] font-bold text-slate-400 block mb-0.5" data-i18n="lbl_doc_number">दस्तावेज़ संख्या</span>
-                <span id="prof-kyc-doc-num" class="font-mono font-bold text-slate-800 dark:text-white">XXXX-XXXX-8921</span>
+                <span id="prof-kyc-doc-num" class="font-mono font-bold text-slate-800 dark:text-white">•••• •••• 8921</span>
               </div>
 
               <div class="bg-slate-50 dark:bg-[#2A323D] p-3 rounded-2xl border border-slate-100 dark:border-slate-700">
-                <span class="text-[10px] font-bold text-slate-400 block mb-0.5" data-i18n="lbl_verification_badge">सत्यापन स्थिति</span>
-                <span class="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                  <span class="material-symbols-outlined text-[14px]">shield</span>
-                  <span data-i18n="badge_verified">सत्यापित</span>
-                </span>
+                <span class="text-[10px] font-bold text-slate-400 block mb-0.5" data-i18n="lbl_submission_date">जमा करने की तिथि</span>
+                <span id="prof-kyc-sub-date" class="font-bold text-slate-800 dark:text-white">24 Oct 2026</span>
               </div>
             </div>
 
             <div class="flex justify-end pt-1">
-              <button onclick="openVendorKYCModal()" class="px-4 py-2 bg-primary text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer">
+              <button onclick="openVendorKYCModal()" class="px-4 py-2 bg-primary text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer hover:opacity-90 active:scale-95">
                 <span class="material-symbols-outlined text-[16px]">upload_file</span>
                 <span data-i18n="btn_reupload_kyc">नया KYC दस्तावेज़ अपलोड करें</span>
               </button>
@@ -1389,7 +1396,7 @@
               <button onclick="openSupportTicketModal('general')" class="p-3 rounded-2xl bg-slate-50 dark:bg-[#2A323D] hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-left flex flex-col gap-1 transition-all cursor-pointer">
                 <span class="material-symbols-outlined text-amber-600 text-[20px]">help</span>
                 <span class="font-bold text-slate-800 dark:text-white" data-i18n="help_cat_other">अन्य सहायता</span>
-                <span class="text-[10px] text-slate-400" data-i18n="help_cat_other_sub">सुपर एडमिन को टिकट भेजें</span>
+                <span class="text-[10px] text-slate-400" data-i18n="help_cat_other_sub">सहायता डेस्क को टिकट भेजें</span>
               </button>
             </div>
           </div>
@@ -2143,7 +2150,7 @@
       </div>
 
       <div class="text-xs text-slate-500 leading-relaxed bg-amber-50 dark:bg-amber-950/20 p-2.5 rounded-xl border border-amber-200 dark:border-amber-800">
-        दुकानदार की प्रामाणिकता हेतु आधार, पैन या वोटर आईडी में से कोई एक दस्तावेज़ दर्ज करें। सुपर एडमिन द्वारा सत्यापन पश्चात "सत्यापित" बैज सक्रिय हो जाएगा।
+        दुकानदार की प्रामाणिकता हेतु आधार, पैन या वोटर आईडी में से कोई एक दस्तावेज़ दर्ज करें। सत्यापन के बाद "सत्यापित" बैज सक्रिय हो जाएगा।
       </div>
 
       <div class="flex flex-col gap-2.5 text-xs">
@@ -2589,7 +2596,7 @@
         help_cat_kyc: "KYC सत्यापन सहायता",
         help_cat_kyc_sub: "दस्तावेज़ पुनः सत्यापन",
         help_cat_other: "अन्य सहायता",
-        help_cat_other_sub: "सुपर एडमिन को टिकट भेजें",
+        help_cat_other_sub: "सहायता डेस्क को टिकट भेजें",
         menu_security: "खाता एवं सुरक्षा",
         menu_security_sub: "स्थायी स्टोर ID व खाता प्रबंधन",
         sec_account_title: "खाता एवं सुरक्षा",
@@ -2708,7 +2715,7 @@
         new_shop_btn: "+ नई दुकान",
         live_beacon: "लाइव 4G",
         reg_vendor_title: "नया दुकानदार पंजीकरण",
-        reg_vendor_sub: "गांव बाज़ार में अपनी दुकान जोड़ें • सुपर एडमिन सत्यापन आवश्यक",
+        reg_vendor_sub: "गांव बाज़ार में अपनी दुकान जोड़ें • सत्यापन आवश्यक",
         reg_lbl_phone: "मोबाइल नंबर *",
         reg_lbl_otp: "OTP कोड *",
         reg_lbl_shop: "दुकान का नाम *",
@@ -2745,9 +2752,9 @@
         pending_vendor_shop_name: "वर्मा किराना स्टोर",
         pending_vendor_owner_info: "दुकानदार: राजेश वर्मा • ID: #VND-NEW",
         security_notice_title: "सुरक्षा एवं प्रामाणिकता सूचना",
-        security_notice_desc: "गाँव बाज़ार सहकारी नेटवर्क में ग्रामीण उपभोक्ताओं की सुरक्षा हेतु सभी नई दुकानों का भौतिक व दस्तावेज़ी सत्यापन अनिवार्य है। आपकी दुकान की जानकारी सुपर एडमिन द्वारा सत्यापन हेतु विचाराधीन है।",
+        security_notice_desc: "आपके दस्तावेज़ सफलतापूर्वक जमा हो गए हैं। सत्यापन जारी है। हमारा लक्ष्य 24 घंटे के भीतर समीक्षा पूरी करना है।",
         lbl_doc_number: "दस्तावेज़ संख्या:",
-        btn_switch_sharma: "शर्मा ब्रदर्स पर स्विच करें",
+        btn_switch_sharma: "डेमो स्टोर देखें (पूर्वावलोकन)",
         kpi_orders_label: "0 कुल ऑर्डर",
         ledger_date_prefix: "तारीख:",
         ledger_stat_sales_sub: "सामान का कुल मूल्य",
@@ -2782,7 +2789,7 @@
       help_cat_order: "Order Issues",
       help_cat_order_sub: "Issues with items or customer delivery",
       help_cat_other: "Other Inquiries",
-      help_cat_other_sub: "Send support ticket to Super Admin",
+      help_cat_other_sub: "Send support ticket to Helpdesk",
       help_cat_payment: "Payments & Payouts",
       help_cat_payment_sub: "Bank transfers & UPI settlements",
       lbl_edit: "Edit",
@@ -2939,7 +2946,7 @@
         new_shop_btn: "+ New Store",
         live_beacon: "Live 4G",
         reg_vendor_title: "New Shopkeeper Registration",
-        reg_vendor_sub: "Add your shop to GaonBazaar • Super Admin Verification Required",
+        reg_vendor_sub: "Add your shop to GaonBazaar • Verification Required",
         reg_lbl_phone: "Mobile Number *",
         reg_lbl_otp: "OTP Code *",
         reg_lbl_shop: "Shop Name *",
@@ -2976,9 +2983,9 @@
         pending_vendor_shop_name: "Verma Kirana Store",
         pending_vendor_owner_info: "Shopkeeper: Rajesh Verma • ID: #VND-NEW",
         security_notice_title: "Security & Verification Notice",
-        security_notice_desc: "To protect rural consumers in the GaonBazaar network, physical and document verification is mandatory for all new shops. Your application is under super admin review.",
+        security_notice_desc: "Your documents have been submitted successfully. Verification is in progress. We aim to review your application within 24 hours.",
         lbl_doc_number: "Document Number:",
-        btn_switch_sharma: "Switch to Sharma Brothers",
+        btn_switch_sharma: "View Demo Store (Preview)",
         kpi_orders_label: "0 Total Orders",
         ledger_date_prefix: "Date:",
         ledger_stat_sales_sub: "Total order value",
@@ -3430,7 +3437,7 @@
       try {
         const res = await vendorApiFetch(`/vendor/status/${encodeURIComponent(VendorStore.currentStoreId)}`);
         if (res.can_access || res.status === 'approved') {
-          showToast(isHi ? 'दुकान स्वीकृत!' : 'Store Approved!', isHi ? 'सुपर एडमिन द्वारा अनुमोदन प्राप्त हुआ। डैशबोर्ड अनलॉक हो गया है।' : 'Approved by Super Admin. Dashboard unlocked.');
+          showToast(isHi ? 'दुकान स्वीकृत!' : 'Store Approved!', isHi ? 'दुकान स्वीकृत! डैशबोर्ड अनलॉक हो गया है।' : 'Store Approved! Dashboard unlocked.');
           await loadStoreProfile();
           await fetchAllVendorData(true);
         } else {
@@ -5436,6 +5443,42 @@
     // =========================================================================
     // 9.19 VENDOR PROFILE & 6-SECTION DATA BINDING
     // =========================================================================
+    
+    function getVendorKycStatusDisplay(status, isHi) {
+      const norm = String(status || '').toLowerCase().trim();
+      if (norm === 'approved' || norm === 'verified') {
+        return {
+          text: isHi ? 'सत्यापित' : 'Verified',
+          cls: 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700',
+          icon: 'check_circle'
+        };
+      } else if (norm === 'submitted' || norm === 'pending' || norm === 'pending_approval' || norm === 'under_review') {
+        return {
+          text: isHi ? 'समीक्षा जारी है' : 'Under Review',
+          cls: 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-700',
+          icon: 'hourglass_top'
+        };
+      } else if (norm === 'resubmission_required' || norm === 'action_required' || norm === 'action_needed') {
+        return {
+          text: isHi ? 'सुधार आवश्यक' : 'Action Required',
+          cls: 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-700',
+          icon: 'warning'
+        };
+      } else if (norm === 'rejected' || norm === 'failed') {
+        return {
+          text: isHi ? 'सत्यापन पूरा नहीं हुआ' : 'Verification Unsuccessful',
+          cls: 'bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border-rose-300 dark:border-rose-700',
+          icon: 'cancel'
+        };
+      } else {
+        return {
+          text: isHi ? 'सत्यापन पूरा करें' : 'Complete Verification',
+          cls: 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700',
+          icon: 'pending'
+        };
+      }
+    }
+
     async function loadVendorProfile() {
       try {
         const storeId = VendorStore.currentStoreId || 'sharma_brothers';
@@ -5475,15 +5518,29 @@
         setVal('prof-hours', `${p.opening_time} - ${p.closing_time} (${p.weekly_schedule})`);
 
         // Section B: KYC
-        setVal('prof-kyc-doc-type', p.kyc_document_type);
-        setVal('prof-kyc-doc-num', p.kyc_document_number_masked);
+        setVal('prof-kyc-doc-type', p.kyc_document_type || 'Aadhaar Card');
+        let rawDocNum = p.kyc_document_number_masked || p.id_number || '•••• •••• 8921';
+        if (rawDocNum && !rawDocNum.includes('•') && rawDocNum.length >= 4) {
+          rawDocNum = '•••• •••• ' + rawDocNum.slice(-4);
+        }
+        setVal('prof-kyc-doc-num', rawDocNum);
+        setVal('prof-kyc-sub-date', p.created_at ? new Date(p.created_at).toLocaleDateString(isHi ? 'hi-IN' : 'en-GB') : '24 Oct 2026');
+
         const kycBadge = document.getElementById('vendor-kyc-status-pill');
+        const kycBanner = document.getElementById('vendor-kyc-review-banner');
+        const kycStatus = p.kyc_status || (p.is_verified ? 'approved' : 'submitted');
+
+        const statusDisplay = getVendorKycStatusDisplay(kycStatus, isHi);
         if (kycBadge) {
-          const isVer = p.kyc_status === 'approved' || p.is_verified;
-          kycBadge.className = isVer 
-            ? 'px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1'
-            : 'px-2.5 py-1 rounded-full text-[11px] font-black bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1';
-          kycBadge.innerHTML = `<span class="material-symbols-outlined text-[13px]">${isVer ? 'check_circle' : 'hourglass_top'}</span><span>${isVer ? (isHi ? 'गाँव बाज़ार सत्यापित' : 'GaonBazaar Verified') : (isHi ? 'सत्यापन विचाराधीन' : 'Verification Under Review')}</span>`;
+          kycBadge.className = `px-2.5 py-1 rounded-full text-[11px] font-black border flex items-center gap-1 ${statusDisplay.cls}`;
+          kycBadge.innerHTML = `<span class="material-symbols-outlined text-[13px]">${statusDisplay.icon}</span><span>${statusDisplay.text}</span>`;
+        }
+        if (kycBanner) {
+          if (kycStatus === 'approved' || p.is_verified) {
+            kycBanner.classList.add('hidden');
+          } else {
+            kycBanner.classList.remove('hidden');
+          }
         }
 
         // Section C: Bank & UPI
@@ -5672,7 +5729,7 @@
         showToast('चेतावनी', 'कृपया समस्या का विवरण दर्ज करें');
         return;
       }
-      showToast('सफल', 'टिकट दर्ज कर लिया गया है। सुपर एडमिन सहायता डेस्क शीघ्र संपर्क करेगा।');
+      showToast('सफल', 'टिकट दर्ज कर लिया गया है। सहायता डेस्क शीघ्र संपर्क करेगा।');
       closeSupportTicketModal();
     }
 

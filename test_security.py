@@ -483,6 +483,35 @@ def test_delivery_location_authorization_and_ownership():
         )
         record_check("Delivered Order Location Update Rejection (HTTP 400)", res_delivered_put.status_code == 400, f"Status: {res_delivered_put.status_code}")
 
+        # 6.12 Delivered Order Location Request Rejection (HTTP 400)
+        res_deliv_req = client.post(
+            f"/api/orders/{enc_id}/request-location",
+            headers={"Authorization": f"Bearer {runner_assigned_token}"}
+        )
+        record_check("Delivered Order Location Request Rejection (HTTP 400)", res_deliv_req.status_code == 400, f"Status: {res_deliv_req.status_code}")
+
+        # Reset to active stage 4 for request tests
+        with db_session() as db:
+            o = db.query(Order).filter(Order.id == test_ord_id).first()
+            if o:
+                o.timeline_stage = 4
+                o.status = "Out for Delivery"
+                db.commit()
+
+        # 6.13 Assigned Runner Request Location Success (HTTP 200)
+        res_req_ok = client.post(
+            f"/api/orders/{enc_id}/request-location",
+            headers={"Authorization": f"Bearer {runner_assigned_token}"}
+        )
+        record_check("Assigned Runner Request Location Success (HTTP 200)", res_req_ok.status_code == 200, f"Status: {res_req_ok.status_code}")
+
+        # 6.14 Unassigned Runner Request Location Rejection (HTTP 403)
+        res_unassigned_req = client.post(
+            f"/api/orders/{enc_id}/request-location",
+            headers={"Authorization": f"Bearer {runner_unassigned_token}"}
+        )
+        record_check("Unassigned Runner Request Location Rejection (HTTP 403)", res_unassigned_req.status_code == 403, f"Status: {res_unassigned_req.status_code}")
+
     finally:
         # Strict DB cleanup: preserve exact baseline
         with db_session() as db:

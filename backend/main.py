@@ -1671,6 +1671,53 @@ def process_order_cancellation(order: Order, db: Session, reason: str = "Custome
 
 
 
+
+@app.post("/api/orders/{order_id}/request-location")
+def request_order_delivery_location(
+    order_id: str,
+    db: Session = Depends(get_db),
+    auth_runner: dict = Depends(verify_runner_access)
+):
+    """
+    Runner requests the customer to pin their exact delivery coordinates.
+    Dispatches a high-priority notification to the customer.
+    """
+    candidate_ids = [order_id, f"#{order_id}", order_id.lstrip("#")]
+    order = db.query(Order).filter(Order.id.in_(candidate_ids)).first()
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+
+    if order.timeline_stage >= 5 or order.status in ["delivered", "cancelled"]:
+        raise HTTPException(status_code=400, detail="Cannot request location for delivered or cancelled orders")
+
+    runner_user_id = auth_runner.get("runner_id") or auth_runner.get("user_id")
+    if order.runner_id and runner_user_id and order.runner_id != runner_user_id and auth_runner.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Forbidden: You are not assigned to this order")
+
+    target_user = str(order.user_id) if order.user_id else str(order.user_phone or "")
+    notif = Notification(
+        id=f"notif_{uuid.uuid4().hex[:8]}",
+        user_id=target_user,
+        user_role="customer",
+        title="Share Delivery Location",
+        title_hi="सटीक डिलीवरी स्थान साझा करें",
+        message=f"Your delivery partner has requested your exact doorstep GPS pin for order #{order.id}.",
+        message_hi=f"आपके डिलीवरी साथी ने ऑर्डर #{order.id} के लिए सटीक डोरस्टेप GPS पिन का अनुरोध किया है।",
+        notification_type="order_location_requested",
+        order_id=order.id,
+        created_at=datetime.utcnow(),
+        is_read=False
+    )
+    db.add(notif)
+    db.commit()
+
+    return {
+        "success": True,
+        "order_id": order.id,
+        "message": "सटीक स्थान का अनुरोध ग्राहक को भेज दिया गया है।"
+    }
+
+
 @app.put("/api/orders/{order_id}/delivery-location", response_model=OrderDeliveryLocationResponse)
 def update_order_delivery_location(
     order_id: str,
@@ -2219,9 +2266,15 @@ def create_payment_order(payload: CreatePaymentOrderRequest, db: Session = Depen
         if not payload.items:
             raise HTTPException(status_code=400, detail="Cannot create payment order with an empty cart")
 
-        target_store_id = payload.store_id or "sharma_brothers"
+        target_store_id = payload.store_id
+        if not target_store_id and payload.items:
+            first_prod = db.query(Product).filter(Product.id == payload.items[0].id).first()
+            if first_prod and first_prod.store_id:
+                target_store_id = first_prod.store_id
+        if not target_store_id:
+            target_store_id = "sharma_brothers"
         store = db.query(Store).filter(Store.id == target_store_id).first()
-        store_name = store.name if store else "Sharma Brothers Kirana"
+        store_name = store.name if store else (target_store_id if target_store_id else "Kirana Store")
 
         subtotal = 0.0
         for item_input in payload.items:
@@ -2760,7 +2813,8 @@ def execute_order_split_payout(
     # Dispatch real notifications to Vendor & Runner
     try:
         notify_payout_settlement(db, order.store_id, "vendor", order.vendor_payout, order.id, "processed", v_trf)
-        notify_payout_settlement(db, getattr(order, "runner_id", "gm_1"), "runner", order.runner_payout, order.id, "processed", r_trf)
+        if getattr(order, "runner_id", None):
+            notify_payout_settlement(db, order.runner_id, "runner", order.runner_payout, order.id, "processed", r_trf)
     except Exception as e:
         print(f"Notice: Payout notification dispatch: {e}")
 
@@ -3785,7 +3839,7 @@ def runner_login(payload: RunnerLoginRequest, db: Session = Depends(get_db)):
 
 @app.get("/api/runner/profile", response_model=RunnerProfileDTO)
 def get_runner_profile(
-    runner_id: str = "gm_1",
+    runner_id: Optional[str] = Query(None),
     db: Session = Depends(get_db),
     auth_runner: dict = Depends(verify_runner_access)
 ):
@@ -3793,7 +3847,8 @@ def get_runner_profile(
     Returns active profile for the Gaon Mitra runner, including current shift status.
     Protected by Runner JWT with strict runner_id isolation.
     """
-    runner_db = db.query(Runner).filter(Runner.id == runner_id).first()
+    effective_id = runner_id or auth_runner.get("runner_id") or auth_runner.get("user_id") or "gm_1"
+    runner_db = db.query(Runner).filter(Runner.id == effective_id).first()
     if runner_db:
         return RunnerProfileDTO(
             runner_id=runner_db.id,
@@ -3811,8 +3866,12 @@ def get_runner_profile(
             payout_upi=runner_db.payout_upi
         )
 
-    profile = RUNNER_STATE.get(runner_id, RUNNER_STATE["gm_1"])
-    return RunnerProfileDTO(**profile)
+    if effective_id in RUNNER_STATE:
+        return RunnerProfileDTO(**RUNNER_STATE[effective_id])
+    if effective_id == "gm_1" or not runner_id:
+        return RunnerProfileDTO(**RUNNER_STATE["gm_1"])
+
+    raise HTTPException(status_code=404, detail=f"Runner profile '{effective_id}' not found")
 
 
 @app.post("/api/runner/shift", response_model=ShiftStatusResponse)
@@ -3830,16 +3889,19 @@ def toggle_runner_shift(
         db.commit()
 
     if payload.runner_id not in RUNNER_STATE:
+        r_name = runner_db.name if runner_db else "Gaon Mitra Runner"
+        r_code = runner_db.runner_code if runner_db else f"#GM-{payload.runner_id[-4:].upper()}"
+        r_phone = runner_db.phone if runner_db else ""
         RUNNER_STATE[payload.runner_id] = {
             "runner_id": payload.runner_id,
-            "name": "Kamal Singh (कमल सिंह)",
-            "runner_code": "#GM-RAMPUR-07",
-            "phone": "9876543220",
-            "hub_id": "hub_rampur_mandi",
-            "hub_name": "Rampur Mandi Cluster Hub #RMP-04",
+            "name": r_name,
+            "runner_code": r_code,
+            "phone": r_phone,
+            "hub_id": runner_db.hub_id if runner_db else "hub_default",
+            "hub_name": runner_db.hub_name if runner_db else "GaonBazaar Cluster Hub",
             "is_online": payload.is_online,
-            "rating": 4.9,
-            "total_completed_missions": 142
+            "rating": runner_db.rating if runner_db else 5.0,
+            "total_completed_missions": runner_db.total_completed_missions if runner_db else 0
         }
     else:
         RUNNER_STATE[payload.runner_id]["is_online"] = payload.is_online
@@ -3875,9 +3937,9 @@ def get_runner_missions(
     for ord_obj in orders:
         store = db.query(Store).filter(Store.id == ord_obj.store_id).first()
         store_phone = store.phone if store and store.phone else "9876543210"
-        store_lat = float(store.lat) if store and store.lat else 29.1350
-        store_lng = float(store.lng) if store and store.lng else 77.0100
-        store_address = (store.address or store.pickup_location or f"{store.name}, {store.village or 'Rampur'}") if store else "Rampur Main Market"
+        store_lat = float(store.lat) if (store and store.lat) else None
+        store_lng = float(store.lng) if (store and store.lng) else None
+        store_address = (store.address or store.pickup_location or (f"{store.name}, {store.village}" if store and store.village else (store.name if store else None)))
 
         items_dto = [
             RunnerMissionItemDTO(
@@ -4229,7 +4291,7 @@ def register_vendor(payload: VendorRegisterRequest, db: Session = Depends(get_db
         success=True,
         store_id=new_store.id,
         status="pending_approval",
-        message="पंजीकरण सफलतापूर्वक दर्ज हुआ! आपकी दुकान सत्यापन हेतु सुपर एडमिन को प्रेषित की गई है।",
+        message="पंजीकरण सफलतापूर्वक दर्ज हुआ! आपकी दुकान का सत्यापन विचाराधीन है। हमारा लक्ष्य 24 घंटे के भीतर समीक्षा पूरी करना है।",
         token=token
     )
 
@@ -4284,7 +4346,7 @@ def register_runner(payload: RunnerRegisterRequest, db: Session = Depends(get_db
             runner_id=existing_runner.id,
             runner_code=existing_runner.runner_code,
             status="pending_approval",
-            message="गाँव मित्र पंजीकरण सफल! आपका सत्यापन सुपर एडमिन द्वारा विचाराधीन है।",
+            message="गाँव मित्र पंजीकरण सफल! आपका सत्यापन विचाराधीन है। हमारा लक्ष्य 24 घंटे के भीतर समीक्षा पूरी करना है।",
             token=token
         )
 
@@ -4334,7 +4396,7 @@ def register_runner(payload: RunnerRegisterRequest, db: Session = Depends(get_db
         runner_id=new_runner.id,
         runner_code=new_runner.runner_code,
         status="pending_approval",
-        message="गाँव मित्र पंजीकरण सफल! आपका सत्यापन सुपर एडमिन द्वारा विचाराधीन है।",
+        message="गाँव मित्र पंजीकरण सफल! आपका सत्यापन विचाराधीन है। हमारा लक्ष्य 24 घंटे के भीतर समीक्षा पूरी करना है।",
         token=token
     )
 
