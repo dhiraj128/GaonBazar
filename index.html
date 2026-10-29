@@ -1908,27 +1908,6 @@
             <button type="button" onclick="openCustomerAccountSubview('personal')" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-[#2A323D] dark:hover:bg-[#465362] text-slate-800 dark:text-[#F8FAFC] text-xs font-bold shrink-0 transition-colors cursor-pointer" data-i18n="btn_edit">संशोधन करें</button>
           </div>
 
-          <!-- Compact Language Toggle Row on Account Landing (Directly Accessible & Test-Compliant) -->
-          <div id="profile-row-lang-card" class="rounded-3xl bg-white dark:bg-[#1D232B] p-3.5 shadow-mobile-card border border-surface-container-high dark:border-[#465362] flex items-center justify-between">
-            <div class="flex items-center gap-3 min-w-0">
-              <div class="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0 border border-indigo-100 dark:border-indigo-800/40">
-                <span class="material-symbols-outlined text-[22px]">translate</span>
-              </div>
-              <div class="flex flex-col min-w-0">
-                <span class="text-xs sm:text-sm font-black text-slate-900 dark:text-[#F8FAFC] truncate" data-i18n="profile_row_lang">ऐप की भाषा</span>
-                <span id="profile-current-lang-badge" class="text-[11px] text-slate-500 dark:text-[#CBD5E1] truncate mt-0.5" data-i18n="profile_row_lang_sub">हिंदी या अंग्रेजी चुनें</span>
-              </div>
-            </div>
-            <div class="flex items-center gap-1.5 bg-slate-100 dark:bg-[#2A323D] p-1 rounded-2xl border border-slate-200 dark:border-[#465362] shrink-0">
-              <button id="btn-profile-lang-hi" type="button" onclick="setAppLanguage('hi')" class="h-9 px-3.5 rounded-xl font-black text-xs flex items-center justify-center transition-all bg-primary text-white shadow-xs cursor-pointer">
-                हिंदी
-              </button>
-              <button id="btn-profile-lang-en" type="button" onclick="setAppLanguage('en')" class="h-9 px-3.5 rounded-xl font-black text-xs flex items-center justify-center transition-all bg-transparent text-slate-700 dark:text-slate-200 hover:bg-white/60 cursor-pointer">
-                English
-              </button>
-            </div>
-          </div>
-
           <!-- Tappable Compact Menu Rows Container -->
           <div class="rounded-3xl bg-white dark:bg-[#1D232B] shadow-mobile-card border border-surface-container-high dark:border-[#465362] divide-y divide-slate-100 dark:divide-slate-800/80 overflow-hidden">
             
@@ -2239,13 +2218,13 @@
                       <span class="text-[11px] text-slate-400" data-i18n="profile_row_lang_sub">हिंदी या अंग्रेजी चुनें</span>
                     </div>
                   </div>
-                  <span id="subview-current-lang-badge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-[#2A323D] text-slate-600 dark:text-slate-300">हिंदी</span>
+                  <span id="profile-current-lang-badge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-[#2A323D] text-slate-600 dark:text-slate-300">हिंदी</span>
                 </div>
                 <div class="grid grid-cols-2 gap-2 pt-1">
-                  <button id="subview-btn-profile-lang-hi" onclick="setAppLanguage('hi')" class="h-10 rounded-2xl border text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer">
+                  <button id="btn-profile-lang-hi" onclick="setAppLanguage('hi')" class="h-10 rounded-2xl border text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer">
                     <span>हिंदी</span>
                   </button>
-                  <button id="subview-btn-profile-lang-en" onclick="setAppLanguage('en')" class="h-10 rounded-2xl border text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer">
+                  <button id="btn-profile-lang-en" onclick="setAppLanguage('en')" class="h-10 rounded-2xl border text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer">
                     <span>English</span>
                   </button>
                 </div>
@@ -2938,7 +2917,7 @@
           <!-- Selected Coordinates & Status Pill -->
           <div class="flex items-center justify-between text-xs bg-slate-50 dark:bg-[#2A323D] p-2.5 rounded-xl border border-slate-100 dark:border-slate-700">
             <span class="text-slate-500 dark:text-slate-400 font-medium" data-i18n="lbl_pin_coords">चयनित निर्देशांक:</span>
-            <span id="share-location-coords-badge" class="font-mono font-bold text-emerald-700 dark:text-emerald-400">29.135000, 77.010000</span>
+            <span id="share-location-coords-badge" class="font-mono font-bold text-emerald-700 dark:text-emerald-400" data-i18n="lbl_no_coords_yet">स्थान चुना नहीं गया</span>
           </div>
 
           <!-- Landmark Note Input -->
@@ -5532,29 +5511,62 @@
     // 4. Exact Doorstep Location Sharing Modal & Flow
     let shareLocationMap = null;
     let shareLocationMarker = null;
-    let shareSelectedLat = 29.135000;
-    let shareSelectedLng = 77.010000;
+    let shareSelectedLat = null;
+    let shareSelectedLng = null;
+
+    function getActiveEligibleOrder() {
+      if (AppStore.activeOrder && AppStore.activeOrder.timeline_stage < 5 && AppStore.activeOrder.status !== 'Delivered' && AppStore.activeOrder.status !== 'Cancelled') {
+        return AppStore.activeOrder;
+      }
+      if (Array.isArray(AppStore.orders)) {
+        const found = AppStore.orders.find(o => (o.timeline_stage < 5 || !o.timeline_stage) && (o.status || '').toLowerCase() !== 'delivered' && (o.status || '').toLowerCase() !== 'cancelled');
+        if (found) return found;
+      }
+      if (AppStore.activeOrder && (AppStore.activeOrder.id || AppStore.activeOrder.order_id)) {
+        return AppStore.activeOrder;
+      }
+      return null;
+    }
 
     window.openShareExactLocationModal = function() {
+      const isHi = AppStore.lang === 'hi';
+      const actOrder = getActiveEligibleOrder();
+      if (!actOrder) {
+        alert(isHi ? 'कोई सक्रिय डिलीवरी ऑर्डर नहीं मिला जिसके लिए लोकेशन साझा की जा सके।' : 'No active delivery order found to share location for.');
+        return;
+      }
+
       const modal = document.getElementById('modal-share-exact-location');
       if (!modal) return;
       modal.classList.remove('hidden');
 
-      // Use active order coordinates if available
-      let startLat = 29.135000;
-      let startLng = 77.010000;
-      const actOrder = AppStore.activeOrder;
-      if (actOrder && actOrder.customer_lat && actOrder.customer_lng) {
+      // Check if order already has confirmed GPS coordinates
+      let startLat = null;
+      let startLng = null;
+      if (actOrder.customer_lat && actOrder.customer_lng && !isNaN(Number(actOrder.customer_lat)) && !isNaN(Number(actOrder.customer_lng)) && Number(actOrder.customer_lat) !== 0 && Number(actOrder.customer_lng) !== 0) {
         startLat = Number(actOrder.customer_lat);
         startLng = Number(actOrder.customer_lng);
+        shareSelectedLat = startLat;
+        shareSelectedLng = startLng;
+        updateShareCoordsBadge(shareSelectedLat, shareSelectedLng);
+      } else if (AppStore.customerLat && AppStore.customerLng && !isNaN(Number(AppStore.customerLat)) && !isNaN(Number(AppStore.customerLng)) && Number(AppStore.customerLat) !== 0 && Number(AppStore.customerLng) !== 0) {
+        startLat = Number(AppStore.customerLat);
+        startLng = Number(AppStore.customerLng);
+        shareSelectedLat = startLat;
+        shareSelectedLng = startLng;
+        updateShareCoordsBadge(shareSelectedLat, shareSelectedLng);
+      } else {
+        // No demo coordinates! Customer must pick a pin or use GPS
+        shareSelectedLat = null;
+        shareSelectedLng = null;
+        const badge = document.getElementById('share-location-coords-badge');
+        if (badge) {
+          badge.innerText = isHi ? 'कृपया GPS बटन दबाएं या मैप पर पिन रखें' : 'Tap GPS button or place pin on map';
+        }
       }
-      shareSelectedLat = startLat;
-      shareSelectedLng = startLng;
-
-      updateShareCoordsBadge(shareSelectedLat, shareSelectedLng);
 
       setTimeout(() => {
-        initShareLocationMap(shareSelectedLat, shareSelectedLng);
+        initShareLocationMap(startLat, startLng);
       }, 150);
     };
 
@@ -5566,7 +5578,12 @@
     function updateShareCoordsBadge(lat, lng) {
       const badge = document.getElementById('share-location-coords-badge');
       if (badge) {
-        badge.innerText = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+        if (lat != null && lng != null && !isNaN(lat) && !isNaN(lng)) {
+          badge.innerText = `${Number(lat).toFixed(6)}, ${Number(lng).toFixed(6)}`;
+        } else {
+          const isHi = (typeof AppStore !== 'undefined' && AppStore.lang === 'hi');
+          badge.innerText = isHi ? 'स्थान चुना नहीं गया' : 'No location selected';
+        }
       }
     }
 
@@ -5574,10 +5591,13 @@
       const mapEl = document.getElementById('share-location-leaflet-map');
       if (!mapEl || typeof L === 'undefined') return;
 
+      const centerLat = (lat != null && !isNaN(lat)) ? lat : 28.6139;
+      const centerLng = (lng != null && !isNaN(lng)) ? lng : 77.2090;
+
       if (!shareLocationMap) {
         shareLocationMap = L.map('share-location-leaflet-map', {
-          center: [lat, lng],
-          zoom: 17,
+          center: [centerLat, centerLng],
+          zoom: (lat != null) ? 17 : 14,
           zoomControl: true,
           scrollWheelZoom: true,
           touchZoom: true,
@@ -5589,30 +5609,53 @@
           attribution: '&copy; OpenStreetMap'
         }).addTo(shareLocationMap);
 
-        shareLocationMarker = L.marker([lat, lng], {
-          draggable: true,
-          autoPan: true
-        }).addTo(shareLocationMap);
+        if (lat != null && lng != null) {
+          shareLocationMarker = L.marker([lat, lng], {
+            draggable: true,
+            autoPan: true
+          }).addTo(shareLocationMap);
 
-        shareLocationMarker.on('dragend', function(e) {
-          const pos = e.target.getLatLng();
-          shareSelectedLat = pos.lat;
-          shareSelectedLng = pos.lng;
-          updateShareCoordsBadge(pos.lat, pos.lng);
-        });
+          shareLocationMarker.on('dragend', function(e) {
+            const pos = e.target.getLatLng();
+            shareSelectedLat = pos.lat;
+            shareSelectedLng = pos.lng;
+            updateShareCoordsBadge(pos.lat, pos.lng);
+          });
+        }
 
         shareLocationMap.on('click', function(e) {
-          if (shareLocationMarker) {
+          shareSelectedLat = e.latlng.lat;
+          shareSelectedLng = e.latlng.lng;
+          if (!shareLocationMarker) {
+            shareLocationMarker = L.marker(e.latlng, {
+              draggable: true,
+              autoPan: true
+            }).addTo(shareLocationMap);
+            shareLocationMarker.on('dragend', function(ev) {
+              const pos = ev.target.getLatLng();
+              shareSelectedLat = pos.lat;
+              shareSelectedLng = pos.lng;
+              updateShareCoordsBadge(pos.lat, pos.lng);
+            });
+          } else {
             shareLocationMarker.setLatLng(e.latlng);
-            shareSelectedLat = e.latlng.lat;
-            shareSelectedLng = e.latlng.lng;
-            updateShareCoordsBadge(e.latlng.lat, e.latlng.lng);
           }
+          updateShareCoordsBadge(e.latlng.lat, e.latlng.lng);
         });
       } else {
-        shareLocationMap.setView([lat, lng], 17);
-        if (shareLocationMarker) {
-          shareLocationMarker.setLatLng([lat, lng]);
+        shareLocationMap.setView([centerLat, centerLng], (lat != null) ? 17 : 14);
+        if (lat != null && lng != null) {
+          if (!shareLocationMarker) {
+            shareLocationMarker = L.marker([lat, lng], { draggable: true, autoPan: true }).addTo(shareLocationMap);
+            shareLocationMarker.on('dragend', function(e) {
+              const pos = e.target.getLatLng();
+              shareSelectedLat = pos.lat;
+              shareSelectedLng = pos.lng;
+              updateShareCoordsBadge(pos.lat, pos.lng);
+            });
+          } else {
+            shareLocationMarker.setLatLng([lat, lng]);
+          }
         }
       }
 
@@ -5620,8 +5663,9 @@
     }
 
     window.requestShareLocationGPS = function() {
+      const isHi = AppStore.lang === 'hi';
       if (!navigator.geolocation) {
-        alert(AppStore.lang === 'hi' ? 'आपके ब्राउज़र में GPS उपलब्ध नहीं है।' : 'GPS is not available in your browser.');
+        alert(isHi ? 'आपके ब्राउज़र में GPS उपलब्ध नहीं है।' : 'GPS is not available in your browser.');
         return;
       }
       navigator.geolocation.getCurrentPosition(
@@ -5631,14 +5675,27 @@
           shareSelectedLat = lat;
           shareSelectedLng = lng;
           updateShareCoordsBadge(lat, lng);
-          if (shareLocationMap && shareLocationMarker) {
+          if (shareLocationMap) {
             shareLocationMap.setView([lat, lng], 18);
-            shareLocationMarker.setLatLng([lat, lng]);
+            if (!shareLocationMarker && typeof L !== 'undefined') {
+              shareLocationMarker = L.marker([lat, lng], {
+                draggable: true,
+                autoPan: true
+              }).addTo(shareLocationMap);
+              shareLocationMarker.on('dragend', function(e) {
+                const p = e.target.getLatLng();
+                shareSelectedLat = p.lat;
+                shareSelectedLng = p.lng;
+                updateShareCoordsBadge(p.lat, p.lng);
+              });
+            } else if (shareLocationMarker) {
+              shareLocationMarker.setLatLng([lat, lng]);
+            }
           }
         },
         function(err) {
           console.warn('GPS location request error:', err);
-          alert(AppStore.lang === 'hi' ? 'GPS लोकेशन प्राप्त नहीं हो सकी। आप पिन को मैप पर खींचकर सही जगह रख सकते हैं।' : 'Could not fetch GPS. You can drag the pin on the map to your exact doorstep.');
+          alert(isHi ? 'GPS लोकेशन प्राप्त नहीं हो सकी। आप पिन को मैप पर खींचकर सही जगह रख सकते हैं।' : 'Could not fetch GPS. You can drag the pin on the map to your exact doorstep.');
         },
         { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
       );
@@ -5650,8 +5707,26 @@
       const notesInput = document.getElementById('share-location-notes');
       const landmark = notesInput ? notesInput.value.trim() : '';
 
-      const orderId = (AppStore.activeOrder && AppStore.activeOrder.order_id) || (AppStore.lastOrderId) || '#RUR-5765';
+      const actOrder = getActiveEligibleOrder();
+      const orderId = actOrder ? (actOrder.id || actOrder.order_id) : (AppStore.lastOrderId || null);
+
+      if (!orderId) {
+        alert(isHi ? 'कोई सक्रिय डिलीवरी ऑर्डर नहीं मिला।' : 'No active order found.');
+        return;
+      }
+
+      if (shareSelectedLat == null || shareSelectedLng == null || isNaN(shareSelectedLat) || isNaN(shareSelectedLng) || (shareSelectedLat === 0 && shareSelectedLng === 0)) {
+        alert(isHi ? 'कृपया डिलीवरी के लिए मैप पर सटीक स्थान चुनें या GPS बटन दबाएं।' : 'Please select an exact delivery location on the map or tap GPS button.');
+        return;
+      }
+
       const cleanId = encodeURIComponent(orderId);
+      const token = AppStore.sessionToken || (typeof localStorage !== 'undefined' ? (localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_authToken')) : null);
+
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
 
       if (btn) {
         btn.disabled = true;
@@ -5661,10 +5736,10 @@
       try {
         const resp = await fetch(`/api/orders/${cleanId}/delivery-location`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: headers,
           body: JSON.stringify({
-            customer_lat: shareSelectedLat,
-            customer_lng: shareSelectedLng,
+            customer_lat: Number(shareSelectedLat),
+            customer_lng: Number(shareSelectedLng),
             landmark: landmark || undefined
           })
         });
@@ -5676,6 +5751,14 @@
             AppStore.activeOrder.customer_lng = shareSelectedLng;
             if (landmark) AppStore.activeOrder.landmark = landmark;
           }
+          if (Array.isArray(AppStore.orders)) {
+            const o = AppStore.orders.find(x => (x.id === orderId || x.order_id === orderId));
+            if (o) {
+              o.customer_lat = shareSelectedLat;
+              o.customer_lng = shareSelectedLng;
+              if (landmark) o.landmark = landmark;
+            }
+          }
           closeShareExactLocationModal();
           if (typeof showAudioToast === 'function') {
             showAudioToast(
@@ -5685,6 +5768,13 @@
           } else {
             alert(isHi ? '📍 स्थान साझा किया गया! डिलीवरी साथी को सूचित कर दिया गया है।' : '📍 Location shared! Delivery partner has been notified.');
           }
+        } else if (resp.status === 401) {
+          alert(isHi ? 'कृपया स्थान साझा करने के लिए पहले लॉगिन करें।' : 'Please log in first to share delivery location.');
+        } else if (resp.status === 403) {
+          alert(isHi ? 'अनधिकृत: आप केवल अपने सक्रिय ऑर्डर का स्थान बदल सकते हैं।' : 'Unauthorized: You can only update locations for your own active orders.');
+        } else if (resp.status === 400) {
+          const errData = await resp.json().catch(() => ({}));
+          alert(errData.detail || (isHi ? 'ऑर्डर पहले ही डिलीवर या रद्द हो चुका है।' : 'Order is already delivered or cancelled.'));
         } else {
           alert(isHi ? 'स्थान साझा नहीं हो सका। कृपया पुनः प्रयास करें।' : 'Failed to share location. Please retry.');
         }
@@ -5698,7 +5788,6 @@
         }
       }
     };
-
 
     window.applyBilingualState = function() {
       if (typeof updateThemeSelectorUI === 'function') updateThemeSelectorUI();

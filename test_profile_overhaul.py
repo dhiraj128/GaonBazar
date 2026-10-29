@@ -146,6 +146,11 @@ def run_tests():
         check("Language Hi button exists", page.locator("#btn-profile-lang-hi").count() == 1)
         check("Language En button exists", page.locator("#btn-profile-lang-en").count() == 1)
 
+        # Open Settings & Preferences subview to access language controls
+        if page.is_visible("#account-row-settings"):
+            page.click("#account-row-settings")
+            page.wait_for_timeout(300)
+
         # Test Switch to English
         page.click("#btn-profile-lang-en")
         page.wait_for_timeout(400)

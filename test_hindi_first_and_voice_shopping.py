@@ -87,6 +87,10 @@ def main():
 
         # Language belongs in Account settings, not the drawer.
         page.click("#nav-btn-profile")
+        page.wait_for_timeout(300)
+        # Navigate from Account landing menu to Settings & Preferences subview
+        page.click("#account-row-settings")
+        page.wait_for_timeout(300)
         runner.check("Account is the only language-settings destination",
                      page.is_visible("#btn-profile-lang-hi") and
                      page.is_visible("#btn-profile-lang-en") and
