@@ -837,6 +837,8 @@ def _run_runner_device_steps(context, dev_name, device_config, logger):
     # rather than trying to click a hidden element and timing out for 30s.
     page.click("#nav-btn-settings")
     page.wait_for_selector("#tab-settings:not(.hidden)", timeout=5000)
+    page.click("#runner-menu-row-preferences")
+    page.wait_for_timeout(250)
     check_element_bounds(page, "#lang-toggle-btn", "Language Toggle in Settings", logger)
     check_element_bounds(page, "#runner-theme-settings-card", "Theme Controls in Settings", logger)
     initial_lang = page.evaluate("localStorage.getItem('gaonbazar_lang')")
