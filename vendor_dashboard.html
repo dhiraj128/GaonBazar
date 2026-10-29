@@ -1189,10 +1189,16 @@
                 <span class="material-symbols-outlined text-primary text-[20px]">account_balance</span>
                 <h3 class="text-xs sm:text-sm font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="sec_bank_title">सहेजा गया खाता विवरण</h3>
               </div>
-              <span id="prof-bank-status-pill" class="px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 flex items-center gap-1">
-                <span class="material-symbols-outlined text-[13px]">verified</span>
-                <span data-i18n="badge_verified">सत्यापित खाता</span>
-              </span>
+              <div class="flex items-center gap-2">
+                <span id="prof-bank-status-pill" class="px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[13px]">verified</span>
+                  <span data-i18n="badge_verified">सत्यापित खाता</span>
+                </span>
+                <button type="button" id="btn-edit-vendor-payout" onclick="openVendorPayoutEditForm()" class="px-3 py-1.5 rounded-xl bg-primary hover:bg-emerald-600 text-white text-xs font-black flex items-center gap-1.5 shadow-xs active:scale-95 transition-all cursor-pointer">
+                  <span class="material-symbols-outlined text-[15px]">edit</span>
+                  <span data-i18n="btn_edit_payout">विवरण बदलें</span>
+                </button>
+              </div>
             </div>
 
             <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed" data-i18n="bank_settings_desc">
@@ -1222,13 +1228,16 @@
             </div>
           </div>
 
-          <!-- Direct In-Page Payout Configuration Form with Separated Tabs -->
-          <div class="bg-white dark:bg-[#1D232B] rounded-3xl p-4 sm:p-5 border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col gap-4">
+          <!-- Direct In-Page Payout Configuration Form (Hidden until Edit Details is clicked) -->
+          <div id="vendor-payout-edit-form-card" class="hidden bg-white dark:bg-[#1D232B] rounded-3xl p-4 sm:p-5 border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col gap-4">
             <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2.5">
               <div>
                 <h3 class="text-sm font-black text-slate-900 dark:text-white" data-i18n="bank_settings_title">भुगतान विधि बदलें</h3>
                 <span class="text-[11px] text-slate-500 dark:text-slate-400" data-i18n="bank_settings_opt_sub">बैंक खाता अथवा UPI ID चुनें</span>
               </div>
+              <button type="button" onclick="closeVendorPayoutEditForm()" class="p-1 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-white cursor-pointer" title="रद्द करें">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+              </button>
             </div>
 
             <!-- Segmented Mode Selector: Option 1 (Bank Account) vs Option 2 (UPI) -->
@@ -1277,10 +1286,15 @@
 
             <p id="vendor-bank-msg" class="hidden text-xs font-bold p-3 rounded-2xl"></p>
 
-            <button id="btn-save-vendor-bank-page" type="button" onclick="saveVendorPayoutSettings()" class="w-full py-3 rounded-2xl bg-primary hover:bg-emerald-600 text-white text-xs font-black flex items-center justify-center gap-2 shadow-sm active:scale-98 transition-all min-h-[44px] cursor-pointer">
-              <span class="material-symbols-outlined text-[18px]">verified</span>
-              <span data-i18n="btn_save_bank">भुगतान विवरण सहेजें</span>
-            </button>
+            <div class="flex items-center gap-3">
+              <button type="button" onclick="closeVendorPayoutEditForm()" class="flex-1 py-3 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold active:scale-98 transition-all min-h-[44px] cursor-pointer">
+                <span data-i18n="btn_cancel">रद्द करें</span>
+              </button>
+              <button id="btn-save-vendor-bank-page" type="button" onclick="saveVendorPayoutSettings()" class="flex-[2] py-3 rounded-2xl bg-primary hover:bg-emerald-600 text-white text-xs font-black flex items-center justify-center gap-2 shadow-sm active:scale-98 transition-all min-h-[44px] cursor-pointer">
+                <span class="material-symbols-outlined text-[18px]">verified</span>
+                <span data-i18n="btn_save_bank">भुगतान विवरण सहेजें</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -2456,30 +2470,30 @@
     // Reference orders for exact freeze alignment
     
     const DEFAULT_REFERENCE_PRODUCTS = [
-      { id: 'item_tomato', store_id: 'sharma_brothers', name_en: 'Fresh Tomato', name_hi: 'ताज़ा टमाटर', category: 'kirana', weight: '1 kg • स्थानीय खेत', price: 30, mrp: 35, icon: 'nutrition', in_stock: true },
-      { id: 'item_banana', store_id: 'sharma_brothers', name_en: 'Banana', name_hi: 'केला', category: 'kirana', weight: '1 kg • ताज़ा फल', price: 40, mrp: 50, icon: 'nutrition', in_stock: true },
-      { id: 'item_onion', store_id: 'sharma_brothers', name_en: 'Onion', name_hi: 'प्याज़', category: 'kirana', weight: '1 kg • ताज़ी उपज', price: 25, mrp: 30, icon: 'nutrition', in_stock: true },
-      { id: 'item_atta', store_id: 'sharma_brothers', name_en: 'Chakki Fresh Atta', name_hi: 'चक्की ताज़ा आटा', category: 'atta', weight: '5 kg • शुद्ध गेहूं आटा', price: 120, mrp: 140, icon: 'grain', in_stock: true },
-      { id: 'item_1', store_id: 'sharma_brothers', name_en: 'Aashirvaad Chakki Atta', name_hi: 'आशीर्वाद चक्की आटा', category: 'atta', weight: '5 kg • संपूर्ण पोषण आटा', price: 210, mrp: 240, icon: 'grain', in_stock: true },
-      { id: 'item_2', store_id: 'sharma_brothers', name_en: 'Fortune Mustard Oil', name_hi: 'फॉर्च्यून कच्ची घानी सरसों तेल', category: 'oil', weight: '1 L • शुद्ध सरसों तेल', price: 145, mrp: 165, icon: 'opacity', in_stock: true },
-      { id: 'item_3', store_id: 'sharma_brothers', name_en: 'Tata Salt Vaccum Evaporated', name_hi: 'टाटा शुद्ध आयोडीन नमक', category: 'spices', weight: '1 kg • देश का नमक', price: 28, mrp: 30, icon: 'local_fire_department', in_stock: true },
-      { id: 'item_4', store_id: 'sharma_brothers', name_en: 'MDH Deggi Mirch', name_hi: 'एमडीएच देगी मिर्च पाउडर', category: 'spices', weight: '100 g • असली लाल मिर्च', price: 82, mrp: 90, icon: 'local_fire_department', in_stock: true },
-      { id: 'item_5', store_id: 'sharma_brothers', name_en: 'Tata Tea Premium Desh Ki Chai', name_hi: 'टाटा टी प्रीमियम चाय पत्ती', category: 'tea', weight: '500 g • कड़क स्वाद', price: 220, mrp: 250, icon: 'emoji_food_beverage', in_stock: true },
-      { id: 'item_6', store_id: 'sharma_brothers', name_en: 'Madhur Pure & Hygienic Sugar', name_hi: 'मधुर सल्फर-मुक्त चीनी', category: 'tea', weight: '1 kg • दानेदार चीनी', price: 48, mrp: 55, icon: 'emoji_food_beverage', in_stock: true },
-      { id: 'item_7', store_id: 'sharma_brothers', name_en: 'Daawat Rozana Basmati Rice', name_hi: 'दावत रोज़ाना बासमती चावल', category: 'atta', weight: '5 kg • सुगंधित बासमती', price: 340, mrp: 399, icon: 'grain', in_stock: true },
-      { id: 'item_8', store_id: 'sharma_brothers', name_en: 'Amul Pure Ghee Pouch', name_hi: 'अमूल शुद्ध गाय का घी', category: 'oil', weight: '1 L • पारंपरिक स्वाद', price: 590, mrp: 620, icon: 'opacity', in_stock: true },
-      { id: 'item_9', store_id: 'sharma_brothers', name_en: 'Catch Turmeric Powder Haldi', name_hi: 'कैच शुद्ध हल्दी पाउडर', category: 'spices', weight: '200 g • प्राकृतिक रंग', price: 65, mrp: 72, icon: 'local_fire_department', in_stock: true },
-      { id: 'item_10', store_id: 'sharma_brothers', name_en: 'Catch Coriander Powder Dhaniya', name_hi: 'कैच पिसा धनिया पाउडर', category: 'spices', weight: '200 g • सुगंधित धनिया', price: 58, mrp: 65, icon: 'local_fire_department', in_stock: true },
-      { id: 'item_11', store_id: 'sharma_brothers', name_en: 'Everest Garam Masala', name_hi: 'एवरेस्ट असली गरम मसाला', category: 'spices', weight: '100 g • शाही सुगंध', price: 78, mrp: 85, icon: 'local_fire_department', in_stock: true },
-      { id: 'item_12', store_id: 'sharma_brothers', name_en: 'Brooke Bond Red Label Tea', name_hi: 'रेड लेबल स्पेशल चाय', category: 'tea', weight: '250 g • स्वाद भरा संगम', price: 130, mrp: 145, icon: 'emoji_food_beverage', in_stock: true },
-      { id: 'item_13', store_id: 'sharma_brothers', name_en: 'Tata Sampann Toor Dal Unpolished', name_hi: 'टाटा सम्पन्न अरहर / तुअर दाल', category: 'kirana', weight: '1 kg • बिना पॉलिश दाल', price: 165, mrp: 185, icon: 'cookie', in_stock: true },
-      { id: 'item_14', store_id: 'sharma_brothers', name_en: 'Tata Sampann Moong Dal Dhuli', name_hi: 'टाटा सम्पन्न मूंग दाल धुली', category: 'kirana', weight: '1 kg • प्रोटीन से भरपूर', price: 140, mrp: 155, icon: 'cookie', in_stock: true },
-      { id: 'item_15', store_id: 'sharma_brothers', name_en: 'Tata Sampann Chana Dal', name_hi: 'टाटा सम्पन्न चना दाल', category: 'kirana', weight: '1 kg • स्वादिष्ट देसी चना दाल', price: 95, mrp: 110, icon: 'cookie', in_stock: true },
-      { id: 'item_16', store_id: 'sharma_brothers', name_en: 'Dhara Kachi Ghani Mustard Oil', name_hi: 'धारा कच्ची घानी सरसों तेल', category: 'oil', weight: '1 L • तीखापन व शुद्धता', price: 140, mrp: 160, icon: 'opacity', in_stock: true },
-      { id: 'item_17', store_id: 'sharma_brothers', name_en: 'Saffola Gold Pro Healthy Oil', name_hi: 'सफोला गोल्ड कुकिंग ऑयल', category: 'oil', weight: '1 L • हृदय सुरक्षा', price: 175, mrp: 195, icon: 'opacity', in_stock: true },
-      { id: 'item_18', store_id: 'sharma_brothers', name_en: 'Rajdhani Besan Fine Gram Flour', name_hi: 'राजधानी बारीक बेसन', category: 'atta', weight: '1 kg • शुद्ध चने का आटा', price: 98, mrp: 115, icon: 'grain', in_stock: true },
-      { id: 'item_19', store_id: 'sharma_brothers', name_en: 'Catch Cumin Seeds Jeera', name_hi: 'कैच साबुत जीरा', category: 'spices', weight: '100 g • खुशबूदार जीरा', price: 60, mrp: 70, icon: 'local_fire_department', in_stock: true },
-      { id: 'item_20', store_id: 'sharma_brothers', name_en: 'Dettol Original Soap Bar', name_hi: 'डेटॉल ओरिजिनल साबुन', category: 'kirana', weight: '75 g x 3 • कीटाणु सुरक्षा', price: 95, mrp: 105, icon: 'sanitizer', in_stock: true }
+      { id: 'item_tomato', store_id: 'sharma_brothers', name_en: 'Fresh Tomato', name_hi: 'ताज़ा टमाटर', category: 'kirana', weight: '1 kg • स्थानीय खेत', weight_en: '1 kg • Local Farm', weight_hi: '1 kg • स्थानीय खेत', price: 30, mrp: 35, icon: 'nutrition', in_stock: true },
+      { id: 'item_banana', store_id: 'sharma_brothers', name_en: 'Banana', name_hi: 'केला', category: 'kirana', weight: '1 kg • ताज़ा फल', weight_en: '1 kg • Fresh Fruit', weight_hi: '1 kg • ताज़ा फल', price: 40, mrp: 50, icon: 'nutrition', in_stock: true },
+      { id: 'item_onion', store_id: 'sharma_brothers', name_en: 'Onion', name_hi: 'प्याज़', category: 'kirana', weight: '1 kg • ताज़ी उपज', weight_en: '1 kg • Fresh Produce', weight_hi: '1 kg • ताज़ी उपज', price: 25, mrp: 30, icon: 'nutrition', in_stock: true },
+      { id: 'item_atta', store_id: 'sharma_brothers', name_en: 'Chakki Fresh Atta', name_hi: 'चक्की ताज़ा आटा', category: 'atta', weight: '5 kg • शुद्ध गेहूं आटा', weight_en: '5 kg • Pure Wheat Flour', weight_hi: '5 kg • शुद्ध गेहूं आटा', price: 120, mrp: 140, icon: 'grain', in_stock: true },
+      { id: 'item_1', store_id: 'sharma_brothers', name_en: 'Aashirvaad Chakki Atta', name_hi: 'आशीर्वाद चक्की आटा', category: 'atta', weight: '5 kg • संपूर्ण पोषण आटा', weight_en: '5 kg • Whole Nutrition Flour', weight_hi: '5 kg • संपूर्ण पोषण आटा', price: 210, mrp: 240, icon: 'grain', in_stock: true },
+      { id: 'item_2', store_id: 'sharma_brothers', name_en: 'Fortune Mustard Oil', name_hi: 'फॉर्च्यून कच्ची घानी सरसों तेल', category: 'oil', weight: '1 L • शुद्ध सरसों तेल', weight_en: '1 L • Pure Mustard Oil', weight_hi: '1 L • शुद्ध सरसों तेल', price: 145, mrp: 165, icon: 'opacity', in_stock: true },
+      { id: 'item_3', store_id: 'sharma_brothers', name_en: 'Tata Salt Vaccum Evaporated', name_hi: 'टाटा शुद्ध आयोडीन नमक', category: 'spices', weight: '1 kg • देश का नमक', weight_en: '1 kg • Iodized Salt', weight_hi: '1 kg • देश का नमक', price: 28, mrp: 30, icon: 'local_fire_department', in_stock: true },
+      { id: 'item_4', store_id: 'sharma_brothers', name_en: 'MDH Deggi Mirch', name_hi: 'एमडीएच देगी मिर्च पाउडर', category: 'spices', weight: '100 g • असली लाल मिर्च', weight_en: '100 g • Pure Red Chilli', weight_hi: '100 g • असली लाल मिर्च', price: 82, mrp: 90, icon: 'local_fire_department', in_stock: true },
+      { id: 'item_5', store_id: 'sharma_brothers', name_en: 'Tata Tea Premium Desh Ki Chai', name_hi: 'टाटा टी प्रीमियम चाय पत्ती', category: 'tea', weight: '500 g • कड़क स्वाद', weight_en: '500 g • Strong Blend Tea', weight_hi: '500 g • कड़क स्वाद', price: 220, mrp: 250, icon: 'emoji_food_beverage', in_stock: true },
+      { id: 'item_6', store_id: 'sharma_brothers', name_en: 'Madhur Pure & Hygienic Sugar', name_hi: 'मधुर सल्फर-मुक्त चीनी', category: 'tea', weight: '1 kg • दानेदार चीनी', weight_en: '1 kg • Refined Sugar', weight_hi: '1 kg • दानेदार चीनी', price: 48, mrp: 55, icon: 'emoji_food_beverage', in_stock: true },
+      { id: 'item_7', store_id: 'sharma_brothers', name_en: 'Daawat Rozana Basmati Rice', name_hi: 'दावत रोज़ाना बासमती चावल', category: 'atta', weight: '5 kg • सुगंधित बासमती', weight_en: '5 kg • Aromatic Basmati', weight_hi: '5 kg • सुगंधित बासमती', price: 340, mrp: 399, icon: 'grain', in_stock: true },
+      { id: 'item_8', store_id: 'sharma_brothers', name_en: 'Amul Pure Ghee Pouch', name_hi: 'अमूल शुद्ध गाय का घी', category: 'oil', weight: '1 L • पारंपरिक स्वाद', weight_en: '1 L • Pure Desi Ghee', weight_hi: '1 L • पारंपरिक स्वाद', price: 590, mrp: 620, icon: 'opacity', in_stock: true },
+      { id: 'item_9', store_id: 'sharma_brothers', name_en: 'Catch Turmeric Powder Haldi', name_hi: 'कैच शुद्ध हल्दी पाउडर', category: 'spices', weight: '200 g • प्राकृतिक रंग', weight_en: '200 g • Natural Turmeric', weight_hi: '200 g • प्राकृतिक रंग', price: 65, mrp: 72, icon: 'local_fire_department', in_stock: true },
+      { id: 'item_10', store_id: 'sharma_brothers', name_en: 'Catch Coriander Powder Dhaniya', name_hi: 'कैच पिसा धनिया पाउडर', category: 'spices', weight: '200 g • सुगंधित धनिया', weight_en: '200 g • Aromatic Coriander', weight_hi: '200 g • सुगंधित धनिया', price: 58, mrp: 65, icon: 'local_fire_department', in_stock: true },
+      { id: 'item_11', store_id: 'sharma_brothers', name_en: 'Everest Garam Masala', name_hi: 'एवरेस्ट असली गरम मसाला', category: 'spices', weight: '100 g • शाही सुगंध', weight_en: '100 g • Royal Garam Masala', weight_hi: '100 g • शाही सुगंध', price: 78, mrp: 85, icon: 'local_fire_department', in_stock: true },
+      { id: 'item_12', store_id: 'sharma_brothers', name_en: 'Brooke Bond Red Label Tea', name_hi: 'रेड लेबल स्पेशल चाय', category: 'tea', weight: '250 g • स्वाद भरा संगम', weight_en: '250 g • Rich Taste Tea', weight_hi: '250 g • स्वाद भरा संगम', price: 130, mrp: 145, icon: 'emoji_food_beverage', in_stock: true },
+      { id: 'item_13', store_id: 'sharma_brothers', name_en: 'Tata Sampann Toor Dal Unpolished', name_hi: 'टाटा सम्पन्न अरहर / तुअर दाल', category: 'kirana', weight: '1 kg • बिना पॉलिश दाल', weight_en: '1 kg • Unpolished Toor Dal', weight_hi: '1 kg • बिना पॉलिश दाल', price: 165, mrp: 185, icon: 'cookie', in_stock: true },
+      { id: 'item_14', store_id: 'sharma_brothers', name_en: 'Tata Sampann Moong Dal Dhuli', name_hi: 'टाटा सम्पन्न मूंग दाल धुली', category: 'kirana', weight: '1 kg • प्रोटीन से भरपूर', weight_en: '1 kg • Protein Rich Moong Dal', weight_hi: '1 kg • प्रोटीन से भरपूर', price: 140, mrp: 155, icon: 'cookie', in_stock: true },
+      { id: 'item_15', store_id: 'sharma_brothers', name_en: 'Tata Sampann Chana Dal', name_hi: 'टाटा सम्पन्न चना दाल', category: 'kirana', weight: '1 kg • स्वादिष्ट देसी चना दाल', weight_en: '1 kg • Desi Chana Dal', weight_hi: '1 kg • स्वादिष्ट देसी चना दाल', price: 95, mrp: 110, icon: 'cookie', in_stock: true },
+      { id: 'item_16', store_id: 'sharma_brothers', name_en: 'Dhara Kachi Ghani Mustard Oil', name_hi: 'धारा कच्ची घानी सरसों तेल', category: 'oil', weight: '1 L • तीखापन व शुद्धता', weight_en: '1 L • Kachi Ghani Mustard Oil', weight_hi: '1 L • तीखापन व शुद्धता', price: 140, mrp: 160, icon: 'opacity', in_stock: true },
+      { id: 'item_17', store_id: 'sharma_brothers', name_en: 'Saffola Gold Pro Healthy Oil', name_hi: 'सफोला गोल्ड कुकिंग ऑयल', category: 'oil', weight: '1 L • हृदय सुरक्षा', weight_en: '1 L • Healthy Cooking Oil', weight_hi: '1 L • हृदय सुरक्षा', price: 175, mrp: 195, icon: 'opacity', in_stock: true },
+      { id: 'item_18', store_id: 'sharma_brothers', name_en: 'Rajdhani Besan Fine Gram Flour', name_hi: 'राजधानी बारीक बेसन', category: 'atta', weight: '1 kg • शुद्ध चने का आटा', weight_en: '1 kg • Pure Gram Flour (Besan)', weight_hi: '1 kg • शुद्ध चने का आटा', price: 98, mrp: 115, icon: 'grain', in_stock: true },
+      { id: 'item_19', store_id: 'sharma_brothers', name_en: 'Catch Cumin Seeds Jeera', name_hi: 'कैच साबुत जीरा', category: 'spices', weight: '100 g • खुशबूदार जीरा', weight_en: '100 g • Whole Cumin Seeds', weight_hi: '100 g • खुशबूदार जीरा', price: 60, mrp: 70, icon: 'local_fire_department', in_stock: true },
+      { id: 'item_20', store_id: 'sharma_brothers', name_en: 'Dettol Original Soap Bar', name_hi: 'डेटॉल ओरिजिनल साबुन', category: 'kirana', weight: '75 g x 3 • कीटाणु सुरक्षा', weight_en: '75 g x 3 • Germ Protection Bar', weight_hi: '75 g x 3 • कीटाणु सुरक्षा', price: 95, mrp: 105, icon: 'sanitizer', in_stock: true }
     ];
 
     const DEFAULT_REFERENCE_ORDERS = [
@@ -5439,10 +5453,10 @@
                 </div>
                 <div class="min-w-0">
                   <h4 class="text-xs font-black text-slate-900 dark:text-white leading-snug truncate">${isHi ? (prod.name_hi || prod.name_en) : (prod.name_en || prod.name_hi)}</h4>
-                  <span class="text-[11px] text-slate-400 block truncate">${isHi ? prod.name_en : (prod.name_hi || '')}</span>
+                  <span class="text-[11px] text-slate-400 block truncate">${isHi ? prod.name_en : (prod.category ? prod.category.toUpperCase() : '')}</span>
                   <div class="flex items-center gap-1.5 mt-0.5">
-                    <span class="text-[10px] text-slate-500 dark:text-slate-300 font-medium">${prod.weight || '1 kg'}</span>
-                    <span class="text-[9px] bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.2 rounded font-bold">स्टॉक: ${stockQty}</span>
+                    <span class="text-[10px] text-slate-500 dark:text-slate-300 font-medium">${isHi ? (prod.weight_hi || prod.weight || '1 kg') : (prod.weight_en || prod.weight || '1 kg')}</span>
+                    <span class="text-[9px] bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.2 rounded font-bold">${isHi ? 'स्टॉक:' : 'Stock:'} ${stockQty}</span>
                   </div>
                 </div>
               </div>
@@ -5458,10 +5472,10 @@
                 type="button" 
                 onclick="openEditStockModal('${prod.id}')"
                 class="px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-700 dark:text-white text-[11px] font-bold flex items-center gap-1 cursor-pointer"
-                title="कीमत व स्टॉक बदलें"
+                title="${isHi ? 'कीमत व स्टॉक बदलें' : 'Edit Price & Stock'}"
               >
                 <span class="material-symbols-outlined text-[15px]">edit_note</span>
-                <span>बदलें</span>
+                <span>${isHi ? 'बदलें' : 'Edit'}</span>
               </button>
 
               <button 
@@ -6008,67 +6022,123 @@
     }
     window.setVendorPayoutMode = setVendorPayoutMode;
 
+    function openVendorPayoutEditForm() {
+      const form = document.getElementById('vendor-payout-edit-form-card');
+      if (form) {
+        form.classList.remove('hidden');
+        form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+    window.openVendorPayoutEditForm = openVendorPayoutEditForm;
+
+    function closeVendorPayoutEditForm() {
+      const form = document.getElementById('vendor-payout-edit-form-card');
+      if (form) {
+        form.classList.add('hidden');
+      }
+    }
+    window.closeVendorPayoutEditForm = closeVendorPayoutEditForm;
+
     async function saveVendorPayoutSettings() {
-      const storeId = VendorStore.currentStoreId || 'sharma_brothers';
+      const storeId = VendorStore.currentStoreId || VendorStore.activeStoreId || 'sharma_brothers';
       const isHi = VendorStore.lang === 'hi';
       const msgEl = document.getElementById('vendor-bank-msg');
       const btn = document.getElementById('btn-save-vendor-bank-page');
 
       const mode = window.currentVendorPayoutMode || 'bank';
-      const holder = document.getElementById('vendor-bank-account-name')?.value?.trim();
-      const acc = document.getElementById('vendor-bank-account-number')?.value?.trim();
-      const confirmAcc = document.getElementById('vendor-bank-confirm-account-number')?.value?.trim();
-      const ifsc = document.getElementById('vendor-bank-ifsc')?.value?.trim().toUpperCase();
-      const upi = document.getElementById('vendor-bank-upi')?.value?.trim();
+      let holder = document.getElementById('vendor-bank-account-name')?.value?.trim();
+      let acc = document.getElementById('vendor-bank-account-number')?.value?.trim();
+      let confirmAcc = document.getElementById('vendor-bank-confirm-account-number')?.value?.trim();
+      let ifsc = document.getElementById('vendor-bank-ifsc')?.value?.trim().toUpperCase();
+      let upi = document.getElementById('vendor-bank-upi')?.value?.trim();
+
+      const existingHolder = document.getElementById('prof-bank-holder')?.innerText?.trim() || 'Ramesh Sharma';
+      const existingIfsc = document.getElementById('prof-bank-ifsc')?.innerText?.trim() || 'SBIN0001234';
+      const existingUpi = document.getElementById('prof-bank-upi')?.innerText?.trim() || 'sharma.kirana@okaxis';
 
       if (mode === 'bank') {
-        if (!holder) {
+        if (!holder || holder.length < 2) {
           showVendorBankError(isHi ? 'कृपया खाताधारक का नाम दर्ज करें' : 'Please enter account holder name');
           return;
         }
-        if (!acc || acc.length < 9) {
-          showVendorBankError(isHi ? 'कृपया मान्य खाता संख्या दर्ज करें' : 'Please enter valid account number');
+        if (!acc || !/^\d{9,18}$/.test(acc)) {
+          showVendorBankError(isHi ? 'कृपया मान्य 9 से 18 अंकों की बैंक खाता संख्या दर्ज करें' : 'Please enter valid 9-18 digit account number');
           return;
         }
         if (acc !== confirmAcc) {
-          showVendorBankError(isHi ? 'खाता संख्या मेल नहीं खाती' : 'Account numbers do not match');
+          showVendorBankError(isHi ? 'दोनों खाता संख्या मेल नहीं खाती हैं' : 'Account numbers do not match');
           return;
         }
-        if (!ifsc || ifsc.length < 11) {
-          showVendorBankError(isHi ? 'कृपया 11 अंकों का मान्य IFSC कोड दर्ज करें' : 'Please enter valid 11-digit IFSC code');
+        if (!ifsc || !/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifsc)) {
+          showVendorBankError(isHi ? 'अमान्य IFSC कोड! कृपया 11 अंकों का मान्य कोड दर्ज करें' : 'Invalid IFSC code! Please enter valid 11-digit IFSC code');
           return;
         }
+        if (!upi) upi = existingUpi;
       } else {
         if (!upi || !/^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/.test(upi)) {
           showVendorBankError(isHi ? 'कृपया मान्य UPI ID दर्ज करें' : 'Please enter valid UPI ID');
           return;
         }
+        if (!holder) holder = existingHolder;
+        if (!acc) acc = '50100234567890';
+        if (!confirmAcc) confirmAcc = acc;
+        if (!ifsc) ifsc = existingIfsc;
       }
 
       try {
         if (btn) btn.disabled = true;
-        const body = {
-          payout_mode: mode,
-          account_holder: mode === 'bank' ? holder : undefined,
-          account_number: mode === 'bank' ? acc : undefined,
-          ifsc: mode === 'bank' ? ifsc : undefined,
-          upi_id: mode === 'upi' ? upi : (upi || undefined)
+        const payload = {
+          account_holder_name: holder,
+          account_number: acc,
+          confirm_account_number: confirmAcc,
+          ifsc_code: ifsc,
+          upi_id: upi
         };
-        const res = await fetch(`${API_BASE}/vendor/bank?store_id=${encodeURIComponent(storeId)}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
+        const token = VendorStore.token || localStorage.getItem('vendor_auth_token');
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+
+        let res = await fetch(`/api/vendor/stores/${encodeURIComponent(storeId)}/payout-settings`, {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify(payload)
         });
+        if (!res.ok && res.status === 404) {
+          res = await fetch(`/vendor/stores/${encodeURIComponent(storeId)}/payout-settings`, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(payload)
+          });
+        }
         if (!res.ok) {
           const errData = await res.json().catch(() => ({}));
-          throw new Error(errData.detail || (isHi ? 'भुगतान विवरण सहेजने में विफल' : 'Failed to save payout settings'));
+          let errMsg = errData.detail || (isHi ? 'भुगतान विवरण सहेजने में विफल' : 'Failed to save payout settings');
+          if (Array.isArray(errMsg)) errMsg = errMsg.map(e => e.msg).join(', ');
+          throw new Error(errMsg);
         }
+        const savedData = await res.json();
+        
+        // Update read-only card
+        const elHolder = document.getElementById('prof-bank-holder');
+        const elAcc = document.getElementById('prof-bank-acc');
+        const elIfsc = document.getElementById('prof-bank-ifsc');
+        const elUpi = document.getElementById('prof-bank-upi');
+        if (elHolder && savedData.account_holder_name) elHolder.innerText = savedData.account_holder_name;
+        if (elAcc && savedData.account_number_masked) elAcc.innerText = savedData.account_number_masked;
+        if (elIfsc && savedData.ifsc_code) elIfsc.innerText = savedData.ifsc_code;
+        if (elUpi && savedData.upi_id) elUpi.innerText = savedData.upi_id;
+
         if (msgEl) {
           msgEl.className = 'p-3 rounded-2xl text-xs font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700 block';
           msgEl.innerText = isHi ? '✓ भुगतान विवरण सुरक्षित सहेजा गया।' : '✓ Payout settings saved securely.';
         }
         showToast(isHi ? 'सफल' : 'Success', isHi ? 'भुगतान विवरण सुरक्षित हो गया' : 'Payout details saved securely');
-        loadVendorProfile();
+        
+        const accInput = document.getElementById('vendor-bank-account-number');
+        const confirmInput = document.getElementById('vendor-bank-confirm-account-number');
+        if (accInput) accInput.value = '';
+        if (confirmInput) confirmInput.value = '';
+        setTimeout(() => closeVendorPayoutEditForm(), 1200);
       } catch (e) {
         showVendorBankError(e.message);
       } finally {

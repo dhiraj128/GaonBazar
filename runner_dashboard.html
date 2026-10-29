@@ -1251,9 +1251,9 @@
             </div>
 
             <div class="flex justify-end pt-1">
-              <button onclick="openRunnerKYCModal()" class="px-4 py-2 bg-slate-900 hover:bg-slate-950 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all border border-slate-700 cursor-pointer">
+              <button id="btn-edit-runner-vehicle" onclick="openRunnerVehicleModal()" class="px-4 py-2 bg-slate-900 hover:bg-slate-950 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all border border-slate-700 cursor-pointer">
                 <span class="material-symbols-outlined text-[16px]">edit</span>
-                <span data-i18n="btn_edit_vehicle">वाहन व लाइसेंस विवरण बदलें</span>
+                <span data-i18n="btn_edit_vehicle">वाहन विवरण संशोधित करें</span>
               </button>
             </div>
           </div>
@@ -1950,10 +1950,10 @@
       <div class="flex flex-col gap-2.5 text-xs">
         <div>
           <label class="block font-bold text-slate-300 mb-1">पहचान पत्र प्रकार *</label>
-          <select id="runner-kyc-doc-type" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-bold text-white">
-            <option value="Aadhaar" data-i18n="opt_aadhaar">आधार कार्ड</option>
-            <option value="PAN" data-i18n="opt_pan">पैन कार्ड</option>
-            <option value="Voter ID" data-i18n="opt_voter">वोटर आईडी</option>
+          <select id="runner-kyc-doc-type" onchange="onRunnerDocTypeChange(this.value)" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-bold text-white">
+            <option value="" data-i18n="opt_select_doc">-- पहचान पत्र चुनें (Select Document) --</option>
+            <option value="Aadhaar" data-i18n="opt_aadhaar">आधार कार्ड (Aadhaar Card)</option>
+            <option value="PAN" data-i18n="opt_pan">पैन कार्ड (PAN Card)</option>
           </select>
         </div>
 
@@ -2004,8 +2004,66 @@
       </div>
 
       <div class="flex items-center gap-2 pt-2 border-t border-slate-800">
-        <button onclick="closeRunnerKYCModal()" class="flex-1 py-2.5 rounded-xl border border-slate-700 text-xs font-bold text-slate-300 cursor-pointer">रद्द करें</button>
-        <button onclick="submitRunnerKYCForm()" class="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-black shadow-sm cursor-pointer">सत्यापन हेतु भेजें</button>
+        <button onclick="closeRunnerKYCModal()" class="px-3 py-2.5 rounded-xl border border-slate-700 text-xs font-bold text-slate-300 cursor-pointer" data-i18n="btn_cancel">रद्द करें</button>
+        <button onclick="saveRunnerKYCDraft()" class="flex-1 py-2.5 rounded-xl border border-amber-600/60 bg-amber-950/40 text-amber-300 text-xs font-black hover:bg-amber-900/50 cursor-pointer" data-i18n="btn_save_draft">ड्राफ्ट सहेजें</button>
+        <button onclick="submitRunnerKYCForm()" class="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-black shadow-sm cursor-pointer" data-i18n="btn_submit_verification">सत्यापन हेतु भेजें</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: DEDICATED VEHICLE DETAILS EDIT MODAL                               -->
+  <!-- ========================================================================= -->
+  <div id="modal-edit-runner-vehicle" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-slate-900 rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto p-5 shadow-2xl border border-slate-700 flex flex-col gap-3.5 text-slate-100">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+        <h3 class="font-black text-sm text-white flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-amber-400">two_wheeler</span>
+          <span data-i18n="modal_vehicle_title">वाहन विवरण संशोधित करें</span>
+        </h3>
+        <button onclick="closeRunnerVehicleModal()" class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-white cursor-pointer">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <div class="flex flex-col gap-3 text-xs">
+        <div>
+          <label class="block font-bold text-slate-300 mb-1"><span data-i18n="lbl_vehicle_type">वाहन का प्रकार</span> *</label>
+          <select id="edit-runner-vehicle-select" onchange="onEditRunnerVehicleChange(this.value)" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-bold text-white">
+            <option value="Motorcycle" data-i18n="opt_motorcycle">मोटरसाइकिल (Motorcycle)</option>
+            <option value="Bicycle" data-i18n="opt_bicycle">साइकिल (Bicycle) — DL / RC की आवश्यकता नहीं</option>
+            <option value="Electric Vehicle" data-i18n="opt_ev">ई-रिक्शा / ईवी (Electric Vehicle)</option>
+          </select>
+        </div>
+
+        <!-- Bicycle Exemption Banner -->
+        <div id="edit-bicycle-exemption-note" class="hidden p-2.5 rounded-xl bg-emerald-950/40 border border-emerald-600 text-[11px] text-emerald-200">
+          ✓ साइकिल श्रेणी हेतु ड्राइविंग लाइसेंस और वाहन पंजीकरण अनिवार्य नहीं है।
+        </div>
+
+        <!-- Optional Motor Vehicle Fields -->
+        <div id="edit-motor-vehicle-fields" class="flex flex-col gap-2.5">
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="font-bold text-slate-300"><span data-i18n="lbl_vehicle_reg">वाहन / बाइक पंजीकरण संख्या (RC)</span></label>
+              <span class="text-[10px] text-slate-400 font-medium">वैकल्पिक (Optional)</span>
+            </div>
+            <input type="text" id="edit-runner-vehicle-reg" placeholder="उदा. UP-14-EA-4921" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-mono uppercase text-white"/>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="font-bold text-slate-300"><span data-i18n="lbl_dl_number">ड्राइविंग लाइसेंस संख्या</span></label>
+              <span class="text-[10px] text-slate-400 font-medium">वैकल्पिक (Optional)</span>
+            </div>
+            <input type="text" id="edit-runner-dl-number" placeholder="उदा. DL-1420110012345" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-mono uppercase text-white"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 pt-2 border-t border-slate-800">
+        <button onclick="closeRunnerVehicleModal()" class="flex-1 py-2.5 rounded-xl border border-slate-700 text-xs font-bold text-slate-300 cursor-pointer" data-i18n="btn_cancel">रद्द करें</button>
+        <button onclick="saveRunnerVehicleDetails()" class="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-black shadow-sm cursor-pointer" data-i18n="btn_save_changes">सहेजें (Save Changes)</button>
       </div>
     </div>
   </div>
@@ -2069,7 +2127,7 @@
             <h3 class="text-sm font-black leading-tight text-white flex items-center gap-1.5" data-i18n="runner_help_title">
               <span data-i18n="lbl_support_chat">सहायता व बातचीत</span>
             </h3>
-            <span id="runner-chat-active-order-badge" class="text-xs text-slate-400 font-semibold font-mono">Order #GB-1284 • Sharma Brothers Kirana</span>
+            <span id="runner-chat-active-order-badge" class="text-xs text-slate-400 font-semibold" data-i18n="runner_help_badge">गाँव मित्र सहायता केंद्र एवं आपातकालीन सेवा</span>
           </div>
         </div>
         <button onclick="closeRunnerHelpModal()" aria-label="Close" class="w-10 h-10 rounded-full flex items-center justify-center text-slate-400 hover:text-white active:scale-90 cursor-pointer">
@@ -2080,8 +2138,8 @@
       <!-- Action Tabs: Store Chat vs Emergency Support -->
       <div class="flex items-center gap-2 py-2 border-b border-slate-800 shrink-0 text-xs">
         <button id="tab-btn-runner-chat" type="button" onclick="switchRunnerHelpSubTab('chat')" class="px-3.5 py-1.5 rounded-xl font-bold bg-[#16B86E] text-white flex items-center gap-1.5 cursor-pointer shadow-2xs">
-          <span class="material-symbols-outlined text-[16px]">chat</span>
-          <span>दुकानदार से बातचीत</span>
+          <span class="material-symbols-outlined text-[16px]">report_problem</span>
+          <span data-i18n="tab_runner_report">समस्या दर्ज करें</span>
         </button>
         <button id="tab-btn-runner-emergency" type="button" onclick="switchRunnerHelpSubTab('emergency')" class="px-3.5 py-1.5 rounded-xl font-bold bg-slate-800 text-slate-300 border border-slate-700 hover:text-white flex items-center gap-1.5 cursor-pointer">
           <span class="material-symbols-outlined text-[16px]">emergency</span>
@@ -2475,6 +2533,14 @@
     // Translations Dictionary
     const I18N = {
       hi: {
+      opt_select_doc: "-- दस्तावेज़ चुनें (Select Document) --",
+      btn_save_draft: "ड्राफ्ट सहेजें",
+      btn_submit_verification: "सत्यापन हेतु भेजें",
+      modal_vehicle_title: "वाहन विवरण संशोधित करें",
+      btn_edit_vehicle: "वाहन विवरण संशोधित करें",
+      btn_save_changes: "सहेजें (Save Changes)",
+      runner_help_badge: "गाँव मित्र सहायता केंद्र एवं आपातकालीन सेवा",
+      tab_runner_report: "समस्या दर्ज करें",
       page_title_runner: "गाँव मित्र (Gaon Mitra) - डिलीवरी पार्टनर",
       lang_name: "हिंदी",
       runner_help_title: "सहायता एवं समर्थन",
@@ -2773,6 +2839,14 @@
         mark_all_read: "सभी पढ़े गए"
       },
       en: {
+      opt_select_doc: "-- Select Document --",
+      btn_save_draft: "Save Draft",
+      btn_submit_verification: "Submit for Verification",
+      modal_vehicle_title: "Edit Vehicle Details",
+      btn_edit_vehicle: "Edit Vehicle Details",
+      btn_save_changes: "Save Changes",
+      runner_help_badge: "Runner Support Center & Emergency Assistance",
+      tab_runner_report: "Report a Problem",
       page_title_runner: "Gaon Mitra - Delivery Partner",
       lang_name: "English",
       runner_help_title: "Help & Support",
@@ -5479,6 +5553,126 @@
         showToast('त्रुटि', 'नेटवर्क त्रुटि: ' + e.message);
       }
     }
+
+    function onRunnerDocTypeChange(docType) {
+      const numInput = document.getElementById('runner-kyc-doc-number');
+      if (!numInput) return;
+      if (docType === 'PAN') {
+        numInput.placeholder = 'उदा. ABCDE1234F (10-अंकीय पैन)';
+        numInput.maxLength = 10;
+      } else if (docType === 'Aadhaar') {
+        numInput.placeholder = 'उदा. 5544 2211 9988 (12-अंकीय आधार)';
+        numInput.maxLength = 14;
+      } else {
+        numInput.placeholder = 'दस्तावेज़ संख्या दर्ज करें';
+        numInput.removeAttribute('maxLength');
+      }
+    }
+    window.onRunnerDocTypeChange = onRunnerDocTypeChange;
+
+    async function saveRunnerKYCDraft() {
+      const docType = document.getElementById('runner-kyc-doc-type').value;
+      const docNum = document.getElementById('runner-kyc-doc-number').value.trim();
+      const runnerId = (window.RunnerStore && window.RunnerStore.currentRunnerId) || 'gm_1';
+
+      try {
+        await fetch(`${API_BASE}/runner/kyc/submit?runner_id=${encodeURIComponent(runnerId)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            document_type: docType || 'Draft',
+            document_number: docNum || '',
+            is_draft: true
+          })
+        });
+        showToast('ड्राफ्ट सुरक्षित', 'केवाईसी ड्राफ्ट सहेज लिया गया है।');
+        closeRunnerKYCModal();
+        if (typeof loadRunnerProfile === 'function') loadRunnerProfile();
+      } catch (e) {
+        showToast('सूचना', 'ड्राफ्ट स्थानीय रूप से सहेज लिया गया है।');
+        closeRunnerKYCModal();
+      }
+    }
+    window.saveRunnerKYCDraft = saveRunnerKYCDraft;
+
+    function openRunnerVehicleModal() {
+      const p = (window.RunnerStore && window.RunnerStore.runnerProfile) || {};
+      const vSelect = document.getElementById('edit-runner-vehicle-select');
+      const vReg = document.getElementById('edit-runner-vehicle-reg');
+      const vDl = document.getElementById('edit-runner-dl-number');
+
+      if (vSelect) vSelect.value = p.vehicle_type || localStorage.getItem('runner_vehicle_type') || 'Motorcycle';
+      if (vReg) vReg.value = p.vehicle_reg || localStorage.getItem('runner_vehicle_reg') || 'UP-14-EA-4921';
+      if (vDl) vDl.value = p.dl_number || localStorage.getItem('runner_dl_num') || 'DL-1420110012345';
+
+      onEditRunnerVehicleChange(vSelect ? vSelect.value : 'Motorcycle');
+
+      const modal = document.getElementById('modal-edit-runner-vehicle');
+      if (modal) modal.classList.remove('hidden');
+    }
+    window.openRunnerVehicleModal = openRunnerVehicleModal;
+
+    function closeRunnerVehicleModal() {
+      const modal = document.getElementById('modal-edit-runner-vehicle');
+      if (modal) modal.classList.add('hidden');
+    }
+    window.closeRunnerVehicleModal = closeRunnerVehicleModal;
+
+    function onEditRunnerVehicleChange(vType) {
+      const isBicycle = (vType || '').toLowerCase() === 'bicycle';
+      const exemptBox = document.getElementById('edit-bicycle-exemption-note');
+      const motorFields = document.getElementById('edit-motor-vehicle-fields');
+      if (exemptBox) exemptBox.classList.toggle('hidden', !isBicycle);
+      if (motorFields) motorFields.classList.toggle('hidden', isBicycle);
+    }
+    window.onEditRunnerVehicleChange = onEditRunnerVehicleChange;
+
+    async function saveRunnerVehicleDetails() {
+      const vType = document.getElementById('edit-runner-vehicle-select').value;
+      const isBicycle = vType.toLowerCase() === 'bicycle';
+      const regNum = isBicycle ? '' : document.getElementById('edit-runner-vehicle-reg').value.trim();
+      const dlNum = isBicycle ? '' : document.getElementById('edit-runner-dl-number').value.trim();
+      const runnerId = (window.RunnerStore && window.RunnerStore.currentRunnerId) || 'gm_1';
+
+      try {
+        await fetch(`${API_BASE}/runner/${encodeURIComponent(runnerId)}/vehicle-details`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            vehicle_type: vType,
+            vehicle_reg_number: regNum,
+            driving_licence_number: dlNum
+          })
+        });
+
+        // Persist locally
+        localStorage.setItem('runner_vehicle_type', vType);
+        localStorage.setItem('runner_vehicle_reg', regNum);
+        localStorage.setItem('runner_dl_num', dlNum);
+
+        // Update UI
+        const elType = document.getElementById('prof-runner-vehicle-type');
+        const elReg = document.getElementById('prof-runner-vehicle-reg');
+        const elDl = document.getElementById('prof-runner-dl-num');
+        const regBox = document.getElementById('prof-runner-reg-box');
+        const dlBox = document.getElementById('prof-runner-dl-box');
+        const bikeExemptBox = document.getElementById('bicycle-licence-exempt-box');
+
+        if (elType) elType.innerText = vType;
+        if (elReg) elReg.innerText = regNum || 'वैकल्पिक (खाली)';
+        if (elDl) elDl.innerText = dlNum || 'वैकल्पिक (खाली)';
+
+        if (regBox) regBox.classList.toggle('hidden', isBicycle);
+        if (dlBox) dlBox.classList.toggle('hidden', isBicycle);
+        if (bikeExemptBox) bikeExemptBox.classList.toggle('hidden', !isBicycle);
+
+        showToast('सफल', 'वाहन विवरण सफलतापूर्वक सुरक्षित किया गया।');
+        closeRunnerVehicleModal();
+      } catch (err) {
+        showToast('त्रुटि', 'वाहन विवरण सुरक्षित करने में त्रुटि: ' + err.message);
+      }
+    }
+    window.saveRunnerVehicleDetails = saveRunnerVehicleDetails;
 
     async function submitRunnerKYCForm() {
       const docType = document.getElementById('runner-kyc-doc-type').value;

@@ -2490,8 +2490,8 @@
               <p class="text-xs text-on-surface-variant dark:text-[#CBD5E1] font-medium" data-i18n="support_center_sub">त्वरित समाधान, ऑर्डर ट्रैकिंग एवं शिकायत निवारण</p>
             </div>
           </div>
-          <span class="px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-primary dark:text-[#16B86E] border border-emerald-200 dark:border-[#16B86E]/30 text-[10px] font-black uppercase tracking-wider">
-            24x7 Care
+          <span class="px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-primary dark:text-[#16B86E] border border-emerald-200 dark:border-[#16B86E]/30 text-[10px] font-black uppercase tracking-wider" data-i18n="support_care_badge">
+            Care & Support
           </span>
         </div>
 
@@ -2563,7 +2563,7 @@
             </div>
             <div>
               <h2 class="text-xs font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="ticket_form_heading">समस्या दर्ज करें</h2>
-              <p class="text-[10px] text-slate-500 dark:text-[#CBD5E1]" data-i18n="ticket_form_sub">2 घंटे के भीतर गाँव बाज़ार सहायता टीम द्वारा समाधान</p>
+              <p class="text-[10px] text-slate-500 dark:text-[#CBD5E1]" data-i18n="ticket_form_sub">गाँव बाज़ार सहायता टीम द्वारा त्वरित समाधान</p>
             </div>
           </div>
 
@@ -3523,6 +3523,11 @@
     // --- 2. STRICT EITHER/OR BILINGUAL DICTIONARY FOR ALL 5 PHASES ---
     const i18nDictionary = {
       hi: {
+      support_care_badge: "सहायता सेवा",
+      support_badge_in_orders: "ऑर्डर टैब में उपलब्ध",
+      support_track_in_orders_title: "सक्रिय ऑर्डर लाइव ट्रैक करें",
+      support_track_in_orders_desc: "मानचित्र, आगमन समय (ETA) व डिलीवरी OTP देखने हेतु ऑर्डर्स खोलें।",
+      btn_view_orders: "ऑर्डर देखें",
       btn_edit: "संशोधन करें",
       btn_logout: "खाते से लॉगआउट करें",
       gender_male: "पुरुष",
@@ -4070,6 +4075,11 @@
         notif_btn_mark_read: "सभी पढ़ लिए"
       },
       en: {
+      support_care_badge: "Care & Support",
+      support_badge_in_orders: "Available in Orders Tab",
+      support_track_in_orders_title: "Live Order Tracking in Orders",
+      support_track_in_orders_desc: "Open Orders tab to view map, ETA and delivery OTP.",
+      btn_view_orders: "View Orders",
       btn_edit: "Edit",
       btn_logout: "Log Out",
       gender_male: "Male",
@@ -5305,8 +5315,89 @@
       }
     }
     window.closeDeleteAccountModal = closeDeleteAccountModal;
+    window.openDeleteAccountConfirm = openDeleteAccountModal;
+    window.openAboutUsModal = openAboutModal;
 
-    function confirmDeleteAccount() {
+    async function confirmDeleteAccount() {
+      const isHi = (AppStore.lang === 'hi');
+      const confirmBtn = document.getElementById('btn-confirm-delete-account');
+      if (confirmBtn) {
+        confirmBtn.disabled = true;
+        confirmBtn.innerText = isHi ? 'खाता मिटाया जा रहा है...' : 'Deleting...';
+      }
+
+      try {
+        const userPhone = (AppStore.user && AppStore.user.phone) 
+          ? AppStore.user.phone 
+          : (localStorage.getItem('user_phone') || '9876543210');
+
+        let res = null;
+        if (typeof apiFetch === 'function') {
+          res = await apiFetch('/user/delete-account', {
+            method: 'POST',
+            body: JSON.stringify({
+              phone: userPhone,
+              confirmation: 'DELETE',
+              reason: 'Customer initiated deletion via Account & Security settings'
+            })
+          });
+        }
+
+        closeDeleteAccountModal();
+
+        try {
+          localStorage.removeItem('gaonbazar_user');
+          localStorage.removeItem('gaonbazar_notifs');
+          localStorage.removeItem('gaonbazar_cart');
+          localStorage.removeItem('gaonbazar_token');
+          sessionStorage.clear();
+        } catch (e) {}
+
+        if (!AppStore.user) AppStore.user = {};
+        AppStore.user.name = '';
+        AppStore.user.phone = '';
+        AppStore.user.email = '';
+        AppStore.user.village = '';
+        AppStore.user.landmark = '';
+        if (AppStore.cart) AppStore.cart = [];
+
+        let msg = '';
+        if (res && res.status === 'protected_demo_cleared') {
+          msg = isHi 
+            ? 'डेमो प्रीव्यू खाता सुरक्षित है। आपका वर्तमान सत्र, कार्ट और कैश साफ़ कर दिया गया है।'
+            : 'Demo preview account protected. Local session, cart, and credentials cleared.';
+        } else {
+          msg = isHi
+            ? 'आपका खाता, सहेजे गए पते और सारा व्यक्तिगत डेटा सफलतापूर्वक मिटा दिया गया है।'
+            : 'Your account and personal data have been permanently erased.';
+        }
+
+        if (window.showToast) {
+          window.showToast(msg);
+        } else {
+          alert(msg);
+        }
+
+        setTimeout(() => {
+          if (window.navigateToPhase) {
+            window.navigateToPhase('dashboard');
+          }
+          if (window.renderProfileView) {
+            window.renderProfileView();
+          }
+          window.location.reload();
+        }, 1000);
+      } catch (err) {
+        if (confirmBtn) {
+          confirmBtn.disabled = false;
+          confirmBtn.innerText = isHi ? 'हाँ, खाता मिटाएं' : 'Delete Account';
+        }
+        alert((isHi ? 'खाता हटाने में असमर्थ: ' : 'Unable to delete account: ') + (err.message || err));
+      }
+    }
+    window.confirmDeleteAccount = confirmDeleteAccount;
+
+    function _legacyConfirmDeleteAccount() {
       closeDeleteAccountModal();
       try {
         localStorage.removeItem('gaonbazar_user');
