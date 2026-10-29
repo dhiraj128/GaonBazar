@@ -219,6 +219,7 @@ def test_rate_limiting():
     # 3.2 Checkout rate limit: 10 requests allowed, 11th must return HTTP 429
     checkout_blocked = False
     chk_statuses = []
+    created_order_ids = []
     for i in range(12):
         payload = {
             "user_phone": "9876543210",
@@ -238,6 +239,13 @@ def test_rate_limiting():
             headers={"X-Enforce-Rate-Limit": "1"}
         )
         chk_statuses.append(r.status_code)
+        if r.status_code == 200:
+            try:
+                ord_id = r.json().get("order_id")
+                if ord_id:
+                    created_order_ids.append(ord_id)
+            except Exception:
+                pass
         if r.status_code == 429:
             checkout_blocked = True
 
@@ -246,6 +254,14 @@ def test_rate_limiting():
         checkout_blocked and chk_statuses[10] == 429,
         f"11th call returned 429 with Retry-After header"
     )
+
+    # Clean up test orders created during rate limiting test to preserve database baseline
+    if created_order_ids:
+        from backend.database import db_session
+        from backend.models import Order
+        with db_session() as db:
+            db.query(Order).filter(Order.id.in_(created_order_ids)).delete(synchronize_session=False)
+            db.commit()
 
     # Reset limiters for subsequent ecosystem tests
     otp_rate_limiter.reset()
@@ -329,6 +345,153 @@ def test_security_headers_and_cors():
     record_check("CORS Locked Down Against Malicious Origin", cors_blocked, f"Allow-Origin: {allowed_origin}")
 
 
+def test_delivery_location_authorization_and_ownership():
+    print("\n[SECURITY AUDIT 6/6]: Order Delivery Location Security, Ownership & Active Order Enforcement")
+    import urllib.parse
+    from backend.database import db_session
+    from backend.models import Order, Notification
+
+    cust_a_phone = "9876543210"
+    cust_b_phone = "9876543299"
+    cust_a_token = issue_user_token(user_id=101, phone=cust_a_phone, name="Customer A")
+    cust_b_token = issue_user_token(user_id=102, phone=cust_b_phone, name="Customer B")
+    runner_assigned_token = issue_runner_token(runner_id="gm_1", phone="9876543220", name="Assigned Runner")
+    runner_unassigned_token = issue_runner_token(runner_id="gm_2", phone="9876543221", name="Unassigned Runner")
+    admin_token = issue_admin_token()
+
+    test_ord_id = "#SEC-LOC-ORD-1"
+    enc_id = urllib.parse.quote(test_ord_id)
+
+    # Setup isolated test order
+    with db_session() as db:
+        existing = db.query(Order).filter(Order.id == test_ord_id).first()
+        if existing:
+            db.delete(existing)
+            db.commit()
+
+        test_order = Order(
+            id=test_ord_id,
+            user_id=101,
+            user_phone=cust_a_phone,
+            user_name="Customer A",
+            village="Rampur Chaupal",
+            landmark="Near Shiva Temple",
+            customer_lat=29.1350,
+            customer_lng=77.0100,
+            runner_id="gm_1",
+            store_id="sharma_brothers",
+            store_name="Sharma Brothers Kirana",
+            subtotal=250.0,
+            total_amount=265.0,
+            payment_mode="COD",
+            status="Order Placed",
+            timeline_stage=1,
+            delivery_otp="1234"
+        )
+        db.add(test_order)
+        db.commit()
+
+    try:
+        # 6.1 Unauthenticated PUT location -> 401 Unauthorized
+        res_unauth_put = client.put(
+            f"/api/orders/{enc_id}/delivery-location",
+            json={"customer_lat": 29.1400, "customer_lng": 77.0200}
+        )
+        record_check("Unauthenticated Location Update Rejection (HTTP 401)", res_unauth_put.status_code == 401, f"Status: {res_unauth_put.status_code}")
+
+        # 6.2 Unauthenticated GET location -> 401 Unauthorized
+        res_unauth_get = client.get(f"/api/orders/{enc_id}/delivery-location")
+        record_check("Unauthenticated Location Query Rejection (HTTP 401)", res_unauth_get.status_code == 401, f"Status: {res_unauth_get.status_code}")
+
+        # 6.3 Customer B attempts to update Customer A's order location -> 403 Forbidden
+        res_cust_b_put = client.put(
+            f"/api/orders/{enc_id}/delivery-location",
+            json={"customer_lat": 29.1450, "customer_lng": 77.0250},
+            headers={"Authorization": f"Bearer {cust_b_token}"}
+        )
+        record_check("Cross-Customer Location Update Denial (HTTP 403)", res_cust_b_put.status_code == 403, f"Status: {res_cust_b_put.status_code}")
+
+        # 6.4 Customer B attempts to view Customer A's order location -> 403 Forbidden
+        res_cust_b_get = client.get(
+            f"/api/orders/{enc_id}/delivery-location",
+            headers={"Authorization": f"Bearer {cust_b_token}"}
+        )
+        record_check("Cross-Customer Location View Denial (HTTP 403)", res_cust_b_get.status_code == 403, f"Status: {res_cust_b_get.status_code}")
+
+        # 6.5 Unassigned Runner (gm_2) attempts to view location -> 403 Forbidden
+        res_unassigned_runner_get = client.get(
+            f"/api/orders/{enc_id}/delivery-location",
+            headers={"Authorization": f"Bearer {runner_unassigned_token}"}
+        )
+        record_check("Unassigned Runner Location View Denial (HTTP 403)", res_unassigned_runner_get.status_code == 403, f"Status: {res_unassigned_runner_get.status_code}")
+
+        # 6.6 Valid Customer A updates their own order location -> 200 OK
+        res_owner_put = client.put(
+            f"/api/orders/{enc_id}/delivery-location",
+            json={"customer_lat": 29.141200, "customer_lng": 77.018500, "landmark": "Green Door next to school"},
+            headers={"Authorization": f"Bearer {cust_a_token}"}
+        )
+        record_check("Owner Customer Location Update Authorized (HTTP 200)", res_owner_put.status_code == 200, f"Status: {res_owner_put.status_code}")
+        if res_owner_put.status_code == 200:
+            data = res_owner_put.json()
+            record_check("Location Coordinates Saved Correctly", abs(data["customer_lat"] - 29.141200) < 1e-4 and abs(data["customer_lng"] - 77.018500) < 1e-4)
+            record_check("Directions URL Present in Response", "google.com/maps/dir" in (data.get("directions_url") or ""))
+
+        # 6.7 Assigned Runner (gm_1) reads delivery location -> 200 OK
+        res_assigned_runner_get = client.get(
+            f"/api/orders/{enc_id}/delivery-location",
+            headers={"Authorization": f"Bearer {runner_assigned_token}"}
+        )
+        record_check("Assigned Runner Location Query Authorized (HTTP 200)", res_assigned_runner_get.status_code == 200, f"Status: {res_assigned_runner_get.status_code}")
+
+        # 6.8 Invalid GPS Coordinates Rejection (out-of-bounds latitude/longitude)
+        res_invalid_coords = client.put(
+            f"/api/orders/{enc_id}/delivery-location",
+            json={"customer_lat": 195.0, "customer_lng": 77.018500},
+            headers={"Authorization": f"Bearer {cust_a_token}"}
+        )
+        record_check("Out-of-Bounds GPS Coordinates Rejection (HTTP 400)", res_invalid_coords.status_code == 400, f"Status: {res_invalid_coords.status_code}")
+
+        # 6.9 Zero GPS Coordinates Rejection (0, 0)
+        res_zero_coords = client.put(
+            f"/api/orders/{enc_id}/delivery-location",
+            json={"customer_lat": 0.0, "customer_lng": 0.0},
+            headers={"Authorization": f"Bearer {cust_a_token}"}
+        )
+        record_check("Zero GPS Coordinates Rejection (HTTP 400)", res_zero_coords.status_code == 400, f"Status: {res_zero_coords.status_code}")
+
+        # 6.10 Non-existent order rejection (no silent fallback IDs)
+        res_missing_order = client.put(
+            "/api/orders/NON-EXISTENT-ORDER-9999/delivery-location",
+            json={"customer_lat": 29.141200, "customer_lng": 77.018500},
+            headers={"Authorization": f"Bearer {cust_a_token}"}
+        )
+        record_check("Missing Order Rejection (HTTP 404, No Fallback)", res_missing_order.status_code == 404, f"Status: {res_missing_order.status_code}")
+
+        # 6.11 Delivered / Cancelled order location update rejection -> 400 Bad Request
+        with db_session() as db:
+            o = db.query(Order).filter(Order.id == test_ord_id).first()
+            if o:
+                o.timeline_stage = 5
+                o.status = "Delivered"
+                db.commit()
+
+        res_delivered_put = client.put(
+            f"/api/orders/{enc_id}/delivery-location",
+            json={"customer_lat": 29.141200, "customer_lng": 77.018500},
+            headers={"Authorization": f"Bearer {cust_a_token}"}
+        )
+        record_check("Delivered Order Location Update Rejection (HTTP 400)", res_delivered_put.status_code == 400, f"Status: {res_delivered_put.status_code}")
+
+    finally:
+        # Strict DB cleanup: preserve exact baseline
+        with db_session() as db:
+            clean_ord = db.query(Order).filter(Order.id == test_ord_id).first()
+            if clean_ord:
+                db.delete(clean_ord)
+                db.commit()
+
+
 def main():
     print("=" * 80)
     print("GAONBAZAAR ENTERPRISE SECURITY AUDIT & PENETRATION VERIFICATION")
@@ -339,6 +502,7 @@ def main():
     test_rate_limiting()
     test_xss_and_sqli_defense()
     test_security_headers_and_cors()
+    test_delivery_location_authorization_and_ownership()
 
     print("\n" + "=" * 80)
     print(f"SECURITY AUDIT RESULTS: {PASSED_TESTS}/{TOTAL_TESTS} CHECKS PASSED")

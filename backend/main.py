@@ -1675,27 +1675,68 @@ def process_order_cancellation(order: Order, db: Session, reason: str = "Custome
 def update_order_delivery_location(
     order_id: str,
     payload: OrderDeliveryLocationUpdate,
+    auth: Dict[str, Any] = Depends(require_authenticated_user),
     db: Session = Depends(get_db)
 ):
     """
     Updates confirmed doorstep delivery coordinates for an active order.
-    Notifies assigned delivery partner and posts coordination notice to order chat thread.
+    Requires authentication.
+    Only the customer who owns an eligible active order (or admin) may update its delivery location.
+    Rejects updates if the order is already delivered or cancelled.
+    Validates coordinate bounds and dispatches notifications only to the assigned runner.
     """
     candidate_ids = [order_id, f"#{order_id}", order_id.lstrip("#")]
     order = db.query(Order).filter(Order.id.in_(candidate_ids)).first()
     if not order:
         raise HTTPException(status_code=404, detail=f"Order {order_id} not found")
 
-    # Validate coordinate bounds
+    # 1. Enforce active order status: reject if already delivered or cancelled
+    order_status_lower = (order.status or "").lower()
+    if order.timeline_stage >= 5 or order_status_lower in ["delivered", "cancelled", "canceled", "returned"]:
+        raise HTTPException(
+            status_code=400,
+            detail="Cannot update delivery location: Order is already delivered or cancelled."
+        )
+
+    # 2. Strict Role & Ownership verification
+    user_role = auth.get("role")
+    if user_role not in ["customer", "admin"]:
+        raise HTTPException(
+            status_code=403,
+            detail="Forbidden: Only the customer who owns this order may update the delivery location."
+        )
+
+    if user_role == "customer":
+        tok_phone = str(auth.get("phone") or "").strip().replace("+91", "").lstrip("0")
+        tok_uid = str(auth.get("user_id") or auth.get("sub") or "").strip()
+        ord_phone = str(order.user_phone or "").strip().replace("+91", "").lstrip("0")
+        ord_uid = str(order.user_id or "").strip()
+
+        is_owner = False
+        if tok_phone and ord_phone and tok_phone == ord_phone:
+            is_owner = True
+        elif tok_uid and ord_uid and tok_uid == ord_uid:
+            is_owner = True
+
+        if not is_owner:
+            raise HTTPException(
+                status_code=403,
+                detail="Forbidden: You do not have permission to update delivery location for another customer's order."
+            )
+
+    # 3. Validate coordinate bounds & non-zero coordinates
     if not (-90.0 <= payload.customer_lat <= 90.0 and -180.0 <= payload.customer_lng <= 180.0):
-        raise HTTPException(status_code=400, detail="Invalid GPS coordinates")
+        raise HTTPException(status_code=400, detail="Invalid GPS coordinates: latitude or longitude out of bounds")
+
+    if payload.customer_lat == 0.0 and payload.customer_lng == 0.0:
+        raise HTTPException(status_code=400, detail="Invalid GPS coordinates: (0, 0) cannot be used as delivery location")
 
     order.customer_lat = payload.customer_lat
     order.customer_lng = payload.customer_lng
     if payload.landmark:
         order.landmark = payload.landmark
 
-    # Auto-post location sharing notification in order chat thread
+    # 4. Auto-post location sharing coordination message to order chat thread
     th_id = f"th_{order.id.replace('#', '')}"
     thread = db.query(MessageThread).filter(MessageThread.order_id == order.id).first()
     if not thread:
@@ -1703,7 +1744,7 @@ def update_order_delivery_location(
             id=th_id,
             order_id=order.id,
             vendor_id=order.store_id,
-            runner_id=order.runner_id or "gm_1",
+            runner_id=order.runner_id,
             subject=f"Order {order.id} Coordination",
             created_at=datetime.utcnow(),
             updated_at=datetime.utcnow()
@@ -1717,7 +1758,7 @@ def update_order_delivery_location(
 
     db.add(ChatMessage(
         thread_id=thread.id,
-        sender_id=order.user_phone or "customer",
+        sender_id=order.user_phone or str(order.user_id or "customer"),
         sender_role="customer",
         sender_name=order.user_name or "ग्राहक",
         message=loc_msg,
@@ -1726,7 +1767,7 @@ def update_order_delivery_location(
     ))
     thread.updated_at = datetime.utcnow()
 
-    # Send persistent notification to assigned runner
+    # 5. Send persistent notification ONLY to the assigned runner
     if order.runner_id:
         try:
             create_notification(
@@ -1759,12 +1800,61 @@ def update_order_delivery_location(
 @app.get("/api/orders/{order_id}/delivery-location")
 def get_order_delivery_location(
     order_id: str,
+    auth: Dict[str, Any] = Depends(require_authenticated_user),
     db: Session = Depends(get_db)
 ):
+    """
+    Returns confirmed doorstep delivery coordinates for an order.
+    Requires authentication.
+    Only the authenticated customer (order owner), assigned Runner, or authorized operational staff
+    (admin or order's vendor) may read precise delivery coordinates.
+    """
     candidate_ids = [order_id, f"#{order_id}", order_id.lstrip("#")]
     order = db.query(Order).filter(Order.id.in_(candidate_ids)).first()
     if not order:
         raise HTTPException(status_code=404, detail=f"Order {order_id} not found")
+
+    user_role = auth.get("role")
+
+    # Super admin has operational staff access
+    if user_role == "admin":
+        pass
+    elif user_role == "customer":
+        tok_phone = str(auth.get("phone") or "").strip().replace("+91", "").lstrip("0")
+        tok_uid = str(auth.get("user_id") or auth.get("sub") or "").strip()
+        ord_phone = str(order.user_phone or "").strip().replace("+91", "").lstrip("0")
+        ord_uid = str(order.user_id or "").strip()
+
+        is_owner = False
+        if tok_phone and ord_phone and tok_phone == ord_phone:
+            is_owner = True
+        elif tok_uid and ord_uid and tok_uid == ord_uid:
+            is_owner = True
+
+        if not is_owner:
+            raise HTTPException(
+                status_code=403,
+                detail="Forbidden: You do not have permission to view delivery location for another customer's order."
+            )
+    elif user_role == "runner":
+        token_runner = str(auth.get("runner_id") or auth.get("sub") or "").strip()
+        if not order.runner_id or token_runner != str(order.runner_id).strip():
+            raise HTTPException(
+                status_code=403,
+                detail="Forbidden: Only the assigned delivery partner may view the delivery location."
+            )
+    elif user_role == "vendor":
+        token_store = str(auth.get("store_id") or auth.get("sub") or "").strip()
+        if not order.store_id or token_store != str(order.store_id).strip():
+            raise HTTPException(
+                status_code=403,
+                detail="Forbidden: Only the vendor handling this order may view the delivery location."
+            )
+    else:
+        raise HTTPException(
+            status_code=403,
+            detail="Forbidden: Unauthorized role"
+        )
 
     directions_url = None
     if order.customer_lat is not None and order.customer_lng is not None:
