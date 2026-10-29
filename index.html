@@ -599,8 +599,8 @@
             <span id="drawer-user-initial">अ</span>
           </div>
           <div class="flex flex-col min-w-0 flex-1">
-            <span id="drawer-user-name" class="font-black text-xs text-slate-900 dark:text-[#F8FAFC] truncate">अतिथि ग्राहक</span>
-            <span id="drawer-user-phone" class="text-[11px] text-slate-500 dark:text-[#CBD5E1] font-mono truncate">लॉगिन नहीं किया</span>
+            <span id="drawer-user-name" class="font-black text-xs text-slate-900 dark:text-[#F8FAFC] truncate" data-i18n="guest_user_title">अतिथि ग्राहक</span>
+            <span id="drawer-user-phone" class="text-[11px] text-slate-500 dark:text-[#CBD5E1] font-mono truncate" data-i18n="guest_not_logged_in">लॉगिन नहीं किया</span>
           </div>
           <span class="material-symbols-outlined text-slate-400 dark:text-[#94A3B8] text-[18px]">chevron_right</span>
         </button>
@@ -842,7 +842,7 @@
         <!-- OTP Verification Error Alert Banner -->
         <div id="p1-otp-error" class="hidden bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl p-3.5 text-xs font-bold flex items-center gap-2 shadow-2xs">
           <span class="material-symbols-outlined text-[20px] text-rose-600 shrink-0">error</span>
-          <span id="p1-otp-error-text">अमान्य या समाप्त OTP कोड। कृपया दोबारा प्रयास करें।</span>
+          <span id="p1-otp-error-text" data-i18n="p1_otp_error_text">अमान्य या समाप्त OTP कोड। कृपया दोबारा प्रयास करें।</span>
         </div>
 
         <button id="p1-verify-otp-btn" onclick="submitVerifyOtp()" class="w-full min-h-[52px] py-3.5 px-6 rounded-2xl bg-secondary hover:bg-secondary/90 text-white text-base font-bold shadow-lg flex items-center justify-center gap-2 active:scale-98 transition-all">
@@ -1017,7 +1017,7 @@
               title="Recenter to detected GPS coordinates"
             >
               <span class="material-symbols-outlined text-[16px] text-primary">my_location</span>
-              <span id="p1-recenter-text">GPS पर जाएं</span>
+              <span id="p1-recenter-text" data-i18n="p1_recenter_text">GPS पर जाएं</span>
             </button>
           </div>
 
@@ -1035,7 +1035,7 @@
             class="w-full min-h-[46px] py-2.5 px-4 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-bold shadow-md flex items-center justify-center gap-2 active:scale-98 transition-all cursor-pointer"
           >
             <span class="material-symbols-outlined text-[18px]">verified</span>
-            <span id="p1-confirm-location-text">✅ इस सटीक पते की पुष्टि करें</span>
+            <span id="p1-confirm-location-text" data-i18n="p1_confirm_location_text">✅ इस सटीक पते की पुष्टि करें</span>
           </button>
         </div>
 
@@ -2171,15 +2171,17 @@
               <span id="profile-payments-chevron" class="hidden"></span>
               <div id="profile-saved-payment-list" class="space-y-2.5">
                 <!-- Dynamically populated or fallback -->
-                <div class="p-3 rounded-2xl bg-slate-50 dark:bg-[#2A323D] border border-slate-100 dark:border-slate-700 flex items-center justify-between">
-                  <div class="flex items-center gap-2.5">
-                    <span class="material-symbols-outlined text-primary text-[20px]">account_balance_wallet</span>
-                    <div>
-                      <span class="text-xs font-bold text-slate-800 dark:text-white block">UPI Auto-Pay</span>
-                      <span class="text-[10px] text-slate-400">9876543210@upi</span>
+                <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3 min-w-0">
+                  <div class="flex items-center gap-3 min-w-0 flex-1">
+                    <div class="w-10 h-10 rounded-xl bg-primary/10 dark:bg-primary/20 text-primary flex items-center justify-center shrink-0">
+                      <span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <span class="text-xs font-black text-slate-800 dark:text-white block truncate">UPI Auto-Pay</span>
+                      <span class="text-[11px] font-mono text-slate-500 dark:text-slate-400 block truncate">9876543210@upi</span>
                     </div>
                   </div>
-                  <span class="text-[10px] bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-bold px-2 py-0.5 rounded-full" data-i18n="badge_active">सक्रिय</span>
+                  <span class="text-[10px] bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 font-extrabold px-2.5 py-1 rounded-full shrink-0" data-i18n="badge_active">सक्रिय</span>
                 </div>
               </div>
 
@@ -2882,6 +2884,55 @@
     <!-- =================================================================== -->
     <!-- SHARE EXACT DOORSTEP LOCATION MODAL (Leaflet Draggable Pin & GPS)   -->
     <!-- =================================================================== -->
+    
+    <!-- ========================================================================= -->
+    <!-- CUSTOMER ADDRESS EDIT MODAL                                               -->
+    <!-- ========================================================================= -->
+    <div id="modal-edit-customer-address" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3.5 sm:p-4">
+      <div class="bg-white dark:bg-[#1D232B] rounded-3xl w-full max-w-md shadow-2xl border border-slate-200 dark:border-[#465362] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        <!-- Header -->
+        <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-xs">
+              <span class="material-symbols-outlined text-[20px]">pin_drop</span>
+            </div>
+            <div>
+              <h3 class="text-sm font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="addr_edit_title">डिलीवरी पता संपादित करें</h3>
+              <p class="text-[11px] text-slate-500 dark:text-[#CBD5E1]" data-i18n="addr_edit_sub">गाँव, पहचान चिन्ह व घर का पता</p>
+            </div>
+          </div>
+          <button type="button" onclick="closeAddressEditModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-[#2A323D] text-slate-600 dark:text-slate-300 flex items-center justify-center hover:bg-slate-200 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">close</span>
+          </button>
+        </div>
+        <!-- Form Body -->
+        <div class="p-4 space-y-3.5">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1" data-i18n="p1_village_label">गाँव या ग्राम पंचायत *</label>
+            <input type="text" id="addr-modal-village-input" class="w-full h-11 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#2A323D] text-xs font-bold text-slate-800 dark:text-white outline-none focus:border-emerald-500" placeholder="उदा. रामपुर" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1" data-i18n="p1_lm_field_label">गाँव का मुख्य पहचान चिन्ह *</label>
+            <input type="text" id="addr-modal-landmark-input" class="w-full h-11 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#2A323D] text-xs font-bold text-slate-800 dark:text-white outline-none focus:border-emerald-500" placeholder="उदा. शिव मंदिर के पास, प्राथमिक स्कूल के पीछे" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1" data-i18n="addr_btn_map_pin">नक्शे पर पिन बदलें</label>
+            <button type="button" onclick="closeAddressEditModal(); openShareExactLocationModal();" class="w-full h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer">
+              <span class="material-symbols-outlined text-[18px]">map</span>
+              <span data-i18n="addr_btn_map_pin">नक्शे पर पिन बदलें</span>
+            </button>
+          </div>
+          <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+            <button type="button" onclick="closeAddressEditModal()" class="h-11 rounded-xl bg-slate-100 dark:bg-[#2A323D] hover:bg-slate-200 text-slate-700 dark:text-slate-300 font-bold text-xs cursor-pointer" data-i18n="btn_cancel">रद्द करें</button>
+            <button type="button" onclick="saveCustomerAddressFromModal()" class="h-11 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs flex items-center justify-center gap-1.5 shadow-sm active:scale-95 cursor-pointer">
+              <span class="material-symbols-outlined text-[16px]">save</span>
+              <span data-i18n="addr_btn_save">पता सहेजें</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div id="modal-share-exact-location" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3.5 sm:p-4">
       <div class="bg-white dark:bg-[#1D232B] rounded-3xl w-full max-w-md shadow-2xl border border-slate-200 dark:border-[#465362] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         
@@ -3487,6 +3538,55 @@
     // --- 2. STRICT EITHER/OR BILINGUAL DICTIONARY FOR ALL 5 PHASES ---
     const i18nDictionary = {
       hi: {
+      btn_edit: "संशोधन करें",
+      btn_logout: "खाते से लॉगआउट करें",
+      gender_male: "पुरुष",
+      gender_female: "महिला",
+      gender_other: "अन्य",
+      profile_addr_primary: "प्राथमिक गाँव व पता",
+      profile_badge_default: "डिफ़ॉल्ट",
+      badge_active: "सक्रिय",
+      profile_row_lang_sub: "हिंदी या अंग्रेजी चुनें",
+      profile_row_theme_sub: "हल्का, गहरा या ऑटो",
+      theme_light: "लाइट",
+      theme_dark: "डार्क",
+      theme_system: "सिस्टम",
+      profile_sec_notifs: "सूचना प्राथमिकताएं",
+      notif_sms: "SMS द्वारा ऑर्डर अपडेट",
+      notif_push: "पुश नोटिफिकेशन",
+      notif_email: "ईमेल पर बिल एवं ऑफ़र",
+      legal_privacy: "गोपनीयता नीति (Privacy Policy)",
+      legal_terms: "नियम एवं शर्तें (Terms & Conditions)",
+      app_share: "गाँव में दोस्तों को शेयर करें",
+      app_rate: "ऐप को रेटिंग दें",
+      app_about: "हमारे बारे में (About GaonBazaar)",
+      btn_delete_account: "खाता स्थायी रूप से हटाएं",
+      p4_cart_title: "आपका थैला",
+      p4_clear_all: "सभी हटाएं",
+      p5_items_title: "ऑर्डर का सामान",
+      lbl_select_delivery_location: "डिलीवरी स्थान चुनें",
+      loc_opt_current: "वर्तमान GPS स्थान",
+      loc_opt_map: "नक्शे पर पिन करें",
+      loc_opt_saved: "सहेजा गया पता",
+      p1_quick_villages: "आस-पास के गाँव:",
+      ai_chip_1: "2 किलो आटा",
+      ai_chip_2: "1 लीटर सरसों तेल",
+      ai_chip_3: "पारले-जी बिस्कुट",
+      profile_open_chat_sub: "24/7 तत्काल सहायता व ऑर्डर सवाल",
+      faq_q5: "क्या रिटर्न या रिफंड की सुविधा है?",
+      faq_a5: "हाँ, यदि कोई सामान खराब या गलत निकलता है तो आप डिलीवरी के तुरंत बाद रिपोर्ट कर सकते हैं।",
+      lbl_no_coords_yet: "स्थान चुना नहीं गया",
+      support_ai_assistant_title: "AI सहायता केंद्र",
+      support_ai_assistant_sub: "ऑर्डर व डिलीवरी सहायता",
+      p1_recenter_text: "GPS पर जाएं",
+      p1_confirm_location_text: "✅ इस सटीक पते की पुष्टि करें",
+      p1_otp_error_text: "अमान्य या समाप्त OTP कोड। कृपया दोबारा प्रयास करें।",
+      guest_user_title: "अतिथि ग्राहक",
+      guest_not_logged_in: "लॉगिन नहीं किया",
+      addr_edit_title: "डिलीवरी पता संपादित करें",
+      addr_edit_sub: "गाँव, पहचान चिन्ह व घर का पता",
+      addr_btn_save: "पता सहेजें",
+      addr_btn_map_pin: "नक्शे पर पिन बदलें",
       support_official_badge: "गाँव बाज़ार 24x7 ग्राहक सेवा",
       lbl_deliver_to: "डिलीवरी स्थान:",
       lbl_choose_delivery_location: "स्थान चुनें",
@@ -3985,6 +4085,55 @@
         notif_btn_mark_read: "सभी पढ़ लिए"
       },
       en: {
+      btn_edit: "Edit",
+      btn_logout: "Log Out",
+      gender_male: "Male",
+      gender_female: "Female",
+      gender_other: "Other",
+      profile_addr_primary: "Primary Village & Address",
+      profile_badge_default: "Default",
+      badge_active: "Active",
+      profile_row_lang_sub: "Choose Hindi or English",
+      profile_row_theme_sub: "Light, Dark or System",
+      theme_light: "Light",
+      theme_dark: "Dark",
+      theme_system: "System",
+      profile_sec_notifs: "Notification Preferences",
+      notif_sms: "Order updates via SMS",
+      notif_push: "Push Notifications",
+      notif_email: "Bills & Offers via Email",
+      legal_privacy: "Privacy Policy",
+      legal_terms: "Terms & Conditions",
+      app_share: "Share with Friends",
+      app_rate: "Rate App",
+      app_about: "About GaonBazaar",
+      btn_delete_account: "Delete Account Permanently",
+      p4_cart_title: "Your Cart",
+      p4_clear_all: "Clear All",
+      p5_items_title: "Order Items",
+      lbl_select_delivery_location: "Select Delivery Location",
+      loc_opt_current: "Current GPS Location",
+      loc_opt_map: "Pin on Map",
+      loc_opt_saved: "Saved Address",
+      p1_quick_villages: "Nearby Villages:",
+      ai_chip_1: "2 kg Atta",
+      ai_chip_2: "1L Mustard Oil",
+      ai_chip_3: "Parle-G Biscuit",
+      profile_open_chat_sub: "24/7 instant support & order queries",
+      faq_q5: "Is return or refund available?",
+      faq_a5: "Yes, if an item is damaged or incorrect you can report it right after delivery.",
+      lbl_no_coords_yet: "No location selected yet",
+      support_ai_assistant_title: "AI Support Center",
+      support_ai_assistant_sub: "Order & Delivery Assistance",
+      p1_recenter_text: "Go to GPS",
+      p1_confirm_location_text: "✅ Confirm This Exact Location",
+      p1_otp_error_text: "Invalid or expired OTP code. Please try again.",
+      guest_user_title: "Guest Customer",
+      guest_not_logged_in: "Not Logged In",
+      addr_edit_title: "Edit Delivery Address",
+      addr_edit_sub: "Village, landmark & house details",
+      addr_btn_save: "Save Address",
+      addr_btn_map_pin: "Change Pin on Map",
       support_official_badge: "GaonBazaar 24x7 Customer Support",
       lbl_deliver_to: "Deliver to:",
       lbl_choose_delivery_location: "Choose Delivery Location",
@@ -5321,6 +5470,54 @@
     // =========================================================================
 
     // 1. Customer Account Subview Navigation
+    
+    window.openAddressEditModal = function() {
+      const modal = document.getElementById('modal-edit-customer-address');
+      if (!modal) return;
+      const vill = (AppStore.user && AppStore.user.village) ? AppStore.user.village : '';
+      const lm = (AppStore.user && AppStore.user.landmark) ? AppStore.user.landmark : '';
+      const villInput = document.getElementById('addr-modal-village-input');
+      const lmInput = document.getElementById('addr-modal-landmark-input');
+      if (villInput) villInput.value = vill;
+      if (lmInput) lmInput.value = lm;
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    };
+
+    window.closeAddressEditModal = function() {
+      const modal = document.getElementById('modal-edit-customer-address');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    };
+
+    window.saveCustomerAddressFromModal = function() {
+      const vill = document.getElementById('addr-modal-village-input')?.value?.trim();
+      const lm = document.getElementById('addr-modal-landmark-input')?.value?.trim();
+      if (!vill && !lm) {
+        closeAddressEditModal();
+        return;
+      }
+      if (!AppStore.user) AppStore.user = {};
+      if (vill) AppStore.user.village = vill;
+      if (lm) AppStore.user.landmark = lm;
+      
+      const pLm = document.getElementById('profile-user-landmark');
+      if (pLm) pLm.innerText = lm || vill;
+      const pVill = document.getElementById('profile-user-village');
+      if (pVill) pVill.innerText = vill || lm;
+      const hVill = document.getElementById('header-delivery-village-name');
+      if (hVill) hVill.innerText = vill || lm;
+
+      savePersistentState();
+      closeAddressEditModal();
+      if (typeof showToast === 'function') {
+        const isHi = (AppStore.lang === 'hi');
+        showToast(isHi ? 'पता सफलतापूर्वक सहेजा गया!' : 'Address saved successfully!', 'success');
+      }
+    };
+
     window.openCustomerAccountSubview = function(subId) {
       const landing = document.getElementById('customer-account-landing');
       if (landing) landing.classList.add('hidden');
@@ -5869,6 +6066,15 @@
       document.documentElement.lang = lang;
       const dict = i18nDictionary[lang] || i18nDictionary['hi'];
       if (typeof updateQuickLangButtonUI === "function") updateQuickLangButtonUI();
+      
+      const langBadge = document.getElementById('profile-current-lang-badge');
+      if (langBadge) langBadge.innerText = (lang === 'hi') ? 'हिंदी' : 'English';
+      
+      const themeBadge = document.getElementById('profile-current-theme-badge');
+      if (themeBadge) {
+        const curTheme = localStorage.getItem('gaonbazar_theme') || 'light';
+        themeBadge.innerText = (lang === 'hi') ? (curTheme === 'dark' ? 'डार्क' : curTheme === 'system' ? 'सिस्टम' : 'लाइट') : (curTheme.charAt(0).toUpperCase() + curTheme.slice(1));
+      }
 
       if (dict && dict.page_title_app) {
         document.title = dict.page_title_app;
@@ -6501,7 +6707,7 @@
 
       if (customerHeader) {
         // Auth/Login, AI Voice Assistant & Tracking Pages: Hide top header to match Reference Design Freeze
-        if (cleanPhase === 'login' || cleanPhase === 'otp' || cleanPhase === 'ai-commerce' || cleanPhase === 'tracking' || cleanPhase === 'cart') {
+        if (cleanPhase === 'login' || cleanPhase === 'otp' || cleanPhase === 'ai-commerce' || cleanPhase === 'tracking' || cleanPhase === 'cart' || cleanPhase === 'support') {
           customerHeader.classList.add('hidden');
           customerHeader.style.display = 'none';
         } else {
@@ -6514,7 +6720,7 @@
         // PAGE-SPECIFIC VISIBILITY:
         // Notifications bell is visible on main Home page (dashboard).
         // When user navigates away to subpages, header actions hide and Back Button appears.
-        if (cleanPhase === 'dashboard') {
+        if (cleanPhase === 'dashboard' || cleanPhase === 'profile') {
           if (notifBtn) {
             notifBtn.classList.remove('hidden');
             notifBtn.style.display = 'flex';
@@ -6525,7 +6731,7 @@
           }
           backBtn.classList.add('hidden');
           backBtn.style.display = 'none';
-        } else if (cleanPhase !== 'login' && cleanPhase !== 'otp') {
+        } else if (cleanPhase !== 'login' && cleanPhase !== 'otp' && cleanPhase !== 'support') {
           if (notifBtn) {
             notifBtn.classList.add('hidden');
             notifBtn.style.display = 'none';
@@ -6560,6 +6766,13 @@
     window.navigateToPhase = navigateToPhase;
 
     function navigateBack() {
+      // If an Account subview is active, return to the Account landing screen first
+      const activeSubview = document.querySelector('.customer-subview:not(.hidden)');
+      if (activeSubview) {
+        showCustomerAccountLanding();
+        return;
+      }
+
       const activeOverlays = (typeof window.getActiveOverlayStack === 'function') ? window.getActiveOverlayStack() : [];
       if (activeOverlays.length > 0) {
         try {
@@ -10839,25 +11052,25 @@
             const isUpi = m.method_type === 'upi';
             const icon = isUpi ? 'payments' : 'credit_card';
             return `
-              <div class="rounded-2xl bg-white p-3.5 shadow-mobile-card border border-surface-container-high flex items-center justify-between transition-all hover:border-primary/40">
-                <div class="flex items-center gap-3 min-w-0">
-                  <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0 border border-slate-200">
+              <div class="rounded-2xl bg-white dark:bg-[#2A323D] p-3.5 shadow-xs border border-slate-200 dark:border-[#465362] flex items-center justify-between gap-3 min-w-0 transition-all hover:border-primary/40">
+                <div class="flex items-center gap-3 min-w-0 flex-1">
+                  <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-[#1D232B] text-slate-700 dark:text-slate-300 flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-700">
                     <span class="material-symbols-outlined text-[20px] text-primary">${icon}</span>
                   </div>
-                  <div class="flex flex-col min-w-0">
-                    <div class="flex items-center gap-1.5">
-                      <span class="text-xs font-black text-slate-900 truncate">${m.title}</span>
-                      ${m.is_default ? `<span class="text-[9px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-extrabold border border-primary/20">${defaultBadgeText}</span>` : ''}
+                  <div class="flex flex-col min-w-0 flex-1">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                      <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">${m.title}</span>
+                      ${m.is_default ? `<span class="text-[9px] bg-primary/10 text-primary dark:text-[#16B86E] px-1.5 py-0.5 rounded-full font-extrabold border border-primary/20 shrink-0">${defaultBadgeText}</span>` : ''}
                     </div>
-                    <span class="text-[11px] font-mono font-bold text-slate-600 truncate">${m.vpa_or_card}</span>
-                    <span class="text-[9px] text-slate-400 mt-0.5 flex items-center gap-1">
+                    <span class="text-[11px] font-mono font-bold text-slate-600 dark:text-slate-300 truncate">${m.vpa_or_card}</span>
+                    <span class="text-[9px] text-slate-400 dark:text-slate-500 mt-0.5 flex items-center gap-1">
                       <span class="material-symbols-outlined text-[11px] text-emerald-600">lock</span>
                       <span>${secureTokenText}</span>
                     </span>
                   </div>
                 </div>
 
-                <button onclick="deleteSavedPaymentMethod(${m.id})" title="${removeBtnTitle}" class="w-8 h-8 rounded-xl bg-slate-50 hover:bg-red-50 text-slate-400 hover:text-red-600 border border-slate-200 flex items-center justify-center active:scale-95 transition-colors shrink-0">
+                <button onclick="deleteSavedPaymentMethod(${m.id})" title="${removeBtnTitle}" class="w-8 h-8 rounded-xl bg-slate-50 dark:bg-[#1D232B] hover:bg-red-50 dark:hover:bg-red-950/40 text-slate-400 hover:text-red-600 border border-slate-200 dark:border-slate-700 flex items-center justify-center active:scale-95 transition-colors shrink-0 cursor-pointer">
                   <span class="material-symbols-outlined text-[16px]">delete</span>
                 </button>
               </div>

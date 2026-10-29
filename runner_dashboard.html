@@ -1609,7 +1609,7 @@
             <span class="text-[10px] text-[#16B86E] font-bold mt-0.5">📍 400m away (2 mins)</span>
           </div>
         </div>
-        <a id="runner-screen-pickup-call-link" href="tel:9876543210" class="px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-[#2A323D] text-[#16B86E] text-xs font-bold flex items-center gap-1 active:scale-95 shrink-0">
+        <a id="runner-screen-pickup-call-link" href="#" class="px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-[#2A323D] text-[#16B86E] text-xs font-bold flex items-center gap-1 active:scale-95 shrink-0">
           <span class="material-symbols-outlined text-[16px]">call</span>
           <span>Call</span>
         </a>
@@ -1711,7 +1711,7 @@
             <span class="text-[10px] text-amber-600 dark:text-amber-400 font-bold">Collect: ₹245 (Cash)</span>
           </div>
         </div>
-        <a id="runner-screen-map-call-link" href="tel:9876543210" class="px-3.5 py-2 rounded-xl bg-[#16B86E] text-white text-xs font-bold flex items-center gap-1 shadow-xs active:scale-95 shrink-0">
+        <a id="runner-screen-map-call-link" href="#" class="px-3.5 py-2 rounded-xl bg-[#16B86E] text-white text-xs font-bold flex items-center gap-1 shadow-xs active:scale-95 shrink-0">
           <span class="material-symbols-outlined text-[16px]">call</span>
           <span>Call</span>
         </a>
@@ -1908,19 +1908,19 @@
 
       <div class="flex flex-col gap-2.5 text-xs">
         <div>
-          <label class="block font-bold text-slate-300 mb-1">पूरा नाम *</label>
+          <label class="block font-bold text-slate-300 mb-1" data-i18n="lbl_full_name">पूरा नाम *</label>
           <input type="text" id="edit-runner-name" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white"/>
         </div>
         <div>
-          <label class="block font-bold text-slate-300 mb-1">गाँव / पंचायत *</label>
+          <label class="block font-bold text-slate-300 mb-1" data-i18n="lbl_village_panchayat">गाँव / पंचायत *</label>
           <input type="text" id="edit-runner-village" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white"/>
         </div>
         <div>
-          <label class="block font-bold text-slate-300 mb-1">स्थायी पता *</label>
+          <label class="block font-bold text-slate-300 mb-1" data-i18n="lbl_permanent_address">स्थायी पता *</label>
           <input type="text" id="edit-runner-address" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white"/>
         </div>
         <div>
-          <label class="block font-bold text-rose-300 mb-1">आपातकालीन संपर्क फ़ोन *</label>
+          <label class="block font-bold text-rose-300 mb-1" data-i18n="lbl_emergency_phone">आपातकालीन संपर्क फ़ोन *</label>
           <input type="text" id="edit-runner-emergency" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-mono text-white"/>
         </div>
       </div>
@@ -2475,6 +2475,22 @@
     // Translations Dictionary
     const I18N = {
       hi: {
+      page_title_runner: "गाँव मित्र (Gaon Mitra) - डिलीवरी पार्टनर",
+      lang_name: "हिंदी",
+      runner_help_title: "सहायता एवं समर्थन",
+      opt_dl: "ड्राइविंग लाइसेंस (DL)",
+      reg_lbl_photo: "प्रोफ़ाइल फ़ोटो",
+      reg_hint_payout_upi: "दैनिक कमाई प्राप्त करने के लिए अपनी सही UPI ID दर्ज करें",
+      btn_submit_reg: "पंजीकरण सबमिट करें",
+      ptr_refreshing: "ताज़ा किया जा रहा है...",
+      lbl_full_name: "पूरा नाम *",
+      lbl_village_panchayat: "गाँव / पंचायत *",
+      lbl_permanent_address: "स्थायी पता *",
+      lbl_emergency_phone: "आपातकालीन संपर्क फ़ोन *",
+      btn_cancel: "रद्द करें",
+      btn_save: "सहेजें",
+      lbl_id_type: "पहचान पत्र प्रकार *",
+      lbl_id_number: "पहचान पत्र संख्या *",
       opt_aadhaar: "आधार कार्ड",
       opt_pan: "पैन कार्ड",
       opt_voter: "वोटर आईडी",
@@ -2757,6 +2773,22 @@
         mark_all_read: "सभी पढ़े गए"
       },
       en: {
+      page_title_runner: "Gaon Mitra - Delivery Partner",
+      lang_name: "English",
+      runner_help_title: "Help & Support",
+      opt_dl: "Driving License (DL)",
+      reg_lbl_photo: "Profile Photo",
+      reg_hint_payout_upi: "Enter your valid UPI ID to receive daily earnings",
+      btn_submit_reg: "Submit Registration",
+      ptr_refreshing: "Refreshing...",
+      lbl_full_name: "Full Name *",
+      lbl_village_panchayat: "Village / Panchayat *",
+      lbl_permanent_address: "Permanent Address *",
+      lbl_emergency_phone: "Emergency Contact Phone *",
+      btn_cancel: "Cancel",
+      btn_save: "Save",
+      lbl_id_type: "ID Proof Type *",
+      lbl_id_number: "ID Number *",
       opt_aadhaar: "Aadhaar Card",
       opt_pan: "PAN Card",
       opt_voter: "Voter ID",
