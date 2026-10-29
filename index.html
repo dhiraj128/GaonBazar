@@ -1846,7 +1846,23 @@
           </div>
 
           <!-- Action Buttons -->
-          <div id="view-profile" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 space-y-4">
+          <div class="flex flex-col gap-2.5 w-full">
+            <button type="button" id="offline-retry-btn" onclick="retryConnection()" class="w-full h-12 bg-primary text-white rounded-xl text-sm font-bold flex items-center justify-center gap-2 shadow-md active:scale-98">
+              <span class="material-symbols-outlined text-[18px]">refresh</span>
+              <span data-i18n="offline_retry">पुनः प्रयास करें</span>
+            </button>
+            <button type="button" id="offline-home-btn" onclick="navigateToPhase('dashboard')" class="w-full h-11 bg-white text-primary border border-primary rounded-xl text-xs font-bold flex items-center justify-center gap-2 active:bg-emerald-50">
+              <span class="material-symbols-outlined text-[16px]">storefront</span>
+              <span data-i18n="offline_home">होम पेज पर जाएं</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- PHASE 5: USER PROFILE & SETTINGS SCREEN                               -->
+      <!-- ===================================================================== -->
+      <div id="view-profile" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 space-y-4">
         
         <!-- Profile Top Title Bar -->
         <div class="flex items-center justify-between pb-1">
@@ -5305,6 +5321,14 @@
           const panel = document.getElementById('profile-saved-payments-panel');
           if (panel) panel.classList.remove('hidden');
         }
+      }
+    };
+
+    window.navigateToSupportCenter = function() {
+      if (typeof navigateToPhase === 'function') {
+        navigateToPhase('support');
+      } else if (typeof showView === 'function') {
+        showView('support');
       }
     };
 
