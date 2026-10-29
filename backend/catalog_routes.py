@@ -763,17 +763,27 @@ def update_vendor_bank_details(
     if not s:
         raise HTTPException(status_code=404, detail="Store not found.")
 
-    s.bank_account_name = payload.account_holder.strip()
-    s.bank_account_number = payload.account_number.strip()
-    s.bank_ifsc = payload.ifsc.strip().upper()
-    if payload.upi_id:
+    mode = (payload.payout_mode or "bank").lower().strip()
+    if mode == "upi" or (payload.upi_id and not payload.account_number):
+        if not payload.upi_id or "@" not in payload.upi_id.strip():
+            raise HTTPException(status_code=400, detail="Invalid UPI ID. Format should be username@bank")
         s.payout_upi = payload.upi_id.strip()
-    s.bank_verification_status = "verified"
+        s.bank_verification_status = "verified"
+    else:
+        if not payload.account_holder or not payload.account_number or not payload.ifsc:
+            raise HTTPException(status_code=400, detail="Account holder, account number, and IFSC code are required for bank payout.")
+        s.bank_account_name = payload.account_holder.strip()
+        s.bank_account_number = payload.account_number.strip()
+        s.bank_ifsc = payload.ifsc.strip().upper()
+        if payload.upi_id:
+            s.payout_upi = payload.upi_id.strip()
+        s.bank_verification_status = "verified"
 
     db.commit()
     return {
         "success": True,
-        "message": "Bank details saved securely.",
+        "message": "Payout details saved securely.",
+        "payout_mode": mode,
         "bank_verification_status": "verified"
     }
 
@@ -999,17 +1009,27 @@ def update_runner_bank_details(
     if not r:
         raise HTTPException(status_code=404, detail="Runner not found.")
 
-    r.bank_account_name = payload.account_holder.strip()
-    r.bank_account_number = payload.account_number.strip()
-    r.bank_ifsc = payload.ifsc.strip().upper()
-    if payload.upi_id:
+    mode = (payload.payout_mode or "bank").lower().strip()
+    if mode == "upi" or (payload.upi_id and not payload.account_number):
+        if not payload.upi_id or "@" not in payload.upi_id.strip():
+            raise HTTPException(status_code=400, detail="Invalid UPI ID. Format should be username@bank")
         r.payout_upi = payload.upi_id.strip()
-    r.bank_verification_status = "verified"
+        r.bank_verification_status = "verified"
+    else:
+        if not payload.account_holder or not payload.account_number or not payload.ifsc:
+            raise HTTPException(status_code=400, detail="Account holder, account number, and IFSC code are required for bank payout.")
+        r.bank_account_name = payload.account_holder.strip()
+        r.bank_account_number = payload.account_number.strip()
+        r.bank_ifsc = payload.ifsc.strip().upper()
+        if payload.upi_id:
+            r.payout_upi = payload.upi_id.strip()
+        r.bank_verification_status = "verified"
 
     db.commit()
     return {
         "success": True,
-        "message": "Bank details saved securely.",
+        "message": "Payout details saved securely.",
+        "payout_mode": mode,
         "bank_verification_status": "verified"
     }
 
