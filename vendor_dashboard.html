@@ -570,9 +570,9 @@
       <div class="flex items-center gap-1.5 shrink-0">
         <!-- Notifications Bell with Red Badge -->
         <!-- Compact HI / EN Quick Language Switch Button -->
-        <button id="quick-lang-toggle-btn" type="button" onclick="toggleLanguageQuick()" aria-label="Toggle Language" title="Change Language / भाषा बदलें" class="h-10 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-[#2A323D] dark:hover:bg-[#465362] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] flex items-center justify-center gap-1 active:scale-95 transition-all shrink-0 cursor-pointer shadow-2xs font-bold text-xs">
+        <button id="quick-lang-toggle-btn" type="button" onclick="toggleLanguageQuick()" aria-label="भाषा: हिंदी (अंग्रेज़ी में बदलने के लिए क्लिक करें)" title="भाषा: हिंदी (अंग्रेज़ी में बदलें)" class="h-10 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-[#2A323D] dark:hover:bg-[#465362] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] flex items-center justify-center gap-1 active:scale-95 transition-all shrink-0 cursor-pointer shadow-2xs font-bold text-xs">
           <span class="material-symbols-outlined text-[17px] text-primary">translate</span>
-          <span id="vendor-quick-lang-label" class="font-black text-[11px]">EN</span>
+          <span id="vendor-quick-lang-label" class="font-black text-[11px]">हिंदी</span>
         </button>
 
         <button id="btn-vendor-header-notifs" type="button" onclick="openVendorNotificationsModal()" title="Notifications" aria-label="Notifications" class="relative w-10 h-10 min-w-[40px] min-h-[40px] rounded-xl bg-slate-100 dark:bg-[#2A323D] hover:bg-slate-200 dark:hover:bg-[#465362] text-slate-700 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] flex items-center justify-center active:scale-95 shrink-0 cursor-pointer shadow-2xs">
@@ -6065,11 +6065,11 @@
       const lbl = document.getElementById('vendor-quick-lang-label');
       const btn = document.getElementById('quick-lang-toggle-btn');
       if (lbl) {
-        lbl.innerText = isHi ? 'EN' : 'हिंदी';
+        lbl.innerText = isHi ? 'हिंदी' : 'English';
       }
       if (btn) {
-        btn.setAttribute('aria-label', isHi ? 'Switch to English' : 'हिंदी में बदलें');
-        btn.setAttribute('title', isHi ? 'Switch to English' : 'हिंदी में बदलें');
+        btn.setAttribute('aria-label', isHi ? 'भाषा: हिंदी (अंग्रेज़ी में बदलने के लिए क्लिक करें)' : 'Language: English (Click to switch to Hindi)');
+        btn.setAttribute('title', isHi ? 'भाषा: हिंदी (अंग्रेज़ी में बदलें)' : 'Language: English (Switch to Hindi)');
       }
     }
     window.updateVendorQuickLangBtn = updateVendorQuickLangBtn;
