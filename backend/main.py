@@ -3672,6 +3672,9 @@ def get_runner_missions(
     for ord_obj in orders:
         store = db.query(Store).filter(Store.id == ord_obj.store_id).first()
         store_phone = store.phone if store and store.phone else "9876543210"
+        store_lat = float(store.lat) if store and store.lat else 29.1350
+        store_lng = float(store.lng) if store and store.lng else 77.0100
+        store_address = (store.address or store.pickup_location or f"{store.name}, {store.village or 'Rampur'}") if store else "Rampur Main Market"
 
         items_dto = [
             RunnerMissionItemDTO(
@@ -3701,6 +3704,9 @@ def get_runner_missions(
                 store_id=ord_obj.store_id,
                 store_name=ord_obj.store_name,
                 store_phone=store_phone,
+                store_lat=store_lat,
+                store_lng=store_lng,
+                store_address=store_address,
                 user_name=ord_obj.user_name,
                 user_phone=ord_obj.user_phone,
                 village=ord_obj.village,

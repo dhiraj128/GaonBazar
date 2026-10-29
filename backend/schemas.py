@@ -365,6 +365,9 @@ class RunnerMissionDTO(BaseModel):
     store_id: str
     store_name: str
     store_phone: str
+    store_lat: Optional[float] = None
+    store_lng: Optional[float] = None
+    store_address: Optional[str] = None
     user_name: str
     user_phone: str
     village: str
@@ -1113,10 +1116,11 @@ class VendorKYCSubmitRequest(BaseModel):
 
 
 class VendorBankUpdateRequest(BaseModel):
-    account_holder: str
+    payout_mode: Optional[str] = "bank"
+    account_holder: Optional[str] = None
     bank_name: Optional[str] = None
-    account_number: str
-    ifsc: str
+    account_number: Optional[str] = None
+    ifsc: Optional[str] = None
     upi_id: Optional[str] = None
 
 
@@ -1194,8 +1198,9 @@ class AdminKYCPendingItemDTO(BaseModel):
     driving_licence: Optional[str] = None
 
 class RunnerBankUpdateRequest(BaseModel):
-    account_holder: str
+    payout_mode: Optional[str] = "bank"
+    account_holder: Optional[str] = None
     bank_name: Optional[str] = None
-    account_number: str
-    ifsc: str
+    account_number: Optional[str] = None
+    ifsc: Optional[str] = None
     upi_id: Optional[str] = None
