@@ -541,9 +541,9 @@
       <!-- Right: Notifications Bell (Replaces 4-Square Grid Menu per UX Architecture) -->
       <div class="flex items-center gap-1 shrink-0">
         <!-- Compact HI / EN Quick Language Switch Button -->
-        <button id="quick-lang-toggle-btn" type="button" onclick="toggleLanguageQuick()" aria-label="Toggle Language" title="Change Language / भाषा बदलें" class="h-10 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-[#2A323D] dark:hover:bg-[#465362] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] flex items-center justify-center gap-1 active:scale-95 transition-all shrink-0 cursor-pointer shadow-2xs font-bold text-xs">
+        <button id="quick-lang-toggle-btn" type="button" onclick="toggleLanguageQuick()" aria-label="भाषा: हिंदी (अंग्रेज़ी में बदलने के लिए क्लिक करें)" title="भाषा: हिंदी (अंग्रेज़ी में बदलें)" class="h-10 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-[#2A323D] dark:hover:bg-[#465362] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] flex items-center justify-center gap-1 active:scale-95 transition-all shrink-0 cursor-pointer shadow-2xs font-bold text-xs">
           <span class="material-symbols-outlined text-[17px] text-primary">translate</span>
-          <span id="quick-lang-label" class="font-black text-[11px]">EN</span>
+          <span id="quick-lang-label" class="font-black text-[11px]">हिंदी</span>
         </button>
 
         <!-- Visible Primary Notifications Bell with Real Unread Dot -->
@@ -1862,7 +1862,7 @@
       <!-- ===================================================================== -->
       <!-- PHASE 5: USER PROFILE & SETTINGS SCREEN                               -->
       <!-- ===================================================================== -->
-      <div id="view-profile" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 space-y-4">
+      <div id="view-profile" class="screen-view hidden flex-col w-full px-4 pt-3 pb-36 flex-1 min-h-0 space-y-4">
         
         <!-- Profile Top Title Bar -->
         <div class="flex items-center justify-between pb-1">
@@ -1880,7 +1880,7 @@
         <!-- =================================================================== -->
         <!-- A. CUSTOMER ACCOUNT LANDING MENU (Compact Header + 6 Menu Rows)    -->
         <!-- =================================================================== -->
-        <div id="customer-account-landing" class="flex flex-col space-y-4 w-full">
+        <div id="customer-account-landing" class="flex flex-col space-y-4 w-full pb-32">
           
           <!-- Compact User Identity Header -->
           <div id="profile-user-card" class="rounded-3xl bg-white dark:bg-[#1D232B] p-4 shadow-mobile-card border border-surface-container-high dark:border-[#465362] flex items-center justify-between">
@@ -2003,6 +2003,9 @@
               <span data-i18n="btn_logout">खाते से लॉगआउट करें</span>
             </button>
           </div>
+
+          <!-- Viewport clearance spacer to prevent bottom navigation overlap on compact screens -->
+          <div class="h-16 shrink-0 w-full" aria-hidden="true"></div>
 
           <!-- Preserved Accessible Support Links for Hierarchy Tests -->
           <div id="profile-sec-help-support" class="hidden">
@@ -5356,18 +5359,45 @@
     };
 
     function updateQuickLangButtonUI() {
-      const cur = AppStore.lang || 'hi';
+      const cur = (typeof AppStore !== 'undefined' && AppStore.lang) ? AppStore.lang : (localStorage.getItem('gaonbazar_lang') || 'hi');
       const lbl = document.getElementById('quick-lang-label');
       const btn = document.getElementById('quick-lang-toggle-btn');
       if (lbl) {
-        lbl.innerText = cur === 'hi' ? 'EN' : 'हिंदी';
+        lbl.innerText = cur === 'hi' ? 'हिंदी' : 'English';
       }
       if (btn) {
-        btn.setAttribute('aria-label', cur === 'hi' ? 'Switch to English' : 'हिंदी में बदलें');
-        btn.setAttribute('title', cur === 'hi' ? 'Switch to English' : 'हिंदी में बदलें');
+        btn.setAttribute('aria-label', cur === 'hi' ? 'भाषा: हिंदी (अंग्रेज़ी में बदलने के लिए क्लिक करें)' : 'Language: English (Click to switch to Hindi)');
+        btn.setAttribute('title', cur === 'hi' ? 'भाषा: हिंदी (अंग्रेज़ी में बदलें)' : 'Language: English (Switch to Hindi)');
+      }
+      const btnHi = document.getElementById('btn-profile-lang-hi');
+      const btnEn = document.getElementById('btn-profile-lang-en');
+      const curBadge = document.getElementById('profile-current-lang-badge');
+      if (curBadge) curBadge.innerText = (cur === 'hi') ? 'हिंदी' : 'English';
+      if (btnHi && btnEn) {
+        if (cur === 'hi') {
+          btnHi.className = "h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all bg-primary text-white shadow-xs cursor-pointer";
+          btnEn.className = "h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all bg-slate-100 hover:bg-slate-200 dark:bg-[#2A323D] dark:hover:bg-[#465362] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#465362] cursor-pointer";
+        } else {
+          btnHi.className = "h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all bg-slate-100 hover:bg-slate-200 dark:bg-[#2A323D] dark:hover:bg-[#465362] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#465362] cursor-pointer";
+          btnEn.className = "h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all bg-primary text-white shadow-xs cursor-pointer";
+        }
       }
     }
     window.updateQuickLangButtonUI = updateQuickLangButtonUI;
+
+    window.setAppLanguage = function(lang) {
+      if (typeof window.toggleGlobalLanguage === 'function') {
+        window.toggleGlobalLanguage(lang);
+      } else {
+        AppStore.lang = lang;
+        localStorage.setItem('gaonbazar_lang', lang);
+        if (typeof applyBilingualState === 'function') applyBilingualState();
+      }
+      if (typeof updateQuickLangButtonUI === 'function') updateQuickLangButtonUI();
+    };
+    function setAppLanguage(lang) {
+      window.setAppLanguage(lang);
+    }
 
     // 3. Native-Style Pull-to-Refresh Component
     function initPullToRefresh(container, refreshFn) {
