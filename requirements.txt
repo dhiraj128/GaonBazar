@@ -9,5 +9,7 @@ pytest>=7.4.0
 razorpay>=1.4.1
 python-dotenv>=1.0.0
 psycopg2-binary>=2.9.9,<3.0
+# SQLAlchemy postgresql+psycopg:// URLs require Psycopg 3 (not psycopg2).
+psycopg[binary]==3.3.6
 python-multipart>=0.0.9
 cryptography>=41.0.0
