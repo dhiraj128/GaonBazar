@@ -1837,10 +1837,16 @@
               </div>
             </div>
           </div>
-          <button type="button" onclick="openSupportForActiveOrder()" class="min-h-[36px] px-2.5 text-xs font-bold text-primary hover:underline flex items-center gap-1 cursor-pointer">
-            <span class="material-symbols-outlined text-[16px]">support_agent</span>
-            <span data-i18n="od_help_btn">Help</span>
-          </button>
+          <div class="flex items-center gap-1">
+            <button type="button" onclick="openReturnPolicyModal()" class="min-h-[36px] px-2 text-[11px] font-bold text-slate-600 dark:text-[#CBD5E1] hover:text-primary flex items-center gap-1 cursor-pointer">
+              <span class="material-symbols-outlined text-[15px]">policy</span>
+              <span data-i18n="od_policy_btn">Policy</span>
+            </button>
+            <button type="button" onclick="openSupportForActiveOrder()" class="min-h-[36px] px-2.5 text-xs font-bold text-primary hover:underline flex items-center gap-1 cursor-pointer">
+              <span class="material-symbols-outlined text-[16px]">support_agent</span>
+              <span data-i18n="od_help_btn">Help</span>
+            </button>
+          </div>
         </div>
 
         <!-- 1. Live Status & 5-Stage Stepper Card -->
@@ -1892,6 +1898,56 @@
           <p class="text-[10px] text-amber-700/80 dark:text-amber-300/80 leading-relaxed border-t border-amber-200/60 dark:border-amber-800/30 pt-1.5">
             Truthful banking timeline: 5–7 business days per RBI settlement rules. We never falsely claim funds are credited before issuing bank clearance.
           </p>
+        </div>
+
+        <!-- 3B. Active Replacement Stepper Card -->
+        <div id="od-replacement-card" class="hidden bg-emerald-50/80 dark:bg-[#1D232B] border-2 border-emerald-500/30 rounded-2xl p-4 space-y-3">
+          <div class="flex items-center justify-between border-b border-emerald-200/60 dark:border-[#465362] pb-2.5">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold">
+                <span class="material-symbols-outlined text-[18px]">published_with_changes</span>
+              </div>
+              <div>
+                <span class="text-xs font-black text-emerald-950 dark:text-emerald-200" id="od-rep-title" data-i18n="rep_title">Free Corrective Replacement</span>
+                <p class="text-[10px] text-emerald-700 dark:text-emerald-300 font-mono font-bold" id="od-rep-id">REP-000000</p>
+              </div>
+            </div>
+            <span id="od-rep-status-badge" class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-300">
+              Requested
+            </span>
+          </div>
+
+          <div class="flex items-center justify-between text-xs">
+            <div class="space-y-0.5">
+              <p class="text-[11px] font-bold text-slate-800 dark:text-[#F8FAFC]" id="od-rep-product">Product Replacement</p>
+              <p class="text-[10px] text-slate-500 dark:text-[#CBD5E1]" id="od-rep-reason">Reason: Wrong Item</p>
+            </div>
+            <div class="text-right">
+              <span class="text-xs font-black text-emerald-600 dark:text-emerald-400">₹0 (Free)</span>
+              <p class="text-[10px] text-slate-400" id="od-rep-eta">ETA: 45 Mins</p>
+            </div>
+          </div>
+
+          <!-- 7-Stage Replacement Stepper Container -->
+          <div id="od-rep-stepper-container" class="pt-1.5">
+            <!-- Rendered dynamically via renderReplacementStepper() -->
+          </div>
+
+          <!-- Replacement Delivery Verification OTP -->
+          <div id="od-rep-otp-box" class="hidden bg-white dark:bg-[#111418] border border-emerald-200 dark:border-[#465362] rounded-xl p-2.5 flex items-center justify-between">
+            <div>
+              <span class="text-[9px] font-black uppercase tracking-wider text-emerald-600">Replacement Delivery OTP</span>
+              <p class="text-[10px] text-slate-500">Share with delivery partner upon arrival</p>
+            </div>
+            <div id="od-rep-otp-digits" class="font-mono font-black text-sm text-emerald-600 bg-emerald-50 dark:bg-[#2A323D] px-2.5 py-1 rounded border border-emerald-200">
+              ----
+            </div>
+          </div>
+
+          <!-- Reverse Pickup Notice -->
+          <div id="od-rep-reverse-notice" class="hidden text-[10px] p-2 rounded-lg bg-emerald-100/60 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 border border-emerald-200 dark:border-emerald-800">
+            📦 Reverse Pickup: Please keep the sealed incorrect product ready for the delivery partner.
+          </div>
         </div>
 
         <!-- 4. Items in this Order -->
@@ -3690,16 +3746,62 @@
           </button>
         </div>
 
-        <!-- Issue Category Dropdown -->
+        <!-- Preferred Resolution Selector (Phase 3B) -->
+        <div class="space-y-1.5 bg-slate-50 dark:bg-[#2A323D] p-3 rounded-2xl border border-slate-200 dark:border-[#465362]">
+          <label class="block text-xs font-black text-slate-800 dark:text-[#F8FAFC]" data-i18n="issue_preferred_resolution">Choose Remedy / समाधान चुनें *</label>
+          <div class="grid grid-cols-2 gap-2">
+            <label class="relative flex items-center p-2 rounded-xl border border-emerald-500/40 bg-white dark:bg-[#1D232B] cursor-pointer hover:border-emerald-500">
+              <input type="radio" name="issue_resolution_type" value="replacement" checked onchange="onIssueResolutionChange()" class="w-4 h-4 text-emerald-600 focus:ring-emerald-500 cursor-pointer">
+              <div class="ml-2">
+                <span class="block text-[11px] font-black text-slate-900 dark:text-[#F8FAFC]">Free Replacement</span>
+                <span class="block text-[9px] text-emerald-600 font-bold">मुफ्त बदलाव (₹0) • ~45m</span>
+              </div>
+            </label>
+            <label class="relative flex items-center p-2 rounded-xl border border-slate-200 dark:border-[#465362] bg-white dark:bg-[#1D232B] cursor-pointer hover:border-amber-500">
+              <input type="radio" name="issue_resolution_type" value="refund" onchange="onIssueResolutionChange()" class="w-4 h-4 text-amber-600 focus:ring-amber-500 cursor-pointer">
+              <div class="ml-2">
+                <span class="block text-[11px] font-black text-slate-900 dark:text-[#F8FAFC]">Eligible Refund</span>
+                <span class="block text-[9px] text-amber-600 font-bold">रिफंड • 5-7 कार्य दिवस</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Issue Category Dropdown (10 Standard Grievance Categories) -->
         <div class="space-y-1">
-          <label class="block text-xs font-bold text-slate-700 dark:text-[#CBD5E1]" data-i18n="issue_cat_label">Issue Category *</label>
-          <select id="issue-general-category" class="w-full h-10 px-3 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] text-xs font-bold text-slate-800 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer">
-            <option value="item_issue">Specific Item Problem (Missing / Damaged / Wrong)</option>
-            <option value="delivery_delay">Delivery Delay / डिलीवरी में देरी</option>
-            <option value="runner_conduct">Delivery Partner Behavior / डिलीवरी साथी का व्यवहार</option>
-            <option value="refund_payment">Payment or Billing Issue / भुगतान या बिल समस्या</option>
-            <option value="other">Other Grievance / अन्य समस्या</option>
+          <label class="block text-xs font-bold text-slate-700 dark:text-[#CBD5E1]" data-i18n="issue_cat_label">Issue Category / समस्या श्रेणी *</label>
+          <select id="issue-general-category" onchange="onIssueCategoryChange()" class="w-full h-10 px-3 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] text-xs font-bold text-slate-800 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer">
+            <option value="wrong_item">1. Wrong Item Received / गलत सामान प्राप्त हुआ</option>
+            <option value="missing_item">2. Missing Item / सामान छूटा हुआ है</option>
+            <option value="damaged_item">3. Damaged or Broken / टूटा हुआ या पैकेजिंग खराब</option>
+            <option value="expired_item">4. Expired Product / उत्पाद की एक्सपायरी समाप्त</option>
+            <option value="spoiled_item">5. Spoiled, Rotten or Stale Food / सड़ा हुआ या बासी भोजन</option>
+            <option value="poor_quality">6. Poor Quality / खराब गुणवत्ता</option>
+            <option value="incorrect_quantity">7. Incorrect Quantity / कम या गलत मात्रा</option>
+            <option value="order_not_delivered">8. Entire Order Not Delivered / पूरा ऑर्डर नहीं पहुंचा</option>
+            <option value="delayed_delivery">9. Delivery Delay / डिलीवरी में अत्यधिक देरी</option>
+            <option value="other">10. Other Grievance / अन्य समस्या</option>
           </select>
+        </div>
+
+        <!-- Dynamic Remedy Guidance Callout -->
+        <div id="issue-remedy-callout" class="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/40 text-[11px] text-emerald-900 dark:text-emerald-200 space-y-1">
+          <div class="flex items-center gap-1.5 font-bold">
+            <span class="material-symbols-outlined text-[15px] text-emerald-600">electric_bolt</span>
+            <span id="issue-remedy-callout-title">Fast Corrective Replacement</span>
+          </div>
+          <p id="issue-remedy-callout-desc" class="text-[10px] text-emerald-800/90 dark:text-emerald-300/90 leading-tight">
+            Corrective delivery ETA: 45 Mins in Minapur Pilot. Free delivery fee (₹0).
+          </p>
+          <p id="issue-reverse-callout-desc" class="text-[10px] text-emerald-700/80 dark:text-emerald-400/80 font-medium pt-1 border-t border-emerald-200/60 dark:border-emerald-800/30">
+            📦 Sealed incorrect products are collected upon replacement delivery.
+          </p>
+        </div>
+
+        <!-- COD Refund UPI Destination (Conditional) -->
+        <div id="issue-cod-upi-container" class="hidden space-y-1">
+          <label class="block text-xs font-bold text-slate-700 dark:text-[#CBD5E1]">UPI ID / VPA for Direct Reimbursement (COD orders)</label>
+          <input type="text" id="issue-modal-upi" placeholder="yourname@okhdfcbank" class="w-full h-9 px-3 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] text-xs font-medium text-slate-800 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-primary/30" />
         </div>
 
         <!-- Item-Level Selection Container -->
@@ -3756,6 +3858,57 @@
             <div class="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-[#2A323D] text-primary flex items-center justify-center font-bold">
               <span class="material-symbols-outlined text-[20px]">currency_rupee</span>
             </div>
+
+    <!-- ======================================================================= -->
+    <!-- MODAL: BILINGUAL RETURNS, REPLACEMENT & REFUND POLICY                   -->
+    <!-- ======================================================================= -->
+    <div id="modal-return-policy" onclick="if(event.target === this) closeReturnPolicyModal()" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex flex-col justify-end sm:justify-center items-center p-0 sm:p-4 transition-opacity duration-300">
+      <div onclick="event.stopPropagation()" class="bg-white dark:bg-[#1D232B] rounded-t-[32px] sm:rounded-3xl p-5 sm:p-6 pb-safe shadow-2xl max-w-sm sm:max-w-lg w-full border-t sm:border border-slate-200 dark:border-[#465362] flex flex-col gap-4 max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom duration-300">
+        <!-- Drag Handle -->
+        <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-full mx-auto -mt-2 mb-1 shrink-0"></div>
+
+        <!-- Header -->
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-[#465362] pb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-[#2A323D] text-primary flex items-center justify-center font-bold">
+              <span class="material-symbols-outlined text-[20px]">policy</span>
+            </div>
+            <div>
+              <h3 class="text-sm font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="policy_modal_title">GaonBazaar Return Policy</h3>
+              <p class="text-[10px] text-slate-500 dark:text-[#CBD5E1]">Consumer Protection & Quick-Commerce Standard</p>
+            </div>
+          </div>
+          <button type="button" onclick="closeReturnPolicyModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-[#2A323D] text-slate-600 dark:text-[#CBD5E1] flex items-center justify-center hover:bg-slate-200 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">close</span>
+          </button>
+        </div>
+
+        <!-- Policy Rules List -->
+        <div class="space-y-2.5 text-xs text-slate-700 dark:text-[#CBD5E1]" id="return-policy-content">
+          <!-- Populated dynamically via loadReturnPolicyData() -->
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] space-y-1">
+            <span class="font-black text-slate-900 dark:text-white block">Case A: Cancellation Before Store Acceptance</span>
+            <p class="text-[11px] text-slate-600 dark:text-[#CBD5E1]">100% full refund including delivery & platform fees for prepaid orders. Free cancellation on COD.</p>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] space-y-1">
+            <span class="font-black text-slate-900 dark:text-white block">Case B: Wrong or Defective Item</span>
+            <p class="text-[11px] text-slate-600 dark:text-[#CBD5E1]">Customer choice of Free Replacement (₹0 charge, 45m ETA) or full refund. Sealed items collected safely.</p>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] space-y-1">
+            <span class="font-black text-slate-900 dark:text-white block">Case D: Damaged, Expired or Spoiled Food</span>
+            <p class="text-[11px] text-slate-600 dark:text-[#CBD5E1]">Safety First: Spoiled or perishable items are immediately refunded or replaced. For health reasons, unsafe food is NEVER picked up or resold.</p>
+          </div>
+          <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 space-y-1">
+            <span class="font-black text-emerald-900 dark:text-emerald-200 block">Truthful Banking Settlement (5–7 Business Days)</span>
+            <p class="text-[11px] text-emerald-800 dark:text-emerald-300">Compliant with RBI and UPI settlement banking cycles. We never claim funds are credited before bank confirmation.</p>
+          </div>
+        </div>
+
+        <button type="button" onclick="closeReturnPolicyModal()" class="w-full py-3 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold text-xs active:scale-95 transition-all cursor-pointer">
+          Close Policy
+        </button>
+      </div>
+    </div>
             <div>
               <h3 class="text-sm font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="refund_tracker_title">Refund Status</h3>
               <p class="text-[11px] text-slate-500 dark:text-[#CBD5E1]" id="refund-modal-order-id-label">Order #</p>
@@ -11420,6 +11573,64 @@
         }
       }
 
+      // Phase 3B: Active Replacement Card & 7-Stage Stepper
+      const repCard = document.getElementById('od-replacement-card');
+      if (repCard) {
+        const rep = data.active_replacement;
+        if (rep && !['REJECTED', 'CANCELLED', 'FAILED'].includes(rep.status)) {
+          repCard.classList.remove('hidden');
+          const repIdBadge = document.getElementById('od-rep-id');
+          if (repIdBadge) repIdBadge.innerText = rep.replacement_id;
+          
+          const repStatusBadge = document.getElementById('od-rep-status-badge');
+          if (repStatusBadge) {
+            repStatusBadge.innerText = rep.status;
+            repStatusBadge.className = (rep.status === 'REPLACED')
+              ? 'px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-300'
+              : 'px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-300 animate-pulse';
+          }
+
+          const repProductText = document.getElementById('od-rep-product');
+          if (repProductText) repProductText.innerText = `${rep.product_name} × ${rep.quantity}`;
+
+          const repReasonText = document.getElementById('od-rep-reason');
+          if (repReasonText) repReasonText.innerText = `${isHi ? 'कारण' : 'Reason'}: ${rep.reason}`;
+
+          const repEtaText = document.getElementById('od-rep-eta');
+          if (repEtaText) repEtaText.innerText = `ETA: ${rep.promised_eta || '45 Mins'}`;
+
+          // Render 7-Stage Stepper
+          renderReplacementStepper(rep.status);
+
+          // Delivery Verification OTP for Replacement
+          const repOtpBox = document.getElementById('od-rep-otp-box');
+          const repOtpDigits = document.getElementById('od-rep-otp-digits');
+          if (repOtpBox && repOtpDigits) {
+            if (rep.delivery_verification && rep.status !== 'REPLACED') {
+              repOtpBox.classList.remove('hidden');
+              repOtpDigits.innerText = rep.delivery_verification;
+            } else {
+              repOtpBox.classList.add('hidden');
+            }
+          }
+
+          // Reverse pickup notice
+          const repRevNotice = document.getElementById('od-rep-reverse-notice');
+          if (repRevNotice) {
+            if (rep.reverse_pickup_required && rep.reverse_pickup_status !== 'PICKED_UP') {
+              repRevNotice.classList.remove('hidden');
+              repRevNotice.innerText = isHi 
+                ? '📦 गलत सील बंद सामान कृपया डिलीवरी साथी को वापसी हेतु तैयार रखें।' 
+                : '📦 Reverse Pickup: Please keep the sealed incorrect product ready for the delivery partner.';
+            } else {
+              repRevNotice.classList.add('hidden');
+            }
+          }
+        } else {
+          repCard.classList.add('hidden');
+        }
+      }
+
       // Items list
       const itemsContainer = document.getElementById('od-items-list');
       const itemsCountBadge = document.getElementById('od-items-count-badge');
@@ -11744,6 +11955,132 @@
     }
     window.confirmCustomerOrderCancellation = confirmCustomerOrderCancellation;
 
+    // --- Phase 3B: 7-Stage Replacement Stepper & Policy Helpers ---
+    function renderReplacementStepper(status) {
+      const container = document.getElementById('od-rep-stepper-container');
+      if (!container) return;
+
+      const isHi = (AppStore.lang === 'hi');
+      const stages = [
+        { key: 'REQUESTED', label_en: 'Requested', label_hi: 'अनुरोध' },
+        { key: 'VERIFYING', label_en: 'Review', label_hi: 'समीक्षा' },
+        { key: 'APPROVED', label_en: 'Approved', label_hi: 'स्वीकृत' },
+        { key: 'VENDOR_PACKING', label_en: 'Packing', label_hi: 'पैकिंग' },
+        { key: 'RUNNER_ASSIGNED', label_en: 'Assigned', label_hi: 'पार्टनर' },
+        { key: 'OUT_FOR_DELIVERY', label_en: 'On Way', label_hi: 'रवाना' },
+        { key: 'REPLACED', label_en: 'Replaced', label_hi: 'बदला' }
+      ];
+
+      const stageIndexMap = {
+        'REQUESTED': 0,
+        'VERIFYING': 1,
+        'APPROVED': 2,
+        'VENDOR_PACKING': 3,
+        'RUNNER_ASSIGNED': 4,
+        'OUT_FOR_DELIVERY': 5,
+        'REPLACED': 6
+      };
+
+      const currentIdx = stageIndexMap[status] !== undefined ? stageIndexMap[status] : 0;
+
+      container.innerHTML = `
+        <div class="flex items-center justify-between relative py-2">
+          <!-- Continuous background line -->
+          <div class="absolute left-2.5 right-2.5 top-1/2 -translate-y-1/2 h-1 bg-slate-200 dark:bg-[#465362] z-0"></div>
+          <!-- Filled progress line -->
+          <div class="absolute left-2.5 top-1/2 -translate-y-1/2 h-1 bg-emerald-500 z-0 transition-all duration-500"
+               style="width: ${(currentIdx / (stages.length - 1)) * 94}%;"></div>
+
+          ${stages.map((st, idx) => {
+            const isCompleted = idx < currentIdx;
+            const isCurrent = idx === currentIdx;
+            let dotClasses = 'w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold z-10 transition-all ';
+            if (isCompleted) {
+              dotClasses += 'bg-emerald-600 text-white shadow-xs';
+            } else if (isCurrent) {
+              dotClasses += 'bg-emerald-500 text-white ring-4 ring-emerald-200 dark:ring-emerald-900/60 scale-110';
+            } else {
+              dotClasses += 'bg-slate-200 dark:bg-[#2A323D] text-slate-500 border border-slate-300 dark:border-[#465362]';
+            }
+
+            return `
+              <div class="flex flex-col items-center gap-1 z-10 min-w-0">
+                <div class="${dotClasses}">
+                  ${isCompleted ? '<span class="material-symbols-outlined text-[12px]">check</span>' : (idx + 1)}
+                </div>
+                <span class="text-[8px] sm:text-[9px] font-black truncate max-w-[42px] text-center ${isCurrent ? 'text-emerald-700 dark:text-emerald-300 font-extrabold' : 'text-slate-400 dark:text-slate-500'}">
+                  ${isHi ? st.label_hi : st.label_en}
+                </span>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+    window.renderReplacementStepper = renderReplacementStepper;
+
+    function onIssueResolutionChange() {
+      const type = document.querySelector('input[name="issue_resolution_type"]:checked')?.value || 'replacement';
+      const isHi = (AppStore.lang === 'hi');
+      const calloutTitle = document.getElementById('issue-remedy-callout-title');
+      const calloutDesc = document.getElementById('issue-remedy-callout-desc');
+      const codUpiBox = document.getElementById('issue-cod-upi-container');
+
+      if (type === 'replacement') {
+        if (calloutTitle) calloutTitle.innerText = isHi ? 'तेज़ मुफ्त बदलाव सेवा' : 'Fast Corrective Replacement';
+        if (calloutDesc) calloutDesc.innerText = isHi ? 'अनुमानित समय: 45 मिनट। मुफ्त डिलीवरी (₹0)।' : 'Corrective delivery ETA: 45 Mins in Minapur Pilot. Free delivery fee (₹0).';
+        if (codUpiBox) codUpiBox.classList.add('hidden');
+      } else {
+        if (calloutTitle) calloutTitle.innerText = isHi ? 'पारदर्शी बैंक रिफंड' : 'Truthful Bank Refund';
+        if (calloutDesc) calloutDesc.innerText = isHi ? 'आरबीआई एवं यूपीआई निपटान चक्र के अनुसार 5-7 कार्य दिवस।' : '5-7 business days settlement per RBI & UPI banking clearance rules.';
+        if (currentOrderDetailsData && currentOrderDetailsData.payment_mode === 'COD') {
+          if (codUpiBox) codUpiBox.classList.remove('hidden');
+        }
+      }
+      onIssueCategoryChange();
+    }
+    window.onIssueResolutionChange = onIssueResolutionChange;
+
+    function onIssueCategoryChange() {
+      const cat = document.getElementById('issue-general-category')?.value || 'wrong_item';
+      const isHi = (AppStore.lang === 'hi');
+      const revCallout = document.getElementById('issue-reverse-callout-desc');
+      const isPerishableFood = ['damaged_item', 'expired_item', 'spoiled_item'].includes(cat);
+
+      if (revCallout) {
+        if (isPerishableFood) {
+          revCallout.innerText = isHi 
+            ? '🛡️ खाद्य सुरक्षा: खराब या एक्सपायरी भोजन की वापसी आवश्यक नहीं है और इसे कभी दोबारा नहीं बेचा जाएगा।'
+            : '🛡️ Food Safety & Hygiene: For health reasons, unsafe perishable food is NOT required to be returned and is never resold.';
+        } else {
+          revCallout.innerText = isHi
+            ? '📦 गलत सील बंद सामान कृपया डिलीवरी साथी को वापसी हेतु तैयार रखें।'
+            : '📦 Sealed incorrect products are collected upon replacement delivery.';
+        }
+      }
+    }
+    window.onIssueCategoryChange = onIssueCategoryChange;
+
+    async function openReturnPolicyModal() {
+      const modal = document.getElementById('modal-return-policy');
+      if (!modal) return;
+      modal.classList.remove('hidden');
+      if (window.pushOverlayHistory) {
+        window.pushOverlayHistory('modal-return-policy', function(fromPop) {
+          closeReturnPolicyModal(fromPop);
+        });
+      }
+    }
+    window.openReturnPolicyModal = openReturnPolicyModal;
+
+    function closeReturnPolicyModal(isFromPopstate) {
+      document.getElementById('modal-return-policy')?.classList.add('hidden');
+      if (window.closeOverlayHistory) {
+        window.closeOverlayHistory('modal-return-policy', isFromPopstate);
+      }
+    }
+    window.closeReturnPolicyModal = closeReturnPolicyModal;
+
     // --- Modal 2: Item-Level Issue Reporter Modal ---
     function openOrderIssueReporter(orderId) {
       activeOrderDetailsId = orderId;
@@ -11885,34 +12222,46 @@
       if (errBox) errBox.classList.add('hidden');
 
       try {
-        const res = await apiFetch('/support/ticket', {
+        const preferredResolution = document.querySelector('input[name="issue_resolution_type"]:checked')?.value || 'replacement';
+        const upiInput = document.getElementById('issue-modal-upi');
+        const upiVpa = upiInput ? upiInput.value.trim() : null;
+
+        const res = await apiFetch('/resolutions/issue', {
           method: 'POST',
           body: JSON.stringify({
             user_phone: userPhone,
             order_id: activeOrderDetailsId,
             category: category,
+            preferred_resolution: preferredResolution,
             message: message,
-            affected_items: affectedItems.length > 0 ? affectedItems : null
+            affected_items: affectedItems.length > 0 ? affectedItems : null,
+            upi_vpa: upiVpa
           })
         });
 
         if (!res || !res.ticket_id) {
-          throw new Error(res && res.detail ? res.detail : 'Failed to register support ticket');
+          throw new Error(res && res.detail ? res.detail : 'Failed to register resolution request');
         }
 
-        // Show success state
+        // Show success state with truthful details
         if (buttonsBox) buttonsBox.classList.add('hidden');
         if (succBox) {
+          const succMsg = document.getElementById('issue-modal-success-msg');
           const ticketIdLabel = document.getElementById('issue-modal-ticket-id');
-          if (ticketIdLabel) ticketIdLabel.innerText = `Ticket #${res.ticket_id}`;
+          if (ticketIdLabel) {
+            ticketIdLabel.innerText = res.replacement_id ? `Replacement #${res.replacement_id}` : `Refund #${res.refund_id || res.ticket_id}`;
+          }
+          if (succMsg) {
+            succMsg.innerText = res.message || (isHi ? 'अनुरोध सफलतापूर्वक दर्ज हुआ!' : 'Request registered successfully!');
+          }
           succBox.classList.remove('hidden');
         }
 
-        setTimeout(() => {
+        setTimeout(async () => {
           closeOrderIssueReporter();
-          if (typeof openSupportCenterSection === 'function') {
-            navigateToPhase('support');
-            openSupportCenterSection('my_tickets');
+          // Reload Order Details to instantly display the new Replacement stepper or Refund card
+          if (activeOrderDetailsId && typeof openCustomerOrderDetails === 'function') {
+            await openCustomerOrderDetails(activeOrderDetailsId);
           }
         }, 1800);
       } catch (err) {

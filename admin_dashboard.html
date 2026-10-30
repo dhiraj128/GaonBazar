@@ -339,6 +339,13 @@
         <span id="tab-tickets-badge" class="ml-1 text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-full font-bold">0</span>
       </button>
 
+      <!-- Tab 9: Phase 3B Unified Resolution Management -->
+      <button id="admin-tab-btn-resolutions" onclick="switchTab('resolutions')" class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-slate-900 text-slate-300 hover:text-white border border-slate-800 transition-all whitespace-nowrap shrink-0 min-h-[38px]">
+        <span class="material-symbols-outlined text-[18px] text-emerald-400">published_with_changes</span>
+        <span data-i18n="tab_resolutions">रिफंड व समाधान डेस्क (Resolutions)</span>
+        <span id="tab-resolutions-badge" class="ml-1 text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold">0</span>
+      </button>
+
     </div>
 
     <!-- ======================================================================= -->
@@ -636,6 +643,78 @@
           </thead>
           <tbody id="tickets-table-body" class="divide-y divide-slate-800 text-slate-300 font-medium">
             <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+    <!-- ======================================================================= -->
+    <!-- 8B. TAB 9: UNIFIED RESOLUTION, REPLACEMENT & REFUND MANAGEMENT          -->
+    <!-- ======================================================================= -->
+    <section id="tab-resolutions" class="hidden mt-10 shrink-0 flex-col gap-6 p-4 sm:p-6 bg-slate-900/60 rounded-3xl border border-slate-800/80 shadow-lg" style="margin-top: 40px;">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-sm font-black text-white flex items-center gap-2">
+            <span class="material-symbols-outlined text-emerald-400">published_with_changes</span>
+            <span>रिफंड, बदलाव व विवाद समाधान डेस्क (Unified Resolution Desk)</span>
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">
+            ग्राहकों के रिफंड दावे, मुफ्त बदलाव मिशन, तथा निष्पक्ष जवाबदेही (Liability Attribution) प्रबंधन
+          </p>
+        </div>
+        <button onclick="fetchAdminResolutions()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 border border-slate-700 flex items-center gap-1.5 self-start sm:self-auto cursor-pointer">
+          <span class="material-symbols-outlined text-xs">refresh</span>
+          रिफ्रेश
+        </button>
+      </div>
+
+      <!-- 8 Workflow Filter Tabs -->
+      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1" id="res-workflow-tabs">
+        <button onclick="switchResolutionTab('all')" id="res-tab-all" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 text-white shadow-xs shrink-0 cursor-pointer">
+          सभी (All)
+        </button>
+        <button onclick="switchResolutionTab('new')" id="res-tab-new" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 shrink-0 cursor-pointer">
+          नए अनुरोध (New)
+        </button>
+        <button onclick="switchResolutionTab('under_review')" id="res-tab-under_review" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 shrink-0 cursor-pointer">
+          समीक्षाधीन (Under Review)
+        </button>
+        <button onclick="switchResolutionTab('refunds')" id="res-tab-refunds" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 shrink-0 cursor-pointer">
+          रिफंड दावे (Refunds)
+        </button>
+        <button onclick="switchResolutionTab('replacements')" id="res-tab-replacements" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 shrink-0 cursor-pointer">
+          बदलाव मिशन (Replacements)
+        </button>
+        <button onclick="switchResolutionTab('approved')" id="res-tab-approved" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 shrink-0 cursor-pointer">
+          स्वीकृत (Approved)
+        </button>
+        <button onclick="switchResolutionTab('rejected')" id="res-tab-rejected" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 shrink-0 cursor-pointer">
+          अस्वीकृत (Rejected)
+        </button>
+        <button onclick="switchResolutionTab('completed')" id="res-tab-completed" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 shrink-0 cursor-pointer">
+          पूर्ण (Completed)
+        </button>
+      </div>
+
+      <!-- Resolutions Table Container -->
+      <div class="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-950/60">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="border-b border-slate-800 bg-slate-900/80 text-slate-400 font-bold uppercase tracking-wider">
+              <th class="py-3 px-3">Type / ID</th>
+              <th class="py-3 px-3">Order #</th>
+              <th class="py-3 px-3">Customer Phone</th>
+              <th class="py-3 px-3">Item / Claim Details</th>
+              <th class="py-3 px-3">Amount</th>
+              <th class="py-3 px-3">Status</th>
+              <th class="py-3 px-3">Liability Attribution</th>
+              <th class="py-3 px-3 min-w-[280px]">Admin Actions</th>
+            </tr>
+          </thead>
+          <tbody id="resolutions-table-body" class="divide-y divide-slate-800 text-slate-300 font-medium">
+            <!-- Rendered dynamically via renderResolutionsTable() -->
           </tbody>
         </table>
       </div>
@@ -2177,7 +2256,7 @@
     // --- TAB SWITCHER ---
     function switchTab(tabId) {
       AdminStore.activeTab = tabId;
-      ['catalog', 'vendors', 'runners', 'orders', 'ledger', 'risk', 'bank', 'notifications', 'tickets'].forEach(t => {
+      ['catalog', 'vendors', 'runners', 'orders', 'ledger', 'risk', 'bank', 'notifications', 'tickets', 'resolutions'].forEach(t => {
         const sec = document.getElementById(`tab-${t}`);
         const btn = document.getElementById(`admin-tab-btn-${t}`);
         if (sec) sec.classList.add('hidden');
@@ -2206,6 +2285,9 @@
       }
       if (tabId === 'tickets') {
         fetchSupportTickets();
+      }
+      if (tabId === 'resolutions') {
+        fetchAdminResolutions();
       }
     }
 
@@ -2839,3 +2921,139 @@
 
 </body>
 </html>
+
+    // --- Phase 3B: Admin Resolution Management Controller ---
+    AdminStore.activeResolutionTab = 'all';
+    AdminStore.resolutions = [];
+
+    function switchResolutionTab(tab) {
+      AdminStore.activeResolutionTab = tab;
+      const tabs = ['all', 'new', 'under_review', 'refunds', 'replacements', 'approved', 'rejected', 'completed'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`res-tab-${t}`);
+        if (btn) {
+          if (t === tab) {
+            btn.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 text-white shadow-xs shrink-0 cursor-pointer";
+          } else {
+            btn.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 shrink-0 cursor-pointer";
+          }
+        }
+      });
+      fetchAdminResolutions(tab);
+    }
+    window.switchResolutionTab = switchResolutionTab;
+
+    async function fetchAdminResolutions(tab) {
+      const activeTab = tab || AdminStore.activeResolutionTab || 'all';
+      const tbody = document.getElementById('resolutions-table-body');
+      if (tbody) {
+        tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-slate-400 font-bold">समाधान डेटा लोड हो रहा है...</td></tr>';
+      }
+
+      try {
+        const res = await adminFetch(`/admin/resolutions?tab=${encodeURIComponent(activeTab)}`);
+        const items = (res && res.resolutions) ? res.resolutions : [];
+        AdminStore.resolutions = items;
+        const badge = document.getElementById('tab-resolutions-badge');
+        if (badge) badge.innerText = res.count || items.length;
+
+        renderResolutionsTable(items);
+      } catch (err) {
+        console.error('Failed to fetch admin resolutions:', err);
+        if (tbody) {
+          tbody.innerHTML = `<tr><td colspan="8" class="py-6 text-center text-rose-400 font-bold">त्रुटि: ${err.message || 'डेटा प्राप्त नहीं हो सका'}</td></tr>`;
+        }
+      }
+    }
+    window.fetchAdminResolutions = fetchAdminResolutions;
+
+    function renderResolutionsTable(items) {
+      const tbody = document.getElementById('resolutions-table-body');
+      if (!tbody) return;
+
+      if (!items || items.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-slate-500 font-bold">इस श्रेणी में कोई रिकॉर्ड नहीं है।</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = items.map(it => {
+        const isRep = it.type === 'replacement';
+        const isRef = it.type === 'refund';
+        const typeBadge = isRep 
+          ? '<span class="px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[10px] font-bold">Replacement</span>'
+          : '<span class="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold">Refund</span>';
+
+        return `
+          <tr class="hover:bg-slate-900/40 transition-colors">
+            <td class="py-3 px-3">
+              ${typeBadge}
+              <div class="font-mono font-bold text-white text-[11px] mt-1">${it.id}</div>
+            </td>
+            <td class="py-3 px-3 font-mono text-slate-300 font-bold">${it.order_id || '-'}</td>
+            <td class="py-3 px-3 font-mono text-slate-300">${it.customer_phone || '-'}</td>
+            <td class="py-3 px-3">
+              <div class="font-bold text-white">${it.product_name || 'Claim'}</div>
+              <div class="text-[10px] text-slate-400">${it.reason || '-'}</div>
+            </td>
+            <td class="py-3 px-3 font-bold text-white">₹${Number(it.amount || 0).toFixed(2)}</td>
+            <td class="py-3 px-3">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-800 text-slate-300 border border-slate-700">
+                ${it.status}
+              </span>
+            </td>
+            <td class="py-3 px-3">
+              <select id="liability-${it.id}" class="bg-slate-800 text-[11px] text-white border border-slate-700 rounded-lg px-2 py-1">
+                <option value="unclear" ${it.responsible_party === 'unclear' ? 'selected' : ''}>Unclear / अस्पष्ट</option>
+                <option value="vendor" ${it.responsible_party === 'vendor' ? 'selected' : ''}>Vendor / विक्रेता</option>
+                <option value="runner" ${it.responsible_party === 'runner' ? 'selected' : ''}>Runner / डिलीवरी साथी</option>
+                <option value="platform" ${it.responsible_party === 'platform' ? 'selected' : ''}>Platform / प्लेटफ़ॉर्म</option>
+              </select>
+            </td>
+            <td class="py-3 px-3">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                ${isRef ? `
+                  <button onclick="adminExecuteResolutionAction('${it.id}', 'approve_refund')" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] active:scale-95 cursor-pointer">
+                    Approve Refund
+                  </button>
+                ` : `
+                  <button onclick="adminExecuteResolutionAction('${it.id}', 'approve_replacement')" class="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-[11px] active:scale-95 cursor-pointer">
+                    Approve Replacement
+                  </button>
+                `}
+                <button onclick="adminExecuteResolutionAction('${it.id}', 'request_evidence')" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-[10px] active:scale-95 cursor-pointer">
+                  Request Evidence
+                </button>
+                <button onclick="adminExecuteResolutionAction('${it.id}', 'reject')" class="px-2 py-1 rounded-lg bg-rose-950/40 hover:bg-rose-900 text-rose-300 border border-rose-800 font-bold text-[10px] active:scale-95 cursor-pointer">
+                  Reject
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function adminExecuteResolutionAction(itemId, action) {
+      const liabilitySelect = document.getElementById(`liability-${itemId}`);
+      const responsibleParty = liabilitySelect ? liabilitySelect.value : 'unclear';
+
+      try {
+        const res = await adminFetch(`/admin/resolutions/${encodeURIComponent(itemId)}/action`, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: action,
+            responsible_party: responsibleParty,
+            admin_notes: `Processed via Admin Resolution Desk (${action})`
+          })
+        });
+
+        if (res && res.success) {
+          await fetchAdminResolutions();
+        } else {
+          alert('Action failed: ' + (res.detail || 'Unknown error'));
+        }
+      } catch(e) {
+        alert('Action error: ' + e.message);
+      }
+    }
+    window.adminExecuteResolutionAction = adminExecuteResolutionAction;

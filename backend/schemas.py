@@ -787,6 +787,59 @@ class RefundTrackingDTO(BaseModel):
     timeline: List[RefundTrackingTimelineItemDTO]
 
 
+class ReplacementDetailDTO(BaseModel):
+    replacement_id: str
+    original_order_id: str
+    ticket_id: Optional[str] = None
+    original_order_item_id: Optional[int] = None
+    replacement_product_id: str
+    product_name: str
+    quantity: int
+    item_price: float
+    reason: str
+    preferred_resolution: str
+    customer_phone: str
+    customer_name: Optional[str] = None
+    store_id: str
+    store_name: Optional[str] = None
+    runner_id: Optional[str] = None
+    runner_name: Optional[str] = None
+    runner_phone: Optional[str] = None
+    status: str
+    promised_eta: Optional[str] = None
+    delivery_verification: Optional[str] = None
+    reverse_pickup_required: bool = False
+    reverse_pickup_status: str
+    customer_charge: float = 0.0
+    admin_notes: Optional[str] = None
+    evidence_url: Optional[str] = None
+    created_at: str
+    updated_at: Optional[str] = None
+
+
+class RefundDetailDTO(BaseModel):
+    refund_id: str
+    order_id: str
+    ticket_id: Optional[str] = None
+    replacement_id: Optional[str] = None
+    user_phone: str
+    amount: float
+    amount_paise: int
+    reason: str
+    payment_mode: str
+    razorpay_refund_id: Optional[str] = None
+    status: str
+    responsible_party: str = "unclear"
+    reimbursement_method: str = "ORIGINAL_SOURCE"
+    reimbursement_destination: Optional[str] = None
+    approved_by: Optional[str] = None
+    approval_timestamp: Optional[str] = None
+    admin_notes: Optional[str] = None
+    created_at: str
+
+
+
+
 class CustomerOrderDetailResponse(BaseModel):
     order_id: str
     store_id: str
@@ -819,6 +872,8 @@ class CustomerOrderDetailResponse(BaseModel):
     refund_amount: Optional[float] = None
     refund_penalty: Optional[float] = None
     refund_tracking: Optional[RefundTrackingDTO] = None
+    active_replacement: Optional[ReplacementDetailDTO] = None
+    refund_records: Optional[List[RefundDetailDTO]] = None
 
 
 # --- FinTech & Payout Onboarding Schemas ---
@@ -1317,3 +1372,52 @@ class AdminDatabaseMigrateRequest(BaseModel):
     confirm: bool = False
     dry_run: bool = False
     target_environment: Optional[str] = None
+
+
+# --- Resolution, Replacement & Refund Schemas (Phase 3B) ---
+
+class IssueReportRequest(SecureBaseModel):
+    order_id: str
+    category: str  # missing_item, wrong_item, damaged_item, expired_item, spoiled_item, incorrect_quantity, order_not_delivered, duplicate_payment, delivery_or_payment_issue, other
+    preferred_resolution: str = "refund"  # "refund", "replacement"
+    affected_items: Optional[List[Dict[str, Any]]] = None
+    message: Optional[str] = None
+    evidence_url: Optional[str] = None
+    user_phone: Optional[str] = None
+    upi_vpa: Optional[str] = None
+
+
+class IssueReportResponse(BaseModel):
+    success: bool
+    ticket_id: str
+    order_id: str
+    preferred_resolution: str
+    status: str
+    replacement_id: Optional[str] = None
+    refund_id: Optional[str] = None
+    refund_amount: Optional[float] = None
+    replacement_eta: Optional[str] = None
+    reverse_pickup_required: bool = False
+    reverse_pickup_instructions: Optional[str] = None
+    message: str
+    created_at: str
+
+
+class ResolutionAdminActionRequest(BaseModel):
+    action: str  # approve_refund, approve_replacement, request_evidence, request_vendor_response, offer_alternate, reject, escalate
+    responsible_party: Optional[str] = "unclear"  # vendor, runner, platform, unclear, customer
+    refund_amount: Optional[float] = None
+    admin_notes: Optional[str] = None
+    reimbursement_method: Optional[str] = None
+
+
+class VendorReplacementActionRequest(BaseModel):
+    action: str  # confirm_stock, out_of_stock, mark_ready
+    vendor_notes: Optional[str] = None
+
+
+class RunnerReplacementActionRequest(BaseModel):
+    action: Optional[str] = 'verify_otp'  # pickup, verify_otp
+    otp: Optional[str] = None
+    reverse_item_collected: Optional[bool] = False
+    runner_notes: Optional[str] = None

@@ -693,6 +693,13 @@
           <span data-i18n="filter_orders_ready">तैयार / सौंपें</span>
         </button>
 
+        <!-- Filter 4B: Phase 3B Replacements & Issues -->
+        <button onclick="switchOrderFilter('replacements')" id="filter-btn-replacements" class="order-filter-pill min-h-[42px] px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-[#1D232B] text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-600/60 shrink-0 active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[16px] text-amber-500">published_with_changes</span>
+          <span data-i18n="filter_orders_replacements">बदलाव (Replacements)</span>
+          <span id="vendor-replacements-badge" class="px-1.5 py-0.2 rounded-full text-[10px] font-black bg-amber-500 text-white">0</span>
+        </button>
+
         <!-- Filter 5: Out in Transit -->
         <button onclick="switchOrderFilter('transit')" id="filter-btn-transit" class="hidden" class="order-filter-pill min-h-[42px] px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] shrink-0 active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5" data-i18n="filter_orders_transit">
           <span>रास्ते में</span>
@@ -4031,7 +4038,144 @@
         activeBtn.classList.remove('bg-white', 'dark:bg-[#1D232B]', 'text-slate-800', 'dark:text-[#F8FAFC]', 'border', 'border-slate-200', 'dark:border-[#465362]', 'font-bold');
         activeBtn.classList.add('bg-[#16B86E]', 'text-white', 'font-black', 'shrink-0', 'shadow-xs');
       }
-      renderOrdersQueue();
+      if (filterName === 'replacements') {
+        renderVendorReplacementsQueue();
+      } else {
+        renderOrdersQueue();
+      }
+    }
+
+    // --- Phase 3B: Vendor Replacement & Issue Management Engine ---
+    async function fetchVendorReplacements() {
+      try {
+        const storeId = VendorStore.storeId || 'sharma_brothers';
+        const token = VendorStore.token || (typeof localStorage !== 'undefined' ? (localStorage.getItem('vendorToken') || localStorage.getItem('token')) : null);
+        const res = await fetch(`/api/vendor/${encodeURIComponent(storeId)}/replacements`, {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+        });
+        if (res.ok) {
+          const list = await res.json();
+          VendorStore.replacements = Array.isArray(list) ? list : [];
+          const badge = document.getElementById('vendor-replacements-badge');
+          if (badge) badge.innerText = VendorStore.replacements.length;
+        }
+      } catch (err) {
+        console.warn('Vendor replacements fetch failed:', err);
+      }
+    }
+
+    function renderVendorReplacementsQueue() {
+      const container = document.getElementById('orders-container');
+      if (!container) return;
+
+      const reps = VendorStore.replacements || [];
+      const isHi = (VendorStore.lang === 'hi');
+
+      if (reps.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full bg-white dark:bg-[#1D232B] rounded-3xl p-8 border border-slate-200 dark:border-[#465362] text-center flex flex-col items-center justify-center gap-2">
+            <span class="material-symbols-outlined text-[38px] text-slate-400">check_circle</span>
+            <p class="text-xs font-bold text-slate-700 dark:text-[#F8FAFC]">
+              ${isHi ? 'कोई सक्रिय बदलाव अनुरोध नहीं है।' : 'No active replacement requests.'}
+            </p>
+            <p class="text-[11px] text-slate-400">
+              ${isHi ? 'ग्राहकों के सभी ऑर्डर सुरक्षित व पूर्ण हैं।' : 'All customer orders are verified and intact.'}
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = reps.map(r => `
+        <div class="bg-white dark:bg-[#1D232B] rounded-2xl p-4 border-2 border-amber-500/40 shadow-xs flex flex-col gap-3">
+          <div class="flex items-center justify-between border-b border-slate-100 dark:border-[#465362] pb-2">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[20px] text-amber-500">published_with_changes</span>
+              <div>
+                <span class="font-mono text-xs font-black text-slate-900 dark:text-white">${r.replacement_id}</span>
+                <p class="text-[10px] text-slate-500">Order #${r.original_order_id}</p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-300">
+              ${r.status}
+            </span>
+          </div>
+
+          <div class="flex items-start justify-between text-xs">
+            <div class="space-y-0.5">
+              <h4 class="font-black text-slate-900 dark:text-white">${r.product_name}</h4>
+              <p class="text-[11px] text-slate-600 dark:text-[#CBD5E1]">Quantity: ${r.quantity} • Value: ₹${Number(r.item_price).toFixed(2)}</p>
+              <p class="text-[10px] text-rose-600 font-semibold">Grievance: ${r.reason}</p>
+            </div>
+            <div class="text-right">
+              <span class="text-xs font-black text-emerald-600">Remedy: Free Replacement</span>
+              <p class="text-[10px] text-slate-400">ETA: ${r.promised_eta || '45 Mins'}</p>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex items-center gap-2 pt-1 border-t border-slate-100 dark:border-[#465362]">
+            ${r.status === 'REQUESTED' ? `
+              <button onclick="vendorRespondReplacement('${r.replacement_id}', 'confirm_stock')" class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs active:scale-95 transition-all cursor-pointer">
+                ${isHi ? 'स्टॉक पुष्टि व पैक करें' : 'Confirm Stock & Pack'}
+              </button>
+              <button onclick="vendorRespondReplacement('${r.replacement_id}', 'out_of_stock')" class="py-2.5 px-3 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 font-black text-xs active:scale-95 transition-all cursor-pointer">
+                ${isHi ? 'स्टॉक खत्म' : 'Out of Stock'}
+              </button>
+            ` : (r.status === 'VENDOR_PACKING' ? `
+              <button onclick="vendorMarkReplacementReady('${r.replacement_id}')" class="flex-1 py-2.5 rounded-xl bg-[#16B86E] hover:bg-emerald-700 text-white font-black text-xs active:scale-95 transition-all cursor-pointer">
+                ${isHi ? 'पैक पूर्ण - डिलीवरी हेतु तैयार' : 'Mark Ready for Runner'}
+              </button>
+            ` : `
+              <div class="text-xs text-slate-500 font-bold">
+                ${r.runner_name ? `Runner Assigned: ${r.runner_name}` : 'Awaiting delivery completion'}
+              </div>
+            `)}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function vendorRespondReplacement(repId, action) {
+      try {
+        const token = VendorStore.token || (typeof localStorage !== 'undefined' ? (localStorage.getItem('vendorToken') || localStorage.getItem('token')) : null);
+        const res = await fetch(`/api/vendor/replacements/${encodeURIComponent(repId)}/respond`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify({ action: action })
+        });
+        if (res.ok) {
+          await fetchVendorReplacements();
+          renderVendorReplacementsQueue();
+        } else {
+          const err = await res.json();
+          alert(err.detail || 'Action failed');
+        }
+      } catch(e) {
+        alert('Network error: ' + e.message);
+      }
+    }
+
+    async function vendorMarkReplacementReady(repId) {
+      try {
+        const token = VendorStore.token || (typeof localStorage !== 'undefined' ? (localStorage.getItem('vendorToken') || localStorage.getItem('token')) : null);
+        const res = await fetch(`/api/vendor/replacements/${encodeURIComponent(repId)}/ready`, {
+          method: 'POST',
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+        });
+        if (res.ok) {
+          await fetchVendorReplacements();
+          renderVendorReplacementsQueue();
+        } else {
+          const err = await res.json();
+          alert(err.detail || 'Action failed');
+        }
+      } catch(e) {
+        alert('Network error: ' + e.message);
+      }
     }
 
     // --- 9.9 TAB 2: INVENTORY LOGIC ---

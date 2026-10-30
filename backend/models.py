@@ -289,6 +289,13 @@ class SupportTicket(Base):
     category = Column(String(50), default="general")
     message = Column(Text, nullable=False)
     status = Column(String(20), default="open")  # "open", "in_progress", "resolved"
+    preferred_resolution = Column(String(30), default="refund")  # "refund", "replacement"
+    affected_items_json = Column(Text, nullable=True)
+    evidence_url = Column(Text, nullable=True)
+    replacement_id = Column(String(50), nullable=True)
+    refund_id = Column(String(50), nullable=True)
+    responsible_party = Column(String(30), default="unclear")  # "vendor", "runner", "platform", "unclear", "customer"
+    admin_notes = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
 
@@ -451,3 +458,72 @@ class ProcessedWebhookEvent(Base):
     event_id = Column(String(100), unique=True, index=True, nullable=False)
     event_type = Column(String(100), nullable=True)
     processed_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+
+class Replacement(Base):
+    __tablename__ = "replacements"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    replacement_id = Column(String(50), unique=True, index=True, nullable=False)  # e.g. "REP-847291"
+    original_order_id = Column(String(50), ForeignKey("orders.id"), nullable=False, index=True)
+    ticket_id = Column(String(50), nullable=True, index=True)
+    original_order_item_id = Column(Integer, nullable=True)
+    replacement_product_id = Column(String(50), ForeignKey("products.id"), nullable=False)
+    product_name = Column(String(150), nullable=False)
+    quantity = Column(Integer, default=1, nullable=False)
+    item_price = Column(Float, default=0.0)
+    reason = Column(String(100), nullable=False)
+    preferred_resolution = Column(String(30), default="replacement")
+    customer_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    customer_phone = Column(String(20), nullable=False, index=True)
+    customer_name = Column(String(100), nullable=True)
+    store_id = Column(String(50), ForeignKey("stores.id"), nullable=False, index=True)
+    store_name = Column(String(150), nullable=True)
+    runner_id = Column(String(50), ForeignKey("runners.id"), nullable=True, index=True)
+    runner_name = Column(String(100), nullable=True)
+    runner_phone = Column(String(20), nullable=True)
+    inventory_reservation = Column(Boolean, default=False)
+    replacement_cost_paise = Column(Integer, default=0)
+    customer_charge_paise = Column(Integer, default=0)  # Free replacement: strictly 0
+    approved_by = Column(String(50), nullable=True)
+    approval_timestamp = Column(DateTime, nullable=True)
+    responsible_party = Column(String(30), default="unclear")  # "vendor", "runner", "platform", "unclear", "customer"
+    status = Column(String(30), default="REQUESTED", index=True)
+    # Statuses: REQUESTED, VERIFYING, APPROVED, VENDOR_PACKING, RUNNER_ASSIGNED, OUT_FOR_DELIVERY, REPLACED, REJECTED, STOCK_UNAVAILABLE, FAILED, REFUND_OFFERED, CANCELLED
+    promised_eta = Column(String(50), default="45 Mins")
+    actual_delivery_timestamp = Column(DateTime, nullable=True)
+    delivery_verification = Column(String(10), nullable=True)  # 4-digit OTP
+    reverse_pickup_required = Column(Boolean, default=False)
+    reverse_pickup_status = Column(String(30), default="NOT_REQUIRED")
+    # Reverse statuses: NOT_REQUIRED, PENDING_PICKUP, PICKED_UP, QUARANTINED, DISPOSED, RETURNED_TO_VENDOR
+    admin_notes = Column(Text, nullable=True)
+    evidence_url = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow, index=True)
+    updated_at = Column(DateTime, default=datetime.utcnow)
+
+
+class RefundRecord(Base):
+    __tablename__ = "refund_records"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    refund_id = Column(String(50), unique=True, index=True, nullable=False)  # e.g. "REF-109284"
+    order_id = Column(String(50), ForeignKey("orders.id"), nullable=False, index=True)
+    ticket_id = Column(String(50), nullable=True, index=True)
+    replacement_id = Column(String(50), nullable=True, index=True)
+    user_phone = Column(String(20), nullable=False, index=True)
+    amount = Column(Float, nullable=False)
+    amount_paise = Column(Integer, nullable=False)
+    reason = Column(String(100), nullable=False)
+    payment_mode = Column(String(20), default="UPI")  # "UPI", "CARD", "COD"
+    original_razorpay_payment_id = Column(String(100), nullable=True)
+    razorpay_refund_id = Column(String(100), nullable=True)
+    status = Column(String(30), default="REQUESTED", index=True)
+    # Statuses: REQUESTED, UNDER_REVIEW, APPROVED, INITIATED, PROCESSING, PROCESSED, FAILED, REJECTED
+    responsible_party = Column(String(30), default="unclear")
+    reimbursement_method = Column(String(30), default="ORIGINAL_SOURCE")  # "ORIGINAL_SOURCE", "UPI_DIRECT", "CASH_RETURN", "STORE_CREDIT"
+    reimbursement_destination = Column(String(100), nullable=True)
+    approved_by = Column(String(50), nullable=True)
+    approval_timestamp = Column(DateTime, nullable=True)
+    admin_notes = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow, index=True)
+    updated_at = Column(DateTime, default=datetime.utcnow)

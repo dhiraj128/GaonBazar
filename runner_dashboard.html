@@ -3887,12 +3887,133 @@
       renderMissionsQueue();
     };
 
+    async function fetchRunnerReplacementMissions() {
+      try {
+        const runnerId = RunnerStore.runnerId || '1';
+        const token = RunnerStore.token || (typeof localStorage !== 'undefined' ? (localStorage.getItem('runnerToken') || localStorage.getItem('token')) : null);
+        const res = await fetch(`/api/runner/${encodeURIComponent(runnerId)}/replacement-missions`, {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+        });
+        if (res.ok) {
+          const data = await res.json();
+          RunnerStore.replacementMissions = Array.isArray(data) ? data : [];
+        }
+      } catch (err) {
+        console.warn('Replacement missions fetch failed:', err);
+      }
+    }
+
+    async function runnerPickupReplacement(repId) {
+      try {
+        const token = RunnerStore.token || (typeof localStorage !== 'undefined' ? (localStorage.getItem('runnerToken') || localStorage.getItem('token')) : null);
+        const res = await fetch(`/api/runner/replacements/${encodeURIComponent(repId)}/pickup`, {
+          method: 'POST',
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+        });
+        if (res.ok) {
+          await fetchRunnerReplacementMissions();
+          renderMissionsQueue();
+        } else {
+          const err = await res.json();
+          alert(err.detail || 'Pickup failed');
+        }
+      } catch(e) {
+        alert('Network error: ' + e.message);
+      }
+    }
+
+    async function runnerVerifyReplacementOtp(repId) {
+      try {
+        const input = document.getElementById(`runner-rep-otp-${repId}`);
+        const otpVal = input ? input.value.trim() : '';
+        if (!otpVal || otpVal.length < 4) {
+          alert('Please enter the 4-digit customer OTP');
+          return;
+        }
+        const token = RunnerStore.token || (typeof localStorage !== 'undefined' ? (localStorage.getItem('runnerToken') || localStorage.getItem('token')) : null);
+        const res = await fetch(`/api/runner/replacements/${encodeURIComponent(repId)}/verify-otp`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify({ otp: otpVal })
+        });
+        if (res.ok) {
+          alert('Replacement successfully delivered! Mission earnings credited.');
+          await fetchRunnerReplacementMissions();
+          renderMissionsQueue();
+        } else {
+          const err = await res.json();
+          alert(err.detail || 'OTP verification failed');
+        }
+      } catch(e) {
+        alert('Network error: ' + e.message);
+      }
+    }
+
     function renderMissionsQueue() {
       const container = document.getElementById('missions-container');
       if (!container) return;
 
-      let list = [...(RunnerStore.missions || [])];
       const isHi = RunnerStore.lang === 'hi';
+      const repMissions = RunnerStore.replacementMissions || [];
+      let repCardsHtml = '';
+
+      if (repMissions.length > 0) {
+        repCardsHtml = repMissions.map(r => `
+          <div class="rounded-2xl p-4 bg-amber-500/5 dark:bg-[#1D232B] border-2 border-amber-500/50 shadow-md flex flex-col gap-3">
+            <!-- Prominent No-Payment-Due Badge -->
+            <div class="p-2.5 rounded-xl bg-amber-500/15 border border-amber-500/40 text-amber-900 dark:text-amber-200 flex items-center justify-between text-xs font-black">
+              <div class="flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[18px] text-amber-600">published_with_changes</span>
+                <span>${isHi ? 'बदलाव डिलीवरी — कोई भुगतान न लें (₹0)' : 'Replacement Delivery — No Customer Payment Due (₹0)'}</span>
+              </div>
+              <span class="px-2 py-0.5 rounded-full bg-amber-600 text-white text-[10px] font-black uppercase">
+                ${r.status}
+              </span>
+            </div>
+
+            <div class="flex items-start justify-between text-xs">
+              <div>
+                <span class="text-[10px] uppercase font-bold text-slate-400">Mission</span>
+                <h4 class="font-black text-slate-900 dark:text-white text-sm">${r.replacement_id}</h4>
+                <p class="text-[11px] text-slate-600 dark:text-[#CBD5E1]">Item: ${r.product_name} (${r.quantity}x)</p>
+                <p class="text-[10px] text-slate-500">From: ${r.store_name || r.store_id} ➔ To: ${r.customer_name || r.customer_phone}</p>
+              </div>
+              <div class="text-right">
+                <span class="text-xs font-black text-emerald-600">Earnings: ₹40</span>
+                <p class="text-[10px] text-slate-400">Customer Due: ₹0</p>
+              </div>
+            </div>
+
+            ${r.reverse_pickup_required ? `
+              <div class="p-2 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-900 dark:text-blue-200 text-[10px] border border-blue-200 flex items-center gap-1.5 font-bold">
+                <span class="material-symbols-outlined text-[14px]">inventory_2</span>
+                <span>${isHi ? '📦 ग्राहक से गलत सील बंद सामान अवश्य वापस लें।' : '📦 Reverse Pickup: Collect incorrect sealed item from customer.'}</span>
+              </div>
+            ` : ''}
+
+            <!-- Action Controls -->
+            <div class="flex items-center gap-2 pt-1 border-t border-slate-100 dark:border-[#465362]">
+              ${r.status === 'RUNNER_ASSIGNED' ? `
+                <button onclick="runnerPickupReplacement('${r.replacement_id}')" class="flex-1 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-black text-xs active:scale-95 transition-all cursor-pointer">
+                  ${isHi ? 'स्टोर से सामान उठाएं (Pickup)' : 'Pickup from Store'}
+                </button>
+              ` : `
+                <div class="flex-1 flex items-center gap-2">
+                  <input type="text" id="runner-rep-otp-${r.replacement_id}" placeholder="4-digit OTP" maxlength="4" class="w-28 h-9 px-2 text-center font-mono font-black text-sm rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-[#111418] text-slate-900 dark:text-white" />
+                  <button onclick="runnerVerifyReplacementOtp('${r.replacement_id}')" class="flex-1 h-9 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs active:scale-95 transition-all cursor-pointer">
+                    ${isHi ? 'OTP सत्यापित करें' : 'Verify & Deliver'}
+                  </button>
+                </div>
+              `}
+            </div>
+          </div>
+        `).join('');
+      }
+
+      let list = [...(RunnerStore.missions || [])];
 
       if (list.length === 0) {
         // Fallback default sample missions to populate matching Reference 03
@@ -3924,7 +4045,7 @@
         ];
       }
 
-      container.innerHTML = list.map((mission, idx) => {
+      container.innerHTML = repCardsHtml + list.map((mission, idx) => {
         const isPickup = mission.timeline_stage === 3 || idx === 0;
         const badgeText = isPickup ? 'PICKUP' : 'DELIVERY';
         const badgeClass = isPickup 
