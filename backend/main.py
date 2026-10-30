@@ -3200,14 +3200,31 @@ def get_order_payment_status(order_id: str, db: Session = Depends(get_db)):
 
 
 @app.post("/api/support/chat", response_model=SupportChatResponse)
-def support_chat_endpoint(payload: SupportChatRequest, db: Session = Depends(get_db)):
+def support_chat_endpoint(
+    payload: SupportChatRequest,
+    db: Session = Depends(get_db),
+    auth: Dict[str, Any] = Depends(require_customer_token)
+):
     """
     Simulates an AI chatbot response for GaonBazaar Customer Support:
-    - Recognizes order tracking queries ("Where is my order? / मेरा ऑर्डर कहाँ है?")
-    - Recognizes refund & cancellation questions
-    - Recognizes urgent escalation / customer service call queries
-    - Context-aware bilingual answers in Hindi / English
+    - Strictly requires authenticated customer Bearer token (or admin)
+    - Enforces customer isolation: caller cannot query another customer's orders or phone
+    - Delivery OTP is ONLY disclosed to verified order owner when stage == 4
+    - Truthful banking refund timelines (5-7 business days per banking cycle, never 2-hour promises)
     """
+    token_role = auth.get("role")
+    token_phone = auth.get("phone")
+    clean_token_phone = str(token_phone or "").strip().replace("+91", "").lstrip("0")
+
+    # If payload includes user_phone, verify that it matches authenticated customer's phone
+    if payload.user_phone and token_role != "admin":
+        clean_req_phone = str(payload.user_phone).strip().replace("+91", "").lstrip("0")
+        if clean_req_phone and clean_token_phone and clean_req_phone != clean_token_phone:
+            raise HTTPException(
+                status_code=403,
+                detail="Access Denied: Token phone does not match requested phone"
+            )
+
     msg_raw = payload.message.strip()
     msg_lower = msg_raw.lower()
     lang = (payload.lang or "hi").lower()
@@ -3219,31 +3236,68 @@ def support_chat_endpoint(payload: SupportChatRequest, db: Session = Depends(get
         "📞 कॉल सहायता केंद्र / Call Help Center"
     ]
 
-    # 1. Order tracking & status query detection
+    # 1. Refund & cancellation policy detection (if general refund question without specific non-cancelled order_id)
+    refund_keywords = ["refund", "रिफंड", "पैसे", "money", "काट", "कटा", "कट गया", "वापस", "return", "कटौती", "पेनाल्टी", "penalty"]
+    is_refund_query = any(kw in msg_lower for kw in refund_keywords)
+
+    if is_refund_query and not payload.order_id:
+        if lang == "hi":
+            reply = "प्रीपेड (UPI) ऑर्डर्स का रिफंड बैंक सेटलमेंट प्रक्रिया के अनुसार 5-7 कार्य दिवसों में आपके मूल खाते में वापस जमा होता है। 3-स्ट्राइक नियमों के अनुसार, तीसरे कैंसलेशन पर डिलीवरी और प्लेटफ़ॉर्म शुल्क की कटौती होती है।"
+        else:
+            reply = "Prepaid UPI refunds are processed back to your original source account within 5-7 business days per banking settlement cycles. Cancellations after Strike 3 are subject to standard delivery & platform fee deductions."
+        return SupportChatResponse(reply=reply, action="refund_policy", escalate_call=False, quick_replies=quick_replies)
+
+    # 2. Order tracking & status query detection
     order_keywords = ["order", "ऑर्डर", "कहाँ", "where", "track", "status", "delivery", "kab", "कब", "late", "लेट", "देर", "पैक", "पहुंच"]
-    is_order_query = any(kw in msg_lower for kw in order_keywords)
+    is_order_query = any(kw in msg_lower for kw in order_keywords) or bool(payload.order_id)
 
     if is_order_query:
-        # Check if user specified an order ID or search for user's most recent order
         target_order = None
         if payload.order_id:
             candidate_ids = [payload.order_id, f"#{payload.order_id}", payload.order_id.lstrip("#")]
             target_order = db.query(Order).filter(Order.id.in_(candidate_ids)).first()
+            if target_order:
+                # Strictly enforce ownership: caller must have legitimate access to this order!
+                if not verify_order_access(target_order, auth):
+                    raise HTTPException(
+                        status_code=403,
+                        detail="Access Denied: You do not have permission to view or track this order."
+                    )
+            else:
+                # Order specified by ID does not exist in DB
+                raise HTTPException(
+                    status_code=404,
+                    detail=f"Order '{payload.order_id}' not found."
+                )
+
         if not target_order:
-            target_order = db.query(Order).filter(Order.user_phone == payload.user_phone).order_by(Order.created_at.desc()).first()
+            effective_phone = clean_token_phone if token_role != "admin" else (
+                str(payload.user_phone or token_phone or "").strip().replace("+91", "").lstrip("0")
+            )
+            if effective_phone:
+                target_order = db.query(Order).filter(
+                    (Order.user_phone == effective_phone) |
+                    (Order.user_phone == f"+91{effective_phone}") |
+                    (Order.user_phone == f"0{effective_phone}")
+                ).order_by(Order.created_at.desc()).first()
 
         if target_order:
+            if not verify_order_access(target_order, auth):
+                raise HTTPException(
+                    status_code=403,
+                    detail="Access Denied: You do not have permission to view or track this order."
+                )
+
             stage = target_order.timeline_stage
-            otp = target_order.delivery_otp
-            store = target_order.store_name
             amt = f"₹{target_order.total_amount:.2f}"
+            store = target_order.store_name
             eta = getattr(target_order, 'eta_mins', '30 Mins') or '30 Mins'
 
             if "cancel" in (target_order.status or "").lower():
                 if lang == "hi":
-                    reply = f"आपका ऑर्डर {target_order.id} ({amt}) रद्द किया जा चुका है। यदि यह प्रीपेड (UPI) था, तो रिफंड राशि 2 घंटे में आपके मूल खाते में आ जाएगी।"
+                    reply = f"आपका ऑर्डर {target_order.id} ({amt}) रद्द किया जा चुका है। यदि यह प्रीपेड (UPI) था, तो रिफंड राशि बैंकिंग चक्र (5-7 कार्य दिवस) में आपके मूल खाते में आ जाएगी। सहायता के लिए टिकट दर्ज करें।"
                 else:
-                    reply = f"Your order {target_order.id} ({amt}) has been cancelled. If prepaid, your refund will be credited within 2 hours."
+                    reply = f"Your order {target_order.id} ({amt}) has been cancelled. If prepaid, your refund will be processed back to your original source account via banking cycles (5-7 business days). Submit a ticket for assistance."
                 return SupportChatResponse(reply=reply, action="order_cancelled", escalate_call=False, quick_replies=quick_replies)
 
             if stage == 1:
@@ -3262,6 +3316,8 @@ def support_chat_endpoint(payload: SupportChatRequest, db: Session = Depends(get
                 else:
                     reply = f"Order {target_order.id} is packed and ready. Gaon Mitra (runner) is en route for pickup."
             elif stage == 4:
+                # Stage 4: Out for Delivery. Delivery OTP only returned to authorized customer/admin owner
+                otp = target_order.delivery_otp
                 if lang == "hi":
                     reply = f"ऑर्डर {target_order.id} रास्ते में है! आपका सुरक्षित 4-अंकीय डिलीवरी OTP '{otp}' है। सामान मिलने पर ही यह OTP राइडर को दें।"
                 else:
@@ -3285,16 +3341,15 @@ def support_chat_endpoint(payload: SupportChatRequest, db: Session = Depends(get
                 reply = "Hello! No recent order was found for your registered phone number. Please specify an Order ID or tap 'Call Help Center' for live agent support."
             return SupportChatResponse(reply=reply, action="no_order_found", escalate_call=False, quick_replies=quick_replies)
 
-    # 2. Refund & cancellation query detection
-    refund_keywords = ["refund", "रिफंड", "पैसे", "money", "काट", "कटा", "कट गया", "वापस", "return", "कटौती", "पेनाल्टी", "penalty"]
-    if any(kw in msg_lower for kw in refund_keywords):
+    # 3. Fallback refund policy if query had refund keyword with order_id but order was not cancelled
+    if is_refund_query:
         if lang == "hi":
-            reply = "प्रीपेड (UPI) ऑर्डर्स का रिफंड 2 घंटे के भीतर आपके बैंक खाते में क्रेडिट हो जाता है। 3-स्ट्राइक नियमों के अनुसार, तीसरे कैंसलेशन पर डिलीवरी और प्लेटफ़ॉर्म शुल्क की कटौती होती है।"
+            reply = "प्रीपेड (UPI) ऑर्डर्स का रिफंड बैंक सेटलमेंट प्रक्रिया के अनुसार 5-7 कार्य दिवसों में आपके मूल खाते में वापस जमा होता है। 3-स्ट्राइक नियमों के अनुसार, तीसरे कैंसलेशन पर डिलीवरी और प्लेटफ़ॉर्म शुल्क की कटौती होती है।"
         else:
-            reply = "Prepaid UPI refunds are processed back to your original source account within 2 hours. Cancellations after Strike 3 are subject to standard delivery & platform fee deductions."
+            reply = "Prepaid UPI refunds are processed back to your original source account within 5-7 business days per banking settlement cycles. Cancellations after Strike 3 are subject to standard delivery & platform fee deductions."
         return SupportChatResponse(reply=reply, action="refund_policy", escalate_call=False, quick_replies=quick_replies)
 
-    # 3. Call escalation / emergency agent assistance detection
+    # 4. Call escalation / emergency agent assistance detection
     escalation_keywords = ["call", "agent", "बात", "शिकायत", "care", "helpline", "help", "support", "emergency", "urgent", "कॉल", "एजेंट", "कस्टमर केयर", "फोन", "मदद"]
     if any(kw in msg_lower for kw in escalation_keywords):
         if lang == "hi":
@@ -3303,7 +3358,7 @@ def support_chat_endpoint(payload: SupportChatRequest, db: Session = Depends(get
             reply = "Our customer care executives are available 24/7 to resolve any issues. Tap the high-contrast '📞 Call Help Center' (1800-120-4266) button below to speak directly with an agent."
         return SupportChatResponse(reply=reply, action="call_escalation", escalate_call=True, quick_replies=quick_replies)
 
-    # 4. Default general AI assistant reply
+    # 5. Default general AI assistant reply
     if lang == "hi":
         reply = "नमस्ते! GaonBazaar AI सहायक में आपका स्वागत है। आप मुझसे अपने ऑर्डर की स्थिति ('मेरा ऑर्डर कहाँ है?'), रिफंड या डिलीवरी के बारे में पूछ सकते हैं, या सीधे सहायता केंद्र को कॉल कर सकते हैं।"
     else:
@@ -3313,14 +3368,33 @@ def support_chat_endpoint(payload: SupportChatRequest, db: Session = Depends(get
 
 
 @app.post("/api/support/ticket", response_model=SupportTicketResponse)
-def create_support_ticket(payload: SupportTicketRequest, db: Session = Depends(get_db)):
+def create_support_ticket(
+    payload: SupportTicketRequest,
+    db: Session = Depends(get_db),
+    auth: Dict[str, Any] = Depends(require_customer_token)
+):
     """
-    Logs customer grievances and complaints into the SQLite support_tickets table.
+    Logs customer grievances and complaints into the support_tickets table.
+    Enforces customer isolation and authentic identity.
     """
+    token_role = auth.get("role")
+    token_phone = auth.get("phone")
+    clean_token_phone = str(token_phone or "").strip().replace("+91", "").lstrip("0")
+    
+    # Customer can only log tickets for their own phone
+    effective_phone = token_phone if token_role != "admin" else (payload.user_phone or token_phone)
+    if payload.user_phone and token_role != "admin":
+        clean_req = str(payload.user_phone).strip().replace("+91", "").lstrip("0")
+        if clean_req and clean_token_phone and clean_req != clean_token_phone:
+            raise HTTPException(
+                status_code=403,
+                detail="Access Denied: Cannot create support ticket for another customer's phone"
+            )
+
     ticket_id = f"TKT-{random.randint(10000, 99999)}"
     ticket = SupportTicket(
         ticket_id=ticket_id,
-        user_phone=payload.user_phone,
+        user_phone=effective_phone,
         order_id=payload.order_id,
         category=payload.category or "general",
         message=payload.message,
@@ -3341,13 +3415,33 @@ def create_support_ticket(payload: SupportTicketRequest, db: Session = Depends(g
 
 
 @app.get("/api/support/tickets")
-def list_support_tickets(user_phone: Optional[str] = None, db: Session = Depends(get_db)):
+def list_support_tickets(
+    user_phone: Optional[str] = None,
+    db: Session = Depends(get_db),
+    auth: Dict[str, Any] = Depends(require_customer_token)
+):
     """
-    Returns customer support complaints and grievance tickets for self-service portal.
+    Returns customer support complaints and grievance tickets.
+    Enforces account isolation: customers can only view their own tickets.
     """
+    token_role = auth.get("role")
+    token_phone = auth.get("phone")
+    clean_token_phone = str(token_phone or "").strip().replace("+91", "").lstrip("0")
+
     query = db.query(SupportTicket)
-    if user_phone:
-        query = query.filter(SupportTicket.user_phone == user_phone)
+    if token_role != "admin":
+        query = query.filter(
+            (SupportTicket.user_phone == token_phone) |
+            (SupportTicket.user_phone == f"+91{clean_token_phone}") |
+            (SupportTicket.user_phone == clean_token_phone)
+        )
+    elif user_phone:
+        clean_target = str(user_phone).strip().replace("+91", "").lstrip("0")
+        query = query.filter(
+            (SupportTicket.user_phone == user_phone) |
+            (SupportTicket.user_phone == f"+91{clean_target}") |
+            (SupportTicket.user_phone == clean_target)
+        )
     tickets = query.order_by(SupportTicket.created_at.desc()).limit(20).all()
     return [
         {

@@ -2750,7 +2750,7 @@
                 <span class="material-symbols-outlined text-slate-400 dark:text-[#94A3B8] text-[18px] transition-transform duration-200 faq-chevron">expand_more</span>
               </button>
               <div class="hidden p-3.5 bg-white dark:bg-[#1D232B] text-xs text-slate-600 dark:text-[#CBD5E1] border-t border-slate-100 dark:border-[#465362] leading-relaxed" data-i18n="faq_a3">
-                यदि कोई सामान खराब, एक्सपायर्ड या गलत निकलता है, तो आप डिलीवरी के तुरंत बाद यहाँ "शिकायत दर्ज करें" से रिपोर्ट कर सकते हैं या टोल-फ्री हेल्पलाइन पर कॉल कर सकते हैं। प्रीपेड ऑर्डर्स का रिफंड 2 घंटे के भीतर सीधे आपके मूल बैंक खाते में क्रेडिट हो जाता है।
+                यदि कोई सामान खराब, एक्सपायर्ड या गलत निकलता है, तो आप डिलीवरी के तुरंत बाद यहाँ "शिकायत दर्ज करें" से रिपोर्ट कर सकते हैं या टोल-फ्री हेल्पलाइन पर कॉल कर सकते हैं। प्रीपेड ऑर्डर्स का रिफंड बैंक सेटलमेंट के अनुसार 5-7 कार्य दिवसों में सीधे आपके मूल खाते में आ जाता है।
               </div>
             </div>
 
@@ -4010,9 +4010,9 @@
         faq_q3: "यदि कोई सामान खराब या छूटा हुआ निकले तो क्या करें?",
         faq_a3: "यदि कोई सामान खराब या छूटा हुआ हो, तो आप नीचे शिकायत दर्ज कर सकते हैं या तुरंत 1800-120-4266 पर कॉल करें। हम तुरंत सामान बदलने या 100% रिफंड की गारंटी देते हैं।",
         faq_q4: "ऑनलाइन प्रीपेड रिफंड कैसे मिलता है?",
-        faq_a4: "UPI या कार्ड से किए गए भुगतान का रिफंड सीधे आपके मूल बैंक खाते में 2 घंटे के भीतर आ जाता है।",
+        faq_a4: "UPI या कार्ड से किए गए भुगतान का रिफंड बैंकिंग नियमों के अनुसार 5-7 कार्य दिवसों में सीधे आपके मूल खाते में आ जाता है।",
         ticket_form_heading: "सहायता टिकट दर्ज करें",
-        ticket_form_sub: "मानव सहायता टीम द्वारा 2 घंटे में समाधान",
+        ticket_form_sub: "मानव सहायता टीम द्वारा त्वरित समाधान",
         ticket_order_label: "ऑर्डर नंबर (वैकल्पिक)",
         ticket_category_label: "शिकायत श्रेणी *",
         ticket_subject_label: "विषय *",
@@ -4562,9 +4562,9 @@
         faq_q3: "What if an item is damaged or missing?",
         faq_a3: "If any item is damaged or missing, you can raise a ticket below or call our helpline immediately. We guarantee instant doorstep replacement or a 100% refund without hassle.",
         faq_q4: "How are prepaid online refunds processed?",
-        faq_a4: "Prepaid refunds via UPI or Card are processed instantly and credited back to your original source account within 2 hours.",
+        faq_a4: "Prepaid refunds via UPI or Card are processed via banking cycles and credited back to your original source account within 5-7 business days.",
         ticket_form_heading: "Raise a Support Ticket",
-        ticket_form_sub: "Human customer care response within 2 hours",
+        ticket_form_sub: "Dedicated grievance resolution by human support team",
         ticket_order_label: "Order Reference (Optional)",
         ticket_category_label: "Issue Category *",
         ticket_subject_label: "Subject *",
@@ -7122,7 +7122,9 @@
         const recognition = new SpeechRecognition();
         recognition.lang = isHi ? 'hi-IN' : 'en-IN';
         recognition.interimResults = false;
-        if (micLbl) micLbl.innerText = isHi ? 'बोलिए...' : 'Listening...';
+        recognition.onstart = () => {
+          if (micLbl) micLbl.innerText = isHi ? 'बोलिए...' : 'Listening...';
+        };
         recognition.onresult = (e) => {
           if (e.results && e.results[0] && e.results[0][0]) {
             const transcript = e.results[0][0].transcript.trim();
@@ -7165,8 +7167,10 @@
         const recognition = new SpeechRecognition();
         recognition.lang = isHi ? 'hi-IN' : 'en-IN';
         recognition.interimResults = false;
-        if (btnText) btnText.innerText = isHi ? 'सुन रहा हूँ...' : 'Listening...';
-        if (status) status.innerText = isHi ? 'स्पष्ट बोलिए...' : 'Speak clearly...';
+        recognition.onstart = () => {
+          if (btnText) btnText.innerText = isHi ? 'सुन रहा हूँ...' : 'Listening...';
+          if (status) status.innerText = isHi ? 'स्पष्ट बोलिए...' : 'Speak clearly...';
+        };
         recognition.onresult = (e) => {
           if (e.results && e.results[0] && e.results[0][0]) {
             const transcript = e.results[0][0].transcript.trim();
@@ -7182,6 +7186,11 @@
           if (btnText) btnText.innerText = isHi ? 'माइक 🎙️' : 'Voice 🎙️';
           if (status) status.innerText = isHi ? 'कृपया नीचे टाइप करें' : 'Please type below';
           if (textarea) textarea.focus();
+        };
+        recognition.onend = () => {
+          if (btnText && (btnText.innerText.includes('सुन') || btnText.innerText.includes('Listening'))) {
+            btnText.innerText = isHi ? 'माइक 🎙️' : 'Voice 🎙️';
+          }
         };
         recognition.start();
       } catch (err) {
@@ -11284,8 +11293,8 @@
         if (stage <= 2) {
           return {
             reply: isHi
-              ? `ऑर्डर रद्द: आपका ऑर्डर #${activeOrderId} सफलतापूर्वक रद्द कर दिया गया है। यदि आपने ऑनलाइन भुगतान किया था, तो 2 घंटे के भीतर रिफंड मिल जाएगा।`
-              : `Order Cancelled: Your order #${activeOrderId} has been cancelled successfully. If prepaid, your refund will be credited within 2 hours.`,
+              ? `ऑर्डर रद्द: आपका ऑर्डर #${activeOrderId} सफलतापूर्वक रद्द कर दिया गया है। यदि आपने ऑनलाइन भुगतान किया था, तो 5-7 कार्य दिवसों में रिफंड मिल जाएगा।`
+              : `Order Cancelled: Your order #${activeOrderId} has been cancelled successfully. If prepaid, your refund will be processed within 5-7 business days.`,
             escalate_call: false
           };
         } else {
@@ -11314,8 +11323,8 @@
       if (refundKeywords.some(kw => text.includes(kw))) {
         return {
           reply: isHi
-            ? 'रिफंड अपडेट: रद्द किए गए प्रीपेड ऑर्डर की राशि 2 घंटे के भीतर आपके मूल बैंक खाते (UPI/Card) में स्वतः क्रेडिट कर दी जाती है।'
-            : 'Refund Update: Prepaid refunds for cancelled orders are automatically credited back to your original payment method within 2 hours.',
+            ? 'रिफंड अपडेट: रद्द किए गए प्रीपेड ऑर्डर का रिफंड बैंक सेटलमेंट अनुसार 5-7 कार्य दिवसों में मूल खाते में आ जाता है।'
+            : 'Refund Update: Prepaid refunds for cancelled orders are processed via standard banking cycles within 5-7 business days.',
           escalate_call: false
         };
       }
@@ -12153,7 +12162,7 @@
         if (typeof showAudioToast === 'function') {
           showAudioToast(
             isHi ? 'शिकायत टिकट दर्ज' : 'Ticket Registered',
-            isHi ? `टिकट #${res.ticket_id} दर्ज हो गया है। हमारी टीम 2 घंटे में समाधान करेगी।` : `Ticket #${res.ticket_id} registered. Our team will resolve it within 2 hours.`
+            isHi ? `टिकट #${res.ticket_id} दर्ज हो गया है। हमारी टीम जल्द ही समाधान करेगी।` : `Ticket #${res.ticket_id} registered. Our team will investigate and resolve promptly.`
           );
         }
       } catch (err) {

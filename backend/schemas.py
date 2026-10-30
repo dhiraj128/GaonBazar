@@ -667,7 +667,7 @@ class AdminCommissionLedgerResponse(BaseModel):
 
 # --- Support & My Account Schemas ---
 class SupportChatRequest(SecureBaseModel):
-    user_phone: str = Field(..., min_length=10, max_length=15)
+    user_phone: Optional[str] = Field(None, min_length=10, max_length=15)
     message: str = Field(..., min_length=1)
     order_id: Optional[str] = None
     lang: Optional[str] = "hi"
@@ -681,7 +681,7 @@ class SupportChatResponse(BaseModel):
 
 
 class SupportTicketRequest(SecureBaseModel):
-    user_phone: str = Field(..., min_length=10, max_length=15)
+    user_phone: Optional[str] = Field(None, min_length=10, max_length=15)
     message: str = Field(..., min_length=1)
     order_id: Optional[str] = None
     category: Optional[str] = "general"

@@ -461,7 +461,7 @@ old_submit_ticket = '''      const ticketId = `TKT-${Math.floor(10000 + Math.ran
       if (typeof showAudioToast === 'function') {
         showAudioToast(
           isHi ? 'शिकायत टिकट दर्ज' : 'Ticket Registered',
-          isHi ? `टिकट #${ticketId} दर्ज हो गया है। हमारी टीम 2 घंटे में समाधान करेगी।` : `Ticket #${ticketId} registered. Our team will resolve it within 2 hours.`
+          isHi ? `टिकट #${ticketId} दर्ज हो गया है। हमारी टीम जल्द ही समाधान करेगी।` : `Ticket #${ticketId} registered. Our team will resolve it promptly.`
         );
       }'''
 
@@ -519,7 +519,7 @@ new_submit_ticket = '''      const isHi = (AppStore.lang === 'hi');
         if (typeof showAudioToast === 'function') {
           showAudioToast(
             isHi ? 'शिकायत टिकट दर्ज' : 'Ticket Registered',
-            isHi ? `टिकट #${res.ticket_id} दर्ज हो गया है। हमारी टीम 2 घंटे में समाधान करेगी।` : `Ticket #${res.ticket_id} registered. Our team will resolve it within 2 hours.`
+            isHi ? `टिकट #${res.ticket_id} दर्ज हो गया है। हमारी टीम जल्द ही समाधान करेगी।` : `Ticket #${res.ticket_id} registered. Our team will resolve it promptly.`
           );
         }
       } catch (err) {

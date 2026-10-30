@@ -1012,6 +1012,15 @@ def main():
     test_security_headers_and_cors()
     test_delivery_location_authorization_and_ownership()
 
+    # Cleanup temporary test fixtures to preserve authoritative DB baseline
+    with db_session() as db:
+        db.query(Order).filter(
+            Order.id.like("SEC-%") | 
+            Order.id.like("ORD-SEC%") |
+            Order.user_phone.in_(["9812300098", "9812300099", "9876599020", "9876500001", "9876500002"])
+        ).delete(synchronize_session=False)
+        db.commit()
+
     print("\n" + "=" * 80)
     print(f"SECURITY AUDIT RESULTS: {PASSED_CHECKS}/{TOTAL_CHECKS} CHECKS PASSED")
     print("=" * 80)
