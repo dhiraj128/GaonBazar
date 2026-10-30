@@ -90,6 +90,27 @@ def test_migration_lifecycle():
         assert src_size_initial == src_size_final, "Source database was modified during migration!"
         print("[PASS] Source database remained completely untouched (read-only safety verified)")
 
+        # Test E: Verify Post-Migration New Insert & Key Collision Immunity
+        print("\n--- TEST PHASE 4: Post-Migration New Inserts & ID Generation ---")
+        tgt_engine = create_engine(tgt_url)
+        try:
+            with tgt_engine.connect() as t_conn:
+                max_log_id = t_conn.execute(text("SELECT COALESCE(MAX(id), 0) FROM audit_logs")).scalar() or 0
+                # Insert new record into auto-increment table without specifying ID
+                t_conn.execute(text('''
+                    INSERT INTO audit_logs (action, actor_role, actor_id, target_entity, details)
+                    VALUES ('post_migration_verification', 'admin', 'auditor_1', 'database', 'Verified post-migration insert')
+                '''))
+                t_conn.commit()
+                new_max_id = t_conn.execute(text("SELECT MAX(id) FROM audit_logs")).scalar()
+                assert new_max_id > max_log_id, f"New audit log ID {new_max_id} not greater than max {max_log_id}"
+                # Verify orders count is strictly 364
+                ord_count = t_conn.execute(text("SELECT COUNT(*) FROM orders")).scalar()
+                assert ord_count == 364, f"Orders count changed unexpectedly: {ord_count}"
+            print(f"[PASS] Post-migration insertion successful without ID collisions (New Auto ID: {new_max_id} > {max_log_id})")
+        finally:
+            tgt_engine.dispose()
+
     print("\n" + "=" * 80)
     print("ALL MIGRATION PUMP REGRESSION AUDITS PASSED (100% VERIFIED)")
     print("=" * 80)

@@ -206,10 +206,11 @@ def run_migration(
                         if pk_cols and len(pk_cols) == 1:
                             pk_name = pk_cols[0]
                             t_conn.execute(text(f'''
-                                SELECT setval(
-                                    pg_get_serial_sequence('"{tbl}"', '{pk_name}'),
-                                    COALESCE((SELECT MAX("{pk_name}") FROM "{tbl}"), 1)
-                                )
+                                SELECT CASE 
+                                    WHEN MAX("{pk_name}") IS NOT NULL THEN setval(pg_get_serial_sequence('"{tbl}"', '{pk_name}'), MAX("{pk_name}"), true)
+                                    ELSE setval(pg_get_serial_sequence('"{tbl}"', '{pk_name}'), 1, false)
+                                END FROM "{tbl}"
+                                WHERE pg_get_serial_sequence('"{tbl}"', '{pk_name}') IS NOT NULL;
                             '''))
                             t_conn.commit()
                             logger(f"  [OK] Sequence synchronized: {tbl}.{pk_name}")

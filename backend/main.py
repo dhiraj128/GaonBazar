@@ -64,7 +64,7 @@ from .schemas import (
     WebhookPaymentEventResponse, SplitPayoutDetailsDTO,
     NotificationDTO, NotificationListResponse, UnreadCountResponse,
     NotificationMarkReadResponse, WebPushSubscriptionRequest,
-    ChatMessageCreate, ChatMessageResponse, MessageThreadResponse, MessageThreadListResponse
+    ChatMessageCreate, ChatMessageResponse, MessageThreadResponse, MessageThreadListResponse, AdminDatabaseMigrateRequest
 )
 from .pricing import (
     calculate_order_pricing,
@@ -424,25 +424,10 @@ def on_startup():
     ensure_schema_migrations()
     Base.metadata.create_all(bind=engine)
 
-    # If running on PostgreSQL and the target database has 0 orders (e.g. newly provisioned Supabase DB),
-    # automatically execute the safe, non-destructive migration pump from backend/gaonbazar.db.
-    if engine.dialect.name == "postgresql":
-        try:
-            with engine.connect() as conn:
-                orders_count = conn.execute(text("SELECT COUNT(*) FROM orders")).scalar() or 0
-            if orders_count == 0:
-                print("[STARTUP] PostgreSQL database detected with 0 orders. Initiating automatic safe SQLite data migration...")
-                src_db = Path(__file__).resolve().parent / "gaonbazar.db"
-                if src_db.exists():
-                    from migrate_sqlite_to_postgres import run_migration
-                    migration_res = run_migration(
-                        sqlite_url=f"sqlite:///{src_db}",
-                        postgres_url=str(engine.url),
-                        execute=True
-                    )
-                    print(f"[STARTUP] PostgreSQL auto-migration completed: success={migration_res.get('success')}")
-        except Exception as e:
-            print(f"[STARTUP WARNING] PostgreSQL auto-migration check encountered: {e}")
+    # Note: Unsafe automatic migration on startup is strictly disabled.
+    # Database migration must be an explicit, authorized, recoverable operation
+    # executed via `python migrate_sqlite_to_postgres.py --execute` or the
+    # authorized Super Admin endpoint `POST /api/admin/database-migrate`.
 
     # Never insert or overwrite demo shops, catalog prices or runner records in
     # PostgreSQL production. Seed only when explicitly requested in an isolated
@@ -5959,13 +5944,24 @@ def admin_database_inspection(
 @app.post("/admin/database-migrate")
 def admin_trigger_database_migration(
     request: Request,
+    payload: Optional[AdminDatabaseMigrateRequest] = None,
     db: Session = Depends(get_db),
     admin_claims: dict = Depends(require_admin_token)
 ):
     """
-    Executes idempotent non-destructive data pump from SQLite baseline into active target DB.
+    Executes explicit, authorized, recoverable non-destructive data pump from SQLite baseline into active target DB.
+    Requires explicit confirm=True (or dry_run=True for preflight audit).
     Honors primary key constraints, prevents duplicates, and updates sequence generators.
     """
+    is_dry_run = payload.dry_run if payload else False
+    is_confirmed = payload.confirm if payload else False
+
+    if not is_confirmed and not is_dry_run:
+        raise HTTPException(
+            status_code=400,
+            detail="Explicit confirmation required. Send JSON payload {'confirm': true} to execute migration, or {'dry_run': true} for read-only preflight verification."
+        )
+
     from migrate_sqlite_to_postgres import run_migration
     src_db = Path(__file__).resolve().parent / "gaonbazar.db"
     if not src_db.exists():
@@ -5974,21 +5970,24 @@ def admin_trigger_database_migration(
     result = run_migration(
         sqlite_url=f"sqlite:///{src_db}",
         postgres_url=str(engine.url),
-        execute=True
+        execute=(not is_dry_run)
     )
 
+    action_name = "database_migration_audited" if is_dry_run else "database_migration_executed"
     record_audit_log(
-        action="database_migration_triggered",
+        db,
+        action=action_name,
         actor_role="admin",
         actor_id=admin_claims.get("sub", "admin"),
         target_entity="database",
         target_id=engine.dialect.name,
-        details=f"Migration executed. Success: {result.get('success')}. Orders: {result.get('tgt_order_sum')}",
+        details=f"Explicit migration invoked. execute={not is_dry_run}. Success: {result.get('success')}. Orders: {result.get('tgt_order_sum')}",
         ip_address=request.client.host if request.client else None
     )
 
     return {
         "status": "success" if result.get("success") else "error",
+        "mode": "dry_run" if is_dry_run else "execute",
         "details": result
     }
 

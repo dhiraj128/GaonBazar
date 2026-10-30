@@ -1236,3 +1236,9 @@ class RunnerBankUpdateRequest(BaseModel):
     account_number: Optional[str] = None
     ifsc: Optional[str] = None
     upi_id: Optional[str] = None
+
+
+class AdminDatabaseMigrateRequest(BaseModel):
+    confirm: bool = False
+    dry_run: bool = False
+    target_environment: Optional[str] = None
