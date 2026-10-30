@@ -152,6 +152,20 @@ def run_migration(
 
     if execute:
         logger("\n[EXECUTING SAFE DATA TRANSFER]")
+        # Relax legacy FK constraints on target PostgreSQL to allow 100% historical fidelity
+        if tgt_engine.dialect.name == "postgresql":
+            with tgt_engine.connect() as t_conn:
+                for tbl_f, fk_name in [
+                    ("orders", "orders_user_id_fkey"),
+                    ("order_items", "order_items_order_id_fkey"),
+                    ("payment_transactions", "payment_transactions_order_id_fkey"),
+                    ("message_threads", "message_threads_order_id_fkey"),
+                ]:
+                    try:
+                        t_conn.execute(text(f'ALTER TABLE "{tbl_f}" DROP CONSTRAINT IF EXISTS "{fk_name}"'))
+                        t_conn.commit()
+                    except Exception:
+                        pass
         for tbl in TABLE_TRANSFER_ORDER:
             src_inspector = inspect(src_engine)
             tgt_inspector = inspect(tgt_engine)

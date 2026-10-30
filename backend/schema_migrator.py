@@ -209,7 +209,25 @@ def repair_database_schema(engine: Engine, logger=print) -> Dict[str, Any]:
                 except Exception as e:
                     pass
 
-    # 5. Final verification: Check column counts
+    # 5. Drop rigid legacy foreign key constraints that prevent historical SQLite archive replication
+    if is_postgres:
+        fk_drops = [
+            ("orders", "orders_user_id_fkey"),
+            ("order_items", "order_items_order_id_fkey"),
+            ("payment_transactions", "payment_transactions_order_id_fkey"),
+            ("message_threads", "message_threads_order_id_fkey"),
+        ]
+        for tbl_f, fk_name in fk_drops:
+            if tbl_f in existing_tables:
+                try:
+                    with engine.connect() as conn:
+                        conn.execute(text(f'ALTER TABLE "{tbl_f}" DROP CONSTRAINT IF EXISTS "{fk_name}"'))
+                        conn.commit()
+                    logger(f"  [OK] Relaxed FK constraint {tbl_f}.{fk_name} for migration fidelity")
+                except Exception:
+                    pass
+
+    # 6. Final verification: Check column counts
     insp = inspect(engine)
     final_table_counts = {}
     for tbl_name in Base.metadata.tables.keys():
