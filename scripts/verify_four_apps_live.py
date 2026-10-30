@@ -3,6 +3,8 @@ GaonBazaar 4-App End-to-End Live PostgreSQL Verification Suite
 Tests Customer, Vendor, Runner, and Super Admin live against Render preview on Supabase PostgreSQL.
 """
 import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import json
 import http.cookiejar
 import urllib.request
@@ -92,30 +94,37 @@ def test_four_apps_live():
         assert otp_res.get("success") is True
         print("  [PASS] Customer send-otp dispatched successfully")
 
-    from backend.main import issue_customer_token
-    cust_token = issue_customer_token(cust_phone, name="Verified Customer")
+    from backend.security import issue_user_token, issue_vendor_token, issue_runner_token, issue_admin_token
+    cust_token = issue_user_token(user_id=1, phone=cust_phone, name="Verified Customer")
 
     orders_req = urllib.request.Request(
-        f"{PREVIEW_URL}/api/orders",
+        f"{PREVIEW_URL}/api/user/{cust_phone}/orders",
         headers={"Authorization": f"Bearer {cust_token}"}
     )
     with opener.open(orders_req) as resp:
         my_orders = json.loads(resp.read().decode())
-        print(f"  [PASS] Customer /api/orders authenticated query executed on PostgreSQL (count: {len(my_orders)})")
+        print(f"  [PASS] Customer /api/user/{cust_phone}/orders authenticated query executed on PostgreSQL (count: {len(my_orders)})")
+
+    trust_req = urllib.request.Request(
+        f"{PREVIEW_URL}/api/user/{cust_phone}/trust-status",
+        headers={"Authorization": f"Bearer {cust_token}"}
+    )
+    with opener.open(trust_req) as resp:
+        trust_data = json.loads(resp.read().decode())
+        print(f"  [PASS] Customer trust score queried on PostgreSQL: {trust_data.get('trust_score')}")
 
     results["customer_app"] = "PASS"
 
     # 4. Vendor Application Verification
     print("\n--- APP 2: VENDOR APP ---")
     # 4a. Vendor Shell
-    with opener.open(f"{PREVIEW_URL}/vendor.html") as resp:
+    with opener.open(f"{PREVIEW_URL}/vendor_dashboard.html") as resp:
         v_html = resp.read().decode("utf-8", errors="ignore")
         assert "vendor" in v_html.lower() or "दुकानदार" in v_html
-        print("  [PASS] Vendor App shell (vendor.html) loaded successfully")
+        print("  [PASS] Vendor App shell (vendor_dashboard.html) loaded successfully")
 
     # 4b. Vendor Auth & Dashboard APIs
-    from backend.main import issue_vendor_token
-    vendor_token = issue_vendor_token("sharma_brothers")
+    vendor_token = issue_vendor_token(store_id="sharma_brothers", phone="9876543210")
 
     v_prod_req = urllib.request.Request(
         f"{PREVIEW_URL}/api/vendor/stores/sharma_brothers/products",
@@ -138,14 +147,13 @@ def test_four_apps_live():
     # 5. Runner Application Verification
     print("\n--- APP 3: RUNNER APP ---")
     # 5a. Runner Shell
-    with opener.open(f"{PREVIEW_URL}/runner.html") as resp:
+    with opener.open(f"{PREVIEW_URL}/runner_dashboard.html") as resp:
         r_html = resp.read().decode("utf-8", errors="ignore")
         assert "runner" in r_html.lower() or "gaon mitra" in r_html.lower() or "मित्र" in r_html
-        print("  [PASS] Runner App shell (runner.html) loaded successfully")
+        print("  [PASS] Runner App shell (runner_dashboard.html) loaded successfully")
 
     # 5b. Runner Auth & Orders Query
-    from backend.main import issue_runner_token
-    runner_token = issue_runner_token("gm_1")
+    runner_token = issue_runner_token(runner_id="gm_1", phone="9876543220")
 
     r_ord_req = urllib.request.Request(
         f"{PREVIEW_URL}/api/runner/missions",
@@ -160,13 +168,12 @@ def test_four_apps_live():
     # 6. Super Admin Application Verification
     print("\n--- APP 4: SUPER ADMIN PLATFORM ---")
     # 6a. Admin Shell
-    with opener.open(f"{PREVIEW_URL}/admin.html") as resp:
+    with opener.open(f"{PREVIEW_URL}/admin_dashboard.html") as resp:
         a_html = resp.read().decode("utf-8", errors="ignore")
         assert "admin" in a_html.lower() or "gaonbazar" in a_html.lower()
-        print("  [PASS] Super Admin platform (admin.html) loaded successfully")
+        print("  [PASS] Super Admin platform (admin_dashboard.html) loaded successfully")
 
     # 6b. Admin Token & Platform Metrics
-    from backend.main import issue_admin_token
     admin_token = issue_admin_token("super_admin")
 
     metrics_req = urllib.request.Request(
@@ -191,6 +198,27 @@ def test_four_apps_live():
         audit_data = json.loads(resp.read().decode())
         logs = audit_data.get("logs", [])
         print(f"  [PASS] Super Admin audit logs queried from PostgreSQL (count: {len(logs)})")
+
+# 6d. Super Admin Database Repair Endpoint
+    repair_req = urllib.request.Request(
+        f"{PREVIEW_URL}/api/admin/database-repair",
+        data=b"{}",
+        headers={"Authorization": f"Bearer {admin_token}", "Content-Type": "application/json"}
+    )
+    with opener.open(repair_req) as resp:
+        rep_res = json.loads(resp.read().decode())
+        assert rep_res.get("status") == "success"
+        print("  [PASS] Super Admin /api/admin/database-repair verified live on PostgreSQL")
+
+    # 6e. Super Admin Database Inspection Endpoint
+    insp_req = urllib.request.Request(
+        f"{PREVIEW_URL}/api/admin/database-inspection",
+        headers={"Authorization": f"Bearer {admin_token}"}
+    )
+    with opener.open(insp_req) as resp:
+        insp_res = json.loads(resp.read().decode())
+        assert insp_res.get("is_postgres") is True
+        print(f"  [PASS] Super Admin /api/admin/database-inspection verified live (engine: {insp_res.get('database_engine')})")
 
     results["super_admin_app"] = "PASS"
 
