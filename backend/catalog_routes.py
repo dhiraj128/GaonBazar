@@ -24,10 +24,71 @@ from .security import (
     require_admin_token,
     require_vendor_token,
     require_runner_token,
+    require_authenticated_user,
+    encrypt_sensitive_field,
+    decrypt_sensitive_field,
+    validate_image_file_bytes,
+    is_test_bypass_allowed,
+    is_hosted_or_production_environment,
     mask_bank_account
 )
 
 router = APIRouter(tags=["Central Catalog, Vendor & Runner Operations"])
+
+def _resolve_vendor_auth(auth: Optional[Dict[str, Any]], target_store_id: Optional[str]) -> str:
+    """Enforces strict tenant isolation for vendor endpoints."""
+    if not auth:
+        if is_test_bypass_allowed():
+            return target_store_id or "sharma_brothers"
+        raise HTTPException(
+            status_code=401,
+            detail="Vendor authentication required. Please provide a valid Bearer token."
+        )
+    role = auth.get("role")
+    if role == "admin":
+        return target_store_id or auth.get("store_id") or "sharma_brothers"
+    if role != "vendor":
+        raise HTTPException(status_code=403, detail="Forbidden: Vendor privileges required")
+    token_store = auth.get("store_id") or auth.get("sub")
+    if target_store_id and token_store and target_store_id != token_store:
+        raise HTTPException(
+            status_code=403,
+            detail=f"Access Denied: Token for store '{token_store}' cannot access store '{target_store_id}'"
+        )
+    return token_store or target_store_id or "sharma_brothers"
+
+
+def _resolve_runner_auth(auth: Optional[Dict[str, Any]], target_runner_id: Optional[str]) -> str:
+    """Enforces strict tenant isolation for runner endpoints."""
+    if not auth:
+        if is_test_bypass_allowed():
+            return target_runner_id or "gm_1"
+        raise HTTPException(
+            status_code=401,
+            detail="Gaon Mitra authentication required. Please provide a valid Bearer token."
+        )
+    role = auth.get("role")
+    if role == "admin":
+        return target_runner_id or auth.get("runner_id") or "gm_1"
+    if role != "runner":
+        raise HTTPException(status_code=403, detail="Forbidden: Gaon Mitra runner privileges required")
+    token_runner = auth.get("runner_id") or auth.get("sub")
+    if target_runner_id and token_runner and target_runner_id != token_runner:
+        raise HTTPException(
+            status_code=403,
+            detail=f"Access Denied: Token for runner '{token_runner}' cannot access runner '{target_runner_id}'"
+        )
+    return token_runner or target_runner_id or "gm_1"
+
+
+def _resolve_admin_auth(auth: Optional[Dict[str, Any]]) -> Dict[str, Any]:
+    """Enforces strict Super Admin authorization."""
+    if not auth:
+        raise HTTPException(status_code=401, detail="Super Admin authentication required")
+    if auth.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Forbidden: Super Admin privileges required")
+    return auth
+
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 STATIC_IMAGES_DIR = ROOT_DIR / "static" / "images"
@@ -321,16 +382,27 @@ async def upload_catalog_image(
     """
     Accepts genuine product photograph or image file, stores persistently,
     and returns a versioned URL.
+    Enforces authentication, 5MB max file size, and magic byte file type verification.
     """
-    content_type = file.content_type or ""
-    if not (content_type.startswith("image/") or file.filename.lower().endswith((".png", ".jpg", ".jpeg", ".webp"))):
+    if not auth and not is_test_bypass_allowed():
+        raise HTTPException(status_code=401, detail="Authentication required to upload catalog assets")
+    if auth and auth.get("role") not in ("admin", "vendor", "runner"):
+        raise HTTPException(status_code=403, detail="Forbidden: Insufficient privileges for image upload")
+
+    filename = Path(file.filename or "upload.png").name
+    ext = Path(filename).suffix.lower() or ".png"
+    if ext not in (".png", ".jpg", ".jpeg", ".webp"):
         raise HTTPException(status_code=400, detail="Only image files (PNG, JPG, WEBP) are supported.")
 
-    ext = Path(file.filename).suffix.lower() or ".png"
+    contents = await file.read()
+    if len(contents) > 5 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="Image exceeds maximum allowed size of 5MB")
+
+    if not validate_image_file_bytes(contents):
+        raise HTTPException(status_code=400, detail="Invalid image payload: binary contents do not match genuine image signature")
+
     clean_name = f"uploaded_{int(datetime.utcnow().timestamp())}_{secrets.token_hex(4)}{ext}"
     dest_path = STATIC_IMAGES_DIR / clean_name
-
-    contents = await file.read()
     dest_path.write_bytes(contents)
 
     relative_url = f"static/images/{clean_name}?v={ASSET_VERSION}"
@@ -493,6 +565,8 @@ def update_vendor_inventory_item(
     if not p:
         raise HTTPException(status_code=404, detail="Product not found.")
 
+    eff_store = _resolve_vendor_auth(auth, p.store_id)
+
     if payload.price is not None:
         p.price = float(payload.price)
     if payload.weight is not None:
@@ -537,6 +611,8 @@ def delete_vendor_inventory_item(
     p = db.query(Product).filter(Product.id == product_id).first()
     if not p:
         raise HTTPException(status_code=404, detail="Product not found.")
+
+    eff_store = _resolve_vendor_auth(auth, p.store_id)
 
     db.delete(p)
     db.commit()
@@ -1046,6 +1122,7 @@ def get_pending_kyc_submissions(
     """
     Super Admin views all pending KYC identity document submissions from vendors and delivery partners.
     """
+    _resolve_admin_auth(auth)
     res = []
 
     # 1. Pending Vendors
@@ -1107,6 +1184,7 @@ def review_kyc_submission(
     - reject: sets status='rejected', notes reason.
     - resubmit: sets status='resubmission_requested', notes reason.
     """
+    _resolve_admin_auth(auth)
     action = payload.action.lower()
     if action == "approved":
         action = "approve"

@@ -37,6 +37,7 @@ def run_razorpay_tests() -> bool:
     client = TestClient(app)
     db = SessionLocal()
     ensure_schema_migrations()
+    initial_order_ids = set(o[0] for o in db.query(Order.id).all())
 
     passed_count = 0
     failed_count = 0
@@ -339,6 +340,14 @@ def run_razorpay_tests() -> bool:
     audit("Zero-Trust /payments/create-order API Call in Checkout", "/payments/create-order" in index_content)
     audit("Razorpay Modal Initialization Logic Present", "new Razorpay(options)" in index_content)
     audit("Cryptographic Signature Verification Call on Success", "/payments/verify-signature" in index_content)
+
+    # Clean up test orders created during test to preserve exact 364 orders baseline
+    new_order_ids = set(o[0] for o in db.query(Order.id).all()) - initial_order_ids
+    if new_order_ids:
+        db.query(OrderItem).filter(OrderItem.order_id.in_(new_order_ids)).delete(synchronize_session=False)
+        db.query(PaymentTransaction).filter(PaymentTransaction.order_id.in_(new_order_ids)).delete(synchronize_session=False)
+        db.query(Order).filter(Order.id.in_(new_order_ids)).delete(synchronize_session=False)
+        db.commit()
 
     db.close()
 

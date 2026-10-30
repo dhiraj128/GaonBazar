@@ -21,6 +21,9 @@ if hasattr(sys.stdout, "reconfigure"):
 from backend.main import app
 from backend.database import get_db, SessionLocal, DATABASE_URL
 from backend.models import CentralProduct, Product, Store, Runner, Order
+from backend.security import issue_admin_token
+
+ADMIN_HEADERS = {"Authorization": f"Bearer {issue_admin_token()}"}
 
 client = TestClient(app)
 
@@ -191,7 +194,7 @@ def test_07_vendor_kyc_and_super_admin_review():
     assert resp.json()["kyc_status"] == "under_review"
 
     # 2. Verify Super Admin sees pending submission
-    pending_resp = client.get("/api/admin/kyc/pending")
+    pending_resp = client.get("/api/admin/kyc/pending", headers=ADMIN_HEADERS)
     assert pending_resp.status_code == 200
     pending_items = pending_resp.json()
     vendor_pending = [item for item in pending_items if item["entity_id"] == "sharma_brothers"]
@@ -202,7 +205,7 @@ def test_07_vendor_kyc_and_super_admin_review():
     review_resp = client.post("/api/admin/kyc/vendor/sharma_brothers/review", json={
         "action": "approved",
         "rejection_reason": None
-    })
+    }, headers=ADMIN_HEADERS)
     assert review_resp.status_code == 200
     assert review_resp.json()["is_verified"] is True
 
@@ -252,7 +255,7 @@ def test_08_runner_kyc_conditional_vehicle_rule():
     assert prof_m["driving_licence_number"] == "DL-1420110012345"
 
     # 3. Super Admin approves runner
-    client.post("/api/admin/kyc/runner/gm_1/review", json={"action": "approved"})
+    client.post("/api/admin/kyc/runner/gm_1/review", json={"action": "approved"}, headers=ADMIN_HEADERS)
     verified_runner = client.get("/api/runner/profile?runner_id=gm_1").json()
     assert verified_runner["is_verified"] is True
     print("-> Conditional vehicle logic and Partner verification confirmed.")

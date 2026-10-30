@@ -66,6 +66,113 @@ def is_test_bypass_allowed() -> bool:
     )
 
 
+# -----------------------------------------------------------------------------
+# 1.2 TOKEN REVOCATION & BLACKLIST (LOGOUT & SUSPENSION ENGINE)
+# -----------------------------------------------------------------------------
+_REVOKED_TOKENS = set()
+_REVOKED_TOKENS_LOCK = threading.Lock()
+
+def revoke_token(token: Optional[str]):
+    """Adds a token to the revoked token blacklist (for logout, suspension, or deletion)."""
+    if not token or not isinstance(token, str):
+        return
+    token_clean = token.strip()
+    if token_clean.lower().startswith("bearer "):
+        token_clean = token_clean[7:].strip()
+    token_hash = hashlib.sha256(token_clean.encode("utf-8")).hexdigest()
+    with _REVOKED_TOKENS_LOCK:
+        _REVOKED_TOKENS.add(token_hash)
+
+def is_token_revoked(token: Optional[str]) -> bool:
+    """Checks if a token has been revoked / logged out."""
+    if not token or not isinstance(token, str):
+        return False
+    token_clean = token.strip()
+    if token_clean.lower().startswith("bearer "):
+        token_clean = token_clean[7:].strip()
+    token_hash = hashlib.sha256(token_clean.encode("utf-8")).hexdigest()
+    with _REVOKED_TOKENS_LOCK:
+        return token_hash in _REVOKED_TOKENS
+
+def clear_revoked_tokens_for_tests():
+    """Clears blacklist cache for automated testing isolation."""
+    with _REVOKED_TOKENS_LOCK:
+        _REVOKED_TOKENS.clear()
+
+
+# -----------------------------------------------------------------------------
+# 1.3 WEBHOOK IDEMPOTENCY & REPLAY DEFENSE ENGINE
+# -----------------------------------------------------------------------------
+_PROCESSED_WEBHOOK_EVENTS = set()
+_WEBHOOK_EVENTS_LOCK = threading.Lock()
+
+def is_webhook_event_processed(event_id: Optional[str]) -> bool:
+    """Returns True if the webhook event ID has already been recorded and processed."""
+    if not event_id:
+        return False
+    with _WEBHOOK_EVENTS_LOCK:
+        return str(event_id).strip() in _PROCESSED_WEBHOOK_EVENTS
+
+def record_webhook_event_processed(event_id: Optional[str]):
+    """Records a webhook event ID to prevent duplicate financial credits."""
+    if not event_id:
+        return
+    with _WEBHOOK_EVENTS_LOCK:
+        _PROCESSED_WEBHOOK_EVENTS.add(str(event_id).strip())
+
+def clear_webhook_events_for_tests():
+    """Clears processed webhook cache for automated test runs."""
+    with _WEBHOOK_EVENTS_LOCK:
+        _PROCESSED_WEBHOOK_EVENTS.clear()
+
+
+# -----------------------------------------------------------------------------
+# 1.4 FILE UPLOAD MAGIC BYTE & TYPE VALIDATION
+# -----------------------------------------------------------------------------
+def validate_image_file_bytes(content: bytes) -> bool:
+    """
+    Validates binary content of uploaded images against authentic file magic signatures.
+    Strictly denies HTML, SVG, scripts, or executables masquerading as images.
+    """
+    if not content or len(content) < 8:
+        return False
+    # PNG: \x89PNG\r\n\x1a\n
+    if content.startswith(b"\x89PNG\r\n\x1a\n"):
+        return True
+    # JPEG / JPG: \xff\xd8\xff
+    if content.startswith(b"\xff\xd8\xff"):
+        return True
+    # WEBP: RIFF....WEBP
+    if content.startswith(b"RIFF") and b"WEBP" in content[:16]:
+        return True
+    # GIF: GIF87a or GIF89a
+    if content.startswith(b"GIF87a") or content.startswith(b"GIF89a"):
+        return True
+    return False
+
+
+# -----------------------------------------------------------------------------
+# 1.5 ADMIN SECRET RESOLUTION ENGINE
+# -----------------------------------------------------------------------------
+def get_admin_secret_key() -> str:
+    """
+    Resolves the Super Admin authentication secret key.
+    Fails closed in production if unconfigured or using insecure default.
+    """
+    key = os.getenv("ADMIN_SECRET_KEY", "").strip()
+    if is_production_environment():
+        insecure_defaults = ("gaonbazar_super_admin_secret_2026", "admin123", "password", "changeme", "secret", "default")
+        if not key or key in insecure_defaults:
+            raise HTTPException(
+                status_code=500,
+                detail="Production security violation: ADMIN_SECRET_KEY unconfigured or using insecure default (fail closed)."
+            )
+        return key
+    elif is_hosted_or_production_environment():
+        return key or "gaonbazar_preview_super_admin_2026"
+    else:
+        return key or "gaonbazar_super_admin_secret_2026"
+
 def _check_jwt_secret_integrity(secret: str):
     """Fails closed in production environments if JWT secret is missing or uses insecure default."""
     if is_production_environment():
@@ -245,6 +352,10 @@ def decode_jwt_token(token: str, secret: str = JWT_SECRET) -> Dict[str, Any]:
         raise HTTPException(status_code=401, detail="Malformed JWT token structure")
 
     header_b64, payload_b64, sig_b64 = parts
+
+    if is_token_revoked(token):
+        raise HTTPException(status_code=401, detail="Authentication token has been revoked or logged out")
+
 
     # 1. Verify Header
     try:
@@ -521,6 +632,34 @@ def verify_customer_access(
         )
 
     return payload
+
+
+def verify_order_access(order: Any, payload: Optional[Dict[str, Any]]) -> bool:
+    """
+    Verifies that the authenticated caller has legitimate authorization to access the given order:
+    - Customer who owns the order
+    - Assigned Vendor for the order's store
+    - Assigned Runner for the order
+    - Super Admin
+    """
+    if not payload:
+        return False
+    role = payload.get("role")
+    if role == "admin":
+        return True
+    if role == "customer":
+        tok_phone = str(payload.get("phone", "")).strip().replace("+91", "").lstrip("0")
+        ord_phone = str(getattr(order, "user_phone", "")).strip().replace("+91", "").lstrip("0")
+        return bool(tok_phone and ord_phone and tok_phone == ord_phone)
+    if role == "vendor":
+        tok_store = payload.get("store_id")
+        ord_store = getattr(order, "store_id", None)
+        return bool(tok_store and ord_store and tok_store == ord_store)
+    if role == "runner":
+        tok_runner = payload.get("runner_id")
+        ord_runner = getattr(order, "runner_id", None)
+        return bool(tok_runner and ord_runner and tok_runner == ord_runner)
+    return False
 
 
 # -----------------------------------------------------------------------------
