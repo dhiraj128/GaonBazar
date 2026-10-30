@@ -168,13 +168,19 @@ from fastapi.responses import PlainTextResponse, HTMLResponse, JSONResponse, Red
 import base64 as _preview_b64
 import hashlib as _preview_hashlib
 import hmac as _preview_hmac
+from html import escape as _preview_escape
 
 def _compute_preview_token(password: str) -> str:
-    secret = os.getenv("JWT_SECRET_KEY", "gaonbazar_preview_secret_salt_2026")
-    return _preview_hmac.new(secret.encode(), password.encode(), _preview_hashlib.sha256).hexdigest()
+    """Sign preview sessions using the configured password or a separate environment secret."""
+    secret = os.getenv("GAONBAZAR_PREVIEW_SESSION_SECRET", "").strip() or password
+    message = ("gaonbazar-preview-session-v2:" + password).encode("utf-8")
+    return _preview_hmac.new(secret.encode("utf-8"), message, _preview_hashlib.sha256).hexdigest()
 
 def _render_preview_unlock_html(error_msg: str = "", redirect_to: str = "/") -> str:
-    err_html = f'<div class="mb-4 p-3 bg-red-500/20 border border-red-500/40 text-red-200 text-xs rounded-xl font-bold flex items-center gap-2"><span>⚠️</span><span>{error_msg}</span></div>' if error_msg else ""
+    safe_redirect = redirect_to if redirect_to.startswith("/") and not redirect_to.startswith("//") and "\\" not in redirect_to else "/"
+    safe_redirect = _preview_escape(safe_redirect, quote=True)
+    safe_error = _preview_escape(error_msg, quote=True)
+    err_html = f'<div class="mb-4 p-3 bg-red-500/20 border border-red-500/40 text-red-200 text-xs rounded-xl font-bold flex items-center gap-2"><span>⚠️</span><span>{safe_error}</span></div>' if error_msg else ""
     return f'''<!DOCTYPE html>
 <html lang="hi" class="dark">
 <head>
@@ -205,7 +211,7 @@ def _render_preview_unlock_html(error_msg: str = "", redirect_to: str = "/") -> 
 
     <!-- Unlock Form -->
     <form method="POST" action="/api/preview/unlock" class="flex flex-col gap-4">
-      <input type="hidden" name="redirect_to" value="{redirect_to}">
+      <input type="hidden" name="redirect_to" value="{safe_redirect}">
       <div>
         <label for="preview_password" class="block text-xs font-bold text-slate-300 mb-1.5">प्रीव्यू पासवर्ड (Access Key)</label>
         <input 
@@ -231,7 +237,7 @@ def _render_preview_unlock_html(error_msg: str = "", redirect_to: str = "/") -> 
     </form>
 
     <div class="pt-2 border-t border-slate-800/60 text-center">
-      <p class="text-[10px] text-slate-500 font-medium">एक बार पासवर्ड दर्ज करने पर 7 दिनों तक बार-बार लॉगिन नहीं करना पड़ेगा।</p>
+      <p class="text-[10px] text-slate-500 font-medium">एक बार पासवर्ड दर्ज करने पर 24 घंटों तक बार-बार लॉगिन नहीं करना पड़ेगा।</p>
     </div>
 
   </div>
@@ -252,9 +258,9 @@ async def preview_access_guard(request: Request, call_next):
         return await call_next(request)
 
     expected = os.getenv("GAONBAZAR_PREVIEW_PASSWORD", "")
-    known_keys = [k for k in (expected, "gaonbazar_preview_2026") if k]
+    known_keys = [expected] if expected and len(expected) >= 16 else []
     if not known_keys:
-        return PlainTextResponse("Preview disabled: missing GAONBAZAR_PREVIEW_PASSWORD", status_code=503)
+        return PlainTextResponse("Preview disabled: configure a strong GAONBAZAR_PREVIEW_PASSWORD (16+ characters)", status_code=503)
 
     # 1. Cookie-based session (Once authenticated, all HTML and background polling requests pass)
     cookie_token = request.cookies.get("gb_preview_session")
@@ -263,21 +269,7 @@ async def preview_access_guard(request: Request, call_next):
         response.headers["Cache-Control"] = "no-store"
         return response
 
-    # 2. Query Parameter direct unlock (?preview_key=...)
-    query_key = request.query_params.get("preview_key")
-    if query_key and any(_preview_hmac.compare_digest(query_key, k) for k in known_keys):
-        clean_url = str(request.url.remove_query_params("preview_key"))
-        resp = RedirectResponse(url=clean_url, status_code=303)
-        resp.set_cookie(
-            key="gb_preview_session",
-            value=_compute_preview_token(query_key),
-            max_age=604800,
-            path="/",
-            httponly=False,
-            samesite="lax",
-            secure=False
-        )
-        return resp
+    # Never accept preview passwords in URLs; query strings can leak into logs.
 
     # 3. HTTP Header token / basic auth (backward compatibility without popup)
     auth = request.headers.get("Authorization", "")
@@ -344,21 +336,21 @@ async def preview_unlock_handler(request: Request):
         except Exception:
             pass
 
-    if not redirect_to.startswith("/"):
+    if not redirect_to.startswith("/") or redirect_to.startswith("//") or "\\" in redirect_to:
         redirect_to = "/"
 
-    known_keys = [k for k in (expected, "gaonbazar_preview_2026") if k]
-    if any(_preview_hmac.compare_digest(password, k) for k in known_keys):
+    known_keys = [expected] if expected and len(expected) >= 16 else []
+    if known_keys and any(_preview_hmac.compare_digest(password, k) for k in known_keys):
         token = _compute_preview_token(password)
         resp = RedirectResponse(url=redirect_to, status_code=303)
         resp.set_cookie(
             key="gb_preview_session",
             value=token,
-            max_age=604800,  # 7 days
+            max_age=86400,  # 7 days
             path="/",
-            httponly=False,
+            httponly=True,
             samesite="lax",
-            secure=False
+            secure=True
         )
         return resp
 

@@ -14,8 +14,10 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 
 BASE_DIR = Path(__file__).resolve().parent
 # Isolate preview data from committed and live databases when running in preview mode.
+import tempfile
 if os.getenv("GAONBAZAR_PREVIEW_MODE") == "1":
-    _local_sqlite_url = "sqlite:////tmp/gaonbazar_staging_20261025.db"
+    _staging_db = Path(tempfile.gettempdir()) / "gaonbazar_staging_20261025.db"
+    _local_sqlite_url = f"sqlite:///{_staging_db.as_posix()}"
 else:
     _local_sqlite_url = f"sqlite:///{BASE_DIR / 'gaonbazar.db'}"
 _supplied_url = (os.getenv("DATABASE_URL") or "").strip()

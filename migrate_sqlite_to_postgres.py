@@ -63,13 +63,21 @@ def normalize_postgres_url(url: str) -> str:
 
 def inspect_table_counts(engine, tables: List[str]) -> Dict[str, int]:
     counts = {}
+    try:
+        insp = inspect(engine)
+        existing = set(insp.get_table_names())
+    except Exception:
+        existing = set()
     with engine.connect() as conn:
         for tbl in tables:
+            if tbl not in existing:
+                counts[tbl] = 0
+                continue
             try:
-                res = conn.execute(text(f"SELECT COUNT(*) FROM {tbl}")).scalar()
+                res = conn.execute(text(f'SELECT COUNT(*) FROM "{tbl}"')).scalar()
                 counts[tbl] = int(res or 0)
             except Exception:
-                counts[tbl] = -1
+                counts[tbl] = 0
     return counts
 
 
