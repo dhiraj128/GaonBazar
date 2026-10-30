@@ -33,7 +33,7 @@ from .models import User, OTPRecord, Landmark, Store, Product, Order, OrderItem,
 from .schemas import (
     SendOTPRequest, SendOTPResponse,
     VerifyOTPRequest, VerifyOTPResponse, UserProfileDTO, CustomerTrustStatusDTO,
-    SaveLandmarkRequest, SaveLandmarkResponse,
+    SaveLandmarkRequest, SaveLandmarkResponse, LocationServiceabilityResponse,
     StoreDTO, ProductDTO, StoreCategoryDTO,
     CheckoutRequest, CheckoutResponse,
     OrderStatusResponse, CancelOrderRequest, OrderCancelResponse,
@@ -562,6 +562,36 @@ def serve_admin_dashboard(request: Request):
 # Mount static assets directories (CSS, JS, Images, Icons)
 STATIC_DIR = ROOT_DIR / "static"
 STATIC_DIR.mkdir(parents=True, exist_ok=True)
+
+FALLBACK_PLACEHOLDER_SVG = """<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
+  <rect width="300" height="300" fill="#f8fafc"/>
+  <rect x="20" y="20" width="260" height="260" rx="12" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="6,6"/>
+  <circle cx="150" cy="120" r="40" fill="#e2e8f0"/>
+  <path d="M110 200 C 120 160, 180 160, 190 200 Z" fill="#cbd5e1"/>
+  <text x="150" y="235" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="15" font-weight="600" fill="#15803d" text-anchor="middle">GaonBazaar Fresh</text>
+  <text x="150" y="255" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">Muzaffarpur • Minapur</text>
+</svg>"""
+
+@app.get("/static/images/{filename}")
+def serve_static_image_with_fallback(filename: str):
+    """
+    Serves static images with reliable fallback SVG for missing assets
+    or ephemeral disk restarts in cloud environments like Render.
+    """
+    images_dir = (STATIC_DIR / "images").resolve()
+    target_path = (images_dir / filename).resolve()
+    try:
+        target_path.relative_to(images_dir)
+    except ValueError:
+        raise HTTPException(status_code=403, detail="Forbidden")
+    if target_path.is_file():
+        return FileResponse(target_path)
+    return Response(
+        content=FALLBACK_PLACEHOLDER_SVG,
+        media_type="image/svg+xml",
+        headers={"Cache-Control": "public, max-age=3600"}
+    )
+
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 ASSETS_DIR = ROOT_DIR / "assets"
@@ -918,7 +948,8 @@ def save_user_landmark(
         lat=payload.lat or 29.1324,
         lng=payload.lng or 77.0125,
         accuracy=payload.accuracy or 6.0,
-        district=payload.district.strip() if payload.district else None,
+        district=payload.district.strip() if payload.district else "Muzaffarpur",
+        block=getattr(payload, 'block', None) or "Minapur",
         village=payload.village,
         landmark_text=landmark_text,
         created_at=datetime.utcnow()
@@ -934,7 +965,7 @@ def save_user_landmark(
             phone=user.phone,
             name=user.name,
             lang=user.lang or "hi",
-            district=payload.district.strip() if payload.district else None,
+            district=payload.district.strip() if payload.district else "Muzaffarpur",
             village=payload.village,
             landmark=landmark_text,
             consecutive_cancellations=getattr(user, 'consecutive_cancellations', 0) or 0,
@@ -944,6 +975,116 @@ def save_user_landmark(
             warning_alert=user.warning_alert,
             trust_score=user.trust_score if user.trust_score is not None else 100
         )
+    )
+
+
+# =============================================================================
+# 2.0.1 PILOT GEOFENCE & LOCATION SERVICEABILITY ENGINE
+# =============================================================================
+
+PILOT_COVERAGE = {
+    "state": "Bihar",
+    "district": "Muzaffarpur",
+    "block": "Minapur",
+    "center": {
+        "lat": 26.1770,
+        "lng": 85.3400,
+        "name": "Minapur Block HQ"
+    },
+    "max_delivery_radius_km": 8.0,
+    "approved_villages": [
+        "Minapur",
+        "Rampur",
+        "Chatursi",
+        "Dharampur",
+        "Tengrari",
+        "Ali Nechra",
+        "Panapur",
+        "Ghosaut",
+        "Bahuara",
+        "Nandna"
+    ]
+}
+
+
+@app.get("/api/location/serviceability", response_model=LocationServiceabilityResponse)
+def check_location_serviceability(
+    lat: Optional[float] = Query(None, ge=-90.0, le=90.0),
+    lng: Optional[float] = Query(None, ge=-180.0, le=180.0),
+    village: Optional[str] = Query(None),
+    block: Optional[str] = Query(None),
+    district: Optional[str] = Query(None),
+    store_id: Optional[str] = Query(None),
+    db: Session = Depends(get_db)
+):
+    """
+    Validates geographic serviceability against Minapur block / Muzaffarpur pilot geofence (8.0 km radius).
+    Returns serviceability status, authoritative distance calculation, and delivery pricing estimate.
+    """
+    req_district = (district or "Muzaffarpur").strip()
+    req_block = (block or "Minapur").strip()
+
+    village_approved = False
+    clean_village = None
+    if village:
+        clean_village = village.strip()
+        village_approved = any(v.lower() == clean_village.lower() for v in PILOT_COVERAGE["approved_villages"])
+
+    distance_km = None
+    serviceable = False
+    reason = None
+
+    if lat is not None and lng is not None:
+        # Reference store or pilot center
+        ref_lat = PILOT_COVERAGE["center"]["lat"]
+        ref_lng = PILOT_COVERAGE["center"]["lng"]
+        if store_id:
+            store = db.query(Store).filter(Store.id == store_id).first()
+            if store and store.lat and store.lng:
+                ref_lat, ref_lng = float(store.lat), float(store.lng)
+
+        road_dist_km, straight_line_km, _ = calculate_authoritative_distance_km(ref_lat, ref_lng, lat, lng)
+        distance_km = road_dist_km
+
+        if distance_km <= PILOT_COVERAGE["max_delivery_radius_km"] or is_geofence_bypass_permitted():
+            serviceable = True
+        else:
+            serviceable = False
+            reason = f"Distance ({distance_km:.2f} km) exceeds pilot limit of {PILOT_COVERAGE['max_delivery_radius_km']} km."
+    elif clean_village and village_approved:
+        serviceable = True
+        distance_km = 3.5
+    elif clean_village and not village_approved:
+        serviceable = False
+        reason = f"Village '{clean_village}' is outside the active pilot villages in Minapur block."
+    else:
+        serviceable = True
+        distance_km = 2.0
+
+    pricing_estimate = None
+    if serviceable:
+        pricing = calculate_order_pricing(subtotal_in_rupees=200.0, distance_km=distance_km or 2.0)
+        pricing_estimate = {
+            "estimated_delivery_fee": pricing.delivery_fee,
+            "free_delivery_threshold": 149.0,
+            "estimated_eta_mins": compute_dynamic_eta(distance_km or 2.0, "normal")
+        }
+
+    return LocationServiceabilityResponse(
+        serviceable=serviceable,
+        village=clean_village,
+        block=req_block,
+        district=req_district,
+        distance_km=distance_km,
+        max_radius_km=PILOT_COVERAGE["max_delivery_radius_km"],
+        reason=reason,
+        pricing_estimate=pricing_estimate,
+        pilot_coverage={
+            "state": PILOT_COVERAGE["state"],
+            "district": PILOT_COVERAGE["district"],
+            "block": PILOT_COVERAGE["block"],
+            "approved_villages": PILOT_COVERAGE["approved_villages"]
+        }
     )
 
 

@@ -31,6 +31,7 @@ TABLE_TRANSFER_ORDER = [
     "stores",
     "users",
     "runners",
+    "central_products",
     "products",
     "landmarks",
     "orders",
@@ -39,7 +40,10 @@ TABLE_TRANSFER_ORDER = [
     "support_tickets",
     "saved_payment_methods",
     "payment_transactions",
-    "notifications"
+    "notifications",
+    "message_threads",
+    "chat_messages",
+    "audit_logs"
 ]
 
 

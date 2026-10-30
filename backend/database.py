@@ -4,8 +4,10 @@ Set DATABASE_URL in Render to a *separately provisioned and migrated* PostgreSQL
 database. Existing SQLite data is NOT automatically transferred by this switch.
 """
 import os
+import json
+from datetime import datetime
 from pathlib import Path
-import os
+from typing import Optional, Any, Dict, List
 
 from sqlalchemy import create_engine, event, text
 from sqlalchemy.orm import declarative_base, sessionmaker
@@ -278,7 +280,9 @@ def ensure_schema_migrations():
             ("runner_id", "VARCHAR(50)"),
             ("distance_type", "VARCHAR(50) DEFAULT 'road_routing_estimate'"),
             ("vendor_transfer_id", "VARCHAR(100)"),
-            ("runner_transfer_id", "VARCHAR(100)")
+            ("runner_transfer_id", "VARCHAR(100)"),
+            ("district", "VARCHAR(100) DEFAULT 'Muzaffarpur'"),
+            ("block", "VARCHAR(100) DEFAULT 'Minapur'")
         ]
         for col_name, col_type in order_cols:
             if col_name not in existing_order_cols:
@@ -331,10 +335,16 @@ def ensure_schema_migrations():
         existing_landmark_cols = {r[1] for r in res_landmarks}
         if "district" not in existing_landmark_cols:
             try:
-                conn.execute(text("ALTER TABLE landmarks ADD COLUMN district VARCHAR(100)"))
+                conn.execute(text("ALTER TABLE landmarks ADD COLUMN district VARCHAR(100) DEFAULT 'Muzaffarpur'"))
                 conn.commit()
             except Exception as e:
                 print(f"Notice adding column district to landmarks: {e}")
+        if "block" not in existing_landmark_cols:
+            try:
+                conn.execute(text("ALTER TABLE landmarks ADD COLUMN block VARCHAR(100) DEFAULT 'Minapur'"))
+                conn.commit()
+            except Exception as e:
+                print(f"Notice adding column block to landmarks: {e}")
 
         # Check otp_records columns for attempts counter
         res_otp = conn.execute(text("PRAGMA table_info(otp_records)")).fetchall()
@@ -345,6 +355,25 @@ def ensure_schema_migrations():
                 conn.commit()
             except Exception as e:
                 print(f"Notice adding column attempts to otp_records: {e}")
+
+        # Ensure audit_logs table exists
+        try:
+            conn.execute(text("""
+                CREATE TABLE IF NOT EXISTS audit_logs (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    action VARCHAR(100) NOT NULL,
+                    actor_role VARCHAR(50) NOT NULL,
+                    actor_id VARCHAR(100),
+                    target_entity VARCHAR(50),
+                    target_id VARCHAR(100),
+                    details TEXT,
+                    ip_address VARCHAR(50),
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )
+            """))
+            conn.commit()
+        except Exception as e:
+            print(f"Notice creating audit_logs table: {e}")
 
         # Ensure support_tickets table exists
         try:
@@ -510,5 +539,35 @@ def ensure_schema_migrations():
         except Exception as re_err:
             print(f"Notice backfilling runner partner codes: {re_err}")
 
-
+def record_audit_log(
+    db,
+    action: str,
+    actor_role: str,
+    actor_id: Optional[str] = None,
+    target_entity: Optional[str] = None,
+    target_id: Optional[str] = None,
+    details: Any = None,
+    ip_address: Optional[str] = None
+):
+    """
+    Records an auditable event in the audit_logs table.
+    Ensures end-to-end traceability for privileged admin decisions, KYC changes, and financial transfers.
+    """
+    try:
+        from .models import AuditLog
+        details_str = json.dumps(details, default=str) if isinstance(details, (dict, list)) else (str(details) if details else None)
+        entry = AuditLog(
+            action=action,
+            actor_role=actor_role,
+            actor_id=str(actor_id) if actor_id else None,
+            target_entity=target_entity,
+            target_id=str(target_id) if target_id else None,
+            details=details_str,
+            ip_address=ip_address,
+            created_at=datetime.utcnow()
+        )
+        db.add(entry)
+        db.commit()
+    except Exception as e:
+        print(f"Notice recording audit log: {e}")
 

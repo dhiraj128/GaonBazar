@@ -103,6 +103,7 @@ class SaveLandmarkRequest(SecureBaseModel):
     phone: str = Field(..., min_length=10)
     name: str = Field(..., min_length=1)
     district: Optional[str] = None
+    block: Optional[str] = None
     village: str = Field(..., min_length=1)
     landmark: str = Field(..., min_length=10)
     lat: Optional[float] = None
@@ -113,6 +114,17 @@ class SaveLandmarkResponse(BaseModel):
     success: bool
     message: str
     user: UserProfileDTO
+
+class LocationServiceabilityResponse(BaseModel):
+    serviceable: bool
+    village: Optional[str] = None
+    block: str = "Minapur"
+    district: str = "Muzaffarpur"
+    distance_km: Optional[float] = None
+    max_radius_km: float = 8.0
+    reason: Optional[str] = None
+    pricing_estimate: Optional[Dict[str, Any]] = None
+    pilot_coverage: Dict[str, Any]
 
 # --- Catalog Schemas ---
 class ProductDTO(BaseModel):

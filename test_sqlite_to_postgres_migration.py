@@ -63,7 +63,7 @@ def test_migration_lifecycle():
             tr = exec_res["transferred"][tbl]
             assert tc == sc, f"Mismatch in {tbl}: src={sc}, tgt={tc}"
             assert tr == sc, f"Transferred count mismatch in {tbl}: transferred={tr}, expected={sc}"
-        print("[PASS] All 12 tables transferred with 100% row count matching")
+        print(f"[PASS] All {len(TABLE_TRANSFER_ORDER)} tables transferred with 100% row count matching")
 
         # Verify financial sums match
         assert abs(exec_res["src_order_sum"] - exec_res["tgt_order_sum"]) < 0.01, "Orders total amount sum mismatch"

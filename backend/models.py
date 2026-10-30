@@ -44,7 +44,8 @@ class Landmark(Base):
     lat = Column(Float, nullable=True)
     lng = Column(Float, nullable=True)
     accuracy = Column(Float, nullable=True)
-    district = Column(String(100), nullable=True)
+    district = Column(String(100), nullable=True, default="Muzaffarpur")
+    block = Column(String(100), nullable=True, default="Minapur")
     village = Column(String(150), nullable=False)
     landmark_text = Column(Text, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -162,6 +163,8 @@ class Order(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     user_phone = Column(String(15), nullable=False)
     user_name = Column(String(100), nullable=False)
+    district = Column(String(100), nullable=True, default="Muzaffarpur")
+    block = Column(String(100), nullable=True, default="Minapur")
     village = Column(String(150), nullable=False)
     landmark = Column(Text, nullable=False)
     customer_lat = Column(Float, nullable=True)
@@ -370,3 +373,17 @@ class ChatMessage(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     thread = relationship("MessageThread", back_populates="messages")
+
+class AuditLog(Base):
+    __tablename__ = "audit_logs"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    action = Column(String(100), nullable=False, index=True)
+    actor_role = Column(String(50), nullable=False, index=True)  # "admin", "vendor", "runner", "customer", "system"
+    actor_id = Column(String(100), nullable=True, index=True)
+    target_entity = Column(String(50), nullable=True, index=True)  # "order", "store", "runner", "kyc", "payout"
+    target_id = Column(String(100), nullable=True, index=True)
+    details = Column(Text, nullable=True)
+    ip_address = Column(String(50), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow, index=True)
+
