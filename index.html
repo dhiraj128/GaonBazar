@@ -868,8 +868,12 @@
 
         <!-- 1. Name Input Card -->
         <div class="bg-white rounded-2xl p-4 shadow-mobile-card border border-surface-container-high flex flex-col gap-2">
-          <label class="text-xs font-bold text-on-surface flex justify-between">
+          <label class="text-xs font-bold text-on-surface flex justify-between items-center">
             <span data-i18n="p1_name_label">आपका पूरा नाम *</span>
+            <button id="p1-name-mic-btn" type="button" onclick="startNameVoiceInput()" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 text-[11px] font-bold transition-all cursor-pointer">
+              <span class="material-symbols-outlined text-[15px]">mic</span>
+              <span id="p1-name-mic-lbl">बोलकर भरें 🎙️</span>
+            </button>
           </label>
           <div class="relative flex items-center bg-surface-container-low rounded-xl border border-surface-container-high focus-within:border-primary">
             <span class="material-symbols-outlined text-outline absolute left-3 text-[18px]">person</span>
@@ -963,8 +967,15 @@
 
           <div class="flex justify-between items-center pt-1 text-xs">
             <label class="font-bold text-on-surface" data-i18n="p1_lm_field_label">गाँव का मुख्य पहचान चिन्ह *</label>
-            <span id="p1-lm-counter" class="text-[10px] text-outline font-bold" data-i18n="p1_lm_counter_min">कम से कम 10 अक्षर</span>
+            <div class="flex items-center gap-2">
+              <span id="p1-lm-counter" class="text-[10px] text-outline font-bold" data-i18n="p1_lm_counter_min">कम से कम 10 अक्षर</span>
+              <button id="p1-voice-lm-btn" type="button" onclick="startLandmarkVoiceInput()" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 text-[11px] font-bold transition-all cursor-pointer">
+                <span class="material-symbols-outlined text-[15px]">mic</span>
+                <span>माइक 🎙️</span>
+              </button>
+            </div>
           </div>
+          <div id="p1-voice-lm-status" class="text-[11px] font-semibold text-slate-500"></div>
 
           <div class="flex flex-col gap-2">
             <textarea 
@@ -8674,14 +8685,9 @@
           }, 5000);
         };
 
-        // Set immediate synchronous listening indicators
-        if (voiceBtn) {
-          voiceBtn.classList.remove('bg-[#16B86E]', 'hover:bg-emerald-600', 'bg-slate-100', 'text-slate-700');
-          voiceBtn.classList.add('bg-red-500', 'text-white', 'animate-pulse');
-        }
-        if (voiceIcon) voiceIcon.innerText = 'graphic_eq';
-        if (voiceText) voiceText.innerText = isHi ? 'सुन रहे हैं...' : 'Listening...';
-        if (searchInput) searchInput.placeholder = isHi ? 'बोलिए (उदा. टमाटर, दूध, तेल)...' : 'Listening... speak product name';
+        // Set initialization state without premature listening indicators
+        if (voiceText) voiceText.innerText = isHi ? 'शुरू हो रहा है...' : 'Connecting...';
+        if (searchInput) searchInput.placeholder = isHi ? 'माइक्रोफ़ोन से जुड़ रहे हैं...' : 'Connecting to microphone...';
 
         // Complete state machine
         recognition.onstart = () => {

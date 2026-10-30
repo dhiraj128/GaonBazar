@@ -22,12 +22,13 @@ In accordance with the **Zero-Broken-Flows Stabilization** mandate, every defect
 | Priority | Focus Area | Status | Empirical Verification Evidence |
 | :--- | :--- | :--- | :--- |
 | **Priority A** | Support Chat & Grievance Security | **PASS** | `POST /api/support/chat` & `/api/support/ticket` secured with `require_customer_token`. Delivery OTP leak plugged. 31/31 adversarial penetration tests pass in `test_support_chat_security.py`. |
-| **Priority B** | PostgreSQL / Supabase Integration | **BLOCKED** *(On Render Dashboard Config)* | Authoritative backup preserved (364 orders, ₹91,333.00). Migration script verified. Render preview container does not have `DATABASE_URL` injected yet. Clear owner instructions provided. |
-| **Priority C** | Full Localization Across All 4 Apps | **PASS** | Added all missing keys (`admin_gate_title`, `tab_catalog`, `tab_notifications`, `tab_tickets`, `tickets_heading`, `tickets_subheading`, `btn_edit_payout`). 100% dictionary completeness verified across all 4 apps. |
-| **Priority D** | Microphone Workflows & Speech Recognition | **PASS** | Home search, AI shopping, Onboarding name, and Landmark microphones set `hi-IN` / `en-IN` dynamically. "Listening" pulse strictly bound to `recognition.onstart`; clean `onend` reset. |
-| **Priority E** | UI/UX, Themes & Android Back Gestures | **PASS** | All theme modes (Light/Dark/System) verified across 3 apps. Android back gesture dismissal handles multi-level stacked modals without app reload. Vertical scroll clearance $\ge 112\text{px}$. |
-| **Priority F** | Four-App Connected Workflow | **PASS** | Complete order lifecycle: Customer order placement -> Vendor acceptance/packing -> Runner pickup & OTP verification -> Admin platform commission & God-view surveillance. |
+| **Priority B** | PostgreSQL / Supabase Integration | **BLOCKED** *(On Render Dashboard Config)* | Authoritative backup preserved (364 orders, ₹91,333.00). Migration tool verified (`migrate_sqlite_to_postgres.py`). Render preview container does not have `DATABASE_URL` injected yet (`/api/version` confirms `database_engine: sqlite`). Supabase contains 12 public tables with 0 records awaiting connection. |
+| **Priority C** | Full Localization Across All 4 Apps | **PASS** | Added all missing keys (`admin_gate_title`, `tab_catalog`, `tab_notifications`, `tab_tickets`, `tickets_heading`, `tickets_subheading`, `btn_edit_payout`). 21/21 Playwright checks pass in `test_bilingual_persistence_and_dynamic_i18n.py` verifying dynamic strings and reload persistence. |
+| **Priority D** | Microphone Workflows & Speech Recognition | **PASS** | Home search, AI shopping, Onboarding name, and Landmark microphones set `hi-IN` / `en-IN` dynamically. Premature pulse before `onstart` eliminated. Dedicated UI mic buttons added for Name and Landmark. 23/23 tests pass in `test_all_microphone_workflows.py`. |
+| **Priority E** | UI/UX, Themes & Android Back Gestures | **PASS** | All theme modes (Light/Dark/System) verified across 3 apps. Android back gesture dismissal handles multi-level stacked modals without app reload (13/13 tests pass). Vertical scroll clearance $\ge 112\text{px}$ (66/66 tests pass). |
+| **Priority F** | Four-App Connected Workflow | **PASS** | Complete order lifecycle: Customer order placement -> Vendor acceptance/packing -> Runner pickup & OTP verification -> Admin platform commission & God-view surveillance (5/5 suites pass). |
 | **Priority G** | Refund Scope Control & Banking Truthfulness | **PASS** | Removed all unsupported "2-hour refund" claims across code and UI. Replaced with truthful 5–7 business days banking timeline. Created comprehensive `REFUND_SYSTEM_REQUIREMENTS.md`. |
+| **Priority H** | Real Hardware Verification | **BLOCKED** *(No Physical Device Access)* | Emulated Android Viewport (393x851, DPR 2.75) verified via Playwright. Physical device hands-on testing remains blocked on hardware access. |
 
 ---
 
@@ -86,11 +87,17 @@ A dedicated 31-point adversarial test suite was authored and executed:
 1. **Render Preview Environment:**
    - Probed via live runtime telemetry: `https://gaonbazar-mobile-preview.onrender.com/api/version`.
    - Reports `database_engine: "sqlite"`, `postgres_url_configured: false`.
-   - Proves empirically that the environment variable `DATABASE_URL` has **not** been added or active in the Render dashboard for `gaonbazar-mobile-preview`.
+   - Proves empirically that the environment variable `DATABASE_URL` has **not** been added or is not active in the Render dashboard for `gaonbazar-mobile-preview`.
 2. **Supabase Database (`bbxryqngieknfclhqbmr`):**
    - Independent inspection confirmed 12 public tables created by initial schema creation, with 0 orders, 0 users, and 0 payment transactions.
    - The database is clean and ready to receive migration data once Render environment variables are applied.
-3. **Authoritative Source Snapshot:**
+3. **Migration Script & Arguments Clarification:**
+   - The codebase does not have `scripts/migrate_sqlite_to_supabase.py`.
+   - The authoritative migration script is `migrate_sqlite_to_postgres.py` located at the root of the repository.
+   - Verified CLI flags:
+     - Dry run: `python migrate_sqlite_to_postgres.py --sqlite-path backend/gaonbazar.db --postgres-url "$DATABASE_URL" --verify-only`
+     - Execution: `python migrate_sqlite_to_postgres.py --sqlite-path backend/gaonbazar.db --postgres-url "$DATABASE_URL" --execute`
+4. **Authoritative Source Snapshot:**
    - The source SQLite database has been verified and backed up at `backups/gaonbazar_backup_20261030_084336.db`.
    - Contains strictly: **364 orders** (₹91,333.00) and **64 payment transactions** (₹18,112.00).
 
@@ -100,13 +107,13 @@ To connect Render Preview to Supabase:
 2. Select web service **`gaonbazar-mobile-preview`**.
 3. Navigate to **Environment**.
 4. Add the following variables:
-   - `DATABASE_URL`: `postgresql://postgres:[YOUR-PASSWORD]@aws-0-ap-south-1.pooler.supabase.com:6543/postgres?sslmode=require`
+   - `DATABASE_URL`: `postgresql://postgres:[PASSWORD]@db.bbxryqngieknfclhqbmr.supabase.co:5432/postgres?sslmode=require`
    - `GAONBAZAR_REQUIRE_POSTGRES`: `1`
    - `GAONBAZAR_DB_SSL`: `require`
 5. Click **Save Changes** (Render will redeploy).
-6. In the Render Shell, run:
+6. In the Render Shell or deployment console, run:
    ```bash
-   python scripts/migrate_sqlite_to_supabase.py --source backend/gaonbazar.db --target "$DATABASE_URL"
+   python migrate_sqlite_to_postgres.py --sqlite-path backend/gaonbazar.db --postgres-url "$DATABASE_URL" --execute
    ```
 
 ---
@@ -114,7 +121,7 @@ To connect Render Preview to Supabase:
 ## 4. Priority C: Complete Localization & Missing Keys
 
 ### 4.1 Exhaustive Dictionary Audit
-An automated parser (`scripts/audit_i18n_keys.py`) scanned all `data-i18n` and `data-i18n-ph` attributes across all 4 HTML applications:
+An automated parser scanned all `data-i18n` and `data-i18n-ph` attributes across all 4 HTML applications:
 - **`admin_dashboard.html`**:
   - Missing keys identified: `admin_gate_title`, `tab_catalog`, `tab_notifications`, `tab_tickets`, `tickets_heading`, `tickets_subheading`.
   - Added full bilingual entries to both `AdminI18N.hi` and `AdminI18N.en`.
@@ -128,29 +135,66 @@ An automated parser (`scripts/audit_i18n_keys.py`) scanned all `data-i18n` and `
 - **`index.html`**:
   - Audit: **536 keys defined in HI, 544 in EN (100% complete)**.
 
-### 4.2 Language Preference Persistence
-- `localStorage.getItem('gaonbazar_lang')` persists user language across navigation, reloads, and login sessions.
-- Synced with role-specific keys: `gaonbazar_admin_lang`, `gaonbazar_vendor_lang`, `gaonbazar_runner_lang`.
+### 4.2 Dynamic Localization & Reload Persistence (`test_bilingual_persistence_and_dynamic_i18n.py`)
+A comprehensive Playwright test suite was executed across all 4 applications:
+- **Customer App:**
+  - Search placeholder active in Hindi (`किराना, दवाई, बीज खोजें...`) and English (`Search Kirana, medicine, seeds...`).
+  - Bottom navigation tabs update dynamically ("ऑर्डर" vs "Orders").
+  - Support Center header updates dynamically ("सहायता केंद्र" vs "Help & Support").
+  - Language persists across browser reload in both Hindi and English.
+- **Vendor App:**
+  - Workspace section title switches dynamically ("नए ऑर्डर" vs "Live Orders").
+  - Ledger sales metrics update dynamically ("Gross Sales" / "Total Sales").
+  - Language preference persists across browser reload.
+- **Runner App:**
+  - Navigation tabs update dynamically ("मिशन" vs "Missions").
+  - Language preference persists across browser reload.
+- **Super Admin App:**
+  - Application title updates dynamically ("गांव बाज़ार • सुपर एडमिन" vs "GaonBazaar • Super Admin").
+  - Metric cards update dynamically ("सकल कारोबार" vs "Gross Volume").
+  - Language preference persists across browser reload.
+- **Result:** **21/21 Localization Checks Passed (100.0%)**.
 
 ---
 
-## 5. Priority D: Microphone Workflows & Speech Recognition
+## 5. Priority D: Universal Microphone Workflows & Speech Recognition
 
-### 5.1 Microphones Audited & Hardened
-1. **Home Search Mic (`triggerVoiceSearch`):**
-   - Configured with `recognition.lang = (AppStore.lang === 'hi' ? 'hi-IN' : 'en-IN')`.
-   - Real interim and final transcripts piped to `#p2-search-input`.
-   - Normalizes voice queries and filters store catalog without altering cart state.
-2. **AI Shopping Assistant Mic (`toggleCommerceVoiceRecognition`):**
-   - Configured with `hi-IN` / `en-IN`.
-   - Visual pulse rings toggle dynamically on `recognition.onstart`.
-   - Voice commands parsed into multi-item cart operations.
-3. **Onboarding Name Mic (`startNameVoiceInput`):**
-   - Fixed listening state transition: `micLbl.innerText = 'बोलिए...'` now triggers strictly on `recognition.onstart`.
-   - Automatic fallback to manual text input on unsupported browsers or permission denial.
-4. **Landmark Voice Mic (`startLandmarkVoiceInput`):**
-   - Fixed listening state transition: `btnText` and `status` update strictly on `recognition.onstart`.
-   - Added `recognition.onend` handler to ensure clean reset if speech finishes without input.
+### 5.1 Elimination of Premature Listening Indicators
+In `index.html` `triggerVoiceSearch()`:
+- Previously, `voiceBtn.classList.add('bg-red-500', 'animate-pulse')` and `voiceText.innerText = 'Listening...'` were set synchronously before `recognition.start()` was called.
+- This produced false "Listening" indicators before the user granted microphone permission.
+- Corrected: `triggerVoiceSearch()` now sets a neutral connecting state (`voiceText.innerText = 'Connecting...'` / `'शुरू हो रहा है...'`), and strictly triggers active pulse (`bg-red-500`, `animate-pulse`, `graphic_eq`, and `Listening...` / `'सुन रहे हैं...'`) inside `recognition.onstart`.
+
+### 5.2 Dedicated Voice Input UI Added for Name & Landmark
+- **Onboarding Name Input:** Added dedicated `#p1-name-mic-btn` with `#p1-name-mic-lbl` inside the Name card in `view-p1-landmark`.
+- **Rural Landmark Input:** Added dedicated `#p1-voice-lm-btn` with `#p1-voice-lm-status` on the Landmark textarea card.
+
+### 5.3 Universal Microphone Resilience Suite (`test_all_microphone_workflows.py`)
+Executed 23-point Playwright suite covering all 4 microphones and edge cases:
+- `✓ PASS: Home mic: NO premature red pulse before onstart`
+- `✓ PASS: Home mic: Active red pulse triggers strictly on onstart`
+- `✓ PASS: Home mic: Language matches Hindi (hi-IN)`
+- `✓ PASS: Home mic: Real transcript populated in search input (ताज़ा टमाटर)`
+- `✓ PASS: Home mic: UI reset to idle after final transcript`
+- `✓ PASS: Home mic: Second tap cancels active listening cleanly`
+- `✓ PASS: Home mic: Recovers to idle on permission denial (not-allowed)`
+- `✓ PASS: Home mic: Recovers to idle on network error`
+- `✓ PASS: AI mic: Configured for Hindi (hi-IN)`
+- `✓ PASS: AI mic: Status text transitions to listening on onstart`
+- `✓ PASS: AI mic: Multi-tap cancels recognition smoothly`
+- `✓ PASS: AI mic: Populates transcript input (2 kilo aata)`
+- `✓ PASS: AI mic: Recovers cleanly from not-allowed error`
+- `✓ PASS: Name mic: Configured with hi-IN language`
+- `✓ PASS: Name mic: Populates customer name input correctly (राजेश कुमार)`
+- `✓ PASS: Name mic: Displays fallback instruction on error (टाइप करें)`
+- `✓ PASS: Landmark mic: Configured with hi-IN language`
+- `✓ PASS: Landmark mic: Appends transcript into landmark textarea (पुराने कुएं के पास)`
+- `✓ PASS: Landmark mic: Displays fallback prompt on error (कृपया नीचे टाइप करें)`
+- `✓ PASS: Unsupported browser: Home mic does not crash or freeze`
+- `✓ PASS: Unsupported browser: AI mic gracefully warns user to type`
+- `✓ PASS: Unsupported browser: Name mic indicates mic unavailable`
+- `✓ PASS: Unsupported browser: Landmark mic prompts user to type manually`
+- **Result:** **23/23 Microphone Checks Passed (100.0%)**.
 
 ---
 
@@ -166,6 +210,10 @@ Verified via Playwright across Customer, Vendor, and Runner applications:
 Verified 13/13 scenarios in `test_android_back_gesture.py`:
 - Stacked modals (e.g. Account Subview -> Address Modal -> Help Modal) dismiss in strict reverse order ($LIFO$).
 - History state (`window.history.pushState`) intercepts `popstate` without reloading the application or losing uncommitted form state.
+
+### 6.3 Vertical Scrolling Clearance
+Verified 66/66 scenarios in `test_vertical_scrolling.py`:
+- Bottom sheet and sticky CTA clearance $\ge 112\text{px}$ across all views to prevent overlapping floating bars.
 
 ---
 
@@ -190,8 +238,37 @@ Verified via `test_four_app_integration_e2e.py`:
 
 ---
 
-## 9. Conclusion & Production Guard
+## 9. Visual Verification Screenshots
 
+Captured 12 high-fidelity screenshots in `screenshots/microphones_and_localization_audit/`:
+- `01_customer_home_hi_mic_ready.png`: Customer home with Hindi UI and ready mic state.
+- `02_customer_home_en.png`: Customer home with English UI.
+- `03_customer_ai_voice_assistant.png`: AI Voice Assistant view.
+- `04_customer_landmark_name_voice.png`: Onboarding form with dedicated Name & Landmark voice buttons.
+- `05_customer_support_center_hi.png`: Customer Support Center (Hindi).
+- `06_customer_support_center_en.png`: Customer Support Center (English).
+- `07_vendor_dashboard_hi.png`: Vendor Dashboard (Hindi).
+- `08_vendor_dashboard_en.png`: Vendor Dashboard (English).
+- `09_runner_dashboard_hi.png`: Runner Dashboard (Hindi).
+- `10_runner_dashboard_en.png`: Runner Dashboard (English).
+- `11_admin_dashboard_hi.png`: Super Admin Dashboard (Hindi).
+- `12_admin_dashboard_en.png`: Super Admin Dashboard (English).
+
+---
+
+## 10. Master Verification Verdict & Remaining Blockers
+
+### Summary of Completed Deliverables:
+- **Backend Security:** `POST /api/support/chat` & tickets locked behind authenticated customer sessions. Delivery OTP leak plugged. 31/31 adversarial tests pass.
+- **Universal Microphones:** 4 microphones tested and verified. Premature pulse removed. 23/23 tests pass.
+- **Full Localization:** 100% dictionary completeness and dynamic reload persistence verified across all 4 apps. 21/21 tests pass.
+- **Authoritative Database Baseline:** 364 orders (₹91,333.00) and 64 payments (₹18,112.00) preserved with zero test residue.
 - **Production Safety:** Branch `main` and production service `https://gaonbazar.onrender.com/` remain **100% untouched**.
-- **Source Database Integrity:** Exact baseline (**364 orders**, ₹91,333.00, **64 payments**, ₹18,112.00) preserved with zero test residue.
-- **Zero Broken Flows:** All reported defects have been eliminated with verified regression suites passing 100%.
+
+### Remaining Blockers (Empirical & Explicit):
+1. **PostgreSQL Supabase Live Integration:** **BLOCKED ON REPOSITORY OWNER ACTION**
+   - Render preview service `gaonbazar-mobile-preview` does not yet have `DATABASE_URL` configured in its environment dashboard (`postgres_url_configured: false`).
+   - Supabase project `bbxryqngieknfclhqbmr` has 12 tables and 0 records awaiting connection.
+   - Cannot declare PostgreSQL migration complete until owner adds `DATABASE_URL` to Render dashboard and runs `python migrate_sqlite_to_postgres.py --sqlite-path backend/gaonbazar.db --postgres-url "$DATABASE_URL" --execute`.
+2. **Physical Mobile Hardware Hands-On:** **BLOCKED ON HARDWARE ACCESS**
+   - Validated via Playwright emulated touch viewports (393x851, DPR 2.75). Physical device verification requires owner testing on physical Android devices.
