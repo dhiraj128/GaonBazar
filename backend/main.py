@@ -788,6 +788,7 @@ def send_otp(payload: SendOTPRequest, db: Session = Depends(get_db)):
 
 
 @app.post("/api/auth/verify", response_model=VerifyOTPResponse)
+@app.post("/api/auth/verify-otp", response_model=VerifyOTPResponse)
 def verify_otp(payload: VerifyOTPRequest, db: Session = Depends(get_db)):
     """
     Validates the 6-digit OTP against DB. Enforces:
@@ -863,6 +864,7 @@ def verify_otp(payload: VerifyOTPRequest, db: Session = Depends(get_db)):
         success=True,
         message="Phone authentication verified successfully",
         session_token=session_token,
+        token=session_token,
         user=UserProfileDTO(
             id=user.id,
             phone=user.phone,
@@ -2106,6 +2108,16 @@ def update_order_delivery_location(
             logger.warning(f"Could not send runner notification: {e}")
 
     db.commit()
+
+    record_audit_log(
+        db,
+        action="CUSTOMER_LOCATION_UPDATE",
+        actor_role="customer",
+        actor_id=str(order.user_phone),
+        target_entity="order",
+        target_id=str(order.id),
+        details={"lat": payload.customer_lat, "lng": payload.customer_lng, "landmark": payload.landmark}
+    )
 
     return OrderDeliveryLocationResponse(
         success=True,

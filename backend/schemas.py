@@ -96,6 +96,7 @@ class VerifyOTPResponse(BaseModel):
     success: bool
     message: str
     session_token: str
+    token: Optional[str] = None
     user: UserProfileDTO
 
 # --- Landmark Schemas ---
