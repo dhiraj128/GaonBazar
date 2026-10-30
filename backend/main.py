@@ -57,6 +57,8 @@ from .schemas import (
     SupportChatRequest, SupportChatResponse, SupportTicketRequest, SupportTicketResponse,
     CommerceAssistantRequest, CommerceAssistantItemDTO, CommerceAssistantResponse,
     UserOrderSummaryDTO,
+    CustomerOrderDetailItemDTO, RefundTrackingTimelineItemDTO,
+    RefundTrackingDTO, CustomerOrderDetailResponse,
     BankPayoutSettingsRequest, BankPayoutSettingsDTO,
     CustomerSavedPaymentDTO, AddCustomerSavedPaymentRequest,
     AdminPayoutVerificationDTO, AdminPayoutStatusUpdateRequest,
@@ -1802,6 +1804,165 @@ def get_order_status(
     )
 
 
+@app.get("/api/orders/{order_id}/details", response_model=CustomerOrderDetailResponse)
+@app.get("/api/orders/{order_id}", response_model=CustomerOrderDetailResponse)
+def get_order_details(
+    order_id: str,
+    db: Session = Depends(get_db),
+    auth: Optional[Dict[str, Any]] = Depends(get_current_token_payload)
+):
+    """
+    Returns full order details for the Customer Order Details Screen.
+    Includes itemized breakdown, transparent fee structure, real-time timeline,
+    delivery OTP (isolated to customer owner/admin), and contextual action flags:
+    can_cancel (Stage 1-2), can_request_cancellation (Stage 3-4), can_report_issue (Stage 0, 5).
+    """
+    candidate_ids = [order_id, f"#{order_id}", order_id.lstrip("#")]
+    order = db.query(Order).filter(Order.id.in_(candidate_ids)).first()
+    if not order:
+        raise HTTPException(status_code=404, detail=f"Order {order_id} not found in database")
+
+    if not auth:
+        if not is_test_bypass_allowed():
+            raise HTTPException(status_code=401, detail="Authentication required to view order details")
+    elif not verify_order_access(order, auth):
+        raise HTTPException(status_code=403, detail="Forbidden: You are not authorized to view this order")
+
+    # Delivery OTP confidentiality: only disclosed to customer owner or admin
+    can_see_otp = False
+    if auth and auth.get("role") == "admin":
+        can_see_otp = True
+    elif auth and auth.get("role") == "customer":
+        tok_phone = str(auth.get("phone", "")).strip().replace("+91", "").lstrip("0")
+        ord_phone = str(order.user_phone or "").strip().replace("+91", "").lstrip("0")
+        if tok_phone and ord_phone and tok_phone == ord_phone:
+            can_see_otp = True
+    elif not auth and is_test_bypass_allowed():
+        can_see_otp = True
+
+    exposed_otp = order.delivery_otp if can_see_otp else None
+
+    # Runner details
+    runner_obj = None
+    r_id = getattr(order, "runner_id", None)
+    if r_id:
+        runner_obj = db.query(Runner).filter(Runner.id == r_id).first()
+    elif order.timeline_stage >= 3:
+        runner_obj = db.query(Runner).filter(Runner.is_online == True).first()
+
+    # Item details
+    items_list = []
+    if hasattr(order, "items") and order.items:
+        for it in order.items:
+            items_list.append(CustomerOrderDetailItemDTO(
+                id=it.id,
+                product_id=it.product_id,
+                name=it.product_name,
+                price=float(it.price),
+                qty=it.quantity,
+                unit="pack",
+                image=f"static/images/{it.product_id}.png",
+                total_price=round(float(it.price) * it.quantity, 2)
+            ))
+
+    # Action flags
+    can_cancel = (order.timeline_stage in (1, 2))
+    can_request_cancellation = (order.timeline_stage in (3, 4))
+    can_report_issue = (order.timeline_stage in (0, 5))
+
+    is_prepaid = (order.payment_mode.upper() != "COD")
+    refund_status = None
+    refund_tracking = None
+    refund_amt = float(getattr(order, 'refund_amount', 0.0) or 0.0)
+    refund_pen = float(getattr(order, 'refund_penalty', 0.0) or 0.0)
+
+    if order.timeline_stage == 0:
+        if is_prepaid:
+            refund_status = "PROCESSING" if refund_amt > 0 else "NOT_APPLICABLE"
+            created_str = order.created_at.strftime("%d %b %Y") if order.created_at else datetime.utcnow().strftime("%d %b %Y")
+            refund_tracking = RefundTrackingDTO(
+                is_prepaid=True,
+                amount=refund_amt,
+                method=order.payment_mode or "UPI",
+                status=refund_status,
+                status_text_en="Refund processing (5-7 business days per RBI / UPI banking cycles)" if refund_status == "PROCESSING" else "No refund applicable",
+                status_text_hi="रिफंड प्रक्रिया में है (भारतीय रिज़र्व बैंक / UPI निपटान चक्र के अनुसार 5-7 कार्य दिवस)" if refund_status == "PROCESSING" else "कोई रिफंड लागू नहीं",
+                settlement_timeline="5-7 business days",
+                timeline=[
+                    RefundTrackingTimelineItemDTO(
+                        stage="Cancellation Confirmed",
+                        stage_hi="रद्दकरण स्वीकृत",
+                        completed=True,
+                        active=False,
+                        date=created_str,
+                        note="Order cancellation received and approved"
+                    ),
+                    RefundTrackingTimelineItemDTO(
+                        stage="Bank Settlement Initiated",
+                        stage_hi="बैंक निपटान प्रारंभ",
+                        completed=True,
+                        active=True,
+                        date=created_str,
+                        note="Refund request routed through payment gateway to customer bank"
+                    ),
+                    RefundTrackingTimelineItemDTO(
+                        stage="Credit to Bank / UPI Account",
+                        stage_hi="बैंक / UPI खाते में क्रेडिट",
+                        completed=False,
+                        active=False,
+                        date=None,
+                        note="Credited within 5-7 business days depending on issuing bank settlement cycle"
+                    )
+                ]
+            )
+        else:
+            refund_status = "NOT_APPLICABLE"
+            refund_tracking = RefundTrackingDTO(
+                is_prepaid=False,
+                amount=0.0,
+                method="COD",
+                status="NOT_APPLICABLE",
+                status_text_en="Cash on Delivery order - no online refund required",
+                status_text_hi="कैश ऑन डिलीवरी ऑर्डर - कोई ऑनलाइन रिफंड आवश्यक नहीं",
+                settlement_timeline="N/A",
+                timeline=[]
+            )
+
+    return CustomerOrderDetailResponse(
+        order_id=order.id,
+        store_id=order.store_id or "",
+        store_name=order.store_name or "",
+        user_name=order.user_name,
+        user_phone=order.user_phone,
+        village=order.village,
+        landmark=order.landmark,
+        delivery_address=getattr(order, "delivery_address", None) or f"{order.landmark or ''}, {order.village or ''}".strip(", "),
+        subtotal=float(order.subtotal),
+        delivery_fee=float(order.delivery_fee),
+        platform_fee=float(order.platform_fee),
+        total_amount=float(order.total_amount),
+        status=order.status,
+        timeline_stage=order.timeline_stage,
+        payment_mode=order.payment_mode,
+        payment_status=getattr(order, "payment_status", "PENDING") or ("PAID" if is_prepaid else "PENDING"),
+        delivery_otp=exposed_otp,
+        runner_id=runner_obj.id if runner_obj else None,
+        runner_name=runner_obj.name if runner_obj else None,
+        runner_phone=runner_obj.phone if runner_obj else None,
+        created_at=order.created_at.isoformat() if order.created_at else datetime.utcnow().isoformat(),
+        paid_at=order.created_at.isoformat() if (is_prepaid and order.created_at) else None,
+        items=items_list,
+        can_cancel=can_cancel,
+        can_request_cancellation=can_request_cancellation,
+        can_report_issue=can_report_issue,
+        cancellation_reason=getattr(order, "cancellation_reason", None),
+        refund_status=refund_status,
+        refund_amount=refund_amt if order.timeline_stage == 0 else None,
+        refund_penalty=refund_pen if order.timeline_stage == 0 else None,
+        refund_tracking=refund_tracking
+    )
+
+
 def reset_user_trust_on_delivery(user_phone: str, db: Session):
     """
     The Reset Logic: If a user's order successfully reaches Stage 5 ('Delivered'),
@@ -1917,6 +2078,7 @@ def process_order_cancellation(order: Order, db: Session, reason: str = "Custome
             "total_amount": order.total_amount,
             "refund_penalty": getattr(order, 'refund_penalty', 0.0) or 0.0,
             "refund_amount": getattr(order, 'refund_amount', 0.0) or 0.0,
+            "consecutive_cancellations": 0,
             "cancelled_orders_count": 0,
             "is_cod_blocked": False,
             "is_blacklisted": False,
@@ -1994,6 +2156,50 @@ def process_order_cancellation(order: Order, db: Session, reason: str = "Custome
     order.refund_penalty = refund_penalty
     order.refund_amount = refund_amount
     order.cancellation_reason = reason
+    # Restore product inventory
+    if hasattr(order, "items") and order.items:
+        for it in order.items:
+            prod = db.query(Product).filter(Product.id == it.product_id).first()
+            if prod:
+                prod.stock_qty = (prod.stock_qty or 0) + it.quantity
+
+    # Dispatch in-app bilingual notifications
+    if order.store_id:
+        store = db.query(Store).filter(Store.id == order.store_id).first()
+        v_recipient = store.phone if (store and store.phone) else order.store_id
+        try:
+            create_notification(
+                db=db,
+                user_id=v_recipient,
+                user_role="vendor",
+                title=f"Order {order.id} Cancelled",
+                title_hi=f"ऑर्डर {order.id} रद्द कर दिया गया",
+                message=f"Order {order.id} was cancelled by customer. Reason: {reason}",
+                message_hi=f"ऑर्डर {order.id} ग्राहक द्वारा रद्द किया गया। कारण: {reason}",
+                notification_type="order_cancelled",
+                order_id=order.id
+            )
+        except Exception as e:
+            logger.warning(f"Failed to send vendor cancellation notification: {e}")
+
+    if order.runner_id:
+        runner_obj = db.query(Runner).filter(Runner.id == order.runner_id).first()
+        r_recipient = runner_obj.phone if (runner_obj and runner_obj.phone) else str(order.runner_id)
+        try:
+            create_notification(
+                db=db,
+                user_id=r_recipient,
+                user_role="runner",
+                title=f"Mission {order.id} Cancelled",
+                title_hi=f"मिशन {order.id} रद्द हुआ",
+                message=f"Order {order.id} was cancelled. Delivery no longer needed.",
+                message_hi=f"ऑर्डर {order.id} रद्द हो गया है। डिलीवरी आवश्यक नहीं है।",
+                notification_type="order_cancelled",
+                order_id=order.id
+            )
+        except Exception as e:
+            logger.warning(f"Failed to send runner cancellation notification: {e}")
+
 
     db.commit()
     db.refresh(order)
@@ -2299,8 +2505,34 @@ def cancel_order_endpoint(
             raise HTTPException(status_code=401, detail="Authentication required to cancel order")
     elif not verify_order_access(order, auth) or auth.get("role") not in ("customer", "admin"):
         raise HTTPException(status_code=403, detail="Forbidden: You are not authorized to cancel this order")
+    # Idempotent response if already cancelled (concurrency protection)
+    if order.timeline_stage == 0:
+        res = process_order_cancellation(order, db, reason=(payload.reason if payload and payload.reason else "Customer requested cancellation"))
+        return OrderCancelResponse(
+            success=True,
+            order_id=res["order_id"],
+            status=res["status"],
+            timeline_stage=res["timeline_stage"],
+            payment_mode=res["payment_mode"],
+            subtotal=res["subtotal"],
+            delivery_fee=res["delivery_fee"],
+            platform_fee=res["platform_fee"],
+            total_amount=res["total_amount"],
+            refund_penalty=res["refund_penalty"],
+            refund_amount=res["refund_amount"],
+            consecutive_cancellations=res.get("consecutive_cancellations", 0),
+            cancelled_orders_count=res["cancelled_orders_count"],
+            is_cod_blocked=res["is_cod_blocked"],
+            is_blacklisted=res["is_blacklisted"],
+            warning_alert=res["warning_alert"],
+            message=res["message"]
+        )
+
     if order.timeline_stage == 5:
-        raise HTTPException(status_code=400, detail="Cannot cancel an order that has already been delivered")
+        raise HTTPException(status_code=400, detail="Cannot cancel an order that has already been delivered. Please use 'Report an Issue' to contact support.")
+
+    if order.timeline_stage in (3, 4):
+        raise HTTPException(status_code=400, detail="Direct cancellation is not available after fulfillment has started. Please request cancellation via Support.")
 
     reason = payload.reason if (payload and payload.reason) else "Customer requested cancellation"
     res = process_order_cancellation(order, db, reason=reason)
@@ -2316,7 +2548,7 @@ def cancel_order_endpoint(
         total_amount=res["total_amount"],
         refund_penalty=res["refund_penalty"],
         refund_amount=res["refund_amount"],
-        consecutive_cancellations=res["consecutive_cancellations"],
+        consecutive_cancellations=res.get("consecutive_cancellations", 0),
         cancelled_orders_count=res["cancelled_orders_count"],
         is_cod_blocked=res["is_cod_blocked"],
         is_blacklisted=res["is_blacklisted"],
@@ -2392,6 +2624,13 @@ def get_user_orders(phone: str, db: Session = Depends(get_db), auth: Dict[str, A
             runner_obj = db.query(Runner).filter(Runner.id == r_id).first()
         elif ord_obj.timeline_stage >= 3:
             runner_obj = db.query(Runner).filter(Runner.is_online == True).first()
+        can_cancel = (ord_obj.timeline_stage in (1, 2))
+        can_req_cancel = (ord_obj.timeline_stage in (3, 4))
+        can_report = (ord_obj.timeline_stage in (0, 5))
+        is_prepaid = (ord_obj.payment_mode.upper() != "COD")
+        ref_status = "PROCESSING" if (ord_obj.timeline_stage == 0 and is_prepaid and (getattr(ord_obj, 'refund_amount', 0.0) or 0.0) > 0) else None
+        ref_amount = getattr(ord_obj, 'refund_amount', 0.0) if ord_obj.timeline_stage == 0 else None
+
         results.append(UserOrderSummaryDTO(
             order_id=ord_obj.id,
             store_name=ord_obj.store_name,
@@ -2407,7 +2646,12 @@ def get_user_orders(phone: str, db: Session = Depends(get_db), auth: Dict[str, A
             runner_id=runner_obj.id if runner_obj else None,
             runner_name=runner_obj.name if runner_obj else None,
             runner_phone=runner_obj.phone if runner_obj else None,
-            created_at=ord_obj.created_at.isoformat() if ord_obj.created_at else datetime.utcnow().isoformat()
+            created_at=ord_obj.created_at.isoformat() if ord_obj.created_at else datetime.utcnow().isoformat(),
+            can_cancel=can_cancel,
+            can_request_cancellation=can_req_cancel,
+            can_report_issue=can_report,
+            refund_status=ref_status,
+            refund_amount=ref_amount
         ))
     return results
 
@@ -3435,13 +3679,33 @@ def create_support_ticket(
                 detail="Access Denied: Cannot create support ticket for another customer's phone"
             )
 
+    # Order ownership verification if order_id is provided
+    if payload.order_id and token_role != "admin":
+        cand_ids = [payload.order_id, f"#{payload.order_id}", payload.order_id.lstrip("#")]
+        ord_rec = db.query(Order).filter(Order.id.in_(cand_ids)).first()
+        if ord_rec:
+            ord_phone = str(ord_rec.user_phone or "").strip().replace("+91", "").lstrip("0")
+            if clean_token_phone and ord_phone and ord_phone != clean_token_phone:
+                raise HTTPException(status_code=403, detail="Forbidden: Order does not belong to your account")
+
+    msg = payload.message or ""
+    if payload.affected_items:
+        items_desc = []
+        for it in payload.affected_items:
+            p_name = it.get("name") or it.get("product_id") or "Item"
+            p_issue = it.get("issue") or "Issue reported"
+            p_qty = it.get("qty", 1)
+            items_desc.append(f"{p_name} (Qty: {p_qty}) - Issue: {p_issue}")
+        items_str = "; ".join(items_desc)
+        msg = f"[Affected Items: {items_str}] {msg}".strip()
+
     ticket_id = f"TKT-{random.randint(10000, 99999)}"
     ticket = SupportTicket(
         ticket_id=ticket_id,
         user_phone=effective_phone,
         order_id=payload.order_id,
         category=payload.category or "general",
-        message=payload.message,
+        message=msg,
         status="open",
         created_at=datetime.utcnow()
     )

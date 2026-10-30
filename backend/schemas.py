@@ -690,6 +690,7 @@ class SupportTicketRequest(SecureBaseModel):
     order_id: Optional[str] = None
     category: Optional[str] = "general"
     subject: Optional[str] = None
+    affected_items: Optional[List[Dict[str, Any]]] = None
 
 
 class SupportTicketResponse(BaseModel):
@@ -748,6 +749,76 @@ class UserOrderSummaryDTO(BaseModel):
     runner_name: Optional[str] = None
     runner_phone: Optional[str] = None
     created_at: str
+    can_cancel: Optional[bool] = None
+    can_request_cancellation: Optional[bool] = None
+    can_report_issue: Optional[bool] = None
+    refund_status: Optional[str] = None
+    refund_amount: Optional[float] = None
+
+
+class CustomerOrderDetailItemDTO(BaseModel):
+    id: Optional[int] = None
+    product_id: str
+    name: str
+    price: float
+    qty: int
+    unit: Optional[str] = "pack"
+    image: Optional[str] = None
+    total_price: Optional[float] = None
+
+
+class RefundTrackingTimelineItemDTO(BaseModel):
+    stage: str
+    stage_hi: Optional[str] = None
+    completed: bool
+    active: Optional[bool] = False
+    date: Optional[str] = None
+    note: Optional[str] = None
+
+
+class RefundTrackingDTO(BaseModel):
+    is_prepaid: bool
+    amount: float
+    method: str
+    status: str  # "PROCESSING", "COMPLETED", "NOT_APPLICABLE"
+    status_text_en: str
+    status_text_hi: str
+    settlement_timeline: str
+    timeline: List[RefundTrackingTimelineItemDTO]
+
+
+class CustomerOrderDetailResponse(BaseModel):
+    order_id: str
+    store_id: str
+    store_name: str
+    user_name: Optional[str] = None
+    user_phone: str
+    village: Optional[str] = None
+    landmark: Optional[str] = None
+    delivery_address: Optional[str] = None
+    subtotal: float
+    delivery_fee: float
+    platform_fee: float
+    total_amount: float
+    status: str
+    timeline_stage: int
+    payment_mode: str
+    payment_status: Optional[str] = "PENDING"
+    delivery_otp: Optional[str] = None
+    runner_id: Optional[str] = None
+    runner_name: Optional[str] = None
+    runner_phone: Optional[str] = None
+    created_at: str
+    paid_at: Optional[str] = None
+    items: List[CustomerOrderDetailItemDTO]
+    can_cancel: bool
+    can_request_cancellation: bool
+    can_report_issue: bool
+    cancellation_reason: Optional[str] = None
+    refund_status: Optional[str] = None
+    refund_amount: Optional[float] = None
+    refund_penalty: Optional[float] = None
+    refund_tracking: Optional[RefundTrackingDTO] = None
 
 
 # --- FinTech & Payout Onboarding Schemas ---

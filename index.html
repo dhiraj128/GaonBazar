@@ -1820,6 +1820,163 @@
       </section>
 
       <!-- ===================================================================== -->
+      <!-- PHASE 5.1: CUSTOMER ORDER DETAILS & CANCELLATION SCREEN              -->
+      <!-- ===================================================================== -->
+      <section id="view-order-details" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 overflow-y-auto space-y-3.5" style="touch-action: pan-y !important;">
+        <!-- Header -->
+        <div class="flex items-center justify-between py-1 border-b border-slate-100 dark:border-[#465362] pb-2">
+          <div class="flex items-center gap-2">
+            <button onclick="navigateBack()" aria-label="Back" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-[#2A323D] hover:bg-slate-200 dark:hover:bg-[#465362] text-slate-700 dark:text-[#F8FAFC] flex items-center justify-center cursor-pointer active:scale-95 transition-all">
+              <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+            </button>
+            <div>
+              <h1 class="text-sm font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="order_details_title">Order Details</h1>
+              <div class="flex items-center gap-1.5">
+                <span id="od-order-id-badge" class="font-mono text-[11px] font-bold text-primary truncate">#ORD-0000</span>
+                <button type="button" onclick="copyOdOrderId()" class="min-h-[24px] px-2 text-[10px] bg-slate-100 dark:bg-[#2A323D] rounded text-slate-600 dark:text-[#CBD5E1] hover:bg-slate-200 font-bold active:scale-95 cursor-pointer">Copy</button>
+              </div>
+            </div>
+          </div>
+          <button type="button" onclick="openSupportForActiveOrder()" class="min-h-[36px] px-2.5 text-xs font-bold text-primary hover:underline flex items-center gap-1 cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">support_agent</span>
+            <span data-i18n="od_help_btn">Help</span>
+          </button>
+        </div>
+
+        <!-- 1. Live Status & 5-Stage Stepper Card -->
+        <div class="bg-white dark:bg-[#1D232B] rounded-2xl p-4 shadow-xs border border-slate-200 dark:border-[#465362] flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <div class="flex flex-col">
+              <span class="text-[10px] font-black uppercase text-slate-400 tracking-wider" data-i18n="od_current_status">Status</span>
+              <h3 id="od-status-title" class="text-sm sm:text-base font-black text-slate-900 dark:text-[#F8FAFC]">Order Confirmed</h3>
+            </div>
+            <span id="od-status-badge" class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200">
+              Active
+            </span>
+          </div>
+
+          <!-- Stepper Container -->
+          <div id="od-stepper-container" class="pt-2">
+            <!-- Populated dynamically by renderOrderDetailsStepper() -->
+          </div>
+        </div>
+
+        <!-- 2. Secure Delivery OTP Box (Visible only when delivery_otp present and order active) -->
+        <div id="od-otp-box" class="hidden bg-emerald-50/80 dark:bg-[#2A323D] border border-emerald-200 dark:border-[#465362] rounded-2xl p-3.5 flex items-center justify-between">
+          <div>
+            <span class="text-[10px] font-black uppercase tracking-wider text-[#16B86E]">Security Code</span>
+            <p class="text-[11px] text-slate-600 dark:text-[#CBD5E1]">Share with partner at delivery</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold text-slate-500 dark:text-[#CBD5E1]">DELIVERY OTP:</span>
+            <div id="od-otp-digits" class="flex gap-1 font-mono font-black text-sm text-[#16B86E] bg-white dark:bg-[#111418] px-2.5 py-1 rounded-lg border border-emerald-200 dark:border-[#465362]">
+              ----
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Refund Notice Card (Visible when order is cancelled) -->
+        <div id="od-refund-card" class="hidden bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/40 rounded-2xl p-3.5 space-y-2">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-amber-600 text-[20px]">currency_rupee</span>
+              <div>
+                <span class="text-xs font-black text-amber-900 dark:text-amber-300" id="od-refund-status-text">Refund Processing</span>
+                <p class="text-[11px] text-amber-800 dark:text-amber-200" id="od-refund-amount-text">Amount: ₹0.00</p>
+              </div>
+            </div>
+            <button type="button" onclick="openRefundTrackerModal(activeOrderDetailsId)" class="px-2.5 py-1.5 rounded-lg bg-amber-600 text-white text-[11px] font-bold shadow-xs active:scale-95 transition-all cursor-pointer">
+              Track Refund
+            </button>
+          </div>
+          <p class="text-[10px] text-amber-700/80 dark:text-amber-300/80 leading-relaxed border-t border-amber-200/60 dark:border-amber-800/30 pt-1.5">
+            Truthful banking timeline: 5–7 business days per RBI settlement rules. We never falsely claim funds are credited before issuing bank clearance.
+          </p>
+        </div>
+
+        <!-- 4. Items in this Order -->
+        <div class="bg-white dark:bg-[#1D232B] rounded-2xl p-4 shadow-xs border border-slate-200 dark:border-[#465362] space-y-3">
+          <div class="flex items-center justify-between border-b border-slate-100 dark:border-[#465362] pb-2">
+            <h3 class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] uppercase tracking-wider flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px] text-primary">shopping_bag</span>
+              <span id="od-items-title">Items in this Order</span>
+            </h3>
+            <span id="od-items-count-badge" class="text-[11px] text-slate-500 font-bold">0 items</span>
+          </div>
+
+          <div id="od-items-list" class="space-y-2.5">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- 5. Bill Details -->
+        <div class="bg-white dark:bg-[#1D232B] rounded-2xl p-4 shadow-xs border border-slate-200 dark:border-[#465362] space-y-2.5">
+          <h3 class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] uppercase tracking-wider border-b border-slate-100 dark:border-[#465362] pb-2 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px] text-primary">receipt_long</span>
+            <span data-i18n="od_bill_title">Bill Details</span>
+          </h3>
+
+          <div class="space-y-1.5 text-xs">
+            <div class="flex items-center justify-between text-slate-600 dark:text-[#CBD5E1]">
+              <span data-i18n="od_subtotal">Item Subtotal</span>
+              <span id="od-bill-subtotal" class="font-bold text-slate-900 dark:text-[#F8FAFC]">₹0.00</span>
+            </div>
+            <div class="flex items-center justify-between text-slate-600 dark:text-[#CBD5E1]">
+              <span data-i18n="od_delivery_fee">Delivery Fee</span>
+              <span id="od-bill-delivery" class="font-bold text-slate-900 dark:text-[#F8FAFC]">₹0.00</span>
+            </div>
+            <div class="flex items-center justify-between text-slate-600 dark:text-[#CBD5E1]">
+              <span data-i18n="od_platform_fee">Platform Fee</span>
+              <span class="font-bold text-slate-900 dark:text-[#F8FAFC]">₹3.00</span>
+            </div>
+            <div class="flex items-center justify-between text-sm pt-2 border-t border-slate-100 dark:border-[#465362]">
+              <span class="font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="od_total_paid">Total Paid</span>
+              <span id="od-bill-total" class="font-black text-primary text-base">₹0.00</span>
+            </div>
+          </div>
+
+          <!-- Payment Mode Pill -->
+          <div class="pt-2 border-t border-slate-100 dark:border-[#465362] flex items-center justify-between">
+            <span class="text-[11px] text-slate-500 font-bold" data-i18n="od_payment_mode">Payment Mode:</span>
+            <span id="od-payment-mode-pill" class="px-2.5 py-0.5 rounded-md bg-slate-100 dark:bg-[#2A323D] text-[11px] font-bold text-slate-700 dark:text-[#CBD5E1]">
+              UPI
+            </span>
+          </div>
+        </div>
+
+        <!-- 6. Delivery & Store Info -->
+        <div class="bg-white dark:bg-[#1D232B] rounded-2xl p-4 shadow-xs border border-slate-200 dark:border-[#465362] space-y-2.5">
+          <h3 class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] uppercase tracking-wider border-b border-slate-100 dark:border-[#465362] pb-2 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px] text-primary">location_on</span>
+            <span data-i18n="od_delivery_info">Delivery Details</span>
+          </h3>
+
+          <div class="space-y-2 text-xs">
+            <div>
+              <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider" data-i18n="od_store_lbl">Store:</span>
+              <p id="od-store-name" class="font-bold text-slate-800 dark:text-[#F8FAFC]">Sharma Kirana</p>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider" data-i18n="od_address_lbl">Delivery Address:</span>
+              <p id="od-delivery-address" class="font-medium text-slate-700 dark:text-[#CBD5E1]">Near Shiv Mandir, Rampur</p>
+            </div>
+            <div id="od-runner-info-box" class="hidden pt-1 border-t border-slate-100 dark:border-[#465362]">
+              <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider" data-i18n="od_runner_lbl">Delivery Partner:</span>
+              <p id="od-runner-details" class="font-bold text-slate-800 dark:text-[#F8FAFC]">Sunil Kumar</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7. Dynamic Contextual Action Bar -->
+        <div id="od-actions-bar" class="w-full space-y-2 pt-1 pb-4">
+          <!-- Populated dynamically based on can_cancel, can_request_cancellation, can_report_issue -->
+        </div>
+
+        <!-- Bottom Spacer -->
+        <div class="w-full h-12 shrink-0 pointer-events-none" aria-hidden="true"></div>
+      </section>
+
+      <!-- ===================================================================== -->
       <!-- PHASE 6: CUSTOM OFFLINE FALLBACK SCREEN                               -->
       <!-- ===================================================================== -->
       <section id="view-offline-fallback" class="screen-view hidden flex-col w-full px-4 pt-6 pb-28 flex-1 min-h-0 items-center text-center">
@@ -3426,6 +3583,265 @@
         <input type="hidden" id="new-payment-val"/>
         <input type="hidden" id="cb-payment-default"/>
         <div id="add-payment-error" class="hidden"></div>
+      </div>
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- MODAL: ORDER CANCELLATION CONFIRMATION                                  -->
+    <!-- ======================================================================= -->
+    <div id="modal-cancel-order" onclick="if(event.target === this) closeCancelOrderModal()" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex flex-col justify-end sm:justify-center items-center p-0 sm:p-4 transition-opacity duration-300">
+      <div onclick="event.stopPropagation()" class="bg-white dark:bg-[#1D232B] rounded-t-[32px] sm:rounded-3xl p-5 sm:p-6 pb-safe shadow-2xl max-w-sm sm:max-w-md w-full border-t sm:border border-slate-200 dark:border-[#465362] flex flex-col gap-4 max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom duration-300">
+        <!-- Drag Handle -->
+        <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-full mx-auto -mt-2 mb-1 shrink-0"></div>
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-[#465362] pb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-red-50 dark:bg-red-950/40 text-red-600 flex items-center justify-center font-bold">
+              <span class="material-symbols-outlined text-[20px]">cancel</span>
+            </div>
+            <div>
+              <h3 class="text-sm font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="cancel_modal_title">Cancel Order</h3>
+              <p class="text-[11px] text-slate-500 dark:text-[#CBD5E1]" id="cancel-modal-order-id-label">Order #</p>
+            </div>
+          </div>
+          <button type="button" onclick="closeCancelOrderModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-[#2A323D] text-slate-600 dark:text-[#CBD5E1] flex items-center justify-center hover:bg-slate-200 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">close</span>
+          </button>
+        </div>
+
+        <!-- Cancellation Notice / Policy -->
+        <div class="p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/40 rounded-xl space-y-1">
+          <p class="text-xs font-bold text-amber-900 dark:text-amber-300 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">info</span>
+            <span data-i18n="cancel_policy_title">Cancellation Policy</span>
+          </p>
+          <p class="text-[11px] text-amber-800 dark:text-amber-200 leading-relaxed" id="cancel-modal-policy-text">
+            Orders can be cancelled directly before the vendor begins packing. Once cancelled, your items will be returned to store inventory.
+          </p>
+        </div>
+
+        <!-- Refund Estimate Preview -->
+        <div id="cancel-modal-refund-box" class="p-3 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/40 rounded-xl space-y-1">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-emerald-900 dark:text-emerald-300" data-i18n="cancel_refund_est">Refund Estimate:</span>
+            <span class="text-xs font-black text-emerald-700 dark:text-emerald-400" id="cancel-modal-refund-amount">₹0.00</span>
+          </div>
+          <p class="text-[10px] text-emerald-800/80 dark:text-emerald-300/80 leading-tight" id="cancel-modal-refund-timeline-note">
+            Full refund to original payment source (5–7 business days per banking cycle).
+          </p>
+        </div>
+
+        <!-- Reason Selection -->
+        <div class="space-y-1.5">
+          <label class="block text-xs font-bold text-slate-700 dark:text-[#CBD5E1]" data-i18n="cancel_reason_label">Reason for Cancellation *</label>
+          <select id="cancel-reason-select" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] text-xs font-bold text-slate-800 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-red-500/30 cursor-pointer">
+            <option value="Ordered by mistake">Ordered by mistake / गलती से ऑर्डर हो गया</option>
+            <option value="Need to change delivery address or phone">Change delivery address or phone / पता या नंबर बदलना है</option>
+            <option value="Delivery time is too long">Delivery time is too long / डिलीवरी में देरी</option>
+            <option value="Items no longer needed">Items no longer needed / अब सामान की जरूरत नहीं है</option>
+            <option value="Other reasons">Other reasons / अन्य कारण</option>
+          </select>
+        </div>
+
+        <!-- Optional comments -->
+        <div class="space-y-1.5">
+          <label class="block text-xs font-bold text-slate-700 dark:text-[#CBD5E1]" data-i18n="cancel_comments_label">Additional Comments (Optional)</label>
+          <textarea id="cancel-comments-input" rows="2" placeholder="Tell us more about why you're cancelling..." class="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] text-xs font-medium text-slate-800 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-red-500/30 resize-none"></textarea>
+        </div>
+
+        <!-- Error display -->
+        <div id="cancel-modal-error" class="hidden p-2.5 rounded-xl text-[11px] font-bold bg-rose-50 text-rose-800 border border-rose-200"></div>
+
+        <!-- Action buttons -->
+        <div class="flex items-center gap-2 pt-1">
+          <button type="button" onclick="closeCancelOrderModal()" class="flex-1 py-3 rounded-xl border border-slate-200 dark:border-[#465362] text-slate-600 dark:text-[#CBD5E1] font-bold text-xs hover:bg-slate-50 dark:hover:bg-[#2A323D] active:scale-95 transition-all cursor-pointer" data-i18n="cancel_modal_keep">
+            Keep Order
+          </button>
+          <button type="button" id="btn-confirm-cancel-order" onclick="confirmCustomerOrderCancellation()" class="flex-1 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-1 active:scale-95 transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">cancel</span>
+            <span data-i18n="cancel_modal_confirm">Confirm Cancel</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- MODAL: ITEM-LEVEL ISSUE / GRIEVANCE REPORTER                            -->
+    <!-- ======================================================================= -->
+    <div id="modal-order-issue-report" onclick="if(event.target === this) closeOrderIssueReporter()" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex flex-col justify-end sm:justify-center items-center p-0 sm:p-4 transition-opacity duration-300">
+      <div onclick="event.stopPropagation()" class="bg-white dark:bg-[#1D232B] rounded-t-[32px] sm:rounded-3xl p-5 sm:p-6 pb-safe shadow-2xl max-w-sm sm:max-w-md w-full border-t sm:border border-slate-200 dark:border-[#465362] flex flex-col gap-4 max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom duration-300">
+        <!-- Drag Handle -->
+        <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-full mx-auto -mt-2 mb-1 shrink-0"></div>
+
+        <!-- Header -->
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-[#465362] pb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 flex items-center justify-center font-bold">
+              <span class="material-symbols-outlined text-[20px]">report_problem</span>
+            </div>
+            <div>
+              <h3 class="text-sm font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="issue_modal_title">Report an Issue</h3>
+              <p class="text-[11px] text-slate-500 dark:text-[#CBD5E1]" id="issue-modal-order-id-label">Order #</p>
+            </div>
+          </div>
+          <button type="button" onclick="closeOrderIssueReporter()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-[#2A323D] text-slate-600 dark:text-[#CBD5E1] flex items-center justify-center hover:bg-slate-200 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">close</span>
+          </button>
+        </div>
+
+        <!-- Issue Category Dropdown -->
+        <div class="space-y-1">
+          <label class="block text-xs font-bold text-slate-700 dark:text-[#CBD5E1]" data-i18n="issue_cat_label">Issue Category *</label>
+          <select id="issue-general-category" class="w-full h-10 px-3 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] text-xs font-bold text-slate-800 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer">
+            <option value="item_issue">Specific Item Problem (Missing / Damaged / Wrong)</option>
+            <option value="delivery_delay">Delivery Delay / डिलीवरी में देरी</option>
+            <option value="runner_conduct">Delivery Partner Behavior / डिलीवरी साथी का व्यवहार</option>
+            <option value="refund_payment">Payment or Billing Issue / भुगतान या बिल समस्या</option>
+            <option value="other">Other Grievance / अन्य समस्या</option>
+          </select>
+        </div>
+
+        <!-- Item-Level Selection Container -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <label class="block text-xs font-bold text-slate-700 dark:text-[#CBD5E1]" data-i18n="issue_items_label">Select Affected Item(s)</label>
+            <span class="text-[10px] text-slate-400 font-medium">Select all that apply</span>
+          </div>
+          <div id="issue-items-checkbox-list" class="space-y-2 max-h-56 overflow-y-auto pr-1">
+            <!-- Populated dynamically with items from order -->
+          </div>
+        </div>
+
+        <!-- Remarks / Details -->
+        <div class="space-y-1">
+          <label class="block text-xs font-bold text-slate-700 dark:text-[#CBD5E1]" data-i18n="issue_details_label">Details / विवरण *</label>
+          <textarea id="issue-modal-message" rows="3" placeholder="Please explain the issue in detail..." required class="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] text-xs font-medium text-slate-800 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"></textarea>
+        </div>
+
+        <!-- Error display -->
+        <div id="issue-modal-error" class="hidden p-2.5 rounded-xl text-[11px] font-bold bg-rose-50 text-rose-800 border border-rose-200"></div>
+
+        <!-- Success display -->
+        <div id="issue-modal-success" class="hidden p-3 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 space-y-1 text-center">
+          <span class="material-symbols-outlined text-2xl text-emerald-600">check_circle</span>
+          <p class="text-xs font-black" id="issue-modal-success-msg">Ticket registered successfully!</p>
+          <p class="text-[11px] text-emerald-700 font-mono font-bold" id="issue-modal-ticket-id">Ticket #</p>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="flex items-center gap-2 pt-1" id="issue-modal-buttons">
+          <button type="button" onclick="closeOrderIssueReporter()" class="flex-1 py-3 rounded-xl border border-slate-200 dark:border-[#465362] text-slate-600 dark:text-[#CBD5E1] font-bold text-xs hover:bg-slate-50 dark:hover:bg-[#2A323D] active:scale-95 transition-all cursor-pointer" data-i18n="issue_modal_cancel">
+            Cancel
+          </button>
+          <button type="button" id="btn-submit-order-issue" onclick="submitItemLevelGrievance()" class="flex-1 py-3 rounded-xl bg-primary hover:bg-emerald-700 text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-1 active:scale-95 transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">send</span>
+            <span data-i18n="issue_modal_submit">Submit Grievance</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- MODAL: TRUTHFUL REFUND TRACKER (RBI / UPI Settlement Timeline)          -->
+    <!-- ======================================================================= -->
+    <div id="modal-track-refund" onclick="if(event.target === this) closeRefundTrackerModal()" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex flex-col justify-end sm:justify-center items-center p-0 sm:p-4 transition-opacity duration-300">
+      <div onclick="event.stopPropagation()" class="bg-white dark:bg-[#1D232B] rounded-t-[32px] sm:rounded-3xl p-5 sm:p-6 pb-safe shadow-2xl max-w-sm sm:max-w-md w-full border-t sm:border border-slate-200 dark:border-[#465362] flex flex-col gap-4 max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom duration-300">
+        <!-- Drag Handle -->
+        <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-full mx-auto -mt-2 mb-1 shrink-0"></div>
+
+        <!-- Header -->
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-[#465362] pb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-[#2A323D] text-primary flex items-center justify-center font-bold">
+              <span class="material-symbols-outlined text-[20px]">currency_rupee</span>
+            </div>
+            <div>
+              <h3 class="text-sm font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="refund_tracker_title">Refund Status</h3>
+              <p class="text-[11px] text-slate-500 dark:text-[#CBD5E1]" id="refund-modal-order-id-label">Order #</p>
+            </div>
+          </div>
+          <button type="button" onclick="closeRefundTrackerModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-[#2A323D] text-slate-600 dark:text-[#CBD5E1] flex items-center justify-center hover:bg-slate-200 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">close</span>
+          </button>
+        </div>
+
+        <!-- Refund Summary Card -->
+        <div class="p-3.5 bg-slate-50 dark:bg-[#2A323D] rounded-2xl border border-slate-200 dark:border-[#465362] flex items-center justify-between">
+          <div>
+            <span class="text-[10px] uppercase font-black text-slate-400 tracking-wider" data-i18n="refund_total_label">Refund Amount</span>
+            <h4 class="text-lg font-black text-slate-900 dark:text-[#F8FAFC]" id="refund-modal-amount">₹0.00</h4>
+            <span class="text-[10px] text-slate-500 dark:text-[#CBD5E1]" id="refund-modal-method">Original Payment Method (UPI)</span>
+          </div>
+          <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-300" id="refund-modal-status-badge">
+            Processing
+          </span>
+        </div>
+
+        <!-- Truthful 3-Step Banking Timeline -->
+        <div class="space-y-3 py-1">
+          <h4 class="text-xs font-black text-slate-700 dark:text-[#CBD5E1] uppercase tracking-wider" data-i18n="refund_timeline_title">Settlement Stages</h4>
+          
+          <div class="space-y-4 pl-2 relative before:absolute before:top-2 before:bottom-2 before:left-[17px] before:w-0.5 before:bg-slate-200 dark:before:bg-slate-700">
+            <!-- Step 1: Cancellation Confirmed -->
+            <div class="flex items-start gap-3 relative">
+              <div class="w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shrink-0 z-10 shadow-xs">
+                <span class="material-symbols-outlined text-[16px]">check</span>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <h5 class="text-xs font-bold text-slate-900 dark:text-[#F8FAFC]">Cancellation Confirmed</h5>
+                  <span class="text-[10px] text-slate-400 font-medium" id="refund-step-1-date">Today</span>
+                </div>
+                <p class="text-[11px] text-slate-500 dark:text-[#CBD5E1] mt-0.5">Order cancelled and refund approved by GaonBazaar.</p>
+              </div>
+            </div>
+
+            <!-- Step 2: Gateway Settlement Initiated -->
+            <div class="flex items-start gap-3 relative">
+              <div class="w-7 h-7 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold text-xs shrink-0 z-10 shadow-xs ring-4 ring-amber-100 dark:ring-amber-950">
+                <span class="material-symbols-outlined text-[16px] animate-spin">sync</span>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <h5 class="text-xs font-bold text-amber-700 dark:text-amber-400">Bank Settlement Initiated</h5>
+                  <span class="text-[10px] text-amber-600 dark:text-amber-400 font-bold">In Progress</span>
+                </div>
+                <p class="text-[11px] text-slate-500 dark:text-[#CBD5E1] mt-0.5">Refund instructions dispatched through Razorpay payment gateway to customer's issuing bank.</p>
+              </div>
+            </div>
+
+            <!-- Step 3: Account Credit -->
+            <div class="flex items-start gap-3 relative">
+              <div class="w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-500 flex items-center justify-center font-bold text-xs shrink-0 z-10">
+                <span class="material-symbols-outlined text-[16px]">account_balance</span>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <h5 class="text-xs font-bold text-slate-500 dark:text-slate-400">Credit to Bank / UPI Account</h5>
+                  <span class="text-[10px] text-slate-400 font-medium">5-7 Business Days</span>
+                </div>
+                <p class="text-[11px] text-slate-500 dark:text-[#CBD5E1] mt-0.5">Funds reflect in your bank account statement in accordance with RBI / UPI clearing cycles.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Truthful Financial Notice -->
+        <div class="p-3 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/40 rounded-xl space-y-1">
+          <p class="text-xs font-bold text-blue-900 dark:text-blue-300 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">verified_user</span>
+            <span>Truthful Banking Timeline</span>
+          </p>
+          <p class="text-[11px] text-blue-800 dark:text-blue-200 leading-relaxed">
+            Per Reserve Bank of India (RBI) guidelines, standard UPI and bank payment reversals take 5 to 7 banking working days. We do not falsely display funds as credited before bank reconciliation completes.
+          </p>
+        </div>
+
+        <!-- Close Button -->
+        <button type="button" onclick="closeRefundTrackerModal()" class="w-full py-3 rounded-xl bg-primary hover:bg-emerald-700 text-white font-extrabold text-xs shadow-md active:scale-95 transition-all cursor-pointer">
+          Close
+        </button>
       </div>
     </div>
 
@@ -6655,7 +7071,8 @@
         account: 'view-profile',
         orders: 'view-profile',
         support: 'view-support-center',
-        offline: 'view-offline-fallback'
+        offline: 'view-offline-fallback',
+        'order-details': 'view-order-details'
       };
 
       // Support either clean phase key ("store") or full DOM element ID ("view-p3-store")
@@ -10840,12 +11257,30 @@
                     <span class="font-bold text-on-surface">₹${Number(ord.total_amount).toFixed(2)}</span>
                     <span class="text-[11px] text-slate-400">(${ord.items_count} ${isHi ? 'सामान' : 'items'})</span>
                   </div>
-                  <div class="flex items-center gap-2">
-                    <span class="text-[10px] bg-surface-container px-2 py-0.5 rounded-md font-bold text-slate-600">OTP: ${ord.delivery_otp}</span>
-                    <button onclick="AppStore.orderId = '${ord.order_id}'; navigateToPhase('tracking');" class="h-7 px-2.5 rounded-lg bg-primary/10 text-primary text-[11px] font-extrabold flex items-center gap-1 active:scale-95">
-                      <span>${isHi ? 'ट्रैक करें' : 'Track'}</span>
-                      <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+                  <div class="flex items-center flex-wrap gap-1.5 justify-end">
+                    ${(!isCancelled && ord.timeline_stage < 5 && ord.delivery_otp) ? `<span class="text-[10px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-md font-mono font-bold">OTP: ${ord.delivery_otp}</span>` : ''}
+                    <button onclick="openCustomerOrderDetails('${ord.order_id}')" class="h-7 px-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold flex items-center gap-1 active:scale-95 cursor-pointer">
+                      <span class="material-symbols-outlined text-[13px]">receipt</span>
+                      <span>${isHi ? 'विवरण' : 'Details'}</span>
                     </button>
+                    ${(!isCancelled && ord.timeline_stage < 5) ? `
+                      <button onclick="AppStore.orderId = '${ord.order_id}'; navigateToPhase('tracking');" class="h-7 px-2.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 text-[11px] font-extrabold flex items-center gap-1 active:scale-95 cursor-pointer">
+                        <span>${isHi ? 'ट्रैक करें' : 'Track'}</span>
+                        <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+                      </button>
+                    ` : ''}
+                    ${(isCancelled && ((ord.refund_status === 'PROCESSING') || (ord.payment_mode || '').toUpperCase() !== 'COD')) ? `
+                      <button onclick="openRefundTrackerModal('${ord.order_id}')" class="h-7 px-2.5 rounded-lg bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 text-[11px] font-extrabold flex items-center gap-1 active:scale-95 cursor-pointer">
+                        <span class="material-symbols-outlined text-[13px]">currency_rupee</span>
+                        <span>${isHi ? 'रिफंड स्थिति' : 'Track Refund'}</span>
+                      </button>
+                    ` : ''}
+                    ${isDelivered ? `
+                      <button onclick="openOrderIssueReporter('${ord.order_id}')" class="h-7 px-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 text-[11px] font-bold flex items-center gap-1 active:scale-95 cursor-pointer">
+                        <span class="material-symbols-outlined text-[13px]">report_problem</span>
+                        <span>${isHi ? 'शिकायत दर्ज करें' : 'Report Issue'}</span>
+                      </button>
+                    ` : ''}
                   </div>
                 </div>
               </div>
@@ -10868,6 +11303,665 @@
     }
     window.loadUserOrderHistory = loadUserOrderHistory;
 
+
+
+    // =========================================================================
+    // CUSTOMER ORDER DETAILS, CANCELLATION & REFUND CONTROLLER
+    // =========================================================================
+    let activeOrderDetailsId = null;
+    let currentOrderDetailsData = null;
+
+    async function openCustomerOrderDetails(orderId) {
+      if (!orderId) return;
+      activeOrderDetailsId = orderId;
+      const isHi = (AppStore.lang === 'hi');
+
+      // Update basic badges immediately
+      const idBadge = document.getElementById('od-order-id-badge');
+      if (idBadge) idBadge.innerText = `#${orderId}`;
+
+      const statusTitle = document.getElementById('od-status-title');
+      const statusBadge = document.getElementById('od-status-badge');
+      if (statusTitle) statusTitle.innerText = isHi ? 'विवरण लोड हो रहा है...' : 'Loading Details...';
+      if (statusBadge) statusBadge.innerText = '...';
+
+      // Clear existing containers
+      const itemsContainer = document.getElementById('od-items-list');
+      if (itemsContainer) itemsContainer.innerHTML = '<div class="py-4 text-center text-xs text-slate-400">Loading order items...</div>';
+      const actionsContainer = document.getElementById('od-actions-bar');
+      if (actionsContainer) actionsContainer.innerHTML = '';
+      const otpBox = document.getElementById('od-otp-box');
+      if (otpBox) otpBox.classList.add('hidden');
+      const refundCard = document.getElementById('od-refund-card');
+      if (refundCard) refundCard.classList.add('hidden');
+
+      // Navigate to order-details view
+      navigateToPhase('order-details');
+
+      try {
+        const data = await apiFetch(`/orders/${encodeURIComponent(orderId)}/details`);
+        if (!data || !data.order_id) {
+          throw new Error(data && data.detail ? data.detail : 'Failed to fetch order details');
+        }
+        currentOrderDetailsData = data;
+        renderOrderDetailsUI(data);
+      } catch (err) {
+        console.error('Failed to load order details:', err);
+        if (statusTitle) statusTitle.innerText = isHi ? 'त्रुटि हुई' : 'Error Loading Order';
+        if (itemsContainer) {
+          itemsContainer.innerHTML = `
+            <div class="p-4 bg-red-50 text-red-700 text-xs rounded-xl border border-red-200 text-center">
+              ${err.message || 'Unable to retrieve order details. Please check your network connection.'}
+            </div>
+          `;
+        }
+      }
+    }
+    window.openCustomerOrderDetails = openCustomerOrderDetails;
+
+    function renderOrderDetailsUI(data) {
+      const isHi = (AppStore.lang === 'hi');
+      activeOrderDetailsId = data.order_id;
+
+      // Header
+      const idBadge = document.getElementById('od-order-id-badge');
+      if (idBadge) idBadge.innerText = `#${data.order_id}`;
+
+      // Status
+      const statusTitle = document.getElementById('od-status-title');
+      const statusBadge = document.getElementById('od-status-badge');
+      const isCancelled = (data.status || '').toLowerCase().includes('cancel') || data.timeline_stage === 0;
+      const isDelivered = data.timeline_stage === 5;
+
+      if (statusTitle) {
+        statusTitle.innerText = data.status || 'Order Placed';
+      }
+
+      if (statusBadge) {
+        if (isCancelled) {
+          statusBadge.className = 'px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-red-100 text-red-800 border border-red-300';
+          statusBadge.innerText = isHi ? 'रद्द' : 'Cancelled';
+        } else if (isDelivered) {
+          statusBadge.className = 'px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-300';
+          statusBadge.innerText = isHi ? 'डिलीवर हुआ' : 'Delivered';
+        } else {
+          statusBadge.className = 'px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-300 animate-pulse';
+          statusBadge.innerText = isHi ? 'प्रक्रियाधीन' : 'In Progress';
+        }
+      }
+
+      // Stepper
+      renderOrderDetailsStepper(data.timeline_stage, isCancelled);
+
+      // Delivery OTP
+      const otpBox = document.getElementById('od-otp-box');
+      const otpDigits = document.getElementById('od-otp-digits');
+      if (otpBox && otpDigits) {
+        if (data.delivery_otp && !isCancelled && !isDelivered) {
+          otpBox.classList.remove('hidden');
+          const cleanOtp = String(data.delivery_otp);
+          otpDigits.innerHTML = cleanOtp.split('').map(d => `<span class="px-1">${d}</span>`).join('');
+        } else {
+          otpBox.classList.add('hidden');
+        }
+      }
+
+      // Refund Notice
+      const refundCard = document.getElementById('od-refund-card');
+      const refundStatusText = document.getElementById('od-refund-status-text');
+      const refundAmtText = document.getElementById('od-refund-amount-text');
+      if (refundCard) {
+        if (isCancelled && (data.refund_status === 'PROCESSING' || (data.refund_amount && data.refund_amount > 0))) {
+          refundCard.classList.remove('hidden');
+          if (refundStatusText) refundStatusText.innerText = isHi ? 'रिफंड प्रक्रियाधीन है (5-7 कार्य दिवस)' : 'Refund Processing (5-7 Business Days)';
+          if (refundAmtText) refundAmtText.innerText = `${isHi ? 'रिफंड राशि' : 'Refund Amount'}: ₹${Number(data.refund_amount || 0).toFixed(2)}`;
+        } else {
+          refundCard.classList.add('hidden');
+        }
+      }
+
+      // Items list
+      const itemsContainer = document.getElementById('od-items-list');
+      const itemsCountBadge = document.getElementById('od-items-count-badge');
+      if (itemsContainer && data.items && Array.isArray(data.items)) {
+        if (itemsCountBadge) itemsCountBadge.innerText = `${data.items.length} ${isHi ? 'सामान' : 'items'}`;
+        itemsContainer.innerHTML = data.items.map(it => {
+          const itemTotal = it.total_price || (it.price * it.qty);
+          const imgSrc = it.image || `static/images/${it.product_id}.png`;
+          return `
+            <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-100 dark:border-[#465362]/60">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <img src="${imgSrc}" onerror="this.onerror=null;this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%2316B86E%22><path d=%22M12 2l8 4.5v11L12 22l-8-4.5v-11L12 2z%22/></svg>'" class="w-10 h-10 object-contain rounded-lg bg-white p-1 border border-slate-200 dark:border-slate-700 shrink-0"/>
+                <div class="min-w-0">
+                  <h4 class="text-xs font-bold text-slate-800 dark:text-[#F8FAFC] truncate">${it.name}</h4>
+                  <p class="text-[10px] text-slate-500 dark:text-[#CBD5E1]">₹${Number(it.price).toFixed(2)} × ${it.qty} ${it.unit || 'pack'}</p>
+                </div>
+              </div>
+              <span class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] shrink-0">₹${Number(itemTotal).toFixed(2)}</span>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Bill details
+      const billSubtotal = document.getElementById('od-bill-subtotal');
+      const billDelivery = document.getElementById('od-bill-delivery');
+      const billTotal = document.getElementById('od-bill-total');
+      const payModePill = document.getElementById('od-payment-mode-pill');
+      if (billSubtotal) billSubtotal.innerText = `₹${Number(data.subtotal).toFixed(2)}`;
+      if (billDelivery) billDelivery.innerText = `₹${Number(data.delivery_fee).toFixed(2)}`;
+      if (billTotal) billTotal.innerText = `₹${Number(data.total_amount).toFixed(2)}`;
+      if (payModePill) {
+        const isPrepaid = (data.payment_mode || '').toUpperCase() !== 'COD';
+        payModePill.innerText = `${data.payment_mode || 'UPI'} • ${isPrepaid ? (isCancelled ? 'REFUNDING' : 'PAID') : (isDelivered ? 'PAID' : 'PENDING')}`;
+      }
+
+      // Store & Delivery info
+      const storeName = document.getElementById('od-store-name');
+      const deliveryAddress = document.getElementById('od-delivery-address');
+      const runnerBox = document.getElementById('od-runner-info-box');
+      const runnerDetails = document.getElementById('od-runner-details');
+      if (storeName) storeName.innerText = data.store_name || 'Sharma Kirana Store';
+      if (deliveryAddress) {
+        deliveryAddress.innerText = data.delivery_address || `${data.landmark || ''}, ${data.village || ''}`.trim().replace(/^,\s*|,\s*$/g, '') || 'Rampur Village';
+      }
+      if (runnerBox && runnerDetails) {
+        if (data.runner_name) {
+          runnerBox.classList.remove('hidden');
+          runnerDetails.innerText = `${data.runner_name} (${data.runner_phone || 'Assigned'})`;
+        } else {
+          runnerBox.classList.add('hidden');
+        }
+      }
+
+      // Contextual Action Buttons
+      const actionsContainer = document.getElementById('od-actions-bar');
+      if (actionsContainer) {
+        let actionButtonsHtml = '';
+
+        // If direct cancel is eligible (Stage 1 or 2)
+        if (data.can_cancel) {
+          actionButtonsHtml += `
+            <button onclick="openCancelOrderModal('${data.order_id}')" class="w-full min-h-[46px] rounded-xl border-2 border-red-500 text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 text-xs font-black shadow-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all cursor-pointer">
+              <span class="material-symbols-outlined text-[18px]">cancel</span>
+              <span>${isHi ? 'ऑर्डर रद्द करें' : 'Cancel Order'}</span>
+            </button>
+          `;
+        }
+
+        // If stage 3 or 4: direct cancellation rejected, guidance to support
+        if (data.can_request_cancellation) {
+          actionButtonsHtml += `
+            <button onclick="requestOrderCancellationViaSupport('${data.order_id}')" class="w-full min-h-[46px] rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-black shadow-md flex items-center justify-center gap-1.5 active:scale-95 transition-all cursor-pointer">
+              <span class="material-symbols-outlined text-[18px]">support_agent</span>
+              <span>${isHi ? 'रद्दीकरण सहायता अनुरोध (पैकिंग शुरू)' : 'Request Cancellation (Packing Started)'}</span>
+            </button>
+          `;
+        }
+
+        // If active (Stage 1 to 4): Live Tracking
+        if (!isCancelled && data.timeline_stage < 5) {
+          actionButtonsHtml += `
+            <button onclick="AppStore.orderId = '${data.order_id}'; navigateToPhase('tracking');" class="w-full min-h-[46px] rounded-xl bg-primary hover:bg-emerald-700 text-white text-xs font-black shadow-md flex items-center justify-center gap-1.5 active:scale-95 transition-all cursor-pointer">
+              <span class="material-symbols-outlined text-[18px]">near_me</span>
+              <span>${isHi ? 'लाइव ट्रैकिंग देखें' : 'View Live Tracking'}</span>
+            </button>
+          `;
+        }
+
+        // If delivered or cancelled: Report an Issue
+        if (data.can_report_issue) {
+          actionButtonsHtml += `
+            <button onclick="openOrderIssueReporter('${data.order_id}')" class="w-full min-h-[46px] rounded-xl bg-slate-800 hover:bg-slate-900 text-white text-xs font-black shadow-md flex items-center justify-center gap-1.5 active:scale-95 transition-all cursor-pointer">
+              <span class="material-symbols-outlined text-[18px]">report_problem</span>
+              <span>${isHi ? 'सामान या डिलीवरी की शिकायत दर्ज करें' : 'Report an Issue / Item Problem'}</span>
+            </button>
+          `;
+        }
+
+        // If cancelled & prepaid: Track Refund
+        if (isCancelled && (data.refund_status === 'PROCESSING' || (data.payment_mode || '').toUpperCase() !== 'COD')) {
+          actionButtonsHtml += `
+            <button onclick="openRefundTrackerModal('${data.order_id}')" class="w-full min-h-[46px] rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black shadow-md flex items-center justify-center gap-1.5 active:scale-95 transition-all cursor-pointer">
+              <span class="material-symbols-outlined text-[18px]">currency_rupee</span>
+              <span>${isHi ? 'रिफंड स्थिति ट्रैक करें (5-7 दिन)' : 'Track Refund Status (5-7 Days)'}</span>
+            </button>
+          `;
+        }
+
+        actionsContainer.innerHTML = actionButtonsHtml;
+      }
+    }
+
+    function renderOrderDetailsStepper(stage, isCancelled) {
+      const container = document.getElementById('od-stepper-container');
+      if (!container) return;
+      const isHi = (AppStore.lang === 'hi');
+
+      if (isCancelled) {
+        container.innerHTML = `
+          <div class="p-3 bg-red-50 text-red-800 rounded-xl border border-red-200 flex items-center gap-2.5">
+            <span class="material-symbols-outlined text-2xl text-red-600 shrink-0">cancel</span>
+            <div class="text-xs">
+              <p class="font-bold">${isHi ? 'यह ऑर्डर रद्द कर दिया गया है' : 'This order has been cancelled'}</p>
+              <p class="text-[11px] text-red-700">${isHi ? 'सामान स्टोर इन्वेंटरी में वापस जोड़ दिए गए हैं।' : 'Items have been returned to store inventory.'}</p>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      const stages = [
+        { num: 1, label_en: 'Placed', label_hi: 'पुष्टि' },
+        { num: 2, label_en: 'Accepted', label_hi: 'स्वीकृत' },
+        { num: 3, label_en: 'Packed', label_hi: 'पैक्ड' },
+        { num: 4, label_en: 'On the Way', label_hi: 'रवाना' },
+        { num: 5, label_en: 'Delivered', label_hi: 'डिलीवर' }
+      ];
+
+      container.innerHTML = `
+        <div class="grid grid-cols-5 gap-1 text-center items-start pt-1">
+          ${stages.map((st, idx) => {
+            const isCompleted = stage >= st.num;
+            const isCurrent = stage === st.num;
+            let circleClass = "bg-slate-200 text-slate-500";
+            let icon = st.num;
+            if (isCompleted && !isCurrent) {
+              circleClass = "bg-emerald-600 text-white";
+              icon = '<span class="material-symbols-outlined text-[14px]">check</span>';
+            } else if (isCurrent) {
+              circleClass = "bg-primary text-white ring-4 ring-primary/20";
+              icon = '<span class="material-symbols-outlined text-[14px]">local_shipping</span>';
+            }
+            return `
+              <div class="flex flex-col items-center">
+                <div class="w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs ${circleClass}">
+                  ${icon}
+                </div>
+                <span class="text-[10px] font-bold mt-1 text-slate-700 dark:text-[#CBD5E1] truncate w-full">${isHi ? st.label_hi : st.label_en}</span>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function copyOdOrderId() {
+      if (!activeOrderDetailsId) return;
+      navigator.clipboard?.writeText(activeOrderDetailsId).then(() => {
+        if (typeof showAudioToast === 'function') {
+          showAudioToast(AppStore.lang === 'hi' ? 'ऑर्डर आईडी कॉपी हो गई!' : 'Order ID copied!', 'success');
+        } else {
+          alert('Copied Order ID: ' + activeOrderDetailsId);
+        }
+      }).catch(() => {
+        alert('Order ID: ' + activeOrderDetailsId);
+      });
+    }
+    window.copyOdOrderId = copyOdOrderId;
+
+    function openSupportForActiveOrder() {
+      if (!activeOrderDetailsId) {
+        navigateToPhase('support');
+        return;
+      }
+      openSupportForOrder(activeOrderDetailsId);
+    }
+    window.openSupportForActiveOrder = openSupportForActiveOrder;
+
+    function openSupportForOrder(orderId) {
+      navigateToPhase('support');
+      const orderInput = document.getElementById('ticket-order-id');
+      if (orderInput) orderInput.value = orderId;
+      if (typeof openSupportCenterSection === 'function') {
+        openSupportCenterSection('report_issue');
+      }
+    }
+    window.openSupportForOrder = openSupportForOrder;
+
+    function requestOrderCancellationViaSupport(orderId) {
+      navigateToPhase('support');
+      const orderInput = document.getElementById('ticket-order-id');
+      const categorySelect = document.getElementById('ticket-category');
+      const subjectInput = document.getElementById('ticket-subject');
+      const descInput = document.getElementById('ticket-description');
+
+      if (orderInput) orderInput.value = orderId;
+      if (categorySelect) categorySelect.value = 'refund_payment';
+      if (subjectInput) subjectInput.value = `Order ${orderId} Cancellation Request (Fulfillment in Progress)`;
+      if (descInput) descInput.value = `The vendor has already begun packing or dispatching Order ${orderId}. I request cancellation and refund support.`;
+
+      if (typeof openSupportCenterSection === 'function') {
+        openSupportCenterSection('report_issue');
+      }
+    }
+    window.requestOrderCancellationViaSupport = requestOrderCancellationViaSupport;
+
+    // --- Modal 1: Cancel Order Modal Controller ---
+    function openCancelOrderModal(orderId) {
+      activeOrderDetailsId = orderId;
+      const modal = document.getElementById('modal-cancel-order');
+      if (!modal) return;
+
+      const orderLabel = document.getElementById('cancel-modal-order-id-label');
+      if (orderLabel) orderLabel.innerText = `Order #${orderId}`;
+
+      const refundAmount = document.getElementById('cancel-modal-refund-amount');
+      const refundNote = document.getElementById('cancel-modal-refund-timeline-note');
+      const isHi = (AppStore.lang === 'hi');
+
+      if (currentOrderDetailsData) {
+        const isPrepaid = (currentOrderDetailsData.payment_mode || '').toUpperCase() !== 'COD';
+        if (refundAmount) refundAmount.innerText = `₹${Number(currentOrderDetailsData.total_amount || 0).toFixed(2)}`;
+        if (refundNote) {
+          refundNote.innerText = isPrepaid 
+            ? (isHi ? 'मूल भुगतान माध्यम में 100% पूर्ण रिफंड (5-7 कार्य दिवस)' : 'Full 100% refund to original payment source (5–7 business days per banking cycle)')
+            : (isHi ? 'कैश ऑन डिलीवरी ऑर्डर - कोई शुल्क नहीं' : 'Cash on Delivery order - ₹0 charges');
+        }
+      }
+
+      const errBox = document.getElementById('cancel-modal-error');
+      if (errBox) errBox.classList.add('hidden');
+
+      const btn = document.getElementById('btn-confirm-cancel-order');
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `<span class="material-symbols-outlined text-[16px]">cancel</span><span>${isHi ? 'रद्द करें' : 'Confirm Cancel'}</span>`;
+      }
+
+      modal.classList.remove('hidden');
+      if (window.pushOverlayHistory) {
+        window.pushOverlayHistory('modal-cancel-order', function(fromPop) {
+          closeCancelOrderModal(fromPop);
+        });
+      }
+    }
+    window.openCancelOrderModal = openCancelOrderModal;
+
+    function closeCancelOrderModal(isFromPopstate) {
+      document.getElementById('modal-cancel-order')?.classList.add('hidden');
+      if (window.closeOverlayHistory) {
+        window.closeOverlayHistory('modal-cancel-order', isFromPopstate);
+      }
+    }
+    window.closeCancelOrderModal = closeCancelOrderModal;
+
+    async function confirmCustomerOrderCancellation() {
+      if (!activeOrderDetailsId) return;
+      const isHi = (AppStore.lang === 'hi');
+      const btn = document.getElementById('btn-confirm-cancel-order');
+      const errBox = document.getElementById('cancel-modal-error');
+      const reasonSelect = document.getElementById('cancel-reason-select');
+      const commentsInput = document.getElementById('cancel-comments-input');
+
+      const reason = reasonSelect ? reasonSelect.value : 'Customer requested cancellation';
+      const comments = commentsInput ? commentsInput.value.trim() : '';
+      const fullReason = comments ? `${reason} - ${comments}` : reason;
+
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span class="material-symbols-outlined text-[16px] animate-spin">sync</span><span>${isHi ? 'रद्द किया जा रहा है...' : 'Cancelling...'}</span>`;
+      }
+      if (errBox) errBox.classList.add('hidden');
+
+      try {
+        const res = await apiFetch(`/orders/${encodeURIComponent(activeOrderDetailsId)}/cancel`, {
+          method: 'POST',
+          body: JSON.stringify({ reason: fullReason })
+        });
+
+        if (!res || !res.success) {
+          throw new Error(res && res.detail ? res.detail : 'Failed to cancel order');
+        }
+
+        // Close cancel modal
+        closeCancelOrderModal();
+
+        // Refresh UI
+        await openCustomerOrderDetails(activeOrderDetailsId);
+        if (typeof loadUserOrderHistory === 'function') loadUserOrderHistory();
+
+        // Show toast
+        if (typeof showAudioToast === 'function') {
+          showAudioToast(isHi ? 'ऑर्डर सफलतापूर्वक रद्द कर दिया गया।' : 'Order cancelled successfully.', 'success');
+        }
+
+        // If prepaid, open refund tracker modal automatically
+        if ((res.payment_mode || '').toUpperCase() !== 'COD' && (res.refund_amount > 0)) {
+          openRefundTrackerModal(activeOrderDetailsId);
+        }
+      } catch (err) {
+        console.error('Cancellation failed:', err);
+        if (errBox) {
+          errBox.innerText = err.message || 'Unable to cancel order.';
+          errBox.classList.remove('hidden');
+        }
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = `<span class="material-symbols-outlined text-[16px]">cancel</span><span>${isHi ? 'पुनः प्रयास करें' : 'Try Again'}</span>`;
+        }
+      }
+    }
+    window.confirmCustomerOrderCancellation = confirmCustomerOrderCancellation;
+
+    // --- Modal 2: Item-Level Issue Reporter Modal ---
+    function openOrderIssueReporter(orderId) {
+      activeOrderDetailsId = orderId;
+      const modal = document.getElementById('modal-order-issue-report');
+      if (!modal) return;
+
+      const isHi = (AppStore.lang === 'hi');
+      const orderLabel = document.getElementById('issue-modal-order-id-label');
+      if (orderLabel) orderLabel.innerText = `Order #${orderId}`;
+
+      const itemsListContainer = document.getElementById('issue-items-checkbox-list');
+      if (itemsListContainer && currentOrderDetailsData && currentOrderDetailsData.items) {
+        itemsListContainer.innerHTML = currentOrderDetailsData.items.map((it, idx) => `
+          <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] space-y-2">
+            <label class="flex items-center gap-2.5 cursor-pointer">
+              <input type="checkbox" id="issue-item-chk-${idx}" data-pid="${it.product_id}" data-pname="${it.name}" data-pqty="${it.qty}" onchange="toggleItemIssueOptions(${idx})" class="w-4 h-4 rounded accent-primary cursor-pointer"/>
+              <div class="min-w-0 flex-1">
+                <span class="text-xs font-bold text-slate-800 dark:text-[#F8FAFC] truncate block">${it.name}</span>
+                <span class="text-[10px] text-slate-500 dark:text-[#CBD5E1]">₹${Number(it.price).toFixed(2)} × ${it.qty}</span>
+              </div>
+            </label>
+            <div id="issue-item-details-${idx}" class="hidden pl-6 space-y-1.5 pt-1 border-t border-slate-100 dark:border-[#465362]/40">
+              <select id="issue-item-type-${idx}" class="w-full h-8 px-2 rounded-lg bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-[#465362] text-[11px] font-bold text-slate-700 dark:text-[#CBD5E1]">
+                <option value="missing">Missing from package / सामान छूटा हुआ</option>
+                <option value="wrong">Wrong item delivered / गलत सामान आया</option>
+                <option value="damaged">Damaged or leaking / टूटा या खराब सामान</option>
+                <option value="expired">Expired or stale / खराब गुणवत्ता या समाप्त</option>
+              </select>
+            </div>
+          </div>
+        `).join('');
+      } else if (itemsListContainer) {
+        itemsListContainer.innerHTML = '<p class="text-xs text-slate-400">Order item details loaded.</p>';
+      }
+
+      // Reset form state
+      const errBox = document.getElementById('issue-modal-error');
+      const succBox = document.getElementById('issue-modal-success');
+      const buttonsBox = document.getElementById('issue-modal-buttons');
+      const msgInput = document.getElementById('issue-modal-message');
+
+      if (errBox) errBox.classList.add('hidden');
+      if (succBox) succBox.classList.add('hidden');
+      if (buttonsBox) buttonsBox.classList.remove('hidden');
+      if (msgInput) msgInput.value = '';
+
+      modal.classList.remove('hidden');
+      if (window.pushOverlayHistory) {
+        window.pushOverlayHistory('modal-order-issue-report', function(fromPop) {
+          closeOrderIssueReporter(fromPop);
+        });
+      }
+    }
+    window.openOrderIssueReporter = openOrderIssueReporter;
+
+    function toggleItemIssueOptions(idx) {
+      const chk = document.getElementById(`issue-item-chk-${idx}`);
+      const details = document.getElementById(`issue-item-details-${idx}`);
+      if (details) {
+        if (chk && chk.checked) {
+          details.classList.remove('hidden');
+        } else {
+          details.classList.add('hidden');
+        }
+      }
+    }
+    window.toggleItemIssueOptions = toggleItemIssueOptions;
+
+    function closeOrderIssueReporter(isFromPopstate) {
+      document.getElementById('modal-order-issue-report')?.classList.add('hidden');
+      if (window.closeOverlayHistory) {
+        window.closeOverlayHistory('modal-order-issue-report', isFromPopstate);
+      }
+    }
+    window.closeOrderIssueReporter = closeOrderIssueReporter;
+
+    async function submitItemLevelGrievance() {
+      if (!activeOrderDetailsId) return;
+      const isHi = (AppStore.lang === 'hi');
+      const btn = document.getElementById('btn-submit-order-issue');
+      const errBox = document.getElementById('issue-modal-error');
+      const succBox = document.getElementById('issue-modal-success');
+      const buttonsBox = document.getElementById('issue-modal-buttons');
+      const msgInput = document.getElementById('issue-modal-message');
+      const catSelect = document.getElementById('issue-general-category');
+
+      const message = msgInput ? msgInput.value.trim() : '';
+      const category = catSelect ? catSelect.value : 'item_issue';
+
+      if (!message) {
+        if (errBox) {
+          errBox.innerText = isHi ? 'कृपया समस्या का विवरण दर्ज करें।' : 'Please provide details about the issue.';
+          errBox.classList.remove('hidden');
+        }
+        return;
+      }
+
+      // Collect affected items
+      const affectedItems = [];
+      if (currentOrderDetailsData && currentOrderDetailsData.items) {
+        currentOrderDetailsData.items.forEach((it, idx) => {
+          const chk = document.getElementById(`issue-item-chk-${idx}`);
+          if (chk && chk.checked) {
+            const typeSelect = document.getElementById(`issue-item-type-${idx}`);
+            affectedItems.push({
+              product_id: it.product_id,
+              name: it.name,
+              qty: it.qty,
+              issue: typeSelect ? typeSelect.value : 'reported'
+            });
+          }
+        });
+      }
+
+      // Secure customer phone resolution without hardcoded fallback
+      let userPhone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '';
+      if (!userPhone) {
+        const storedToken = AppStore.sessionToken || (typeof localStorage !== 'undefined' ? (localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_authToken')) : null);
+        if (storedToken) {
+          try {
+            const payload = JSON.parse(atob(storedToken.split('.')[1]));
+            if (payload && payload.phone) userPhone = payload.phone;
+          } catch(e) {}
+        }
+      }
+
+      if (!userPhone) {
+        if (errBox) {
+          errBox.innerText = isHi ? 'कृपया शिकायत दर्ज करने से पहले लॉगिन करें।' : 'Please login before submitting a grievance.';
+          errBox.classList.remove('hidden');
+        }
+        return;
+      }
+
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span class="material-symbols-outlined text-[16px] animate-spin">sync</span><span>${isHi ? 'शिकायत दर्ज हो रही है...' : 'Submitting...'}</span>`;
+      }
+      if (errBox) errBox.classList.add('hidden');
+
+      try {
+        const res = await apiFetch('/support/ticket', {
+          method: 'POST',
+          body: JSON.stringify({
+            user_phone: userPhone,
+            order_id: activeOrderDetailsId,
+            category: category,
+            message: message,
+            affected_items: affectedItems.length > 0 ? affectedItems : null
+          })
+        });
+
+        if (!res || !res.ticket_id) {
+          throw new Error(res && res.detail ? res.detail : 'Failed to register support ticket');
+        }
+
+        // Show success state
+        if (buttonsBox) buttonsBox.classList.add('hidden');
+        if (succBox) {
+          const ticketIdLabel = document.getElementById('issue-modal-ticket-id');
+          if (ticketIdLabel) ticketIdLabel.innerText = `Ticket #${res.ticket_id}`;
+          succBox.classList.remove('hidden');
+        }
+
+        setTimeout(() => {
+          closeOrderIssueReporter();
+          if (typeof openSupportCenterSection === 'function') {
+            navigateToPhase('support');
+            openSupportCenterSection('my_tickets');
+          }
+        }, 1800);
+      } catch (err) {
+        console.error('Failed to submit grievance:', err);
+        if (errBox) {
+          errBox.innerText = err.message || 'Unable to register support ticket.';
+          errBox.classList.remove('hidden');
+        }
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = `<span class="material-symbols-outlined text-[16px]">send</span><span>${isHi ? 'पुनः प्रयास करें' : 'Try Again'}</span>`;
+        }
+      }
+    }
+    window.submitItemLevelGrievance = submitItemLevelGrievance;
+
+    // --- Modal 3: Truthful Refund Tracker Modal ---
+    function openRefundTrackerModal(orderId) {
+      activeOrderDetailsId = orderId;
+      const modal = document.getElementById('modal-track-refund');
+      if (!modal) return;
+
+      const orderLabel = document.getElementById('refund-modal-order-id-label');
+      if (orderLabel) orderLabel.innerText = `Order #${orderId}`;
+
+      const amtLabel = document.getElementById('refund-modal-amount');
+      const methodLabel = document.getElementById('refund-modal-method');
+
+      if (currentOrderDetailsData) {
+        if (amtLabel) amtLabel.innerText = `₹${Number(currentOrderDetailsData.refund_amount || currentOrderDetailsData.total_amount || 0).toFixed(2)}`;
+        if (methodLabel) methodLabel.innerText = `${currentOrderDetailsData.payment_mode || 'UPI'} (Original Source)`;
+      }
+
+      modal.classList.remove('hidden');
+      if (window.pushOverlayHistory) {
+        window.pushOverlayHistory('modal-track-refund', function(fromPop) {
+          closeRefundTrackerModal(fromPop);
+        });
+      }
+    }
+    window.openRefundTrackerModal = openRefundTrackerModal;
+
+    function closeRefundTrackerModal(isFromPopstate) {
+      document.getElementById('modal-track-refund')?.classList.add('hidden');
+      if (window.closeOverlayHistory) {
+        window.closeOverlayHistory('modal-track-refund', isFromPopstate);
+      }
+    }
+    window.closeRefundTrackerModal = closeRefundTrackerModal;
 
     // =========================================================================
     // CUSTOMER SAVED PAYMENT METHODS CONTROLLER (Swiggy / Flipkart 2-Step Flow)
@@ -12122,7 +13216,21 @@
       }
 
       try {
-        const userPhone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '9876543210';
+        let userPhone = (AppStore.user && AppStore.user.phone) ? AppStore.user.phone : '';
+        if (!userPhone) {
+          const storedToken = AppStore.sessionToken || (typeof localStorage !== 'undefined' ? (localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_authToken')) : null);
+          if (storedToken) {
+            try {
+              const payload = JSON.parse(atob(storedToken.split('.')[1]));
+              if (payload && payload.phone) userPhone = payload.phone;
+            } catch(e) {}
+          }
+        }
+        if (!userPhone) {
+          alert(isHi ? 'कृपया शिकायत दर्ज करने से पहले लॉगिन करें।' : 'Please login before registering a support ticket.');
+          if (submitBtn) { submitBtn.disabled = false; submitBtn.innerText = isHi ? 'शिकायत भेजें' : 'Submit Ticket'; }
+          return;
+        }
         const res = await apiFetch('/support/ticket', {
           method: 'POST',
           body: JSON.stringify({
