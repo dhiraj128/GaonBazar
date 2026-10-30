@@ -541,6 +541,10 @@ class AdminMetricsResponse(BaseModel):
     approved_runners: int
     pending_runners: int
     open_tickets: Optional[int] = 0
+    live_orders_count: Optional[int] = 0
+    live_gmv: Optional[float] = 0.0
+    demo_orders_count: Optional[int] = 0
+    demo_gmv: Optional[float] = 0.0
 
 
 class AdminPendingVendorDTO(BaseModel):

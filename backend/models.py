@@ -200,6 +200,7 @@ class Order(Base):
     vendor_transfer_id = Column(String(100), nullable=True)
     runner_transfer_id = Column(String(100), nullable=True)
     paid_at = Column(DateTime, nullable=True)
+    data_origin = Column(String(30), default="live", nullable=True, index=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", back_populates="orders")
@@ -218,6 +219,19 @@ class OrderItem(Base):
     quantity = Column(Integer, nullable=False)
 
     order = relationship("Order", back_populates="items")
+
+
+class ArchivedOrderItem(Base):
+    __tablename__ = "archived_order_items"
+
+    id = Column(Integer, primary_key=True, index=True)
+    order_id = Column(String(50), nullable=False, index=True)
+    product_id = Column(String(50), nullable=False)
+    product_name = Column(String(150), nullable=False)
+    price = Column(Float, nullable=False)
+    quantity = Column(Integer, nullable=False)
+    archive_reason = Column(String(100), default="synthetic_test_fixture_unlinked")
+    archived_at = Column(DateTime, default=datetime.utcnow)
 
 
 class Runner(Base):
@@ -323,6 +337,37 @@ class PaymentTransaction(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     order = relationship("Order", back_populates="transactions")
+
+
+class ArchivedPaymentTransaction(Base):
+    __tablename__ = "archived_payment_transactions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    order_id = Column(String(50), nullable=False, index=True)
+    razorpay_order_id = Column(String(100), index=True, nullable=True)
+    razorpay_payment_id = Column(String(100), index=True, nullable=True)
+    amount = Column(Float, nullable=False)
+    amount_in_paise = Column(Integer, nullable=False)
+    currency = Column(String(10), default="INR")
+    status = Column(String(30), default="created")
+    payment_mode = Column(String(30), default="ONLINE")
+    signature = Column(String(255), nullable=True)
+    verified = Column(Boolean, default=False)
+    verified_at = Column(DateTime, nullable=True)
+    raw_payload = Column(Text, nullable=True)
+    vendor_split_amount = Column(Float, default=0.0)
+    runner_split_amount = Column(Float, default=0.0)
+    admin_platform_fee = Column(Float, default=3.0)
+    admin_margin = Column(Float, default=0.0)
+    route_transfer_status = Column(String(30), default="prepared")
+    vendor_transfer_id = Column(String(100), nullable=True)
+    runner_transfer_id = Column(String(100), nullable=True)
+    settlement_id = Column(String(100), nullable=True)
+    settled_at = Column(DateTime, nullable=True)
+    failure_reason = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    archive_reason = Column(String(100), default="synthetic_test_fixture_unlinked")
+    archived_at = Column(DateTime, default=datetime.utcnow)
 
 
 

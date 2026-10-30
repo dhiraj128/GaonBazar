@@ -169,12 +169,36 @@ import base64 as _preview_b64
 import hashlib as _preview_hashlib
 import hmac as _preview_hmac
 
+from html import escape as _preview_escape
+import time as _preview_time
+
+# Rate limiting for preview unlock attempts: max 5 failed attempts per IP per minute
+_preview_failed_attempts: dict = {}
+
+def _check_preview_rate_limit(ip: str) -> bool:
+    now = _preview_time.time()
+    attempts = _preview_failed_attempts.get(ip, [])
+    attempts = [t for t in attempts if now - t < 60.0]
+    _preview_failed_attempts[ip] = attempts
+    return len(attempts) < 5
+
+def _record_preview_failed_attempt(ip: str):
+    now = _preview_time.time()
+    attempts = _preview_failed_attempts.get(ip, [])
+    attempts.append(now)
+    _preview_failed_attempts[ip] = [t for t in attempts if now - t < 60.0]
+
 def _compute_preview_token(password: str) -> str:
-    secret = os.getenv("JWT_SECRET_KEY", "gaonbazar_preview_secret_salt_2026")
-    return _preview_hmac.new(secret.encode(), password.encode(), _preview_hashlib.sha256).hexdigest()
+    """Sign preview sessions using the configured password or a separate environment secret."""
+    secret = os.getenv("GAONBAZAR_PREVIEW_SESSION_SECRET", "").strip() or password
+    message = ("gaonbazar-preview-session-v2:" + password).encode("utf-8")
+    return _preview_hmac.new(secret.encode("utf-8"), message, _preview_hashlib.sha256).hexdigest()
 
 def _render_preview_unlock_html(error_msg: str = "", redirect_to: str = "/") -> str:
-    err_html = f'<div class="mb-4 p-3 bg-red-500/20 border border-red-500/40 text-red-200 text-xs rounded-xl font-bold flex items-center gap-2"><span>⚠️</span><span>{error_msg}</span></div>' if error_msg else ""
+    safe_redirect = redirect_to if redirect_to.startswith("/") and not redirect_to.startswith("//") and "\\" not in redirect_to else "/"
+    safe_redirect = _preview_escape(safe_redirect, quote=True)
+    safe_error = _preview_escape(error_msg, quote=True)
+    err_html = f'<div class="mb-4 p-3 bg-red-500/20 border border-red-500/40 text-red-200 text-xs rounded-xl font-bold flex items-center gap-2"><span>⚠️</span><span>{safe_error}</span></div>' if error_msg else ""
     return f'''<!DOCTYPE html>
 <html lang="hi" class="dark">
 <head>
@@ -205,7 +229,7 @@ def _render_preview_unlock_html(error_msg: str = "", redirect_to: str = "/") -> 
 
     <!-- Unlock Form -->
     <form method="POST" action="/api/preview/unlock" class="flex flex-col gap-4">
-      <input type="hidden" name="redirect_to" value="{redirect_to}">
+      <input type="hidden" name="redirect_to" value="{safe_redirect}">
       <div>
         <label for="preview_password" class="block text-xs font-bold text-slate-300 mb-1.5">प्रीव्यू पासवर्ड (Access Key)</label>
         <input 
@@ -231,7 +255,7 @@ def _render_preview_unlock_html(error_msg: str = "", redirect_to: str = "/") -> 
     </form>
 
     <div class="pt-2 border-t border-slate-800/60 text-center">
-      <p class="text-[10px] text-slate-500 font-medium">एक बार पासवर्ड दर्ज करने पर 7 दिनों तक बार-बार लॉगिन नहीं करना पड़ेगा।</p>
+      <p class="text-[10px] text-slate-500 font-medium">एक बार पासवर्ड दर्ज करने पर 24 घंटों तक बार-बार लॉगिन नहीं करना पड़ेगा।</p>
     </div>
 
   </div>
@@ -251,10 +275,10 @@ async def preview_access_guard(request: Request, call_next):
     if request.url.path in public_paths or request.url.path.startswith(("/static/", "/assets/", "/screenshots/", "/api/catalog/")):
         return await call_next(request)
 
-    expected = os.getenv("GAONBAZAR_PREVIEW_PASSWORD", "")
-    known_keys = [k for k in (expected, "gaonbazar_preview_2026") if k]
+    expected = os.getenv("GAONBAZAR_PREVIEW_PASSWORD", "").strip()
+    known_keys = [expected] if expected and len(expected) >= 16 else []
     if not known_keys:
-        return PlainTextResponse("Preview disabled: missing GAONBAZAR_PREVIEW_PASSWORD", status_code=503)
+        return PlainTextResponse("Preview disabled: configure a strong GAONBAZAR_PREVIEW_PASSWORD (16+ characters)", status_code=503)
 
     # 1. Cookie-based session (Once authenticated, all HTML and background polling requests pass)
     cookie_token = request.cookies.get("gb_preview_session")
@@ -263,21 +287,7 @@ async def preview_access_guard(request: Request, call_next):
         response.headers["Cache-Control"] = "no-store"
         return response
 
-    # 2. Query Parameter direct unlock (?preview_key=...)
-    query_key = request.query_params.get("preview_key")
-    if query_key and any(_preview_hmac.compare_digest(query_key, k) for k in known_keys):
-        clean_url = str(request.url.remove_query_params("preview_key"))
-        resp = RedirectResponse(url=clean_url, status_code=303)
-        resp.set_cookie(
-            key="gb_preview_session",
-            value=_compute_preview_token(query_key),
-            max_age=604800,
-            path="/",
-            httponly=False,
-            samesite="lax",
-            secure=False
-        )
-        return resp
+    # 2. Never accept preview passwords in URLs; query strings can leak into logs.
 
     # 3. HTTP Header token / basic auth (backward compatibility without popup)
     auth = request.headers.get("Authorization", "")
@@ -293,7 +303,7 @@ async def preview_access_guard(request: Request, call_next):
             pass
     elif auth.startswith("Bearer "):
         token = auth[7:].strip()
-        if any(_preview_hmac.compare_digest(token, _compute_preview_token(k)) or _preview_hmac.compare_digest(token, k) for k in known_keys):
+        if any(_preview_hmac.compare_digest(token, _compute_preview_token(k)) for k in known_keys):
             response = await call_next(request)
             response.headers["Cache-Control"] = "no-store"
             return response
@@ -320,7 +330,14 @@ async def preview_access_guard(request: Request, call_next):
 
 @app.post("/api/preview/unlock")
 async def preview_unlock_handler(request: Request):
-    expected = os.getenv("GAONBAZAR_PREVIEW_PASSWORD", "")
+    client_ip = request.client.host if request.client else "unknown"
+    if not _check_preview_rate_limit(client_ip):
+        return JSONResponse(
+            status_code=429,
+            content={"error": "rate_limited", "detail": "Too many failed unlock attempts. Please wait 1 minute."}
+        )
+
+    expected = os.getenv("GAONBAZAR_PREVIEW_PASSWORD", "").strip()
     content_type = request.headers.get("content-type", "")
     password = ""
     redirect_to = "/"
@@ -344,24 +361,25 @@ async def preview_unlock_handler(request: Request):
         except Exception:
             pass
 
-    if not redirect_to.startswith("/"):
+    if not redirect_to.startswith("/") or redirect_to.startswith("//") or "\\" in redirect_to:
         redirect_to = "/"
 
-    known_keys = [k for k in (expected, "gaonbazar_preview_2026") if k]
-    if any(_preview_hmac.compare_digest(password, k) for k in known_keys):
+    known_keys = [expected] if expected and len(expected) >= 16 else []
+    if known_keys and any(_preview_hmac.compare_digest(password, k) for k in known_keys):
         token = _compute_preview_token(password)
         resp = RedirectResponse(url=redirect_to, status_code=303)
         resp.set_cookie(
             key="gb_preview_session",
             value=token,
-            max_age=604800,  # 7 days
+            max_age=86400,  # 24 hours
             path="/",
-            httponly=False,
+            httponly=True,
             samesite="lax",
-            secure=False
+            secure=True
         )
         return resp
 
+    _record_preview_failed_attempt(client_ip)
     return HTMLResponse(
         _render_preview_unlock_html(error_msg="गलत पासवर्ड। कृपया दोबारा प्रयास करें। (Invalid Preview Password)", redirect_to=redirect_to),
         status_code=401
@@ -673,6 +691,11 @@ def get_build_version(db: Session = Depends(get_db)):
     table_counts = {}
     finances = {}
     try:
+        act_pmt_sum = float(db.execute(text("SELECT COALESCE(SUM(amount), 0) FROM payment_transactions")).scalar() or 0.0)
+        arc_pmt_sum = float(db.execute(text("SELECT COALESCE(SUM(amount), 0) FROM archived_payment_transactions")).scalar() or 0.0) if "archived_payment_transactions" in Base.metadata.tables else 0.0
+        arc_pmt_count = int(db.execute(text("SELECT COUNT(*) FROM archived_payment_transactions")).scalar() or 0) if "archived_payment_transactions" in Base.metadata.tables else 0
+        arc_item_count = int(db.execute(text("SELECT COUNT(*) FROM archived_order_items")).scalar() or 0) if "archived_order_items" in Base.metadata.tables else 0
+
         table_counts = {
             "stores": db.query(Store).count(),
             "products": db.query(Product).count(),
@@ -680,10 +703,12 @@ def get_build_version(db: Session = Depends(get_db)):
             "users": db.query(User).count(),
             "runners": db.query(Runner).count(),
             "order_items": db.query(OrderItem).count(),
+            "archived_order_items": arc_item_count,
             "landmarks": db.query(Landmark).count(),
             "store_categories": db.query(StoreCategory).count(),
             "saved_payment_methods": db.query(SavedPaymentMethod).count(),
             "payment_transactions": db.query(PaymentTransaction).count(),
+            "archived_payment_transactions": arc_pmt_count,
             "notifications": db.query(Notification).count(),
             "support_tickets": db.query(SupportTicket).count(),
             "message_threads": db.query(MessageThread).count(),
@@ -695,7 +720,9 @@ def get_build_version(db: Session = Depends(get_db)):
         }
         finances = {
             "orders_total_inr": float(db.execute(text("SELECT COALESCE(SUM(total_amount), 0) FROM orders")).scalar() or 0.0),
-            "payments_total_inr": float(db.execute(text("SELECT COALESCE(SUM(amount), 0) FROM payment_transactions")).scalar() or 0.0)
+            "active_payments_total_inr": act_pmt_sum,
+            "archived_payments_total_inr": arc_pmt_sum,
+            "payments_total_inr": round(act_pmt_sum + arc_pmt_sum, 2)
         }
     except Exception as e:
         table_counts = {"error": str(e)}
@@ -1732,7 +1759,10 @@ def get_order_status(
                 "image": f"static/images/{it.product_id}.png"
             })
 
-    if auth and not verify_order_access(order, auth):
+    if not auth:
+        if not is_test_bypass_allowed():
+            raise HTTPException(status_code=401, detail="Authentication required to view order status")
+    elif not verify_order_access(order, auth):
         raise HTTPException(status_code=403, detail="Forbidden: You are not authorized to view this order")
 
     # Delivery OTP confidentiality: only disclosed to customer owner or admin
@@ -1821,10 +1851,18 @@ def advance_timeline(order_id: str, db: Session = Depends(get_db)):
 
 
 @app.post("/api/orders/{order_id}/deliver")
-def mark_order_delivered(order_id: str, db: Session = Depends(get_db)):
+def mark_order_delivered(
+    order_id: str,
+    db: Session = Depends(get_db),
+    auth: Optional[Dict[str, Any]] = Depends(get_current_token_payload)
+):
     """
     Marks an order as Delivered (Stage 5) and resets consecutive cancellations.
     """
+    if not auth and not is_test_bypass_allowed():
+        raise HTTPException(status_code=401, detail="Authentication required to mark order delivered")
+    if auth and auth.get("role") not in ("runner", "admin"):
+        raise HTTPException(status_code=403, detail="Forbidden: Only assigned runner or admin can mark order delivered")
     candidate_ids = [order_id, f"#{order_id}", order_id.lstrip("#")]
     order = db.query(Order).filter(Order.id.in_(candidate_ids)).first()
     if not order:
@@ -2098,7 +2136,7 @@ def update_order_delivery_location(
 
     # 4. Auto-post location sharing coordination message to order chat thread
     th_id = f"th_{order.id.replace('#', '')}"
-    thread = db.query(MessageThread).filter(MessageThread.order_id == order.id).first()
+    thread = db.query(MessageThread).filter((MessageThread.order_id == order.id) | (MessageThread.id == th_id)).first()
     if not thread:
         thread = MessageThread(
             id=th_id,
@@ -2110,6 +2148,9 @@ def update_order_delivery_location(
             updated_at=datetime.utcnow()
         )
         db.add(thread)
+        db.flush()
+    elif not thread.order_id:
+        thread.order_id = order.id
         db.flush()
 
     loc_msg = f"📍 Customer shared delivery location: {payload.customer_lat:.6f}, {payload.customer_lng:.6f}"
@@ -2253,7 +2294,10 @@ def cancel_order_endpoint(
     order = db.query(Order).filter(Order.id.in_(candidate_ids)).first()
     if not order:
         raise HTTPException(status_code=404, detail=f"Order {order_id} not found")
-    if auth and not verify_order_access(order, auth):
+    if not auth:
+        if not is_test_bypass_allowed():
+            raise HTTPException(status_code=401, detail="Authentication required to cancel order")
+    elif not verify_order_access(order, auth) or auth.get("role") not in ("customer", "admin"):
         raise HTTPException(status_code=403, detail="Forbidden: You are not authorized to cancel this order")
     if order.timeline_stage == 5:
         raise HTTPException(status_code=400, detail="Cannot cancel an order that has already been delivered")
@@ -4392,6 +4436,10 @@ def toggle_runner_shift(
     """
     Toggles runner shift status between Online (ड्यूटी चालू) and Offline (ड्यूटी बंद).
     """
+    if auth_runner and auth_runner.get("role") != "admin":
+        req_runner_id = auth_runner.get("runner_id") or auth_runner.get("sub")
+        if req_runner_id and req_runner_id != payload.runner_id:
+            raise HTTPException(status_code=403, detail="Forbidden: You cannot toggle shift status for another runner")
     runner_db = db.query(Runner).filter(Runner.id == payload.runner_id).first()
     if runner_db:
         runner_db.is_online = payload.is_online
@@ -4664,6 +4712,13 @@ def confirm_runner_pickup(order_id: str, db: Session = Depends(get_db), auth_run
             status_code=400,
             detail=f"Order {order_id} is not yet packed and ready for pickup (Current Stage {order.timeline_stage}: {order.status})"
         )
+
+    if auth_runner and auth_runner.get("role") != "admin":
+        req_runner_id = auth_runner.get("runner_id") or auth_runner.get("sub")
+        if order.runner_id and req_runner_id and order.runner_id != req_runner_id:
+            raise HTTPException(status_code=403, detail="Forbidden: Order is assigned to another runner")
+        if not order.runner_id and req_runner_id:
+            order.runner_id = req_runner_id
 
     order.timeline_stage = 4
     order.status = "Out for Delivery"
@@ -5116,6 +5171,10 @@ def get_admin_metrics(db: Session = Depends(get_db), admin_claims: dict = Depend
     customers, vendors, and delivery runners.
     """
     orders = db.query(Order).all()
+    live_orders = [o for o in orders if getattr(o, 'data_origin', None) == 'live']
+    demo_orders = [o for o in orders if getattr(o, 'data_origin', None) != 'live']
+    live_gmv = sum(o.total_amount for o in live_orders)
+    demo_gmv = sum(o.total_amount for o in demo_orders)
     total_gmv = sum(o.total_amount for o in orders)
     platform_profits = sum(float(getattr(o, 'admin_profit', None) or 0.0) for o in orders)
     active_orders = len([o for o in orders if o.timeline_stage in [1, 2, 3, 4]])
@@ -5148,7 +5207,11 @@ def get_admin_metrics(db: Session = Depends(get_db), admin_claims: dict = Depend
         total_runners=total_runners,
         approved_runners=approved_runners,
         pending_runners=pending_runners,
-        open_tickets=open_tickets
+        open_tickets=open_tickets,
+        live_orders_count=len(live_orders),
+        live_gmv=round(live_gmv, 2),
+        demo_orders_count=len(demo_orders),
+        demo_gmv=round(demo_gmv, 2)
     )
 
 
@@ -6008,6 +6071,12 @@ def admin_database_inspection(
         url_obj = engine.url
         masked_uri = f"postgresql://{url_obj.username or 'user'}:****@{url_obj.host or 'host'}:{url_obj.port or 5432}/{url_obj.database or 'db'}"
 
+    arc_item_count = int(db.execute(text("SELECT COUNT(*) FROM archived_order_items")).scalar() or 0) if "archived_order_items" in Base.metadata.tables else 0
+    arc_pmt_count = int(db.execute(text("SELECT COUNT(*) FROM archived_payment_transactions")).scalar() or 0) if "archived_payment_transactions" in Base.metadata.tables else 0
+    orders_sum = float(db.execute(text("SELECT COALESCE(SUM(total_amount), 0) FROM orders")).scalar() or 0.0)
+    payments_sum = float(db.execute(text("SELECT COALESCE(SUM(amount), 0) FROM payment_transactions")).scalar() or 0.0)
+    arc_payments_sum = float(db.execute(text("SELECT COALESCE(SUM(amount), 0) FROM archived_payment_transactions")).scalar() or 0.0) if "archived_payment_transactions" in Base.metadata.tables else 0.0
+
     table_counts = {
         "store_categories": db.query(StoreCategory).count(),
         "stores": db.query(Store).count(),
@@ -6017,10 +6086,12 @@ def admin_database_inspection(
         "landmarks": db.query(Landmark).count(),
         "orders": db.query(Order).count(),
         "order_items": db.query(OrderItem).count(),
+        "archived_order_items": arc_item_count,
         "otp_records": db.query(OTPRecord).count(),
         "support_tickets": db.query(SupportTicket).count(),
         "saved_payment_methods": db.query(SavedPaymentMethod).count(),
         "payment_transactions": db.query(PaymentTransaction).count(),
+        "archived_payment_transactions": arc_pmt_count,
         "notifications": db.query(Notification).count(),
         "message_threads": db.query(MessageThread).count(),
         "chat_messages": db.query(ChatMessage).count(),
@@ -6029,8 +6100,11 @@ def admin_database_inspection(
         "processed_webhook_events": db.query(ProcessedWebhookEvent).count(),
     }
 
-    orders_sum = float(db.execute(text("SELECT COALESCE(SUM(total_amount), 0) FROM orders")).scalar() or 0.0)
-    payments_sum = float(db.execute(text("SELECT COALESCE(SUM(amount), 0) FROM payment_transactions")).scalar() or 0.0)
+    integrity_checks = {
+        "orphan_orders": int(db.execute(text("SELECT COUNT(*) FROM orders WHERE user_id IS NOT NULL AND user_id NOT IN (SELECT id FROM users)")).scalar() or 0),
+        "orphan_order_items": int(db.execute(text("SELECT COUNT(*) FROM order_items WHERE order_id NOT IN (SELECT id FROM orders)")).scalar() or 0),
+        "orphan_payment_transactions": int(db.execute(text("SELECT COUNT(*) FROM payment_transactions WHERE order_id NOT IN (SELECT id FROM orders)")).scalar() or 0),
+    }
 
     return {
         "status": "online",
@@ -6043,9 +6117,14 @@ def admin_database_inspection(
         "financial_volumes": {
             "orders_count": table_counts.get("orders", 0),
             "orders_sum_inr": orders_sum,
-            "payments_count": table_counts.get("payment_transactions", 0),
-            "payments_sum_inr": payments_sum
+            "active_payments_count": table_counts.get("payment_transactions", 0),
+            "active_payments_sum_inr": payments_sum,
+            "archived_payments_count": arc_pmt_count,
+            "archived_payments_sum_inr": arc_payments_sum,
+            "total_reconciled_payments_count": table_counts.get("payment_transactions", 0) + arc_pmt_count,
+            "total_reconciled_payments_sum_inr": round(payments_sum + arc_payments_sum, 2)
         },
+        "integrity_checks": integrity_checks,
         "timestamp": datetime.utcnow().isoformat()
     }
 
@@ -6469,7 +6548,7 @@ def get_or_create_order_thread(order_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail=f"Order {order_id} not found")
         
     th_id = f"th_{order.id.replace('#', '')}"
-    t = db.query(MessageThread).filter(MessageThread.order_id == order.id).first()
+    t = db.query(MessageThread).filter((MessageThread.order_id == order.id) | (MessageThread.id == th_id)).first()
     if not t:
         t = MessageThread(
             id=th_id,
@@ -6481,6 +6560,8 @@ def get_or_create_order_thread(order_id: str, db: Session = Depends(get_db)):
             updated_at=datetime.utcnow()
         )
         db.add(t)
+    elif not t.order_id:
+        t.order_id = order.id
         store = db.query(Store).filter(Store.id == order.store_id).first()
         store_name = store.name if store else "दुकानदार"
         db.add(ChatMessage(
