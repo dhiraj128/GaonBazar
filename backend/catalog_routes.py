@@ -10,7 +10,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request, UploadFil
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, and_, text
 
-from .database import get_db
+from .database import get_db, record_audit_log
 from .models import CentralProduct, Product, Store, Runner, Notification
 from .schemas import (
     CentralProductDTO, CentralProductCreateRequest, CentralProductUpdateRequest, CentralProductDeduplicateRequest,
@@ -1115,6 +1115,7 @@ def update_runner_bank_details(
 # =============================================================================
 
 @router.get("/api/admin/kyc/pending", response_model=List[AdminKYCPendingItemDTO])
+@router.get("/admin/kyc/pending", response_model=List[AdminKYCPendingItemDTO])
 def get_pending_kyc_submissions(
     db: Session = Depends(get_db),
     auth: Optional[Dict[str, Any]] = Depends(get_current_token_payload)
@@ -1171,6 +1172,7 @@ def get_pending_kyc_submissions(
 
 
 @router.post("/api/admin/kyc/{entity_type}/{entity_id}/review")
+@router.post("/admin/kyc/{entity_type}/{entity_id}/review")
 def review_kyc_submission(
     entity_type: str,
     entity_id: str,
@@ -1203,6 +1205,16 @@ def review_kyc_submission(
     }
     final_status = status_map[action]
     is_verified = (action == "approve")
+
+    record_audit_log(
+        db,
+        action=f"KYC_{action.upper()}",
+        actor_role="admin",
+        actor_id=auth.get("phone", "superadmin") if auth else "superadmin",
+        target_entity=entity_type,
+        target_id=entity_id,
+        details={"decision": action, "rejection_reason": payload.rejection_reason}
+    )
 
     if entity_type == "vendor":
         s = db.query(Store).filter(Store.id == entity_id).first()

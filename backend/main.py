@@ -28,8 +28,8 @@ from sqlalchemy import or_, and_, text
 import sentry_sdk
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 
-from .database import engine, Base, get_db, check_database_integrity, ensure_schema_migrations, db_session
-from .models import User, OTPRecord, Landmark, Store, Product, Order, OrderItem, Runner, SupportTicket, StoreCategory, SavedPaymentMethod, PaymentTransaction, Notification, MessageThread, ChatMessage
+from .database import engine, Base, get_db, check_database_integrity, ensure_schema_migrations, db_session, record_audit_log
+from .models import User, OTPRecord, Landmark, Store, Product, Order, OrderItem, Runner, SupportTicket, StoreCategory, SavedPaymentMethod, PaymentTransaction, Notification, MessageThread, ChatMessage, AuditLog
 from .schemas import (
     SendOTPRequest, SendOTPResponse,
     VerifyOTPRequest, VerifyOTPResponse, UserProfileDTO, CustomerTrustStatusDTO,
@@ -529,7 +529,7 @@ class AdminLoginRequest(BaseModel):
 
 @app.post("/api/admin/login")
 @app.post("/admin/login")
-def admin_login_endpoint(payload: Optional[AdminLoginRequest] = None):
+def admin_login_endpoint(payload: Optional[AdminLoginRequest] = None, db: Session = Depends(get_db)):
     """
     Super Admin authentication endpoint.
     Issues genuine signed JWT with role 'admin'.
@@ -545,6 +545,14 @@ def admin_login_endpoint(payload: Optional[AdminLoginRequest] = None):
     if hmac.compare_digest(provided.encode("utf-8"), expected.encode("utf-8")):
         admin_id = (payload.username.strip() if payload and payload.username else None) or "super_admin"
         token = issue_admin_token(admin_id)
+        record_audit_log(
+            db,
+            action="ADMIN_LOGIN",
+            actor_role="admin",
+            actor_id=admin_id,
+            target_entity="auth",
+            details="Super Admin authentication successful"
+        )
         return {"success": True, "token": token, "role": "admin", "admin_id": admin_id}
     raise HTTPException(status_code=401, detail="Invalid admin credentials")
 
@@ -4976,7 +4984,7 @@ def admin_list_support_tickets(status: Optional[str] = None, db: Session = Depen
 @app.post("/api/admin/support/tickets/{ticket_id}/action")
 def admin_support_ticket_action(
     ticket_id: str,
-    action: str = Query("resolve", regex="^(resolve|in_progress|close)$"),
+    action: str = Query("resolve", pattern="^(resolve|in_progress|close)$"),
     admin_notes: Optional[str] = None,
     db: Session = Depends(get_db),
     admin_claims: dict = Depends(require_admin_token)
@@ -4992,6 +5000,16 @@ def admin_support_ticket_action(
     ticket.status = new_status
     db.commit()
     db.refresh(ticket)
+
+    record_audit_log(
+        db,
+        action=f"SUPPORT_TICKET_{new_status.upper()}",
+        actor_role="admin",
+        actor_id=admin_claims.get("phone", "superadmin"),
+        target_entity="support_ticket",
+        target_id=ticket.ticket_id,
+        details={"action": action, "notes": admin_notes, "user_phone": ticket.user_phone}
+    )
 
     # Dispatch notification to user
     try:
@@ -5089,6 +5107,17 @@ def approve_vendor(store_id: str, db: Session = Depends(get_db), admin_claims: d
     store.status = "approved"
     store.is_open = True
     db.commit()
+
+    record_audit_log(
+        db,
+        action="APPROVE_VENDOR",
+        actor_role="admin",
+        actor_id=admin_claims.get("phone", "superadmin"),
+        target_entity="store",
+        target_id=store_id,
+        details={"status": "approved", "store_name": store.name}
+    )
+
     try:
         notify_vendor_kyc_status(db, store.id, "approved", store.name)
     except Exception as e:
@@ -5107,6 +5136,17 @@ def reject_vendor(store_id: str, payload: Optional[AdminApprovalActionRequest] =
     store.status = "rejected"
     store.is_open = False
     db.commit()
+
+    record_audit_log(
+        db,
+        action="REJECT_VENDOR",
+        actor_role="admin",
+        actor_id=admin_claims.get("phone", "superadmin"),
+        target_entity="store",
+        target_id=store_id,
+        details={"status": "rejected", "reason": payload.reason if payload else None}
+    )
+
     try:
         notify_vendor_kyc_status(db, store.id, "rejected", store.name)
     except Exception as e:
@@ -5135,6 +5175,17 @@ def block_vendor(store_id: str, db: Session = Depends(get_db), admin_claims: dic
             user.warning_alert = "Store account banned for fraudulent activity"
 
     db.commit()
+
+    record_audit_log(
+        db,
+        action="BLOCK_VENDOR",
+        actor_role="admin",
+        actor_id=admin_claims.get("phone", "superadmin"),
+        target_entity="store",
+        target_id=store_id,
+        details={"status": "banned", "store_name": store.name}
+    )
+
     return {"success": True, "store_id": store_id, "status": "banned", "message": f"दुकान {store.name} को ब्लॉक/बैन किया गया (फ्रॉड कंट्रोल)।"}
 
 
@@ -5212,6 +5263,17 @@ def approve_runner(runner_id: str, db: Session = Depends(get_db), admin_claims: 
     runner.status = "approved"
     runner.is_online = True
     db.commit()
+
+    record_audit_log(
+        db,
+        action="APPROVE_RUNNER",
+        actor_role="admin",
+        actor_id=admin_claims.get("phone", "superadmin"),
+        target_entity="runner",
+        target_id=runner_id,
+        details={"status": "approved", "runner_name": runner.name}
+    )
+
     try:
         notify_runner_kyc_status(db, runner.id, "approved", runner.name)
     except Exception as e:
@@ -5230,6 +5292,17 @@ def reject_runner(runner_id: str, payload: Optional[AdminApprovalActionRequest] 
     runner.status = "rejected"
     runner.is_online = False
     db.commit()
+
+    record_audit_log(
+        db,
+        action="REJECT_RUNNER",
+        actor_role="admin",
+        actor_id=admin_claims.get("phone", "superadmin"),
+        target_entity="runner",
+        target_id=runner_id,
+        details={"status": "rejected", "reason": payload.reason if payload else None}
+    )
+
     try:
         notify_runner_kyc_status(db, runner.id, "rejected", runner.name)
     except Exception as e:
@@ -5258,6 +5331,17 @@ def block_runner(runner_id: str, db: Session = Depends(get_db), admin_claims: di
             user.warning_alert = "Runner account banned for fraudulent activity"
 
     db.commit()
+
+    record_audit_log(
+        db,
+        action="BLOCK_RUNNER",
+        actor_role="admin",
+        actor_id=admin_claims.get("phone", "superadmin"),
+        target_entity="runner",
+        target_id=runner_id,
+        details={"status": "banned", "runner_name": runner.name}
+    )
+
     return {"success": True, "runner_id": runner_id, "status": "banned", "message": f"गाँव मित्र {runner.name} को ब्लॉक/बैन किया गया (फ्रॉड कंट्रोल)।"}
 
 
@@ -5450,6 +5534,17 @@ def update_admin_payout_verification_status(
             raise HTTPException(status_code=404, detail="Store not found.")
         store.bank_verification_status = payload.status
         db.commit()
+
+        record_audit_log(
+            db,
+            action="UPDATE_PAYOUT_STATUS",
+            actor_role="admin",
+            actor_id=admin_claims.get("phone", "superadmin"),
+            target_entity="vendor",
+            target_id=entity_id,
+            details={"status": payload.status, "vendor_name": store.name}
+        )
+
         return {
             "success": True,
             "entity_type": "vendor",
@@ -5463,6 +5558,17 @@ def update_admin_payout_verification_status(
             raise HTTPException(status_code=404, detail="Runner not found.")
         runner.bank_verification_status = payload.status
         db.commit()
+
+        record_audit_log(
+            db,
+            action="UPDATE_PAYOUT_STATUS",
+            actor_role="admin",
+            actor_id=admin_claims.get("phone", "superadmin"),
+            target_entity="runner",
+            target_id=entity_id,
+            details={"status": payload.status, "runner_name": runner.name}
+        )
+
         return {
             "success": True,
             "entity_type": "runner",
@@ -5472,6 +5578,223 @@ def update_admin_payout_verification_status(
         }
     else:
         raise HTTPException(status_code=400, detail="Invalid entity_type. Must be 'vendor' or 'runner'.")
+
+
+# =============================================================================
+# 9.1 SUPER ADMIN OPERATIONAL REPORTS & AUDIT TRAIL ENDPOINTS
+# =============================================================================
+
+@app.get("/api/admin/reports/orders")
+@app.get("/admin/reports/orders")
+def get_admin_orders_report(
+    format: str = Query("json", pattern="^(json|csv)$"),
+    status: Optional[str] = None,
+    limit: int = Query(500, le=5000),
+    db: Session = Depends(get_db),
+    admin_claims: dict = Depends(require_admin_token)
+):
+    """
+    Exports comprehensive order transactions report in CSV or JSON format for Super Admin accounting.
+    """
+    query = db.query(Order).order_by(Order.id.desc())
+    if status and status != "all":
+        query = query.filter(Order.status == status)
+    orders = query.limit(limit).all()
+
+    record_audit_log(
+        db,
+        action="EXPORT_ORDERS_REPORT",
+        actor_role="admin",
+        actor_id=admin_claims.get("phone", "superadmin"),
+        target_entity="order",
+        details={"format": format, "count": len(orders), "status_filter": status}
+    )
+
+    if format == "csv":
+        import io
+        import csv
+        output = io.StringIO()
+        writer = csv.writer(output)
+        writer.writerow([
+            "order_id", "created_at", "user_phone", "store_id", "total_amount",
+            "payment_mode", "payment_status", "status", "timeline_stage",
+            "runner_id", "delivery_fee", "platform_fee", "vendor_payout", "runner_payout",
+            "village", "block", "district"
+        ])
+        for o in orders:
+            writer.writerow([
+                o.id,
+                o.created_at.isoformat() if o.created_at else "",
+                o.user_phone,
+                o.store_id,
+                o.total_amount,
+                o.payment_mode or "COD",
+                getattr(o, "payment_status", "PENDING") or "PENDING",
+                o.status,
+                o.timeline_stage,
+                getattr(o, "runner_id", "") or "",
+                o.delivery_fee or 0.0,
+                o.platform_fee or 0.0,
+                getattr(o, "vendor_payout", 0.0) or 0.0,
+                getattr(o, "runner_payout", 0.0) or 0.0,
+                getattr(o, "village", "Rampur") or "Rampur",
+                getattr(o, "block", "Minapur") or "Minapur",
+                getattr(o, "district", "Muzaffarpur") or "Muzaffarpur"
+            ])
+        return Response(
+            content=output.getvalue(),
+            media_type="text/csv",
+            headers={"Content-Disposition": "attachment; filename=gaonbazar_orders_report.csv"}
+        )
+
+    # JSON response
+    total_gmv = sum(o.total_amount for o in orders)
+    return {
+        "count": len(orders),
+        "total_gmv": round(total_gmv, 2),
+        "orders": [
+            {
+                "order_id": o.id,
+                "created_at": o.created_at.isoformat() if o.created_at else None,
+                "user_phone": o.user_phone,
+                "store_id": o.store_id,
+                "total_amount": o.total_amount,
+                "payment_mode": o.payment_mode or "COD",
+                "payment_status": getattr(o, "payment_status", "PENDING") or "PENDING",
+                "status": o.status,
+                "timeline_stage": o.timeline_stage,
+                "runner_id": getattr(o, "runner_id", None),
+                "delivery_fee": o.delivery_fee or 0.0,
+                "platform_fee": o.platform_fee or 0.0,
+                "vendor_payout": getattr(o, "vendor_payout", 0.0) or 0.0,
+                "runner_payout": getattr(o, "runner_payout", 0.0) or 0.0,
+                "village": getattr(o, "village", "Rampur"),
+                "block": getattr(o, "block", "Minapur"),
+                "district": getattr(o, "district", "Muzaffarpur")
+            }
+            for o in orders
+        ]
+    }
+
+
+@app.get("/api/admin/reports/financials")
+@app.get("/admin/reports/financials")
+def get_admin_financials_report(
+    format: str = Query("json", pattern="^(json|csv)$"),
+    db: Session = Depends(get_db),
+    admin_claims: dict = Depends(require_admin_token)
+):
+    """
+    Generates high-level financial reconciliation report covering GMV, vendor payouts,
+    runner earnings, platform commission, and payment method distribution.
+    """
+    orders = db.query(Order).all()
+    total_gmv = sum(o.total_amount for o in orders)
+    vendor_payouts_total = sum(float(getattr(o, "vendor_payout", 0.0) or 0.0) for o in orders)
+    runner_payouts_total = sum(float(getattr(o, "runner_payout", 0.0) or 0.0) for o in orders)
+    platform_profits_total = sum(float(getattr(o, "admin_profit", 0.0) or 0.0) for o in orders)
+    total_delivery_fees = sum(float(getattr(o, "delivery_fee", 0.0) or 0.0) for o in orders)
+
+    cod_orders = [o for o in orders if (o.payment_mode or "COD").upper() == "COD"]
+    online_orders = [o for o in orders if (o.payment_mode or "").upper() in ("ONLINE", "RAZORPAY", "UPI")]
+
+    cod_gmv = sum(o.total_amount for o in cod_orders)
+    online_gmv = sum(o.total_amount for o in online_orders)
+
+    record_audit_log(
+        db,
+        action="EXPORT_FINANCIALS_REPORT",
+        actor_role="admin",
+        actor_id=admin_claims.get("phone", "superadmin"),
+        target_entity="financials",
+        details={"format": format, "total_gmv": total_gmv}
+    )
+
+    if format == "csv":
+        import io
+        import csv
+        output = io.StringIO()
+        writer = csv.writer(output)
+        writer.writerow(["metric", "value", "unit", "description"])
+        writer.writerow(["total_gmv", round(total_gmv, 2), "INR", "Gross Merchandise Value"])
+        writer.writerow(["vendor_payouts", round(vendor_payouts_total, 2), "INR", "Total vendor store settlements"])
+        writer.writerow(["runner_payouts", round(runner_payouts_total, 2), "INR", "Total delivery partner disbursements"])
+        writer.writerow(["platform_profits", round(platform_profits_total, 2), "INR", "Platform net retained fees"])
+        writer.writerow(["delivery_fees_collected", round(total_delivery_fees, 2), "INR", "Delivery fees collected"])
+        writer.writerow(["total_orders_count", len(orders), "count", "Total historical orders count"])
+        writer.writerow(["cod_orders_count", len(cod_orders), "count", "Cash On Delivery orders count"])
+        writer.writerow(["cod_gmv", round(cod_gmv, 2), "INR", "Total cash collected on delivery"])
+        writer.writerow(["online_orders_count", len(online_orders), "count", "Digital online orders count"])
+        writer.writerow(["online_gmv", round(online_gmv, 2), "INR", "Total online digital volume"])
+        return Response(
+            content=output.getvalue(),
+            media_type="text/csv",
+            headers={"Content-Disposition": "attachment; filename=gaonbazar_financials_report.csv"}
+        )
+
+    return {
+        "total_gmv": round(total_gmv, 2),
+        "vendor_payouts_total": round(vendor_payouts_total, 2),
+        "runner_payouts_total": round(runner_payouts_total, 2),
+        "platform_profits_total": round(platform_profits_total, 2),
+        "total_delivery_fees": round(total_delivery_fees, 2),
+        "order_counts": {
+            "total": len(orders),
+            "cod": len(cod_orders),
+            "online": len(online_orders)
+        },
+        "gmv_distribution": {
+            "cod_gmv": round(cod_gmv, 2),
+            "online_gmv": round(online_gmv, 2)
+        }
+    }
+
+
+@app.get("/api/admin/audit-logs")
+@app.get("/admin/audit-logs")
+def get_admin_audit_logs(
+    limit: int = Query(50, le=500),
+    offset: int = Query(0, ge=0),
+    action: Optional[str] = None,
+    actor_role: Optional[str] = None,
+    target_entity: Optional[str] = None,
+    db: Session = Depends(get_db),
+    admin_claims: dict = Depends(require_admin_token)
+):
+    """
+    Returns immutable audit logs recording privileged administrative, KYC, and financial transfers.
+    """
+    query = db.query(AuditLog).order_by(AuditLog.id.desc())
+    if action:
+        query = query.filter(AuditLog.action == action)
+    if actor_role:
+        query = query.filter(AuditLog.actor_role == actor_role)
+    if target_entity:
+        query = query.filter(AuditLog.target_entity == target_entity)
+
+    total_count = query.count()
+    logs = query.offset(offset).limit(limit).all()
+
+    return {
+        "total": total_count,
+        "offset": offset,
+        "limit": limit,
+        "logs": [
+            {
+                "id": log.id,
+                "action": log.action,
+                "actor_role": log.actor_role,
+                "actor_id": log.actor_id,
+                "target_entity": log.target_entity,
+                "target_id": log.target_id,
+                "details": log.details,
+                "ip_address": log.ip_address,
+                "created_at": log.created_at.isoformat() if log.created_at else None
+            }
+            for log in logs
+        ]
+    }
+
 
 
 
