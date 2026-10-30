@@ -16,8 +16,8 @@
 | Phase 1 | Backend Security, KYC & Payments Hardening | **COMPLETED** | 53/53 PASSED (100%) | Commit `7535126` on Preview |
 | Phase 2 | Database, Infrastructure & Persistent Storage | **COMPLETED** | 40/40 PASSED (100%) | `docs/overnight/PHASE_2_REPORT.md` |
 | Phase 3 | Super Admin Dashboard & Operations Platform | **COMPLETED** | 45/45 PASSED (100%) | `docs/overnight/PHASE_3_REPORT.md` |
-| Phase 4 | Vendor Mobile Application | **IN PROGRESS** | Pending Phase 4 tests | `docs/overnight/PHASE_4_REPORT.md` |
-| Phase 5 | Customer Mobile Application | QUEUED | - | `docs/overnight/PHASE_5_REPORT.md` |
+| Phase 4 | Vendor Mobile Application | **COMPLETED** | 49/49 PASSED (100%) | `docs/overnight/PHASE_4_REPORT.md` |
+| Phase 5 | Customer Mobile Application | **IN PROGRESS** | Pending Phase 5 tests | `docs/overnight/PHASE_5_REPORT.md` |
 | Phase 6 | Runner / Delivery Partner Application | QUEUED | - | `docs/overnight/PHASE_6_REPORT.md` |
 | Phase 7 | End-to-End Four-App Integration | QUEUED | - | `docs/overnight/PHASE_7_REPORT.md` |
 | Phase 8 | QA, Performance & Launch Readiness | QUEUED | - | `docs/overnight/PHASE_8_FINAL_REPORT.md` |
@@ -51,4 +51,14 @@
   - Added paginated audit logs query endpoint (`/api/admin/audit-logs`).
   - Added comprehensive test suite `test_admin_operations_platform.py`.
   - Verified 45/45 test suite passing. Baseline strictly maintained at 364 orders.
-- **Next Task:** Execute Phase 4 — Vendor Mobile Application.
+
+### Milestone 4 — Phase 4 Vendor Mobile Application Complete
+- **Timestamp:** 2026-10-30T07:10:00Z
+- **Actions:**
+  - Audited and verified `vendor_dashboard.html` for 360x800 mobile viewport, touch targets, pull-to-refresh, audio chime alerts, and Hindi/English localization.
+  - Hardened vendor order lifecycle (Accept -> Stage 2, Pack -> Stage 3) and enforced delivery restriction (vendors blocked with 403 from marking delivered).
+  - Instrumented audit trail logging on vendor order lifecycle actions.
+  - Unified inventory and pricing APIs with method and path aliases (`POST`/`PUT`/`PATCH`, `/api/vendor/...` and `/vendor/...`).
+  - Built comprehensive test suite `test_vendor_application_e2e.py`.
+  - Verified 49/49 test suite passing. Baseline strictly maintained at 364 orders.
+- **Next Task:** Execute Phase 5 — Customer Mobile Application.

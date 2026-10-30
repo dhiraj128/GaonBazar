@@ -3781,6 +3781,16 @@ def update_vendor_order_status(
     db.commit()
     db.refresh(order)
 
+    record_audit_log(
+        db,
+        action=f"VENDOR_ORDER_STAGE_{payload.stage}",
+        actor_role="vendor",
+        actor_id=auth_vendor.get("store_id"),
+        target_entity="order",
+        target_id=str(order.id),
+        details={"stage": payload.stage, "status": order.status}
+    )
+
     items_dto = [
         VendorOrderItemDTO(
             product_id=it.product_id,
@@ -3883,6 +3893,16 @@ def vendor_quick_action(
             reset_user_trust_on_delivery(order.user_phone, db)
         db.commit()
         db.refresh(order)
+
+    record_audit_log(
+        db,
+        action=f"VENDOR_ORDER_{action.upper()}",
+        actor_role="vendor",
+        actor_id=auth_vendor.get("store_id"),
+        target_entity="order",
+        target_id=str(order.id),
+        details={"action": action, "stage": order.timeline_stage, "status": order.status}
+    )
 
     items_dto = [
         VendorOrderItemDTO(

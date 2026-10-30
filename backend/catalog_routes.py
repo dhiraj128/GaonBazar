@@ -419,6 +419,7 @@ async def upload_catalog_image(
 # =============================================================================
 
 @router.get("/api/vendor/inventory", response_model=List[VendorProductDTO])
+@router.get("/vendor/inventory", response_model=List[VendorProductDTO])
 def get_vendor_inventory(
     store_id: Optional[str] = Query(None),
     db: Session = Depends(get_db),
@@ -470,6 +471,7 @@ def get_vendor_inventory(
 
 
 @router.post("/api/vendor/inventory/add", response_model=VendorProductDTO)
+@router.post("/vendor/inventory/add", response_model=VendorProductDTO)
 def add_product_to_vendor_inventory(
     payload: VendorAddProductRequest,
     store_id: Optional[str] = Query(None),
@@ -550,6 +552,11 @@ def add_product_to_vendor_inventory(
 
 
 @router.put("/api/vendor/inventory/{product_id}", response_model=VendorProductDTO)
+@router.post("/api/vendor/inventory/{product_id}", response_model=VendorProductDTO)
+@router.patch("/api/vendor/inventory/{product_id}", response_model=VendorProductDTO)
+@router.put("/vendor/inventory/{product_id}", response_model=VendorProductDTO)
+@router.post("/vendor/inventory/{product_id}", response_model=VendorProductDTO)
+@router.patch("/vendor/inventory/{product_id}", response_model=VendorProductDTO)
 def update_vendor_inventory_item(
     product_id: str,
     payload: VendorUpdateProductRequest,
@@ -602,6 +609,7 @@ def update_vendor_inventory_item(
 
 
 @router.delete("/api/vendor/inventory/{product_id}")
+@router.delete("/vendor/inventory/{product_id}")
 def delete_vendor_inventory_item(
     product_id: str,
     db: Session = Depends(get_db),
@@ -624,6 +632,7 @@ def delete_vendor_inventory_item(
 # =============================================================================
 
 @router.get("/api/vendor/profile", response_model=VendorProfileDTO)
+@router.get("/vendor/profile", response_model=VendorProfileDTO)
 def get_vendor_profile(
     store_id: Optional[str] = Query(None),
     db: Session = Depends(get_db),
@@ -687,6 +696,9 @@ def get_vendor_profile(
 
 
 @router.put("/api/vendor/profile", response_model=VendorProfileDTO)
+@router.post("/api/vendor/profile", response_model=VendorProfileDTO)
+@router.put("/vendor/profile", response_model=VendorProfileDTO)
+@router.post("/vendor/profile", response_model=VendorProfileDTO)
 def update_vendor_profile(
     payload: VendorProfileUpdateRequest,
     store_id: Optional[str] = Query(None),
@@ -749,6 +761,7 @@ def update_vendor_profile(
 
 
 @router.post("/api/vendor/kyc/submit")
+@router.post("/vendor/kyc/submit")
 def submit_vendor_kyc(
     payload: VendorKYCSubmitRequest,
     store_id: Optional[str] = Query(None),
@@ -812,6 +825,9 @@ def submit_vendor_kyc(
 
 
 @router.put("/api/vendor/bank")
+@router.post("/api/vendor/bank")
+@router.put("/vendor/bank")
+@router.post("/vendor/bank")
 def update_vendor_bank_details(
     payload: VendorBankUpdateRequest,
     store_id: Optional[str] = Query(None),
