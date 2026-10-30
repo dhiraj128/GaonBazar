@@ -4266,6 +4266,16 @@ def toggle_runner_shift(
         runner_db.is_online = payload.is_online
         db.commit()
 
+        record_audit_log(
+            db,
+            action="RUNNER_SHIFT_TOGGLE",
+            actor_role="runner",
+            actor_id=payload.runner_id,
+            target_entity="runner",
+            target_id=payload.runner_id,
+            details={"is_online": payload.is_online}
+        )
+
     if payload.runner_id not in RUNNER_STATE:
         r_name = runner_db.name if runner_db else "Gaon Mitra Runner"
         r_code = runner_db.runner_code if runner_db else f"#GM-{payload.runner_id[-4:].upper()}"
@@ -4528,6 +4538,17 @@ def confirm_runner_pickup(order_id: str, db: Session = Depends(get_db), auth_run
     order.status = "Out for Delivery"
     order.eta_mins = compute_dynamic_eta(getattr(order, 'distance_km', 1.5), timeline_stage=4)
     db.commit()
+
+    record_audit_log(
+        db,
+        action="RUNNER_ORDER_PICKUP",
+        actor_role="runner",
+        actor_id=auth_runner.get("runner_id", "runner"),
+        target_entity="order",
+        target_id=str(order.id),
+        details={"status": "Out for Delivery", "stage": 4}
+    )
+
     try:
         r_name = auth_runner.get("name", "Kamal Singh") if isinstance(auth_runner, dict) else "Kamal Singh"
         notify_runner_out_for_delivery(db, order, r_name)
@@ -4633,6 +4654,16 @@ def verify_doorstep_otp(
     cod_cash = order.total_amount if order.payment_mode == "COD" else 0.0
     o_dist = float(getattr(order, 'distance_km', None) or 1.2)
     commission_earned = float(getattr(order, 'runner_payout', None) or (30.0 if o_dist > 5.0 else (15.0 if o_dist > 2.0 else 10.0)))
+
+    record_audit_log(
+        db,
+        action="RUNNER_DELIVERY_HANDOVER",
+        actor_role="runner",
+        actor_id=auth_runner.get("runner_id", "runner"),
+        target_entity="order",
+        target_id=str(order.id),
+        details={"status": "Delivered", "cod_cash": cod_cash, "commission_earned": commission_earned}
+    )
 
     return HandoverResponse(
         success=True,

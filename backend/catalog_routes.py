@@ -885,6 +885,7 @@ def update_vendor_bank_details(
 # =============================================================================
 
 @router.get("/api/runner/profile", response_model=RunnerProfileDetailDTO)
+@router.get("/runner/profile", response_model=RunnerProfileDetailDTO)
 def get_runner_profile(
     runner_id: Optional[str] = Query(None),
     db: Session = Depends(get_db),
@@ -948,6 +949,9 @@ def get_runner_profile(
 
 
 @router.put("/api/runner/profile", response_model=RunnerProfileDetailDTO)
+@router.post("/api/runner/profile", response_model=RunnerProfileDetailDTO)
+@router.put("/runner/profile", response_model=RunnerProfileDetailDTO)
+@router.post("/runner/profile", response_model=RunnerProfileDetailDTO)
 def update_runner_profile(
     payload: RunnerProfileUpdateRequest,
     runner_id: Optional[str] = Query(None),
@@ -998,6 +1002,7 @@ def update_runner_profile(
 
 
 @router.post("/api/runner/kyc/submit")
+@router.post("/runner/kyc/submit")
 def submit_runner_kyc(
     payload: RunnerKYCSubmitRequest,
     runner_id: Optional[str] = Query(None),
@@ -1074,6 +1079,9 @@ def submit_runner_kyc(
 
 
 @router.put("/api/runner/bank")
+@router.post("/api/runner/bank")
+@router.put("/runner/bank")
+@router.post("/runner/bank")
 def update_runner_bank_details(
     payload: RunnerBankUpdateRequest,
     runner_id: Optional[str] = Query(None),

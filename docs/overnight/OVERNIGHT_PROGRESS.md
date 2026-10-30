@@ -18,8 +18,8 @@
 | Phase 3 | Super Admin Dashboard & Operations Platform | **COMPLETED** | 45/45 PASSED (100%) | `docs/overnight/PHASE_3_REPORT.md` |
 | Phase 4 | Vendor Mobile Application | **COMPLETED** | 49/49 PASSED (100%) | `docs/overnight/PHASE_4_REPORT.md` |
 | Phase 5 | Customer Mobile Application | **COMPLETED** | 54/54 PASSED (100%) | `docs/overnight/PHASE_5_REPORT.md` |
-| Phase 6 | Runner / Delivery Partner Application | **IN PROGRESS** | Pending Phase 6 tests | `docs/overnight/PHASE_6_REPORT.md` |
-| Phase 7 | End-to-End Four-App Integration | QUEUED | - | `docs/overnight/PHASE_7_REPORT.md` |
+| Phase 6 | Runner / Delivery Partner Application | **COMPLETED** | 55/55 PASSED (100%) | `docs/overnight/PHASE_6_REPORT.md` |
+| Phase 7 | End-to-End Four-App Integration | **IN PROGRESS** | Pending Phase 7 tests | `docs/overnight/PHASE_7_REPORT.md` |
 | Phase 8 | QA, Performance & Launch Readiness | QUEUED | - | `docs/overnight/PHASE_8_FINAL_REPORT.md` |
 
 ---
@@ -73,3 +73,17 @@
   - Built comprehensive test suite `test_customer_application_e2e.py`.
   - Verified 54/54 test suite passing. Baseline strictly maintained at 364 orders.
 - **Next Task:** Execute Phase 6 — Runner / Delivery Partner Application.
+
+### Milestone 6 — Phase 6 Runner / Delivery Partner Application Complete
+- **Timestamp:** 2026-10-30T08:15:00Z
+- **Actions:**
+  - Audited and verified `runner_dashboard.html` for offline-first resilience, duty toggle, mission discovery, and doorstep handover workflows.
+  - Implemented secure bearer token authentication with dedicated online/offline duty toggle (`POST /api/runner/shift` and `/runner/shift`) with audit logging.
+  - Hardened mission queue discovery (`GET /api/runner/orders`) and store pickup verification (`POST /api/runner/orders/{id}/pickup`), transitioning stage 3 to stage 4 ("Out for Delivery").
+  - Hardened 4-digit doorstep delivery OTP verification (`POST /api/runner/orders/{id}/verify-otp`), transitioning stage 4 to stage 5 ("Delivered") and marking paid status. Bad OTPs rejected with HTTP 400. Replay on already delivered order rejected with HTTP 400.
+  - Added runner trip earnings ledger (`GET /api/runner/ledger`) with dynamic distance-based commissions and COD cash collected.
+  - Added secure payout destination bank configuration (`PUT /api/runner/bank`) with masked account numbers (`GET /api/runner/{id}/payout-settings`).
+  - Enforced vehicle onboarding rules: bicycles do not require DL; motorized vehicles require RC and driver documentation.
+  - Built comprehensive test suite `test_runner_application_e2e.py`.
+  - Verified 55/55 test suite passing. Baseline strictly maintained at 364 orders.
+- **Next Task:** Execute Phase 7 — End-to-End Four-App Integration.
