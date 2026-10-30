@@ -185,15 +185,29 @@ def repair_database_schema(engine: Engine, logger=print) -> Dict[str, Any]:
                 except Exception as e:
                     logger(f"  [!] Notice adding dynamic column {tbl_name}.{col.name}: {e}")
 
-    # 4. Column widening for PostgreSQL (e.g. users.session_token for JWTs)
-    if is_postgres and "users" in existing_tables:
-        try:
-            with engine.connect() as conn:
-                conn.execute(text('ALTER TABLE "users" ALTER COLUMN "session_token" TYPE VARCHAR(500)'))
-                conn.commit()
-            logger("  [OK] Widened users.session_token to VARCHAR(500)")
-        except Exception as e:
-            logger(f"  [!] Notice widening users.session_token: {e}")
+    # 4. Column widening for PostgreSQL (e.g. users.session_token for JWTs, bank_account_number for encrypted credentials)
+    if is_postgres:
+        widen_stmts = [
+            ("users", "session_token", "VARCHAR(500)"),
+            ("runners", "bank_account_number", "TEXT"),
+            ("stores", "bank_account_number", "TEXT"),
+            ("runners", "photo_url", "TEXT"),
+            ("stores", "photo_url", "TEXT"),
+            ("products", "image_url", "TEXT"),
+            ("central_products", "image_url", "TEXT"),
+            ("notifications", "message", "TEXT"),
+            ("notifications", "message_hi", "TEXT"),
+            ("payment_transactions", "raw_payload", "TEXT"),
+        ]
+        for tbl_w, col_w, type_w in widen_stmts:
+            if tbl_w in existing_tables:
+                try:
+                    with engine.connect() as conn:
+                        conn.execute(text(f'ALTER TABLE "{tbl_w}" ALTER COLUMN "{col_w}" TYPE {type_w}'))
+                        conn.commit()
+                    logger(f"  [OK] Widened {tbl_w}.{col_w} to {type_w}")
+                except Exception as e:
+                    pass
 
     # 5. Final verification: Check column counts
     insp = inspect(engine)
