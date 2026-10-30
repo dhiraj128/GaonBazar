@@ -10,7 +10,7 @@ class User(Base):
     phone = Column(String(15), unique=True, index=True, nullable=False)
     name = Column(String(100), nullable=True)
     lang = Column(String(10), default="hi")
-    session_token = Column(String(100), unique=True, index=True, nullable=True)
+    session_token = Column(String(500), unique=True, index=True, nullable=True)
     consecutive_cancellations = Column(Integer, default=0)
     cancelled_orders = Column(Integer, default=0)
     is_cod_blocked = Column(Boolean, default=False)

@@ -180,6 +180,14 @@ def run_migration(
                     skipped[tbl] = 0
                     continue
 
+                # If PostgreSQL, ensure users.session_token is widened to VARCHAR(500) to support JWT tokens
+                if tbl == "users" and tgt_engine.dialect.name == "postgresql":
+                    try:
+                        t_conn.execute(text('ALTER TABLE "users" ALTER COLUMN "session_token" TYPE VARCHAR(500)'))
+                        t_conn.commit()
+                    except Exception:
+                        pass
+
                 # Query existing PKs from target to avoid duplicates
                 existing_pks = set()
                 if pk_cols and len(pk_cols) == 1:

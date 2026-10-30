@@ -185,7 +185,17 @@ def repair_database_schema(engine: Engine, logger=print) -> Dict[str, Any]:
                 except Exception as e:
                     logger(f"  [!] Notice adding dynamic column {tbl_name}.{col.name}: {e}")
 
-    # 4. Final verification: Check column counts
+    # 4. Column widening for PostgreSQL (e.g. users.session_token for JWTs)
+    if is_postgres and "users" in existing_tables:
+        try:
+            with engine.connect() as conn:
+                conn.execute(text('ALTER TABLE "users" ALTER COLUMN "session_token" TYPE VARCHAR(500)'))
+                conn.commit()
+            logger("  [OK] Widened users.session_token to VARCHAR(500)")
+        except Exception as e:
+            logger(f"  [!] Notice widening users.session_token: {e}")
+
+    # 5. Final verification: Check column counts
     insp = inspect(engine)
     final_table_counts = {}
     for tbl_name in Base.metadata.tables.keys():
