@@ -6084,11 +6084,19 @@ def admin_trigger_database_migration(
         except Exception:
             target_pg_url = str(engine.url)
 
-    result = run_migration(
-        sqlite_url=f"sqlite:///{src_db}",
-        postgres_url=target_pg_url,
-        execute=(not is_dry_run)
-    )
+    try:
+        result = run_migration(
+            sqlite_url=f"sqlite:///{src_db}",
+            postgres_url=target_pg_url,
+            execute=(not is_dry_run)
+        )
+    except Exception as e:
+        import traceback
+        tb = traceback.format_exc()
+        raise HTTPException(
+            status_code=500,
+            detail=f"Migration failed: {e}\n{tb}"
+        )
 
     action_name = "database_migration_audited" if is_dry_run else "database_migration_executed"
     record_audit_log(

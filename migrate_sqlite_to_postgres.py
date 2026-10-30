@@ -190,6 +190,23 @@ def run_migration(
                     except Exception:
                         existing_pks = set()
 
+                from backend.models import Base
+                from sqlalchemy import Boolean, DateTime, Integer, Float
+                from datetime import datetime
+
+                table_model = Base.metadata.tables.get(tbl)
+                col_type_map = {}
+                if table_model is not None:
+                    for col in table_model.columns:
+                        if isinstance(col.type, Boolean):
+                            col_type_map[col.name] = 'bool'
+                        elif isinstance(col.type, DateTime):
+                            col_type_map[col.name] = 'datetime'
+                        elif isinstance(col.type, Integer):
+                            col_type_map[col.name] = 'int'
+                        elif isinstance(col.type, Float):
+                            col_type_map[col.name] = 'float'
+
                 to_insert = []
                 num_skipped = 0
                 for row in rows:
@@ -199,16 +216,44 @@ def run_migration(
                         if pk_val in existing_pks:
                             num_skipped += 1
                             continue
+
+                    # Coerce types for target PostgreSQL dialect
+                    if tgt_engine.dialect.name == "postgresql":
+                        for c_name, c_val in list(row_dict.items()):
+                            expected_type = col_type_map.get(c_name)
+                            if expected_type == 'bool' and c_val is not None:
+                                if isinstance(c_val, (int, float)):
+                                    row_dict[c_name] = bool(c_val)
+                                elif isinstance(c_val, str):
+                                    row_dict[c_name] = c_val.lower() in ('true', '1', 't', 'yes')
+                            elif expected_type == 'datetime' and isinstance(c_val, str) and c_val.strip():
+                                parsed_dt = None
+                                try:
+                                    parsed_dt = datetime.fromisoformat(c_val.replace("Z", "+00:00"))
+                                except Exception:
+                                    for fmt in ("%Y-%m-%d %H:%M:%S.%f", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d"):
+                                        try:
+                                            parsed_dt = datetime.strptime(c_val, fmt)
+                                            break
+                                        except Exception:
+                                            pass
+                                if parsed_dt is not None:
+                                    row_dict[c_name] = parsed_dt
+
                     to_insert.append(row_dict)
 
                 if to_insert:
                     insert_stmt = text(f'INSERT INTO "{tbl}" ({col_list_str}) VALUES ({val_placeholders})')
-                    # Insert in batches of 200
                     batch_size = 200
-                    for i in range(0, len(to_insert), batch_size):
-                        batch = to_insert[i:i + batch_size]
-                        t_conn.execute(insert_stmt, batch)
-                    t_conn.commit()
+                    try:
+                        for i in range(0, len(to_insert), batch_size):
+                            batch = to_insert[i:i + batch_size]
+                            t_conn.execute(insert_stmt, batch)
+                        t_conn.commit()
+                    except Exception as ins_err:
+                        logger(f"  [ERROR] Failed batch insertion into {tbl}: {ins_err}")
+                        t_conn.rollback()
+                        raise
 
                 transferred[tbl] = len(to_insert)
                 skipped[tbl] = num_skipped
