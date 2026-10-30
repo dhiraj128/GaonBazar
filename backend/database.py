@@ -25,11 +25,13 @@ if _supplied_url.startswith("postgres://"):
 else:
     DATABASE_URL = _supplied_url or _local_sqlite_url
 
-if not DATABASE_URL.startswith(("sqlite:", "postgresql:")):
-    raise RuntimeError("DATABASE_URL must be a PostgreSQL or SQLite SQLAlchemy URL")
+# SQLAlchemy URLs can include an explicit driver, e.g. postgresql+psycopg://.
+# Treat all supported PostgreSQL driver variants as PostgreSQL for safety checks.
+if not DATABASE_URL.startswith(("sqlite://", "postgresql://", "postgresql+psycopg://", "postgresql+psycopg2://")):
+    raise RuntimeError("DATABASE_URL must be a supported PostgreSQL or SQLite SQLAlchemy URL")
 
-IS_SQLITE = DATABASE_URL.startswith("sqlite:")
-IS_POSTGRES = DATABASE_URL.startswith("postgresql:")
+IS_SQLITE = DATABASE_URL.startswith("sqlite://")
+IS_POSTGRES = DATABASE_URL.startswith(("postgresql://", "postgresql+psycopg://", "postgresql+psycopg2://"))
 if os.getenv("GAONBAZAR_REQUIRE_POSTGRES") == "1" and not IS_POSTGRES:
     raise RuntimeError("GAONBAZAR_REQUIRE_POSTGRES=1, but PostgreSQL DATABASE_URL is missing")
 
