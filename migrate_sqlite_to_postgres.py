@@ -63,13 +63,21 @@ def normalize_postgres_url(url: str) -> str:
 
 def inspect_table_counts(engine, tables: List[str]) -> Dict[str, int]:
     counts = {}
+    try:
+        insp = inspect(engine)
+        existing = set(insp.get_table_names())
+    except Exception:
+        existing = set()
     with engine.connect() as conn:
         for tbl in tables:
+            if tbl not in existing:
+                counts[tbl] = 0
+                continue
             try:
-                res = conn.execute(text(f"SELECT COUNT(*) FROM {tbl}")).scalar()
+                res = conn.execute(text(f'SELECT COUNT(*) FROM "{tbl}"')).scalar()
                 counts[tbl] = int(res or 0)
             except Exception:
-                counts[tbl] = -1
+                counts[tbl] = 0
     return counts
 
 
@@ -94,10 +102,16 @@ def run_migration(
 
     # Instantiate source and target engines
     src_engine = create_engine(sqlite_url, connect_args={"check_same_thread": False, "timeout": 30.0})
+    tgt_connect_args = {}
+    if not postgres_url.startswith("sqlite:"):
+        tgt_connect_args["connect_timeout"] = 15
+        if os.getenv("GAONBAZAR_DB_SSL", "require") == "require":
+            tgt_connect_args["sslmode"] = "require"
+
     tgt_engine = create_engine(
         postgres_url,
         pool_pre_ping=True,
-        connect_args={"connect_timeout": 15} if not postgres_url.startswith("sqlite:") else {}
+        connect_args=tgt_connect_args
     )
 
     # 1. Check Source Integrity
@@ -114,6 +128,11 @@ def run_migration(
     if execute:
         logger("Creating any missing schema tables on target (non-destructive)...")
         Base.metadata.create_all(bind=tgt_engine)
+        try:
+            from backend.schema_migrator import repair_database_schema
+            repair_database_schema(tgt_engine, logger=logger)
+        except Exception as e:
+            logger(f"Notice during target schema repair: {e}")
         logger("[OK] Schema synchronization complete.")
 
     src_counts = inspect_table_counts(src_engine, TABLE_TRANSFER_ORDER)

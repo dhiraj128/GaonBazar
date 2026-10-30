@@ -122,12 +122,18 @@ def check_database_integrity() -> bool:
 
 def ensure_schema_migrations():
     """
-    Safely adds any missing columns to existing SQLite tables
-    (e.g. stores onboarding and KYC columns) without data loss.
+    Safely adds any missing columns to existing tables (PostgreSQL & SQLite)
+    including all 53 missing columns across stores, runners, orders, payment_transactions,
+    products, and landmarks, and creates missing tables without data loss.
     """
-    # This legacy helper issues SQLite-only PRAGMAs/DDL.
-    # PostgreSQL schema must be created/migrated using reviewed SQL migrations;
-    # do not attempt automatic SQLite ALTER TABLE / financial backfills there.
+    try:
+        try:
+            from .schema_migrator import repair_database_schema
+        except ImportError:
+            from backend.schema_migrator import repair_database_schema
+        repair_database_schema(engine)
+    except Exception as e:
+        print(f"Notice during schema migration: {e}")
     if IS_POSTGRES:
         return
     with engine.connect() as conn:

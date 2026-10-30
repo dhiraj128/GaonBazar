@@ -6077,9 +6077,16 @@ def admin_trigger_database_migration(
     if not src_db.exists():
         raise HTTPException(status_code=404, detail="Baseline SQLite database file not found on disk.")
 
+    target_pg_url = os.getenv("DATABASE_URL")
+    if not target_pg_url:
+        try:
+            target_pg_url = engine.url.render_as_string(hide_password=False)
+        except Exception:
+            target_pg_url = str(engine.url)
+
     result = run_migration(
         sqlite_url=f"sqlite:///{src_db}",
-        postgres_url=str(engine.url),
+        postgres_url=target_pg_url,
         execute=(not is_dry_run)
     )
 
