@@ -29,7 +29,7 @@ import sentry_sdk
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 
 from .database import engine, Base, get_db, check_database_integrity, ensure_schema_migrations, db_session, record_audit_log
-from .models import User, OTPRecord, Landmark, Store, Product, Order, OrderItem, Runner, SupportTicket, StoreCategory, SavedPaymentMethod, PaymentTransaction, Notification, MessageThread, ChatMessage, AuditLog
+from .models import User, OTPRecord, Landmark, Store, Product, Order, OrderItem, Runner, SupportTicket, StoreCategory, SavedPaymentMethod, PaymentTransaction, Notification, MessageThread, ChatMessage, AuditLog, RevokedToken, ProcessedWebhookEvent
 from .schemas import (
     SendOTPRequest, SendOTPResponse,
     VerifyOTPRequest, VerifyOTPResponse, UserProfileDTO, CustomerTrustStatusDTO,
@@ -423,6 +423,27 @@ def on_startup():
     check_database_integrity()
     ensure_schema_migrations()
     Base.metadata.create_all(bind=engine)
+
+    # If running on PostgreSQL and the target database has 0 orders (e.g. newly provisioned Supabase DB),
+    # automatically execute the safe, non-destructive migration pump from backend/gaonbazar.db.
+    if engine.dialect.name == "postgresql":
+        try:
+            with engine.connect() as conn:
+                orders_count = conn.execute(text("SELECT COUNT(*) FROM orders")).scalar() or 0
+            if orders_count == 0:
+                print("[STARTUP] PostgreSQL database detected with 0 orders. Initiating automatic safe SQLite data migration...")
+                src_db = Path(__file__).resolve().parent / "gaonbazar.db"
+                if src_db.exists():
+                    from migrate_sqlite_to_postgres import run_migration
+                    migration_res = run_migration(
+                        sqlite_url=f"sqlite:///{src_db}",
+                        postgres_url=str(engine.url),
+                        execute=True
+                    )
+                    print(f"[STARTUP] PostgreSQL auto-migration completed: success={migration_res.get('success')}")
+        except Exception as e:
+            print(f"[STARTUP WARNING] PostgreSQL auto-migration check encountered: {e}")
+
     # Never insert or overwrite demo shops, catalog prices or runner records in
     # PostgreSQL production. Seed only when explicitly requested in an isolated
     # environment; SQLite local development retains legacy demo behavior.
@@ -665,6 +686,7 @@ def get_build_version(db: Session = Depends(get_db)):
         storage_durability = "Remote Persistent Managed PostgreSQL"
 
     table_counts = {}
+    finances = {}
     try:
         table_counts = {
             "stores": db.query(Store).count(),
@@ -672,10 +694,23 @@ def get_build_version(db: Session = Depends(get_db)):
             "orders": db.query(Order).count(),
             "users": db.query(User).count(),
             "runners": db.query(Runner).count(),
+            "order_items": db.query(OrderItem).count(),
+            "landmarks": db.query(Landmark).count(),
+            "store_categories": db.query(StoreCategory).count(),
+            "saved_payment_methods": db.query(SavedPaymentMethod).count(),
+            "payment_transactions": db.query(PaymentTransaction).count(),
             "notifications": db.query(Notification).count(),
             "support_tickets": db.query(SupportTicket).count(),
             "message_threads": db.query(MessageThread).count(),
-            "chat_messages": db.query(ChatMessage).count()
+            "chat_messages": db.query(ChatMessage).count(),
+            "otp_records": db.query(OTPRecord).count(),
+            "audit_logs": db.query(AuditLog).count(),
+            "revoked_tokens": db.query(RevokedToken).count(),
+            "processed_webhook_events": db.query(ProcessedWebhookEvent).count(),
+        }
+        finances = {
+            "orders_total_inr": float(db.execute(text("SELECT COALESCE(SUM(total_amount), 0) FROM orders")).scalar() or 0.0),
+            "payments_total_inr": float(db.execute(text("SELECT COALESCE(SUM(amount), 0) FROM payment_transactions")).scalar() or 0.0)
         }
     except Exception as e:
         table_counts = {"error": str(e)}
@@ -694,6 +729,7 @@ def get_build_version(db: Session = Depends(get_db)):
         "database_identifier": redacted_id,
         "storage_durability": storage_durability,
         "table_counts": table_counts,
+        "financial_volumes": finances,
         "timestamp": datetime.utcnow().isoformat()
     }
 
@@ -5856,6 +5892,104 @@ def get_admin_audit_logs(
             }
             for log in logs
         ]
+    }
+
+
+@app.get("/api/admin/database-inspection")
+@app.get("/admin/database-inspection")
+def admin_database_inspection(
+    db: Session = Depends(get_db),
+    admin_claims: dict = Depends(require_admin_token)
+):
+    """
+    Detailed administrative inspection of database dialect, connectivity, table inventories,
+    and financial ledger integrity.
+    """
+    dialect_name = engine.dialect.name
+    is_sqlite = (dialect_name == "sqlite")
+    if is_sqlite:
+        masked_uri = "sqlite:///backend/gaonbazar.db"
+    else:
+        url_obj = engine.url
+        masked_uri = f"postgresql://{url_obj.username or 'user'}:****@{url_obj.host or 'host'}:{url_obj.port or 5432}/{url_obj.database or 'db'}"
+
+    table_counts = {
+        "store_categories": db.query(StoreCategory).count(),
+        "stores": db.query(Store).count(),
+        "users": db.query(User).count(),
+        "runners": db.query(Runner).count(),
+        "products": db.query(Product).count(),
+        "landmarks": db.query(Landmark).count(),
+        "orders": db.query(Order).count(),
+        "order_items": db.query(OrderItem).count(),
+        "otp_records": db.query(OTPRecord).count(),
+        "support_tickets": db.query(SupportTicket).count(),
+        "saved_payment_methods": db.query(SavedPaymentMethod).count(),
+        "payment_transactions": db.query(PaymentTransaction).count(),
+        "notifications": db.query(Notification).count(),
+        "message_threads": db.query(MessageThread).count(),
+        "chat_messages": db.query(ChatMessage).count(),
+        "audit_logs": db.query(AuditLog).count(),
+        "revoked_tokens": db.query(RevokedToken).count(),
+        "processed_webhook_events": db.query(ProcessedWebhookEvent).count(),
+    }
+
+    orders_sum = float(db.execute(text("SELECT COALESCE(SUM(total_amount), 0) FROM orders")).scalar() or 0.0)
+    payments_sum = float(db.execute(text("SELECT COALESCE(SUM(amount), 0) FROM payment_transactions")).scalar() or 0.0)
+
+    return {
+        "status": "online",
+        "database_engine": dialect_name,
+        "database_identifier": masked_uri,
+        "is_postgres": not is_sqlite,
+        "ssl_required": os.getenv("GAONBAZAR_DB_SSL", "require") == "require",
+        "table_counts": table_counts,
+        "total_tables": len(table_counts),
+        "financial_volumes": {
+            "orders_count": table_counts.get("orders", 0),
+            "orders_sum_inr": orders_sum,
+            "payments_count": table_counts.get("payment_transactions", 0),
+            "payments_sum_inr": payments_sum
+        },
+        "timestamp": datetime.utcnow().isoformat()
+    }
+
+
+@app.post("/api/admin/database-migrate")
+@app.post("/admin/database-migrate")
+def admin_trigger_database_migration(
+    request: Request,
+    db: Session = Depends(get_db),
+    admin_claims: dict = Depends(require_admin_token)
+):
+    """
+    Executes idempotent non-destructive data pump from SQLite baseline into active target DB.
+    Honors primary key constraints, prevents duplicates, and updates sequence generators.
+    """
+    from migrate_sqlite_to_postgres import run_migration
+    src_db = Path(__file__).resolve().parent / "gaonbazar.db"
+    if not src_db.exists():
+        raise HTTPException(status_code=404, detail="Baseline SQLite database file not found on disk.")
+
+    result = run_migration(
+        sqlite_url=f"sqlite:///{src_db}",
+        postgres_url=str(engine.url),
+        execute=True
+    )
+
+    record_audit_log(
+        action="database_migration_triggered",
+        actor_role="admin",
+        actor_id=admin_claims.get("sub", "admin"),
+        target_entity="database",
+        target_id=engine.dialect.name,
+        details=f"Migration executed. Success: {result.get('success')}. Orders: {result.get('tgt_order_sum')}",
+        ip_address=request.client.host if request.client else None
+    )
+
+    return {
+        "status": "success" if result.get("success") else "error",
+        "details": result
     }
 
 

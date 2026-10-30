@@ -43,7 +43,9 @@ TABLE_TRANSFER_ORDER = [
     "notifications",
     "message_threads",
     "chat_messages",
-    "audit_logs"
+    "audit_logs",
+    "revoked_tokens",
+    "processed_webhook_events"
 ]
 
 
@@ -137,6 +139,8 @@ def run_migration(
 
             if not src_inspector.has_table(tbl):
                 logger(f"  * {tbl}: Source table does not exist. Skipping.")
+                transferred[tbl] = 0
+                skipped[tbl] = 0
                 continue
 
             src_cols = [c["name"] for c in src_inspector.get_columns(tbl)]
@@ -190,6 +194,27 @@ def run_migration(
                 transferred[tbl] = len(to_insert)
                 skipped[tbl] = num_skipped
                 logger(f"  [OK] {tbl}: Inserted {len(to_insert)}, Skipped {num_skipped} existing.")
+
+        # Synchronize PostgreSQL sequences for auto-increment columns if target is PostgreSQL
+        if tgt_engine.dialect.name == "postgresql":
+            logger("\n[SYNCHRONIZING POSTGRESQL SEQUENCES]")
+            tgt_inspector = inspect(tgt_engine)
+            with tgt_engine.connect() as t_conn:
+                for tbl in TABLE_TRANSFER_ORDER:
+                    try:
+                        pk_cols = [pk for pk in tgt_inspector.get_pk_constraint(tbl).get("constrained_columns", [])]
+                        if pk_cols and len(pk_cols) == 1:
+                            pk_name = pk_cols[0]
+                            t_conn.execute(text(f'''
+                                SELECT setval(
+                                    pg_get_serial_sequence('"{tbl}"', '{pk_name}'),
+                                    COALESCE((SELECT MAX("{pk_name}") FROM "{tbl}"), 1)
+                                )
+                            '''))
+                            t_conn.commit()
+                            logger(f"  [OK] Sequence synchronized: {tbl}.{pk_name}")
+                    except Exception:
+                        pass
 
     tgt_counts_after = inspect_table_counts(tgt_engine, TABLE_TRANSFER_ORDER)
 

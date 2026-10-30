@@ -387,3 +387,22 @@ class AuditLog(Base):
     ip_address = Column(String(50), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, index=True)
 
+
+
+class RevokedToken(Base):
+    __tablename__ = "revoked_tokens"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    token_hash = Column(String(64), unique=True, index=True, nullable=False)
+    revoked_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    expires_at = Column(DateTime, nullable=True)
+    reason = Column(String(255), nullable=True)
+
+
+class ProcessedWebhookEvent(Base):
+    __tablename__ = "processed_webhook_events"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    event_id = Column(String(100), unique=True, index=True, nullable=False)
+    event_type = Column(String(100), nullable=True)
+    processed_at = Column(DateTime, default=datetime.utcnow, nullable=False)

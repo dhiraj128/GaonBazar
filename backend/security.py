@@ -72,8 +72,10 @@ def is_test_bypass_allowed() -> bool:
 _REVOKED_TOKENS = set()
 _REVOKED_TOKENS_LOCK = threading.Lock()
 
-def revoke_token(token: Optional[str]):
-    """Adds a token to the revoked token blacklist (for logout, suspension, or deletion)."""
+def revoke_token(token: Optional[str], reason: Optional[str] = None, expires_at: Optional[datetime] = None):
+    """Adds a token to the revoked token blacklist (for logout, suspension, or deletion).
+    Saves to in-memory set and durable database table `revoked_tokens`.
+    """
     if not token or not isinstance(token, str):
         return
     token_clean = token.strip()
@@ -83,8 +85,30 @@ def revoke_token(token: Optional[str]):
     with _REVOKED_TOKENS_LOCK:
         _REVOKED_TOKENS.add(token_hash)
 
+    try:
+        from .database import SessionLocal
+        from .models import RevokedToken
+        db = SessionLocal()
+        try:
+            exists = db.query(RevokedToken).filter(RevokedToken.token_hash == token_hash).first()
+            if not exists:
+                record = RevokedToken(
+                    token_hash=token_hash,
+                    revoked_at=datetime.utcnow(),
+                    expires_at=expires_at,
+                    reason=reason or "logout_or_revocation"
+                )
+                db.add(record)
+                db.commit()
+        except Exception:
+            db.rollback()
+        finally:
+            db.close()
+    except Exception:
+        pass
+
 def is_token_revoked(token: Optional[str]) -> bool:
-    """Checks if a token has been revoked / logged out."""
+    """Checks if a token has been revoked / logged out. Checks in-memory cache first, then database."""
     if not token or not isinstance(token, str):
         return False
     token_clean = token.strip()
@@ -92,12 +116,42 @@ def is_token_revoked(token: Optional[str]) -> bool:
         token_clean = token_clean[7:].strip()
     token_hash = hashlib.sha256(token_clean.encode("utf-8")).hexdigest()
     with _REVOKED_TOKENS_LOCK:
-        return token_hash in _REVOKED_TOKENS
+        if token_hash in _REVOKED_TOKENS:
+            return True
+
+    try:
+        from .database import SessionLocal
+        from .models import RevokedToken
+        db = SessionLocal()
+        try:
+            record = db.query(RevokedToken).filter(RevokedToken.token_hash == token_hash).first()
+            if record:
+                with _REVOKED_TOKENS_LOCK:
+                    _REVOKED_TOKENS.add(token_hash)
+                return True
+        finally:
+            db.close()
+    except Exception:
+        pass
+    return False
 
 def clear_revoked_tokens_for_tests():
     """Clears blacklist cache for automated testing isolation."""
     with _REVOKED_TOKENS_LOCK:
         _REVOKED_TOKENS.clear()
+    try:
+        from .database import SessionLocal
+        from .models import RevokedToken
+        db = SessionLocal()
+        try:
+            db.query(RevokedToken).delete()
+            db.commit()
+        except Exception:
+            db.rollback()
+        finally:
+            db.close()
+    except Exception:
+        pass
 
 
 # -----------------------------------------------------------------------------
@@ -107,23 +161,80 @@ _PROCESSED_WEBHOOK_EVENTS = set()
 _WEBHOOK_EVENTS_LOCK = threading.Lock()
 
 def is_webhook_event_processed(event_id: Optional[str]) -> bool:
-    """Returns True if the webhook event ID has already been recorded and processed."""
+    """Returns True if the webhook event ID has already been recorded and processed.
+    Checks in-memory cache first, then database table `processed_webhook_events`.
+    """
     if not event_id:
         return False
+    clean_id = str(event_id).strip()
     with _WEBHOOK_EVENTS_LOCK:
-        return str(event_id).strip() in _PROCESSED_WEBHOOK_EVENTS
+        if clean_id in _PROCESSED_WEBHOOK_EVENTS:
+            return True
 
-def record_webhook_event_processed(event_id: Optional[str]):
-    """Records a webhook event ID to prevent duplicate financial credits."""
+    try:
+        from .database import SessionLocal
+        from .models import ProcessedWebhookEvent
+        db = SessionLocal()
+        try:
+            record = db.query(ProcessedWebhookEvent).filter(ProcessedWebhookEvent.event_id == clean_id).first()
+            if record:
+                with _WEBHOOK_EVENTS_LOCK:
+                    _PROCESSED_WEBHOOK_EVENTS.add(clean_id)
+                return True
+        finally:
+            db.close()
+    except Exception:
+        pass
+    return False
+
+def record_webhook_event_processed(event_id: Optional[str], event_type: Optional[str] = None):
+    """Records a webhook event ID to prevent duplicate financial credits.
+    Stores in in-memory cache and persists to database table `processed_webhook_events`.
+    """
     if not event_id:
         return
+    clean_id = str(event_id).strip()
     with _WEBHOOK_EVENTS_LOCK:
-        _PROCESSED_WEBHOOK_EVENTS.add(str(event_id).strip())
+        _PROCESSED_WEBHOOK_EVENTS.add(clean_id)
+
+    try:
+        from .database import SessionLocal
+        from .models import ProcessedWebhookEvent
+        db = SessionLocal()
+        try:
+            exists = db.query(ProcessedWebhookEvent).filter(ProcessedWebhookEvent.event_id == clean_id).first()
+            if not exists:
+                record = ProcessedWebhookEvent(
+                    event_id=clean_id,
+                    event_type=event_type,
+                    processed_at=datetime.utcnow()
+                )
+                db.add(record)
+                db.commit()
+        except Exception:
+            db.rollback()
+        finally:
+            db.close()
+    except Exception:
+        pass
 
 def clear_webhook_events_for_tests():
     """Clears processed webhook cache for automated test runs."""
     with _WEBHOOK_EVENTS_LOCK:
         _PROCESSED_WEBHOOK_EVENTS.clear()
+    try:
+        from .database import SessionLocal
+        from .models import ProcessedWebhookEvent
+        db = SessionLocal()
+        try:
+            db.query(ProcessedWebhookEvent).delete()
+            db.commit()
+        except Exception:
+            db.rollback()
+        finally:
+            db.close()
+    except Exception:
+        pass
 
 
 # -----------------------------------------------------------------------------
