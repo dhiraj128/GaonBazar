@@ -94,7 +94,6 @@ def run_all_tests():
         prod_available = Product(
             id="prod_test_rice",
             store_id="sharma_brothers",
-        store_name="Sharma Brothers Kirana",
             name_en="Basmati Rice 1kg",
             name_hi="बासमती चावल १ किलो",
             category="Grains",
@@ -115,7 +114,6 @@ def run_all_tests():
         prod_milk = Product(
             id="prod_test_milk",
             store_id="sharma_brothers",
-        store_name="Sharma Brothers Kirana",
             name_en="Fresh Cow Milk 1L",
             name_hi="ताजा गाय का दूध १ लीटर",
             category="Dairy",
@@ -133,7 +131,6 @@ def run_all_tests():
         prod_oos = Product(
             id="prod_test_oos",
             store_id="sharma_brothers",
-        store_name="Sharma Brothers Kirana",
             name_en="Special Tea 500g",
             name_hi="विशेष चाय ५०० ग्राम",
             category="Beverages",
