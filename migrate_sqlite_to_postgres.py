@@ -227,7 +227,7 @@ def run_migration(
 
                 from backend.models import Base
                 from sqlalchemy import Boolean, DateTime, Integer, Float
-                from datetime import datetime
+                from datetime import datetime, timezone
 
                 table_model = Base.metadata.tables.get(tbl)
                 col_type_map = {}
@@ -261,19 +261,32 @@ def run_migration(
                                     row_dict[c_name] = bool(c_val)
                                 elif isinstance(c_val, str):
                                     row_dict[c_name] = c_val.lower() in ('true', '1', 't', 'yes')
-                            elif expected_type == 'datetime' and isinstance(c_val, str) and c_val.strip():
-                                parsed_dt = None
-                                try:
-                                    parsed_dt = datetime.fromisoformat(c_val.replace("Z", "+00:00"))
-                                except Exception:
-                                    for fmt in ("%Y-%m-%d %H:%M:%S.%f", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d"):
-                                        try:
-                                            parsed_dt = datetime.strptime(c_val, fmt)
-                                            break
-                                        except Exception:
-                                            pass
-                                if parsed_dt is not None:
-                                    row_dict[c_name] = parsed_dt
+                            elif expected_type == 'datetime':
+                                if isinstance(c_val, str) and c_val.strip():
+                                    parsed_dt = None
+                                    try:
+                                        parsed_dt = datetime.fromisoformat(c_val.replace("Z", "+00:00"))
+                                    except Exception:
+                                        for fmt in ("%Y-%m-%d %H:%M:%S.%f", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d"):
+                                            try:
+                                                parsed_dt = datetime.strptime(c_val, fmt)
+                                                break
+                                            except Exception:
+                                                pass
+                                    if parsed_dt is not None:
+                                        row_dict[c_name] = parsed_dt
+                                    else:
+                                        row_dict[c_name] = datetime.now(timezone.utc)
+                                elif isinstance(c_val, (int, float)):
+                                    try:
+                                        if c_val > 1000000000:
+                                            row_dict[c_name] = datetime.fromtimestamp(c_val, tz=timezone.utc)
+                                        else:
+                                            row_dict[c_name] = datetime.now(timezone.utc)
+                                    except Exception:
+                                        row_dict[c_name] = datetime.now(timezone.utc)
+                                elif not isinstance(c_val, datetime) and c_val is not None:
+                                    row_dict[c_name] = datetime.now(timezone.utc)
 
                     to_insert.append(row_dict)
 
