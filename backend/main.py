@@ -6117,6 +6117,46 @@ def admin_trigger_database_migration(
     }
 
 
+@app.post("/api/admin/database-repair")
+@app.post("/admin/database-repair")
+def admin_database_repair(
+    request: Request,
+    db: Session = Depends(get_db),
+    admin_claims: dict = Depends(require_admin_token)
+):
+    """
+    Executes schema alignment and synchronizes PostgreSQL sequences for auto-increment columns.
+    """
+    try:
+        from .schema_migrator import repair_database_schema
+    except ImportError:
+        from backend.schema_migrator import repair_database_schema
+
+    try:
+        repair_res = repair_database_schema(engine)
+        record_audit_log(
+            db,
+            action="database_repair_executed",
+            actor_role="admin",
+            actor_id=admin_claims.get("sub", "admin"),
+            target_entity="database",
+            target_id=engine.dialect.name,
+            details=f"Schema repair & sequence sync executed. Status: {repair_res.get('status')}",
+            ip_address=request.client.host if request.client else None
+        )
+        return {
+            "status": "success",
+            "repair_summary": repair_res
+        }
+    except Exception as e:
+        import traceback
+        tb = traceback.format_exc()
+        raise HTTPException(
+            status_code=500,
+            detail=f"Schema repair failed: {e}\n{tb}"
+        )
+
+
 
 
 

@@ -227,7 +227,12 @@ def repair_database_schema(engine: Engine, logger=print) -> Dict[str, Any]:
                 except Exception:
                     pass
 
-    # 6. Final verification: Check column counts
+    # 6. Synchronize PostgreSQL sequence generators with maximum existing IDs
+    synced_sequences: List[str] = []
+    if is_postgres:
+        synced_sequences = synchronize_postgres_sequences(engine, logger=logger)
+
+    # 7. Final verification: Check column counts
     insp = inspect(engine)
     final_table_counts = {}
     for tbl_name in Base.metadata.tables.keys():
@@ -245,8 +250,58 @@ def repair_database_schema(engine: Engine, logger=print) -> Dict[str, Any]:
         "dialect": engine.dialect.name,
         "added_columns_count": len(added_columns),
         "added_columns": added_columns,
+        "synced_sequences": synced_sequences,
         "table_column_counts": final_table_counts
     }
+
+
+def synchronize_postgres_sequences(engine: Engine, logger=print) -> List[str]:
+    """
+    Synchronizes all PostgreSQL sequence generators with the maximum existing ID in each table.
+    Essential after bulk data migrations, explicit ID inserts, or dumps to prevent duplicate key errors.
+    """
+    if engine.dialect.name != "postgresql":
+        return []
+
+    logger("[POSTGRES] Synchronizing sequence counters with existing data...")
+    insp = inspect(engine)
+    existing_tables = set(insp.get_table_names())
+    synced: List[str] = []
+
+    seq_sync_targets = [
+        ("users", "id"),
+        ("otp_records", "id"),
+        ("landmarks", "id"),
+        ("store_categories", "id"),
+        ("order_items", "id"),
+        ("support_tickets", "id"),
+        ("saved_payment_methods", "id"),
+        ("payment_transactions", "id"),
+        ("chat_messages", "id"),
+        ("audit_logs", "id"),
+        ("revoked_tokens", "id"),
+        ("processed_webhook_events", "id"),
+    ]
+
+    with engine.connect() as conn:
+        for tbl_name, col_name in seq_sync_targets:
+            if tbl_name not in existing_tables:
+                continue
+            try:
+                max_val_res = conn.execute(text(f'SELECT MAX("{col_name}") FROM "{tbl_name}"')).scalar()
+                max_val = int(max_val_res) if max_val_res is not None else 0
+                seq_sql = text("SELECT pg_get_serial_sequence(:tbl, :col)")
+                seq_name_res = conn.execute(seq_sql, {"tbl": tbl_name, "col": col_name}).scalar()
+                if seq_name_res:
+                    setval_sql = text("SELECT setval(:seq, :val, :is_called)")
+                    conn.execute(setval_sql, {"seq": seq_name_res, "val": max_val if max_val > 0 else 1, "is_called": max_val > 0})
+                    conn.commit()
+                    synced.append(f"{tbl_name}.{col_name} -> {max_val}")
+                    logger(f"  [OK] Synchronized sequence {seq_name_res} to {max_val}")
+            except Exception as e:
+                logger(f"  [!] Notice syncing sequence for {tbl_name}.{col_name}: {e}")
+
+    return synced
 
 
 def main():

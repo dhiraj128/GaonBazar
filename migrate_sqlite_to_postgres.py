@@ -310,24 +310,11 @@ def run_migration(
         # Synchronize PostgreSQL sequences for auto-increment columns if target is PostgreSQL
         if tgt_engine.dialect.name == "postgresql":
             logger("\n[SYNCHRONIZING POSTGRESQL SEQUENCES]")
-            tgt_inspector = inspect(tgt_engine)
-            with tgt_engine.connect() as t_conn:
-                for tbl in TABLE_TRANSFER_ORDER:
-                    try:
-                        pk_cols = [pk for pk in tgt_inspector.get_pk_constraint(tbl).get("constrained_columns", [])]
-                        if pk_cols and len(pk_cols) == 1:
-                            pk_name = pk_cols[0]
-                            t_conn.execute(text(f'''
-                                SELECT CASE 
-                                    WHEN MAX("{pk_name}") IS NOT NULL THEN setval(pg_get_serial_sequence('"{tbl}"', '{pk_name}'), MAX("{pk_name}"), true)
-                                    ELSE setval(pg_get_serial_sequence('"{tbl}"', '{pk_name}'), 1, false)
-                                END FROM "{tbl}"
-                                WHERE pg_get_serial_sequence('"{tbl}"', '{pk_name}') IS NOT NULL;
-                            '''))
-                            t_conn.commit()
-                            logger(f"  [OK] Sequence synchronized: {tbl}.{pk_name}")
-                    except Exception:
-                        pass
+            try:
+                from backend.schema_migrator import synchronize_postgres_sequences
+            except ImportError:
+                from schema_migrator import synchronize_postgres_sequences
+            synchronize_postgres_sequences(tgt_engine, logger=logger)
 
     tgt_counts_after = inspect_table_counts(tgt_engine, TABLE_TRANSFER_ORDER)
 
