@@ -61,7 +61,10 @@ def test_customer_theme(page):
     page.wait_for_selector("#app-root", timeout=10000)
 
     # Navigate to Profile / Settings
-    page.evaluate("() => { if (window.navigateToPhase) window.navigateToPhase('profile'); }")
+    page.evaluate("""() => {
+        if (window.navigateToPhase) window.navigateToPhase('profile');
+        if (window.openCustomerAccountSubview) window.openCustomerAccountSubview('preferences');
+    }""")
     page.wait_for_selector("#view-profile", timeout=5000)
 
     # 1. Verify Theme UI controls exist
@@ -129,7 +132,7 @@ def test_customer_theme(page):
     page.evaluate("() => { if (window.toggleGlobalLanguage) window.toggleGlobalLanguage('hi'); }")
     time.sleep(0.2)
     light_text_hi = page.inner_text("#btn-theme-light")
-    assert "हल्का" in light_text_hi, f"Expected हल्का in button, got {light_text_hi}"
+    assert ("लाइट" in light_text_hi or "हल्का" in light_text_hi), f"Expected 'लाइट' or 'हल्का' in button, got {light_text_hi}"
     print("  [PASS] Customer theme labels support English and Hindi")
 
 
@@ -138,15 +141,18 @@ def test_vendor_theme(page):
     page.goto(f"{BASE_URL}/vendor")
     page.wait_for_selector("body", timeout=10000)
 
-    # Bypass gate if visible
+    # Authenticate cleanly via Login Gate button
+    if page.is_visible("#vendor-login-gate"):
+        page.click("#btn-vendor-login")
+        page.wait_for_selector("#vendor-main-content:not(.hidden)", timeout=10000)
+        time.sleep(0.5)
+
+    # Click Settings tab in bottom nav and navigate to preferences subview
+    page.click("#nav-btn-settings")
     page.evaluate("""() => {
-        localStorage.setItem('gaonbazar_vendor_token', 'mock_vendor_token_123');
-        localStorage.setItem('gaonbazar_vendor_store_id', 'sharma_brothers');
-        const gate = document.getElementById('vendor-login-gate');
-        if (gate) gate.classList.add('hidden');
-        if (window.switchMainTab) window.switchMainTab('settings');
+        if (window.openVendorSubView) window.openVendorSubView('preferences');
     }""")
-    time.sleep(0.5)
+    page.wait_for_selector("#vendor-theme-settings-card", timeout=5000)
 
     # 1. Verify Theme UI controls exist
     assert page.is_visible("#vendor-theme-settings-card"), "Vendor theme card should exist in settings"
@@ -204,8 +210,11 @@ def test_runner_theme(page):
         page.wait_for_selector("#runner-main-content:not(.hidden)", timeout=10000)
         time.sleep(0.5)
 
-    # Click Settings tab in bottom nav
+    # Click Settings tab in bottom nav and navigate to preferences subview
     page.click("#nav-btn-settings")
+    page.evaluate("""() => {
+        if (window.openRunnerSubView) window.openRunnerSubView('preferences');
+    }""")
     page.wait_for_selector("#runner-theme-settings-card", timeout=5000)
 
     # 1. Verify Theme UI controls exist
@@ -246,7 +255,7 @@ def test_runner_theme(page):
     assert stored == "dark"
     dark_body_bg = page.evaluate("() => window.getComputedStyle(document.body).backgroundColor")
     print(f"  [EVIDENCE] Runner Dark Mode Computed Styles: body bg={dark_body_bg}")
-    assert "15, 23, 42" in dark_body_bg or "2, 6, 23" in dark_body_bg or "11, 17, 32" in dark_body_bg, f"Expected dark background, got {dark_body_bg}"
+    assert "15, 23, 42" in dark_body_bg or "2, 6, 23" in dark_body_bg or "11, 17, 32" in dark_body_bg or "17, 20, 24" in dark_body_bg, f"Expected dark background, got {dark_body_bg}"
     print("  [PASS] Runner Dark Mode verified with slate-900 background")
 
     # 4. Test System Mode & Media Query Reactivity

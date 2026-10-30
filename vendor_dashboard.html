@@ -1334,7 +1334,7 @@
 
 
           <!-- Theme & Sound Card -->
-          <div class="bg-white dark:bg-[#1D232B] rounded-3xl p-4 sm:p-5 border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col gap-3.5">
+          <div id="vendor-theme-settings-card" class="bg-white dark:bg-[#1D232B] rounded-3xl p-4 sm:p-5 border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col gap-3.5">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
               <!-- Theme -->
               <div class="bg-slate-50 dark:bg-[#2A323D] p-3 rounded-2xl border border-slate-100 dark:border-slate-700 flex flex-col justify-between">
@@ -1343,9 +1343,9 @@
                   <span class="text-[11px] text-slate-400" data-i18n="vendor_theme_sub">हल्का, गहरा या डिवाइस के अनुसार</span>
                 </div>
                 <div class="grid grid-cols-3 gap-1 bg-white dark:bg-[#1D232B] p-1 rounded-xl border border-slate-200 dark:border-slate-600">
-                  <button onclick="setVendorTheme('light')" class="py-1 rounded text-[10px] font-bold hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer" data-i18n="theme_opt_light">हल्का</button>
-                  <button onclick="setVendorTheme('dark')" class="py-1 rounded text-[10px] font-bold hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer" data-i18n="theme_opt_dark">गहरा</button>
-                  <button onclick="setVendorTheme('system')" class="py-1 rounded text-[10px] font-bold bg-primary text-white cursor-pointer" data-i18n="theme_opt_system">सिस्टम</button>
+                  <button id="btn-vendor-theme-light" onclick="setVendorTheme('light')" class="py-1 rounded text-[10px] font-bold hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer" data-i18n="theme_opt_light">हल्का</button>
+                  <button id="btn-vendor-theme-dark" onclick="setVendorTheme('dark')" class="py-1 rounded text-[10px] font-bold hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer" data-i18n="theme_opt_dark">गहरा</button>
+                  <button id="btn-vendor-theme-system" onclick="setVendorTheme('system')" class="py-1 rounded text-[10px] font-bold bg-primary text-white cursor-pointer" data-i18n="theme_opt_system">सिस्टम</button>
                 </div>
               </div>
 
