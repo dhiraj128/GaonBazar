@@ -700,6 +700,16 @@ def get_build_version(db: Session = Depends(get_db)):
     except Exception as e:
         table_counts = {"error": str(e)}
 
+    db_config = {
+        "has_database_url": bool((os.getenv("DATABASE_URL") or "").strip()),
+        "require_postgres": os.getenv("GAONBAZAR_REQUIRE_POSTGRES") == "1",
+        "ssl_mode": os.getenv("GAONBAZAR_DB_SSL", "require"),
+        "is_postgres_active": (dialect_name == "postgresql"),
+        "connected_host": masked_host if not is_sqlite else "local-sqlite",
+        "expected_supabase_project": "bbxryqngieknfclhqbmr",
+        "target_supabase_matched": ("bbxryqngieknfclhqbmr" in (os.getenv("DATABASE_URL") or ""))
+    }
+
     return {
         "status": "online",
         "app_name": "GaonBazaar",
@@ -712,6 +722,7 @@ def get_build_version(db: Session = Depends(get_db)):
         "pwa_cache_name": "gaonbazar-v3-20261026",
         "database_engine": dialect_name,
         "database_identifier": redacted_id,
+        "database_configuration": db_config,
         "storage_durability": storage_durability,
         "table_counts": table_counts,
         "financial_volumes": finances,
@@ -735,11 +746,16 @@ def health_check():
         except Exception:
             commit = "unknown"
 
+    dialect_name = engine.dialect.name
     return {
         "status": "healthy",
         "service": "GaonBazaar Backend",
         "sentry_configured": bool(SENTRY_DSN),
         "db_integrity": integrity_status,
+        "database_engine": dialect_name,
+        "database_url_configured": bool((os.getenv("DATABASE_URL") or "").strip()),
+        "require_postgres_configured": os.getenv("GAONBAZAR_REQUIRE_POSTGRES") == "1",
+        "target_supabase_matched": ("bbxryqngieknfclhqbmr" in (os.getenv("DATABASE_URL") or "")),
         "commit_sha": commit,
         "commit_short": commit[:7] if len(commit) >= 7 else commit,
         "environment": "preview" if os.getenv("GAONBAZAR_PREVIEW_MODE") == "1" else ("production" if os.getenv("RENDER") else "development"),
