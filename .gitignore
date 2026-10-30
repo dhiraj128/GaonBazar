@@ -8,7 +8,13 @@ build/
 *.log
 __pycache__/
 *.pyc
+# Database files and backups
+*.db
+*.db-journal
 *.db-shm
 *.db-wal
-scratch/
+*.sqlite
+*.sqlite3
+backend/*.db
 backups/
+scratch/

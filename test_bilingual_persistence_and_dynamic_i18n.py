@@ -60,19 +60,19 @@ def run_localization_audit():
         page.evaluate("window.switchLanguage('hi')")
         page.wait_for_timeout(100)
         hi_search_ph = page.get_attribute("#p2-search-input", "placeholder") or ""
-        check("Customer: Hindi search placeholder active", "सामान" in hi_search_ph or "खोज" in hi_search_ph, f"ph: {hi_search_ph}")
+        check("Customer: Hindi search placeholder active", ("सामान" in hi_search_ph or "खोजें" in hi_search_ph) and "Search" not in hi_search_ph, f"ph: {hi_search_ph}")
 
         hi_nav_orders = page.inner_text("#nav-lbl-orders")
-        check("Customer: Hindi orders nav label", "ऑर्डर" in hi_nav_orders or "Orders" in hi_nav_orders, f"label: {hi_nav_orders}")
+        check("Customer: Hindi orders nav label strictly Hindi", "ऑर्डर" in hi_nav_orders and "Orders" not in hi_nav_orders, f"label: {hi_nav_orders}")
 
         # 1.2 Switch to English UI
         page.evaluate("window.switchLanguage('en')")
         page.wait_for_timeout(100)
         en_search_ph = page.get_attribute("#p2-search-input", "placeholder") or ""
-        check("Customer: English search placeholder active", "search" in en_search_ph.lower(), f"ph: {en_search_ph}")
+        check("Customer: English search placeholder active", "search" in en_search_ph.lower() and "खोजें" not in en_search_ph, f"ph: {en_search_ph}")
 
         en_nav_orders = page.inner_text("#nav-lbl-orders")
-        check("Customer: English orders nav label", "Orders" in en_nav_orders, f"label: {en_nav_orders}")
+        check("Customer: English orders nav label strictly English", "Orders" in en_nav_orders and "ऑर्डर" not in en_nav_orders, f"label: {en_nav_orders}")
 
         # 1.3 Test reload persistence for English
         page.reload(wait_until="domcontentloaded")
@@ -80,7 +80,7 @@ def run_localization_audit():
         persisted_lang = page.evaluate("localStorage.getItem('gaonbazar_lang')")
         check("Customer: English persisted in localStorage after reload", persisted_lang == "en")
         en_reloaded_ph = page.get_attribute("#p2-search-input", "placeholder") or ""
-        check("Customer: Search input still English after reload", "search" in en_reloaded_ph.lower(), f"ph: {en_reloaded_ph}")
+        check("Customer: Search input still English after reload", "search" in en_reloaded_ph.lower() and "खोजें" not in en_reloaded_ph, f"ph: {en_reloaded_ph}")
 
         # 1.4 Test reload persistence for Hindi
         page.evaluate("window.switchLanguage('hi')")
@@ -95,12 +95,12 @@ def run_localization_audit():
         page.evaluate("navigateToPhase('support')")
         page.wait_for_timeout(100)
         support_title_en = page.inner_text("[data-i18n='support_center_title']")
-        check("Customer: Support header in English", "Help & Support" in support_title_en or "Support" in support_title_en, f"title: {support_title_en}")
+        check("Customer: Support header strictly English", ("Help & Support" in support_title_en or "Support" in support_title_en) and "सहायता" not in support_title_en, f"title: {support_title_en}")
 
         page.evaluate("window.switchLanguage('hi')")
         page.wait_for_timeout(100)
         support_title_hi = page.inner_text("[data-i18n='support_center_title']")
-        check("Customer: Support header in Hindi", "सहायता" in support_title_hi or "मदद" in support_title_hi, f"title: {support_title_hi}")
+        check("Customer: Support header strictly Hindi", ("सहायता" in support_title_hi or "मदद" in support_title_hi) and "Help" not in support_title_hi, f"title: {support_title_hi}")
 
         context.close()
 
@@ -121,7 +121,7 @@ def run_localization_audit():
         }""")
         v_page.wait_for_timeout(100)
         vendor_title_hi = v_page.inner_text("#current-section-title")
-        check("Vendor: Section title in Hindi", "ऑर्डर" in vendor_title_hi or "दुकानदार" in vendor_title_hi, f"title: {vendor_title_hi}")
+        check("Vendor: Section title strictly Hindi", ("नए ऑर्डर" in vendor_title_hi or "दुकानदार" in vendor_title_hi) and "Live Orders" not in vendor_title_hi, f"title: {vendor_title_hi}")
 
         # 2.2 Switch to English UI
         v_page.evaluate("toggleLanguage()")
@@ -129,7 +129,7 @@ def run_localization_audit():
         vendor_lang = v_page.evaluate("VendorStore.lang")
         check("Vendor: Language toggled to English", vendor_lang == "en")
         vendor_title_en = v_page.inner_text("#current-section-title")
-        check("Vendor: Section title in English", "Live Orders" in vendor_title_en or "Workspace" in vendor_title_en or "Orders" in vendor_title_en, f"title: {vendor_title_en}")
+        check("Vendor: Section title strictly English", ("Live Orders" in vendor_title_en or "Workspace" in vendor_title_en) and "नए ऑर्डर" not in vendor_title_en, f"title: {vendor_title_en}")
 
         # 2.3 Verify reload persistence
         v_page.reload(wait_until="domcontentloaded")
@@ -141,7 +141,7 @@ def run_localization_audit():
         v_page.evaluate("switchMainTab('ledger')")
         v_page.wait_for_timeout(100)
         sales_label = v_page.inner_text("[data-i18n='ledger_stat_sales']")
-        check("Vendor: Ledger sales label in English", "Gross Sales" in sales_label or "Sales" in sales_label, f"label: {sales_label}")
+        check("Vendor: Ledger sales label strictly English", ("Gross Sales" in sales_label or "Sales" in sales_label) and not any(ord(c) >= 0x0900 and ord(c) <= 0x097F for c in sales_label), f"label: {sales_label}")
 
         v_context.close()
 
@@ -162,13 +162,13 @@ def run_localization_audit():
         }""")
         r_page.wait_for_timeout(100)
         r_tab_hi = r_page.inner_text("[data-i18n='nav_missions']")
-        check("Runner: Missions tab in Hindi", "मिशन" in r_tab_hi or "डिलीवरी" in r_tab_hi, f"tab: {r_tab_hi}")
+        check("Runner: Missions tab strictly Hindi", ("मिशन" in r_tab_hi or "डिलीवरी" in r_tab_hi) and "Missions" not in r_tab_hi, f"tab: {r_tab_hi}")
 
         # 3.2 Switch to English UI
         r_page.evaluate("toggleLanguage()")
         r_page.wait_for_timeout(100)
         r_tab_en = r_page.inner_text("[data-i18n='nav_missions']")
-        check("Runner: Missions tab in English", "Missions" in r_tab_en, f"tab: {r_tab_en}")
+        check("Runner: Missions tab strictly English", "Missions" in r_tab_en and "मिशन" not in r_tab_en, f"tab: {r_tab_en}")
 
         # 3.3 Test reload persistence
         r_page.reload(wait_until="domcontentloaded")
@@ -196,17 +196,17 @@ def run_localization_audit():
         }""")
         a_page.wait_for_timeout(100)
         a_title_hi = a_page.inner_text("#admin-app-title")
-        check("Admin: App title in Hindi", "सुपर एडमिन" in a_title_hi or "गांव बाज़ार" in a_title_hi, f"title: {a_title_hi}")
+        check("Admin: App title strictly Hindi", ("सुपर एडमिन" in a_title_hi or "गांव बाज़ार" in a_title_hi) and "Super Admin" not in a_title_hi, f"title: {a_title_hi}")
 
         # 4.2 Switch to English UI
         a_page.evaluate("toggleAdminLanguage()")
         a_page.wait_for_timeout(100)
         a_title_en = a_page.inner_text("#admin-app-title")
-        check("Admin: App title in English", "Super Admin" in a_title_en or "Admin" in a_title_en, f"title: {a_title_en}")
+        check("Admin: App title strictly English", ("Super Admin" in a_title_en or "Admin" in a_title_en) and "सुपर एडमिन" not in a_title_en, f"title: {a_title_en}")
 
         # 4.3 Verify metrics card in English
         gmv_label_en = a_page.inner_text("[data-i18n='kpi_gmv']")
-        check("Admin: GMV metric card label in English", "Gross" in gmv_label_en or "GMV" in gmv_label_en or "Sales" in gmv_label_en or "Business" in gmv_label_en, f"label: {gmv_label_en}")
+        check("Admin: GMV metric card label strictly English", ("Gross" in gmv_label_en or "GMV" in gmv_label_en or "Sales" in gmv_label_en or "Volume" in gmv_label_en) and not any(ord(c) >= 0x0900 and ord(c) <= 0x097F for c in gmv_label_en), f"label: {gmv_label_en}")
 
         # 4.4 Test reload persistence
         a_page.reload(wait_until="domcontentloaded")
