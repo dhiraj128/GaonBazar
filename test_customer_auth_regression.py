@@ -327,3 +327,7 @@ def run_customer_auth_regression_suite():
 
 if __name__ == "__main__":
     run_customer_auth_regression_suite()
+
+
+def test_customer_auth_regression():
+    run_customer_auth_regression_suite()

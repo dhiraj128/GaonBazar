@@ -1,32 +1,107 @@
-from sqlalchemy import create_engine, event
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+"""GaonBazaar database connection configuration.
+
+Set DATABASE_URL in Render to a *separately provisioned and migrated* PostgreSQL
+database. Existing SQLite data is NOT automatically transferred by this switch.
+"""
+import os
+import json
+from datetime import datetime
 from pathlib import Path
+from typing import Optional, Any, Dict, List
 
-# Database path: backend/gaonbazar.db
+from sqlalchemy import create_engine, event, text
+from sqlalchemy.orm import declarative_base, sessionmaker
+
 BASE_DIR = Path(__file__).resolve().parent
-DATABASE_URL = f"sqlite:///{BASE_DIR / 'gaonbazar.db'}"
+# Isolate preview data from committed and live databases when running in preview mode.
+import tempfile
+if os.getenv("GAONBAZAR_PREVIEW_MODE") == "1":
+    _staging_db = Path(tempfile.gettempdir()) / "gaonbazar_staging_20261025.db"
+    _local_sqlite_url = f"sqlite:///{_staging_db.as_posix()}"
+else:
+    _local_sqlite_url = f"sqlite:///{BASE_DIR / 'gaonbazar.db'}"
+_supplied_url = (os.getenv("DATABASE_URL") or "").strip()
+if _supplied_url.startswith("postgres://"):
+    # Normalize legacy provider URLs for SQLAlchemy 2.x.
+    DATABASE_URL = "postgresql://" + _supplied_url[len("postgres://"):]
+else:
+    DATABASE_URL = _supplied_url or _local_sqlite_url
 
-engine = create_engine(
-    DATABASE_URL,
-    connect_args={"check_same_thread": False, "timeout": 30.0}
-)
+# SQLAlchemy URLs can include an explicit driver, e.g. postgresql+psycopg://.
+# Treat all supported PostgreSQL driver variants as PostgreSQL for safety checks.
+if not DATABASE_URL.startswith(("sqlite://", "postgresql://", "postgresql+psycopg://", "postgresql+psycopg2://")):
+    raise RuntimeError("DATABASE_URL must be a supported PostgreSQL or SQLite SQLAlchemy URL")
 
-@event.listens_for(engine, "connect")
-def set_sqlite_pragma(dbapi_connection, connection_record):
-    cursor = dbapi_connection.cursor()
-    cursor.execute("PRAGMA journal_mode=WAL")
-    cursor.execute("PRAGMA busy_timeout=30000")
-    cursor.execute("PRAGMA synchronous=NORMAL")
-    cursor.close()
+IS_SQLITE = DATABASE_URL.startswith("sqlite://")
+IS_POSTGRES = DATABASE_URL.startswith(("postgresql://", "postgresql+psycopg://", "postgresql+psycopg2://"))
+if os.getenv("GAONBAZAR_REQUIRE_POSTGRES") == "1" and not IS_POSTGRES:
+    raise RuntimeError("GAONBAZAR_REQUIRE_POSTGRES=1, but PostgreSQL DATABASE_URL is missing")
+
+if IS_SQLITE:
+    # SQLite remains the zero-configuration local/test backend only.
+    # Configured connection pool with generous limits and pre-ping to eliminate
+    # "QueuePool limit of size 5 overflow 10 reached" during concurrent Playwright audits and background tasks.
+    engine = create_engine(
+        DATABASE_URL,
+        connect_args={"check_same_thread": False, "timeout": 60.0},
+        pool_pre_ping=True,
+        pool_size=20,
+        max_overflow=40,
+        pool_timeout=60,
+        pool_recycle=1800,
+    )
+
+    @event.listens_for(engine, "connect")
+    def set_sqlite_pragma(dbapi_connection, connection_record):
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA journal_mode=WAL")
+        cursor.execute("PRAGMA busy_timeout=30000")
+        cursor.execute("PRAGMA synchronous=NORMAL")
+        cursor.close()
+else:
+    # Persistent FastAPI service; pool configured for Supabase session pooler (5432) or direct PostgreSQL.
+    # Generous pool sizing (10 pool + 15 overflow) prevents connection starvation under concurrent orders.
+    # Secrets belong in Render environment variables, never client-side JS.
+    engine = create_engine(
+        DATABASE_URL,
+        pool_pre_ping=True,
+        pool_size=10,
+        max_overflow=15,
+        pool_recycle=1800,
+        pool_timeout=30,
+        connect_args={"connect_timeout": 15, "sslmode": "require"}
+        if os.getenv("GAONBAZAR_DB_SSL", "require") == "require" else {"connect_timeout": 15},
+    )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
+
+from contextlib import contextmanager
+
+@contextmanager
+def db_session():
+    """
+    Guaranteed session lifecycle context manager for background tasks, scripts, and startups:
+    with db_session() as db:
+        db.query(...)
+    Guarantees session rollback on error and proper close() back to QueuePool upon exit.
+    """
+    db = SessionLocal()
+    try:
+        yield db
+    except Exception:
+        db.rollback()
+        raise
+    finally:
+        db.close()
 
 def get_db():
     db = SessionLocal()
     try:
         yield db
+    except Exception:
+        db.rollback()
+        raise
     finally:
         db.close()
 
@@ -37,24 +112,57 @@ def check_database_integrity() -> bool:
     the SQLite database is intact and not corrupted before accepting orders.
     Returns True if healthy; raises RuntimeError if corruption is detected.
     """
-    from sqlalchemy import text
+    # Postgres has no SQLite PRAGMA. Validate that the configured DB responds.
     with engine.connect() as conn:
-        result = conn.execute(text("PRAGMA integrity_check")).fetchall()
-        rows = [row[0] for row in result]
-        if rows == ["ok"]:
-            return True
-        else:
-            error_details = "; ".join(rows)
-            raise RuntimeError(f"Database integrity check failed: {error_details}")
+        if IS_POSTGRES:
+            return conn.execute(text("SELECT 1")).scalar_one() == 1
+        rows = [row[0] for row in conn.execute(text("PRAGMA integrity_check")).fetchall()]
+        if rows != ["ok"]:
+            raise RuntimeError("Database integrity check failed: " + "; ".join(rows))
+        return True
 
 
 def ensure_schema_migrations():
     """
-    Safely adds any missing columns to existing SQLite tables
-    (e.g. stores onboarding and KYC columns) without data loss.
+    Safely adds any missing columns to existing tables (PostgreSQL & SQLite)
+    including all 53 missing columns across stores, runners, orders, payment_transactions,
+    products, and landmarks, and creates missing tables without data loss.
     """
-    from sqlalchemy import text
+    try:
+        try:
+            from .schema_migrator import repair_database_schema
+        except ImportError:
+            from backend.schema_migrator import repair_database_schema
+        repair_database_schema(engine)
+    except Exception as e:
+        print(f"Notice during schema migration: {e}")
+    if IS_POSTGRES:
+        return
     with engine.connect() as conn:
+        # Ensure new tables (e.g. central_products) exist
+        try:
+            from .models import CentralProduct
+            Base.metadata.create_all(bind=engine, tables=[CentralProduct.__table__])
+        except Exception as e:
+            print(f"Notice creating tables: {e}")
+
+        # Check products columns for central product link & inventory
+        res_prod = conn.execute(text("PRAGMA table_info(products)")).fetchall()
+        existing_prod_cols = {r[1] for r in res_prod}
+        prod_cols = [
+            ("central_product_id", "VARCHAR(50)"),
+            ("image_url", "TEXT"),
+            ("stock_qty", "INTEGER DEFAULT 50"),
+            ("is_available", "BOOLEAN DEFAULT 1")
+        ]
+        for col_name, col_type in prod_cols:
+            if col_name not in existing_prod_cols:
+                try:
+                    conn.execute(text(f"ALTER TABLE products ADD COLUMN {col_name} {col_type}"))
+                    conn.commit()
+                except Exception as e:
+                    print(f"Notice adding column {col_name} to products: {e}")
+
         # Check stores columns
         res = conn.execute(text("PRAGMA table_info(stores)")).fetchall()
         existing_cols = {r[1] for r in res}
@@ -71,9 +179,46 @@ def ensure_schema_migrations():
             ("bank_account_number", "VARCHAR(50)"),
             ("bank_ifsc", "VARCHAR(20)"),
             ("bank_verification_status", "VARCHAR(20) DEFAULT 'pending'"),
+            ("partner_code", "VARCHAR(50)"),
+            ("village", "VARCHAR(100) DEFAULT 'Rampur'"),
+            ("address", "TEXT"),
+            ("emergency_contact", "VARCHAR(15)"),
+            ("vehicle_reg_number", "VARCHAR(50)"),
+            ("driving_licence_number", "VARCHAR(50)"),
+            ("driving_licence_url", "TEXT"),
+            ("kyc_status", "VARCHAR(30) DEFAULT 'approved'"),
+            ("kyc_document_type", "VARCHAR(50) DEFAULT 'Aadhaar'"),
+            ("kyc_document_number", "VARCHAR(100) DEFAULT 'XXXX-XXXX-4821'"),
+            ("kyc_document_url", "TEXT"),
+            ("kyc_rejection_reason", "TEXT"),
+            ("kyc_submitted_at", "DATETIME"),
+            ("kyc_reviewed_at", "DATETIME"),
+            ("is_verified", "BOOLEAN DEFAULT 1"),
+            ("primary_village", "VARCHAR(100) DEFAULT 'Rampur'"),
+            ("service_radius_km", "FLOAT DEFAULT 5.0"),
+            ("theme_preference", "VARCHAR(20) DEFAULT 'system'"),
+            ("lang_preference", "VARCHAR(10) DEFAULT 'hi'"),
             ("lat", "FLOAT DEFAULT 29.1350"),
             ("lng", "FLOAT DEFAULT 77.0100"),
-            ("created_at", "DATETIME")
+            ("created_at", "DATETIME"),
+            ("store_code", "VARCHAR(50)"),
+            ("village", "VARCHAR(100) DEFAULT 'Rampur'"),
+            ("address", "TEXT"),
+            ("landmark", "VARCHAR(150)"),
+            ("pickup_location", "VARCHAR(150)"),
+            ("opening_time", "VARCHAR(20) DEFAULT '07:00 AM'"),
+            ("closing_time", "VARCHAR(20) DEFAULT '09:00 PM'"),
+            ("weekly_schedule", "VARCHAR(50) DEFAULT 'All Days'"),
+            ("kyc_status", "VARCHAR(30) DEFAULT 'approved'"),
+            ("kyc_document_type", "VARCHAR(50) DEFAULT 'Aadhaar'"),
+            ("kyc_document_number", "VARCHAR(100) DEFAULT 'XXXX-XXXX-8921'"),
+            ("kyc_document_url", "TEXT"),
+            ("kyc_rejection_reason", "TEXT"),
+            ("kyc_submitted_at", "DATETIME"),
+            ("kyc_reviewed_at", "DATETIME"),
+            ("is_verified", "BOOLEAN DEFAULT 1"),
+            ("theme_preference", "VARCHAR(20) DEFAULT 'system'"),
+            ("lang_preference", "VARCHAR(10) DEFAULT 'hi'"),
         ]
 
         for col_name, col_type in new_cols:
@@ -91,7 +236,26 @@ def ensure_schema_migrations():
             ("bank_account_name", "VARCHAR(150)"),
             ("bank_account_number", "VARCHAR(50)"),
             ("bank_ifsc", "VARCHAR(20)"),
-            ("bank_verification_status", "VARCHAR(20) DEFAULT 'pending'")
+            ("bank_verification_status", "VARCHAR(20) DEFAULT 'pending'"),
+            ("partner_code", "VARCHAR(50)"),
+            ("village", "VARCHAR(100) DEFAULT 'Rampur'"),
+            ("address", "TEXT"),
+            ("emergency_contact", "VARCHAR(15)"),
+            ("vehicle_reg_number", "VARCHAR(50)"),
+            ("driving_licence_number", "VARCHAR(50)"),
+            ("driving_licence_url", "TEXT"),
+            ("kyc_status", "VARCHAR(30) DEFAULT 'approved'"),
+            ("kyc_document_type", "VARCHAR(50) DEFAULT 'Aadhaar'"),
+            ("kyc_document_number", "VARCHAR(100) DEFAULT 'XXXX-XXXX-4821'"),
+            ("kyc_document_url", "TEXT"),
+            ("kyc_rejection_reason", "TEXT"),
+            ("kyc_submitted_at", "DATETIME"),
+            ("kyc_reviewed_at", "DATETIME"),
+            ("is_verified", "BOOLEAN DEFAULT 1"),
+            ("primary_village", "VARCHAR(100) DEFAULT 'Rampur'"),
+            ("service_radius_km", "FLOAT DEFAULT 5.0"),
+            ("theme_preference", "VARCHAR(20) DEFAULT 'system'"),
+            ("lang_preference", "VARCHAR(10) DEFAULT 'hi'"),
         ]
         for col_name, col_type in runner_cols:
             if col_name not in existing_runner_cols:
@@ -122,7 +286,13 @@ def ensure_schema_migrations():
             ("split_payout_status", "VARCHAR(30) DEFAULT 'unprocessed'"),
             ("paid_at", "DATETIME"),
             ("customer_lat", "FLOAT"),
-            ("customer_lng", "FLOAT")
+            ("customer_lng", "FLOAT"),
+            ("runner_id", "VARCHAR(50)"),
+            ("distance_type", "VARCHAR(50) DEFAULT 'road_routing_estimate'"),
+            ("vendor_transfer_id", "VARCHAR(100)"),
+            ("runner_transfer_id", "VARCHAR(100)"),
+            ("district", "VARCHAR(100) DEFAULT 'Muzaffarpur'"),
+            ("block", "VARCHAR(100) DEFAULT 'Minapur'")
         ]
         for col_name, col_type in order_cols:
             if col_name not in existing_order_cols:
@@ -131,6 +301,25 @@ def ensure_schema_migrations():
                     conn.commit()
                 except Exception as e:
                     print(f"Notice adding column {col_name} to orders: {e}")
+
+        
+        # Check payment_transactions columns
+        res_pt = conn.execute(text("PRAGMA table_info(payment_transactions)")).fetchall()
+        existing_pt_cols = {r[1] for r in res_pt}
+        pt_cols = [
+            ("vendor_transfer_id", "VARCHAR(100)"),
+            ("runner_transfer_id", "VARCHAR(100)"),
+            ("settlement_id", "VARCHAR(100)"),
+            ("settled_at", "DATETIME"),
+            ("failure_reason", "TEXT")
+        ]
+        for col_name, col_type in pt_cols:
+            if col_name not in existing_pt_cols:
+                try:
+                    conn.execute(text(f"ALTER TABLE payment_transactions ADD COLUMN {col_name} {col_type}"))
+                    conn.commit()
+                except Exception as e:
+                    print(f"Notice adding column {col_name} to payment_transactions: {e}")
 
         # Check users columns for 3-strike customer trust score
         res_users = conn.execute(text("PRAGMA table_info(users)")).fetchall()
@@ -156,10 +345,16 @@ def ensure_schema_migrations():
         existing_landmark_cols = {r[1] for r in res_landmarks}
         if "district" not in existing_landmark_cols:
             try:
-                conn.execute(text("ALTER TABLE landmarks ADD COLUMN district VARCHAR(100)"))
+                conn.execute(text("ALTER TABLE landmarks ADD COLUMN district VARCHAR(100) DEFAULT 'Muzaffarpur'"))
                 conn.commit()
             except Exception as e:
                 print(f"Notice adding column district to landmarks: {e}")
+        if "block" not in existing_landmark_cols:
+            try:
+                conn.execute(text("ALTER TABLE landmarks ADD COLUMN block VARCHAR(100) DEFAULT 'Minapur'"))
+                conn.commit()
+            except Exception as e:
+                print(f"Notice adding column block to landmarks: {e}")
 
         # Check otp_records columns for attempts counter
         res_otp = conn.execute(text("PRAGMA table_info(otp_records)")).fetchall()
@@ -170,6 +365,25 @@ def ensure_schema_migrations():
                 conn.commit()
             except Exception as e:
                 print(f"Notice adding column attempts to otp_records: {e}")
+
+        # Ensure audit_logs table exists
+        try:
+            conn.execute(text("""
+                CREATE TABLE IF NOT EXISTS audit_logs (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    action VARCHAR(100) NOT NULL,
+                    actor_role VARCHAR(50) NOT NULL,
+                    actor_id VARCHAR(100),
+                    target_entity VARCHAR(50),
+                    target_id VARCHAR(100),
+                    details TEXT,
+                    ip_address VARCHAR(50),
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )
+            """))
+            conn.commit()
+        except Exception as e:
+            print(f"Notice creating audit_logs table: {e}")
 
         # Ensure support_tickets table exists
         try:
@@ -311,4 +525,59 @@ def ensure_schema_migrations():
         except Exception as bfe:
             print(f"Notice backfilling order splits: {bfe}")
 
+        # Ensure all existing stores have a unique permanent Store ID (e.g. GB-S000001)
+        try:
+            stores = conn.execute(text("SELECT id, store_code FROM stores ORDER BY rowid")).fetchall()
+            for idx, row in enumerate(stores, start=1):
+                s_id, s_code = row[0], row[1]
+                if not s_code:
+                    code = f"GB-S{idx:06d}"
+                    conn.execute(text("UPDATE stores SET store_code = :c WHERE id = :id"), {"c": code, "id": s_id})
+            conn.commit()
+        except Exception as se:
+            print(f"Notice backfilling store codes: {se}")
+
+        # Ensure all existing delivery partners have a unique permanent Partner ID (e.g. GB-DP000001)
+        try:
+            runners = conn.execute(text("SELECT id, partner_code FROM runners ORDER BY rowid")).fetchall()
+            for idx, row in enumerate(runners, start=1):
+                r_id, r_code = row[0], row[1]
+                if not r_code:
+                    code = f"GB-DP{idx:06d}"
+                    conn.execute(text("UPDATE runners SET partner_code = :c WHERE id = :id"), {"c": code, "id": r_id})
+            conn.commit()
+        except Exception as re_err:
+            print(f"Notice backfilling runner partner codes: {re_err}")
+
+def record_audit_log(
+    db,
+    action: str,
+    actor_role: str,
+    actor_id: Optional[str] = None,
+    target_entity: Optional[str] = None,
+    target_id: Optional[str] = None,
+    details: Any = None,
+    ip_address: Optional[str] = None
+):
+    """
+    Records an auditable event in the audit_logs table.
+    Ensures end-to-end traceability for privileged admin decisions, KYC changes, and financial transfers.
+    """
+    try:
+        from .models import AuditLog
+        details_str = json.dumps(details, default=str) if isinstance(details, (dict, list)) else (str(details) if details else None)
+        entry = AuditLog(
+            action=action,
+            actor_role=actor_role,
+            actor_id=str(actor_id) if actor_id else None,
+            target_entity=target_entity,
+            target_id=str(target_id) if target_id else None,
+            details=details_str,
+            ip_address=ip_address,
+            created_at=datetime.utcnow()
+        )
+        db.add(entry)
+        db.commit()
+    except Exception as e:
+        print(f"Notice recording audit log: {e}")
 

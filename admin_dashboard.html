@@ -119,6 +119,12 @@
           <span id="admin-current-lang-text">English</span>
         </button>
 
+        <!-- Admin Logout Button -->
+        <button id="btn-admin-logout" onclick="handleAdminLogout()" class="hidden px-2 sm:px-2.5 py-1.5 rounded-xl bg-rose-950/60 hover:bg-rose-900/60 text-rose-300 border border-rose-700/50 text-xs font-bold flex items-center gap-1 transition-all active:scale-95" title="लॉगआउट (Logout)">
+          <span class="material-symbols-outlined text-[15px]">logout</span>
+          <span class="hidden sm:inline">लॉगआउट</span>
+        </button>
+
         <a href="index.html" target="_blank" title="Open Customer App (PWA) in new tab" class="px-2 sm:px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center gap-1 transition-all">
           <span class="material-symbols-outlined text-[15px] text-blue-400">smartphone</span>
           <span class="hidden sm:inline" data-i18n="nav_customer">ग्राहक ऐप</span>
@@ -150,8 +156,57 @@
     </button>
   </div>
 
+  <!-- ========================================================================= -->
+  <!-- 0.1 SUPER ADMIN LOGIN GATE (Zero-Trust Deny-by-Default Authentication)      -->
+  <!-- ========================================================================= -->
+  <div id="admin-login-gate" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/95 p-4 backdrop-blur-md">
+    <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col gap-5">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-emerald-700 text-white flex items-center justify-center shadow-lg shrink-0">
+          <span class="material-symbols-outlined text-[28px]">admin_panel_settings</span>
+        </div>
+        <div>
+          <h2 class="text-base sm:text-lg font-black text-white" data-i18n="admin_gate_title">सुपर एडमिन प्रमाणीकरण</h2>
+          <span class="text-xs text-slate-400">Super Admin Control Center • Zero-Trust Gate</span>
+        </div>
+      </div>
+
+      <div id="admin-login-error" class="hidden p-3 rounded-xl bg-rose-950/60 border border-rose-500/40 text-rose-200 text-xs font-bold flex items-center gap-2">
+        <span class="material-symbols-outlined text-[18px] text-rose-400">error</span>
+        <span id="admin-login-error-text">अमान्य क्रेडेंशियल्स (Invalid Credentials)</span>
+      </div>
+
+      <form id="admin-login-form" onsubmit="event.preventDefault(); handleAdminLogin();" class="flex flex-col gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1" for="admin-input-username">उपयोगकर्ता नाम (Username)</label>
+          <div class="relative">
+            <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-500 text-[18px]">person</span>
+            <input type="text" id="admin-input-username" value="super_admin" class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2.5 text-xs font-bold text-white focus:outline-none focus:border-primary placeholder-slate-600" placeholder="super_admin" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1" for="admin-input-key">एडमिन सीक्रेट की / पासवर्ड (Secret Key)</label>
+          <div class="relative">
+            <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-500 text-[18px]">key</span>
+            <input type="password" id="admin-input-key" autocomplete="current-password" class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2.5 text-xs font-bold text-white focus:outline-none focus:border-primary placeholder-slate-600" placeholder="••••••••••••••••" required />
+          </div>
+        </div>
+
+        <button type="submit" id="btn-admin-login" class="w-full mt-2 py-3 rounded-xl bg-primary hover:bg-primary-dark text-white font-black text-xs flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">lock_open</span>
+          <span>प्रवेश करें (Authenticate & Enter)</span>
+        </button>
+      </form>
+
+      <div class="text-[11px] text-slate-500 text-center font-medium border-t border-slate-800/80 pt-3">
+        सुरक्षित एन्क्रिप्टेड सत्र • केवल अधिकृत सुपर एडमिन ऑपरेटर
+      </div>
+    </div>
+  </div>
+
   <!-- Main Dashboard Viewport -->
-  <main class="flex-1 min-h-0 max-w-7xl w-full mx-auto p-4 sm:p-6 flex flex-col gap-5 pb-32 sm:pb-36 overflow-y-auto">
+  <main id="admin-main-content" class="hidden flex-1 min-h-0 max-w-7xl w-full mx-auto p-4 sm:p-6 flex flex-col gap-5 pb-32 sm:pb-36 overflow-y-auto">
 
     <!-- ======================================================================= -->
     <!-- 2. GLOBAL ECOSYSTEM METRICS RIBBON                                      -->
@@ -225,7 +280,14 @@
     <!-- ======================================================================= -->
     <div class="flex items-center gap-2 border-b border-slate-800 pb-3 mb-6 overflow-x-auto no-scrollbar shrink-0 relative">
       
-      <!-- Tab 1: Vendor KYC Queue -->
+            <!-- Tab 0: Central Catalog Library -->
+      <button id="admin-tab-btn-catalog" onclick="switchTab('catalog')" class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-slate-900 text-slate-300 hover:text-white border border-slate-800 transition-all whitespace-nowrap shrink-0 min-h-[38px] cursor-pointer">
+        <span class="material-symbols-outlined text-[18px]">inventory_2</span>
+        <span data-i18n="tab_catalog">सेंट्रल कैटलॉग लाइब्रेरी</span>
+        <span id="tab-catalog-badge" class="ml-1 text-[10px] bg-slate-800 text-amber-300 px-2 py-0.5 rounded-full font-bold">23</span>
+      </button>
+
+<!-- Tab 1: Vendor KYC Queue -->
       <button id="admin-tab-btn-vendors" onclick="switchTab('vendors')" class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-slate-800 text-white border border-slate-600 shadow-sm transition-all whitespace-nowrap shrink-0 min-h-[38px]">
         <span class="material-symbols-outlined text-[18px]">storefront</span>
         <span data-i18n="tab_vendors">दुकानदार सत्यापन कतार</span>
@@ -259,9 +321,29 @@
       </button>
 
       <!-- Tab 5: Account Risk Profile & Cancellation Controls -->
+            <!-- Tab 7: System Notifications & Alerts -->
+      <button id="admin-tab-btn-notifications" onclick="switchTab('notifications')" class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-slate-900 text-slate-300 hover:text-white border border-slate-800 transition-all whitespace-nowrap shrink-0 min-h-[38px]">
+        <span class="material-symbols-outlined text-[18px]">notifications</span>
+        <span data-i18n="tab_notifications">सिस्टम अलर्ट व सूचनाएं</span>
+        <span id="tab-notif-badge" class="ml-1 text-[10px] bg-red-600 text-white px-2 py-0.5 rounded-full font-bold hidden">0</span>
+      </button>
       <button id="admin-tab-btn-risk" onclick="switchTab('risk')" class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-slate-900 text-slate-300 hover:text-white border border-slate-800 transition-all whitespace-nowrap shrink-0 min-h-[38px]">
         <span class="material-symbols-outlined text-[18px]">security</span>
         <span data-i18n="tab_risk">आंतरिक खाता जोखिम प्रबंधन</span>
+      </button>
+
+      <!-- Tab 8: Support & Complaints Desk -->
+      <button id="admin-tab-btn-tickets" onclick="switchTab('tickets')" class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-slate-900 text-slate-300 hover:text-white border border-slate-800 transition-all whitespace-nowrap shrink-0 min-h-[38px]">
+        <span class="material-symbols-outlined text-[18px]">support_agent</span>
+        <span data-i18n="tab_tickets">शिकायतें व सहायता डेस्क</span>
+        <span id="tab-tickets-badge" class="ml-1 text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-full font-bold">0</span>
+      </button>
+
+      <!-- Tab 9: Phase 3B Unified Resolution Management -->
+      <button id="admin-tab-btn-resolutions" onclick="switchTab('resolutions')" class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-slate-900 text-slate-300 hover:text-white border border-slate-800 transition-all whitespace-nowrap shrink-0 min-h-[38px]">
+        <span class="material-symbols-outlined text-[18px] text-emerald-400">published_with_changes</span>
+        <span data-i18n="tab_resolutions">रिफंड व समाधान डेस्क (Resolutions)</span>
+        <span id="tab-resolutions-badge" class="ml-1 text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold">0</span>
       </button>
 
     </div>
@@ -313,6 +395,98 @@
     </section>
 
     <!-- ======================================================================= -->
+        <!-- ======================================================================= -->
+    <!-- 3.5 TAB: CENTRAL CATALOG & IMAGE LIBRARY (GaonBazaar Master Products)    -->
+    <!-- ======================================================================= -->
+    <section id="tab-catalog" class="hidden mt-10 shrink-0 flex flex-col gap-6 p-4 sm:p-6 bg-slate-900/60 rounded-3xl border border-slate-800/80 shadow-lg" style="margin-top: 40px;">
+      
+      <!-- Catalog Header Controls -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-slate-800/70">
+        <div>
+          <h2 class="text-sm sm:text-base font-black text-white flex items-center gap-2.5">
+            <span class="material-symbols-outlined text-amber-400">inventory_2</span>
+            <span>मास्टर उत्पाद एवं छवि लाइब्रेरी (Central Catalog & Image Library)</span>
+          </h2>
+          <p class="text-xs text-slate-400 mt-0.5">
+            गाँव बाज़ार की केंद्रीय उत्पाद सूची • 10 ग्रामीण श्रेणियां • विक्रेता स्वतंत्र मूल्य निर्धारण
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2 flex-wrap">
+          <button onclick="openAddCentralProductModal()" class="px-3.5 py-2 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-black shadow-sm flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[17px]">add_circle</span>
+            <span>+ नया मास्टर उत्पाद जोड़ें</span>
+          </button>
+
+          <button onclick="openDeduplicateCatalogModal()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-bold border border-slate-700 flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[17px]">merge_type</span>
+            <span>डुप्लीकेट समेकन</span>
+          </button>
+
+          <button onclick="fetchCentralCatalog()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold border border-slate-700 flex items-center gap-1 active:scale-95 transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[17px]">refresh</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Search and Category Filters -->
+      <div class="flex flex-col gap-3">
+        <!-- Search Input -->
+        <div class="relative w-full">
+          <span class="material-symbols-outlined absolute left-3.5 top-3 text-slate-400 text-[20px]">search</span>
+          <input 
+            type="text" 
+            id="admin-catalog-search-input" 
+            oninput="handleAdminCatalogSearch(this.value)"
+            placeholder="उत्पाद का नाम, ब्रांड, या उपनाम खोजें (उदा. tamatar, pyaz, doodh, atta, amul, parle)..." 
+            class="w-full pl-10 pr-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs sm:text-sm font-medium text-white focus:outline-none focus:border-amber-400"
+          />
+        </div>
+
+        <!-- 10 Rural Category Filter Chips -->
+        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 text-xs font-bold">
+          <button onclick="filterAdminCatalogCategory('all')" class="admin-cat-pill px-3 py-1.5 rounded-full bg-amber-500 text-slate-950 shrink-0 cursor-pointer" data-cat="all">सभी (All)</button>
+          <button onclick="filterAdminCatalogCategory('vegetables')" class="admin-cat-pill px-3 py-1.5 rounded-full bg-slate-800 text-slate-300 hover:text-white shrink-0 cursor-pointer" data-cat="vegetables">सब्जियां व फल</button>
+          <button onclick="filterAdminCatalogCategory('grains')" class="admin-cat-pill px-3 py-1.5 rounded-full bg-slate-800 text-slate-300 hover:text-white shrink-0 cursor-pointer" data-cat="grains">चावल, आटा, दाल</button>
+          <button onclick="filterAdminCatalogCategory('dairy')" class="admin-cat-pill px-3 py-1.5 rounded-full bg-slate-800 text-slate-300 hover:text-white shrink-0 cursor-pointer" data-cat="dairy">दूध व डेयरी</button>
+          <button onclick="filterAdminCatalogCategory('oil')" class="admin-cat-pill px-3 py-1.5 rounded-full bg-slate-800 text-slate-300 hover:text-white shrink-0 cursor-pointer" data-cat="oil">तेल व घी</button>
+          <button onclick="filterAdminCatalogCategory('spices')" class="admin-cat-pill px-3 py-1.5 rounded-full bg-slate-800 text-slate-300 hover:text-white shrink-0 cursor-pointer" data-cat="spices">मसाले व नमक</button>
+          <button onclick="filterAdminCatalogCategory('snacks')" class="admin-cat-pill px-3 py-1.5 rounded-full bg-slate-800 text-slate-300 hover:text-white shrink-0 cursor-pointer" data-cat="snacks">नाश्ता व बिस्कुट</button>
+          <button onclick="filterAdminCatalogCategory('personal_care')" class="admin-cat-pill px-3 py-1.5 rounded-full bg-slate-800 text-slate-300 hover:text-white shrink-0 cursor-pointer" data-cat="personal_care">व्यक्तिगत देखभाल</button>
+          <button onclick="filterAdminCatalogCategory('cleaning')" class="admin-cat-pill px-3 py-1.5 rounded-full bg-slate-800 text-slate-300 hover:text-white shrink-0 cursor-pointer" data-cat="cleaning">सफाई उत्पाद</button>
+          <button onclick="filterAdminCatalogCategory('puja')" class="admin-cat-pill px-3 py-1.5 rounded-full bg-slate-800 text-slate-300 hover:text-white shrink-0 cursor-pointer" data-cat="puja">पूजा सामग्री</button>
+          <button onclick="filterAdminCatalogCategory('stationery')" class="admin-cat-pill px-3 py-1.5 rounded-full bg-slate-800 text-slate-300 hover:text-white shrink-0 cursor-pointer" data-cat="stationery">स्टेशनरी</button>
+        </div>
+      </div>
+
+      <!-- Master Catalog Table -->
+      <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-lg">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-slate-300">
+            <thead class="bg-slate-950 text-slate-400 font-bold border-b border-slate-800 uppercase tracking-wider text-[11px]">
+              <tr>
+                <th class="py-3 px-3.5">तस्वीर (Image)</th>
+                <th class="py-3 px-3.5">उत्पाद नाम (EN & HI)</th>
+                <th class="py-3 px-3.5">श्रेणी (Category)</th>
+                <th class="py-3 px-3.5">ब्रांड व प्रकार</th>
+                <th class="py-3 px-3.5">मानक MRP / इकाई</th>
+                <th class="py-3 px-3.5">सर्च उपनाम (Aliases)</th>
+                <th class="py-3 px-3.5">स्थिति</th>
+                <th class="py-3 px-3.5 text-right">कार्रवाई</th>
+              </tr>
+            </thead>
+            <tbody id="admin-catalog-table-body" class="divide-y divide-slate-800/80">
+              <tr>
+                <td colspan="8" class="py-8 text-center text-slate-500 font-bold">लोड हो रहा है...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+
     <!-- 4. TAB 1: VENDOR KYC APPROVAL QUEUE                                     -->
     <!-- ======================================================================= -->
     <section id="tab-vendors" class="mt-10 shrink-0 flex flex-col gap-6 p-4 sm:p-6 bg-slate-900/60 rounded-3xl border border-slate-800/80 shadow-lg" style="margin-top: 40px;">
@@ -420,6 +594,127 @@
           </thead>
           <tbody id="godview-orders-table-body" class="divide-y divide-slate-800 text-slate-300">
             <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+    <!-- ======================================================================= -->
+    <!-- 7.6 TAB 8: SUPPORT & GRIEVANCE TICKETS DESK                             -->
+    <!-- ======================================================================= -->
+    <section id="tab-tickets" class="hidden mt-10 shrink-0 flex-col gap-6 p-4 sm:p-6 bg-slate-900/60 rounded-3xl border border-slate-800/80 shadow-lg" style="margin-top: 40px;">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-sm font-black text-white flex items-center gap-2">
+            <span class="material-symbols-outlined text-amber-400">support_agent</span>
+            <span data-i18n="tickets_heading">सहायता व शिकायत टिकट डेस्क (Grievance Help Desk)</span>
+          </h2>
+          <p class="text-xs text-slate-400 mt-1" data-i18n="tickets_subheading">ग्राहकों, विक्रेताओं व डिलीवरी पार्टनर्स के टिकट और समाधान प्रबंधन</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <select id="tickets-status-filter" onchange="fetchSupportTickets(this.value)" class="bg-slate-800 text-xs text-white border border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none">
+            <option value="">सभी स्थितियाँ (All Status)</option>
+            <option value="open">ओपन (Open)</option>
+            <option value="in_review">समीक्षाधीन (In Review)</option>
+            <option value="resolved">समाधानित (Resolved)</option>
+          </select>
+          <button onclick="fetchSupportTickets()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 border border-slate-700 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-xs">refresh</span>
+            रिफ्रेश
+          </button>
+        </div>
+      </div>
+
+      <!-- Tickets Table Container -->
+      <div class="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-950/60">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="border-b border-slate-800 bg-slate-900/80 text-slate-400 font-bold uppercase tracking-wider">
+              <th class="py-3 px-3">ID</th>
+              <th class="py-3 px-3">उपयोगकर्ता (User)</th>
+              <th class="py-3 px-3">विषय व श्रेणी (Category)</th>
+              <th class="py-3 px-3">समस्या विवरण (Issue Description)</th>
+              <th class="py-3 px-3">स्थिति (Status)</th>
+              <th class="py-3 px-3">समय (Created)</th>
+              <th class="py-3 px-3 min-w-[240px]">समाधान व कार्रवाई (Resolution & Action)</th>
+            </tr>
+          </thead>
+          <tbody id="tickets-table-body" class="divide-y divide-slate-800 text-slate-300 font-medium">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+    <!-- ======================================================================= -->
+    <!-- 8B. TAB 9: UNIFIED RESOLUTION, REPLACEMENT & REFUND MANAGEMENT          -->
+    <!-- ======================================================================= -->
+    <section id="tab-resolutions" class="hidden mt-10 shrink-0 flex-col gap-6 p-4 sm:p-6 bg-slate-900/60 rounded-3xl border border-slate-800/80 shadow-lg" style="margin-top: 40px;">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-sm font-black text-white flex items-center gap-2">
+            <span class="material-symbols-outlined text-emerald-400">published_with_changes</span>
+            <span>रिफंड, बदलाव व विवाद समाधान डेस्क (Unified Resolution Desk)</span>
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">
+            ग्राहकों के रिफंड दावे, मुफ्त बदलाव मिशन, तथा निष्पक्ष जवाबदेही (Liability Attribution) प्रबंधन
+          </p>
+        </div>
+        <button onclick="fetchAdminResolutions()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 border border-slate-700 flex items-center gap-1.5 self-start sm:self-auto cursor-pointer">
+          <span class="material-symbols-outlined text-xs">refresh</span>
+          रिफ्रेश
+        </button>
+      </div>
+
+      <!-- 8 Workflow Filter Tabs -->
+      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1" id="res-workflow-tabs">
+        <button onclick="switchResolutionTab('all')" id="res-tab-all" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 text-white shadow-xs shrink-0 cursor-pointer">
+          सभी (All)
+        </button>
+        <button onclick="switchResolutionTab('new')" id="res-tab-new" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 shrink-0 cursor-pointer">
+          नए अनुरोध (New)
+        </button>
+        <button onclick="switchResolutionTab('under_review')" id="res-tab-under_review" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 shrink-0 cursor-pointer">
+          समीक्षाधीन (Under Review)
+        </button>
+        <button onclick="switchResolutionTab('refunds')" id="res-tab-refunds" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 shrink-0 cursor-pointer">
+          रिफंड दावे (Refunds)
+        </button>
+        <button onclick="switchResolutionTab('replacements')" id="res-tab-replacements" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 shrink-0 cursor-pointer">
+          बदलाव मिशन (Replacements)
+        </button>
+        <button onclick="switchResolutionTab('approved')" id="res-tab-approved" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 shrink-0 cursor-pointer">
+          स्वीकृत (Approved)
+        </button>
+        <button onclick="switchResolutionTab('rejected')" id="res-tab-rejected" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 shrink-0 cursor-pointer">
+          अस्वीकृत (Rejected)
+        </button>
+        <button onclick="switchResolutionTab('completed')" id="res-tab-completed" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 shrink-0 cursor-pointer">
+          पूर्ण (Completed)
+        </button>
+      </div>
+
+      <!-- Resolutions Table Container -->
+      <div class="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-950/60">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="border-b border-slate-800 bg-slate-900/80 text-slate-400 font-bold uppercase tracking-wider">
+              <th class="py-3 px-3">Type / ID</th>
+              <th class="py-3 px-3">Order #</th>
+              <th class="py-3 px-3">Customer Phone</th>
+              <th class="py-3 px-3">Item / Claim Details</th>
+              <th class="py-3 px-3">Amount</th>
+              <th class="py-3 px-3">Status</th>
+              <th class="py-3 px-3">Liability Attribution</th>
+              <th class="py-3 px-3 min-w-[280px]">Admin Actions</th>
+            </tr>
+          </thead>
+          <tbody id="resolutions-table-body" class="divide-y divide-slate-800 text-slate-300 font-medium">
+            <!-- Rendered dynamically via renderResolutionsTable() -->
           </tbody>
         </table>
       </div>
@@ -635,6 +930,278 @@
       </div>
     </div>
 
+  
+    <!-- ======================================================================= -->
+    <!-- 8. REAL SYSTEM NOTIFICATIONS & ALERTS TAB                               -->
+    <!-- ======================================================================= -->
+    <section id="tab-notifications" class="hidden mt-10 shrink-0 flex-col gap-6 p-4 sm:p-6 bg-slate-900/60 rounded-3xl border border-slate-800/80 shadow-lg" style="margin-top: 40px;">
+      <div class="flex flex-wrap items-center justify-between gap-2.5">
+        <div>
+          <h2 class="text-lg font-black text-white flex items-center gap-2">
+            <span class="material-symbols-outlined text-amber-400">notifications</span>
+            <span>सिस्टम अलर्ट व वास्तविक सूचनाएं (Live Notifications)</span>
+          </h2>
+          <p class="text-xs text-slate-400 mt-0.5">रीयल-टाइम ग्रामीण ऑर्डर, व्यापारी आवेदन व भुगतान सूचनाएं</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="markAllAdminNotifsRead()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 border border-slate-700 transition-all cursor-pointer">
+            सभी पढ़े गए मार्क करें
+          </button>
+          <button onclick="fetchAdminNotifications()" class="px-3 py-1.5 rounded-xl bg-primary/20 hover:bg-primary/30 text-xs font-bold text-primary-fixed border border-primary/40 transition-all flex items-center gap-1 cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">refresh</span>
+            रीफ़्रेश
+          </button>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-950/40">
+        <div id="admin-notifs-container" class="divide-y divide-slate-800/60 min-h-[160px]">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+  <!-- MODAL: ADD CENTRAL MASTER PRODUCT (SUPER ADMIN)                           -->
+  <!-- ========================================================================= -->
+  <div id="modal-admin-add-central-prod" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-slate-900 rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-5 sm:p-6 shadow-2xl border border-slate-700 flex flex-col gap-3.5 text-slate-100">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+        <h3 class="font-black text-sm text-white flex items-center gap-2">
+          <span class="material-symbols-outlined text-amber-400">add_box</span>
+          <span>नया सेंट्रल मास्टर उत्पाद जोड़ें (Add Central Product)</span>
+        </h3>
+        <button onclick="closeAddCentralProductModal()" class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-white cursor-pointer">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">Product Name (English) *</label>
+          <input type="text" id="admin-add-name-en" placeholder="e.g. Fresh Red Tomato" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white outline-none"/>
+        </div>
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">सामान का हिंदी नाम *</label>
+          <input type="text" id="admin-add-name-hi" placeholder="उदा. ताज़ा देशी टमाटर" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white outline-none"/>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">श्रेणी (Category) *</label>
+          <select id="admin-add-category" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-bold text-white outline-none">
+            <option value="vegetables">सब्जियां व फल (Vegetables & Fruits)</option>
+            <option value="grains">चावल, आटा, दाल व अनाज (Grains & Dal)</option>
+            <option value="dairy">दूध व डेयरी उत्पाद (Milk & Dairy)</option>
+            <option value="oil">खाद्य तेल व घी (Cooking Oil & Ghee)</option>
+            <option value="spices">मसाले व नमक (Spices & Salt)</option>
+            <option value="snacks">नाश्ता व बिस्कुट (Snacks & Biscuits)</option>
+            <option value="personal_care">व्यक्तिगत देखभाल व साबुन (Personal Care)</option>
+            <option value="cleaning">सफाई व डिटर्जेंट (Cleaning)</option>
+            <option value="puja">पूजा सामग्री (Puja Essentials)</option>
+            <option value="stationery">स्टेशनरी व कॉपी-किताबें (Stationery)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">ब्रांड (Brand, यदि लागू हो)</label>
+          <input type="text" id="admin-add-brand" placeholder="उदा. Amul / Tata / Local Farm" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white outline-none"/>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">वेरिएंट / प्रकार (Variant)</label>
+          <input type="text" id="admin-add-variant" placeholder="उदा. Taaza / Desi / Premium" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white outline-none"/>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">डिफ़ॉल्ट इकाई (Default Unit) *</label>
+          <input type="text" id="admin-add-unit" placeholder="उदा. 1 kg / 500 ml / 1 Pack" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white outline-none"/>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">मानक MRP (₹) *</label>
+          <input type="number" id="admin-add-mrp" placeholder="उदा. 35" min="1" step="0.5" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-bold text-white outline-none"/>
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class="block font-bold text-slate-300 mb-1">मास्टर उत्पाद तस्वीर (Image URL or Upload) *</label>
+          <div class="flex items-center gap-2">
+            <input type="text" id="admin-add-img-url" placeholder="उदा. static/images/prod_tomato.png" class="flex-1 p-2 bg-slate-800 border border-slate-700 rounded-xl font-mono text-[11px] text-white" />
+            <label class="px-3 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-bold cursor-pointer flex items-center gap-1 shrink-0">
+              <span class="material-symbols-outlined text-[16px]">upload</span>
+              <span>अपलोड</span>
+              <input type="file" accept="image/*" onchange="handleAdminCentralImageUpload(this, 'admin-add-img-url')" class="hidden" />
+            </label>
+          </div>
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class="block font-bold text-slate-300 mb-1">सर्च उपनाम (Search Aliases - कॉमा से अलग करें) *</label>
+          <input type="text" id="admin-add-aliases" placeholder="उदा. tamatar, tomato, tamater, टमाटर" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white outline-none"/>
+          <span class="text-[10px] text-slate-400 mt-0.5 block">ग्रामीण बोली व वर्तनी के अनुसार खोज सहायता हेतु</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 pt-2 border-t border-slate-800">
+        <button onclick="closeAddCentralProductModal()" class="flex-1 py-2.5 rounded-xl border border-slate-700 text-xs font-bold text-slate-300 cursor-pointer">रद्द करें</button>
+        <button onclick="submitNewCentralProduct()" class="flex-1 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-black shadow-sm cursor-pointer">मास्टर सूची में जोड़ें</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: EDIT CENTRAL MASTER PRODUCT (SUPER ADMIN)                          -->
+  <!-- ========================================================================= -->
+  <div id="modal-admin-edit-central-prod" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-slate-900 rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-5 sm:p-6 shadow-2xl border border-slate-700 flex flex-col gap-3.5 text-slate-100">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+        <h3 class="font-black text-sm text-white flex items-center gap-2">
+          <span class="material-symbols-outlined text-amber-400">edit_note</span>
+          <span>मास्टर उत्पाद संशोधित करें (Edit Master Product)</span>
+        </h3>
+        <button onclick="closeEditCentralProductModal()" class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-white cursor-pointer">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <input type="hidden" id="admin-edit-prod-id" value="" />
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">Product Name (English) *</label>
+          <input type="text" id="admin-edit-name-en" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white outline-none"/>
+        </div>
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">सामान का हिंदी नाम *</label>
+          <input type="text" id="admin-edit-name-hi" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white outline-none"/>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">ब्रांड (Brand)</label>
+          <input type="text" id="admin-edit-brand" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white outline-none"/>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">वेरिएंट / प्रकार</label>
+          <input type="text" id="admin-edit-variant" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white outline-none"/>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">डिफ़ॉल्ट इकाई</label>
+          <input type="text" id="admin-edit-unit" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white outline-none"/>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">मानक MRP (₹)</label>
+          <input type="number" id="admin-edit-mrp" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-bold text-white outline-none"/>
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class="block font-bold text-slate-300 mb-1">तस्वीर (Image URL or Upload)</label>
+          <div class="flex items-center gap-2">
+            <input type="text" id="admin-edit-img-url" class="flex-1 p-2 bg-slate-800 border border-slate-700 rounded-xl font-mono text-[11px] text-white" />
+            <label class="px-3 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-bold cursor-pointer flex items-center gap-1 shrink-0">
+              <span class="material-symbols-outlined text-[16px]">upload</span>
+              <span>बदलें</span>
+              <input type="file" accept="image/*" onchange="handleAdminCentralImageUpload(this, 'admin-edit-img-url')" class="hidden" />
+            </label>
+          </div>
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class="block font-bold text-slate-300 mb-1">सर्च उपनाम (Search Aliases)</label>
+          <input type="text" id="admin-edit-aliases" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-medium text-white outline-none"/>
+        </div>
+
+        <div class="sm:col-span-2 flex items-center justify-between p-2.5 rounded-xl bg-slate-800 border border-slate-700">
+          <div>
+            <span class="font-bold text-white block">सक्रिय स्थिति (Active)</span>
+            <span class="text-[10px] text-slate-400">यदि निष्क्रिय करेंगे तो यह नए विक्रेताओं को नहीं दिखेगा (पुराने ऑर्डर व स्टोर सुरक्षित रहेंगे)</span>
+          </div>
+          <input type="checkbox" id="admin-edit-active" class="w-5 h-5 accent-amber-500 rounded cursor-pointer" />
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 pt-2 border-t border-slate-800">
+        <button onclick="closeEditCentralProductModal()" class="flex-1 py-2.5 rounded-xl border border-slate-700 text-xs font-bold text-slate-300 cursor-pointer">रद्द करें</button>
+        <button onclick="saveEditCentralProduct()" class="flex-1 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-black shadow-sm cursor-pointer">अपडेट सहेजें</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: DEDUPLICATE CATALOG RECORDS (SUPER ADMIN)                           -->
+  <!-- ========================================================================= -->
+  <div id="modal-admin-dedup-catalog" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-slate-900 rounded-3xl max-w-md w-full p-5 sm:p-6 shadow-2xl border border-slate-700 flex flex-col gap-3.5 text-slate-100">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+        <h3 class="font-black text-sm text-white flex items-center gap-2">
+          <span class="material-symbols-outlined text-amber-400">merge_type</span>
+          <span>डुप्लीकेट रिकॉर्ड समेकन (Deduplicate)</span>
+        </h3>
+        <button onclick="closeDeduplicateCatalogModal()" class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-white cursor-pointer">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <p class="text-xs text-slate-400 leading-relaxed">
+        यदि दो समान उत्पाद मास्टर कैटलॉग में बन गए हैं, तो डुप्लीकेट रिकॉर्ड के सभी स्टोर लिस्टिंग को मास्टर में स्थानांतरित कर दिया जाएगा और डुप्लीकेट को सुरक्षित रूप से निष्क्रिय कर दिया जाएगा।
+      </p>
+
+      <div class="flex flex-col gap-2.5 text-xs">
+        <div>
+          <label class="block font-bold text-emerald-400 mb-1">मास्टर उत्पाद ID (रखने योग्य) *</label>
+          <select id="dedup-master-select" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-bold text-white outline-none">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold text-rose-400 mb-1">डुप्लीकेट उत्पाद ID (समेकित कर निष्क्रिय करने योग्य) *</label>
+          <select id="dedup-duplicate-select" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl font-bold text-white outline-none">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 pt-2 border-t border-slate-800">
+        <button onclick="closeDeduplicateCatalogModal()" class="flex-1 py-2.5 rounded-xl border border-slate-700 text-xs font-bold text-slate-300 cursor-pointer">रद्द करें</button>
+        <button onclick="executeCatalogDeduplication()" class="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-black shadow-sm cursor-pointer">समेकन निष्पादित करें</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: KYC REVIEW DECISION (SUPER ADMIN)                                   -->
+  <!-- ========================================================================= -->
+  <div id="modal-admin-review-kyc" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-slate-900 rounded-3xl max-w-sm w-full p-5 shadow-2xl border border-slate-700 flex flex-col gap-3 text-slate-100">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+        <span class="font-black text-sm text-white" id="kyc-review-modal-title">केवाईसी समीक्षा निर्णय</span>
+        <button onclick="closeAdminKYCReviewModal()" class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-white cursor-pointer">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <input type="hidden" id="kyc-review-entity-type" value="" />
+      <input type="hidden" id="kyc-review-entity-id" value="" />
+      <input type="hidden" id="kyc-review-action-type" value="" />
+
+      <div class="flex flex-col gap-2 text-xs">
+        <p id="kyc-review-prompt-text" class="text-slate-300 leading-relaxed"></p>
+        <div id="kyc-review-reason-box" class="hidden flex flex-col gap-1">
+          <label class="font-bold text-slate-300">अस्वीकृति या पुनः जमा का कारण दर्ज करें: *</label>
+          <textarea id="kyc-review-reason-input" rows="3" placeholder="कारण लिखें..." class="w-full p-2 bg-slate-800 border border-slate-700 rounded-xl text-white outline-none"></textarea>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 pt-2 border-t border-slate-800">
+        <button onclick="closeAdminKYCReviewModal()" class="flex-1 py-2 rounded-xl border border-slate-700 text-xs font-bold text-slate-300 cursor-pointer">रद्द</button>
+        <button onclick="confirmAdminKYCDecision()" class="flex-1 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-black shadow-sm cursor-pointer">पुष्टि करें</button>
+      </div>
+    </div>
+  </div>
+
+
   </main>
 
   <!-- ========================================================================= -->
@@ -757,7 +1324,13 @@
         empty_orders: "डेटाबेस में कोई सक्रिय ऑर्डर नहीं है",
         empty_banks: "अभी तक कोई बैंक खाता पंजीकृत नहीं है।",
         empty_risk: "कोई पंजीकृत ग्राहक जोखिम प्रोफ़ाइल नहीं मिली।",
-        btn_details: "विवरण"
+        btn_details: "विवरण",
+        admin_gate_title: "सुपर एडमिन प्रमाणीकरण",
+        tab_catalog: "सेंट्रल कैटलॉग लाइब्रेरी",
+        tab_notifications: "सिस्टम अलर्ट व सूचनाएं",
+        tab_tickets: "शिकायतें व सहायता डेस्क",
+        tickets_heading: "सहायता व शिकायत टिकट डेस्क (Grievance Help Desk)",
+        tickets_subheading: "ग्राहकों, विक्रेताओं व डिलीवरी पार्टनर्स के टिकट और समाधान प्रबंधन"
       },
       en: {
         app_title: "GaonBazaar • Super Admin",
@@ -854,7 +1427,13 @@
         empty_orders: "No active orders in database",
         empty_banks: "No bank accounts registered yet.",
         empty_risk: "No registered customer risk profiles found.",
-        btn_details: "Details"
+        btn_details: "Details",
+        admin_gate_title: "Super Admin Authentication",
+        tab_catalog: "Central Catalog Library",
+        tab_notifications: "System Alerts & Notifications",
+        tab_tickets: "Complaints & Support Desk",
+        tickets_heading: "Help Desk & Grievance Tickets",
+        tickets_subheading: "Manage customer, vendor, and delivery partner support grievances and resolutions"
       }
     };
 
@@ -927,17 +1506,139 @@
       }
     }
 
+    async function handleAdminLogin() {
+      const username = document.getElementById('admin-input-username')?.value.trim() || 'super_admin';
+      const key = document.getElementById('admin-input-key')?.value.trim();
+      const errBox = document.getElementById('admin-login-error');
+      const errText = document.getElementById('admin-login-error-text');
+      const btn = document.getElementById('btn-admin-login');
+
+      if (!key) {
+        if (errBox) errBox.classList.remove('hidden');
+        if (errText) errText.innerText = 'कृपया एडमिन सीक्रेट की दर्ज करें (Key required)';
+        return;
+      }
+
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="material-symbols-outlined text-[18px] animate-spin">progress_activity</span><span>प्रमाणीकरण हो रहा है...</span>';
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/admin/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, admin_key: key })
+        });
+
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({ detail: 'Invalid credentials' }));
+          throw new Error(data.detail || 'Authentication failed');
+        }
+
+        const data = await res.json();
+        AdminStore.token = data.token;
+        localStorage.setItem('gaonbazar_admin_token', data.token);
+        localStorage.setItem('authToken', data.token);
+        document.cookie = `gaonbazar_admin_token=${data.token}; path=/; max-age=604800; samesite=lax`;
+
+        // Unlock dashboard
+        document.getElementById('admin-login-gate')?.classList.add('hidden');
+        const main = document.getElementById('admin-main-content');
+        if (main) main.classList.remove('hidden');
+        document.getElementById('btn-admin-logout')?.classList.remove('hidden');
+        if (errBox) errBox.classList.add('hidden');
+
+        updateAdminLanguageUI();
+        await refreshAdminData();
+
+        if (AdminStore.pollTimer) clearInterval(AdminStore.pollTimer);
+        AdminStore.pollTimer = setInterval(() => {
+          refreshAdminData(false);
+        }, 5000);
+      } catch (err) {
+        if (errBox) {
+          errBox.classList.remove('hidden');
+          if (errText) errText.innerText = err.message || 'अमान्य क्रेडेंशियल्स (Invalid credentials)';
+        }
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<span class="material-symbols-outlined text-[18px]">lock_open</span><span>प्रवेश करें (Authenticate & Enter)</span>';
+        }
+      }
+    }
+    window.handleAdminLogin = handleAdminLogin;
+
+    function handleAdminLogout() {
+      AdminStore.token = null;
+      localStorage.removeItem('gaonbazar_admin_token');
+      localStorage.removeItem('authToken');
+      document.cookie = 'gaonbazar_admin_token=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+      if (AdminStore.pollTimer) clearInterval(AdminStore.pollTimer);
+      document.getElementById('admin-main-content')?.classList.add('hidden');
+      document.getElementById('btn-admin-logout')?.classList.add('hidden');
+      document.getElementById('admin-login-gate')?.classList.remove('hidden');
+      const errBox = document.getElementById('admin-login-error');
+      if (errBox) errBox.classList.add('hidden');
+      const keyInput = document.getElementById('admin-input-key');
+      if (keyInput) keyInput.value = '';
+    }
+    window.handleAdminLogout = handleAdminLogout;
+
     async function initAdminApp() {
-      const savedToken = localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_admin_token');
+      let savedToken = localStorage.getItem('gaonbazar_admin_token') || localStorage.getItem('authToken');
+      const cookieMatch = document.cookie.match(/(?:^|;\s*)gaonbazar_admin_token=([^;]+)/);
+      if (cookieMatch && cookieMatch[1]) {
+        savedToken = cookieMatch[1];
+      }
+
+      // Check query param for explicit admin_key if provided: ?admin_key=...
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryKey = urlParams.get('admin_key');
+      if (!savedToken && queryKey) {
+        try {
+          const loginRes = await fetch(`${API_BASE}/admin/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ admin_key: queryKey })
+          });
+          if (loginRes.ok) {
+            const data = await loginRes.json();
+            savedToken = data.token;
+          }
+        } catch (_) {}
+      }
+
       if (savedToken) {
         AdminStore.token = savedToken;
+        localStorage.setItem('gaonbazar_admin_token', savedToken);
+        document.cookie = `gaonbazar_admin_token=${savedToken}; path=/; max-age=604800; samesite=lax`;
+
+        document.getElementById('admin-login-gate')?.classList.add('hidden');
+        const main = document.getElementById('admin-main-content');
+        if (main) main.classList.remove('hidden');
+        document.getElementById('btn-admin-logout')?.classList.remove('hidden');
+
+        updateAdminLanguageUI();
+        try {
+          await refreshAdminData();
+        } catch (e) {
+          handleAdminLogout();
+          return;
+        }
+
+        if (AdminStore.pollTimer) clearInterval(AdminStore.pollTimer);
+        AdminStore.pollTimer = setInterval(() => {
+          refreshAdminData(false);
+        }, 5000);
+      } else {
+        // Unauthenticated: gate is visible, main content hidden
+        document.getElementById('admin-login-gate')?.classList.remove('hidden');
+        document.getElementById('admin-main-content')?.classList.add('hidden');
+        document.getElementById('btn-admin-logout')?.classList.add('hidden');
+        updateAdminLanguageUI();
       }
-      updateAdminLanguageUI();
-      await refreshAdminData();
-      if (AdminStore.pollTimer) clearInterval(AdminStore.pollTimer);
-      AdminStore.pollTimer = setInterval(() => {
-        refreshAdminData(false);
-      }, 5000);
     }
 
     async function refreshAdminData(showToastFeedback = false) {
@@ -989,6 +1690,10 @@
 
       document.getElementById('tab-vendor-badge').innerText = m.pending_vendors;
       document.getElementById('tab-runner-badge').innerText = m.pending_runners;
+      const tBadge = document.getElementById('tab-tickets-badge');
+      if (tBadge && m.open_tickets !== undefined) {
+        tBadge.innerText = m.open_tickets;
+      }
       document.getElementById('godview-count-badge').innerText = `${m.active_orders} ${isHi ? 'ऑर्डर सक्रिय' : 'Orders In-Flight'}`;
     }
 
@@ -1551,7 +2256,7 @@
     // --- TAB SWITCHER ---
     function switchTab(tabId) {
       AdminStore.activeTab = tabId;
-      ['vendors', 'runners', 'orders', 'ledger', 'risk', 'bank'].forEach(t => {
+      ['catalog', 'vendors', 'runners', 'orders', 'ledger', 'risk', 'bank', 'notifications', 'tickets', 'resolutions'].forEach(t => {
         const sec = document.getElementById(`tab-${t}`);
         const btn = document.getElementById(`admin-tab-btn-${t}`);
         if (sec) sec.classList.add('hidden');
@@ -1566,11 +2271,23 @@
       if (activeBtn) {
         activeBtn.className = "px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-slate-800 text-white border border-slate-600 shadow-sm transition-all whitespace-nowrap shrink-0 min-h-[38px]";
       }
+      if (tabId === 'catalog') {
+        fetchCentralCatalog();
+      }
       if (tabId === 'risk') {
         fetchRiskProfiles();
       }
       if (tabId === 'bank') {
         fetchPayoutVerifications();
+      }
+      if (tabId === 'notifications') {
+        fetchAdminNotifications();
+      }
+      if (tabId === 'tickets') {
+        fetchSupportTickets();
+      }
+      if (tabId === 'resolutions') {
+        fetchAdminResolutions();
       }
     }
 
@@ -1626,6 +2343,106 @@
     }
     window.fetchRiskProfiles = fetchRiskProfiles;
 
+    // --- SUPPORT TICKETS HANDLERS ---
+    async function fetchSupportTickets(statusFilter = '') {
+      const tbody = document.getElementById('tickets-table-body');
+      if (!tbody) return;
+      const isHi = AdminStore.lang === 'hi';
+
+      const filterVal = statusFilter !== undefined && statusFilter !== null && statusFilter !== ''
+        ? statusFilter
+        : (document.getElementById('tickets-status-filter')?.value || '');
+
+      const endpoint = filterVal ? `/admin/support/tickets?status=${encodeURIComponent(filterVal)}` : '/admin/support/tickets';
+
+      try {
+        const tickets = await adminFetch(endpoint);
+        if (!tickets || tickets.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-500 font-bold">${isHi ? 'कोई सहायता टिकट उपलब्ध नहीं है' : 'No support tickets found.'}</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = tickets.map(t => {
+          let statusBadge = '';
+          if (t.status === 'open') {
+            statusBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-black bg-rose-500/20 text-rose-300 border border-rose-500/30">ओपन (Open)</span>`;
+          } else if (t.status === 'in_review') {
+            statusBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/30">समीक्षाधीन</span>`;
+          } else {
+            statusBadge = `<span class="px-2 py-0.5 rounded-full text-[11px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">समाधानित (Resolved)</span>`;
+          }
+
+          const createdTime = t.created_at ? new Date(t.created_at).toLocaleString() : 'N/A';
+          const userRole = t.user_role ? `<span class="text-[10px] uppercase font-bold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">${t.user_role}</span>` : '';
+          const userPhone = t.user_phone ? `<div class="font-mono text-slate-300">${t.user_phone}</div>` : '';
+          const orderBadge = t.order_id ? `<div class="text-[10px] text-blue-400 font-mono">Order #${t.order_id}</div>` : '';
+
+          const actionHtml = t.status === 'resolved'
+            ? `<div class="text-emerald-400 text-xs font-medium"><span class="material-symbols-outlined text-xs align-middle text-emerald-400">check_circle</span> समाधानित: ${t.resolution_notes || 'Resolved by Super Admin'}</div>`
+            : `<div class="flex items-center gap-2">
+                <input type="text" id="ticket-res-input-${t.id}" placeholder="${isHi ? 'समाधान नोट दर्ज करें...' : 'Resolution notes...'}" class="w-full bg-slate-800 text-xs text-white border border-slate-700 rounded-lg px-2 py-1 focus:outline-none focus:border-emerald-500" />
+                <button onclick="handleResolveTicket(${t.id})" class="shrink-0 px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1 transition-all">
+                  <span class="material-symbols-outlined text-xs">done</span>
+                  ${isHi ? 'हल करें' : 'Resolve'}
+                </button>
+              </div>`;
+
+          return `
+            <tr class="hover:bg-slate-800/40 transition-colors">
+              <td class="py-2.5 px-3 font-mono text-amber-400 font-bold">#${t.id}</td>
+              <td class="py-2.5 px-3">
+                <div class="font-bold text-white">${t.user_name || 'Anonymous User'}</div>
+                ${userPhone}
+                ${userRole}
+              </td>
+              <td class="py-2.5 px-3">
+                <div class="font-bold text-slate-200">${t.subject || t.category}</div>
+                <div class="text-[11px] text-slate-400 capitalize">${t.category}</div>
+                ${orderBadge}
+              </td>
+              <td class="py-2.5 px-3 max-w-xs text-slate-300">
+                <div class="line-clamp-2" title="${t.description}">${t.description}</div>
+              </td>
+              <td class="py-2.5 px-3">${statusBadge}</td>
+              <td class="py-2.5 px-3 text-[11px] text-slate-400 whitespace-nowrap">${createdTime}</td>
+              <td class="py-2.5 px-3">${actionHtml}</td>
+            </tr>
+          `;
+        }).join('');
+
+      } catch (err) {
+        console.error('Failed to load support tickets:', err);
+        tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-rose-400 font-bold">Error loading tickets: ${err.message}</td></tr>`;
+      }
+    }
+    window.fetchSupportTickets = fetchSupportTickets;
+
+    async function handleResolveTicket(ticketId) {
+      const input = document.getElementById(`ticket-res-input-${ticketId}`);
+      const notes = input ? input.value.trim() : '';
+      const isHi = AdminStore.lang === 'hi';
+
+      try {
+        const res = await adminFetch(`/admin/support/tickets/${ticketId}/action`, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'resolve',
+            resolution_notes: notes || 'Resolved by Super Admin via Operations Desk'
+          })
+        });
+
+        showToast(
+          isHi ? 'टिकट हल हुआ' : 'Ticket Resolved',
+          isHi ? `टिकट #${ticketId} सफलतापूर्वक हल किया गया` : `Ticket #${ticketId} was resolved successfully.`
+        );
+        fetchSupportTickets();
+        refreshAdminData(false);
+      } catch (err) {
+        alert(err.message || 'Failed to resolve ticket');
+      }
+    }
+    window.handleResolveTicket = handleResolveTicket;
+
     // --- TOAST UTILITY ---
     let toastTimeout = null;
     function showToast(title, subtitle) {
@@ -1678,7 +2495,579 @@
         };
       }
     });
-  </script>
+  
+
+    // =========================================================================
+    // 9.15 CENTRAL CATALOG LIBRARY & DEDUPLICATION (SUPER ADMIN)
+    // =========================================================================
+    let adminCentralCatalog = [];
+    let adminCatalogFilter = 'all';
+
+    async function fetchCentralCatalog() {
+      const tbody = document.getElementById('admin-catalog-table-body');
+      if (!tbody) return;
+
+      tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-slate-500 font-bold">मास्टर कैटलॉग लोड हो रहा है...</td></tr>`;
+
+      try {
+        const res = await fetch(`${API_BASE}/catalog/products?limit=100`);
+        if (!res.ok) {
+          tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-rose-500 font-bold">कैटलॉग लोड करने में विफल</td></tr>`;
+          return;
+        }
+
+        const data = await res.json();
+        adminCentralCatalog = data || [];
+
+        // Update badge
+        const badge = document.getElementById('tab-catalog-badge');
+        if (badge) badge.innerText = adminCentralCatalog.length;
+
+        renderAdminCatalogTable();
+      } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-rose-500 font-bold">नेटवर्क त्रुटि: ${e.message}</td></tr>`;
+      }
+    }
+
+    function filterAdminCatalogCategory(cat) {
+      adminCatalogFilter = cat;
+      document.querySelectorAll('.admin-cat-pill').forEach(btn => {
+        if (btn.getAttribute('data-cat') === cat) {
+          btn.className = "admin-cat-pill px-3 py-1.5 rounded-full bg-amber-500 text-slate-950 shrink-0 font-bold";
+        } else {
+          btn.className = "admin-cat-pill px-3 py-1.5 rounded-full bg-slate-800 text-slate-300 hover:text-white shrink-0 font-bold";
+        }
+      });
+      renderAdminCatalogTable();
+    }
+
+    function handleAdminCatalogSearch(q) {
+      renderAdminCatalogTable();
+    }
+
+    function renderAdminCatalogTable() {
+      const tbody = document.getElementById('admin-catalog-table-body');
+      if (!tbody) return;
+
+      const q = (document.getElementById('admin-catalog-search-input')?.value || '').toLowerCase().trim();
+      let list = [...adminCentralCatalog];
+
+      if (adminCatalogFilter !== 'all') {
+        list = list.filter(p => p.category === adminCatalogFilter);
+      }
+      if (q) {
+        list = list.filter(p => 
+          (p.name_en && p.name_en.toLowerCase().includes(q)) ||
+          (p.name_hi && p.name_hi.includes(q)) ||
+          (p.brand && p.brand.toLowerCase().includes(q)) ||
+          (p.search_aliases && p.search_aliases.toLowerCase().includes(q))
+        );
+      }
+
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-slate-500 font-bold">कोई मास्टर उत्पाद नहीं मिला</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(p => {
+        const img = p.image_url || 'static/images/prod_tomato.png';
+        const isActive = p.is_active !== false;
+
+        return `
+          <tr class="hover:bg-slate-800/40 transition-colors">
+            <td class="py-3 px-3.5">
+              <div class="w-12 h-12 rounded-xl bg-slate-950 border border-slate-700 p-1 flex items-center justify-center shrink-0">
+                <img src="${img}" alt="${p.name_en}" class="w-full h-full object-contain" />
+              </div>
+            </td>
+            <td class="py-3 px-3.5">
+              <span class="font-bold text-white block">${p.name_en}</span>
+              <span class="text-[11px] text-slate-400 block">${p.name_hi || ''}</span>
+              <span class="text-[9px] font-mono text-slate-500">ID: ${p.id}</span>
+            </td>
+            <td class="py-3 px-3.5">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-800 text-amber-300 border border-slate-700 capitalize">
+                ${p.category}
+              </span>
+            </td>
+            <td class="py-3 px-3.5">
+              <span class="text-xs text-white block">${p.brand || '--'}</span>
+              <span class="text-[11px] text-slate-400">${p.variant || '--'}</span>
+            </td>
+            <td class="py-3 px-3.5">
+              <span class="font-bold text-amber-300 block">₹${p.default_mrp || '--'}</span>
+              <span class="text-[10px] text-slate-400">${p.default_unit || '1 kg'}</span>
+            </td>
+            <td class="py-3 px-3.5 max-w-[150px]">
+              <span class="text-[10px] text-slate-400 font-mono truncate block" title="${p.search_aliases || ''}">${p.search_aliases || '--'}</span>
+            </td>
+            <td class="py-3 px-3.5">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-black ${isActive ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-700' : 'bg-rose-950/60 text-rose-300 border border-rose-700'}">
+                ${isActive ? 'Active' : 'Disabled'}
+              </span>
+            </td>
+            <td class="py-3 px-3.5 text-right">
+              <div class="flex items-center justify-end gap-1.5">
+                <button 
+                  onclick='openEditCentralProdModal(${JSON.stringify(p).replace(/'/g, "&apos;")})'
+                  class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-all cursor-pointer"
+                  title="संशोधित करें"
+                >
+                  <span class="material-symbols-outlined text-[16px]">edit</span>
+                </button>
+
+                <button 
+                  onclick="toggleDisableCentralProd('${p.id}', ${isActive})"
+                  class="p-1.5 rounded-lg ${isActive ? 'bg-rose-950/50 hover:bg-rose-900/60 text-rose-300 border border-rose-800/60' : 'bg-emerald-950/50 hover:bg-emerald-900/60 text-emerald-300 border border-emerald-800/60'} text-xs font-bold transition-all cursor-pointer"
+                  title="${isActive ? 'सॉफ्ट डिसेबल करें' : 'पुनः सक्रिय करें'}"
+                >
+                  <span class="material-symbols-outlined text-[16px]">${isActive ? 'block' : 'check_circle'}</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Add Central Product
+    function openAddCentralProductModal() {
+      document.getElementById('admin-add-name-en').value = '';
+      document.getElementById('admin-add-name-hi').value = '';
+      document.getElementById('admin-add-brand').value = '';
+      document.getElementById('admin-add-variant').value = '';
+      document.getElementById('admin-add-unit').value = '1 kg';
+      document.getElementById('admin-add-mrp').value = '';
+      document.getElementById('admin-add-img-url').value = '';
+      document.getElementById('admin-add-aliases').value = '';
+
+      const modal = document.getElementById('modal-admin-add-central-prod');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeAddCentralProductModal() {
+      const modal = document.getElementById('modal-admin-add-central-prod');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    async function submitNewCentralProduct() {
+      const en = document.getElementById('admin-add-name-en').value.trim();
+      const hi = document.getElementById('admin-add-name-hi').value.trim();
+      const cat = document.getElementById('admin-add-category').value;
+      const brand = document.getElementById('admin-add-brand').value.trim() || null;
+      const variant = document.getElementById('admin-add-variant').value.trim() || null;
+      const unit = document.getElementById('admin-add-unit').value.trim() || '1 kg';
+      const mrp = parseFloat(document.getElementById('admin-add-mrp').value);
+      const img = document.getElementById('admin-add-img-url').value.trim() || null;
+      const aliases = document.getElementById('admin-add-aliases').value.trim() || en.toLowerCase();
+
+      if (!en || !hi || isNaN(mrp)) {
+        alert('कृपया सभी आवश्यक फ़ील्ड भरें');
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/catalog/products`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name_en: en,
+            name_hi: hi,
+            category: cat,
+            brand: brand,
+            variant: variant,
+            default_unit: unit,
+            default_mrp: mrp,
+            image_url: img,
+            search_aliases: aliases
+          })
+        });
+
+        if (res.ok) {
+          closeAddCentralProductModal();
+          fetchCentralCatalog();
+        } else {
+          alert('उत्पाद जोड़ने में विफल');
+        }
+      } catch (e) {
+        alert('त्रुटि: ' + e.message);
+      }
+    }
+
+    // Edit Central Product
+    function openEditCentralProdModal(p) {
+      document.getElementById('admin-edit-prod-id').value = p.id;
+      document.getElementById('admin-edit-name-en').value = p.name_en || '';
+      document.getElementById('admin-edit-name-hi').value = p.name_hi || '';
+      document.getElementById('admin-edit-brand').value = p.brand || '';
+      document.getElementById('admin-edit-variant').value = p.variant || '';
+      document.getElementById('admin-edit-unit').value = p.default_unit || '1 kg';
+      document.getElementById('admin-edit-mrp').value = p.default_mrp || '';
+      document.getElementById('admin-edit-img-url').value = p.image_url || '';
+      document.getElementById('admin-edit-aliases').value = p.search_aliases || '';
+      document.getElementById('admin-edit-active').checked = p.is_active !== false;
+
+      const modal = document.getElementById('modal-admin-edit-central-prod');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeEditCentralProductModal() {
+      const modal = document.getElementById('modal-admin-edit-central-prod');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    async function saveEditCentralProduct() {
+      const prodId = document.getElementById('admin-edit-prod-id').value;
+      const en = document.getElementById('admin-edit-name-en').value.trim();
+      const hi = document.getElementById('admin-edit-name-hi').value.trim();
+      const brand = document.getElementById('admin-edit-brand').value.trim() || null;
+      const variant = document.getElementById('admin-edit-variant').value.trim() || null;
+      const unit = document.getElementById('admin-edit-unit').value.trim() || '1 kg';
+      const mrp = parseFloat(document.getElementById('admin-edit-mrp').value);
+      const img = document.getElementById('admin-edit-img-url').value.trim() || null;
+      const aliases = document.getElementById('admin-edit-aliases').value.trim() || null;
+      const isActive = document.getElementById('admin-edit-active').checked;
+
+      try {
+        const res = await fetch(`${API_BASE}/catalog/products/${encodeURIComponent(prodId)}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name_en: en,
+            name_hi: hi,
+            brand: brand,
+            variant: variant,
+            default_unit: unit,
+            default_mrp: mrp,
+            image_url: img,
+            search_aliases: aliases,
+            is_active: isActive
+          })
+        });
+
+        if (res.ok) {
+          closeEditCentralProductModal();
+          fetchCentralCatalog();
+        } else {
+          alert('संशोधन सहेजने में विफल');
+        }
+      } catch (e) {
+        alert('त्रुटि: ' + e.message);
+      }
+    }
+
+    async function toggleDisableCentralProd(prodId, currentActive) {
+      const actionName = currentActive ? 'निष्क्रिय (Disable)' : 'पुनः सक्रिय (Activate)';
+      if (!confirm(`क्या आप उत्पाद ${prodId} को ${actionName} करना चाहते हैं?`)) return;
+
+      try {
+        if (currentActive) {
+          await fetch(`${API_BASE}/catalog/products/${encodeURIComponent(prodId)}`, { method: 'DELETE' });
+        } else {
+          await fetch(`${API_BASE}/catalog/products/${encodeURIComponent(prodId)}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ is_active: true })
+          });
+        }
+        fetchCentralCatalog();
+      } catch (e) {
+        alert('कार्रवाई विफल: ' + e.message);
+      }
+    }
+
+    async function handleAdminCentralImageUpload(input, targetInputId) {
+      if (!input.files || input.files.length === 0) return;
+      const file = input.files[0];
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const res = await fetch(`${API_BASE}/catalog/upload-image`, {
+          method: 'POST',
+          body: formData
+        });
+        if (res.ok) {
+          const data = await res.json();
+          document.getElementById(targetInputId).value = data.image_url;
+        } else {
+          alert('छवि अपलोड विफल');
+        }
+      } catch (e) {
+        alert('त्रुटि: ' + e.message);
+      }
+    }
+
+    // Deduplicate Products
+    function openDeduplicateCatalogModal() {
+      const masterSel = document.getElementById('dedup-master-select');
+      const dupSel = document.getElementById('dedup-duplicate-select');
+
+      const options = adminCentralCatalog.map(p => `<option value="${p.id}">${p.name_en} (${p.category} - ${p.id})</option>`).join('');
+      if (masterSel) masterSel.innerHTML = options;
+      if (dupSel) dupSel.innerHTML = options;
+
+      const modal = document.getElementById('modal-admin-dedup-catalog');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeDeduplicateCatalogModal() {
+      const modal = document.getElementById('modal-admin-dedup-catalog');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    async function executeCatalogDeduplication() {
+      const masterId = document.getElementById('dedup-master-select').value;
+      const dupId = document.getElementById('dedup-duplicate-select').value;
+
+      if (!masterId || !dupId || masterId === dupId) {
+        alert('कृपया दो अलग-अलग उत्पाद चुनें');
+        return;
+      }
+
+      if (!confirm(`क्या आप वाकई ${dupId} के सभी स्टोर लिस्टिंग को ${masterId} में समेकित करना चाहते हैं?`)) return;
+
+      try {
+        const res = await fetch(`${API_BASE}/catalog/deduplicate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            master_id: masterId,
+            duplicate_id: dupId
+          })
+        });
+
+        if (res.ok) {
+          alert('समेकन सफलतापूर्वक पूर्ण हुआ!');
+          closeDeduplicateCatalogModal();
+          fetchCentralCatalog();
+        } else {
+          alert('समेकन विफल');
+        }
+      } catch (e) {
+        alert('त्रुटि: ' + e.message);
+      }
+    }
+
+    // KYC Review Modal
+    function openAdminKYCReviewModal(entityType, entityId, actionType, name) {
+      document.getElementById('kyc-review-entity-type').value = entityType;
+      document.getElementById('kyc-review-entity-id').value = entityId;
+      document.getElementById('kyc-review-action-type').value = actionType;
+
+      const titleEl = document.getElementById('kyc-review-modal-title');
+      const promptEl = document.getElementById('kyc-review-prompt-text');
+      const reasonBox = document.getElementById('kyc-review-reason-box');
+      document.getElementById('kyc-review-reason-input').value = '';
+
+      if (actionType === 'approved') {
+        titleEl.innerText = `स्वीकृति: ${name}`;
+        promptEl.innerText = `क्या आप ${name} (${entityType === 'vendor' ? 'दुकानदार' : 'गाँव मित्र'}) के पहचान पत्र को स्वीकृत कर "गाँव बाज़ार सत्यापित" बैज प्रदान करना चाहते हैं?`;
+        reasonBox.classList.add('hidden');
+      } else if (actionType === 'rejected') {
+        titleEl.innerText = `अस्वीकृति: ${name}`;
+        promptEl.innerText = `${name} के पहचान पत्र को अस्वीकृत किया जा रहा है।`;
+        reasonBox.classList.remove('hidden');
+      } else {
+        titleEl.innerText = `पुनः जमा का अनुरोध: ${name}`;
+        promptEl.innerText = `${name} को साफ़ फ़ोटो या सही दस्तावेज़ पुनः अपलोड करने का अनुरोध भेजा जा रहा है।`;
+        reasonBox.classList.remove('hidden');
+      }
+
+      const modal = document.getElementById('modal-admin-review-kyc');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeAdminKYCReviewModal() {
+      const modal = document.getElementById('modal-admin-review-kyc');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    async function confirmAdminKYCDecision() {
+      const entityType = document.getElementById('kyc-review-entity-type').value;
+      const entityId = document.getElementById('kyc-review-entity-id').value;
+      const actionType = document.getElementById('kyc-review-action-type').value;
+      const reason = document.getElementById('kyc-review-reason-input').value.trim();
+
+      if ((actionType === 'rejected' || actionType === 'needs_resubmission') && !reason) {
+        alert('कृपया कारण दर्ज करें');
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/admin/kyc/${encodeURIComponent(entityType)}/${encodeURIComponent(entityId)}/review`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: actionType,
+            rejection_reason: reason || null
+          })
+        });
+
+        if (res.ok) {
+          alert('समीक्षा निर्णय सुरक्षित कर लिया गया!');
+          closeAdminKYCReviewModal();
+          if (typeof fetchPendingVendors === 'function') fetchPendingVendors('all');
+          if (typeof fetchPendingRunners === 'function') fetchPendingRunners('all');
+        } else {
+          alert('कार्रवाई विफल');
+        }
+      } catch (e) {
+        alert('त्रुटि: ' + e.message);
+      }
+    }
+
+</script>
 
 </body>
 </html>
+
+    // --- Phase 3B: Admin Resolution Management Controller ---
+    AdminStore.activeResolutionTab = 'all';
+    AdminStore.resolutions = [];
+
+    function switchResolutionTab(tab) {
+      AdminStore.activeResolutionTab = tab;
+      const tabs = ['all', 'new', 'under_review', 'refunds', 'replacements', 'approved', 'rejected', 'completed'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`res-tab-${t}`);
+        if (btn) {
+          if (t === tab) {
+            btn.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 text-white shadow-xs shrink-0 cursor-pointer";
+          } else {
+            btn.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 shrink-0 cursor-pointer";
+          }
+        }
+      });
+      fetchAdminResolutions(tab);
+    }
+    window.switchResolutionTab = switchResolutionTab;
+
+    async function fetchAdminResolutions(tab) {
+      const activeTab = tab || AdminStore.activeResolutionTab || 'all';
+      const tbody = document.getElementById('resolutions-table-body');
+      if (tbody) {
+        tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-slate-400 font-bold">समाधान डेटा लोड हो रहा है...</td></tr>';
+      }
+
+      try {
+        const res = await adminFetch(`/admin/resolutions?tab=${encodeURIComponent(activeTab)}`);
+        const items = (res && res.resolutions) ? res.resolutions : [];
+        AdminStore.resolutions = items;
+        const badge = document.getElementById('tab-resolutions-badge');
+        if (badge) badge.innerText = res.count || items.length;
+
+        renderResolutionsTable(items);
+      } catch (err) {
+        console.error('Failed to fetch admin resolutions:', err);
+        if (tbody) {
+          tbody.innerHTML = `<tr><td colspan="8" class="py-6 text-center text-rose-400 font-bold">त्रुटि: ${err.message || 'डेटा प्राप्त नहीं हो सका'}</td></tr>`;
+        }
+      }
+    }
+    window.fetchAdminResolutions = fetchAdminResolutions;
+
+    function renderResolutionsTable(items) {
+      const tbody = document.getElementById('resolutions-table-body');
+      if (!tbody) return;
+
+      if (!items || items.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-slate-500 font-bold">इस श्रेणी में कोई रिकॉर्ड नहीं है।</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = items.map(it => {
+        const isRep = it.type === 'replacement';
+        const isRef = it.type === 'refund';
+        const typeBadge = isRep 
+          ? '<span class="px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[10px] font-bold">Replacement</span>'
+          : '<span class="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold">Refund</span>';
+
+        return `
+          <tr class="hover:bg-slate-900/40 transition-colors">
+            <td class="py-3 px-3">
+              ${typeBadge}
+              <div class="font-mono font-bold text-white text-[11px] mt-1">${it.id}</div>
+            </td>
+            <td class="py-3 px-3 font-mono text-slate-300 font-bold">${it.order_id || '-'}</td>
+            <td class="py-3 px-3 font-mono text-slate-300">${it.customer_phone || '-'}</td>
+            <td class="py-3 px-3">
+              <div class="font-bold text-white">${it.product_name || 'Claim'}</div>
+              <div class="text-[10px] text-slate-400">${it.reason || '-'}</div>
+            </td>
+            <td class="py-3 px-3 font-bold text-white">₹${Number(it.amount || 0).toFixed(2)}</td>
+            <td class="py-3 px-3">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-800 text-slate-300 border border-slate-700">
+                ${it.status}
+              </span>
+            </td>
+            <td class="py-3 px-3">
+              <select id="liability-${it.id}" class="bg-slate-800 text-[11px] text-white border border-slate-700 rounded-lg px-2 py-1">
+                <option value="unclear" ${it.responsible_party === 'unclear' ? 'selected' : ''}>Unclear / अस्पष्ट</option>
+                <option value="vendor" ${it.responsible_party === 'vendor' ? 'selected' : ''}>Vendor / विक्रेता</option>
+                <option value="runner" ${it.responsible_party === 'runner' ? 'selected' : ''}>Runner / डिलीवरी साथी</option>
+                <option value="platform" ${it.responsible_party === 'platform' ? 'selected' : ''}>Platform / प्लेटफ़ॉर्म</option>
+              </select>
+            </td>
+            <td class="py-3 px-3">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                ${isRef ? `
+                  <button onclick="adminExecuteResolutionAction('${it.id}', 'approve_refund')" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] active:scale-95 cursor-pointer">
+                    Approve Refund
+                  </button>
+                ` : `
+                  <button onclick="adminExecuteResolutionAction('${it.id}', 'approve_replacement')" class="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-[11px] active:scale-95 cursor-pointer">
+                    Approve Replacement
+                  </button>
+                `}
+                <button onclick="adminExecuteResolutionAction('${it.id}', 'request_evidence')" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-[10px] active:scale-95 cursor-pointer">
+                  Request Evidence
+                </button>
+                <button onclick="adminExecuteResolutionAction('${it.id}', 'reject')" class="px-2 py-1 rounded-lg bg-rose-950/40 hover:bg-rose-900 text-rose-300 border border-rose-800 font-bold text-[10px] active:scale-95 cursor-pointer">
+                  Reject
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function adminExecuteResolutionAction(itemId, action) {
+      const liabilitySelect = document.getElementById(`liability-${itemId}`);
+      const responsibleParty = liabilitySelect ? liabilitySelect.value : 'unclear';
+
+      if (action === 'approve_refund') {
+        const confirmed = window.confirm(
+          `CONFIRM REFUND APPROVAL:
+
+Item ID: ${itemId}
+Responsible Party: ${responsibleParty.toUpperCase()}
+
+Are you sure you want to approve this refund?
+- If Razorpay live refunds are enabled, funds will be refunded from gateway balance.
+- If live refunds are disabled, the refund will be marked APPROVED and queued for settlement.`
+        );
+        if (!confirmed) return;
+      }
+
+      try {
+        const res = await adminFetch(`/admin/resolutions/${encodeURIComponent(itemId)}/action`, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: action,
+            responsible_party: responsibleParty,
+            admin_notes: `Processed via Admin Resolution Desk (${action})`
+          })
+        });
+
+        if (res && res.success) {
+          await fetchAdminResolutions();
+        } else {
+          alert('Action failed: ' + (res.detail || 'Unknown error'));
+        }
+      } catch(e) {
+        alert('Action error: ' + e.message);
+      }
+    }
+    window.adminExecuteResolutionAction = adminExecuteResolutionAction;

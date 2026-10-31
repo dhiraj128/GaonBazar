@@ -1,0 +1,162 @@
+================================================================================
+GAONBAZAAR MASTER COMPLETE FUNCTIONAL & INTEGRATION QA REPORT
+================================================================================
+Execution Timestamp: 2026-10-26 11:53:20 UTC
+Total Tests Executed: 72
+Passed: 72 (100.0%)
+Failed: 0
+Execution Duration: 88.72s
+================================================================================
+
+DETAILED TEST VERIFICATION BREAKDOWN:
+--------------------------------------------------------------------------------
+[PASS] Customer Dashboard Navigation
+       Evidence: User successfully arrived at dashboard view
+[PASS] Language Toggle: Switch to Hindi
+       Evidence: localStorage lang='hi'
+[PASS] Language Toggle: Switch to English
+       Evidence: localStorage lang='en'
+[PASS] Language Persistence on Refresh
+       Evidence: Persisted lang='en'
+[PASS] Theme Mode Toggle (Dark Mode)
+       Evidence: Dark mode class active: True
+[PASS] Delivery Village Pill: Opens Landmark Sheet
+       Evidence: Landmark selection sheet displayed
+[PASS] Store Catalog Navigation
+       Evidence: Sharma Brothers catalog view visible
+[PASS] Floating Cart Bar Pop on Add to Cart
+       Evidence: Cart bar visible with active items
+[PASS] Cart Bar Click: Navigates to Cart View
+       Evidence: Cart view displayed with line items
+[PASS] MOV < ₹99 Guard: Warning Banner Visible
+       Evidence: Warning displayed for subtotal < ₹99
+[PASS] MOV < ₹99 Guard: Proceed CTA Disabled
+       Evidence: User prevented from checking out sub-MOV cart
+[PASS] Cart CTA: Navigates to Checkout Screen
+       Evidence: Checkout payment view displayed
+[PASS] Checkout: Payment Mode Selection (COD)
+       Evidence: Payment mode set to 'COD'
+[PASS] Order Checkout: Transition to Live Tracking
+       Evidence: Tracking visible with Order ID '#RUR-7365'
+[PASS] Customer Delivery OTP Held Securely
+       Evidence: Customer holds 4-digit OTP: '4017'
+[PASS] 5-Stage Dynamic Order Timeline Rendered
+       Evidence: Rendered 5 timeline stage nodes
+[PASS] Customer Support Center View Navigation
+       Evidence: Support screen accessible with helpline details
+[PASS] Vendor Login & Dashboard Unlock
+       Evidence: Vendor main content displayed
+[PASS] Vendor Header Settings Shortcut
+       Evidence: Settings tab opened from header shortcut
+[PASS] Vendor Order Tab Filter: All Orders
+       Evidence: Filter 'all' activated successfully
+[PASS] Vendor Order Tab Filter: New Orders
+       Evidence: Filter 'new' activated successfully
+[PASS] Vendor Order Tab Filter: Packing Orders
+       Evidence: Filter 'packing' activated successfully
+[PASS] Vendor Order Tab Filter: Ready Orders
+       Evidence: Filter 'ready' activated successfully
+[PASS] Vendor Order Tab Filter: Delivered Orders
+       Evidence: Filter 'delivered' activated successfully
+[PASS] Vendor Navigation: Stock Inventory Tab
+       Evidence: Stock management view visible
+[PASS] Stock Availability Switch Toggle (Product: item_1)
+       Evidence: State changed from 'toggle_on
+उपलब्ध' to 'toggle_off
+अनुपलब्ध'
+[PASS] Stock Toggle Persistence after Reload (item_1)
+       Evidence: State persisted as 'toggle_off
+अनुपलब्ध' in SQLite DB
+[PASS] Vendor Navigation: Daily Ledger Tab
+       Evidence: Daily ledger & settlements displayed
+[PASS] Vendor Navigation: Store Settings Tab
+       Evidence: Store profile and bank settings visible
+[PASS] Backend Security Guard: Vendor 'deliver' Quick Action Blocked (HTTP 403)
+       Evidence: Vendor prohibited from executing delivery mark-off
+[PASS] Runner Login & Duty Dashboard Unlock
+       Evidence: Gaon Mitra runner interface active
+[PASS] Runner Duty Availability Toggle
+       Evidence: Duty toggled from 'चालू' to 'बंद'
+[PASS] Runner Active Missions Queue Container
+       Evidence: Missions container ready to receive Stage 3/4 orders
+[PASS] Runner Navigation: Earnings & Ledger Tab
+       Evidence: Runner commission & COD ledger displayed
+[PASS] Privacy Guard: History Records Mask Customer Phones
+       Evidence: Past delivery history protects customer privacy
+[PASS] Backend Security Guard: Invalid Doorstep OTP Rejection
+       Evidence: Invalid OTP rejected with HTTP 400/404
+[PASS] Admin Dashboard: Core KPI Metrics Cards
+       Evidence: GMV, Orders, Active Stores metrics visible
+[PASS] Admin Navigation: God-View Orders Oversight
+       Evidence: Live orders table loaded from database
+[PASS] Admin Navigation: Customer 3-Strike Risk Profiles
+       Evidence: Risk oversight table displayed for internal controls
+[PASS] Admin Navigation: Commission Ledger & Payouts
+       Evidence: Zero-diff financial commission ledger displayed
+[PASS] Admin Navigation: Vendor KYC Approval Queue
+       Evidence: Vendor applications queue accessible
+[PASS] Admin Navigation: Runner KYC Approval Queue
+       Evidence: Gaon Mitra applications queue accessible
+[PASS] Stage 1: Customer Places Order via API
+       Evidence: Order: #RUR-7414 | Delivery OTP: 2192
+[PASS] Stage 1 -> 2: Vendor Receives Order Live in Dashboard
+       Evidence: Order #RUR-7414 received live in Vendor polling cycle
+[PASS] Stage 2 -> 3: Vendor Packs Order
+       Evidence: Order #RUR-7414 packed & ready for Gaon Mitra pickup
+[PASS] Stage 3: Gaon Mitra Receives Pickup Mission Live
+       Evidence: Order #RUR-7414 appeared live in Runner Missions Queue
+[PASS] Stage 3 -> 4: Runner Confirms Store Pickup (Out for Delivery)
+       Evidence: Order #RUR-7414 in transit to customer
+[PASS] Stage 4: Customer Live Tracking Displays En Route Status
+       Evidence: Customer sees #RUR-7414 approaching landmark
+[PASS] Stage 4 -> 5: Doorstep OTP Verified by Runner
+       Evidence: OTP 2192 verified; order marked Delivered
+[PASS] Stage 5: Customer App Reflects Delivered Live
+       Evidence: Customer app confirmed order successfully delivered
+[PASS] Stage 5: Admin Dashboard God-View Reflects Delivered
+       Evidence: Admin table displays order #RUR-7414 in real database records
+[PASS] Authoritative Road Curvature Factor (1.25x)
+       Evidence: Straight: 0.97 km -> Road: 1.21 km (road_routing_estimate)
+[PASS] Zero-Trust Payout Reconciliation: Tier 1 (0-2 km)
+       Evidence: Customer: ₹118.0 == Vendor: ₹100.0 + Runner: ₹5.0 + Platform: ₹13.0 (Paise Diff: 0)
+[PASS] Zero-Trust Payout Reconciliation: Tier 2 (>2-4 km)
+       Evidence: Customer: ₹173.0 == Vendor: ₹150.0 + Runner: ₹10.0 + Platform: ₹13.0 (Paise Diff: 0)
+[PASS] Zero-Trust Payout Reconciliation: Tier 3 (>4-5 km)
+       Evidence: Customer: ₹228.0 == Vendor: ₹200.0 + Runner: ₹15.0 + Platform: ₹13.0 (Paise Diff: 0)
+[PASS] Zero-Trust Payout Reconciliation: Tier 4 (>5-8 km)
+       Evidence: Customer: ₹288.0 == Vendor: ₹250.0 + Runner: ₹25.0 + Platform: ₹13.0 (Paise Diff: 0)
+[PASS] Zero-Trust Payout Reconciliation: Promo >= ₹299 Subtotal
+       Evidence: Customer: ₹313.0 == Vendor: ₹300.0 + Runner: ₹10.0 + Platform: ₹3.0 (Paise Diff: 0)
+[PASS] [320px Compact Feature Phone] Zero Horizontal Overflow
+       Evidence: ScrollWidth: 320px <= Viewport: 320px
+[PASS] [320px Compact Feature Phone] Touch Target Compliance (Min Height >= 36px)
+       Evidence: Small buttons count: 0
+[PASS] [320px Compact Feature Phone] Header Usability & Brand Visibility
+       Evidence: Compact header clearly rendered
+[PASS] [360px Budget Android (Redmi 9A)] Zero Horizontal Overflow
+       Evidence: ScrollWidth: 360px <= Viewport: 360px
+[PASS] [360px Budget Android (Redmi 9A)] Touch Target Compliance (Min Height >= 36px)
+       Evidence: Small buttons count: 0
+[PASS] [360px Budget Android (Redmi 9A)] Header Usability & Brand Visibility
+       Evidence: Compact header clearly rendered
+[PASS] [375px Standard iPhone (iPhone SE)] Zero Horizontal Overflow
+       Evidence: ScrollWidth: 375px <= Viewport: 375px
+[PASS] [375px Standard iPhone (iPhone SE)] Touch Target Compliance (Min Height >= 36px)
+       Evidence: Small buttons count: 0
+[PASS] [375px Standard iPhone (iPhone SE)] Header Usability & Brand Visibility
+       Evidence: Compact header clearly rendered
+[PASS] [393px Modern Android (Pixel 7)] Zero Horizontal Overflow
+       Evidence: ScrollWidth: 393px <= Viewport: 393px
+[PASS] [393px Modern Android (Pixel 7)] Touch Target Compliance (Min Height >= 36px)
+       Evidence: Small buttons count: 0
+[PASS] [393px Modern Android (Pixel 7)] Header Usability & Brand Visibility
+       Evidence: Compact header clearly rendered
+[PASS] [414px Large Screen (iPhone 11 / Plus)] Zero Horizontal Overflow
+       Evidence: ScrollWidth: 414px <= Viewport: 414px
+[PASS] [414px Large Screen (iPhone 11 / Plus)] Touch Target Compliance (Min Height >= 36px)
+       Evidence: Small buttons count: 0
+[PASS] [414px Large Screen (iPhone 11 / Plus)] Header Usability & Brand Visibility
+       Evidence: Compact header clearly rendered
+--------------------------------------------------------------------------------
+FINAL VERDICT: 100% PASS - ALL SCREENS, BUTTONS & LIFECYCLES FULLY VERIFIED
+================================================================================

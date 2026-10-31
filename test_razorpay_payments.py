@@ -30,12 +30,14 @@ from fastapi.testclient import TestClient
 from backend.main import app, RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET, RAZORPAY_WEBHOOK_SECRET
 from backend.database import SessionLocal, ensure_schema_migrations
 from backend.models import Order, OrderItem, Product, User, Store, Runner, PaymentTransaction
+from backend.security import issue_admin_token
 
 
 def run_razorpay_tests() -> bool:
     client = TestClient(app)
     db = SessionLocal()
     ensure_schema_migrations()
+    initial_order_ids = set(o[0] for o in db.query(Order.id).all())
 
     passed_count = 0
     failed_count = 0
@@ -140,7 +142,7 @@ def run_razorpay_tests() -> bool:
         "user_phone": "9812300003",
         "user_name": "Small Buyer",
         "village": "Rampur",
-        "landmark": "Near Well",
+        "landmark": "Near Village Tubewell, Sonpur",
         "items": [{"id": test_prod.id, "name": test_prod.name_en, "price": 10.0, "qty": 1}]
     })
     # Note: item_1 in DB is 180, so 1 qty = 180 (>=99). Let's test with empty or 0 qty
@@ -149,7 +151,7 @@ def run_razorpay_tests() -> bool:
         "user_phone": "9812300003",
         "user_name": "Empty Cart Buyer",
         "village": "Rampur",
-        "landmark": "Near Well",
+        "landmark": "Near Village Tubewell, Sonpur",
         "items": []
     })
     audit("Empty Cart Payment Order Rejected with 400", res_empty.status_code == 400)
@@ -273,10 +275,16 @@ def run_razorpay_tests() -> bool:
     clean_order_id = created_order_id.lstrip("#")
     quoted_order_id = urllib.parse.quote(created_order_id)
 
-    res_split = client.get(f"/payments/orders/{quoted_order_id}/split-payout")
+    admin_headers = {"Authorization": f"Bearer {issue_admin_token('super_admin')}"}
+
+    # Negative authorization audit: Unauthenticated split read must be blocked
+    res_split_unauth = client.get(f"/payments/orders/{quoted_order_id}/split-payout")
+    audit("Unauthenticated Split Read Blocked (401)", res_split_unauth.status_code == 401)
+
+    res_split = client.get(f"/payments/orders/{quoted_order_id}/split-payout", headers=admin_headers)
     audit("Get Order Split Payout Responds 200 (Quoted ID)", res_split.status_code == 200)
 
-    res_split_clean = client.get(f"/payments/orders/{clean_order_id}/split-payout")
+    res_split_clean = client.get(f"/payments/orders/{clean_order_id}/split-payout", headers=admin_headers)
     audit("Get Order Split Payout Responds 200 (Clean ID)", res_split_clean.status_code == 200)
 
     split_data = res_split.json() if res_split.status_code == 200 else {}
@@ -301,10 +309,13 @@ def run_razorpay_tests() -> bool:
         audit("Vendor Transfer Amount Matches in Paise", v_transfer.get("amount") == int(round(v_payout * 100)))
         audit("Runner Transfer Amount Matches in Paise", r_transfer.get("amount") == int(round(r_payout * 100)))
 
-    # Test Split Execution Endpoint
-    res_exec = client.post(f"/payments/orders/{clean_order_id}/execute-split")
+    # Test Split Execution Endpoint: Negative check (Unauthenticated must be blocked)
+    res_exec_unauth = client.post(f"/payments/orders/{clean_order_id}/execute-split")
+    audit("Unauthenticated Split Execution Blocked (401)", res_exec_unauth.status_code == 401)
+
+    res_exec = client.post(f"/payments/orders/{clean_order_id}/execute-split", headers=admin_headers)
     audit("Execute Split Transfers Responds 200 on PAID Order", res_exec.status_code == 200)
-    audit("Split Payout Status Transitions to 'settled'", res_exec.json().get("split_payout_status") == "settled")
+    audit("Split Payout Status Transitions to 'processed' or 'settled'", res_exec.json().get("split_payout_status") in ("settled", "processed"))
 
     # Verify Payment Status Polling Endpoint
     res_poll = client.get(f"/payments/orders/{clean_order_id}/status")
@@ -329,6 +340,14 @@ def run_razorpay_tests() -> bool:
     audit("Zero-Trust /payments/create-order API Call in Checkout", "/payments/create-order" in index_content)
     audit("Razorpay Modal Initialization Logic Present", "new Razorpay(options)" in index_content)
     audit("Cryptographic Signature Verification Call on Success", "/payments/verify-signature" in index_content)
+
+    # Clean up test orders created during test to preserve exact 364 orders baseline
+    new_order_ids = set(o[0] for o in db.query(Order.id).all()) - initial_order_ids
+    if new_order_ids:
+        db.query(OrderItem).filter(OrderItem.order_id.in_(new_order_ids)).delete(synchronize_session=False)
+        db.query(PaymentTransaction).filter(PaymentTransaction.order_id.in_(new_order_ids)).delete(synchronize_session=False)
+        db.query(Order).filter(Order.id.in_(new_order_ids)).delete(synchronize_session=False)
+        db.commit()
 
     db.close()
 

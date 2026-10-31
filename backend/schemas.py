@@ -1,6 +1,6 @@
 import html
 import re
-from typing import List, Optional
+from typing import List, Optional, Dict, Any, Tuple, Union
 from pydantic import BaseModel, Field, model_validator
 
 
@@ -96,6 +96,7 @@ class VerifyOTPResponse(BaseModel):
     success: bool
     message: str
     session_token: str
+    token: Optional[str] = None
     user: UserProfileDTO
 
 # --- Landmark Schemas ---
@@ -103,6 +104,7 @@ class SaveLandmarkRequest(SecureBaseModel):
     phone: str = Field(..., min_length=10)
     name: str = Field(..., min_length=1)
     district: Optional[str] = None
+    block: Optional[str] = None
     village: str = Field(..., min_length=1)
     landmark: str = Field(..., min_length=10)
     lat: Optional[float] = None
@@ -113,6 +115,17 @@ class SaveLandmarkResponse(BaseModel):
     success: bool
     message: str
     user: UserProfileDTO
+
+class LocationServiceabilityResponse(BaseModel):
+    serviceable: bool
+    village: Optional[str] = None
+    block: str = "Minapur"
+    district: str = "Muzaffarpur"
+    distance_km: Optional[float] = None
+    max_radius_km: float = 8.0
+    reason: Optional[str] = None
+    pricing_estimate: Optional[Dict[str, Any]] = None
+    pilot_coverage: Dict[str, Any]
 
 # --- Catalog Schemas ---
 class ProductDTO(BaseModel):
@@ -217,7 +230,30 @@ class OrderStatusResponse(BaseModel):
     landmark: str
     refund_amount: Optional[float] = None
     refund_penalty: Optional[float] = None
+    runner_id: Optional[str] = None
+    runner_name: Optional[str] = None
+    runner_phone: Optional[str] = None
     created_at: str
+    items: Optional[List[Dict[str, Any]]] = None
+    customer_lat: Optional[float] = None
+    customer_lng: Optional[float] = None
+
+
+class OrderDeliveryLocationUpdate(BaseModel):
+    customer_lat: float
+    customer_lng: float
+    landmark: Optional[str] = None
+    delivery_address: Optional[str] = None
+
+
+class OrderDeliveryLocationResponse(BaseModel):
+    success: bool
+    order_id: str
+    customer_lat: float
+    customer_lng: float
+    landmark: Optional[str] = None
+    message: str
+    directions_url: str
 
 
 # --- Vendor (Dukandaar) Schemas ---
@@ -258,6 +294,9 @@ class VendorOrderDTO(BaseModel):
     status: str
     timeline_stage: int
     delivery_otp: str
+    runner_id: Optional[str] = None
+    runner_name: Optional[str] = None
+    runner_phone: Optional[str] = None
     created_at: str
     items: List[VendorOrderItemDTO]
 
@@ -358,6 +397,9 @@ class RunnerMissionDTO(BaseModel):
     store_id: str
     store_name: str
     store_phone: str
+    store_lat: Optional[float] = None
+    store_lng: Optional[float] = None
+    store_address: Optional[str] = None
     user_name: str
     user_phone: str
     village: str
@@ -498,6 +540,11 @@ class AdminMetricsResponse(BaseModel):
     total_runners: int
     approved_runners: int
     pending_runners: int
+    open_tickets: Optional[int] = 0
+    live_orders_count: Optional[int] = 0
+    live_gmv: Optional[float] = 0.0
+    demo_orders_count: Optional[int] = 0
+    demo_gmv: Optional[float] = 0.0
 
 
 class AdminPendingVendorDTO(BaseModel):
@@ -624,7 +671,7 @@ class AdminCommissionLedgerResponse(BaseModel):
 
 # --- Support & My Account Schemas ---
 class SupportChatRequest(SecureBaseModel):
-    user_phone: str = Field(..., min_length=10, max_length=15)
+    user_phone: Optional[str] = Field(None, min_length=10, max_length=15)
     message: str = Field(..., min_length=1)
     order_id: Optional[str] = None
     lang: Optional[str] = "hi"
@@ -638,11 +685,12 @@ class SupportChatResponse(BaseModel):
 
 
 class SupportTicketRequest(SecureBaseModel):
-    user_phone: str = Field(..., min_length=10, max_length=15)
+    user_phone: Optional[str] = Field(None, min_length=10, max_length=15)
     message: str = Field(..., min_length=1)
     order_id: Optional[str] = None
     category: Optional[str] = "general"
     subject: Optional[str] = None
+    affected_items: Optional[List[Dict[str, Any]]] = None
 
 
 class SupportTicketResponse(BaseModel):
@@ -680,6 +728,9 @@ class CommerceAssistantResponse(BaseModel):
     products: List[CommerceAssistantItemDTO]
     message: str
     found_count: int
+    intent: Optional[str] = "search"
+    action_performed: Optional[str] = None
+    clarification_question: Optional[str] = None
 
 
 class UserOrderSummaryDTO(BaseModel):
@@ -694,7 +745,138 @@ class UserOrderSummaryDTO(BaseModel):
     payment_mode: str
     items_count: int
     delivery_otp: str
+    runner_id: Optional[str] = None
+    runner_name: Optional[str] = None
+    runner_phone: Optional[str] = None
     created_at: str
+    can_cancel: Optional[bool] = None
+    can_request_cancellation: Optional[bool] = None
+    can_report_issue: Optional[bool] = None
+    refund_status: Optional[str] = None
+    refund_amount: Optional[float] = None
+
+
+class CustomerOrderDetailItemDTO(BaseModel):
+    id: Optional[int] = None
+    product_id: str
+    name: str
+    price: float
+    qty: int
+    unit: Optional[str] = "pack"
+    image: Optional[str] = None
+    total_price: Optional[float] = None
+
+
+class RefundTrackingTimelineItemDTO(BaseModel):
+    stage: str
+    stage_hi: Optional[str] = None
+    completed: bool
+    active: Optional[bool] = False
+    date: Optional[str] = None
+    note: Optional[str] = None
+
+
+class RefundTrackingDTO(BaseModel):
+    is_prepaid: bool
+    amount: float
+    method: str
+    status: str  # "PROCESSING", "COMPLETED", "NOT_APPLICABLE"
+    status_text_en: str
+    status_text_hi: str
+    settlement_timeline: str
+    timeline: List[RefundTrackingTimelineItemDTO]
+
+
+class ReplacementDetailDTO(BaseModel):
+    replacement_id: str
+    original_order_id: str
+    ticket_id: Optional[str] = None
+    original_order_item_id: Optional[int] = None
+    replacement_product_id: str
+    product_name: str
+    quantity: int
+    item_price: float
+    reason: str
+    preferred_resolution: str
+    customer_phone: str
+    customer_name: Optional[str] = None
+    store_id: str
+    store_name: Optional[str] = None
+    runner_id: Optional[str] = None
+    runner_name: Optional[str] = None
+    runner_phone: Optional[str] = None
+    runner_payout: Optional[float] = 20.0
+    status: str
+    promised_eta: Optional[str] = None
+    delivery_verification: Optional[str] = None
+    reverse_pickup_required: bool = False
+    reverse_pickup_status: str
+    customer_charge: float = 0.0
+    admin_notes: Optional[str] = None
+    evidence_url: Optional[str] = None
+    created_at: str
+    updated_at: Optional[str] = None
+
+
+class RefundDetailDTO(BaseModel):
+    refund_id: str
+    order_id: str
+    ticket_id: Optional[str] = None
+    replacement_id: Optional[str] = None
+    user_phone: str
+    amount: float
+    amount_paise: int
+    reason: str
+    payment_mode: str
+    razorpay_refund_id: Optional[str] = None
+    status: str
+    responsible_party: str = "unclear"
+    reimbursement_method: str = "ORIGINAL_SOURCE"
+    reimbursement_destination: Optional[str] = None
+    approved_by: Optional[str] = None
+    approval_timestamp: Optional[str] = None
+    failure_reason: Optional[str] = None
+    processed_at: Optional[str] = None
+    admin_notes: Optional[str] = None
+    created_at: str
+
+
+
+
+class CustomerOrderDetailResponse(BaseModel):
+    order_id: str
+    store_id: str
+    store_name: str
+    user_name: Optional[str] = None
+    user_phone: str
+    village: Optional[str] = None
+    landmark: Optional[str] = None
+    delivery_address: Optional[str] = None
+    subtotal: float
+    delivery_fee: float
+    platform_fee: float
+    total_amount: float
+    status: str
+    timeline_stage: int
+    payment_mode: str
+    payment_status: Optional[str] = "PENDING"
+    delivery_otp: Optional[str] = None
+    runner_id: Optional[str] = None
+    runner_name: Optional[str] = None
+    runner_phone: Optional[str] = None
+    created_at: str
+    paid_at: Optional[str] = None
+    items: List[CustomerOrderDetailItemDTO]
+    can_cancel: bool
+    can_request_cancellation: bool
+    can_report_issue: bool
+    cancellation_reason: Optional[str] = None
+    refund_status: Optional[str] = None
+    refund_amount: Optional[float] = None
+    refund_penalty: Optional[float] = None
+    refund_tracking: Optional[RefundTrackingDTO] = None
+    active_replacement: Optional[ReplacementDetailDTO] = None
+    refund_records: Optional[List[RefundDetailDTO]] = None
 
 
 # --- FinTech & Payout Onboarding Schemas ---
@@ -864,3 +1046,381 @@ class SplitPayoutDetailsDTO(BaseModel):
 
 
 
+
+
+# =============================================================================
+# REAL IN-APP & BACKEND-BACKED NOTIFICATIONS SCHEMAS
+# =============================================================================
+
+class NotificationDTO(BaseModel):
+    id: str
+    user_id: Optional[str] = None
+    user_role: str
+    order_id: Optional[str] = None
+    title: str
+    title_hi: str
+    message: str
+    message_hi: str
+    notification_type: str
+    is_read: bool
+    created_at: str
+
+
+class NotificationListResponse(BaseModel):
+    success: bool
+    notifications: List[NotificationDTO]
+    unread_count: int
+    total_count: int
+
+
+class UnreadCountResponse(BaseModel):
+    unread_count: int
+
+
+class NotificationMarkReadResponse(BaseModel):
+    success: bool
+    message: str
+    notification_id: Optional[str] = None
+    is_read: bool = True
+
+
+class WebPushSubscriptionRequest(BaseModel):
+    user_id: Optional[str] = None
+    user_role: str
+    endpoint: str
+    keys: Dict[str, str] = Field(default_factory=dict)
+
+
+# --- In-App Role Messaging Schemas (Vendor <-> Runner <-> Admin) ---
+class ChatMessageCreate(BaseModel):
+    message: Optional[str] = None
+    text: Optional[str] = None
+    sender_id: Optional[str] = None
+    sender_role: Optional[str] = None
+    sender_name: Optional[str] = None
+    quick_tag: Optional[str] = None
+
+class ChatMessageResponse(BaseModel):
+    id: int
+    thread_id: str
+    sender_id: str
+    sender_role: str
+    sender_name: str
+    message: str
+    is_read: bool
+    created_at: str
+
+class MessageThreadResponse(BaseModel):
+    id: str
+    order_id: Optional[str] = None
+    vendor_id: str
+    runner_id: Optional[str] = None
+    vendor_name: Optional[str] = None
+    runner_name: Optional[str] = None
+    customer_phone: Optional[str] = None
+    subject: str
+    unread_count: int = 0
+    last_message: Optional[str] = None
+    updated_at: str
+    messages: Optional[List[ChatMessageResponse]] = None
+
+class MessageThreadListResponse(BaseModel):
+    success: bool
+    threads: List[MessageThreadResponse]
+    total_unread: int
+
+
+# =============================================================================
+# CENTRAL CATALOG & VENDOR INVENTORY SCHEMAS (Village-First Architecture)
+# =============================================================================
+
+class CentralProductDTO(BaseModel):
+    id: str
+    name_en: str
+    name_hi: str
+    category: str
+    category_name: Optional[str] = None
+    brand: Optional[str] = None
+    variant: Optional[str] = None
+    default_unit: str = "1 kg"
+    default_mrp: Optional[float] = None
+    image_url: Optional[str] = None
+    search_aliases: Optional[str] = None
+    is_active: bool = True
+
+    class Config:
+        from_attributes = True
+
+
+class CentralProductCreateRequest(BaseModel):
+    name_en: str
+    name_hi: str
+    category: str
+    category_name: Optional[str] = None
+    brand: Optional[str] = None
+    variant: Optional[str] = None
+    default_unit: str = "1 kg"
+    default_mrp: Optional[float] = None
+    image_url: Optional[str] = None
+    search_aliases: Optional[str] = None
+
+
+class CentralProductUpdateRequest(BaseModel):
+    name_en: Optional[str] = None
+    name_hi: Optional[str] = None
+    category: Optional[str] = None
+    category_name: Optional[str] = None
+    brand: Optional[str] = None
+    variant: Optional[str] = None
+    default_unit: Optional[str] = None
+    default_mrp: Optional[float] = None
+    image_url: Optional[str] = None
+    search_aliases: Optional[str] = None
+    is_active: Optional[bool] = None
+
+
+class CentralProductDeduplicateRequest(BaseModel):
+    duplicate_id: str
+    master_id: str
+
+
+class VendorProductDTO(BaseModel):
+    id: str
+    store_id: str
+    name_en: str
+    name_hi: str
+    category: str
+    weight: str
+    price: float
+    mrp: float
+    stock_qty: int = 50
+    in_stock: bool = True
+    is_available: bool = True
+    image_url: Optional[str] = None
+    central_product_id: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+
+class VendorAddProductRequest(BaseModel):
+    central_product_id: Optional[str] = None
+    name_en: str
+    name_hi: str
+    category: str
+    price: float
+    weight: str
+    stock_qty: int = 50
+    in_stock: bool = True
+    mrp: Optional[float] = None
+    image_url: Optional[str] = None
+
+
+class VendorUpdateProductRequest(BaseModel):
+    price: Optional[float] = None
+    weight: Optional[str] = None
+    stock_qty: Optional[int] = None
+    in_stock: Optional[bool] = None
+    mrp: Optional[float] = None
+    image_url: Optional[str] = None
+
+
+class VendorProfileDTO(BaseModel):
+    store_id: str
+    store_code: Optional[str] = None
+    name: str
+    hindi_name: Optional[str] = None
+    owner_name: Optional[str] = None
+    phone: Optional[str] = None
+    category: str
+    village: Optional[str] = None
+    address: Optional[str] = None
+    landmark: Optional[str] = None
+    pickup_location: Optional[str] = None
+    photo_url: Optional[str] = None
+    opening_time: Optional[str] = "07:00 AM"
+    closing_time: Optional[str] = "09:00 PM"
+    weekly_schedule: Optional[str] = "All Days"
+    is_open: bool = True
+    is_verified: bool = False
+    kyc_status: str = "pending"
+    kyc_document_type: Optional[str] = None
+    kyc_document_number_masked: Optional[str] = None
+    kyc_document_url: Optional[str] = None
+    kyc_rejection_reason: Optional[str] = None
+    payout_upi: Optional[str] = None
+    bank_account_name: Optional[str] = None
+    bank_account_number_masked: Optional[str] = None
+    bank_ifsc: Optional[str] = None
+    bank_verification_status: str = "pending"
+    theme_preference: str = "system"
+    lang_preference: str = "hi"
+
+
+class VendorProfileUpdateRequest(BaseModel):
+    name: Optional[str] = None
+    owner_name: Optional[str] = None
+    phone: Optional[str] = None
+    category: Optional[str] = None
+    village: Optional[str] = None
+    address: Optional[str] = None
+    landmark: Optional[str] = None
+    pickup_location: Optional[str] = None
+    opening_time: Optional[str] = None
+    closing_time: Optional[str] = None
+    weekly_schedule: Optional[str] = None
+    photo_url: Optional[str] = None
+    theme_preference: Optional[str] = None
+    lang_preference: Optional[str] = None
+
+
+class VendorKYCSubmitRequest(BaseModel):
+    document_type: str
+    document_number: str
+    document_url: Optional[str] = None
+
+
+class VendorBankUpdateRequest(BaseModel):
+    payout_mode: Optional[str] = "bank"
+    account_holder: Optional[str] = None
+    bank_name: Optional[str] = None
+    account_number: Optional[str] = None
+    ifsc: Optional[str] = None
+    upi_id: Optional[str] = None
+
+
+class RunnerProfileDetailDTO(BaseModel):
+    runner_id: str
+    partner_code: Optional[str] = None
+    name: str
+    phone: str
+    photo_url: Optional[str] = None
+    village: Optional[str] = None
+    address: Optional[str] = None
+    emergency_contact: Optional[str] = None
+    vehicle_type: str = "Motorcycle"
+    vehicle_reg_number: Optional[str] = None
+    driving_licence_number: Optional[str] = None
+    driving_licence_url: Optional[str] = None
+    is_verified: bool = False
+    kyc_status: str = "pending"
+    kyc_document_type: Optional[str] = None
+    kyc_document_number_masked: Optional[str] = None
+    kyc_document_url: Optional[str] = None
+    kyc_rejection_reason: Optional[str] = None
+    primary_village: Optional[str] = "Rampur"
+    service_radius_km: float = 5.0
+    payout_upi: Optional[str] = None
+    bank_account_name: Optional[str] = None
+    bank_account_number_masked: Optional[str] = None
+    bank_ifsc: Optional[str] = None
+    bank_verification_status: str = "pending"
+    is_online: bool = True
+    rating: float = 4.9
+    theme_preference: str = "system"
+    lang_preference: str = "hi"
+
+
+class RunnerProfileUpdateRequest(BaseModel):
+    name: Optional[str] = None
+    village: Optional[str] = None
+    address: Optional[str] = None
+    emergency_contact: Optional[str] = None
+    primary_village: Optional[str] = None
+    photo_url: Optional[str] = None
+    theme_preference: Optional[str] = None
+    lang_preference: Optional[str] = None
+
+
+class RunnerKYCSubmitRequest(BaseModel):
+    document_type: str
+    document_number: str
+    document_url: Optional[str] = None
+    vehicle_type: str = "Motorcycle"
+    vehicle_reg_number: Optional[str] = None
+    driving_licence_number: Optional[str] = None
+    driving_licence_url: Optional[str] = None
+
+
+class AdminKYCReviewRequest(BaseModel):
+    action: str  # "approve", "reject", "resubmit"
+    rejection_reason: Optional[str] = None
+
+
+class AdminKYCPendingItemDTO(BaseModel):
+    entity_type: str  # "vendor" or "runner"
+    entity_id: str
+    entity_code: str
+    name: str
+    phone: str
+    village: str
+    document_type: str
+    document_number_masked: str
+    document_url: Optional[str] = None
+    submitted_at: Optional[str] = None
+    status: str
+    vehicle_type: Optional[str] = None
+    driving_licence: Optional[str] = None
+
+class RunnerBankUpdateRequest(BaseModel):
+    payout_mode: Optional[str] = "bank"
+    account_holder: Optional[str] = None
+    bank_name: Optional[str] = None
+    account_number: Optional[str] = None
+    ifsc: Optional[str] = None
+    upi_id: Optional[str] = None
+
+
+class AdminDatabaseMigrateRequest(BaseModel):
+    confirm: bool = False
+    dry_run: bool = False
+    target_environment: Optional[str] = None
+
+
+# --- Resolution, Replacement & Refund Schemas (Phase 3B) ---
+
+class IssueReportRequest(SecureBaseModel):
+    order_id: str
+    category: str  # missing_item, wrong_item, damaged_item, expired_item, spoiled_item, incorrect_quantity, order_not_delivered, duplicate_payment, delivery_or_payment_issue, other
+    preferred_resolution: str = "refund"  # "refund", "replacement"
+    affected_items: Optional[List[Dict[str, Any]]] = None
+    message: Optional[str] = None
+    evidence_url: Optional[str] = None
+    user_phone: Optional[str] = None
+    upi_vpa: Optional[str] = None
+
+
+class IssueReportResponse(BaseModel):
+    success: bool
+    ticket_id: str
+    order_id: str
+    preferred_resolution: str
+    status: str
+    replacement_id: Optional[str] = None
+    refund_id: Optional[str] = None
+    refund_amount: Optional[float] = None
+    replacement_eta: Optional[str] = None
+    reverse_pickup_required: bool = False
+    reverse_pickup_instructions: Optional[str] = None
+    message: str
+    created_at: str
+
+
+class ResolutionAdminActionRequest(BaseModel):
+    action: str  # approve_refund, approve_replacement, request_evidence, request_vendor_response, offer_alternate, reject, escalate
+    responsible_party: Optional[str] = "unclear"  # vendor, runner, platform, unclear, customer
+    refund_amount: Optional[float] = None
+    admin_notes: Optional[str] = None
+    reimbursement_method: Optional[str] = None
+
+
+class VendorReplacementActionRequest(BaseModel):
+    action: str  # confirm_stock, out_of_stock, mark_ready
+    vendor_notes: Optional[str] = None
+
+
+class RunnerReplacementActionRequest(BaseModel):
+    action: Optional[str] = 'verify_otp'  # pickup, verify_otp
+    otp: Optional[str] = None
+    reverse_item_collected: Optional[bool] = False
+    runner_notes: Optional[str] = None

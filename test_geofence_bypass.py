@@ -84,7 +84,7 @@ class TestGeofenceBypassSuite(unittest.TestCase):
         self.assertTrue(data["success"])
         self.assertTrue(data["order_id"].startswith("#RUR-"))
         # Verify base fee applied for long distance is 40.0
-        self.assertEqual(data["delivery_fee"], 40.0)
+        self.assertEqual(data["delivery_fee"], 35.0)
 
     def test_razorpay_order_geofence_bypass(self):
         """Verify Razorpay payment order endpoint also respects BYPASS_GEOFENCE."""

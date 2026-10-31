@@ -20,6 +20,7 @@ from typing import Optional, Dict, Any, Tuple
 from fastapi import Request, HTTPException, Header, Depends
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
+from cryptography.fernet import Fernet, MultiFernet
 
 # -----------------------------------------------------------------------------
 # 1. CRYPTOGRAPHIC CONFIGURATION
@@ -27,8 +28,376 @@ from starlette.responses import Response
 JWT_SECRET = os.getenv("JWT_SECRET", "gb-bankgrade-production-secret-9a8b7c6d5e4f3a2b1c-2026")
 JWT_ALGORITHM = "HS256"
 DEFAULT_EXPIRATION_DAYS = 30
-TEST_MODE = os.getenv("TEST_MODE", "0") == "1"
-CI_MODE = os.getenv("CI", "0") == "1"
+TEST_MODE = os.getenv("TEST_MODE", "0").lower() in ("1", "true", "yes")
+CI_MODE = os.getenv("CI", "0").lower() in ("1", "true", "yes")
+
+def is_hosted_or_production_environment() -> bool:
+    """Returns True if the application is running in production, preview, or on a hosted cloud platform (e.g. Render)."""
+    if os.getenv("RENDER", "").lower() in ("true", "1") or os.getenv("RENDER_SERVICE_NAME") or os.getenv("RENDER_INSTANCE_ID"):
+        return True
+    if os.getenv("GAONBAZAR_PREVIEW_MODE") == "1":
+        return True
+    env = os.getenv("ENVIRONMENT", "").strip().lower()
+    return env in ("production", "prod", "preview", "staging")
+
+
+def is_production_environment() -> bool:
+    """Returns True if the application is running in production mode."""
+    if is_hosted_or_production_environment():
+        env = os.getenv("ENVIRONMENT", "").strip().lower()
+        if env in ("preview", "staging"):
+            return False
+        return True
+    env = os.getenv("ENVIRONMENT", "").strip().lower()
+    return env in ("production", "prod")
+
+
+def is_test_bypass_allowed() -> bool:
+    """
+    Test bypass via X-Test-Bypass header is strictly prohibited in hosted, preview, or production environments.
+    It is ONLY permitted when running local automated tests in an explicitly configured test environment.
+    """
+    if is_hosted_or_production_environment():
+        return False
+    return (
+        os.getenv("ALLOW_TEST_BYPASS", "").lower() in ("1", "true", "yes")
+        or os.getenv("TEST_MODE", "").lower() in ("1", "true", "yes")
+        or os.getenv("PYTEST_CURRENT_TEST") is not None
+    )
+
+
+# -----------------------------------------------------------------------------
+# 1.2 TOKEN REVOCATION & BLACKLIST (LOGOUT & SUSPENSION ENGINE)
+# -----------------------------------------------------------------------------
+_REVOKED_TOKENS = set()
+_REVOKED_TOKENS_LOCK = threading.Lock()
+
+def revoke_token(token: Optional[str], reason: Optional[str] = None, expires_at: Optional[datetime] = None):
+    """Adds a token to the revoked token blacklist (for logout, suspension, or deletion).
+    Saves to in-memory set and durable database table `revoked_tokens`.
+    """
+    if not token or not isinstance(token, str):
+        return
+    token_clean = token.strip()
+    if token_clean.lower().startswith("bearer "):
+        token_clean = token_clean[7:].strip()
+    token_hash = hashlib.sha256(token_clean.encode("utf-8")).hexdigest()
+    with _REVOKED_TOKENS_LOCK:
+        _REVOKED_TOKENS.add(token_hash)
+
+    try:
+        from .database import SessionLocal
+        from .models import RevokedToken
+        db = SessionLocal()
+        try:
+            exists = db.query(RevokedToken).filter(RevokedToken.token_hash == token_hash).first()
+            if not exists:
+                record = RevokedToken(
+                    token_hash=token_hash,
+                    revoked_at=datetime.utcnow(),
+                    expires_at=expires_at,
+                    reason=reason or "logout_or_revocation"
+                )
+                db.add(record)
+                db.commit()
+        except Exception:
+            db.rollback()
+        finally:
+            db.close()
+    except Exception:
+        pass
+
+def is_token_revoked(token: Optional[str]) -> bool:
+    """Checks if a token has been revoked / logged out. Checks in-memory cache first, then database."""
+    if not token or not isinstance(token, str):
+        return False
+    token_clean = token.strip()
+    if token_clean.lower().startswith("bearer "):
+        token_clean = token_clean[7:].strip()
+    token_hash = hashlib.sha256(token_clean.encode("utf-8")).hexdigest()
+    with _REVOKED_TOKENS_LOCK:
+        if token_hash in _REVOKED_TOKENS:
+            return True
+
+    try:
+        from .database import SessionLocal
+        from .models import RevokedToken
+        db = SessionLocal()
+        try:
+            record = db.query(RevokedToken).filter(RevokedToken.token_hash == token_hash).first()
+            if record:
+                with _REVOKED_TOKENS_LOCK:
+                    _REVOKED_TOKENS.add(token_hash)
+                return True
+        finally:
+            db.close()
+    except Exception:
+        pass
+    return False
+
+def clear_revoked_tokens_for_tests():
+    """Clears blacklist cache for automated testing isolation."""
+    with _REVOKED_TOKENS_LOCK:
+        _REVOKED_TOKENS.clear()
+    try:
+        from .database import SessionLocal
+        from .models import RevokedToken
+        db = SessionLocal()
+        try:
+            db.query(RevokedToken).delete()
+            db.commit()
+        except Exception:
+            db.rollback()
+        finally:
+            db.close()
+    except Exception:
+        pass
+
+
+# -----------------------------------------------------------------------------
+# 1.3 WEBHOOK IDEMPOTENCY & REPLAY DEFENSE ENGINE
+# -----------------------------------------------------------------------------
+_PROCESSED_WEBHOOK_EVENTS = set()
+_WEBHOOK_EVENTS_LOCK = threading.Lock()
+
+def is_webhook_event_processed(event_id: Optional[str]) -> bool:
+    """Returns True if the webhook event ID has already been recorded and processed.
+    Checks in-memory cache first, then database table `processed_webhook_events`.
+    """
+    if not event_id:
+        return False
+    clean_id = str(event_id).strip()
+    with _WEBHOOK_EVENTS_LOCK:
+        if clean_id in _PROCESSED_WEBHOOK_EVENTS:
+            return True
+
+    try:
+        from .database import SessionLocal
+        from .models import ProcessedWebhookEvent
+        db = SessionLocal()
+        try:
+            record = db.query(ProcessedWebhookEvent).filter(ProcessedWebhookEvent.event_id == clean_id).first()
+            if record:
+                with _WEBHOOK_EVENTS_LOCK:
+                    _PROCESSED_WEBHOOK_EVENTS.add(clean_id)
+                return True
+        finally:
+            db.close()
+    except Exception:
+        pass
+    return False
+
+def record_webhook_event_processed(event_id: Optional[str], event_type: Optional[str] = None):
+    """Records a webhook event ID to prevent duplicate financial credits.
+    Stores in in-memory cache and persists to database table `processed_webhook_events`.
+    """
+    if not event_id:
+        return
+    clean_id = str(event_id).strip()
+    with _WEBHOOK_EVENTS_LOCK:
+        _PROCESSED_WEBHOOK_EVENTS.add(clean_id)
+
+    try:
+        from .database import SessionLocal
+        from .models import ProcessedWebhookEvent
+        db = SessionLocal()
+        try:
+            exists = db.query(ProcessedWebhookEvent).filter(ProcessedWebhookEvent.event_id == clean_id).first()
+            if not exists:
+                record = ProcessedWebhookEvent(
+                    event_id=clean_id,
+                    event_type=event_type,
+                    processed_at=datetime.utcnow()
+                )
+                db.add(record)
+                db.commit()
+        except Exception:
+            db.rollback()
+        finally:
+            db.close()
+    except Exception:
+        pass
+
+def clear_webhook_events_for_tests():
+    """Clears processed webhook cache for automated test runs."""
+    with _WEBHOOK_EVENTS_LOCK:
+        _PROCESSED_WEBHOOK_EVENTS.clear()
+    try:
+        from .database import SessionLocal
+        from .models import ProcessedWebhookEvent
+        db = SessionLocal()
+        try:
+            db.query(ProcessedWebhookEvent).delete()
+            db.commit()
+        except Exception:
+            db.rollback()
+        finally:
+            db.close()
+    except Exception:
+        pass
+
+
+# -----------------------------------------------------------------------------
+# 1.4 FILE UPLOAD MAGIC BYTE & TYPE VALIDATION
+# -----------------------------------------------------------------------------
+def validate_image_file_bytes(content: bytes) -> bool:
+    """
+    Validates binary content of uploaded images against authentic file magic signatures.
+    Strictly denies HTML, SVG, scripts, or executables masquerading as images.
+    """
+    if not content or len(content) < 8:
+        return False
+    # PNG: \x89PNG\r\n\x1a\n
+    if content.startswith(b"\x89PNG\r\n\x1a\n"):
+        return True
+    # JPEG / JPG: \xff\xd8\xff
+    if content.startswith(b"\xff\xd8\xff"):
+        return True
+    # WEBP: RIFF....WEBP
+    if content.startswith(b"RIFF") and b"WEBP" in content[:16]:
+        return True
+    # GIF: GIF87a or GIF89a
+    if content.startswith(b"GIF87a") or content.startswith(b"GIF89a"):
+        return True
+    return False
+
+
+# -----------------------------------------------------------------------------
+# 1.5 ADMIN SECRET RESOLUTION ENGINE
+# -----------------------------------------------------------------------------
+def get_admin_secret_key() -> str:
+    """
+    Resolves the Super Admin authentication secret key.
+    Fails closed in production if unconfigured or using insecure default.
+    """
+    key = os.getenv("ADMIN_SECRET_KEY", "").strip()
+    if is_production_environment():
+        insecure_defaults = ("gaonbazar_super_admin_secret_2026", "admin123", "password", "changeme", "secret", "default")
+        if not key or key in insecure_defaults:
+            raise HTTPException(
+                status_code=500,
+                detail="Production security violation: ADMIN_SECRET_KEY unconfigured or using insecure default (fail closed)."
+            )
+        return key
+    elif is_hosted_or_production_environment():
+        return key or "gaonbazar_preview_super_admin_2026"
+    else:
+        return key or "gaonbazar_super_admin_secret_2026"
+
+def _check_jwt_secret_integrity(secret: str):
+    """Fails closed in production environments if JWT secret is missing or uses insecure default."""
+    if is_production_environment():
+        insecure_defaults = (
+            "gb-bankgrade-production-secret-9a8b7c6d5e4f3a2b1c-2026",
+            "super-secret-key-gaonbazar-2026",
+            "secret",
+            "changeme",
+            "123456",
+            "default_secret"
+        )
+        if not secret or secret in insecure_defaults:
+            raise HTTPException(
+                status_code=500,
+                detail="Production security violation: JWT_SECRET unconfigured or using insecure default (fail closed)."
+            )
+
+
+# -----------------------------------------------------------------------------
+# 1.1 SENSITIVE DATA ENCRYPTION AT REST (Bank Accounts & Identity Confidentiality)
+# -----------------------------------------------------------------------------
+def get_fernet_ciphers() -> MultiFernet:
+    """
+    Derives deterministic 32-byte URL-safe base64 encryption keys supporting MultiFernet key rotation.
+    Primary cipher: dedicated BANK_ENCRYPTION_KEY (isolated fin-tech secret).
+    Rotation fallback cipher: JWT_SECRET derived key (allows seamless zero-downtime key rotation).
+    Fails closed in hosted/production if unconfigured or default.
+    """
+    bank_key = os.getenv("BANK_ENCRYPTION_KEY", "").strip()
+    jwt_sec = os.getenv("JWT_SECRET", "").strip()
+
+    if is_production_environment():
+        insecure_keys = (
+            "",
+            "gb-bankgrade-production-secret-9a8b7c6d5e4f3a2b1c-2026",
+            "default_bank_key",
+            "changeme",
+            "secret"
+        )
+        if bank_key in insecure_keys:
+            if jwt_sec and jwt_sec not in insecure_keys:
+                bank_key = f"bank-subsystem-isolated-key::{jwt_sec}"
+            else:
+                raise HTTPException(
+                    status_code=500,
+                    detail="FinTech security violation: BANK_ENCRYPTION_KEY unconfigured or using insecure default in hosted/production (fail closed)."
+                )
+
+    if not bank_key:
+        bank_key = jwt_sec or "gb-bankgrade-production-secret-9a8b7c6d5e4f3a2b1c-2026"
+
+    # Primary key
+    primary_key = base64.urlsafe_b64encode(hashlib.sha256(bank_key.encode("utf-8")).digest())
+    ciphers = [Fernet(primary_key)]
+
+    # Fallback key for rotation / legacy records
+    if jwt_sec and jwt_sec != bank_key:
+        legacy_key = base64.urlsafe_b64encode(hashlib.sha256(jwt_sec.encode("utf-8")).digest())
+        ciphers.append(Fernet(legacy_key))
+    elif "gb-bankgrade-production-secret-9a8b7c6d5e4f3a2b1c-2026" != bank_key:
+        fallback_key = base64.urlsafe_b64encode(hashlib.sha256("gb-bankgrade-production-secret-9a8b7c6d5e4f3a2b1c-2026".encode("utf-8")).digest())
+        ciphers.append(Fernet(fallback_key))
+
+    return MultiFernet(ciphers)
+
+
+def get_fernet_cipher() -> MultiFernet:
+    """Returns the active MultiFernet cipher suite."""
+    return get_fernet_ciphers()
+
+
+def encrypt_sensitive_field(plaintext: Optional[str]) -> Optional[str]:
+    """Encrypts sensitive plaintext (e.g. bank account numbers) at rest using AES-128-CBC MultiFernet."""
+    if not plaintext:
+        return plaintext
+    text_val = str(plaintext).strip()
+    if not text_val or text_val.startswith("enc::"):
+        return text_val
+    cipher = get_fernet_cipher()
+    encrypted_bytes = cipher.encrypt(text_val.encode("utf-8"))
+    return f"enc::{encrypted_bytes.decode('utf-8')}"
+
+
+def decrypt_sensitive_field(ciphertext: Optional[str]) -> Optional[str]:
+    """Decrypts ciphertext at rest back to plaintext with MultiFernet key rotation and explicit error handling."""
+    if not ciphertext:
+        return ciphertext
+    text_val = str(ciphertext).strip()
+    if not text_val.startswith("enc::"):
+        return text_val
+    try:
+        cipher = get_fernet_cipher()
+        encrypted_token = text_val[5:]
+        decrypted_bytes = cipher.decrypt(encrypted_token.encode("utf-8"))
+        return decrypted_bytes.decode("utf-8")
+    except Exception as e:
+        raise ValueError(f"Cryptographic decryption failure for sensitive field: invalid ciphertext or mismatched key ({e})")
+
+
+def mask_bank_account(acc_num: Optional[str]) -> Optional[str]:
+    """Securely masks bank account numbers for API output (e.g. ••••••••5821, showing only last 4 digits)."""
+    if not acc_num:
+        return None
+    try:
+        decrypted = decrypt_sensitive_field(acc_num)
+    except Exception:
+        return "•••• •••• ••••"
+    if not decrypted:
+        return None
+    acc_clean = str(decrypted).strip()
+    if len(acc_clean) <= 4:
+        return "•••• " + acc_clean
+    return ("•" * (len(acc_clean) - 4)) + acc_clean[-4:]
+
 
 
 # -----------------------------------------------------------------------------
@@ -51,6 +420,7 @@ def create_jwt_token(payload: Dict[str, Any], secret: str = JWT_SECRET, expires_
     """
     Creates a signed JSON Web Token using HMAC-SHA256 according to RFC 7519.
     """
+    _check_jwt_secret_integrity(secret)
     now = time.time()
     header = {
         "alg": JWT_ALGORITHM,
@@ -84,6 +454,7 @@ def decode_jwt_token(token: str, secret: str = JWT_SECRET) -> Dict[str, Any]:
     Validates signature, algorithm, and expiration of a JWT token.
     Raises HTTPException(401) on invalid signature, tampering, or expiration.
     """
+    _check_jwt_secret_integrity(secret)
     if not token or not isinstance(token, str):
         raise HTTPException(status_code=401, detail="Missing or invalid authentication token")
 
@@ -92,6 +463,10 @@ def decode_jwt_token(token: str, secret: str = JWT_SECRET) -> Dict[str, Any]:
         raise HTTPException(status_code=401, detail="Malformed JWT token structure")
 
     header_b64, payload_b64, sig_b64 = parts
+
+    if is_token_revoked(token):
+        raise HTTPException(status_code=401, detail="Authentication token has been revoked or logged out")
+
 
     # 1. Verify Header
     try:
@@ -188,17 +563,33 @@ def extract_token_from_header(authorization: Optional[str] = Header(None)) -> Op
 
 def get_current_token_payload(
     authorization: Optional[str] = Header(None),
-    x_test_client: Optional[str] = Header(None)
+    x_test_client: Optional[str] = Header(None),
+    x_test_bypass: Optional[str] = Header(None),
+    request: Request = None
 ) -> Optional[Dict[str, Any]]:
     """
-    Extracts and validates JWT token payload.
-    Supports fallback dev bypass when explicitly in test mode with no authorization.
+    Extracts and validates JWT token payload from Authorization header or Auth cookies.
+    Denies unauthenticated requests by default for production & security audits.
     """
     token = extract_token_from_header(authorization)
+    if not token and request is not None:
+        try:
+            token = request.cookies.get("gaonbazar_admin_token") or request.cookies.get("authToken") or request.cookies.get("access_token")
+        except Exception:
+            token = None
+
     if not token:
-        # Seamless compatibility for automated test runners if no auth header passed
-        if (TEST_MODE or CI_MODE) and not x_test_client == "strict_security_audit":
-            return {"role": "admin", "sub": "test_bypass", "store_id": "sharma_brothers", "runner_id": "gm_1"}
+        # Strict security: deny by default.
+        # Test bypass is ONLY allowed when is_test_bypass_allowed() is True.
+        # It is ALWAYS rejected in preview, production, or when not explicitly enabled.
+        if x_test_bypass == "1":
+            if is_test_bypass_allowed():
+                return {"role": "admin", "sub": "test_bypass", "store_id": "sharma_brothers", "runner_id": "gm_1"}
+            else:
+                raise HTTPException(
+                    status_code=401,
+                    detail="X-Test-Bypass is strictly forbidden in hosted, preview, or production environments."
+                )
         return None
 
     return decode_jwt_token(token)
@@ -218,8 +609,6 @@ def require_authenticated_user(payload: Optional[Dict[str, Any]] = Depends(get_c
 def require_vendor_token(payload: Optional[Dict[str, Any]] = Depends(get_current_token_payload)) -> Dict[str, Any]:
     """Requires a valid Vendor JWT token."""
     if not payload:
-        if TEST_MODE or CI_MODE:
-            return {"role": "vendor", "store_id": "sharma_brothers"}
         raise HTTPException(status_code=401, detail="Vendor authentication required", headers={"WWW-Authenticate": "Bearer"})
     if payload.get("role") not in ["vendor", "admin"]:
         raise HTTPException(status_code=403, detail="Forbidden: Vendor privileges required")
@@ -229,8 +618,6 @@ def require_vendor_token(payload: Optional[Dict[str, Any]] = Depends(get_current
 def require_runner_token(payload: Optional[Dict[str, Any]] = Depends(get_current_token_payload)) -> Dict[str, Any]:
     """Requires a valid Gaon Mitra runner JWT token."""
     if not payload:
-        if TEST_MODE or CI_MODE:
-            return {"role": "runner", "runner_id": "gm_1"}
         raise HTTPException(status_code=401, detail="Gaon Mitra authentication required", headers={"WWW-Authenticate": "Bearer"})
     if payload.get("role") not in ["runner", "admin"]:
         raise HTTPException(status_code=403, detail="Forbidden: Gaon Mitra runner privileges required")
@@ -240,8 +627,6 @@ def require_runner_token(payload: Optional[Dict[str, Any]] = Depends(get_current
 def require_admin_token(payload: Optional[Dict[str, Any]] = Depends(get_current_token_payload)) -> Dict[str, Any]:
     """Requires a valid Super Admin JWT token."""
     if not payload:
-        if TEST_MODE or CI_MODE:
-            return {"role": "admin", "admin_id": "super_admin"}
         raise HTTPException(status_code=401, detail="Super Admin authentication required", headers={"WWW-Authenticate": "Bearer"})
     if payload.get("role") != "admin":
         raise HTTPException(status_code=403, detail="Forbidden: Super Admin privileges required")
@@ -257,8 +642,6 @@ def verify_vendor_access(
     A vendor can ONLY access endpoints corresponding to their specific store_id.
     """
     if not payload:
-        if TEST_MODE or CI_MODE:
-            return {"role": "vendor", "store_id": store_id}
         raise HTTPException(status_code=401, detail="Vendor authentication required", headers={"WWW-Authenticate": "Bearer"})
 
     role = payload.get("role")
@@ -289,8 +672,6 @@ def verify_runner_access(
     A runner can ONLY access their specific active missions, shift toggles, and payout ledger.
     """
     if not payload:
-        if TEST_MODE or CI_MODE:
-            return {"role": "runner", "runner_id": runner_id or "gm_1"}
         raise HTTPException(status_code=401, detail="Gaon Mitra authentication required", headers={"WWW-Authenticate": "Bearer"})
 
     role = payload.get("role")
@@ -364,6 +745,34 @@ def verify_customer_access(
     return payload
 
 
+def verify_order_access(order: Any, payload: Optional[Dict[str, Any]]) -> bool:
+    """
+    Verifies that the authenticated caller has legitimate authorization to access the given order:
+    - Customer who owns the order
+    - Assigned Vendor for the order's store
+    - Assigned Runner for the order
+    - Super Admin
+    """
+    if not payload:
+        return False
+    role = payload.get("role")
+    if role == "admin":
+        return True
+    if role == "customer":
+        tok_phone = str(payload.get("phone", "")).strip().replace("+91", "").lstrip("0")
+        ord_phone = str(getattr(order, "user_phone", "")).strip().replace("+91", "").lstrip("0")
+        return bool(tok_phone and ord_phone and tok_phone == ord_phone)
+    if role == "vendor":
+        tok_store = payload.get("store_id")
+        ord_store = getattr(order, "store_id", None)
+        return bool(tok_store and ord_store and tok_store == ord_store)
+    if role == "runner":
+        tok_runner = payload.get("runner_id")
+        ord_runner = getattr(order, "runner_id", None)
+        return bool(tok_runner and ord_runner and tok_runner == ord_runner)
+    return False
+
+
 # -----------------------------------------------------------------------------
 # 5. IN-MEMORY SLIDING WINDOW RATE LIMITER (ANTI-SPAM / ANTI-FLOODING)
 # -----------------------------------------------------------------------------
@@ -426,7 +835,11 @@ def enforce_otp_rate_limit(
     client_ip = request.client.host if request.client else "127.0.0.1"
     
     # In general test mode, bypass unless explicitly testing rate limits
-    is_bypass = (TEST_MODE or CI_MODE or x_test_bypass == "1") and (x_enforce_rate_limit != "1")
+    if is_hosted_or_production_environment() or not is_test_bypass_allowed():
+        is_bypass = False
+    else:
+        is_test_mode = os.getenv("TEST_MODE", "0").lower() in ("1", "true", "yes") or os.getenv("ALLOW_TEST_BYPASS", "0").lower() in ("1", "true", "yes")
+        is_bypass = (is_test_mode or x_test_bypass == "1") and (x_enforce_rate_limit != "1")
 
     allowed, retry_after = otp_rate_limiter.check_rate_limit(client_ip, is_test_bypass=is_bypass)
     if not allowed:
@@ -445,7 +858,11 @@ def enforce_checkout_rate_limit(
     """Dependency that enforces rate limit on /api/orders/checkout."""
     client_ip = request.client.host if request.client else "127.0.0.1"
 
-    is_bypass = (TEST_MODE or CI_MODE or x_test_bypass == "1") and (x_enforce_rate_limit != "1")
+    if is_hosted_or_production_environment() or not is_test_bypass_allowed():
+        is_bypass = False
+    else:
+        is_test_mode = os.getenv("TEST_MODE", "0").lower() in ("1", "true", "yes") or os.getenv("ALLOW_TEST_BYPASS", "0").lower() in ("1", "true", "yes")
+        is_bypass = (is_test_mode or x_test_bypass == "1") and (x_enforce_rate_limit != "1")
 
     allowed, retry_after = checkout_rate_limiter.check_rate_limit(client_ip, is_test_bypass=is_bypass)
     if not allowed:
@@ -480,7 +897,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
 
         # 5. Device Permissions Policy
-        response.headers["Permissions-Policy"] = "geolocation=(self), camera=(), microphone=(), payment=(self)"
+        response.headers["Permissions-Policy"] = "geolocation=(self), camera=(self), microphone=(self), payment=(self)"
 
         # 6. Strict Content Security Policy (allowing CDNs required for Tailwind, Material Icons, and maps)
         response.headers["Content-Security-Policy"] = (
