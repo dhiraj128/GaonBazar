@@ -1057,7 +1057,7 @@
       <!-- ===================================================================== -->
       <!-- PHASE 2: MAIN DASHBOARD & STORE DISCOVERY                             -->
       <!-- ===================================================================== -->
-      <section id="view-p2-dashboard" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 space-y-4">
+      <section id="view-p2-dashboard" class="screen-view hidden flex-col w-full px-3 pt-2 pb-28 flex-1 min-h-0 space-y-2.5">
         <!-- Sticky Location Header Bar (Hidden on main feed to match approved Reference 01, accessible via header pill) -->
         <div class="hidden bg-surface-container rounded-2xl p-3.5 items-center justify-between shadow-xs border border-surface-container-high">
           <div class="flex items-center gap-2.5 min-w-0 cursor-pointer" onclick="navigateToPhase('landmark')">
@@ -1142,13 +1142,13 @@
         <!-- ============================================================= -->
         <!-- SECTION 1: COMPACT 2-COLUMN STORE CARD GRID (Reference 01)     -->
         <!-- ============================================================= -->
-        <div class="space-y-2 pt-1" id="home-stores-section">
-          <div class="flex items-center justify-between">
+        <div class="space-y-0 pt-0" id="home-stores-section">
+          <div class="hidden" aria-hidden="true">
             <h3 class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] uppercase tracking-wider" data-i18n="p2_stores_title">Stores near you</h3>
             <span id="p2-open-stores-count" class="text-[10px] text-emerald-700 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 px-2 py-0.5 rounded-full">4 Open Now</span>
           </div>
 
-          <div id="p2-stores-list" class="grid grid-cols-2 gap-3">
+          <div id="p2-stores-list" class="grid grid-cols-2 gap-2">
             <div id="p2-stores-empty-state" class="col-span-2 p-8 text-center flex flex-col items-center justify-center gap-2 rounded-2xl bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-[#465362] text-slate-500">
               <span class="material-symbols-outlined text-[36px] text-slate-300">storefront</span>
               <p class="text-xs font-bold text-slate-800 dark:text-white" data-i18n="p2_no_stores">No stores available in your area yet</p>
@@ -1160,8 +1160,8 @@
         <!-- ============================================================= -->
         <!-- SECTION 2: COMPACT 2-COLUMN PRODUCT CARD GRID (Reference 01)   -->
         <!-- ============================================================= -->
-        <div class="space-y-2 pt-2" id="home-popular-section">
-          <div class="flex items-center justify-between">
+        <div class="space-y-0 pt-0" id="home-popular-section">
+          <div class="hidden" aria-hidden="true">
             <h3 class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] uppercase tracking-wider" data-i18n="p2_popular_title">Popular near you</h3>
             <button onclick="showAllFeaturedProducts('all')" aria-label="See all popular products" class="text-xs font-bold text-[#16B86E] hover:underline flex items-center gap-0.5 cursor-pointer">
               <span data-i18n="p2_see_all">See all</span>
@@ -1169,21 +1169,21 @@
             </button>
           </div>
           
-          <div class="grid grid-cols-2 gap-3" id="home-popular-grid">
+          <div class="grid grid-cols-2 gap-2" id="home-popular-grid">
             <!-- Product Card 1: Fresh Tomato -->
-            <div class="rounded-2xl bg-white dark:bg-[#1D232B] p-2.5 border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col justify-between relative group hover:border-[#16B86E] transition-all">
-              <button type="button" data-favorite-item="item_tomato" onclick="toggleProductFavorite('item_tomato', event)" aria-label="Add Fresh Tomato to favorites" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-slate-100/90 dark:bg-slate-800/90 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors cursor-pointer z-10">
+            <div class="rounded-xl bg-white dark:bg-[#22313B] px-2 py-2 border border-slate-200 dark:border-[#3B4B57] shadow-xs grid grid-cols-[54px_minmax(0,1fr)] items-center gap-2 min-h-[88px] relative group hover:border-[#16B86E] transition-all">
+              <button type="button" data-favorite-item="item_tomato" onclick="toggleProductFavorite('item_tomato', event)" aria-label="Add Fresh Tomato to favorites" class="hidden absolute top-2 right-2 w-7 h-7 rounded-full bg-slate-100/90 dark:bg-slate-800/90 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors cursor-pointer z-10">
                 <span class="material-symbols-outlined text-[16px]">favorite_border</span>
               </button>
-              <div class="w-full h-24 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2 mb-2">
-                <img src="static/images/prod_tomato.png" alt="Fresh Tomato" class="h-20 w-auto max-w-full object-contain drop-shadow-xs" />
+              <div class="w-[54px] h-[68px] rounded-lg bg-slate-50 dark:bg-[#2D3B45] flex items-center justify-center p-1">
+                <img src="static/images/prod_tomato.png" alt="Fresh Tomato" class="h-[62px] w-auto max-w-full object-contain drop-shadow-xs" />
               </div>
-              <div class="flex flex-col">
+              <div class="min-w-0 h-full flex flex-col justify-center gap-0.5">
                 <span id="feat-title-tomato" data-i18n="feat_tomato_name" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">Fresh Tomato</span>
                 <span id="feat-sub-tomato" data-i18n="feat_tomato_sub" class="text-[10px] text-slate-500 dark:text-[#CBD5E1] truncate">1 kg</span>
-                <div class="flex items-center justify-between mt-2 pt-1 border-t border-slate-100 dark:border-[#465362]">
+                <div class="flex items-center justify-between gap-1 mt-1">
                   <span id="feat-price-tomato" data-i18n="feat_tomato_price" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC]">₹ 40</span>
-                  <button type="button" onclick="quickAddFeaturedItem('item_tomato')" aria-label="Add Fresh Tomato to cart" class="h-7 px-2.5 rounded-lg bg-[#16B86E] text-white flex items-center justify-center gap-1 shadow-xs active:scale-90 transition-all cursor-pointer font-bold text-[11px]">
+                  <button type="button" onclick="quickAddFeaturedItem('item_tomato')" aria-label="Add Fresh Tomato to cart" class="min-h-[32px] px-2 rounded-lg bg-[#16B86E] text-white flex items-center justify-center gap-1 shadow-xs active:scale-90 transition-all cursor-pointer font-bold text-[11px]">
                     <span class="material-symbols-outlined text-[14px]">add</span>
                     <span data-i18n="lbl_add">Add</span>
                   </button>
@@ -1192,19 +1192,19 @@
             </div>
 
             <!-- Product Card 2: Onion -->
-            <div class="rounded-2xl bg-white dark:bg-[#1D232B] p-2.5 border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col justify-between relative group hover:border-[#16B86E] transition-all">
-              <button type="button" data-favorite-item="item_onion" onclick="toggleProductFavorite('item_onion', event)" aria-label="Add Onion to favorites" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-slate-100/90 dark:bg-slate-800/90 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors cursor-pointer z-10">
+            <div class="rounded-xl bg-white dark:bg-[#22313B] px-2 py-2 border border-slate-200 dark:border-[#3B4B57] shadow-xs grid grid-cols-[54px_minmax(0,1fr)] items-center gap-2 min-h-[88px] relative group hover:border-[#16B86E] transition-all">
+              <button type="button" data-favorite-item="item_onion" onclick="toggleProductFavorite('item_onion', event)" aria-label="Add Onion to favorites" class="hidden absolute top-2 right-2 w-7 h-7 rounded-full bg-slate-100/90 dark:bg-slate-800/90 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors cursor-pointer z-10">
                 <span class="material-symbols-outlined text-[16px]">favorite_border</span>
               </button>
-              <div class="w-full h-24 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2 mb-2">
-                <img src="static/images/prod_onion.png" alt="Onion" class="h-20 w-auto max-w-full object-contain drop-shadow-xs" />
+              <div class="w-[54px] h-[68px] rounded-lg bg-slate-50 dark:bg-[#2D3B45] flex items-center justify-center p-1">
+                <img src="static/images/prod_onion.png" alt="Onion" class="h-[62px] w-auto max-w-full object-contain drop-shadow-xs" />
               </div>
-              <div class="flex flex-col">
+              <div class="min-w-0 h-full flex flex-col justify-center gap-0.5">
                 <span id="feat-title-onion" data-i18n="feat_onion_name" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">Onion</span>
                 <span id="feat-sub-onion" data-i18n="feat_onion_sub" class="text-[10px] text-slate-500 dark:text-[#CBD5E1] truncate">1 kg</span>
-                <div class="flex items-center justify-between mt-2 pt-1 border-t border-slate-100 dark:border-[#465362]">
+                <div class="flex items-center justify-between gap-1 mt-1">
                   <span id="feat-price-onion" data-i18n="feat_onion_price" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC]">₹ 32</span>
-                  <button type="button" onclick="quickAddFeaturedItem('item_onion')" aria-label="Add Onion to cart" class="h-7 px-2.5 rounded-lg bg-[#16B86E] text-white flex items-center justify-center gap-1 shadow-xs active:scale-90 transition-all cursor-pointer font-bold text-[11px]">
+                  <button type="button" onclick="quickAddFeaturedItem('item_onion')" aria-label="Add Onion to cart" class="min-h-[32px] px-2 rounded-lg bg-[#16B86E] text-white flex items-center justify-center gap-1 shadow-xs active:scale-90 transition-all cursor-pointer font-bold text-[11px]">
                     <span class="material-symbols-outlined text-[14px]">add</span>
                     <span data-i18n="lbl_add">Add</span>
                   </button>
@@ -1213,19 +1213,19 @@
             </div>
 
             <!-- Product Card 3: Potato -->
-            <div class="rounded-2xl bg-white dark:bg-[#1D232B] p-2.5 border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col justify-between relative group hover:border-[#16B86E] transition-all">
-              <button type="button" data-favorite-item="item_potato" onclick="toggleProductFavorite('item_potato', event)" aria-label="Add Potato to favorites" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-slate-100/90 dark:bg-slate-800/90 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors cursor-pointer z-10">
+            <div class="rounded-xl bg-white dark:bg-[#22313B] px-2 py-2 border border-slate-200 dark:border-[#3B4B57] shadow-xs grid grid-cols-[54px_minmax(0,1fr)] items-center gap-2 min-h-[88px] relative group hover:border-[#16B86E] transition-all">
+              <button type="button" data-favorite-item="item_potato" onclick="toggleProductFavorite('item_potato', event)" aria-label="Add Potato to favorites" class="hidden absolute top-2 right-2 w-7 h-7 rounded-full bg-slate-100/90 dark:bg-slate-800/90 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors cursor-pointer z-10">
                 <span class="material-symbols-outlined text-[16px]">favorite_border</span>
               </button>
-              <div class="w-full h-24 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2 mb-2">
-                <img src="static/images/prod_potato.png" alt="Potato" class="h-20 w-auto max-w-full object-contain drop-shadow-xs" />
+              <div class="w-[54px] h-[68px] rounded-lg bg-slate-50 dark:bg-[#2D3B45] flex items-center justify-center p-1">
+                <img src="static/images/prod_potato.png" alt="Potato" class="h-[62px] w-auto max-w-full object-contain drop-shadow-xs" />
               </div>
-              <div class="flex flex-col">
+              <div class="min-w-0 h-full flex flex-col justify-center gap-0.5">
                 <span id="feat-title-potato" data-i18n="feat_potato_name" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">Potato</span>
                 <span id="feat-sub-potato" data-i18n="feat_potato_sub" class="text-[10px] text-slate-500 dark:text-[#CBD5E1] truncate">1 kg</span>
-                <div class="flex items-center justify-between mt-2 pt-1 border-t border-slate-100 dark:border-[#465362]">
+                <div class="flex items-center justify-between gap-1 mt-1">
                   <span id="feat-price-potato" data-i18n="feat_potato_price" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC]">₹ 28</span>
-                  <button type="button" onclick="quickAddFeaturedItem('item_potato')" aria-label="Add Potato to cart" class="h-7 px-2.5 rounded-lg bg-[#16B86E] text-white flex items-center justify-center gap-1 shadow-xs active:scale-90 transition-all cursor-pointer font-bold text-[11px]">
+                  <button type="button" onclick="quickAddFeaturedItem('item_potato')" aria-label="Add Potato to cart" class="min-h-[32px] px-2 rounded-lg bg-[#16B86E] text-white flex items-center justify-center gap-1 shadow-xs active:scale-90 transition-all cursor-pointer font-bold text-[11px]">
                     <span class="material-symbols-outlined text-[14px]">add</span>
                     <span data-i18n="lbl_add">Add</span>
                   </button>
@@ -1234,19 +1234,19 @@
             </div>
 
             <!-- Product Card 4: Amul Fresh Milk -->
-            <div class="rounded-2xl bg-white dark:bg-[#1D232B] p-2.5 border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col justify-between relative group hover:border-[#16B86E] transition-all">
-              <button type="button" data-favorite-item="item_milk" onclick="toggleProductFavorite('item_milk', event)" aria-label="Add Amul Milk to favorites" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-slate-100/90 dark:bg-slate-800/90 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors cursor-pointer z-10">
+            <div class="rounded-xl bg-white dark:bg-[#22313B] px-2 py-2 border border-slate-200 dark:border-[#3B4B57] shadow-xs grid grid-cols-[54px_minmax(0,1fr)] items-center gap-2 min-h-[88px] relative group hover:border-[#16B86E] transition-all">
+              <button type="button" data-favorite-item="item_milk" onclick="toggleProductFavorite('item_milk', event)" aria-label="Add Amul Milk to favorites" class="hidden absolute top-2 right-2 w-7 h-7 rounded-full bg-slate-100/90 dark:bg-slate-800/90 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors cursor-pointer z-10">
                 <span class="material-symbols-outlined text-[16px]">favorite_border</span>
               </button>
-              <div class="w-full h-24 rounded-xl bg-slate-50 dark:bg-[#2A323D] flex items-center justify-center p-2 mb-2">
-                <img src="static/images/prod_milk.png" alt="Amul Fresh Milk" class="h-20 w-auto max-w-full object-contain drop-shadow-xs" />
+              <div class="w-[54px] h-[68px] rounded-lg bg-slate-50 dark:bg-[#2D3B45] flex items-center justify-center p-1">
+                <img src="static/images/prod_milk.png" alt="Amul Fresh Milk" class="h-[62px] w-auto max-w-full object-contain drop-shadow-xs" />
               </div>
-              <div class="flex flex-col">
+              <div class="min-w-0 h-full flex flex-col justify-center gap-0.5">
                 <span id="feat-title-milk" data-i18n="feat_milk_name" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">Amul Fresh Milk</span>
                 <span id="feat-sub-milk" data-i18n="feat_milk_sub" class="text-[10px] text-slate-500 dark:text-[#CBD5E1] truncate">1 Litre</span>
-                <div class="flex items-center justify-between mt-2 pt-1 border-t border-slate-100 dark:border-[#465362]">
+                <div class="flex items-center justify-between gap-1 mt-1">
                   <span id="feat-price-milk" data-i18n="feat_milk_price" class="text-xs font-black text-slate-900 dark:text-[#F8FAFC]">₹ 56</span>
-                  <button type="button" onclick="quickAddFeaturedItem('item_milk')" aria-label="Add Amul Milk to cart" class="h-7 px-2.5 rounded-lg bg-[#16B86E] text-white flex items-center justify-center gap-1 shadow-xs active:scale-90 transition-all cursor-pointer font-bold text-[11px]">
+                  <button type="button" onclick="quickAddFeaturedItem('item_milk')" aria-label="Add Amul Milk to cart" class="min-h-[32px] px-2 rounded-lg bg-[#16B86E] text-white flex items-center justify-center gap-1 shadow-xs active:scale-90 transition-all cursor-pointer font-bold text-[11px]">
                     <span class="material-symbols-outlined text-[14px]">add</span>
                     <span data-i18n="lbl_add">Add</span>
                   </button>
@@ -8557,60 +8557,7 @@
       const isHi = (typeof AppStore !== 'undefined' && AppStore && AppStore.lang === 'hi');
       let storeList = Array.isArray(stores) && stores.length > 0 ? stores : [];
 
-      // Fallback sample stores matching Reference 01 if database is still fetching
-      if (storeList.length === 0 && typeof STORE_CATALOG_CACHE !== 'undefined') {
-        storeList = [
-          {
-            id: 'sharma_brothers',
-            name: 'Sharma Kirana Store',
-            hindi_name: 'शर्मा किराना स्टोर',
-            category: 'kirana',
-            store_type: 'kirana',
-            rating: 4.5,
-            total_orders: 120,
-            distance_km: 1.2,
-            eta_mins: '20-30 min',
-            is_open: true
-          },
-          {
-            id: 'rampur_dawa',
-            name: 'Fresh Mart',
-            hindi_name: 'फ्रेश मार्ट',
-            category: 'sabzi',
-            store_type: 'sabzi',
-            rating: 4.8,
-            total_orders: 85,
-            distance_km: 1.5,
-            eta_mins: '15-25 min',
-            is_open: true
-          },
-          {
-            id: 'kisan_seva',
-            name: 'Gupta General Store',
-            hindi_name: 'गुप्ता जनरल स्टोर',
-            category: 'kirana',
-            store_type: 'kirana',
-            rating: 4.3,
-            total_orders: 64,
-            distance_km: 2.1,
-            eta_mins: '25-35 min',
-            is_open: true
-          },
-          {
-            id: 'apna_dairy',
-            name: 'Daily Essentials',
-            hindi_name: 'डेली एसेंशियल्स',
-            category: 'dairy',
-            store_type: 'dairy',
-            rating: 4.6,
-            total_orders: 92,
-            distance_km: 0.9,
-            eta_mins: '20-30 min',
-            is_open: true
-          }
-        ];
-      }
-
+      // No fictitious stores or ratings when the API returns empty results.
       const openStores = storeList.filter(s => s && s.is_open !== false);
       if (countBadge) {
         countBadge.innerText = isHi ? `${openStores.length} खुली हैं` : `${openStores.length} Open Now`;
@@ -8633,12 +8580,12 @@
         return images[idx % images.length];
       }
 
-      listContainer.innerHTML = storeList.map((store, idx) => {
+      listContainer.innerHTML = storeList.length ? storeList.map((store, idx) => {
         const title = isHi ? (store.hindi_name || store.name) : store.name;
         const storeImg = getStoreImage(store, idx);
-        const rating = store.rating || (idx === 0 ? 4.5 : (idx === 1 ? 4.8 : (idx === 2 ? 4.3 : 4.6)));
-        const reviews = store.total_orders || (idx === 0 ? 120 : (idx === 1 ? 85 : (idx === 2 ? 64 : 92)));
-        const storeEta = (store.eta_mins && String(store.eta_mins).trim().length > 0) ? String(store.eta_mins).trim() : '20-30 min';
+        const rating = Number(store.rating) > 0 ? Number(store.rating).toFixed(1) : null;
+        const reviews = Number(store.total_orders) > 0 ? Number(store.total_orders) : null;
+        const storeEta = (store.eta_mins && String(store.eta_mins).trim()) ? String(store.eta_mins).trim() : null;
         const storeDist = (typeof store.distance_km === 'number' ? store.distance_km : parseFloat(store.distance_km)) || 1.2;
 
         const isStore1 = (idx === 0 || store.id === 'sharma_brothers');
@@ -8648,31 +8595,31 @@
 
         return `
           <div onclick="openStoreView('${store.id}')" class="rounded-2xl bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col justify-between overflow-hidden cursor-pointer hover:border-[#16B86E] transition-all relative group">
-            <div class="relative w-full h-24 sm:h-28 bg-slate-100 dark:bg-[#2A323D] overflow-hidden">
+            <div class="relative w-full h-[68px] sm:h-[76px] bg-slate-100 dark:bg-[#2A323D] overflow-hidden">
               <img src="${storeImg}" alt="${title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
               <button type="button" onclick="event.stopPropagation(); toggleStoreFavorite('${store.id}', this)" aria-label="Favorite ${title}" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center transition-all cursor-pointer">
                 <span class="material-symbols-outlined text-[16px]">favorite_border</span>
               </button>
             </div>
-            <div class="p-2.5 flex flex-col justify-between flex-1 gap-1">
+            <div class="px-2 py-1.5 flex flex-col justify-between gap-0.5">
               <div class="min-w-0">
                 <h4 class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">${title}</h4>
               </div>
-              <div class="flex items-center justify-between text-[10px] font-bold text-slate-600 dark:text-[#CBD5E1] pt-1 border-t border-slate-100 dark:border-[#465362]">
+              <div class="flex items-center justify-between gap-1 text-[9px] font-bold text-slate-600 dark:text-[#CBD5E1]">
                 <span class="flex items-center gap-0.5 text-amber-500">
                   <span class="material-symbols-outlined text-[13px] fill-current">star</span>
-                  <span>${rating} (${reviews})</span>
+                  <span>${rating !== null ? `${rating}${reviews !== null ? ` (${reviews})` : ''}` : (isHi ? 'नया' : 'New')}</span>
                 </span>
                 <span class="flex items-center gap-0.5 text-slate-500 dark:text-[#CBD5E1]">
                   <span class="material-symbols-outlined text-[13px]">schedule</span>
-                  <span ${etaIdAttr}>${storeEta}</span>
+                  <span ${etaIdAttr}>${storeEta || (isHi ? 'समय उपलब्ध नहीं' : 'ETA pending')}</span>
                 </span>
               </div>
               <span class="hidden" ${distIdAttr}>${storeDist} km</span>
             </div>
           </div>
         `;
-      }).join('');
+      }).join('') : `<div class="col-span-2 rounded-xl border border-slate-200 dark:border-[#465362] bg-white dark:bg-[#22313B] p-4 text-center text-xs text-slate-600 dark:text-[#D1DAE0]">${isHi ? 'अभी कोई दुकान उपलब्ध नहीं है।' : 'No stores available yet.'}</div>`;
     }
     window.renderStores = renderDashboardStoresFeed;
     window.renderDashboardStoresFeed = renderDashboardStoresFeed;
