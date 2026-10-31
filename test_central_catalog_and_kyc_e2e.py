@@ -15,6 +15,8 @@ from fastapi.testclient import TestClient
 
 # Ensure backend root is on sys.path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+os.environ.setdefault("ALLOW_TEST_BYPASS", "1")
+os.environ.setdefault("TEST_MODE", "1")
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 

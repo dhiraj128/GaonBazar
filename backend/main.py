@@ -1874,9 +1874,35 @@ def get_order_details(
                 total_price=round(float(it.price) * it.quantity, 2)
             ))
 
-    # Action flags
-    can_cancel = (order.timeline_stage in (1, 2))
-    can_request_cancellation = (order.timeline_stage in (3, 4))
+    # Action flags & 3-minute (180s) instant cancellation window enforcement
+    elapsed_seconds = 0.0
+    if order.created_at:
+        now_dt = datetime.utcnow()
+        if hasattr(order.created_at, "timestamp"):
+            elapsed_seconds = max(0.0, (now_dt - order.created_at).total_seconds())
+
+    can_cancel = False
+    can_request_cancellation = False
+    cancel_seconds_remaining = 0
+
+    if order.timeline_stage in (1, 2):
+        if elapsed_seconds <= 180:
+            can_cancel = True
+            cancel_seconds_remaining = max(0, int(180 - elapsed_seconds))
+            can_request_cancellation = False
+        else:
+            can_cancel = False
+            cancel_seconds_remaining = 0
+            can_request_cancellation = True
+    elif order.timeline_stage in (3, 4):
+        can_cancel = False
+        cancel_seconds_remaining = 0
+        can_request_cancellation = True
+    else:
+        can_cancel = False
+        cancel_seconds_remaining = 0
+        can_request_cancellation = False
+
     can_report_issue = (order.timeline_stage in (0, 5))
 
     is_prepaid = (order.payment_mode.upper() != "COD")
@@ -2027,6 +2053,7 @@ def get_order_details(
         can_cancel=can_cancel,
         can_request_cancellation=can_request_cancellation,
         can_report_issue=can_report_issue,
+        cancel_seconds_remaining=cancel_seconds_remaining,
         cancellation_reason=getattr(order, "cancellation_reason", None),
         refund_status=refund_status,
         refund_amount=refund_amt if order.timeline_stage == 0 else None,
@@ -2569,7 +2596,20 @@ def cancel_order_endpoint(
     if order.timeline_stage in (3, 4):
         raise HTTPException(status_code=400, detail="Direct cancellation is not available after fulfillment has started. Please request cancellation via Support.")
 
-    reason = payload.reason if (payload and payload.reason) else "Customer requested cancellation"
+    if order.timeline_stage not in (1, 2):
+        raise HTTPException(status_code=400, detail="Order is not in a cancellable stage.")
+
+    # Server-side 3-minute (180s) instant self-cancellation deadline
+    if order.created_at:
+        now_dt = datetime.utcnow()
+        elapsed_seconds = (now_dt - order.created_at).total_seconds()
+        if elapsed_seconds > 180:
+            raise HTTPException(
+                status_code=400,
+                detail="Direct cancellation window has expired (3 minutes limit). Please use 'Need Help?' to contact Support."
+            )
+
+    reason = payload.reason if (payload and payload.reason) else "Customer requested cancellation" 
     res = process_order_cancellation(order, db, reason=reason)
     return OrderCancelResponse(
         success=True,
@@ -2659,8 +2699,13 @@ def get_user_orders(phone: str, db: Session = Depends(get_db), auth: Dict[str, A
             runner_obj = db.query(Runner).filter(Runner.id == r_id).first()
         elif ord_obj.timeline_stage >= 3:
             runner_obj = db.query(Runner).filter(Runner.is_online == True).first()
-        can_cancel = (ord_obj.timeline_stage in (1, 2))
-        can_req_cancel = (ord_obj.timeline_stage in (3, 4))
+        elapsed_sec = 0.0
+        if ord_obj.created_at:
+            now_dt = datetime.utcnow()
+            elapsed_sec = max(0.0, (now_dt - ord_obj.created_at).total_seconds())
+        can_cancel = (ord_obj.timeline_stage in (1, 2) and elapsed_sec <= 180)
+        can_req_cancel = (ord_obj.timeline_stage in (3, 4) or (ord_obj.timeline_stage in (1, 2) and elapsed_sec > 180))
+        rem_sec = max(0, int(180 - elapsed_sec)) if can_cancel else 0
         can_report = (ord_obj.timeline_stage in (0, 5))
         is_prepaid = (ord_obj.payment_mode.upper() != "COD")
         ref_status = "PROCESSING" if (ord_obj.timeline_stage == 0 and is_prepaid and (getattr(ord_obj, 'refund_amount', 0.0) or 0.0) > 0) else None

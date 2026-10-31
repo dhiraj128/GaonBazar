@@ -302,6 +302,75 @@ def run_tests():
     )
     check("Idempotent cancellation: Repeated call returns HTTP 200", r_cancel_again.status_code == 200)
 
+    print("\n--- 3.5. 180-Second (3-Minute) Instant Cancellation Boundary Verification ---")
+    from datetime import timedelta
+    # Test Order A: Placed 100 seconds ago (Within 180s boundary -> eligible)
+    order_id_100s = f"ORD-100S-{uuid.uuid4().hex[:6]}"
+    with db_session() as db:
+        ord_100s = Order(
+            id=order_id_100s,
+            store_id=prod_store_id,
+            store_name="Sharma Kirana Store",
+            user_id=c1_id,
+            user_phone=c1_phone,
+            user_name="Ramesh Kumar",
+            village="Rampur",
+            landmark="Near Mandir",
+            subtotal=100.0,
+            delivery_fee=25.0,
+            platform_fee=3.0,
+            total_amount=128.0,
+            status="Order Placed",
+            timeline_stage=1,
+            payment_mode="COD",
+            delivery_otp="1234",
+            created_at=datetime.utcnow() - timedelta(seconds=100)
+        )
+        db.add(ord_100s)
+        db.commit()
+
+    r_100s_det = client.get(f"/api/orders/{order_id_100s}/details", headers={"Authorization": f"Bearer {c1_token}"})
+    d_100s_det = r_100s_det.json()
+    check("Order at 100s: can_cancel is True", d_100s_det["can_cancel"] is True)
+    check("Order at 100s: cancel_seconds_remaining > 0", d_100s_det.get("cancel_seconds_remaining", 0) > 0)
+
+    r_100s_cancel = client.post(f"/api/orders/{order_id_100s}/cancel", headers={"Authorization": f"Bearer {c1_token}"})
+    check("Order at 100s: cancellation succeeds with HTTP 200", r_100s_cancel.status_code == 200)
+
+    # Test Order B: Placed 181 seconds ago (Exceeded 180s boundary -> rejected)
+    order_id_181s = f"ORD-181S-{uuid.uuid4().hex[:6]}"
+    with db_session() as db:
+        ord_181s = Order(
+            id=order_id_181s,
+            store_id=prod_store_id,
+            store_name="Sharma Kirana Store",
+            user_id=c1_id,
+            user_phone=c1_phone,
+            user_name="Ramesh Kumar",
+            village="Rampur",
+            landmark="Near Mandir",
+            subtotal=100.0,
+            delivery_fee=25.0,
+            platform_fee=3.0,
+            total_amount=128.0,
+            status="Order Placed",
+            timeline_stage=1,
+            payment_mode="COD",
+            delivery_otp="5678",
+            created_at=datetime.utcnow() - timedelta(seconds=181)
+        )
+        db.add(ord_181s)
+        db.commit()
+
+    r_181s_det = client.get(f"/api/orders/{order_id_181s}/details", headers={"Authorization": f"Bearer {c1_token}"})
+    d_181s_det = r_181s_det.json()
+    check("Order at 181s: can_cancel is False", d_181s_det["can_cancel"] is False)
+    check("Order at 181s: can_request_cancellation is True (support guidance)", d_181s_det["can_request_cancellation"] is True)
+
+    r_181s_cancel = client.post(f"/api/orders/{order_id_181s}/cancel", headers={"Authorization": f"Bearer {c1_token}"})
+    check("Order at 181s: direct cancel rejected with HTTP 400", r_181s_cancel.status_code == 400)
+    check("Order at 181s: rejection message explains 3-minute deadline", "3 minutes" in r_181s_cancel.json().get("detail", ""))
+
     print("\n--- 4. Truthful Refund Tracking Verification ---")
     r_details_cancelled = client.get(
         f"/api/orders/{order_id_test}/details",

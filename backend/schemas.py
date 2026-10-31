@@ -752,6 +752,7 @@ class UserOrderSummaryDTO(BaseModel):
     can_cancel: Optional[bool] = None
     can_request_cancellation: Optional[bool] = None
     can_report_issue: Optional[bool] = None
+    cancel_seconds_remaining: Optional[int] = None
     refund_status: Optional[str] = None
     refund_amount: Optional[float] = None
 
@@ -870,6 +871,7 @@ class CustomerOrderDetailResponse(BaseModel):
     can_cancel: bool
     can_request_cancellation: bool
     can_report_issue: bool
+    cancel_seconds_remaining: Optional[int] = None
     cancellation_reason: Optional[str] = None
     refund_status: Optional[str] = None
     refund_amount: Optional[float] = None

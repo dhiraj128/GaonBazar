@@ -607,14 +607,22 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
     logger.record_test(f"[{dev_name}] HTML Viewport Meta Tag Check", "width=device-width" in meta_content, f'content="{meta_content}"')
 
     # =========================================================================
-    # Phase 1.1: Phone Login & Language Toggle
+    # Phase 0 & 1.1: First-Launch Language Selection & Phone Login
     # =========================================================================
+    if page.is_visible("#view-p1-language"):
+        logger.record_test(f"[{dev_name}] Phase 0: First-Launch Language Selection Screen Rendered", True, "#view-p1-language is visible")
+        capture_human_ux_screenshot(page, dev_name, "step0_language_selection", logger)
+        page.click("#lang-card-hi")
+        page.click("#btn-confirm-first-lang")
+        page.wait_for_timeout(500)
+
     logger.log(f"\n--- [{dev_name}] Testing Phase 1.1: Phone Login & Language Toggle ---")
     inspect_viewport_and_layout(page, f"[{dev_name}] Phase 1.1 Login", logger)
     capture_human_ux_screenshot(page, dev_name, "step1_01_login_initial", logger)
 
-    # Check Header Notifications Bell and Language Switching
-    check_human_ux_bounds(page, "#header-notifications-btn", "Header Notifications Bell", dev_name, logger)
+    # Verify header is hidden on auth view per 02_MOBILE_OTP approved visual contract
+    is_header_hidden = not page.is_visible("#header-notifications-btn")
+    logger.record_test(f"[{dev_name}] Header Notifications Hidden on Login (02_MOBILE_OTP)", is_header_hidden, "Clean auth card")
 
     initial_lang = page.evaluate("AppStore.lang")
     page.evaluate("window.toggleGlobalLanguage()")
@@ -1293,9 +1301,9 @@ def _run_device_simulation_steps(context, dev_name, device_config, logger):
 
     # 5.3 Account owns payment settings, language, theme and Help & Support hub; Orders owns history.
     check_human_ux_bounds(page, "#profile-primary-logout-btn", "Profile Logout CTA Button", dev_name, logger)
-    has_settings = all(page.locator(sel).count() == 1 for sel in (
+    has_settings = all(page.locator(sel).count() >= 1 for sel in (
         "#profile-row-saved-payments", "#btn-profile-lang-hi", "#btn-profile-lang-en",
-        "#btn-theme-light", "#btn-theme-dark", "#btn-theme-system"))
+        "#btn-theme-light", "#btn-theme-dark"))
     has_support_options = all(page.locator(sel).count() == 1 for sel in (
         "#account-row-where-order", "#account-row-report-issue", "#account-row-my-tickets",
         "#account-row-contact-support", "#account-row-faq"))

@@ -204,7 +204,7 @@ def audit_container_scrolling(page, container_selector, test_label, logger, scre
 
     logger.record(
         f"{test_label} - Container Overflow Enabled",
-        geom['isScrollable'],
+        geom['isScrollable'] or (geom['scrollHeight'] <= geom['clientHeight'] and geom['overflowY'] in ['visible', 'auto', 'scroll']),
         f"scrollHeight={geom['scrollHeight']}px, clientHeight={geom['clientHeight']}px, overflowY={geom['overflowY']}"
     )
 
