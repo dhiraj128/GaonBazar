@@ -485,6 +485,7 @@ class Replacement(Base):
     runner_id = Column(String(50), ForeignKey("runners.id"), nullable=True, index=True)
     runner_name = Column(String(100), nullable=True)
     runner_phone = Column(String(20), nullable=True)
+    runner_payout = Column(Float, default=20.0)
     inventory_reservation = Column(Boolean, default=False)
     replacement_cost_paise = Column(Integer, default=0)
     customer_charge_paise = Column(Integer, default=0)  # Free replacement: strictly 0

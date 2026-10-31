@@ -1924,7 +1924,7 @@
             </div>
             <div class="text-right">
               <span class="text-xs font-black text-emerald-600 dark:text-emerald-400">₹0 (Free)</span>
-              <p class="text-[10px] text-slate-400" id="od-rep-eta">ETA: 45 Mins</p>
+              <p class="text-[10px] text-slate-400" id="od-rep-eta">Checking vendor stock...</p>
             </div>
           </div>
 
@@ -3751,10 +3751,10 @@
           <label class="block text-xs font-black text-slate-800 dark:text-[#F8FAFC]" data-i18n="issue_preferred_resolution">Choose Remedy / समाधान चुनें *</label>
           <div class="grid grid-cols-2 gap-2">
             <label class="relative flex items-center p-2 rounded-xl border border-emerald-500/40 bg-white dark:bg-[#1D232B] cursor-pointer hover:border-emerald-500">
-              <input type="radio" name="issue_resolution_type" value="replacement" checked onchange="onIssueResolutionChange()" class="w-4 h-4 text-emerald-600 focus:ring-emerald-500 cursor-pointer">
+              <input type="radio" name="issue_resolution_type" value="replacement" onchange="onIssueResolutionChange()" class="w-4 h-4 text-emerald-600 focus:ring-emerald-500 cursor-pointer">
               <div class="ml-2">
                 <span class="block text-[11px] font-black text-slate-900 dark:text-[#F8FAFC]">Free Replacement</span>
-                <span class="block text-[9px] text-emerald-600 font-bold">मुफ्त बदलाव (₹0) • ~45m</span>
+                <span class="block text-[9px] text-emerald-600 font-bold">मुफ्त बदलाव (₹0) • स्टॉक उपलब्धता पर</span>
               </div>
             </label>
             <label class="relative flex items-center p-2 rounded-xl border border-slate-200 dark:border-[#465362] bg-white dark:bg-[#1D232B] cursor-pointer hover:border-amber-500">
@@ -3791,7 +3791,7 @@
             <span id="issue-remedy-callout-title">Fast Corrective Replacement</span>
           </div>
           <p id="issue-remedy-callout-desc" class="text-[10px] text-emerald-800/90 dark:text-emerald-300/90 leading-tight">
-            Corrective delivery ETA: 45 Mins in Minapur Pilot. Free delivery fee (₹0).
+            ETA: Provided upon vendor stock & delivery confirmation. Free delivery (₹0).
           </p>
           <p id="issue-reverse-callout-desc" class="text-[10px] text-emerald-700/80 dark:text-emerald-400/80 font-medium pt-1 border-t border-emerald-200/60 dark:border-emerald-800/30">
             📦 Sealed incorrect products are collected upon replacement delivery.
@@ -3821,10 +3821,19 @@
           <textarea id="issue-modal-message" rows="3" placeholder="Please explain the issue in detail..." required class="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] text-xs font-medium text-slate-800 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"></textarea>
         </div>
 
-        <!-- Optional Photo Evidence URL -->
-        <div class="space-y-1">
-          <label class="block text-xs font-bold text-slate-700 dark:text-[#CBD5E1]">Photo Evidence URL (Optional / फ़ोटो लिंक)</label>
-          <input type="url" id="issue-photo-url" placeholder="https://example.com/item-photo.jpg" class="w-full h-10 px-3 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] text-xs text-slate-800 dark:text-[#F8FAFC] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/30">
+        <!-- Real Photo Evidence Upload with Camera & Base64 Preview -->
+        <div class="space-y-1.5">
+          <label class="block text-xs font-bold text-slate-700 dark:text-[#CBD5E1]" data-i18n="issue_photo_evidence_label">Photo Evidence / फ़ोटो प्रमाण (Camera / File)</label>
+          <div class="flex items-center gap-2">
+            <input type="file" id="issue-photo-file" accept="image/*" capture="environment" onchange="handleIssuePhotoUpload(event)" class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer" />
+          </div>
+          <div id="issue-photo-preview-container" class="hidden relative w-20 h-20 rounded-xl overflow-hidden border border-slate-200 dark:border-[#465362] mt-1">
+            <img id="issue-photo-preview-img" src="" alt="Evidence Preview" class="w-full h-full object-cover">
+            <button type="button" onclick="clearIssuePhotoEvidence()" class="absolute top-1 right-1 bg-black/60 text-white rounded-full p-0.5 hover:bg-black flex items-center justify-center cursor-pointer">
+              <span class="material-symbols-outlined text-[14px]">close</span>
+            </button>
+          </div>
+          <input type="url" id="issue-photo-url" placeholder="Or enter image URL (https://...)" class="w-full h-8 px-2.5 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] text-[11px] text-slate-800 dark:text-[#F8FAFC] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/30">
         </div>
 
         <!-- Error display -->
@@ -3890,7 +3899,7 @@
         <div class="space-y-3 py-1">
           <h4 class="text-xs font-black text-slate-700 dark:text-[#CBD5E1] uppercase tracking-wider" data-i18n="refund_timeline_title">Settlement Stages</h4>
           
-          <div class="space-y-4 pl-2 relative before:absolute before:top-2 before:bottom-2 before:left-[17px] before:w-0.5 before:bg-slate-200 dark:before:bg-slate-700">
+          <div id="refund-timeline-stepper" class="space-y-4 pl-2 relative before:absolute before:top-2 before:bottom-2 before:left-[17px] before:w-0.5 before:bg-slate-200 dark:before:bg-slate-700">
             <!-- Step 1: Cancellation Confirmed -->
             <div class="flex items-start gap-3 relative">
               <div class="w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shrink-0 z-10 shadow-xs">
@@ -12402,6 +12411,70 @@
         } else {
           alertContainer.innerHTML = '';
         }
+      }
+
+      // Dynamic Truthful 3-Step Banking Timeline
+      const stepperContainer = document.getElementById('refund-timeline-stepper');
+      if (stepperContainer) {
+        const isSettled = (refStatus === 'PROCESSED' || refStatus === 'COMPLETED');
+        const isInit = (refStatus === 'INITIATED');
+        const isFailed = (refStatus === 'FAILED');
+
+        stepperContainer.innerHTML = `
+          <!-- Step 1: Cancellation & Approval -->
+          <div class="flex items-start gap-3 relative">
+            <div class="w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shrink-0 z-10 shadow-xs">
+              <span class="material-symbols-outlined text-[16px]">check</span>
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center justify-between">
+                <h5 class="text-xs font-bold text-slate-900 dark:text-[#F8FAFC]">${isHi ? 'रिफंड अनुरोध स्वीकृत' : 'Refund Request Approved'}</h5>
+                <span class="text-[10px] text-slate-400 font-medium">${isHi ? 'सत्यापित' : 'Verified'}</span>
+              </div>
+              <p class="text-[11px] text-slate-500 dark:text-[#CBD5E1] mt-0.5">${isHi ? 'गाँवबाज़ार द्वारा रिफंड स्वीकृत किया गया।' : 'Refund validated and approved by GaonBazaar.'}</p>
+            </div>
+          </div>
+
+          <!-- Step 2: Gateway Settlement -->
+          <div class="flex items-start gap-3 relative">
+            <div class="w-7 h-7 rounded-full ${isSettled ? 'bg-emerald-600 text-white' : (isInit ? 'bg-amber-500 text-white ring-4 ring-amber-100 dark:ring-amber-950' : (isFailed ? 'bg-rose-600 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-500'))} flex items-center justify-center font-bold text-xs shrink-0 z-10 shadow-xs">
+              <span class="material-symbols-outlined text-[16px] ${isInit ? 'animate-spin' : ''}">${isSettled ? 'check' : (isInit ? 'sync' : (isFailed ? 'close' : 'schedule'))}</span>
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center justify-between">
+                <h5 class="text-xs font-bold ${isSettled ? 'text-emerald-700 dark:text-emerald-400' : (isInit ? 'text-amber-700 dark:text-amber-400' : (isFailed ? 'text-rose-700 dark:text-rose-400' : 'text-slate-600 dark:text-slate-300'))}">
+                  ${isSettled ? (isHi ? 'गेटवे सेटलमेंट संपन्न' : 'Gateway Settlement Processed') : (isInit ? (isHi ? 'बैंक सेटलमेंट प्रक्रियाधीन' : 'Bank Settlement Initiated') : (isFailed ? (isHi ? 'गेटवे प्रसंस्करण त्रुटि' : 'Gateway Processing Failed') : (isHi ? 'गेटवे प्रेषण की प्रतीक्षा' : 'Awaiting Gateway Dispatch')))}
+                </h5>
+                <span class="text-[10px] font-bold ${isSettled ? 'text-emerald-600' : (isInit ? 'text-amber-600' : (isFailed ? 'text-rose-600' : 'text-slate-400'))}">
+                  ${isSettled ? (isHi ? 'संपन्न' : 'Settled') : (isInit ? (isHi ? 'प्रगति पर' : 'In Progress') : (isFailed ? (isHi ? 'विफल' : 'Failed') : (isHi ? 'लंबित' : 'Pending')))}
+                </span>
+              </div>
+              <p class="text-[11px] text-slate-500 dark:text-[#CBD5E1] mt-0.5">
+                ${isSettled ? (isHi ? 'रेज़रपे गेटवे द्वारा बैंक को राशि प्रेषित कर दी गई है।' : 'Refund successfully cleared via payment gateway.') : (isInit ? (isHi ? 'रेज़रपे गेटवे द्वारा बैंक को रिफंड निर्देश भेजा गया।' : 'Refund instructions dispatched through Razorpay payment gateway.') : (isFailed ? (isHi ? 'गेटवे सेटलमेंट में त्रुटि। सपोर्ट टीम मैन्युअल समाधान कर रही है।' : 'Gateway returned an error. Support team is reconciling.') : (isHi ? 'स्वीकृति उपरांत गेटवे को हस्तांतरित किया जाएगा।' : 'Pending batch settlement dispatch to banking gateway.')))}
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 3: Account Credit -->
+          <div class="flex items-start gap-3 relative">
+            <div class="w-7 h-7 rounded-full ${isSettled ? 'bg-emerald-600 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-500'} flex items-center justify-center font-bold text-xs shrink-0 z-10 shadow-xs">
+              <span class="material-symbols-outlined text-[16px]">${isSettled ? 'check' : 'account_balance'}</span>
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center justify-between">
+                <h5 class="text-xs font-bold ${isSettled ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}">
+                  ${isHi ? 'बैंक / यूपीआई खाते में जमा' : 'Credit to Bank / UPI Account'}
+                </h5>
+                <span class="text-[10px] ${isSettled ? 'text-emerald-600 font-bold' : 'text-slate-400 font-medium'}">
+                  ${isSettled ? (isHi ? 'जमा हुआ' : 'Credited') : (isHi ? '5-7 कार्य दिवस' : '5-7 Business Days')}
+                </span>
+              </div>
+              <p class="text-[11px] text-slate-500 dark:text-[#CBD5E1] mt-0.5">
+                ${isSettled ? (isHi ? 'राशि आपके मूल बैंक खाते में क्रेडिट हो चुकी है।' : 'Funds successfully credited to your source account.') : (isHi ? 'आरबीआई एवं एनपीसीआई समाशोधन चक्र अनुसार 5 से 7 बैंकिंग दिवस।' : 'Funds reflect in statement per RBI / UPI banking clearing cycles.')}
+              </p>
+            </div>
+          </div>
+        `;
       }
 
       modal.classList.remove('hidden');

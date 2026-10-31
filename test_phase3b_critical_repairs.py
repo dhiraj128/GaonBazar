@@ -432,7 +432,8 @@ def run_critical_repair_tests():
     check("Runner delivery payout transaction created in payment_transactions", payout_tx is not None)
     if payout_tx:
         check("Runner payout amount is ₹20.00", payout_tx.amount == 20.0)
-        check("Runner payout status is success", payout_tx.status == "success")
+        check("Runner payout status is EARNED", payout_tx.status == "EARNED")
+        check("Runner payout route transfer is payable", payout_tx.route_transfer_status == "payable")
 
     # -------------------------------------------------------------------------
     # SUITE 6: Webhook Handling for refund.failed (P0.1)

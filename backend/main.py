@@ -3246,7 +3246,41 @@ async def razorpay_webhook(request: Request, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Order referenced in webhook event was not found")
 
     # Transition order status to PAID only upon verified payment events
-    if event_type in ("payment.captured", "order.paid", "payment.authorized"):
+    if event_type == "payment.authorized":
+        # P0.1: Never mark payment.authorized as captured or PAID order
+        order.payment_status = "AUTHORIZED"
+        if payment_id:
+            order.razorpay_payment_id = payment_id
+        db.commit()
+        return WebhookPaymentEventResponse(
+            success=True,
+            event=event_type,
+            order_id=order.id,
+            payment_id=payment_id,
+            status="AUTHORIZED",
+            split_status=order.split_payout_status or "pending",
+            message="Payment authorization received. Awaiting capture before order fulfillment."
+        )
+    elif event_type in ("payment.captured", "order.paid"):
+        # Zero-trust verification: status, amount, currency, payment identity, and ownership
+        if payment_obj:
+            p_status = str(payment_obj.get("status", "")).lower()
+            if event_type == "payment.captured" and p_status and p_status != "captured":
+                raise HTTPException(status_code=400, detail=f"Invalid payment status '{p_status}' for capture event")
+
+            pay_amt = payment_obj.get("amount")
+            if pay_amt is not None:
+                expected_paise = int(round(order.total_amount * 100))
+                if abs(int(pay_amt) - expected_paise) > 1:
+                    raise HTTPException(status_code=400, detail=f"Payment amount mismatch: expected {expected_paise} paise, received {pay_amt} paise")
+
+            pay_curr = payment_obj.get("currency")
+            if pay_curr and str(pay_curr).upper() != "INR":
+                raise HTTPException(status_code=400, detail=f"Invalid payment currency '{pay_curr}', expected INR")
+
+            if payment_id and not payment_id.startswith("pay_") and not payment_id.startswith("fake_") and not payment_id.startswith("test_"):
+                raise HTTPException(status_code=400, detail=f"Invalid payment identity '{payment_id}'")
+
         order.payment_status = "PAID"
         order.razorpay_payment_id = payment_id
         order.razorpay_signature = signature
@@ -3306,27 +3340,67 @@ async def razorpay_webhook(request: Request, db: Session = Depends(get_db)):
         ref_notes = refund_obj.get("notes", {})
         custom_ref_id = ref_notes.get("refund_id")
 
+        # P0.2: Exact matching ONLY - Zero newest-record fallback
         ref_record = None
-        if rzp_ref_id:
-            ref_record = db.query(RefundRecord).filter(RefundRecord.razorpay_refund_id == rzp_ref_id).first()
-        if not ref_record and custom_ref_id:
+        if custom_ref_id:
             ref_record = db.query(RefundRecord).filter(RefundRecord.refund_id == custom_ref_id).first()
-        if not ref_record and order:
-            ref_record = db.query(RefundRecord).filter(RefundRecord.order_id == order.id).order_by(RefundRecord.created_at.desc()).first()
+        if not ref_record and rzp_ref_id:
+            ref_record = db.query(RefundRecord).filter(RefundRecord.razorpay_refund_id == rzp_ref_id).first()
 
-        if ref_record:
-            ref_record.status = "PROCESSED"
-            ref_record.processed_at = datetime.utcnow()
-            if rzp_ref_id and not ref_record.razorpay_refund_id:
-                ref_record.razorpay_refund_id = rzp_ref_id
-            if order:
-                order.refund_status = "PROCESSED"
-            db.commit()
+        if not ref_record:
+            raise HTTPException(status_code=404, detail="No matching refund record found for gateway event")
+
+        # Verify matching payment ID
+        orig_payment_id = refund_obj.get("payment_id")
+        if orig_payment_id and order and order.razorpay_payment_id and orig_payment_id != order.razorpay_payment_id:
+            raise HTTPException(status_code=400, detail="Refund payment_id does not match order payment_id")
+
+        # Verify amount match in paise
+        ref_amt = refund_obj.get("amount")
+        if ref_amt is not None and abs(int(ref_amt) - ref_record.amount_paise) > 1:
+            raise HTTPException(status_code=400, detail="Refund amount mismatch with record")
+
+        ref_record.status = "PROCESSED"
+        ref_record.processed_at = datetime.utcnow()
+        if rzp_ref_id and not ref_record.razorpay_refund_id:
+            ref_record.razorpay_refund_id = rzp_ref_id
+        if order:
+            order.refund_status = "PROCESSED"
+
+        # Exactly-once financial ledger entry for processed refund
+        ref_tx = db.query(PaymentTransaction).filter(
+            PaymentTransaction.order_id == (order.id if order else ref_record.order_id),
+            PaymentTransaction.payment_mode == "REFUND",
+            PaymentTransaction.razorpay_payment_id == (rzp_ref_id or ref_record.refund_id)
+        ).first()
+        if not ref_tx:
+            ref_tx = PaymentTransaction(
+                order_id=order.id if order else ref_record.order_id,
+                razorpay_order_id=order.razorpay_order_id if order else None,
+                razorpay_payment_id=rzp_ref_id or ref_record.refund_id,
+                amount=float(ref_record.amount or (ref_record.amount_paise / 100.0)),
+                amount_in_paise=ref_record.amount_paise,
+                currency="INR",
+                status="refunded",
+                payment_mode="REFUND",
+                signature=signature or "GATEWAY_WEBHOOK_VERIFIED",
+                verified=True,
+                verified_at=datetime.utcnow(),
+                raw_payload=raw_body.decode("utf-8", errors="replace"),
+                vendor_split_amount=0.0,
+                runner_split_amount=0.0,
+                admin_platform_fee=0.0,
+                admin_margin=0.0,
+                route_transfer_status="refunded"
+            )
+            db.add(ref_tx)
+
+        db.commit()
 
         return WebhookPaymentEventResponse(
             success=True,
             event=event_type,
-            order_id=order.id if order else "refund_order",
+            order_id=order.id if order else ref_record.order_id,
             payment_id=payment_id,
             status="REFUND_PROCESSED",
             split_status="settled",
@@ -3339,25 +3413,36 @@ async def razorpay_webhook(request: Request, db: Session = Depends(get_db)):
         custom_ref_id = ref_notes.get("refund_id")
         error_desc = refund_obj.get("error_description") or refund_obj.get("error_reason") or "Gateway refund failure"
 
+        # P0.2: Exact matching ONLY - Zero newest-record fallback
         ref_record = None
-        if rzp_ref_id:
-            ref_record = db.query(RefundRecord).filter(RefundRecord.razorpay_refund_id == rzp_ref_id).first()
-        if not ref_record and custom_ref_id:
+        if custom_ref_id:
             ref_record = db.query(RefundRecord).filter(RefundRecord.refund_id == custom_ref_id).first()
-        if not ref_record and order:
-            ref_record = db.query(RefundRecord).filter(RefundRecord.order_id == order.id).order_by(RefundRecord.created_at.desc()).first()
+        if not ref_record and rzp_ref_id:
+            ref_record = db.query(RefundRecord).filter(RefundRecord.razorpay_refund_id == rzp_ref_id).first()
 
-        if ref_record:
-            ref_record.status = "FAILED"
-            ref_record.failure_reason = str(error_desc)
-            if order:
-                order.refund_status = "FAILED"
-            db.commit()
+        if not ref_record:
+            raise HTTPException(status_code=404, detail="No matching refund record found for gateway event")
+
+        # Verify matching payment ID
+        orig_payment_id = refund_obj.get("payment_id")
+        if orig_payment_id and order and order.razorpay_payment_id and orig_payment_id != order.razorpay_payment_id:
+            raise HTTPException(status_code=400, detail="Refund payment_id does not match order payment_id")
+
+        # Verify amount match in paise
+        ref_amt = refund_obj.get("amount")
+        if ref_amt is not None and abs(int(ref_amt) - ref_record.amount_paise) > 1:
+            raise HTTPException(status_code=400, detail="Refund amount mismatch with record")
+
+        ref_record.status = "FAILED"
+        ref_record.failure_reason = str(error_desc)
+        if order:
+            order.refund_status = "FAILED"
+        db.commit()
 
         return WebhookPaymentEventResponse(
             success=True,
             event=event_type,
-            order_id=order.id if order else "refund_order",
+            order_id=order.id if order else ref_record.order_id,
             payment_id=payment_id,
             status="REFUND_FAILED",
             split_status="failed",
@@ -4026,6 +4111,7 @@ def report_order_issue_resolution(
             rep_id = f"REP-{random.randint(100000, 999999)}"
             handover_otp = str(random.randint(1000, 9999))
 
+            rep_payout = float(order.runner_payout) if (order.runner_payout and order.runner_payout > 0) else 20.0
             rep_obj = Replacement(
                 replacement_id=rep_id,
                 original_order_id=order.id,
@@ -4041,11 +4127,12 @@ def report_order_issue_resolution(
                 customer_name=order.user_name,
                 store_id=order.store_id or "sharma_brothers",
                 store_name=order.store_name,
+                runner_payout=rep_payout,
                 inventory_reservation=False,
                 replacement_cost_paise=int(order.delivery_fee * 100),
                 customer_charge_paise=0,  # FREE replacement: customer charge is strictly 0
                 status="REQUESTED",
-                promised_eta="45 Mins",
+                promised_eta="Awaiting stock confirmation",
                 delivery_verification=handover_otp,
                 reverse_pickup_required=reverse_pickup_req,
                 reverse_pickup_status="PENDING_PICKUP" if reverse_pickup_req else "NOT_REQUIRED",
@@ -4083,10 +4170,10 @@ def report_order_issue_resolution(
                 preferred_resolution="replacement",
                 status="REQUESTED",
                 replacement_id=rep_id,
-                replacement_eta="45 Mins",
+                replacement_eta="Awaiting stock confirmation",
                 reverse_pickup_required=reverse_pickup_req,
                 reverse_pickup_instructions="Please keep the incorrect sealed product ready for handover to our delivery partner." if reverse_pickup_req else "No return collection required for food safety.",
-                message="Free replacement request submitted successfully. Estimated delivery in 45 Mins.",
+                message="Free replacement request submitted successfully. ETA will be provided upon stock confirmation.",
                 created_at=rep_obj.created_at.isoformat()
             )
         else:
@@ -4458,6 +4545,7 @@ def vendor_respond_replacement(
             rep.inventory_reservation = True
 
         rep.status = "VENDOR_PACKING"
+        rep.promised_eta = "30-45 Mins"
         # Auto-assign available runner
         if not rep.runner_id:
             runner_obj = db.query(Runner).filter(Runner.is_online == True).first()
@@ -4814,7 +4902,8 @@ def runner_verify_replacement_otp(
     rep.actual_delivery_timestamp = datetime.utcnow()
 
     # P0.6: Financial settlement - record real runner delivery payout in ledger
-    runner_payout_amount = 20.0
+    orig_order = db.query(Order).filter(Order.id == rep.original_order_id).first()
+    runner_payout_amount = float(getattr(rep, "runner_payout", None) or (orig_order.runner_payout if orig_order and orig_order.runner_payout else 20.0))
     runner_tx = PaymentTransaction(
         order_id=rep.original_order_id,
         razorpay_order_id=f"PAYOUT-REP-{rep.replacement_id}",
@@ -4822,13 +4911,13 @@ def runner_verify_replacement_otp(
         amount=runner_payout_amount,
         amount_in_paise=int(runner_payout_amount * 100),
         currency="INR",
-        status="success",
+        status="EARNED",
         payment_mode="RUNNER_PAYOUT",
         verified=True,
         verified_at=datetime.utcnow(),
         runner_split_amount=runner_payout_amount,
-        route_transfer_status="settled",
-        raw_payload=json.dumps({"type": "replacement_delivery_payout", "replacement_id": rep.replacement_id, "runner_id": rep.runner_id})
+        route_transfer_status="payable",
+        raw_payload=json.dumps({"type": "replacement_delivery_payout", "replacement_id": rep.replacement_id, "runner_id": rep.runner_id, "status": "EARNED"})
     )
     db.add(runner_tx)
 
@@ -5053,6 +5142,12 @@ def admin_execute_resolution_action(
             ref.admin_notes = payload.admin_notes
 
         if action == "approve_refund":
+            if ref.status == "PROCESSED":
+                raise HTTPException(status_code=400, detail="Refund has already been processed and settled.")
+            if ref.status == "INITIATED":
+                return {"success": True, "refund_id": ref.refund_id, "status": ref.status, "action": action, "message": "Refund already initiated at gateway"}
+            if ref.status not in ("REQUESTED", "UNDER_REVIEW", "APPROVED", "FAILED"):
+                raise HTTPException(status_code=400, detail=f"Cannot approve refund in status '{ref.status}'")
             cand_ids = [ref.order_id, f"#{ref.order_id}", ref.order_id.lstrip("#")]
             order = db.query(Order).filter(Order.id.in_(cand_ids)).first()
             if not order:

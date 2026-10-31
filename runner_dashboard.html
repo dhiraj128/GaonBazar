@@ -3176,7 +3176,10 @@
       // 1. In-memory RunnerStore token
       if (RunnerStore.token) {
         const p = parseJwtPayload(RunnerStore.token);
-        if (p && (p.role === 'runner' || p.role === 'admin')) return RunnerStore.token;
+        if (p && (p.role === 'runner' || p.role === 'admin')) {
+          if (p.runner_id) { RunnerStore.runnerId = p.runner_id; RunnerStore.activeRunnerId = p.runner_id; }
+          return RunnerStore.token;
+        }
       }
       // 2. Specific gaonbazar_runner_token
       const rToken = localStorage.getItem('gaonbazar_runner_token');
@@ -3988,7 +3991,7 @@
           method: 'POST',
           body: JSON.stringify({ otp: otpVal })
         });
-        showToast('Delivery Completed', 'Replacement delivered! ₹20 mission earnings credited to your ledger.');
+        showToast('Delivery Completed', 'Replacement delivered! Mission earnings credited to your ledger.');
         await fetchRunnerReplacementMissions();
         renderMissionsQueue();
       } catch(e) {
@@ -4026,7 +4029,7 @@
                 <p class="text-[10px] text-slate-500">From: ${r.store_name || r.store_id} ➔ To: ${r.customer_name || r.customer_phone}</p>
               </div>
               <div class="text-right">
-                <span class="text-xs font-black text-emerald-600">Earnings: ₹40</span>
+                <span class="text-xs font-black text-emerald-600">Earnings: ₹${(r.runner_payout != null && !isNaN(r.runner_payout)) ? Number(r.runner_payout).toFixed(2) : '20.00'}</span>
                 <p class="text-[10px] text-slate-400">Customer Due: ₹0</p>
               </div>
             </div>

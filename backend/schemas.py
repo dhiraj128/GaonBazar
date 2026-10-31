@@ -805,6 +805,7 @@ class ReplacementDetailDTO(BaseModel):
     runner_id: Optional[str] = None
     runner_name: Optional[str] = None
     runner_phone: Optional[str] = None
+    runner_payout: Optional[float] = 20.0
     status: str
     promised_eta: Optional[str] = None
     delivery_verification: Optional[str] = None

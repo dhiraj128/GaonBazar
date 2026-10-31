@@ -261,7 +261,7 @@ def run_all_tests():
     check("Ticket ID generated with TKT- prefix", rep_res["ticket_id"].startswith("TKT-"))
     check("Replacement ID generated with REP- prefix", rep_res["replacement_id"].startswith("REP-"))
     check("Status is REQUESTED", rep_res["status"] == "REQUESTED")
-    check("Promised ETA is 45 Mins", rep_res["replacement_eta"] == "45 Mins")
+    check("Promised ETA is dynamic upon stock check", rep_res["replacement_eta"] in ("Awaiting stock confirmation", "30-45 Mins"))
     check("Sealed wrong product requires reverse pickup", rep_res["reverse_pickup_required"] == True)
 
     created_rep_id = rep_res["replacement_id"]
@@ -522,7 +522,7 @@ def run_all_tests():
     # 8.5 Webhook handling: refund.processed with signed HMAC payload
     import hmac, hashlib
     from backend.main import RAZORPAY_WEBHOOK_SECRET
-    rzp_refund_id = ref_rec.razorpay_refund_id or "rfnd_test_gateway_live_789"
+    rzp_refund_id = ref_rec.razorpay_refund_id or f"rfnd_test_{uuid.uuid4().hex[:8]}"
     webhook_payload = {
         "event": "refund.processed",
         "payload": {
@@ -556,7 +556,8 @@ def run_all_tests():
         }
     )
     check("Webhook accepted and processed (HTTP 200)", r_wh.status_code == 200)
-    db.refresh(ref_rec)
+    db.commit()
+    ref_rec = db.query(RefundRecord).filter(RefundRecord.refund_id == claim_id).first()
     check("Refund record transitioned to PROCESSED via webhook", ref_rec.status == "PROCESSED")
 
     # =========================================================================
