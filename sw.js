@@ -15,10 +15,12 @@
  *    - Eliminates the browser's "No Internet" dinosaur screen.
  */
 
-const CACHE_NAME = 'gaonbazar-v1';
+const CACHE_NAME = 'gaonbazar-v7-20261101-clean';
 const PRECACHE_ASSETS = [
   '/',
   '/index.html',
+  '/vendor_dashboard.html',
+  '/runner_dashboard.html',
   '/offline.html',
   '/sw.js'
 ];
@@ -51,12 +53,25 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         cacheNames.map((name) => {
           if (name !== CACHE_NAME) {
+            console.log('[GaonBazaar SW]: Purging obsolete cache:', name);
             return caches.delete(name);
           }
         })
       );
     }).then(() => self.clients.claim())
   );
+});
+
+
+
+// --- 2.5 SERVICE WORKER MESSAGE DISPATCHER ---
+self.addEventListener('message', (event) => {
+  if (!event.data) return;
+  if (event.data.action === 'SKIP_WAITING') {
+    self.skipWaiting();
+  } else if (event.data.action === 'CLEAR_ALL_CACHES') {
+    caches.keys().then((names) => Promise.all(names.map((n) => caches.delete(n))));
+  }
 });
 
 // --- 3. INTELLIGENT FETCH INTERCEPTION ---
@@ -145,6 +160,33 @@ self.addEventListener('fetch', (event) => {
 
           // Relative fallback
           return (await caches.match('offline.html')) || Response.error();
+        })
+    );
+    return;
+  }
+
+  // ---------------------------------------------------------------------------
+  // STRATEGY C-IMG: Network-First with Cache Fallback for Images
+  // Guarantees immediate display of fresh catalog assets and banners
+  // ---------------------------------------------------------------------------
+  const isImage = request.destination === 'image' || 
+                  url.pathname.includes('/images/') || 
+                  /\.(png|jpe?g|webp|svg|gif)(\?.*)?$/i.test(url.pathname);
+
+  if (isImage) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (response && response.status === 200 && request.method === 'GET') {
+            const responseClone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, responseClone));
+          }
+          return response;
+        })
+        .catch(async () => {
+          const cached = await caches.match(request);
+          if (cached) return cached;
+          return new Response('', { status: 408, statusText: 'Image offline' });
         })
     );
     return;

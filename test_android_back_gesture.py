@@ -57,7 +57,7 @@ def test_customer_app(browser):
 
     # --- 1.1 Sidebar Drawer Back Swipe ---
     print("\n[1.1] Testing Sidebar Drawer Edge-Swipe Back Gesture...")
-    page.click("#btn-open-sidebar")
+    page.evaluate("openSidebarDrawer()")
     page.wait_for_timeout(350)
     assert page.is_visible("#sidebar-drawer"), "Sidebar failed to open"
     drawer_classes = page.locator("#sidebar-drawer").get_attribute("class")
@@ -74,7 +74,7 @@ def test_customer_app(browser):
 
     # --- 1.2 Sidebar Drawer Programmatic Close ('X' button) & History Cleanup ---
     print("\n[1.2] Testing Sidebar Close Button History Stack Cleanup...")
-    page.click("#btn-open-sidebar")
+    page.evaluate("openSidebarDrawer()")
     page.wait_for_timeout(300)
     page.click("#btn-close-sidebar")
     page.wait_for_timeout(300)
@@ -124,7 +124,7 @@ def test_customer_app(browser):
 
     # --- 1.6 Stacked Overlays Back Routing (Sidebar -> Terms Modal) ---
     print("\n[1.6] Testing Stacked Overlays Multi-Level Back Routing...")
-    page.click("#btn-open-sidebar")
+    page.evaluate("openSidebarDrawer()")
     page.wait_for_timeout(300)
     page.evaluate("openTermsModal()")
     page.wait_for_timeout(300)

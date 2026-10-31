@@ -4,9 +4,13 @@ on:
   push:
     branches:
       - main
+      - 'feat/**'
+      - 'preview/**'
   pull_request:
     branches:
       - main
+      - 'feat/**'
+      - 'preview/**'
   workflow_dispatch:
 
 concurrency:
@@ -18,6 +22,9 @@ jobs:
     name: Run Automated E2E & Visual Regression Suite
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    env:
+      ALLOW_TEST_BYPASS: "1"
+      TEST_MODE: "1"
 
     steps:
       - name: Checkout Repository
@@ -36,8 +43,11 @@ jobs:
           playwright install --with-deps chromium
 
       - name: Boot GaonBazaar Backend Server (Background)
+        env:
+          ALLOW_TEST_BYPASS: "1"
+          TEST_MODE: "1"
         run: |
-          python run_server.py 8001 &
+          ALLOW_TEST_BYPASS=1 TEST_MODE=1 python run_server.py 8001 &
           echo "SERVER_PID=$!" >> $GITHUB_ENV
           echo "GaonBazaar FastAPI backend booted in background (PID: $!)."
 
@@ -73,9 +83,19 @@ jobs:
         run: |
           python test_razorpay_payments.py
 
+      - name: Run Central Catalog, Vendor & Runner KYC E2E Tests
+        run: |
+          python test_central_catalog_and_kyc_e2e.py
+
       - name: Run Customer Mobile App E2E Test Suite (5 Mobile Devices)
         run: |
           python test_mobile_e2e.py
+
+      - name: Run Customer Navigation, Voice and Dark-Mode Regressions
+        run: |
+          python test_customer_navigation_hierarchy.py
+          node test_customer_voice_logic.js
+          python test_customer_voice_browser.py
 
       - name: Run Vendor (Dukandaar) Dashboard E2E Test Suite
         run: |
@@ -88,6 +108,18 @@ jobs:
       - name: Run Super Admin Dashboard E2E Test Suite
         run: |
           python test_admin_e2e.py
+
+      - name: Run Universal Vertical Scrolling Audit
+        run: |
+          python test_vertical_scrolling.py
+
+      - name: Run Customer AI Voice Shopping & Assistance Suite
+        run: |
+          python test_voice_shopping_and_ai.py
+          python test_hindi_first_and_voice_shopping.py
+
+      - name: Run Delivery Economics, Payouts & Notifications Audit
+        run: python test_delivery_economics_and_notifications.py
 
       - name: Upload Visual QA Screenshots
         if: always()

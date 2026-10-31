@@ -91,7 +91,8 @@ def main():
             # -------------------------------------------------------------
             print("\n[TEST 3]: Testing Interactive Language Toggle Click...")
             # Click toggle (EN -> HI)
-            page.click("#lang-toggle-btn")
+            btn_sel = "#quick-lang-toggle-btn" if page.is_visible("#quick-lang-toggle-btn") else "#lang-toggle-btn"
+            page.click(btn_sel)
             page.wait_for_timeout(300)
             name_toggled_hi = page.inner_text("#runner-name-display").strip()
             hub_toggled_hi = page.inner_text("#runner-hub-name-text").strip()
@@ -99,7 +100,8 @@ def main():
             assert "रामपुर क्लस्टर हब" in hub_toggled_hi, f"Expected 'रामपुर क्लस्टर हब' after toggle, got '{hub_toggled_hi}'"
 
             # Click toggle again (HI -> EN)
-            page.click("#lang-toggle-btn")
+            btn_sel = "#quick-lang-toggle-btn" if page.is_visible("#quick-lang-toggle-btn") else "#lang-toggle-btn"
+            page.click(btn_sel)
             page.wait_for_timeout(300)
             name_toggled_en = page.inner_text("#runner-name-display").strip()
             hub_toggled_en = page.inner_text("#runner-hub-name-text").strip()

@@ -8,6 +8,21 @@ build/
 *.log
 __pycache__/
 *.pyc
+# Database files and backups
+*.db
+*.db-journal
 *.db-shm
 *.db-wal
+*.sqlite
+*.sqlite3
+backend/*.db
+backend/backups/
+backups/
 scratch/
+
+FINAL_APPROVED_HANDOFF_NEW/
+approved_clean_v3/
+approved_handoff_new/
+screenshots/inspect_*
+screenshots/inspect_lang/
+screenshots/live_clean_journey/
