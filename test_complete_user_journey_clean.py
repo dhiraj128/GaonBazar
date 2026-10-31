@@ -146,7 +146,7 @@ async def run_journey_test():
         await asyncio.sleep(0.3)
 
         # Click Verify OTP button
-        verify_btn = page.locator("#p1-legacy-verify-otp-btn")
+        verify_btn = page.locator("#p1-verify-otp-btn")
         await verify_btn.click()
         await asyncio.sleep(1.5)
 

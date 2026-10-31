@@ -139,6 +139,10 @@ class ProductDTO(BaseModel):
     mrp: float
     icon: str
     in_stock: bool
+    image_url: Optional[str] = None
+    central_product_id: Optional[str] = None
+    stock_qty: Optional[int] = 50
+    is_available: Optional[bool] = True
 
     class Config:
         from_attributes = True
@@ -161,7 +165,7 @@ class StoreDTO(BaseModel):
     store_type: Optional[str] = "kirana"
     rating: Optional[float] = None
     total_orders: int = 0
-    distance_km: float = 1.2
+    distance_km: Optional[float] = None
     eta_mins: str = "30 Mins"
     is_open: bool = True
     trust_badge: Optional[str] = None

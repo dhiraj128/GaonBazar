@@ -821,6 +821,7 @@ def debug_sentry_test():
 # =============================================================================
 
 @app.post("/api/auth/send-otp", response_model=SendOTPResponse, dependencies=[Depends(enforce_otp_rate_limit)])
+@app.post("/api/otp/send", response_model=SendOTPResponse, dependencies=[Depends(enforce_otp_rate_limit)])
 def send_otp(payload: SendOTPRequest, db: Session = Depends(get_db)):
     """
     Generates a secure 6-digit OTP code, persists single-use record to DB with 5-minute TTL.
@@ -872,6 +873,7 @@ def send_otp(payload: SendOTPRequest, db: Session = Depends(get_db)):
 
 @app.post("/api/auth/verify", response_model=VerifyOTPResponse)
 @app.post("/api/auth/verify-otp", response_model=VerifyOTPResponse)
+@app.post("/api/otp/verify", response_model=VerifyOTPResponse)
 def verify_otp(payload: VerifyOTPRequest, db: Session = Depends(get_db)):
     """
     Validates the 6-digit OTP against DB. Enforces:
@@ -1038,8 +1040,8 @@ def save_user_landmark(
     landmark_record = Landmark(
         user_id=user.id,
         phone=payload.phone,
-        lat=payload.lat or 29.1324,
-        lng=payload.lng or 77.0125,
+        lat=payload.lat,
+        lng=payload.lng,
         accuracy=payload.accuracy or 6.0,
         district=payload.district.strip() if payload.district else "Muzaffarpur",
         block=getattr(payload, 'block', None) or "Minapur",
@@ -1287,9 +1289,12 @@ def list_stores(
     stores = db.query(Store).filter(Store.status != "pending_approval", Store.status != "rejected").all()
     results = []
     for s in stores:
-        if lat is not None and lng is not None and getattr(s, 'lat', None) and getattr(s, 'lng', None):
+        if lat is not None and lng is not None and getattr(s, 'lat', None) is not None and getattr(s, 'lng', None) is not None:
             s.distance_km = calculate_haversine_km(s.lat, s.lng, lat, lng)
-        s.eta_mins = "30 Mins" if (s.distance_km or 1.2) <= 5.0 else "45-60 Mins"
+            s.eta_mins = "30 Mins" if s.distance_km <= 5.0 else "45-60 Mins"
+        else:
+            s.distance_km = None
+            s.eta_mins = "30-60 Mins"
         results.append(s)
     return results
 
@@ -1309,9 +1314,12 @@ def get_store_profile(
     if not store:
         raise HTTPException(status_code=404, detail="Store not found")
 
-    if lat is not None and lng is not None and getattr(store, 'lat', None) and getattr(store, 'lng', None):
+    if lat is not None and lng is not None and getattr(store, 'lat', None) is not None and getattr(store, 'lng', None) is not None:
         store.distance_km = calculate_haversine_km(store.lat, store.lng, lat, lng)
-    store.eta_mins = "30 Mins" if (store.distance_km or 1.2) <= 5.0 else "45-60 Mins"
+        store.eta_mins = "30 Mins" if store.distance_km <= 5.0 else "45-60 Mins"
+    else:
+        store.distance_km = None
+        store.eta_mins = "30-60 Mins"
     return store
 
 
@@ -1411,6 +1419,9 @@ def get_store_products(
     if category and category != "all":
         query = query.filter(Product.category == category)
     products = query.all()
+    for p in products:
+        if not getattr(p, 'image_url', None) and getattr(p, 'central_product', None) and getattr(p.central_product, 'image_url', None):
+            p.image_url = p.central_product.image_url
     return products
 
 @app.get("/api/products", response_model=List[ProductDTO])
@@ -1439,7 +1450,11 @@ def get_catalog_products(
             query = query.filter(Product.category.in_(["fruits", "fruit"]))
         else:
             query = query.filter(Product.category == category)
-    return query.limit(limit).all()
+    products = query.limit(limit).all()
+    for p in products:
+        if not getattr(p, 'image_url', None) and getattr(p, 'central_product', None) and getattr(p.central_product, 'image_url', None):
+            p.image_url = p.central_product.image_url
+    return products
 
 
 # =============================================================================
