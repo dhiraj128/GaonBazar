@@ -3155,14 +3155,72 @@
       // Audio chime completely silenced per UI specification
     }
 
-    // --- 9.3 API CLIENT WRAPPER (Network-Accurate Heartbeat & Zero False Positives) ---
+    // --- 9.3 JWT & TOKEN ROLE VALIDATION (Fixes repeated 403s from Customer tokens) ---
+    function parseJwtPayload(token) {
+      if (!token || typeof token !== 'string') return null;
+      try {
+        const parts = token.split('.');
+        if (parts.length !== 3) return null;
+        const base64Url = parts[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function getValidRunnerToken() {
+      // 1. In-memory RunnerStore token
+      if (RunnerStore.token) {
+        const p = parseJwtPayload(RunnerStore.token);
+        if (p && (p.role === 'runner' || p.role === 'admin')) return RunnerStore.token;
+      }
+      // 2. Specific gaonbazar_runner_token
+      const rToken = localStorage.getItem('gaonbazar_runner_token');
+      if (rToken) {
+        const p = parseJwtPayload(rToken);
+        if (p && (p.role === 'runner' || p.role === 'admin')) {
+          RunnerStore.token = rToken;
+          return rToken;
+        }
+      }
+      // 3. Saved runner session JSON
+      const sessStr = localStorage.getItem('gaonbazar_runner_session');
+      if (sessStr) {
+        try {
+          const s = JSON.parse(sessStr);
+          if (s.token) {
+            const p = parseJwtPayload(s.token);
+            if (p && (p.role === 'runner' || p.role === 'admin')) {
+              RunnerStore.token = s.token;
+              return s.token;
+            }
+          }
+        } catch (e) {}
+      }
+      // 4. Fallback to generic authToken ONLY if role matches runner or admin
+      const genericToken = localStorage.getItem('authToken');
+      if (genericToken) {
+        const p = parseJwtPayload(genericToken);
+        if (p && (p.role === 'runner' || p.role === 'admin')) {
+          RunnerStore.token = genericToken;
+          return genericToken;
+        }
+      }
+      return null;
+    }
+
+    // --- 9.31 API CLIENT WRAPPER (Network-Accurate Heartbeat & Zero False Positives) ---
     async function runnerApiFetch(endpoint, options = {}) {
       const url = `${API_BASE}${endpoint}`;
       const headers = {
         'Content-Type': 'application/json',
         ...(options.headers || {})
       };
-      const token = RunnerStore.token || localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_runner_token');
+      const token = getValidRunnerToken();
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
@@ -3180,6 +3238,14 @@
       hideRunnerOfflineBanner();
 
       if (!res.ok) {
+        if (res.status === 401 || res.status === 403) {
+          // Invalidate invalid token & stop polling loop immediately to prevent 403 spam
+          if (RunnerStore.pollTimer) {
+            clearInterval(RunnerStore.pollTimer);
+            RunnerStore.pollTimer = null;
+          }
+          console.warn('Runner session unauthorized (401/403). Stopped background polling.');
+        }
         const err = await res.json().catch(() => ({ detail: res.statusText }));
         throw new Error(err.detail || `Server error: ${res.status}`);
       }
@@ -3321,7 +3387,7 @@
     }
 
     async function checkRunnerSession() {
-      const savedAuthToken = localStorage.getItem('authToken') || localStorage.getItem('gaonbazar_runner_token');
+      const validToken = getValidRunnerToken();
       const sessionStr = localStorage.getItem('gaonbazar_runner_session');
       const loginGate = document.getElementById('runner-login-gate');
       const authGate = document.getElementById('runner-auth-gate');
@@ -3333,7 +3399,7 @@
       const urlParams = new URLSearchParams(window.location.search);
       const isPreview = urlParams.get('preview') === '1' || window.__PREVIEW_MODE === true;
 
-      if (!sessionStr && !savedAuthToken) {
+      if (!sessionStr && !validToken) {
         if (isPreview) {
           // Preview mode: display missions dashboard with reference missions
           if (loginGate) {
@@ -3889,15 +3955,9 @@
 
     async function fetchRunnerReplacementMissions() {
       try {
-        const runnerId = RunnerStore.runnerId || '1';
-        const token = RunnerStore.token || (typeof localStorage !== 'undefined' ? (localStorage.getItem('runnerToken') || localStorage.getItem('token')) : null);
-        const res = await fetch(`/api/runner/${encodeURIComponent(runnerId)}/replacement-missions`, {
-          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
-        });
-        if (res.ok) {
-          const data = await res.json();
-          RunnerStore.replacementMissions = Array.isArray(data) ? data : [];
-        }
+        const runnerId = RunnerStore.runnerId || 'gm_1';
+        const data = await runnerApiFetch(`/runner/${encodeURIComponent(runnerId)}/replacement-missions`);
+        RunnerStore.replacementMissions = Array.isArray(data) ? data : [];
       } catch (err) {
         console.warn('Replacement missions fetch failed:', err);
       }
@@ -3905,20 +3965,14 @@
 
     async function runnerPickupReplacement(repId) {
       try {
-        const token = RunnerStore.token || (typeof localStorage !== 'undefined' ? (localStorage.getItem('runnerToken') || localStorage.getItem('token')) : null);
-        const res = await fetch(`/api/runner/replacements/${encodeURIComponent(repId)}/pickup`, {
-          method: 'POST',
-          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+        await runnerApiFetch(`/runner/replacements/${encodeURIComponent(repId)}/pickup`, {
+          method: 'POST'
         });
-        if (res.ok) {
-          await fetchRunnerReplacementMissions();
-          renderMissionsQueue();
-        } else {
-          const err = await res.json();
-          alert(err.detail || 'Pickup failed');
-        }
+        showToast('Pickup Confirmed', 'Replacement package collected from vendor.');
+        await fetchRunnerReplacementMissions();
+        renderMissionsQueue();
       } catch(e) {
-        alert('Network error: ' + e.message);
+        alert('Pickup failed: ' + e.message);
       }
     }
 
@@ -3930,25 +3984,15 @@
           alert('Please enter the 4-digit customer OTP');
           return;
         }
-        const token = RunnerStore.token || (typeof localStorage !== 'undefined' ? (localStorage.getItem('runnerToken') || localStorage.getItem('token')) : null);
-        const res = await fetch(`/api/runner/replacements/${encodeURIComponent(repId)}/verify-otp`, {
+        await runnerApiFetch(`/runner/replacements/${encodeURIComponent(repId)}/verify-otp`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-          },
           body: JSON.stringify({ otp: otpVal })
         });
-        if (res.ok) {
-          alert('Replacement successfully delivered! Mission earnings credited.');
-          await fetchRunnerReplacementMissions();
-          renderMissionsQueue();
-        } else {
-          const err = await res.json();
-          alert(err.detail || 'OTP verification failed');
-        }
+        showToast('Delivery Completed', 'Replacement delivered! ₹20 mission earnings credited to your ledger.');
+        await fetchRunnerReplacementMissions();
+        renderMissionsQueue();
       } catch(e) {
-        alert('Network error: ' + e.message);
+        alert('OTP Verification Failed: ' + e.message);
       }
     }
 

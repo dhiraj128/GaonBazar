@@ -511,15 +511,18 @@ def run_all_tests():
     )
     check("Admin approves valid refund (HTTP 200)", r_appr_ref.status_code == 200)
     ref_action_res = r_appr_ref.json()
-    check("Refund status transitioned to INITIATED", ref_action_res["status"] == "INITIATED")
+    # P0.1: Truthful status without fabrication: APPROVED when live money flag disabled
+    check("Refund status transitioned to APPROVED/INITIATED", ref_action_res["status"] in ("APPROVED", "INITIATED"))
 
     # Verify liability attribution
     ref_rec = db.query(RefundRecord).filter(RefundRecord.refund_id == claim_id).first()
     check("Responsible party attributed to vendor", ref_rec.responsible_party == "vendor")
-    check("Razorpay refund ID assigned", ref_rec.razorpay_refund_id is not None)
+    check("Refund record correctly saved in database", ref_rec is not None)
 
-    # 8.5 Webhook handling: refund.processed
-    rzp_refund_id = ref_rec.razorpay_refund_id
+    # 8.5 Webhook handling: refund.processed with signed HMAC payload
+    import hmac, hashlib
+    from backend.main import RAZORPAY_WEBHOOK_SECRET
+    rzp_refund_id = ref_rec.razorpay_refund_id or "rfnd_test_gateway_live_789"
     webhook_payload = {
         "event": "refund.processed",
         "payload": {
@@ -528,21 +531,33 @@ def run_all_tests():
                     "id": rzp_refund_id,
                     "payment_id": "pay_test_online_456",
                     "amount": 10000,
-                    "status": "processed"
+                    "status": "processed",
+                    "notes": {
+                        "refund_id": claim_id,
+                        "order_id": test_ord_refund.id
+                    }
                 }
             }
         }
     }
+    raw_wh_bytes = json.dumps(webhook_payload).encode("utf-8")
+    valid_sig = hmac.new(
+        key=RAZORPAY_WEBHOOK_SECRET.encode("utf-8"),
+        msg=raw_wh_bytes,
+        digestmod=hashlib.sha256
+    ).hexdigest()
 
-    # Generate valid signature or use test endpoint
     r_wh = client.post(
         "/api/payments/webhook",
-        json=webhook_payload,
-        headers={"X-Razorpay-Signature": "test_sandbox_signature"}
+        content=raw_wh_bytes,
+        headers={
+            "Content-Type": "application/json",
+            "X-Razorpay-Signature": valid_sig
+        }
     )
-    # Even if signature check blocks untrusted outside calls, in test mode or with verified signature it updates status
+    check("Webhook accepted and processed (HTTP 200)", r_wh.status_code == 200)
     db.refresh(ref_rec)
-    check("Refund record exists in database", ref_rec is not None)
+    check("Refund record transitioned to PROCESSED via webhook", ref_rec.status == "PROCESSED")
 
     # =========================================================================
     # SUITE 9: FRONTEND DOM & CONTROLLER INTEGRITY (Task 2, 7, 8, 9)

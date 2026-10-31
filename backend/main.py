@@ -32,7 +32,7 @@ import sentry_sdk
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 
 from .database import engine, Base, get_db, check_database_integrity, ensure_schema_migrations, db_session, record_audit_log
-from .models import User, OTPRecord, Landmark, Store, Product, Order, OrderItem, Runner, SupportTicket, StoreCategory, SavedPaymentMethod, PaymentTransaction, Notification, MessageThread, ChatMessage, AuditLog, RevokedToken, ProcessedWebhookEvent, Replacement, RefundRecord
+from .models import User, OTPRecord, Landmark, Store, Product, Order, OrderItem, ArchivedOrderItem, Runner, SupportTicket, StoreCategory, SavedPaymentMethod, PaymentTransaction, Notification, MessageThread, ChatMessage, AuditLog, RevokedToken, ProcessedWebhookEvent, Replacement, RefundRecord
 from .schemas import (
     SendOTPRequest, SendOTPResponse,
     VerifyOTPRequest, VerifyOTPResponse, UserProfileDTO, CustomerTrustStatusDTO,
@@ -430,6 +430,9 @@ app.add_middleware(
 RAZORPAY_KEY_ID = (os.getenv("RAZORPAY_KEY_ID") or "paste_your_key_id_here").strip("\"'")
 RAZORPAY_KEY_SECRET = (os.getenv("RAZORPAY_KEY_SECRET") or "paste_your_key_secret_here").strip("\"'")
 RAZORPAY_WEBHOOK_SECRET = (os.getenv("RAZORPAY_WEBHOOK_SECRET") or "paste_your_webhook_secret_here").strip("\"'")
+
+# Explicit live-money execution feature flag (strictly disabled by default per P0.1)
+RAZORPAY_LIVE_REFUNDS_ENABLED = os.getenv("RAZORPAY_LIVE_REFUNDS_ENABLED", "0").lower() in ("1", "true")
 
 # Connect Razorpay Python SDK to environment variables
 try:
@@ -2121,20 +2124,11 @@ def mark_order_delivered(
 
 def process_order_cancellation(order: Order, db: Session, reason: str = "Customer requested cancellation") -> dict:
     """
-    Core 3-Strike Customer Trust Score & Refund Penalty Engine:
-    - Strike 1 (1 cancellation):
-        * Trigger in-app warning notification:
-          "Warning: Frequent cancellations may lead to COD restrictions."
-        * Full refund if prepaid; 0 if COD.
-    - Strike 2 (2 cancellations):
-        * Set is_cod_blocked = True in DB.
-        * COD blocked at checkout.
-        * Full refund if prepaid; 0 if COD.
-    - Strike 3 (3 cancellations):
-        * Set is_blacklisted = True in DB.
-        * Permanent checkout block.
-        * Exact Penalty Math: For prepaid orders, deduct Delivery Fee + Platform Fee (₹3).
-          Only the remaining item subtotal is refunded.
+    Reviewed Stage-Based Order Cancellation & Refund Engine (P0.4):
+    - Removed unfair 3-strike penalties, automatic blacklisting, and COD blocking.
+    - Full 100% refund (including delivery and platform fees) for qualifying cancellations before packing.
+    - Idempotent exactly-once product inventory restoration.
+    - Automatic creation of real RefundRecord in PostgreSQL for prepaid cancellations.
     """
     if order.timeline_stage == 0:
         return {
@@ -2147,8 +2141,8 @@ def process_order_cancellation(order: Order, db: Session, reason: str = "Custome
             "delivery_fee": order.delivery_fee,
             "platform_fee": order.platform_fee,
             "total_amount": order.total_amount,
-            "refund_penalty": getattr(order, 'refund_penalty', 0.0) or 0.0,
-            "refund_amount": getattr(order, 'refund_amount', 0.0) or 0.0,
+            "refund_penalty": getattr(order, "refund_penalty", 0.0) or 0.0,
+            "refund_amount": getattr(order, "refund_amount", 0.0) or 0.0,
             "consecutive_cancellations": 0,
             "cancelled_orders_count": 0,
             "is_cod_blocked": False,
@@ -2158,83 +2152,56 @@ def process_order_cancellation(order: Order, db: Session, reason: str = "Custome
             "message": "Order was already cancelled."
         }
 
-    # Locate user
     user = None
     if order.user_id:
         user = db.query(User).filter(User.id == order.user_id).first()
     if not user and order.user_phone:
         user = db.query(User).filter(User.phone == order.user_phone).first()
-    if not user and order.user_phone:
-        user = User(
-            phone=order.user_phone,
-            name=order.user_name,
-            cancelled_orders=0,
-            is_cod_blocked=False,
-            is_blacklisted=False,
-            trust_score=100
-        )
-        db.add(user)
-        db.flush()
 
-    user.consecutive_cancellations = (getattr(user, 'consecutive_cancellations', 0) or 0) + 1
-    user.cancelled_orders = user.consecutive_cancellations
-    current_strikes = user.consecutive_cancellations
-    is_prepaid = (order.payment_mode.upper() != "COD")
-    warning_notification = None
-
-    if current_strikes == 1:
-        # STRIKE 1: Vague Warning (Rule details hidden from customer)
-        user.is_cod_blocked = False
-        user.is_blacklisted = False
-        user.trust_score = 70
-        warning_notification = "We noticed unusual cancellation activity on your account. Continued cancellations may result in COD or account restrictions."
-        user.warning_alert = warning_notification
-        
-        refund_penalty = 0.0
-        refund_amount = round(float(order.total_amount), 2) if is_prepaid else 0.0
-
-    elif current_strikes == 2:
-        # STRIKE 2: The COD Block
-        user.is_cod_blocked = True
-        user.is_blacklisted = False
-        user.trust_score = 40
-        warning_notification = "COD Blocked: Frequent cancellations have restricted Cash on Delivery. Please pay online via UPI."
-        user.warning_alert = warning_notification
-        
-        refund_penalty = 0.0
-        refund_amount = round(float(order.total_amount), 2) if is_prepaid else 0.0
-
-    else:
-        # STRIKE 3 (or higher): Blacklist & Refund Penalty
-        user.is_blacklisted = True
-        user.is_cod_blocked = True
-        user.trust_score = 0
-        warning_notification = "Account Blacklisted: Permanently restricted from checkout due to multiple cancellations."
-        user.warning_alert = warning_notification
-
-        # Exact Penalty Math: Deduct Delivery Fee + Platform Fee (₹3) from total paid amount
-        if is_prepaid:
-            refund_penalty = round(float(order.delivery_fee) + float(order.platform_fee), 2)
-            refund_amount = round(float(order.total_amount) - refund_penalty, 2)
-            if abs(refund_amount - order.subtotal) > 0.01:
-                refund_amount = round(float(order.subtotal), 2)
-        else:
-            refund_penalty = 0.0
-            refund_amount = 0.0
+    is_prepaid = (str(order.payment_mode or "").upper() != "COD")
+    refund_penalty = 0.0
+    refund_amount = round(float(order.total_amount), 2) if is_prepaid else 0.0
 
     order.timeline_stage = 0
-    order.status = "Cancelled with Penalty" if (is_prepaid and refund_penalty > 0) else "Cancelled"
+    order.status = "Cancelled"
     order.refund_penalty = refund_penalty
     order.refund_amount = refund_amount
     order.cancellation_reason = reason
-    # Restore product inventory
-    if hasattr(order, "items") and order.items:
-        for it in order.items:
-            prod = db.query(Product).filter(Product.id == it.product_id).first()
-            if prod:
-                prod.stock_qty = (prod.stock_qty or 0) + it.quantity
 
-    # Dispatch in-app bilingual notifications
+    # Exactly-once inventory restoration
+    if not getattr(order, "inventory_restored", False):
+        if hasattr(order, "items") and order.items:
+            for it in order.items:
+                prod = db.query(Product).filter(Product.id == it.product_id).first()
+                if prod:
+                    prod.stock_qty = (prod.stock_qty or 0) + it.quantity
+        order.inventory_restored = True
+
+    # Create real RefundRecord for prepaid order cancellation
+    if is_prepaid and refund_amount > 0:
+        existing_ref = db.query(RefundRecord).filter(
+            RefundRecord.order_id == order.id,
+            RefundRecord.reason.contains("cancellation")
+        ).first()
+        if not existing_ref:
+            ref_id = f"REF-{random.randint(100000, 999999)}"
+            ref_obj = RefundRecord(
+                refund_id=ref_id,
+                order_id=order.id,
+                user_phone=order.user_phone,
+                amount=refund_amount,
+                amount_paise=int(round(refund_amount * 100)),
+                reason=f"Order cancellation before packing: {reason}",
+                payment_mode=order.payment_mode or "UPI",
+                status="APPROVED",
+                reimbursement_method="ORIGINAL_SOURCE",
+                created_at=datetime.utcnow()
+            )
+            db.add(ref_obj)
+            order.refund_id = ref_id
+            order.refund_status = "APPROVED"
+
+    # Bilingual notifications
     if order.store_id:
         store = db.query(Store).filter(Store.id == order.store_id).first()
         v_recipient = store.phone if (store and store.phone) else order.store_id
@@ -2271,10 +2238,10 @@ def process_order_cancellation(order: Order, db: Session, reason: str = "Custome
         except Exception as e:
             logger.warning(f"Failed to send runner cancellation notification: {e}")
 
-
     db.commit()
     db.refresh(order)
-    db.refresh(user)
+    if user:
+        db.refresh(user)
 
     return {
         "order_id": order.id,
@@ -2287,17 +2254,14 @@ def process_order_cancellation(order: Order, db: Session, reason: str = "Custome
         "total_amount": order.total_amount,
         "refund_penalty": refund_penalty,
         "refund_amount": refund_amount,
-        "consecutive_cancellations": user.consecutive_cancellations,
-        "cancelled_orders_count": user.consecutive_cancellations,
-        "is_cod_blocked": user.is_cod_blocked,
-        "is_blacklisted": user.is_blacklisted,
-        "warning_alert": user.warning_alert,
-        "trust_score": user.trust_score,
-        "message": warning_notification or "Order cancelled successfully."
+        "consecutive_cancellations": 0,
+        "cancelled_orders_count": 0,
+        "is_cod_blocked": False,
+        "is_blacklisted": False,
+        "warning_alert": None,
+        "trust_score": 100,
+        "message": f"Order {order.id} has been cancelled successfully." + (" Full refund initiated to original source." if is_prepaid else " ₹0 cancellation charge.")
     }
-
-
-
 
 
 @app.post("/api/orders/{order_id}/request-location")
@@ -3250,6 +3214,15 @@ async def razorpay_webhook(request: Request, db: Session = Depends(get_db)):
     if event_id:
         record_webhook_event_processed(event_id)
 
+    # Extract refund details if refund webhook
+    refund_obj = payload_obj.get("refund", {}).get("entity", {}) if "refund" in payload_obj else {}
+    if refund_obj:
+        refund_notes = refund_obj.get("notes", {})
+        if not order_id:
+            order_id = refund_notes.get("order_id")
+        if not rzp_order_id:
+            rzp_order_id = refund_obj.get("order_id")
+
     # Locate order in database
     order = None
     if order_id:
@@ -3258,8 +3231,19 @@ async def razorpay_webhook(request: Request, db: Session = Depends(get_db)):
     if not order and rzp_order_id:
         order = db.query(Order).filter(Order.razorpay_order_id == rzp_order_id).first()
 
+    if not order and event_type in ("refund.processed", "refund.failed"):
+        rzp_ref_id = refund_obj.get("id")
+        custom_ref_id = refund_obj.get("notes", {}).get("refund_id")
+        ref_record = None
+        if rzp_ref_id:
+            ref_record = db.query(RefundRecord).filter(RefundRecord.razorpay_refund_id == rzp_ref_id).first()
+        if not ref_record and custom_ref_id:
+            ref_record = db.query(RefundRecord).filter(RefundRecord.refund_id == custom_ref_id).first()
+        if ref_record and ref_record.order_id:
+            order = db.query(Order).filter(Order.id == ref_record.order_id).first()
+
     if not order:
-        raise HTTPException(status_code=404, detail="Order referenced in webhook payment was not found")
+        raise HTTPException(status_code=404, detail="Order referenced in webhook event was not found")
 
     # Transition order status to PAID only upon verified payment events
     if event_type in ("payment.captured", "order.paid", "payment.authorized"):
@@ -3315,6 +3299,69 @@ async def razorpay_webhook(request: Request, db: Session = Depends(get_db)):
             status="PAID",
             split_status=order.split_payout_status,
             message="Payment successfully verified via HMAC SHA256 webhook and order marked as PAID"
+        )
+    elif event_type == "refund.processed":
+        refund_obj = payload_obj.get("refund", {}).get("entity", {}) if "refund" in payload_obj else event_data
+        rzp_ref_id = refund_obj.get("id")
+        ref_notes = refund_obj.get("notes", {})
+        custom_ref_id = ref_notes.get("refund_id")
+
+        ref_record = None
+        if rzp_ref_id:
+            ref_record = db.query(RefundRecord).filter(RefundRecord.razorpay_refund_id == rzp_ref_id).first()
+        if not ref_record and custom_ref_id:
+            ref_record = db.query(RefundRecord).filter(RefundRecord.refund_id == custom_ref_id).first()
+        if not ref_record and order:
+            ref_record = db.query(RefundRecord).filter(RefundRecord.order_id == order.id).order_by(RefundRecord.created_at.desc()).first()
+
+        if ref_record:
+            ref_record.status = "PROCESSED"
+            ref_record.processed_at = datetime.utcnow()
+            if rzp_ref_id and not ref_record.razorpay_refund_id:
+                ref_record.razorpay_refund_id = rzp_ref_id
+            if order:
+                order.refund_status = "PROCESSED"
+            db.commit()
+
+        return WebhookPaymentEventResponse(
+            success=True,
+            event=event_type,
+            order_id=order.id if order else "refund_order",
+            payment_id=payment_id,
+            status="REFUND_PROCESSED",
+            split_status="settled",
+            message=f"Refund {rzp_ref_id or custom_ref_id or 'record'} successfully marked as PROCESSED via webhook"
+        )
+    elif event_type == "refund.failed":
+        refund_obj = payload_obj.get("refund", {}).get("entity", {}) if "refund" in payload_obj else event_data
+        rzp_ref_id = refund_obj.get("id")
+        ref_notes = refund_obj.get("notes", {})
+        custom_ref_id = ref_notes.get("refund_id")
+        error_desc = refund_obj.get("error_description") or refund_obj.get("error_reason") or "Gateway refund failure"
+
+        ref_record = None
+        if rzp_ref_id:
+            ref_record = db.query(RefundRecord).filter(RefundRecord.razorpay_refund_id == rzp_ref_id).first()
+        if not ref_record and custom_ref_id:
+            ref_record = db.query(RefundRecord).filter(RefundRecord.refund_id == custom_ref_id).first()
+        if not ref_record and order:
+            ref_record = db.query(RefundRecord).filter(RefundRecord.order_id == order.id).order_by(RefundRecord.created_at.desc()).first()
+
+        if ref_record:
+            ref_record.status = "FAILED"
+            ref_record.failure_reason = str(error_desc)
+            if order:
+                order.refund_status = "FAILED"
+            db.commit()
+
+        return WebhookPaymentEventResponse(
+            success=True,
+            event=event_type,
+            order_id=order.id if order else "refund_order",
+            payment_id=payment_id,
+            status="REFUND_FAILED",
+            split_status="failed",
+            message=f"Refund {rzp_ref_id or custom_ref_id or 'record'} recorded as FAILED via webhook: {error_desc}"
         )
     else:
         return WebhookPaymentEventResponse(
@@ -3879,7 +3926,13 @@ def report_order_issue_resolution(
     if active_rep:
         raise HTTPException(status_code=400, detail="An active replacement is already in progress for this order")
 
-    # Calculate affected item financial value
+    # P0.3: Calculate affected item financial value strictly from purchased OrderItem records in PostgreSQL
+    db_order_items = db.query(OrderItem).filter(OrderItem.order_id == order.id).all()
+    if not db_order_items:
+        db_order_items = db.query(ArchivedOrderItem).filter(ArchivedOrderItem.order_id == order.id).all()
+
+    purchased_items = {it.product_id: it for it in db_order_items}
+
     affected_amount = 0.0
     primary_prod_id = None
     primary_prod_name = "Product"
@@ -3887,26 +3940,48 @@ def report_order_issue_resolution(
 
     if payload.affected_items and len(payload.affected_items) > 0:
         for it in payload.affected_items:
-            unit_p = float(it.get("unit_price") or it.get("price") or 0.0)
-            q = int(it.get("qty") or 1)
-            if unit_p == 0.0:
-                p_db = db.query(Product).filter(Product.id == it.get("product_id")).first()
-                if p_db:
-                    unit_p = float(p_db.price)
-            affected_amount += (unit_p * q)
+            p_id = it.get("product_id")
+            if not p_id or p_id not in purchased_items:
+                raise HTTPException(status_code=400, detail=f"Product '{p_id}' was not purchased in order {order.id}")
+            purchased_item = purchased_items[p_id]
+            req_qty = int(it.get("qty") or 1)
+            if req_qty <= 0:
+                raise HTTPException(status_code=400, detail="Invalid item quantity: must be at least 1")
+            if req_qty > purchased_item.quantity:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Requested quantity ({req_qty}) exceeds purchased quantity ({purchased_item.quantity}) for {purchased_item.product_name}"
+                )
+            unit_p = float(purchased_item.price)
+            item_total = round(unit_p * req_qty, 2)
+            affected_amount += item_total
+
         first_it = payload.affected_items[0]
         primary_prod_id = first_it.get("product_id")
-        primary_prod_name = first_it.get("name") or "Product"
+        primary_prod_name = purchased_items[primary_prod_id].product_name
         primary_qty = int(first_it.get("qty") or 1)
     elif payload.category == "order_not_delivered":
         affected_amount = float(order.total_amount)
+    elif db_order_items:
+        first_it = db_order_items[0]
+        primary_prod_id = first_it.product_id
+        primary_prod_name = first_it.product_name
+        primary_qty = int(first_it.quantity or 1)
+        affected_amount = round(float(first_it.price) * primary_qty, 2)
     else:
-        # Default fallback to 50% or single item value
-        affected_amount = round(float(order.total_amount) * 0.5, 2)
+        affected_amount = float(order.subtotal or order.total_amount)
 
-    affected_amount = min(affected_amount, float(order.total_amount))
-    if affected_amount <= 0.0:
-        affected_amount = float(order.subtotal)
+    # P0.3: Anti-duplicate / Anti-overcompensating checks against remaining refundable balance
+    existing_refunds = db.query(RefundRecord).filter(
+        RefundRecord.order_id == order.id,
+        RefundRecord.status.notin_(("REJECTED", "FAILED"))
+    ).all()
+    prior_refund_total = sum(r.amount for r in existing_refunds)
+    remaining_balance = round(float(order.total_amount) - prior_refund_total, 2)
+    if remaining_balance <= 0.01:
+        raise HTTPException(status_code=400, detail="This order has already been fully refunded or compensated")
+
+    affected_amount = min(round(affected_amount, 2), remaining_balance)
 
     ticket_id = f"TKT-{random.randint(10000, 99999)}"
     effective_phone = token_phone or order.user_phone
@@ -4015,19 +4090,20 @@ def report_order_issue_resolution(
                 created_at=rep_obj.created_at.isoformat()
             )
         else:
-            # Stock unavailable: cleanly offer/initiate refund so customer is not stranded
+            # Stock unavailable: create an eligible refund request for review (do NOT claim initiated!)
             ref_id = f"REF-{random.randint(100000, 999999)}"
+            is_cod = (str(order.payment_mode or "").upper() == "COD")
             ref_obj = RefundRecord(
                 refund_id=ref_id,
                 order_id=order.id,
                 ticket_id=ticket.ticket_id,
                 user_phone=effective_phone,
                 amount=affected_amount,
-                amount_paise=int(affected_amount * 100),
+                amount_paise=int(round(affected_amount * 100)),
                 reason=f"{payload.category} (Replacement out of stock)",
                 payment_mode=order.payment_mode or "UPI",
                 status="UNDER_REVIEW",
-                reimbursement_method="UPI_DIRECT" if order.payment_mode.upper() == "COD" else "ORIGINAL_SOURCE",
+                reimbursement_method="UPI_DIRECT" if is_cod else "ORIGINAL_SOURCE",
                 reimbursement_destination=payload.upi_vpa,
                 created_at=datetime.utcnow()
             )
@@ -4044,7 +4120,7 @@ def report_order_issue_resolution(
                 refund_id=ref_id,
                 refund_amount=affected_amount,
                 reverse_pickup_required=False,
-                message=f"Requested replacement is currently out of stock at the store. An eligible refund of ₹{affected_amount:.2f} has been initiated for you instead.",
+                message=f"Requested replacement is currently out of stock at the store. A refund request of ₹{affected_amount:.2f} has been registered for review.",
                 created_at=ref_obj.created_at.isoformat()
             )
     else:
@@ -4087,7 +4163,7 @@ def report_order_issue_resolution(
 def get_order_replacements(
     order_id: str,
     db: Session = Depends(get_db),
-    auth: Optional[Dict[str, Any]] = Depends(get_current_token_payload)
+    auth: Dict[str, Any] = Depends(require_authenticated_user)
 ):
     """
     Returns replacements associated with an order.
@@ -4141,14 +4217,36 @@ def get_order_replacements(
 def get_replacement_detail(
     replacement_id: str,
     db: Session = Depends(get_db),
-    auth: Optional[Dict[str, Any]] = Depends(get_current_token_payload)
+    auth: Dict[str, Any] = Depends(require_authenticated_user)
 ):
     """
     Returns detail for a single replacement mission.
+    Strictly protected with object-level authorization and OTP suppression (P0.2).
     """
     r = db.query(Replacement).filter(Replacement.replacement_id == replacement_id).first()
     if not r:
         raise HTTPException(status_code=404, detail="Replacement not found")
+
+    role = auth.get("role")
+    token_phone = auth.get("phone")
+    clean_token_phone = str(token_phone or "").strip().replace("+91", "").lstrip("0")
+    clean_cust_phone = str(r.customer_phone or "").strip().replace("+91", "").lstrip("0")
+
+    is_owner_cust = (role == "customer" and clean_token_phone and clean_token_phone == clean_cust_phone)
+    is_vendor = (role == "vendor" and auth.get("store_id") == r.store_id)
+    is_runner = (role == "runner" and str(auth.get("runner_id")) == str(r.runner_id))
+    is_admin = (role == "admin")
+
+    if not (is_owner_cust or is_vendor or is_runner or is_admin):
+        raise HTTPException(status_code=403, detail="Forbidden: You are not authorized to view this replacement")
+
+    # P0.2: OTP suppression: ONLY the customer owner or admin can see the delivery verification OTP
+    exposed_otp = r.delivery_verification if (is_owner_cust or is_admin) else None
+
+    # P0.2: Phone masking for vendor to prevent customer data harvesting
+    phone_display = r.customer_phone
+    if is_vendor and phone_display and len(phone_display) >= 10:
+        phone_display = f"{phone_display[:2]}******{phone_display[-2:]}"
 
     return ReplacementDetailDTO(
         replacement_id=r.replacement_id,
@@ -4161,7 +4259,7 @@ def get_replacement_detail(
         item_price=r.item_price,
         reason=r.reason,
         preferred_resolution=r.preferred_resolution,
-        customer_phone=r.customer_phone,
+        customer_phone=phone_display,
         customer_name=r.customer_name,
         store_id=r.store_id,
         store_name=r.store_name,
@@ -4170,11 +4268,11 @@ def get_replacement_detail(
         runner_phone=r.runner_phone,
         status=r.status,
         promised_eta=r.promised_eta,
-        delivery_verification=r.delivery_verification,
+        delivery_verification=exposed_otp,
         reverse_pickup_required=r.reverse_pickup_required,
         reverse_pickup_status=r.reverse_pickup_status,
         customer_charge=float(r.customer_charge_paise) / 100.0,
-        admin_notes=r.admin_notes,
+        admin_notes=r.admin_notes if is_admin else None,
         evidence_url=r.evidence_url,
         created_at=r.created_at.isoformat() if r.created_at else datetime.utcnow().isoformat(),
         updated_at=r.updated_at.isoformat() if r.updated_at else None
@@ -4341,6 +4439,12 @@ def vendor_respond_replacement(
     if auth.get("store_id") and auth.get("store_id") != rep.store_id and auth.get("role") != "admin":
         raise HTTPException(status_code=403, detail="Forbidden: You can only respond for your own store")
 
+    # P0.5: Enforce valid state machine before vendor packing
+    if rep.status in ("UNDER_REVIEW", "VERIFYING"):
+        raise HTTPException(status_code=400, detail="Replacement claim is currently under review by Super Admin. Cannot pack until approved.")
+    if rep.status not in ("REQUESTED", "APPROVED"):
+        raise HTTPException(status_code=400, detail=f"Cannot respond to replacement in status '{rep.status}'")
+
     if payload.action == "confirm_stock":
         # Reserve stock transactionally
         prod = db.query(Product).filter(Product.id == rep.replacement_product_id).first()
@@ -4476,6 +4580,9 @@ def vendor_mark_replacement_ready(
     if auth.get("store_id") and auth.get("store_id") != rep.store_id and auth.get("role") != "admin":
         raise HTTPException(status_code=403, detail="Forbidden: Not your store replacement")
 
+    if rep.status != "VENDOR_PACKING":
+        raise HTTPException(status_code=400, detail=f"Cannot mark ready: replacement must be in 'VENDOR_PACKING' state (current: '{rep.status}')")
+
     rep.status = "RUNNER_ASSIGNED"
     if not rep.delivery_verification:
         rep.delivery_verification = str(random.randint(1000, 9999))
@@ -4608,6 +4715,9 @@ def runner_pickup_replacement(
     if auth.get("runner_id") and str(auth.get("runner_id")) != str(rep.runner_id) and auth.get("role") != "admin":
         raise HTTPException(status_code=403, detail="Forbidden: You are not assigned to this replacement")
 
+    if rep.status != "RUNNER_ASSIGNED":
+        raise HTTPException(status_code=400, detail=f"Cannot pick up: replacement is currently '{rep.status}'. Must be in 'RUNNER_ASSIGNED' state.")
+
     rep.status = "OUT_FOR_DELIVERY"
     db.commit()
     db.refresh(rep)
@@ -4678,17 +4788,49 @@ def runner_verify_replacement_otp(
     if auth.get("runner_id") and str(auth.get("runner_id")) != str(rep.runner_id) and auth.get("role") != "admin":
         raise HTTPException(status_code=403, detail="Forbidden: You are not assigned to this replacement")
 
+    # P0.5: Must be out for delivery to verify OTP
+    if rep.status != "OUT_FOR_DELIVERY":
+        raise HTTPException(status_code=400, detail=f"Cannot verify OTP: replacement is currently '{rep.status}'. It must be picked up first.")
+
+    # P0.2: Attempt limiter to prevent brute-forcing
+    current_attempts = getattr(rep, "otp_attempts", 0) or 0
+    if current_attempts >= 5:
+        raise HTTPException(status_code=429, detail="Too many invalid OTP attempts. Delivery verification locked for security. Please contact Super Admin support.")
+
     provided_otp = str(payload.otp or "").strip()
     expected_otp = str(rep.delivery_verification or "").strip()
 
     if not expected_otp or provided_otp != expected_otp:
-        raise HTTPException(status_code=400, detail="Invalid Delivery OTP. Please ask customer for correct 4-digit code.")
+        rep.otp_attempts = current_attempts + 1
+        db.commit()
+        remaining = 5 - rep.otp_attempts
+        raise HTTPException(status_code=400, detail=f"Invalid Delivery OTP. Please ask customer for correct 4-digit code. ({remaining} attempts remaining)")
 
+    rep.otp_attempts = 0
     if rep.reverse_pickup_required:
         rep.reverse_pickup_status = "PICKED_UP"
 
     rep.status = "REPLACED"
     rep.actual_delivery_timestamp = datetime.utcnow()
+
+    # P0.6: Financial settlement - record real runner delivery payout in ledger
+    runner_payout_amount = 20.0
+    runner_tx = PaymentTransaction(
+        order_id=rep.original_order_id,
+        razorpay_order_id=f"PAYOUT-REP-{rep.replacement_id}",
+        razorpay_payment_id=f"TX-RUNNER-{uuid.uuid4().hex[:10]}",
+        amount=runner_payout_amount,
+        amount_in_paise=int(runner_payout_amount * 100),
+        currency="INR",
+        status="success",
+        payment_mode="RUNNER_PAYOUT",
+        verified=True,
+        verified_at=datetime.utcnow(),
+        runner_split_amount=runner_payout_amount,
+        route_transfer_status="settled",
+        raw_payload=json.dumps({"type": "replacement_delivery_payout", "replacement_id": rep.replacement_id, "runner_id": rep.runner_id})
+    )
+    db.add(runner_tx)
 
     # Close associated SupportTicket
     if rep.ticket_id:
@@ -4735,7 +4877,7 @@ def runner_verify_replacement_otp(
         runner_phone=rep.runner_phone,
         status=rep.status,
         promised_eta=rep.promised_eta,
-        delivery_verification=rep.delivery_verification,
+        delivery_verification=None,  # P0.2: Suppressed from runner response
         reverse_pickup_required=rep.reverse_pickup_required,
         reverse_pickup_status=rep.reverse_pickup_status,
         customer_charge=0.0,
@@ -4934,25 +5076,46 @@ def admin_execute_resolution_action(
             ref.approved_by = admin_claims.get("phone", "admin")
             ref.approval_timestamp = datetime.utcnow()
 
-            # Execute Razorpay refund (sandbox / live)
+            # P0.1: Execute Razorpay refund with absolute truthfulness (ZERO fabricated IDs)
             if (order.payment_mode or "").upper() != "COD":
                 payment_id = getattr(order, "razorpay_payment_id", None)
-                if razorpay_client and RAZORPAY_KEY_ID and not RAZORPAY_KEY_ID.startswith("paste_your") and payment_id:
+                if not RAZORPAY_LIVE_REFUNDS_ENABLED:
+                    # Feature flag disabled: keep truthful APPROVED state without gateway fabrication
+                    ref.status = "APPROVED"
+                    ref.razorpay_refund_id = None
+                    ref.admin_notes = ((ref.admin_notes or "") + " [Gateway call skipped: RAZORPAY_LIVE_REFUNDS_ENABLED is disabled]").strip()
+                    order.refund_status = "APPROVED"
+                elif razorpay_client and RAZORPAY_KEY_ID and not RAZORPAY_KEY_ID.startswith("paste_your") and payment_id:
                     try:
                         rzp_res = razorpay_client.payment.refund(payment_id, {
                             "amount": ref.amount_paise,
                             "notes": {"refund_id": ref.refund_id, "order_id": order.id, "reason": ref.reason}
                         })
-                        ref.razorpay_refund_id = rzp_res.get("id")
+                        real_rzp_ref_id = rzp_res.get("id")
+                        if not real_rzp_ref_id:
+                            raise ValueError("No refund ID returned by Razorpay API")
+                        ref.razorpay_refund_id = real_rzp_ref_id
+                        ref.status = "INITIATED"
+                        order.refund_status = "INITIATED"
                     except Exception as e:
-                        logger.warning(f"Razorpay live refund exception: {e}")
-                        ref.razorpay_refund_id = f"rfnd_{uuid.uuid4().hex[:14]}"
+                        logger.error(f"Razorpay refund execution failed: {e}")
+                        ref.status = "FAILED"
+                        ref.failure_reason = str(e)
+                        ref.razorpay_refund_id = None
+                        order.refund_status = "FAILED"
+                        db.commit()
+                        raise HTTPException(status_code=502, detail=f"Gateway refund execution failed: {e}")
                 else:
-                    ref.razorpay_refund_id = f"rfnd_{uuid.uuid4().hex[:14]}"
-                ref.status = "INITIATED"
+                    # Test environment / missing credentials: truthful pending state, ZERO fabrication!
+                    ref.status = "APPROVED"
+                    ref.razorpay_refund_id = None
+                    ref.admin_notes = ((ref.admin_notes or "") + " [Pending Gateway: Razorpay credentials unconfigured]").strip()
+                    order.refund_status = "APPROVED"
             else:
                 ref.status = "APPROVED"
                 ref.reimbursement_method = payload.reimbursement_method or "UPI_DIRECT"
+                ref.razorpay_refund_id = None
+                order.refund_status = "APPROVED"
 
             # Update order refund fields
             order.refund_amount = round(float(getattr(order, "refund_amount", 0.0) or 0.0) + claim_amt, 2)

@@ -200,6 +200,9 @@ class Order(Base):
     vendor_transfer_id = Column(String(100), nullable=True)
     runner_transfer_id = Column(String(100), nullable=True)
     paid_at = Column(DateTime, nullable=True)
+    inventory_restored = Column(Boolean, default=False)
+    refund_status = Column(String(30), nullable=True)
+    refund_id = Column(String(50), nullable=True)
     data_origin = Column(String(30), default="live", nullable=True, index=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
@@ -493,6 +496,7 @@ class Replacement(Base):
     promised_eta = Column(String(50), default="45 Mins")
     actual_delivery_timestamp = Column(DateTime, nullable=True)
     delivery_verification = Column(String(10), nullable=True)  # 4-digit OTP
+    otp_attempts = Column(Integer, default=0)
     reverse_pickup_required = Column(Boolean, default=False)
     reverse_pickup_status = Column(String(30), default="NOT_REQUIRED")
     # Reverse statuses: NOT_REQUIRED, PENDING_PICKUP, PICKED_UP, QUARANTINED, DISPOSED, RETURNED_TO_VENDOR
@@ -524,6 +528,9 @@ class RefundRecord(Base):
     reimbursement_destination = Column(String(100), nullable=True)
     approved_by = Column(String(50), nullable=True)
     approval_timestamp = Column(DateTime, nullable=True)
+    failure_reason = Column(Text, nullable=True)
+    processed_at = Column(DateTime, nullable=True)
+    gateway_response_json = Column(Text, nullable=True)
     admin_notes = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, index=True)
     updated_at = Column(DateTime, default=datetime.utcnow)

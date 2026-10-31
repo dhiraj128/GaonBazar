@@ -3037,6 +3037,20 @@
       const liabilitySelect = document.getElementById(`liability-${itemId}`);
       const responsibleParty = liabilitySelect ? liabilitySelect.value : 'unclear';
 
+      if (action === 'approve_refund') {
+        const confirmed = window.confirm(
+          `CONFIRM REFUND APPROVAL:
+
+Item ID: ${itemId}
+Responsible Party: ${responsibleParty.toUpperCase()}
+
+Are you sure you want to approve this refund?
+- If Razorpay live refunds are enabled, funds will be refunded from gateway balance.
+- If live refunds are disabled, the refund will be marked APPROVED and queued for settlement.`
+        );
+        if (!confirmed) return;
+      }
+
       try {
         const res = await adminFetch(`/admin/resolutions/${encodeURIComponent(itemId)}/action`, {
           method: 'POST',

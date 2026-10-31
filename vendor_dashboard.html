@@ -4138,43 +4138,28 @@
 
     async function vendorRespondReplacement(repId, action) {
       try {
-        const token = VendorStore.token || (typeof localStorage !== 'undefined' ? (localStorage.getItem('vendorToken') || localStorage.getItem('token')) : null);
-        const res = await fetch(`/api/vendor/replacements/${encodeURIComponent(repId)}/respond`, {
+        await vendorApiFetch(`/vendor/replacements/${encodeURIComponent(repId)}/respond`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-          },
           body: JSON.stringify({ action: action })
         });
-        if (res.ok) {
-          await fetchVendorReplacements();
-          renderVendorReplacementsQueue();
-        } else {
-          const err = await res.json();
-          alert(err.detail || 'Action failed');
-        }
+        showToast('Replacement Action', `Replacement status updated to ${action}.`);
+        await fetchVendorReplacements();
+        renderVendorReplacementsQueue();
       } catch(e) {
-        alert('Network error: ' + e.message);
+        alert('Action failed: ' + e.message);
       }
     }
 
     async function vendorMarkReplacementReady(repId) {
       try {
-        const token = VendorStore.token || (typeof localStorage !== 'undefined' ? (localStorage.getItem('vendorToken') || localStorage.getItem('token')) : null);
-        const res = await fetch(`/api/vendor/replacements/${encodeURIComponent(repId)}/ready`, {
-          method: 'POST',
-          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+        await vendorApiFetch(`/vendor/replacements/${encodeURIComponent(repId)}/ready`, {
+          method: 'POST'
         });
-        if (res.ok) {
-          await fetchVendorReplacements();
-          renderVendorReplacementsQueue();
-        } else {
-          const err = await res.json();
-          alert(err.detail || 'Action failed');
-        }
+        showToast('Replacement Ready', 'Replacement item marked ready for runner pickup.');
+        await fetchVendorReplacements();
+        renderVendorReplacementsQueue();
       } catch(e) {
-        alert('Network error: ' + e.message);
+        alert('Action failed: ' + e.message);
       }
     }
 

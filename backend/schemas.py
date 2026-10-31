@@ -834,6 +834,8 @@ class RefundDetailDTO(BaseModel):
     reimbursement_destination: Optional[str] = None
     approved_by: Optional[str] = None
     approval_timestamp: Optional[str] = None
+    failure_reason: Optional[str] = None
+    processed_at: Optional[str] = None
     admin_notes: Optional[str] = None
     created_at: str
 

@@ -3821,6 +3821,12 @@
           <textarea id="issue-modal-message" rows="3" placeholder="Please explain the issue in detail..." required class="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] text-xs font-medium text-slate-800 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"></textarea>
         </div>
 
+        <!-- Optional Photo Evidence URL -->
+        <div class="space-y-1">
+          <label class="block text-xs font-bold text-slate-700 dark:text-[#CBD5E1]">Photo Evidence URL (Optional / फ़ोटो लिंक)</label>
+          <input type="url" id="issue-photo-url" placeholder="https://example.com/item-photo.jpg" class="w-full h-10 px-3 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] text-xs text-slate-800 dark:text-[#F8FAFC] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/30">
+        </div>
+
         <!-- Error display -->
         <div id="issue-modal-error" class="hidden p-2.5 rounded-xl text-[11px] font-bold bg-rose-50 text-rose-800 border border-rose-200"></div>
 
@@ -3858,57 +3864,6 @@
             <div class="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-[#2A323D] text-primary flex items-center justify-center font-bold">
               <span class="material-symbols-outlined text-[20px]">currency_rupee</span>
             </div>
-
-    <!-- ======================================================================= -->
-    <!-- MODAL: BILINGUAL RETURNS, REPLACEMENT & REFUND POLICY                   -->
-    <!-- ======================================================================= -->
-    <div id="modal-return-policy" onclick="if(event.target === this) closeReturnPolicyModal()" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex flex-col justify-end sm:justify-center items-center p-0 sm:p-4 transition-opacity duration-300">
-      <div onclick="event.stopPropagation()" class="bg-white dark:bg-[#1D232B] rounded-t-[32px] sm:rounded-3xl p-5 sm:p-6 pb-safe shadow-2xl max-w-sm sm:max-w-lg w-full border-t sm:border border-slate-200 dark:border-[#465362] flex flex-col gap-4 max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom duration-300">
-        <!-- Drag Handle -->
-        <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-full mx-auto -mt-2 mb-1 shrink-0"></div>
-
-        <!-- Header -->
-        <div class="flex items-center justify-between border-b border-slate-100 dark:border-[#465362] pb-3">
-          <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-[#2A323D] text-primary flex items-center justify-center font-bold">
-              <span class="material-symbols-outlined text-[20px]">policy</span>
-            </div>
-            <div>
-              <h3 class="text-sm font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="policy_modal_title">GaonBazaar Return Policy</h3>
-              <p class="text-[10px] text-slate-500 dark:text-[#CBD5E1]">Consumer Protection & Quick-Commerce Standard</p>
-            </div>
-          </div>
-          <button type="button" onclick="closeReturnPolicyModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-[#2A323D] text-slate-600 dark:text-[#CBD5E1] flex items-center justify-center hover:bg-slate-200 cursor-pointer">
-            <span class="material-symbols-outlined text-[18px]">close</span>
-          </button>
-        </div>
-
-        <!-- Policy Rules List -->
-        <div class="space-y-2.5 text-xs text-slate-700 dark:text-[#CBD5E1]" id="return-policy-content">
-          <!-- Populated dynamically via loadReturnPolicyData() -->
-          <div class="p-3 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] space-y-1">
-            <span class="font-black text-slate-900 dark:text-white block">Case A: Cancellation Before Store Acceptance</span>
-            <p class="text-[11px] text-slate-600 dark:text-[#CBD5E1]">100% full refund including delivery & platform fees for prepaid orders. Free cancellation on COD.</p>
-          </div>
-          <div class="p-3 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] space-y-1">
-            <span class="font-black text-slate-900 dark:text-white block">Case B: Wrong or Defective Item</span>
-            <p class="text-[11px] text-slate-600 dark:text-[#CBD5E1]">Customer choice of Free Replacement (₹0 charge, 45m ETA) or full refund. Sealed items collected safely.</p>
-          </div>
-          <div class="p-3 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] space-y-1">
-            <span class="font-black text-slate-900 dark:text-white block">Case D: Damaged, Expired or Spoiled Food</span>
-            <p class="text-[11px] text-slate-600 dark:text-[#CBD5E1]">Safety First: Spoiled or perishable items are immediately refunded or replaced. For health reasons, unsafe food is NEVER picked up or resold.</p>
-          </div>
-          <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 space-y-1">
-            <span class="font-black text-emerald-900 dark:text-emerald-200 block">Truthful Banking Settlement (5–7 Business Days)</span>
-            <p class="text-[11px] text-emerald-800 dark:text-emerald-300">Compliant with RBI and UPI settlement banking cycles. We never claim funds are credited before bank confirmation.</p>
-          </div>
-        </div>
-
-        <button type="button" onclick="closeReturnPolicyModal()" class="w-full py-3 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold text-xs active:scale-95 transition-all cursor-pointer">
-          Close Policy
-        </button>
-      </div>
-    </div>
             <div>
               <h3 class="text-sm font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="refund_tracker_title">Refund Status</h3>
               <p class="text-[11px] text-slate-500 dark:text-[#CBD5E1]" id="refund-modal-order-id-label">Order #</p>
@@ -3997,6 +3952,58 @@
         </button>
       </div>
     </div>
+
+    <!-- ======================================================================= -->
+    <!-- MODAL: BILINGUAL RETURNS, REPLACEMENT & REFUND POLICY                   -->
+    <!-- ======================================================================= -->
+    <div id="modal-return-policy" onclick="if(event.target === this) closeReturnPolicyModal()" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex flex-col justify-end sm:justify-center items-center p-0 sm:p-4 transition-opacity duration-300">
+      <div onclick="event.stopPropagation()" class="bg-white dark:bg-[#1D232B] rounded-t-[32px] sm:rounded-3xl p-5 sm:p-6 pb-safe shadow-2xl max-w-sm sm:max-w-lg w-full border-t sm:border border-slate-200 dark:border-[#465362] flex flex-col gap-4 max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom duration-300">
+        <!-- Drag Handle -->
+        <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-full mx-auto -mt-2 mb-1 shrink-0"></div>
+
+        <!-- Header -->
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-[#465362] pb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-[#2A323D] text-primary flex items-center justify-center font-bold">
+              <span class="material-symbols-outlined text-[20px]">policy</span>
+            </div>
+            <div>
+              <h3 class="text-sm font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="policy_modal_title">GaonBazaar Return Policy</h3>
+              <p class="text-[10px] text-slate-500 dark:text-[#CBD5E1]">Consumer Protection & Quick-Commerce Standard</p>
+            </div>
+          </div>
+          <button type="button" onclick="closeReturnPolicyModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-[#2A323D] text-slate-600 dark:text-[#CBD5E1] flex items-center justify-center hover:bg-slate-200 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">close</span>
+          </button>
+        </div>
+
+        <!-- Policy Rules List -->
+        <div class="space-y-2.5 text-xs text-slate-700 dark:text-[#CBD5E1]" id="return-policy-content">
+          <!-- Populated dynamically via loadReturnPolicyData() -->
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] space-y-1">
+            <span class="font-black text-slate-900 dark:text-white block">Case A: Cancellation Before Store Acceptance</span>
+            <p class="text-[11px] text-slate-600 dark:text-[#CBD5E1]">100% full refund including delivery & platform fees for prepaid orders. Free cancellation on COD.</p>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] space-y-1">
+            <span class="font-black text-slate-900 dark:text-white block">Case B: Wrong or Defective Item</span>
+            <p class="text-[11px] text-slate-600 dark:text-[#CBD5E1]">Customer choice of Free Replacement (₹0 charge, 30–60m ETA) or full refund. Sealed items collected safely.</p>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] space-y-1">
+            <span class="font-black text-slate-900 dark:text-white block">Case D: Damaged, Expired or Spoiled Food</span>
+            <p class="text-[11px] text-slate-600 dark:text-[#CBD5E1]">Safety First: Spoiled or perishable items are immediately refunded or replaced. For health reasons, unsafe food is NEVER picked up or resold.</p>
+          </div>
+          <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 space-y-1">
+            <span class="font-black text-emerald-900 dark:text-emerald-200 block">Truthful Banking Settlement (5–7 Business Days)</span>
+            <p class="text-[11px] text-emerald-800 dark:text-emerald-300">Compliant with RBI and UPI settlement banking cycles. We never claim funds are credited before bank confirmation.</p>
+          </div>
+        </div>
+
+        <button type="button" onclick="closeReturnPolicyModal()" class="w-full py-3 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold text-xs active:scale-95 transition-all cursor-pointer">
+          Close Policy
+        </button>
+      </div>
+    </div>
+
 
     <!-- ======================================================================= -->
     <!-- MODAL: SECURE PAYMENT PROCESSING (Razorpay Zero-Trust Gateway)         -->
@@ -11961,59 +11968,74 @@
       if (!container) return;
 
       const isHi = (AppStore.lang === 'hi');
+
+      // 4 clean mobile stages to prevent horizontal text clipping
       const stages = [
-        { key: 'REQUESTED', label_en: 'Requested', label_hi: 'अनुरोध' },
-        { key: 'VERIFYING', label_en: 'Review', label_hi: 'समीक्षा' },
-        { key: 'APPROVED', label_en: 'Approved', label_hi: 'स्वीकृत' },
-        { key: 'VENDOR_PACKING', label_en: 'Packing', label_hi: 'पैकिंग' },
-        { key: 'RUNNER_ASSIGNED', label_en: 'Assigned', label_hi: 'पार्टनर' },
-        { key: 'OUT_FOR_DELIVERY', label_en: 'On Way', label_hi: 'रवाना' },
-        { key: 'REPLACED', label_en: 'Replaced', label_hi: 'बदला' }
+        { key: 'requested', label_en: 'Requested', label_hi: 'अनुरोध', match: ['REQUESTED', 'VERIFYING'] },
+        { key: 'packing', label_en: 'Packing', label_hi: 'पैकिंग', match: ['APPROVED', 'VENDOR_PACKING'] },
+        { key: 'on_way', label_en: 'On Way', label_hi: 'रवाना', match: ['RUNNER_ASSIGNED', 'OUT_FOR_DELIVERY'] },
+        { key: 'delivered', label_en: 'Replaced', label_hi: 'बदला', match: ['REPLACED'] }
       ];
 
-      const stageIndexMap = {
-        'REQUESTED': 0,
-        'VERIFYING': 1,
-        'APPROVED': 2,
-        'VENDOR_PACKING': 3,
-        'RUNNER_ASSIGNED': 4,
-        'OUT_FOR_DELIVERY': 5,
-        'REPLACED': 6
+      let currentStepIdx = 0;
+      if (['APPROVED', 'VENDOR_PACKING'].includes(status)) currentStepIdx = 1;
+      else if (['RUNNER_ASSIGNED', 'OUT_FOR_DELIVERY'].includes(status)) currentStepIdx = 2;
+      else if (status === 'REPLACED') currentStepIdx = 3;
+
+      // Real-time detailed sub-badge
+      const subStateDetails = {
+        'REQUESTED': { en: 'Request submitted • Under review by support', hi: 'अनुरोध दर्ज हुआ • समीक्षा जारी है', color: 'amber' },
+        'VERIFYING': { en: 'Quality verification in progress', hi: 'गुणवत्ता सत्यापन जारी है', color: 'amber' },
+        'APPROVED': { en: 'Approved • Waiting for vendor to pack', hi: 'स्वीकृत • विक्रेता द्वारा पैकिंग प्रतीक्षारत', color: 'emerald' },
+        'VENDOR_PACKING': { en: 'Vendor is packing replacement item', hi: 'दुकानदार रिप्लेसमेंट पैक कर रहा है', color: 'emerald' },
+        'RUNNER_ASSIGNED': { en: 'Delivery partner assigned • Heading to store', hi: 'डिलीवरी पार्टनर नियुक्त • दुकान की ओर रवाना', color: 'blue' },
+        'OUT_FOR_DELIVERY': { en: 'Out for delivery • OTP required at delivery', hi: 'डिलीवरी हेतु रवाना • डिलीवरी पर OTP आवश्यक', color: 'purple' },
+        'REPLACED': { en: 'Replacement delivered successfully!', hi: 'सामान सफलतापूर्वक बदल दिया गया!', color: 'emerald' }
       };
 
-      const currentIdx = stageIndexMap[status] !== undefined ? stageIndexMap[status] : 0;
+      const detail = subStateDetails[status] || subStateDetails['REQUESTED'];
 
       container.innerHTML = `
-        <div class="flex items-center justify-between relative py-2">
-          <!-- Continuous background line -->
-          <div class="absolute left-2.5 right-2.5 top-1/2 -translate-y-1/2 h-1 bg-slate-200 dark:bg-[#465362] z-0"></div>
-          <!-- Filled progress line -->
-          <div class="absolute left-2.5 top-1/2 -translate-y-1/2 h-1 bg-emerald-500 z-0 transition-all duration-500"
-               style="width: ${(currentIdx / (stages.length - 1)) * 94}%;"></div>
+        <div class="space-y-3">
+          <div class="flex items-center justify-between relative py-2">
+            <!-- Background track -->
+            <div class="absolute left-3 right-3 top-1/2 -translate-y-1/2 h-1 bg-slate-200 dark:bg-[#465362] z-0"></div>
+            <!-- Filled progress track -->
+            <div class="absolute left-3 top-1/2 -translate-y-1/2 h-1 bg-emerald-500 z-0 transition-all duration-500"
+                 style="width: ${(currentStepIdx / (stages.length - 1)) * 92}%;"></div>
 
-          ${stages.map((st, idx) => {
-            const isCompleted = idx < currentIdx;
-            const isCurrent = idx === currentIdx;
-            let dotClasses = 'w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold z-10 transition-all ';
-            if (isCompleted) {
-              dotClasses += 'bg-emerald-600 text-white shadow-xs';
-            } else if (isCurrent) {
-              dotClasses += 'bg-emerald-500 text-white ring-4 ring-emerald-200 dark:ring-emerald-900/60 scale-110';
-            } else {
-              dotClasses += 'bg-slate-200 dark:bg-[#2A323D] text-slate-500 border border-slate-300 dark:border-[#465362]';
-            }
+            ${stages.map((st, idx) => {
+              const isCompleted = idx < currentStepIdx;
+              const isCurrent = idx === currentStepIdx;
+              let dotClasses = 'w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold z-10 transition-all ';
+              if (isCompleted) {
+                dotClasses += 'bg-emerald-600 text-white shadow-xs';
+              } else if (isCurrent) {
+                dotClasses += 'bg-emerald-500 text-white ring-4 ring-emerald-200 dark:ring-emerald-900/60 scale-110';
+              } else {
+                dotClasses += 'bg-slate-200 dark:bg-[#2A323D] text-slate-500 border border-slate-300 dark:border-[#465362]';
+              }
 
-            return `
-              <div class="flex flex-col items-center gap-1 z-10 min-w-0">
-                <div class="${dotClasses}">
-                  ${isCompleted ? '<span class="material-symbols-outlined text-[12px]">check</span>' : (idx + 1)}
+              return `
+                <div class="flex flex-col items-center gap-1 z-10 min-w-0">
+                  <div class="${dotClasses}">
+                    ${isCompleted ? '<span class="material-symbols-outlined text-[13px]">check</span>' : (idx + 1)}
+                  </div>
+                  <span class="text-[10px] font-bold text-center truncate max-w-[68px] ${isCurrent ? 'text-emerald-600 dark:text-emerald-400 font-black' : 'text-slate-500 dark:text-slate-400'}">
+                    ${isHi ? st.label_hi : st.label_en}
+                  </span>
                 </div>
-                <span class="text-[8px] sm:text-[9px] font-black truncate max-w-[42px] text-center ${isCurrent ? 'text-emerald-700 dark:text-emerald-300 font-extrabold' : 'text-slate-400 dark:text-slate-500'}">
-                  ${isHi ? st.label_hi : st.label_en}
-                </span>
-              </div>
-            `;
-          }).join('')}
+              `;
+            }).join('')}
+          </div>
+
+          <!-- Active Detail Sub-Badge -->
+          <div class="flex items-center justify-center">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>${isHi ? detail.hi : detail.en}</span>
+            </span>
+          </div>
         </div>
       `;
     }
@@ -12222,9 +12244,23 @@
       if (errBox) errBox.classList.add('hidden');
 
       try {
-        const preferredResolution = document.querySelector('input[name="issue_resolution_type"]:checked')?.value || 'replacement';
+        const prefEl = document.querySelector('input[name="issue_resolution_type"]:checked');
+        if (!prefEl) {
+          if (errBox) {
+            errBox.innerText = isHi ? 'कृपया समाधान (मुफ्त बदलाव या रिफंड) चुनें।' : 'Please choose your preferred remedy (Free Replacement or Refund).';
+            errBox.classList.remove('hidden');
+          }
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = `<span class="material-symbols-outlined text-[16px]">send</span><span>${isHi ? 'शिकायत भेजें' : 'Submit Issue'}</span>`;
+          }
+          return;
+        }
+        const preferredResolution = prefEl.value;
         const upiInput = document.getElementById('issue-modal-upi');
         const upiVpa = upiInput ? upiInput.value.trim() : null;
+        const photoInput = document.getElementById('issue-photo-url');
+        const photoUrl = photoInput ? photoInput.value.trim() : null;
 
         const res = await apiFetch('/resolutions/issue', {
           method: 'POST',
@@ -12235,6 +12271,7 @@
             preferred_resolution: preferredResolution,
             message: message,
             affected_items: affectedItems.length > 0 ? affectedItems : null,
+            evidence_url: photoUrl || null,
             upi_vpa: upiVpa
           })
         });
@@ -12284,15 +12321,87 @@
       const modal = document.getElementById('modal-track-refund');
       if (!modal) return;
 
+      const isHi = (AppStore.lang === 'hi');
       const orderLabel = document.getElementById('refund-modal-order-id-label');
       if (orderLabel) orderLabel.innerText = `Order #${orderId}`;
 
       const amtLabel = document.getElementById('refund-modal-amount');
       const methodLabel = document.getElementById('refund-modal-method');
+      const badge = document.getElementById('refund-modal-status-badge');
+
+      let refStatus = 'REQUESTED';
+      let refAmt = 0.0;
+      let refMethod = 'UPI';
+      let gatewayRef = null;
+      let failureReason = null;
 
       if (currentOrderDetailsData) {
-        if (amtLabel) amtLabel.innerText = `₹${Number(currentOrderDetailsData.refund_amount || currentOrderDetailsData.total_amount || 0).toFixed(2)}`;
-        if (methodLabel) methodLabel.innerText = `${currentOrderDetailsData.payment_mode || 'UPI'} (Original Source)`;
+        refAmt = Number(currentOrderDetailsData.refund_amount || currentOrderDetailsData.total_amount || 0);
+        refMethod = currentOrderDetailsData.payment_mode || 'UPI';
+        refStatus = (currentOrderDetailsData.refund_status || 'REQUESTED').toUpperCase();
+
+        if (currentOrderDetailsData.refund_records && currentOrderDetailsData.refund_records.length > 0) {
+          const rec = currentOrderDetailsData.refund_records[0];
+          if (rec.status) refStatus = rec.status.toUpperCase();
+          if (rec.amount) refAmt = Number(rec.amount);
+          if (rec.razorpay_refund_id) gatewayRef = rec.razorpay_refund_id;
+          if (rec.failure_reason) failureReason = rec.failure_reason;
+        }
+      }
+
+      if (amtLabel) amtLabel.innerText = `₹${refAmt.toFixed(2)}`;
+      if (methodLabel) methodLabel.innerText = `${refMethod} (Original Source)`;
+
+      // Dynamic Status Badge
+      if (badge) {
+        badge.className = 'px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ';
+        if (refStatus === 'PROCESSED' || refStatus === 'COMPLETED') {
+          badge.className += 'bg-emerald-100 text-emerald-800 border border-emerald-300';
+          badge.innerText = isHi ? 'पूर्ण' : 'PROCESSED';
+        } else if (refStatus === 'FAILED') {
+          badge.className += 'bg-rose-100 text-rose-800 border border-rose-300';
+          badge.innerText = isHi ? 'विफल' : 'FAILED';
+        } else if (refStatus === 'APPROVED' || refStatus === 'INITIATED') {
+          badge.className += 'bg-blue-100 text-blue-800 border border-blue-300';
+          badge.innerText = isHi ? 'स्वीकृत / प्रक्रियाधीन' : refStatus;
+        } else {
+          badge.className += 'bg-amber-100 text-amber-800 border border-amber-300';
+          badge.innerText = isHi ? 'समीक्षाधीन' : 'UNDER REVIEW';
+        }
+      }
+
+      // Dynamic Gateway Reference & Failure Alert injection
+      let alertContainer = document.getElementById('refund-modal-gateway-alert');
+      if (!alertContainer) {
+        alertContainer = document.createElement('div');
+        alertContainer.id = 'refund-modal-gateway-alert';
+        const summaryCard = document.getElementById('refund-modal-amount')?.closest('div[class*="rounded-2xl"]');
+        if (summaryCard && summaryCard.parentNode) {
+          summaryCard.parentNode.insertBefore(alertContainer, summaryCard.nextSibling);
+        }
+      }
+
+      if (alertContainer) {
+        if (refStatus === 'FAILED') {
+          alertContainer.innerHTML = `
+            <div class="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 rounded-xl mt-2 text-rose-800 dark:text-rose-200 text-xs">
+              <div class="font-bold flex items-center gap-1.5 mb-0.5">
+                <span class="material-symbols-outlined text-[16px] text-rose-600">error</span>
+                <span>${isHi ? 'रिफंड प्रसंस्करण विफल' : 'Refund Processing Failed'}</span>
+              </div>
+              <p class="text-[11px] leading-relaxed">${failureReason || (isHi ? 'बैंक गेटवे से त्रुटि हुई। हमारी सपोर्ट टीम इसे मैन्युअली सुलझा रही है।' : 'Gateway returned an error. Support team is reconciling with the bank.')}</p>
+            </div>
+          `;
+        } else if (gatewayRef) {
+          alertContainer.innerHTML = `
+            <div class="p-2.5 bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] rounded-xl mt-2 text-slate-700 dark:text-[#CBD5E1] text-[11px] flex items-center justify-between">
+              <span class="font-semibold text-slate-500">Gateway Ref / ARN:</span>
+              <span class="font-mono font-bold text-slate-900 dark:text-white">${gatewayRef}</span>
+            </div>
+          `;
+        } else {
+          alertContainer.innerHTML = '';
+        }
       }
 
       modal.classList.remove('hidden');
