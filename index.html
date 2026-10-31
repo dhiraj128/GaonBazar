@@ -2620,6 +2620,18 @@
             <span>•</span><span>|</span><span>|</span><span>|</span><span>•</span>
           </div>
           <div id="commerce-ai-status-text" class="text-[11px] font-bold text-slate-500 dark:text-[#94A3B8] mt-0.5" data-i18n="ai_mic_status_ready">Ready to listen</div>
+          <!-- Microphone permission guide button (shown in PERMISSION_REQUIRED state) -->
+          <div id="commerce-mic-guide-container" class="hidden flex flex-col items-center gap-1 mt-2">
+            <button 
+              id="commerce-mic-guide-btn" 
+              onclick="openMicPermissionGuide()" 
+              type="button" 
+              class="px-3.5 py-1.5 rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-200 border border-amber-300 dark:border-amber-700 text-[11px] font-extrabold flex items-center gap-1.5 shadow-2xs hover:bg-amber-100 dark:hover:bg-amber-900/80 active:scale-95 transition-all cursor-pointer"
+            >
+              <span class="material-symbols-outlined text-[16px] text-amber-600 dark:text-amber-400">help</span>
+              <span data-i18n="ai_mic_guide_btn">Microphone Settings Guide</span>
+            </button>
+          </div>
         </div>
 
         <!-- Suggestion Chips (Vertical list matching Reference 01) -->
@@ -4043,6 +4055,85 @@
       </div>
     </div>
 
+    <!-- ======================================================================= -->
+    <!-- MODAL: MICROPHONE SETTINGS & UNBLOCK GUIDE                              -->
+    <!-- ======================================================================= -->
+    <div id="modal-mic-guide" onclick="if(event.target === this) closeMicPermissionGuide()" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+      <div class="w-full max-w-sm bg-white dark:bg-[#1E242B] rounded-3xl p-5 shadow-2xl border border-slate-200 dark:border-[#38434F] space-y-4 animate-in fade-in zoom-in duration-200">
+        
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-[20px]">settings_voice</span>
+            </div>
+            <div>
+              <h3 class="text-sm font-black text-slate-900 dark:text-[#F8FAFC]" data-i18n="ai_mic_guide_title">Microphone Settings</h3>
+              <p class="text-[10px] text-slate-500 dark:text-[#94A3B8]" data-i18n="ai_mic_guide_sub">How to unblock voice input in Chrome</p>
+            </div>
+          </div>
+          <button onclick="closeMicPermissionGuide()" aria-label="Close" class="w-8 h-8 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">close</span>
+          </button>
+        </div>
+
+        <!-- Instructions for Android & Desktop Chrome -->
+        <div class="space-y-3 text-xs text-slate-600 dark:text-[#CBD5E1]">
+          <!-- Step 1 -->
+          <div class="flex items-start gap-2.5 p-2.5 rounded-2xl bg-slate-50 dark:bg-[#252D37] border border-slate-100 dark:border-slate-800">
+            <span class="w-5 h-5 rounded-full bg-emerald-500 text-white text-[10px] font-black flex items-center justify-center shrink-0 mt-0.5">1</span>
+            <div class="space-y-0.5">
+              <span class="font-extrabold text-slate-900 dark:text-white" data-i18n="ai_mic_step1_title">Tap the Tune / Lock Icon</span>
+              <p class="text-[11px] leading-relaxed" data-i18n="ai_mic_step1_desc">In Chrome address bar at the top, tap the <strong>Tune / Lock</strong> icon next to the website URL.</p>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="flex items-start gap-2.5 p-2.5 rounded-2xl bg-slate-50 dark:bg-[#252D37] border border-slate-100 dark:border-slate-800">
+            <span class="w-5 h-5 rounded-full bg-emerald-500 text-white text-[10px] font-black flex items-center justify-center shrink-0 mt-0.5">2</span>
+            <div class="space-y-0.5">
+              <span class="font-extrabold text-slate-900 dark:text-white" data-i18n="ai_mic_step2_title">Allow Microphone</span>
+              <p class="text-[11px] leading-relaxed" data-i18n="ai_mic_step2_desc">Tap <strong>Permissions</strong> → <strong>Microphone</strong> and select <strong>Allow</strong> (or toggle ON).</p>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="flex items-start gap-2.5 p-2.5 rounded-2xl bg-slate-50 dark:bg-[#252D37] border border-slate-100 dark:border-slate-800">
+            <span class="w-5 h-5 rounded-full bg-emerald-500 text-white text-[10px] font-black flex items-center justify-center shrink-0 mt-0.5">3</span>
+            <div class="space-y-0.5">
+              <span class="font-extrabold text-slate-900 dark:text-white" data-i18n="ai_mic_step3_title">Tap Mic Again or Refresh</span>
+              <p class="text-[11px] leading-relaxed" data-i18n="ai_mic_step3_desc">Return to this page and tap the green mic button to speak in Hindi or English.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Safe Note -->
+        <div class="p-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 flex items-center gap-2">
+          <span class="material-symbols-outlined text-blue-600 dark:text-blue-400 text-[18px] shrink-0">lock</span>
+          <span class="text-[10px] text-blue-800 dark:text-blue-300 font-medium leading-snug" data-i18n="ai_mic_secure_note">Voice recognition requires a secure HTTPS connection and device microphone.</span>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex items-center gap-2 pt-1">
+          <button 
+            type="button" 
+            onclick="testMicPermission()" 
+            class="flex-1 h-10 rounded-full bg-[#16B86E] text-white text-xs font-black shadow-md hover:bg-emerald-600 active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+          >
+            <span class="material-symbols-outlined text-[16px]">mic</span>
+            <span data-i18n="ai_mic_test_btn">Test Microphone</span>
+          </button>
+          <button 
+            type="button" 
+            onclick="closeMicGuideAndFocusInput()" 
+            class="h-10 px-4 rounded-full bg-slate-100 dark:bg-[#2A323D] text-slate-700 dark:text-[#CBD5E1] text-xs font-bold hover:bg-slate-200 dark:hover:bg-slate-700 active:scale-95 transition-all cursor-pointer"
+          >
+            <span data-i18n="ai_mic_type_instead">Type Instead</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Global Audio Guidance Toast Notification -->
     <div id="app-audio-toast" class="hidden pointer-events-none fixed bottom-20 left-4 right-4 z-50 bg-slate-900 text-white p-3 rounded-2xl shadow-2xl flex items-center justify-between border border-slate-700">
       <div class="flex items-center gap-2.5">
@@ -4592,6 +4683,18 @@
         ai_empty_state_title: "सामान देखने के लिए बोलें या लिखें",
         ai_empty_state_desc: "खोजे गए सामान यहाँ 1-टैप 'कार्ट में जोड़ें' बटन के साथ दिखेंगे।",
         ai_proceed_cart: "थैला देखें और चेकआउट करें",
+      ai_mic_guide_btn: "माइक सेटिंग्स गाइड",
+      ai_mic_guide_title: "माइक्रोफ़ोन कैसे चालू करें",
+      ai_mic_guide_sub: "Chrome ब्राउज़र में माइक अनब्लॉक करने का तरीका",
+      ai_mic_step1_title: "ऊपर लॉक या ट्यून आइकन दबाएं",
+      ai_mic_step1_desc: "Chrome के सबसे ऊपर एड्रेस बार में वेबसाइट के नाम के बगल में बने ट्यून/ताला आइकन पर टैप करें।",
+      ai_mic_step2_title: "माइक्रोफ़ोन को Allow करें",
+      ai_mic_step2_desc: "Permissions → Microphone पर जाएं और Allow (अनुमति दें) चुनें।",
+      ai_mic_step3_title: "वापस आकर माइक दबाएं",
+      ai_mic_step3_desc: "पेज पर आकर हरा माइक बटन दबाएं और हिंदी या अंग्रेज़ी में बोलें।",
+      ai_mic_secure_note: "वॉइस शॉपिंग के लिए सुरक्षित HTTPS कनेक्शन और डिवाइस में माइक होना आवश्यक है।",
+      ai_mic_test_btn: "माइक टेस्ट करें",
+      ai_mic_type_instead: "नीचे लिखें",
         // Module 3: Help & Support Center
         support_center_title: "सहायता केंद्र",
         support_center_sub: "स्व-सेवा एवं शिकायत निवारण",
@@ -5144,6 +5247,18 @@
         ai_empty_state_title: "Speak or type your groceries to see live cards",
         ai_empty_state_desc: "Products will appear here with instant 1-tap \"Add to Cart\" buttons.",
         ai_proceed_cart: "View Cart & Checkout",
+      ai_mic_guide_btn: "Microphone Settings Guide",
+      ai_mic_guide_title: "Microphone Settings",
+      ai_mic_guide_sub: "How to unblock voice input in Chrome",
+      ai_mic_step1_title: "Tap the Tune / Lock Icon",
+      ai_mic_step1_desc: "In Chrome address bar at the top, tap the Tune / Lock icon next to the website URL.",
+      ai_mic_step2_title: "Allow Microphone",
+      ai_mic_step2_desc: "Tap Permissions → Microphone and select Allow (or toggle ON).",
+      ai_mic_step3_title: "Tap Mic Again or Refresh",
+      ai_mic_step3_desc: "Return to this page and tap the green mic button to speak in Hindi or English.",
+      ai_mic_secure_note: "Voice recognition requires a secure HTTPS connection and device microphone.",
+      ai_mic_test_btn: "Test Microphone",
+      ai_mic_type_instead: "Type Instead",
         // Module 3: Help & Support Center
         support_center_title: "Help & Support",
         support_center_sub: "Traditional self-service & grievance portal",
@@ -9328,13 +9443,22 @@
 
         recognition.onerror = (event) => {
           if (speechTimer) clearTimeout(speechTimer);
-          console.warn('SpeechRecognition error:', event.error);
+          const errCode = event.error || 'unknown';
+          if (errCode === 'aborted') {
+            resetVoiceSearchUI();
+            return;
+          }
+          console.warn('SpeechRecognition error:', errCode);
           let userErr = isHi ? 'आवाज नहीं पहचानी जा सकी।' : 'Could not understand speech.';
-          if (event.error === 'not-allowed') {
+          if (errCode === 'not-allowed') {
             userErr = isHi ? 'माइक की अनुमति नहीं मिली। कृपया ब्राउज़र में माइक चालू करें।' : 'Microphone permission denied. Please allow mic access.';
-          } else if (event.error === 'no-speech') {
+          } else if (errCode === 'service-not-allowed') {
+            userErr = isHi ? 'वॉइस सेवा प्रतिबंधित है। कृपया लिखकर खोजें।' : 'Speech recognition service restricted. Please type.';
+          } else if (errCode === 'audio-capture') {
+            userErr = isHi ? 'डिवाइस में माइक्रोफ़ोन नहीं मिला। कृपया लिखकर खोजें।' : 'No microphone detected. Please type.';
+          } else if (errCode === 'no-speech') {
             userErr = isHi ? 'कोई आवाज सुनाई नहीं दी।' : 'No speech detected. Please try again.';
-          } else if (event.error === 'network') {
+          } else if (errCode === 'network') {
             userErr = isHi ? 'नेटवर्क समस्या। कृपया लिखकर खोजें।' : 'Voice network error. Please type.';
           }
           showAudioToast("Mic Alert", userErr);
@@ -13134,53 +13258,190 @@
     }
     window.syncCommerceCartBar = syncCommerceCartBar;
 
-    // Genuine speech-recognition lifecycle: never claim listening before onstart.
-    let commerceVoiceHadError = false;
-    function setCommerceVoiceStatus(message, transcript) {
-      const status = document.getElementById('commerce-ai-status-text');
+    // =========================================================================
+    // COMMERCE AI ASSISTANT: 5-STATE MACHINE & MICROPHONE LIFECYCLE MANAGEMENT
+    // Discrete States: READY, LISTENING, PROCESSING, PERMISSION_REQUIRED, ERROR
+    // =========================================================================
+    const COMMERCE_VOICE_STATES = {
+      READY: 'READY',
+      LISTENING: 'LISTENING',
+      PROCESSING: 'PROCESSING',
+      PERMISSION_REQUIRED: 'PERMISSION_REQUIRED',
+      ERROR: 'ERROR'
+    };
+    window.COMMERCE_VOICE_STATES = COMMERCE_VOICE_STATES;
+    let currentCommerceVoiceState = COMMERCE_VOICE_STATES.READY;
+    let isCommerceMicStarting = false;
+    commerceVoiceHadError = false;
+
+    function setCommerceVoiceState(state, customMessage, transcript) {
+      currentCommerceVoiceState = state;
+      const isHi = (AppStore.lang === 'hi');
+      const statusEl = document.getElementById('commerce-ai-status-text');
       const transcriptEl = document.getElementById('commerce-ai-transcript');
-      if (status) { status.innerText = message; status.setAttribute('role', 'status'); status.setAttribute('aria-live', 'polite'); }
+      const micBtn = document.getElementById('commerce-ai-mic-btn');
+      const micIcon = document.getElementById('commerce-mic-icon');
+      const ring1 = document.getElementById('commerce-mic-pulse-ring');
+      const ring2 = document.getElementById('commerce-mic-pulse-ring-2');
+      const guideContainer = document.getElementById('commerce-mic-guide-container');
+      const input = document.getElementById('commerce-ai-input');
+
+      // 1. Reset standard button style classes
+      if (micBtn) {
+        micBtn.classList.remove(
+          'bg-gradient-to-tr', 'from-[#16B86E]', 'to-emerald-500', 'from-primary', 'to-emerald-600',
+          'bg-red-500', 'animate-pulse', 'bg-amber-500', 'bg-emerald-600', 'bg-slate-300', 'dark:bg-slate-700'
+        );
+      }
+
+      // 2. Transition visual state elements
+      switch (state) {
+        case COMMERCE_VOICE_STATES.READY:
+          if (ring1) ring1.classList.add('hidden');
+          if (ring2) ring2.classList.add('hidden');
+          if (guideContainer) guideContainer.classList.add('hidden');
+          if (micBtn) micBtn.classList.add('bg-gradient-to-tr', 'from-[#16B86E]', 'to-emerald-500');
+          if (micIcon) micIcon.innerText = 'mic';
+          if (statusEl) {
+            statusEl.className = 'text-[11px] font-bold text-slate-500 dark:text-[#94A3B8] mt-0.5';
+            statusEl.innerText = customMessage || (isHi ? 'सामान बोलने के लिए माइक दबाएं' : 'Tap mic to speak your grocery items');
+          }
+          break;
+
+        case COMMERCE_VOICE_STATES.LISTENING:
+          if (ring1) ring1.classList.remove('hidden');
+          if (ring2) ring2.classList.remove('hidden');
+          if (guideContainer) guideContainer.classList.add('hidden');
+          if (micBtn) micBtn.classList.add('bg-red-500', 'animate-pulse');
+          if (micIcon) micIcon.innerText = 'graphic_eq';
+          if (statusEl) {
+            statusEl.className = 'text-[11px] font-extrabold text-emerald-600 dark:text-emerald-400 mt-0.5 animate-pulse';
+            statusEl.innerText = customMessage || (isHi ? 'सुन रहा है… अब बोलें' : 'Listening… speak now');
+          }
+          break;
+
+        case COMMERCE_VOICE_STATES.PROCESSING:
+          if (ring1) ring1.classList.add('hidden');
+          if (ring2) ring2.classList.add('hidden');
+          if (guideContainer) guideContainer.classList.add('hidden');
+          if (micBtn) micBtn.classList.add('bg-emerald-600');
+          if (micIcon) micIcon.innerText = 'hourglass_top';
+          if (statusEl) {
+            statusEl.className = 'text-[11px] font-extrabold text-primary dark:text-[#16B86E] mt-0.5';
+            statusEl.innerText = customMessage || (isHi ? 'इन्वेंट्री में खोज रहे हैं…' : 'Searching village inventory…');
+          }
+          break;
+
+        case COMMERCE_VOICE_STATES.PERMISSION_REQUIRED:
+          if (ring1) ring1.classList.add('hidden');
+          if (ring2) ring2.classList.add('hidden');
+          if (guideContainer) guideContainer.classList.remove('hidden');
+          if (micBtn) micBtn.classList.add('bg-amber-500');
+          if (micIcon) micIcon.innerText = 'mic_off';
+          if (statusEl) {
+            statusEl.className = 'text-[11px] font-extrabold text-amber-600 dark:text-amber-400 mt-0.5 text-center px-4 leading-tight';
+            statusEl.innerText = customMessage || (isHi ? 'माइक की अनुमति नहीं है। ब्राउज़र की साइट सेटिंग्स में माइक्रोफ़ोन Allow करें या नीचे टाइप करें।' : 'Microphone blocked. Allow microphone access in this site\'s browser settings, or type below.');
+          }
+          if (input) input.focus();
+          break;
+
+        case COMMERCE_VOICE_STATES.ERROR:
+          if (ring1) ring1.classList.add('hidden');
+          if (ring2) ring2.classList.add('hidden');
+          if (guideContainer) guideContainer.classList.add('hidden');
+          if (micBtn) micBtn.classList.add('bg-slate-300', 'dark:bg-slate-700');
+          if (micIcon) micIcon.innerText = 'error_outline';
+          if (statusEl) {
+            statusEl.className = 'text-[11px] font-bold text-red-600 dark:text-red-400 mt-0.5 text-center px-4 leading-tight';
+            statusEl.innerText = customMessage || (isHi ? 'आवाज़ पहचानने में समस्या हुई। नीचे टाइप करें।' : 'Voice recognition failed. Please type below.');
+          }
+          if (input) input.focus();
+          break;
+      }
+
+      if (statusEl) {
+        statusEl.setAttribute('role', 'status');
+        statusEl.setAttribute('aria-live', 'polite');
+      }
+      if (transcriptEl && transcript !== undefined) {
+        transcriptEl.innerText = transcript;
+      }
+    }
+    window.setCommerceVoiceState = setCommerceVoiceState;
+
+    function setCommerceVoiceStatus(message, transcript) {
+      const statusEl = document.getElementById('commerce-ai-status-text');
+      const transcriptEl = document.getElementById('commerce-ai-transcript');
+      if (statusEl && message !== undefined) {
+        statusEl.innerText = message;
+        statusEl.setAttribute('role', 'status');
+        statusEl.setAttribute('aria-live', 'polite');
+      }
       if (transcriptEl && transcript !== undefined) transcriptEl.innerText = transcript;
     }
+    window.setCommerceVoiceStatus = setCommerceVoiceStatus;
 
     function toggleCommerceVoiceRecognition() {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const isHi = AppStore.lang === 'hi';
+      const isHi = (AppStore.lang === 'hi');
       const input = document.getElementById('commerce-ai-input');
 
+      // 1. Check browser SpeechRecognition support
       if (!SpeechRecognition) {
-        setCommerceVoiceStatus(isHi ? 'इस ब्राउज़र में वॉइस सर्च उपलब्ध नहीं है। नीचे टाइप करें।' : 'Voice search is unavailable in this browser. Please type below.');
+        setCommerceVoiceState(
+          COMMERCE_VOICE_STATES.ERROR,
+          isHi ? 'इस ब्राउज़र में वॉइस सर्च उपलब्ध नहीं है। नीचे टाइप करें।' : 'Voice search is unavailable in this browser. Please type below.'
+        );
         if (input) input.focus();
         return;
       }
-      if (activeCommerceRecognition) {
-        try { activeCommerceRecognition.abort(); } catch (_) {}
+
+      // 2. Check Secure Context (HTTPS or localhost)
+      if (window.isSecureContext === false) {
+        setCommerceVoiceState(
+          COMMERCE_VOICE_STATES.PERMISSION_REQUIRED,
+          isHi ? 'माइक्रोफ़ोन के लिए सुरक्षित HTTPS कनेक्शन आवश्यक है।' : 'Microphone requires a secure HTTPS connection.'
+        );
+        if (input) input.focus();
+        return;
+      }
+
+      // 3. If currently LISTENING or STARTING, user tap means CANCEL / STOP
+      if (activeCommerceRecognition || isCommerceMicStarting) {
+        if (activeCommerceRecognition) {
+          try { activeCommerceRecognition.abort(); } catch (_) {}
+        }
         resetCommerceVoiceUI();
         return;
       }
 
+      // 4. Initialize Recognition Instance synchronously within user gesture
+      isCommerceMicStarting = true;
       try {
         const recognition = new SpeechRecognition();
         activeCommerceRecognition = recognition;
         commerceVoiceHadError = false;
+
         recognition.lang = isHi ? 'hi-IN' : 'en-IN';
         recognition.continuous = false;
         recognition.interimResults = true;
-        setCommerceVoiceStatus(isHi ? 'माइक्रोफ़ोन शुरू हो रहा है…' : 'Starting microphone…');
+        recognition.maxAlternatives = 1;
+
+        setCommerceVoiceState(
+          COMMERCE_VOICE_STATES.READY,
+          isHi ? 'माइक्रोफ़ोन शुरू हो रहा है…' : 'Starting microphone…'
+        );
 
         recognition.onstart = function() {
+          isCommerceMicStarting = false;
           if (activeCommerceRecognition !== recognition) return;
-          const ring1 = document.getElementById('commerce-mic-pulse-ring');
-          const ring2 = document.getElementById('commerce-mic-pulse-ring-2');
-          const micBtn = document.getElementById('commerce-ai-mic-btn');
-          if (ring1) ring1.classList.remove('hidden');
-          if (ring2) ring2.classList.remove('hidden');
-          if (micBtn) {
-            micBtn.classList.remove('bg-gradient-to-tr', 'from-primary', 'to-emerald-600');
-            micBtn.classList.add('bg-red-500', 'animate-pulse');
-          }
-          setCommerceVoiceStatus(isHi ? 'सुन रहा है… अब बोलें' : 'Listening… speak now', isHi ? 'बोलना शुरू करें…' : 'Speak now…');
+          setCommerceVoiceState(
+            COMMERCE_VOICE_STATES.LISTENING,
+            isHi ? 'सुन रहा है… अब बोलें' : 'Listening… speak now',
+            isHi ? 'बोलना शुरू करें…' : 'Speak now…'
+          );
         };
+
         recognition.onresult = function(event) {
           if (activeCommerceRecognition !== recognition) return;
           let transcript = '';
@@ -13191,11 +13452,15 @@
           }
           transcript = transcript.trim();
           if (transcript) {
-            setCommerceVoiceStatus(isHi ? 'आपने कहा:' : 'You said:', transcript);
+            setCommerceVoiceState(COMMERCE_VOICE_STATES.LISTENING, isHi ? 'आपने कहा:' : 'You said:', transcript);
             if (input) input.value = transcript;
           }
           if (final && transcript) {
-            recognition.stop();
+            try { recognition.stop(); } catch (_) {}
+            setCommerceVoiceState(
+              COMMERCE_VOICE_STATES.PROCESSING,
+              isHi ? 'इन्वेंट्री में सामान खोज रहे हैं...' : 'Searching village inventory...'
+            );
             if (window.VoiceCommerceEngine) {
               if (typeof window.VoiceCommerceEngine.executeAiVoiceShoppingList === 'function') {
                 window.VoiceCommerceEngine.executeAiVoiceShoppingList(transcript);
@@ -13207,52 +13472,146 @@
             }
           }
         };
+
         recognition.onerror = function(event) {
+          isCommerceMicStarting = false;
           if (activeCommerceRecognition !== recognition) return;
           commerceVoiceHadError = true;
           const error = event.error || 'unknown';
-          let msg;
-          if (error === 'not-allowed' || error === 'service-not-allowed') {
-            msg = isHi ? 'माइक की अनुमति नहीं है। ब्राउज़र की साइट सेटिंग्स में माइक्रोफ़ोन Allow करें या नीचे टाइप करें।'
-                       : 'Microphone blocked. Allow microphone access in this site\'s browser settings, or type below.';
-          } else if (error === 'no-speech') {
-            msg = isHi ? 'आवाज़ नहीं मिली। फिर कोशिश करें या टाइप करें।' : 'No speech detected. Try again or type below.';
-          } else if (error === 'network') {
-            msg = isHi ? 'वॉइस सेवा का नेटवर्क उपलब्ध नहीं है। नीचे टाइप करें।' : 'Voice service unavailable on this network. Please type below.';
-          } else {
-            msg = isHi ? 'आवाज़ पहचानने में समस्या हुई। नीचे टाइप करें।' : 'Voice recognition failed. Please type below.';
+
+          if (error === 'aborted') {
+            // User cancelled or stopped intentionally — return to READY without error banner
+            resetCommerceVoiceUI();
+            return;
           }
-          resetCommerceVoiceUI(true);
-          setCommerceVoiceStatus(msg);
-          if (input) input.focus();
+
+          if (error === 'not-allowed') {
+            setCommerceVoiceState(
+              COMMERCE_VOICE_STATES.PERMISSION_REQUIRED,
+              isHi ? 'माइक की अनुमति नहीं है। ब्राउज़र की साइट सेटिंग्स में माइक्रोफ़ोन Allow करें या नीचे टाइप करें।'
+                   : 'Microphone blocked. Allow microphone access in this site\'s browser settings, or type below.'
+            );
+          } else if (error === 'service-not-allowed') {
+            setCommerceVoiceState(
+              COMMERCE_VOICE_STATES.ERROR,
+              isHi ? 'डिवाइस पर वॉइस सेवा प्रतिबंधित है। कृपया नीचे लिखकर खोजें।'
+                   : 'Speech recognition service is restricted on this device. Please type below.'
+            );
+          } else if (error === 'audio-capture') {
+            setCommerceVoiceState(
+              COMMERCE_VOICE_STATES.ERROR,
+              isHi ? 'डिवाइस में माइक्रोफ़ोन नहीं मिला। कृपया माइक कनेक्ट करें या टाइप करें।'
+                   : 'No microphone detected on your device. Please connect a mic or type below.'
+            );
+          } else if (error === 'no-speech') {
+            // No speech detected - gentle prompt, back to READY state so user can re-tap
+            setCommerceVoiceState(
+              COMMERCE_VOICE_STATES.READY,
+              isHi ? 'आवाज़ नहीं मिली। फिर कोशिश करें या टाइप करें।'
+                   : 'No speech detected. Try again or type below.'
+            );
+          } else if (error === 'network') {
+            setCommerceVoiceState(
+              COMMERCE_VOICE_STATES.ERROR,
+              isHi ? 'वॉइस सेवा का नेटवर्क उपलब्ध नहीं है। नीचे टाइप करें।'
+                   : 'Voice service unavailable on this network. Please type below.'
+            );
+          } else if (error === 'language-not-supported') {
+            setCommerceVoiceState(
+              COMMERCE_VOICE_STATES.ERROR,
+              isHi ? 'चयनित भाषा समर्थित नहीं है। कृपया लिखकर खोजें।'
+                   : 'Selected language not supported. Please type below.'
+            );
+          } else {
+            setCommerceVoiceState(
+              COMMERCE_VOICE_STATES.ERROR,
+              isHi ? 'आवाज़ पहचानने में समस्या हुई। नीचे टाइप करें।'
+                   : 'Voice recognition failed. Please type below.'
+            );
+          }
         };
+
         recognition.onend = function() {
+          isCommerceMicStarting = false;
           if (activeCommerceRecognition !== recognition) return;
-          resetCommerceVoiceUI(commerceVoiceHadError);
+          activeCommerceRecognition = null;
+          // If ended without error and not processing, return to READY
+          if (!commerceVoiceHadError && currentCommerceVoiceState !== COMMERCE_VOICE_STATES.PROCESSING) {
+            resetCommerceVoiceUI();
+          }
         };
+
         recognition.start();
       } catch (error) {
-        resetCommerceVoiceUI(true);
-        setCommerceVoiceStatus(isHi ? 'माइक शुरू नहीं हुआ। अनुमति जांचें या टाइप करें।' : 'Microphone could not start. Check permissions or type below.');
-        if (input) input.focus();
+        isCommerceMicStarting = false;
+        if (error.name === 'InvalidStateError') {
+          // Recognition already starting or active, ignore duplicate start
+          return;
+        }
+        if (error.name === 'NotAllowedError') {
+          setCommerceVoiceState(
+            COMMERCE_VOICE_STATES.PERMISSION_REQUIRED,
+            isHi ? 'माइक की अनुमति नहीं है। ब्राउज़र की साइट सेटिंग्स में माइक्रोफ़ोन Allow करें या नीचे टाइप करें।'
+                 : 'Microphone blocked. Allow microphone access in this site\'s browser settings, or type below.'
+          );
+        } else {
+          setCommerceVoiceState(
+            COMMERCE_VOICE_STATES.ERROR,
+            isHi ? 'माइक शुरू नहीं हुआ। अनुमति जांचें या टाइप करें।' : 'Microphone could not start. Check permissions or type below.'
+          );
+        }
       }
     }
     window.toggleCommerceVoiceRecognition = toggleCommerceVoiceRecognition;
 
     function resetCommerceVoiceUI(preserveStatus = false) {
-      activeCommerceRecognition = null;
-      const ring1 = document.getElementById('commerce-mic-pulse-ring');
-      const ring2 = document.getElementById('commerce-mic-pulse-ring-2');
-      const micBtn = document.getElementById('commerce-ai-mic-btn');
-      if (ring1) ring1.classList.add('hidden');
-      if (ring2) ring2.classList.add('hidden');
-      if (micBtn) {
-        micBtn.classList.remove('bg-red-500', 'animate-pulse');
-        micBtn.classList.add('bg-gradient-to-tr', 'from-primary', 'to-emerald-600');
+      if (activeCommerceRecognition) {
+        try { activeCommerceRecognition.abort(); } catch (_) {}
       }
-      if (!preserveStatus) setCommerceVoiceStatus(AppStore.lang === 'hi' ? 'सामान बोलने के लिए माइक दबाएं' : 'Tap mic to speak your grocery items');
+      activeCommerceRecognition = null;
+      isCommerceMicStarting = false;
+      commerceVoiceHadError = false;
+      if (!preserveStatus) {
+        setCommerceVoiceState(COMMERCE_VOICE_STATES.READY);
+      }
     }
     window.resetCommerceVoiceUI = resetCommerceVoiceUI;
+
+    function openMicPermissionGuide() {
+      const modal = document.getElementById('modal-mic-guide');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        if (typeof window.pushOverlayHistory === 'function') {
+          window.pushOverlayHistory('modal-mic-guide');
+        }
+      }
+    }
+    window.openMicPermissionGuide = openMicPermissionGuide;
+
+    function closeMicPermissionGuide() {
+      const modal = document.getElementById('modal-mic-guide');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+    window.closeMicPermissionGuide = closeMicPermissionGuide;
+
+    function testMicPermission() {
+      closeMicPermissionGuide();
+      toggleCommerceVoiceRecognition();
+    }
+    window.testMicPermission = testMicPermission;
+
+    function closeMicGuideAndFocusInput() {
+      closeMicPermissionGuide();
+      const input = document.getElementById('commerce-ai-input');
+      if (input) {
+        input.focus();
+      }
+    }
+    window.closeMicGuideAndFocusInput = closeMicGuideAndFocusInput;
 
     function clearCommerceAiInput() {
       const input = document.getElementById('commerce-ai-input');

@@ -897,7 +897,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
 
         # 5. Device Permissions Policy
-        response.headers["Permissions-Policy"] = "geolocation=(self), camera=(), microphone=(), payment=(self)"
+        response.headers["Permissions-Policy"] = "geolocation=(self), camera=(self), microphone=(self), payment=(self)"
 
         # 6. Strict Content Security Policy (allowing CDNs required for Tailwind, Material Icons, and maps)
         response.headers["Content-Security-Policy"] = (
