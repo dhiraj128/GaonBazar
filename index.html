@@ -379,7 +379,7 @@
       scroll-margin-bottom: 120px;
       scroll-margin-top: 75px;
     }
-  
+
     /* GAONBAZAAR DARK CONTRAST FIX v1 — neutral charcoal, approved layout intact. */
     html.dark {
       --gb-night-bg: #111418;
@@ -511,7 +511,7 @@
 
     <!-- App Global Sticky Header (Native Top App Bar - Blinkit Centered Standard) -->
     <header id="customer-header" class="w-full max-w-full h-16 min-h-[60px] bg-white dark:bg-[#111418] border-b border-slate-200 dark:border-[#465362] sticky top-0 z-40 px-3.5 flex items-center justify-between transition-colors shadow-2xs">
-      
+
       <!-- Left: Back Button (shown in subviews) OR GaonBazaar Brand Logo & Location Pill -->
       <div class="flex items-center gap-2 min-w-0">
         <!-- Native Back Arrow (visible when navigated away from home) -->
@@ -569,7 +569,7 @@
 
     <!-- Slide-out Sidebar Panel -->
     <aside id="sidebar-drawer" class="fixed top-0 bottom-0 left-0 w-[84%] max-w-[320px] bg-white dark:bg-[#111418] z-50 shadow-2xl flex flex-col transform -translate-x-full transition-transform duration-300 ease-out overflow-hidden border-r border-slate-200 dark:border-[#465362]" aria-label="Main Navigation">
-      
+
       <!-- Drawer Header Matching Reference 05: Brand + Slogan + X Close -->
       <div class="p-4 pt-safe border-b border-slate-100 dark:border-[#465362] flex items-center justify-between shrink-0 bg-slate-50 dark:bg-[#1D232B]">
         <div class="flex items-center gap-2">
@@ -628,45 +628,45 @@
             <!-- ===================================================================== -->
       <!-- PHASE 0: FIRST-LAUNCH LANGUAGE SELECTION (Matching 01_LANGUAGE_*)     -->
       <!-- ===================================================================== -->
-      <section id="view-p1-language" class="screen-view hidden flex-col w-full px-5 pt-8 pb-20 flex-1 min-h-0 items-center justify-between text-center select-none" style="touch-action: pan-y !important;">
-        <div class="w-full flex flex-col items-center max-w-sm mx-auto pt-6 space-y-6">
+      <section id="view-p1-language" class="screen-view hidden flex-col w-full px-5 pt-8 pb-10 flex-1 min-h-0 items-center justify-between text-center select-none" style="touch-action: pan-y !important;">
+        <div class="w-full flex flex-col items-center max-w-sm mx-auto pt-4 space-y-5">
           <!-- Basket Logo + Brand -->
-          <div class="flex flex-col items-center gap-2">
-            <img src="static/images/logo_basket.png" alt="GaonBazaar" class="w-20 h-20 object-contain drop-shadow-md" />
-            <h1 class="text-3xl font-black tracking-tight text-[#16B86E] font-sans">GaonBazaar</h1>
+          <div class="flex flex-col items-center gap-1.5">
+            <img src="static/images/logo_basket.png" alt="GaonBazaar" class="w-16 h-16 sm:w-20 sm:h-20 object-contain drop-shadow-sm" />
+            <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-[#16B86E] font-sans">GaonBazaar</h1>
           </div>
-          
+
           <!-- Heading -->
           <div class="space-y-1">
-            <h2 class="text-xl font-black text-slate-900 dark:text-[#F8FAFC]">अपनी भाषा चुनें</h2>
-            <p class="text-sm font-semibold text-slate-500 dark:text-[#CBD5E1]">Choose your language</p>
+            <h2 class="text-lg sm:text-xl font-black text-slate-900 dark:text-[#F8FAFC]">अपनी भाषा चुनें</h2>
+            <p class="text-xs sm:text-sm font-semibold text-slate-500 dark:text-[#CBD5E1]">Choose your language</p>
           </div>
 
           <!-- Language Selection Cards -->
-          <div class="w-full space-y-3 pt-2">
+          <div class="w-full space-y-3 pt-1">
             <!-- Hindi Card (Default selected) -->
-            <button id="lang-select-card-hi" type="button" onclick="selectFirstLaunchLanguage('hi')" class="w-full p-4 rounded-2xl flex items-center justify-between transition-all cursor-pointer bg-[#075c42] dark:bg-[#16B86E] text-white shadow-md border-2 border-transparent">
+            <button id="lang-select-card-hi" type="button" onclick="selectFirstLaunchLanguage('hi')" class="w-full px-4 py-3.5 rounded-2xl flex items-center justify-between transition-all cursor-pointer bg-[#047C4A] dark:bg-[#16B86E] text-white shadow-md border-2 border-transparent">
               <div class="flex flex-col text-left">
-                <span class="text-lg font-black leading-tight">हिंदी</span>
+                <span class="text-base sm:text-lg font-black leading-tight">हिंदी</span>
                 <span class="text-xs font-semibold text-emerald-100 dark:text-emerald-950">Hindi</span>
               </div>
-              <span id="lang-check-hi" class="material-symbols-outlined text-[24px]">chevron_right</span>
+              <span id="lang-check-hi" class="material-symbols-outlined text-[22px] text-white">check_circle</span>
             </button>
 
             <!-- English Card -->
-            <button id="lang-select-card-en" type="button" onclick="selectFirstLaunchLanguage('en')" class="w-full p-4 rounded-2xl flex items-center justify-between transition-all cursor-pointer bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border-2 border-slate-200 dark:border-[#465362] hover:border-[#16B86E]">
+            <button id="lang-select-card-en" type="button" onclick="selectFirstLaunchLanguage('en')" class="w-full px-4 py-3.5 rounded-2xl flex items-center justify-between transition-all cursor-pointer bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border-2 border-slate-200 dark:border-[#465362] hover:border-[#16B86E]">
               <div class="flex flex-col text-left">
-                <span class="text-lg font-black leading-tight">English</span>
+                <span class="text-base sm:text-lg font-black leading-tight">English</span>
                 <span class="text-xs font-semibold text-slate-400 dark:text-slate-400">English</span>
               </div>
-              <span id="lang-check-en" class="material-symbols-outlined text-[24px] text-slate-400">chevron_right</span>
+              <span id="lang-check-en" class="material-symbols-outlined text-[22px] text-slate-400">radio_button_unchecked</span>
             </button>
           </div>
         </div>
 
         <!-- Continue Button -->
-        <div class="w-full max-w-sm mx-auto pb-4">
-          <button id="btn-language-continue" type="button" onclick="confirmFirstLaunchLanguage()" class="w-full h-13 rounded-2xl bg-[#075c42] dark:bg-[#16B86E] hover:opacity-95 text-white text-base font-black flex items-center justify-center gap-2 shadow-lg active:scale-98 transition-all cursor-pointer">
+        <div class="w-full max-w-sm mx-auto pt-6 pb-4">
+          <button id="btn-language-continue" type="button" onclick="confirmFirstLaunchLanguage()" class="w-full h-[52px] rounded-2xl bg-[#047C4A] dark:bg-[#16B86E] hover:opacity-95 text-white text-base font-black flex items-center justify-center gap-2 shadow-lg active:scale-98 transition-all cursor-pointer">
             <span id="lbl-language-continue">Continue</span>
             <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
           </button>
@@ -697,23 +697,23 @@
           <!-- Phone Number Input Card -->
           <div class="w-full space-y-2">
             <label class="block text-xs font-black text-slate-800 dark:text-[#F8FAFC]" data-i18n="p1_login_title">Mobile Number</label>
-            <div class="flex items-center rounded-2xl bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-[#465362] px-3.5 h-13 shadow-xs focus-within:border-[#16B86E] transition-all">
+            <div class="flex items-center rounded-2xl bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-[#465362] px-3.5 h-[52px] shadow-xs focus-within:border-[#16B86E] transition-all">
               <span class="text-xs font-bold text-slate-700 dark:text-[#CBD5E1] mr-2 shrink-0">+91 ⌄</span>
-              <input 
-                id="p1-phone-input" 
-                type="tel" 
-                inputmode="numeric" 
-                maxlength="10" 
-                placeholder="98765 43210" 
+              <input
+                id="p1-phone-input"
+                type="tel"
+                inputmode="numeric"
+                maxlength="10"
+                placeholder="98765 43210"
                 class="w-full h-full bg-transparent text-sm font-bold text-slate-900 dark:text-[#F8FAFC] placeholder:text-slate-400 focus:outline-none"
               />
               <span id="p1-phone-valid" class="hidden material-symbols-outlined text-[#16B86E] text-[20px]">check_circle</span>
             </div>
-            <button 
-              id="p1-send-otp-btn" 
-              type="button" 
-              onclick="submitPhoneLogin()" 
-              class="w-full h-12 mt-2 rounded-2xl bg-[#075c42] dark:bg-[#16B86E] hover:opacity-95 text-white font-black text-sm flex items-center justify-center gap-1 shadow-md active:scale-98 transition-all cursor-pointer"
+            <button
+              id="p1-send-otp-btn"
+              type="button"
+              onclick="submitPhoneLogin()"
+              class="w-full h-[52px] mt-2 rounded-2xl bg-[#047C4A] dark:bg-[#16B86E] hover:opacity-95 text-white font-black text-sm flex items-center justify-center gap-1 shadow-md active:scale-98 transition-all cursor-pointer"
             >
               <span id="p1-send-otp-text" data-i18n="p1_send_otp_btn">Send OTP</span>
             </button>
@@ -725,7 +725,7 @@
               <label class="block text-xs font-black text-slate-800 dark:text-[#F8FAFC]" data-i18n="p1_otp_box_label">Enter 6-digit OTP</label>
               <span id="p1-countdown" class="text-[11px] font-bold text-[#16B86E]">0:45</span>
             </div>
-            
+
             <div class="grid grid-cols-6 gap-2">
               <input type="tel" maxlength="1" class="otp-cell w-full h-12 rounded-xl bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-[#465362] text-center text-lg font-black text-slate-900 dark:text-[#F8FAFC] focus:outline-none focus:border-[#16B86E] transition-all" data-idx="0" oninput="onOtpCellInput(this, 0)" onkeydown="onOtpCellKey(this, event, 0)"/>
               <input type="tel" maxlength="1" class="otp-cell w-full h-12 rounded-xl bg-white dark:bg-[#1D232B] border border-slate-200 dark:border-[#465362] text-center text-lg font-black text-slate-900 dark:text-[#F8FAFC] focus:outline-none focus:border-[#16B86E] transition-all" data-idx="1" oninput="onOtpCellInput(this, 1)" onkeydown="onOtpCellKey(this, event, 1)"/>
@@ -740,10 +740,10 @@
               Invalid or expired OTP. Please try again.
             </div>
 
-            <button 
-              id="p1-verify-otp-btn" 
-              type="button" 
-              onclick="submitVerifyOtp()" 
+            <button
+              id="p1-verify-otp-btn"
+              type="button"
+              onclick="submitVerifyOtp()"
               class="w-full h-12 mt-2 rounded-2xl bg-slate-300 dark:bg-[#2A323D] text-slate-700 dark:text-slate-300 font-black text-sm flex items-center justify-center gap-1 shadow-sm active:scale-98 transition-all cursor-pointer"
             >
               <span data-i18n="p1_otp_verify_btn">Verify OTP</span>
@@ -813,12 +813,12 @@
             6-अंकों का कोड दर्ज करें
           </label>
           <div class="grid grid-cols-6 gap-1.5 sm:gap-2">
-            <input type="tel" maxlength="1" class="otp-cell w-full h-12 sm:h-13 py-2 rounded-xl bg-surface-container-low border border-surface-container-high text-center text-xl sm:text-2xl font-black text-on-surface focus:outline-none focus:border-primary transition-all" data-idx="0" oninput="onOtpCellInput(this, 0)" onkeydown="onOtpCellKey(this, event, 0)"/>
-            <input type="tel" maxlength="1" class="otp-cell w-full h-12 sm:h-13 py-2 rounded-xl bg-surface-container-low border border-surface-container-high text-center text-xl sm:text-2xl font-black text-on-surface focus:outline-none focus:border-primary transition-all" data-idx="1" oninput="onOtpCellInput(this, 1)" onkeydown="onOtpCellKey(this, event, 1)"/>
-            <input type="tel" maxlength="1" class="otp-cell w-full h-12 sm:h-13 py-2 rounded-xl bg-surface-container-low border border-surface-container-high text-center text-xl sm:text-2xl font-black text-on-surface focus:outline-none focus:border-primary transition-all" data-idx="2" oninput="onOtpCellInput(this, 2)" onkeydown="onOtpCellKey(this, event, 2)"/>
-            <input type="tel" maxlength="1" class="otp-cell w-full h-12 sm:h-13 py-2 rounded-xl bg-surface-container-low border border-surface-container-high text-center text-xl sm:text-2xl font-black text-on-surface focus:outline-none focus:border-primary transition-all" data-idx="3" oninput="onOtpCellInput(this, 3)" onkeydown="onOtpCellKey(this, event, 3)"/>
-            <input type="tel" maxlength="1" class="otp-cell w-full h-12 sm:h-13 py-2 rounded-xl bg-surface-container-low border border-surface-container-high text-center text-xl sm:text-2xl font-black text-on-surface focus:outline-none focus:border-primary transition-all" data-idx="4" oninput="onOtpCellInput(this, 4)" onkeydown="onOtpCellKey(this, event, 4)"/>
-            <input type="tel" maxlength="1" class="otp-cell w-full h-12 sm:h-13 py-2 rounded-xl bg-surface-container-low border border-surface-container-high text-center text-xl sm:text-2xl font-black text-on-surface focus:outline-none focus:border-primary transition-all" data-idx="5" oninput="onOtpCellInput(this, 5)" onkeydown="onOtpCellKey(this, event, 5)"/>
+            <input type="tel" maxlength="1" class="otp-cell w-full h-12 sm:h-[52px] py-2 rounded-xl bg-surface-container-low border border-surface-container-high text-center text-xl sm:text-2xl font-black text-on-surface focus:outline-none focus:border-primary transition-all" data-idx="0" oninput="onOtpCellInput(this, 0)" onkeydown="onOtpCellKey(this, event, 0)"/>
+            <input type="tel" maxlength="1" class="otp-cell w-full h-12 sm:h-[52px] py-2 rounded-xl bg-surface-container-low border border-surface-container-high text-center text-xl sm:text-2xl font-black text-on-surface focus:outline-none focus:border-primary transition-all" data-idx="1" oninput="onOtpCellInput(this, 1)" onkeydown="onOtpCellKey(this, event, 1)"/>
+            <input type="tel" maxlength="1" class="otp-cell w-full h-12 sm:h-[52px] py-2 rounded-xl bg-surface-container-low border border-surface-container-high text-center text-xl sm:text-2xl font-black text-on-surface focus:outline-none focus:border-primary transition-all" data-idx="2" oninput="onOtpCellInput(this, 2)" onkeydown="onOtpCellKey(this, event, 2)"/>
+            <input type="tel" maxlength="1" class="otp-cell w-full h-12 sm:h-[52px] py-2 rounded-xl bg-surface-container-low border border-surface-container-high text-center text-xl sm:text-2xl font-black text-on-surface focus:outline-none focus:border-primary transition-all" data-idx="3" oninput="onOtpCellInput(this, 3)" onkeydown="onOtpCellKey(this, event, 3)"/>
+            <input type="tel" maxlength="1" class="otp-cell w-full h-12 sm:h-[52px] py-2 rounded-xl bg-surface-container-low border border-surface-container-high text-center text-xl sm:text-2xl font-black text-on-surface focus:outline-none focus:border-primary transition-all" data-idx="4" oninput="onOtpCellInput(this, 4)" onkeydown="onOtpCellKey(this, event, 4)"/>
+            <input type="tel" maxlength="1" class="otp-cell w-full h-12 sm:h-[52px] py-2 rounded-xl bg-surface-container-low border border-surface-container-high text-center text-xl sm:text-2xl font-black text-on-surface focus:outline-none focus:border-primary transition-all" data-idx="5" oninput="onOtpCellInput(this, 5)" onkeydown="onOtpCellKey(this, event, 5)"/>
           </div>
 
           <div class="flex items-center justify-between mt-4 text-xs">
@@ -881,10 +881,10 @@
               <span id="p1-gps-badge" class="text-[11px] text-on-surface-variant font-medium block truncate" data-i18n="p1_gps_badge">GPS सेट नहीं है</span>
             </div>
           </div>
-          <button 
-            id="p1-locate-btn" 
-            type="button" 
-            onclick="detectGpsLocation()" 
+          <button
+            id="p1-locate-btn"
+            type="button"
+            onclick="detectGpsLocation()"
             class="w-full min-h-[44px] px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-bold flex items-center justify-center text-center gap-2 active:scale-98 cursor-pointer shadow-xs transition-all overflow-hidden"
           >
             <span class="material-symbols-outlined text-[18px] shrink-0">near_me</span>
@@ -898,11 +898,11 @@
           <label class="text-[11px] font-bold text-on-surface-variant" data-i18n="p1_district_label">जिला या तहसील *</label>
           <div class="relative flex items-center bg-surface-container-low rounded-xl border border-surface-container-high focus-within:border-primary">
             <span class="material-symbols-outlined text-outline absolute left-3 text-[18px]">location_city</span>
-            <input 
-              id="p1-district-input" oninput="this.dataset.userEdited='true'" 
-              type="text" 
-              placeholder="जैसे: सोनीपत या गनौर" 
-              data-i18n-ph="p1_district_ph" 
+            <input
+              id="p1-district-input" oninput="this.dataset.userEdited='true'"
+              type="text"
+              placeholder="जैसे: सोनीपत या गनौर"
+              data-i18n-ph="p1_district_ph"
               class="w-full h-11 pl-10 pr-3 rounded-xl bg-transparent text-xs font-bold text-on-surface focus:outline-none"
             />
           </div>
@@ -914,11 +914,11 @@
           <label class="text-[11px] font-bold text-on-surface-variant" data-i18n="p1_village_label">गाँव या ग्राम पंचायत *</label>
           <div class="relative flex items-center bg-surface-container-low rounded-xl border border-surface-container-high focus-within:border-primary">
             <span class="material-symbols-outlined text-outline absolute left-3 text-[18px]">home_pin</span>
-            <input 
-              id="p1-village-input" oninput="this.dataset.userEdited='true'" 
-              type="text" 
-              placeholder="जैसे: रामपुर" 
-              data-i18n-ph="p1_village_ph" 
+            <input
+              id="p1-village-input" oninput="this.dataset.userEdited='true'"
+              type="text"
+              placeholder="जैसे: रामपुर"
+              data-i18n-ph="p1_village_ph"
               class="w-full h-11 pl-10 pr-3 rounded-xl bg-transparent text-xs font-bold text-on-surface focus:outline-none"
             />
           </div>
@@ -966,9 +966,9 @@
           <div id="p1-voice-lm-status" class="text-[11px] font-semibold text-slate-500"></div>
 
           <div class="flex flex-col gap-2">
-            <textarea 
-              id="p1-landmark-text" 
-              rows="3" 
+            <textarea
+              id="p1-landmark-text"
+              rows="3"
               oninput="onLandmarkChange(this)"
               placeholder="जैसे: शिव मंदिर के पास, प्राथमिक स्कूल के पीछे"
               data-i18n-ph="p1_lm_ph"
@@ -1006,12 +1006,12 @@
           <!-- Interactive Mobile Map (Pinch to zoom, pan, draggable pin, zoom buttons) -->
           <div class="relative w-full h-56 rounded-2xl overflow-hidden border border-slate-300 shadow-sm bg-slate-100">
             <div id="p1-leaflet-map" class="w-full h-full"></div>
-            
+
             <!-- Floating Recenter Button -->
-            <button 
-              id="p1-map-recenter-btn" 
-              onclick="recenterMapToGps()" 
-              type="button" 
+            <button
+              id="p1-map-recenter-btn"
+              onclick="recenterMapToGps()"
+              type="button"
               class="absolute bottom-3 right-3 z-[400] bg-white/95 hover:bg-white text-slate-800 text-xs font-bold py-1.5 px-3 rounded-full shadow-md border border-slate-200 flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer"
               title="Recenter to detected GPS coordinates"
             >
@@ -1027,10 +1027,10 @@
           </div>
 
           <!-- Explicit Confirmation CTA Button -->
-          <button 
-            id="p1-confirm-location-btn" 
-            onclick="confirmPinnedLocation()" 
-            type="button" 
+          <button
+            id="p1-confirm-location-btn"
+            onclick="confirmPinnedLocation()"
+            type="button"
             class="w-full min-h-[46px] py-2.5 px-4 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-bold shadow-md flex items-center justify-center gap-2 active:scale-98 transition-all cursor-pointer"
           >
             <span class="material-symbols-outlined text-[18px]">verified</span>
@@ -1154,7 +1154,7 @@
         <div class="space-y-2 pt-2" id="home-popular-section">
           <span class="hidden" data-i18n="p2_popular_title">Products</span>
           <span class="hidden" data-i18n="p2_see_all">See all</span>
-          
+
           <div class="grid grid-cols-2 gap-3" id="home-popular-grid">
             <!-- Product Card 1: Fresh Tomato -->
             <div class="rounded-2xl bg-white dark:bg-[#1D232B] p-2.5 border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col justify-between relative group hover:border-[#16B86E] transition-all">
@@ -1306,7 +1306,7 @@
       <!-- PHASE 4.1: CART REVIEW                                                -->
       <!-- ===================================================================== -->
       <section id="view-p4-cart" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 space-y-4">
-        
+
         <!-- Empty Cart Illustration & State (Shown when cart items = 0) -->
         <!-- Cart Header Matching Reference 01 Frame 3 -->
         <div class="flex items-center justify-between py-1">
@@ -1503,7 +1503,7 @@
             <h4 class="text-xs font-extrabold text-on-surface uppercase tracking-wider" data-i18n="p4_payment_opts">भुगतान का तरीका</h4>
             <span class="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200" data-i18n="p4_badge_100_secure">100% सुरक्षित</span>
           </div>
-          
+
           <!-- Option 1: COD (Default) -->
           <label onclick="selectPaymentMethod('COD')" class="p-3.5 rounded-xl border-2 border-primary bg-primary/5 flex items-center justify-between gap-2 cursor-pointer transition-all" id="pay-card-cod">
             <div class="flex items-center gap-2.5 min-w-0 flex-1">
@@ -1547,7 +1547,7 @@
       <!-- PHASE 5: LIVE ORDER TRACKING (Order Placed -> Delivered)              -->
       <!-- ===================================================================== -->
       <section id="view-p5-tracking" class="screen-view hidden flex-col w-full px-4 pt-2 pb-32 sm:pb-36 flex-1 min-h-0 space-y-4" style="touch-action: pan-y !important;">
-        
+
         <!-- One Orders destination: live tracking first, then complete order history -->
         <div class="flex items-center justify-between py-1">
           <div class="flex items-center gap-2">
@@ -1581,7 +1581,7 @@
 
         <!-- 2. ACTIVE TRACKING CONTAINER (Dynamic rendering from server) -->
         <div id="p5-active-tracking-content" class="hidden w-full flex-col space-y-3.5 pb-6" style="touch-action: pan-y !important;">
-          
+
           <!-- Hero Arriving Status Card -->
           <div class="bg-white dark:bg-[#1D232B] rounded-2xl p-4 shadow-xs border border-slate-200 dark:border-[#465362] flex items-center justify-between">
             <div class="flex flex-col">
@@ -1641,7 +1641,7 @@
                 </div>
               </div>
             </div>
-            
+
             <div id="p5-timeline-steps" class="hidden"></div>
           </div>
 
@@ -2104,7 +2104,7 @@
       <!-- ===================================================================== -->
       <div id="view-profile" class="screen-view hidden flex-col w-full px-4 pt-3 pb-36 flex-1 min-h-0 space-y-4">
 
-        
+
         <!-- Profile Top Title Bar with Back Button -->
         <div id="profile-top-bar" class="flex items-center gap-2.5 pb-1">
           <button type="button" id="profile-back-to-home-btn" onclick="navigateBack()" aria-label="Back to Home" class="w-10 h-10 -ml-2 rounded-full flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
@@ -2241,7 +2241,7 @@
         <!-- B. DEDICATED SUBVIEWS (Shown when rows are tapped, Back button ‹)   -->
         <!-- =================================================================== -->
         <div id="customer-account-subviews" class="w-full flex flex-col space-y-4">
-          
+
           <!-- SUBVIEW 1: PERSONAL INFORMATION (MY PROFILE) -->
           <div id="customer-subview-personal" class="customer-subview hidden flex-col space-y-4">
             <div class="flex items-center gap-2.5 pb-2 border-b border-slate-200 dark:border-[#465362]">
@@ -2262,10 +2262,10 @@
                   <label class="block text-[11px] font-black text-slate-700 dark:text-slate-300 mb-1" data-i18n="profile_lbl_fullname">पूरा नाम</label>
                   <div class="relative flex items-center bg-slate-50 dark:bg-[#2A323D] rounded-2xl border border-slate-200 dark:border-slate-700 focus-within:border-primary focus-within:bg-white transition-all">
                     <span class="material-symbols-outlined text-slate-400 absolute left-3.5 text-[18px]">person</span>
-                    <input 
-                      id="profile-user-name-input" 
-                      type="text" 
-                      value="रमेश पटेल" 
+                    <input
+                      id="profile-user-name-input"
+                      type="text"
+                      value="रमेश पटेल"
                       oninput="onProfileNameChange(this.value)"
                       class="w-full h-11 pl-10 pr-3 rounded-2xl bg-transparent text-xs font-bold text-slate-800 dark:text-white focus:outline-none"
                       placeholder="आपका पूरा नाम"
@@ -2280,10 +2280,10 @@
                     <label class="block text-[11px] font-black text-slate-700 dark:text-slate-300 mb-1" data-i18n="profile_lbl_email">ईमेल पता</label>
                     <div class="relative flex items-center bg-slate-50 dark:bg-[#2A323D] rounded-2xl border border-slate-200 dark:border-slate-700 focus-within:border-primary focus-within:bg-white transition-all">
                       <span class="material-symbols-outlined text-slate-400 absolute left-3.5 text-[18px]">mail</span>
-                      <input 
-                        id="profile-email-input" 
-                        type="email" 
-                        value="ramesh.patel@gaonbazar.in" 
+                      <input
+                        id="profile-email-input"
+                        type="email"
+                        value="ramesh.patel@gaonbazar.in"
                         class="w-full h-11 pl-10 pr-3 rounded-2xl bg-transparent text-xs font-bold text-slate-800 dark:text-white focus:outline-none"
                         placeholder="email@example.com"
                       />
@@ -2293,10 +2293,10 @@
                     <label class="block text-[11px] font-black text-slate-700 dark:text-slate-300 mb-1" data-i18n="profile_lbl_dob">जन्म तिथि</label>
                     <div class="relative flex items-center bg-slate-50 dark:bg-[#2A323D] rounded-2xl border border-slate-200 dark:border-slate-700 focus-within:border-primary focus-within:bg-white transition-all">
                       <span class="material-symbols-outlined text-slate-400 absolute left-3.5 text-[18px]">calendar_today</span>
-                      <input 
-                        id="profile-dob-input" 
-                        type="date" 
-                        value="1988-08-15" 
+                      <input
+                        id="profile-dob-input"
+                        type="date"
+                        value="1988-08-15"
                         class="w-full h-11 pl-10 pr-3 rounded-2xl bg-transparent text-xs font-bold text-slate-800 dark:text-white focus:outline-none"
                       />
                     </div>
@@ -2319,8 +2319,8 @@
 
                 <!-- Save Profile Details CTA -->
                 <div class="pt-2">
-                  <button 
-                    id="profile-save-details-btn" 
+                  <button
+                    id="profile-save-details-btn"
                     onclick="saveUserProfileDetails()"
                     class="w-full h-12 rounded-2xl bg-primary text-white font-black text-xs flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
                   >
@@ -2389,23 +2389,16 @@
             <div id="profile-saved-payments-panel" class="rounded-3xl bg-white dark:bg-[#1D232B] shadow-mobile-card border border-surface-container-high dark:border-[#465362] p-4.5 space-y-4">
               <span id="profile-payments-chevron" class="hidden"></span>
               <div id="profile-saved-payment-list" class="space-y-2.5">
-                <!-- Dynamically populated or fallback -->
-                <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3 min-w-0">
-                  <div class="flex items-center gap-3 min-w-0 flex-1">
-                    <div class="w-10 h-10 rounded-xl bg-primary/10 dark:bg-primary/20 text-primary flex items-center justify-center shrink-0">
-                      <span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
-                    </div>
-                    <div class="min-w-0 flex-1">
-                      <span class="text-xs font-black text-slate-800 dark:text-white block truncate">UPI Auto-Pay</span>
-                      <span class="text-[11px] font-mono text-slate-500 dark:text-slate-400 block truncate">9876543210@upi</span>
-                    </div>
-                  </div>
-                  <span class="text-[10px] bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 font-extrabold px-2.5 py-1 rounded-full shrink-0" data-i18n="badge_active">सक्रिय</span>
+                <!-- Dynamically populated from API via loadUserSavedPaymentMethods() -->
+                <div id="profile-payments-empty-state" class="rounded-2xl bg-slate-50 dark:bg-[#2A323D] p-5 border border-slate-200 dark:border-[#465362] text-center flex flex-col items-center justify-center gap-2">
+                  <span class="material-symbols-outlined text-[28px] text-slate-400">credit_card_off</span>
+                  <p class="text-xs font-bold text-slate-800 dark:text-white" data-i18n="profile_no_payments">कोई सहेजा गया भुगतान माध्यम नहीं है</p>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400" data-i18n="profile_no_payments_sub">सुरक्षित चेकआउट के लिए अपनी UPI ID या कार्ड जोड़ें।</p>
                 </div>
               </div>
 
-              <button 
-                id="profile-add-payment-btn" 
+              <button
+                id="profile-add-payment-btn"
                 onclick="openAddPaymentModal()"
                 class="w-full h-11 rounded-2xl bg-primary/10 hover:bg-primary/15 text-primary text-xs font-black flex items-center justify-center gap-1.5 border border-primary/20 transition-all cursor-pointer"
               >
@@ -2557,7 +2550,7 @@
       <!-- MODULE 1: COMMERCE AI ASSISTANT (Voice-First Shopping & Direct Cart CTA) -->
       <!-- ===================================================================== -->
       <section id="view-commerce-ai" class="screen-view hidden flex-col w-full px-4 pt-2 pb-40 flex-1 min-h-0 space-y-4">
-        
+
         <!-- Top Title Bar Matching Reference Image 01 -->
         <div class="flex items-center justify-between py-1">
           <div class="flex items-center gap-2">
@@ -2593,9 +2586,9 @@
           <div class="relative flex items-center justify-center">
             <div id="commerce-mic-pulse-ring" class="hidden absolute -inset-3 rounded-full bg-[#16B86E]/20 animate-ping"></div>
             <div id="commerce-mic-pulse-ring-2" class="hidden absolute -inset-6 rounded-full bg-[#16B86E]/10 animate-pulse"></div>
-            <button 
-              id="commerce-ai-mic-btn" 
-              onclick="toggleCommerceVoiceRecognition()" 
+            <button
+              id="commerce-ai-mic-btn"
+              onclick="toggleCommerceVoiceRecognition()"
               aria-label="Tap to speak"
               class="relative z-10 w-20 h-20 rounded-full bg-gradient-to-tr from-[#16B86E] to-emerald-500 text-white flex items-center justify-center shadow-lg active:scale-95 transition-all cursor-pointer border-4 border-white dark:border-[#111418]"
             >
@@ -2610,10 +2603,10 @@
           <div id="commerce-ai-status-text" class="text-[11px] font-bold text-slate-500 dark:text-[#94A3B8] mt-0.5" data-i18n="ai_mic_status_ready">Ready to listen</div>
           <!-- Microphone permission guide button (shown in PERMISSION_REQUIRED state) -->
           <div id="commerce-mic-guide-container" class="hidden flex flex-col items-center gap-1 mt-2">
-            <button 
-              id="commerce-mic-guide-btn" 
-              onclick="openMicPermissionGuide()" 
-              type="button" 
+            <button
+              id="commerce-mic-guide-btn"
+              onclick="openMicPermissionGuide()"
+              type="button"
               class="px-3.5 py-1.5 rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-200 border border-amber-300 dark:border-amber-700 text-[11px] font-extrabold flex items-center gap-1.5 shadow-2xs hover:bg-amber-100 dark:hover:bg-amber-900/80 active:scale-95 transition-all cursor-pointer"
             >
               <span class="material-symbols-outlined text-[16px] text-amber-600 dark:text-amber-400">help</span>
@@ -2658,17 +2651,17 @@
 
         <!-- Text Fallback Input Bar with send arrow button -->
         <div class="w-full flex items-center gap-2">
-          <input 
-            id="commerce-ai-input" 
-            type="text" 
-            placeholder="Type in Hindi or English..." 
+          <input
+            id="commerce-ai-input"
+            type="text"
+            placeholder="Type in Hindi or English..."
             data-i18n-ph="ai_input_placeholder"
             class="flex-1 h-11 bg-white dark:bg-[#1D232B] rounded-full px-4 text-xs font-medium text-slate-900 dark:text-[#F8FAFC] border border-slate-200 dark:border-[#465362] focus:outline-none focus:border-[#16B86E]"
             onkeydown="if(event.key === 'Enter') submitCommerceAiInput()"
           />
-          <button 
-            id="commerce-ai-send-btn" 
-            onclick="submitCommerceAiInput()" 
+          <button
+            id="commerce-ai-send-btn"
+            onclick="submitCommerceAiInput()"
             aria-label="Send Request"
             class="w-11 h-11 rounded-full bg-[#16B86E] text-white flex items-center justify-center hover:bg-emerald-600 active:scale-95 transition-all shadow-md shrink-0 cursor-pointer"
           >
@@ -2791,7 +2784,7 @@
       </section>
 
 <section id="view-support-center" class="screen-view hidden flex-col w-full px-4 pt-3 pb-28 flex-1 min-h-0 space-y-4">
-        
+
         <!-- Header with Back Button -->
         <div class="flex items-center justify-between pb-1">
           <div class="flex items-center gap-2.5">
@@ -2884,10 +2877,10 @@
             <!-- Order Reference -->
             <div>
               <label class="block text-[11px] font-black text-slate-700 dark:text-[#CBD5E1] mb-1" data-i18n="ticket_order_label">ऑर्डर संदर्भ (Order Reference - यदि हो)</label>
-              <input 
-                type="text" 
-                id="ticket-order-id" 
-                placeholder="उदा. ORD-84729" 
+              <input
+                type="text"
+                id="ticket-order-id"
+                placeholder="उदा. ORD-84729"
                 class="w-full h-11 px-3.5 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] text-xs font-bold text-slate-800 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-primary/30"
               />
             </div>
@@ -2895,8 +2888,8 @@
             <!-- Grievance Category (All 7 explicit categories) -->
             <div>
               <label class="block text-[11px] font-black text-slate-700 dark:text-[#CBD5E1] mb-1" data-i18n="ticket_category_label">समस्या का प्रकार *</label>
-              <select 
-                id="ticket-category" 
+              <select
+                id="ticket-category"
                 required
                 class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] text-xs font-bold text-slate-800 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer"
               >
@@ -2913,11 +2906,11 @@
             <!-- Subject -->
             <div>
               <label class="block text-[11px] font-black text-slate-700 dark:text-[#CBD5E1] mb-1" data-i18n="ticket_subject_label">विषय *</label>
-              <input 
-                type="text" 
-                id="ticket-subject" 
+              <input
+                type="text"
+                id="ticket-subject"
                 required
-                placeholder="समस्या का संक्षिप्त विवरण..." 
+                placeholder="समस्या का संक्षिप्त विवरण..."
                 data-i18n-ph="ticket_subject_ph"
                 class="w-full h-11 px-3.5 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] text-xs font-bold text-slate-800 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-primary/30"
               />
@@ -2926,11 +2919,11 @@
             <!-- Detailed Description -->
             <div>
               <label class="block text-[11px] font-black text-slate-700 dark:text-[#CBD5E1] mb-1" data-i18n="ticket_desc_label">विस्तृत विवरण *</label>
-              <textarea 
-                id="ticket-description" 
+              <textarea
+                id="ticket-description"
                 required
-                rows="3" 
-                placeholder="कृपया क्या हुआ विस्तार से बताएं..." 
+                rows="3"
+                placeholder="कृपया क्या हुआ विस्तार से बताएं..."
                 data-i18n-ph="ticket_desc_ph"
                 class="w-full p-3 rounded-xl bg-slate-50 dark:bg-[#2A323D] border border-slate-200 dark:border-[#465362] text-xs font-medium text-slate-800 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
               ></textarea>
@@ -2940,10 +2933,10 @@
             <div>
               <label class="block text-[11px] font-black text-slate-700 dark:text-[#CBD5E1] mb-1" data-i18n="ticket_upload_label">तस्वीर / बिल जोड़ें (Attach Photo / Bill - ऐच्छिक)</label>
               <div class="flex items-center gap-2">
-                <input 
-                  type="file" 
-                  id="ticket-attachment" 
-                  accept="image/*" 
+                <input
+                  type="file"
+                  id="ticket-attachment"
+                  accept="image/*"
                   onchange="handleTicketAttachmentChange(this)"
                   class="hidden"
                 />
@@ -2956,8 +2949,8 @@
             </div>
 
             <!-- Submit Button -->
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               id="btn-submit-support-ticket"
               class="w-full h-12 bg-primary hover:bg-primary-dark text-white rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md active:scale-98 transition-all cursor-pointer"
             >
@@ -2996,14 +2989,14 @@
           <!-- 24/7 Toll-Free Helpline Banner -->
           <div id="support-helpline-banner" class="rounded-3xl bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-4 shadow-mobile-card flex items-center justify-between gap-3">
             <div class="space-y-0.5 min-w-0">
-              <div class="text-[10.5px] font-black text-emerald-100 uppercase tracking-wide" data-i18n="support_helpline_label">टोल-फ्री कस्टमर हेल्पलाइन (Toll-Free Helpline)</div>
-              <div class="text-base sm:text-lg font-black font-mono">1800-120-4266</div>
-              <div class="text-[10px] text-emerald-100 leading-tight" data-i18n="support_helpline_timing">सोमवार - शनिवार, 7:00 AM - 10:00 PM • निःशुल्क सेवा</div>
+              <div class="text-[10.5px] font-black text-emerald-100 uppercase tracking-wide" data-i18n="support_care_label">गाँव बाज़ार ग्राहक सहायता केंद्र (Support Center)</div>
+              <div class="text-base sm:text-lg font-black" data-i18n="support_care_heading">सहायता टिकट एवं शिकायत निवारण</div>
+              <div class="text-[10px] text-emerald-100 leading-tight" data-i18n="support_care_sub">सोमवार - शनिवार, 7:00 AM - 10:00 PM • त्वरित समाधान</div>
             </div>
-            <a href="tel:18001204266" class="min-h-[44px] px-3.5 py-2 bg-white text-emerald-800 rounded-xl font-black text-xs flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer whitespace-nowrap shrink-0">
-              <span class="material-symbols-outlined text-[18px]">call</span>
-              <span data-i18n="support_call_now">कॉल करें</span>
-            </a>
+            <button type="button" onclick="openSupportCenterSection('report_issue')" class="min-h-[44px] px-3.5 py-2 bg-white text-emerald-800 rounded-xl font-black text-xs flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer whitespace-nowrap shrink-0">
+              <span class="material-symbols-outlined text-[18px]">support_agent</span>
+              <span data-i18n="support_get_help">सहायता लें</span>
+            </button>
           </div>
 
           <!-- AI Support Chatbot Button -->
@@ -3100,7 +3093,7 @@
     <!-- Positioned outside main scroll owner as direct child of #app-root -->
     <!-- ===================================================================== -->
     <nav id="customer-bottom-nav" class="hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 px-2 sm:px-6 py-1.5 pb-safe flex items-center justify-around shadow-sticky-bar max-w-full">
-      
+
       <!-- Tab 1: Home / Stores -->
       <button id="nav-btn-stores" onclick="navigateToPhase('dashboard')" class="flex-1 flex flex-col items-center justify-center min-h-[48px] py-1 text-primary font-black transition-all active:scale-95 cursor-pointer">
         <span class="material-symbols-outlined text-[23px]">home</span>
@@ -3182,7 +3175,7 @@
     <!-- =================================================================== -->
     <!-- SHARE EXACT DOORSTEP LOCATION MODAL (Leaflet Draggable Pin & GPS)   -->
     <!-- =================================================================== -->
-    
+
     <!-- ========================================================================= -->
     <!-- CUSTOMER ADDRESS EDIT MODAL                                               -->
     <!-- ========================================================================= -->
@@ -3233,7 +3226,7 @@
 
     <div id="modal-share-exact-location" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3.5 sm:p-4">
       <div class="bg-white dark:bg-[#1D232B] rounded-3xl w-full max-w-md shadow-2xl border border-slate-200 dark:border-[#465362] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-        
+
         <!-- Header -->
         <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
           <div class="flex items-center gap-2.5">
@@ -3264,7 +3257,7 @@
           <!-- Interactive Map Container -->
           <div class="relative w-full h-56 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 shadow-inner">
             <div id="share-location-leaflet-map" class="w-full h-full"></div>
-            
+
             <!-- Floating Pin Recenter Button -->
             <button id="btn-share-locate-me" type="button" onclick="requestShareLocationGPS()" class="absolute bottom-2.5 right-2.5 z-10 px-3 py-1.5 rounded-xl bg-white dark:bg-[#1D232B] text-slate-800 dark:text-white shadow-md border border-slate-200 dark:border-slate-700 text-xs font-bold flex items-center gap-1.5 active:scale-95 cursor-pointer">
               <span class="material-symbols-outlined text-[16px] text-emerald-600">my_location</span>
@@ -3281,9 +3274,9 @@
           <!-- Landmark Note Input -->
           <div>
             <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1" data-i18n="lbl_share_landmark">पहचान स्थल / घर का विवरण (ऐच्छिक)</label>
-            <input 
-              id="share-location-notes" 
-              type="text" 
+            <input
+              id="share-location-notes"
+              type="text"
               placeholder="उदा. शिव मंदिर के पास, हरा दरवाजा, खसरा 42"
               class="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#2A323D] text-xs font-bold text-slate-800 dark:text-white outline-none focus:border-emerald-500"
               data-i18n-ph="ph_share_landmark"
@@ -3307,7 +3300,7 @@
     <!-- Dismissable on backdrop tap outside (onclick on overlay)                 -->
     <!-- ========================================================================= -->
     <div id="modal-support-chat" onclick="if(event.target === this) closeSupportModal()" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex flex-col justify-end sm:justify-center items-center p-0 sm:p-4 transition-opacity duration-300">
-      
+
       <div onclick="event.stopPropagation()" class="w-full max-w-md bg-white rounded-t-[32px] sm:rounded-3xl shadow-2xl flex flex-col h-[90vh] sm:h-[650px] max-h-[92vh] overflow-hidden border-t sm:border border-slate-200 animate-in slide-in-from-bottom duration-300">
         <!-- Drag Handle -->
         <div class="w-12 h-1.5 bg-slate-300 rounded-full mx-auto mt-2.5 mb-2 shrink-0 sm:hidden"></div>
@@ -3327,15 +3320,14 @@
                 <h3 class="text-xs sm:text-sm font-black text-slate-900 leading-tight" data-i18n="support_ai_assistant_title">गाँव बाज़ार AI सहायक</h3>
                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               </div>
-              <p class="text-[10px] text-slate-500 font-bold" data-i18n="support_ai_assistant_sub">चौबीसों घंटे त्वरित ग्रामीण सहायता</p>
+              <p class="text-[10px] text-slate-500 font-bold" data-i18n="support_ai_assistant_sub">त्वरित ग्रामीण सहायता एवं मार्गदर्शन</p>
             </div>
           </div>
 
           <!-- Helpline Call Button Pill -->
-          <a 
-            id="btn-call-support" 
-            href="tel:18001204266" 
-            class="inline-flex items-center gap-1 bg-emerald-50 hover:bg-emerald-100 text-primary border border-emerald-300/80 px-3.5 py-2 rounded-full text-xs font-black shadow-2xs active:scale-95 transition-all"
+          <a
+            id="btn-call-support"
+            href="#help-center" onclick="closeSupportModal(); openSupportCenterSection('report_issue')" class="inline-flex items-center gap-1 bg-emerald-50 hover:bg-emerald-100 text-primary border border-emerald-300/80 px-3.5 py-2 rounded-full text-xs font-black shadow-2xs active:scale-95 transition-all cursor-pointer"
           >
             <span class="material-symbols-outlined text-[15px]">call</span>
             <span class="text-[11px] font-black" data-i18n="support_call_now">कॉल करें</span>
@@ -3380,17 +3372,17 @@
 
         <!-- Chat Input Form (Touch-Friendly Native Bar) -->
         <div class="p-3 bg-white border-t border-slate-200 flex items-center gap-2 shrink-0 pb-safe">
-          <input 
-            id="chat-input-message" 
-            type="text" 
+          <input
+            id="chat-input-message"
+            type="text"
             placeholder="अपना सवाल या संदेश लिखें..."
             data-i18n-ph="chat_input_ph"
             class="flex-1 h-12 bg-slate-100 rounded-full px-4 text-xs sm:text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/30 border border-slate-200"
             onkeydown="if(event.key === 'Enter') sendChatMessage()"
           />
-          <button 
-            id="btn-send-chat" 
-            onclick="sendChatMessage()" 
+          <button
+            id="btn-send-chat"
+            onclick="sendChatMessage()"
             aria-label="Send Message"
             class="w-12 h-12 min-w-[48px] min-h-[48px] rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary-dark active:scale-95 transition-all shadow-md shrink-0 cursor-pointer"
           >
@@ -3399,7 +3391,7 @@
         </div>
 
         <!-- Hidden anchor kept for backward compatibility -->
-        <a id="btn-call-support-bottom" href="tel:18001204266" class="hidden"></a>
+        <a id="btn-call-support-bottom" href="#help-center" class="hidden"></a>
 
       </div>
     </div>
@@ -3534,18 +3526,18 @@
           </p>
         </div>
         <div class="grid grid-cols-2 gap-2 mt-2">
-          <button 
-            type="button" 
-            onclick="closeDeleteAccountModal()" 
+          <button
+            type="button"
+            onclick="closeDeleteAccountModal()"
             class="min-h-[48px] rounded-xl border border-slate-200 bg-slate-100 text-slate-700 font-black text-xs hover:bg-slate-200 active:scale-95 transition-all cursor-pointer"
             data-i18n="del_cancel_btn"
           >
             रद्द करें
           </button>
-          <button 
+          <button
             id="btn-confirm-delete-account"
-            type="button" 
-            onclick="confirmDeleteAccount()" 
+            type="button"
+            onclick="confirmDeleteAccount()"
             class="min-h-[48px] rounded-xl bg-red-600 text-white font-black text-xs hover:bg-red-700 active:scale-95 transition-all shadow-md cursor-pointer"
             data-i18n="del_confirm_btn"
           >
@@ -3562,7 +3554,7 @@
       <div onclick="event.stopPropagation()" class="bg-white rounded-t-[32px] sm:rounded-3xl p-5 sm:p-6 pb-safe shadow-2xl max-w-sm sm:max-w-md w-full border-t sm:border border-slate-200 flex flex-col gap-4 max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom duration-300">
         <!-- Drag Handle -->
         <div class="w-12 h-1.5 bg-slate-300 rounded-full mx-auto -mt-2 mb-1 shrink-0"></div>
-        
+
         <!-- Modal Header -->
         <div class="flex items-center justify-between border-b border-slate-100 pb-3">
           <div class="flex items-center gap-2.5">
@@ -3738,7 +3730,7 @@
       <div onclick="event.stopPropagation()" class="bg-white dark:bg-[#1D232B] rounded-t-[32px] sm:rounded-3xl p-5 sm:p-6 pb-safe shadow-2xl max-w-sm sm:max-w-md w-full border-t sm:border border-slate-200 dark:border-[#465362] flex flex-col gap-4 max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom duration-300">
         <!-- Drag Handle -->
         <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-full mx-auto -mt-2 mb-1 shrink-0"></div>
-        
+
         <!-- Header -->
         <div class="flex items-center justify-between border-b border-slate-100 dark:border-[#465362] pb-3">
           <div class="flex items-center gap-2.5">
@@ -3987,7 +3979,7 @@
         <!-- Truthful 3-Step Banking Timeline -->
         <div class="space-y-3 py-1">
           <h4 class="text-xs font-black text-slate-700 dark:text-[#CBD5E1] uppercase tracking-wider" data-i18n="refund_timeline_title">Settlement Stages</h4>
-          
+
           <div id="refund-timeline-stepper" class="space-y-4 pl-2 relative before:absolute before:top-2 before:bottom-2 before:left-[17px] before:w-0.5 before:bg-slate-200 dark:before:bg-slate-700">
             <!-- Step 1: Cancellation Confirmed -->
             <div class="flex items-start gap-3 relative">
@@ -4112,7 +4104,7 @@
           <span class="material-symbols-outlined text-emerald-600 text-[32px] animate-spin">progress_activity</span>
           <span class="material-symbols-outlined text-emerald-800 text-[18px] absolute">lock</span>
         </div>
-        
+
         <div class="flex flex-col gap-1">
           <h3 id="pay-proc-title" class="text-base font-extrabold text-slate-900" data-i18n="pay_proc_title">भुगतान प्रक्रिया जारी है...</h3>
           <p id="pay-proc-sub" class="text-xs text-slate-500 font-medium" data-i18n="pay_proc_sub">Razorpay सुरक्षित गेटवे द्वारा प्रमाणीकरण</p>
@@ -4137,7 +4129,7 @@
     <!-- ======================================================================= -->
     <div id="modal-mic-guide" onclick="if(event.target === this) closeMicPermissionGuide()" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
       <div class="w-full max-w-sm bg-white dark:bg-[#1E242B] rounded-3xl p-5 shadow-2xl border border-slate-200 dark:border-[#38434F] space-y-4 animate-in fade-in zoom-in duration-200">
-        
+
         <!-- Modal Header -->
         <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
           <div class="flex items-center gap-2.5">
@@ -4192,17 +4184,17 @@
 
         <!-- Action Buttons -->
         <div class="flex items-center gap-2 pt-1">
-          <button 
-            type="button" 
-            onclick="testMicPermission()" 
+          <button
+            type="button"
+            onclick="testMicPermission()"
             class="flex-1 h-10 rounded-full bg-[#16B86E] text-white text-xs font-black shadow-md hover:bg-emerald-600 active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
           >
             <span class="material-symbols-outlined text-[16px]">mic</span>
             <span data-i18n="ai_mic_test_btn">Test Microphone</span>
           </button>
-          <button 
-            type="button" 
-            onclick="closeMicGuideAndFocusInput()" 
+          <button
+            type="button"
+            onclick="closeMicGuideAndFocusInput()"
             class="h-10 px-4 rounded-full bg-slate-100 dark:bg-[#2A323D] text-slate-700 dark:text-[#CBD5E1] text-xs font-bold hover:bg-slate-200 dark:hover:bg-slate-700 active:scale-95 transition-all cursor-pointer"
           >
             <span data-i18n="ai_mic_type_instead">Type Instead</span>
@@ -4735,7 +4727,7 @@
         chat_header_sub: "ऑनलाइन • 24/7 हेल्पलाइन",
         chat_banner_text: "तत्काल ग्रामीण सहायता केंद्र • 24x7 सेवा",
         chat_toll_free: "टोल-फ्री",
-        chat_call_cta: "1800-120-4266",
+        chat_call_cta: "Help Center",
         chat_welcome_title: "नमस्ते! गाँव बाज़ार AI सहायता केंद्र में आपका स्वागत है। मैं आपकी क्या मदद कर सकता हूँ?",
         chat_welcome_sub: "ऑर्डर, डिलीवरी या रिफंड से जुड़ी सहायता के लिए पूछें।",
         chat_chip_order: "📦 मेरा ऑर्डर कहाँ है?",
@@ -4800,7 +4792,7 @@
         faq_q2: "क्या मैं डिलीवरी पर नकद (कैश ऑन डिलीवरी) भुगतान कर सकता हूँ?",
         faq_a2: "हाँ! 100% हाथ में नकद भुगतान मान्य है। सामान देखकर ही गाँव मित्र को पैसे दें।",
         faq_q3: "यदि कोई सामान खराब या छूटा हुआ निकले तो क्या करें?",
-        faq_a3: "यदि कोई सामान खराब या छूटा हुआ हो, तो आप नीचे शिकायत दर्ज कर सकते हैं या तुरंत 1800-120-4266 पर कॉल करें। हम तुरंत सामान बदलने या 100% रिफंड की गारंटी देते हैं।",
+        faq_a3: "यदि कोई सामान खराब या छूटा हुआ हो, तो आप नीचे शिकायत दर्ज कर सकते हैं या सहायता केंद्र से तुरंत संपर्क कर सकते हैं। हम तुरंत सामान बदलने या 100% रिफंड की गारंटी देते हैं।",
         faq_q4: "ऑनलाइन प्रीपेड रिफंड कैसे मिलता है?",
         faq_a4: "UPI या कार्ड से किए गए भुगतान का रिफंड बैंकिंग नियमों के अनुसार 5-7 कार्य दिवसों में सीधे आपके मूल खाते में आ जाता है।",
         ticket_form_heading: "सहायता टिकट दर्ज करें",
@@ -5315,7 +5307,7 @@
         chat_header_sub: "Online • 24/7 Helpline",
         chat_banner_text: "Instant Rural Support Center • 24x7 Active",
         chat_toll_free: "Toll-Free",
-        chat_call_cta: "1800-120-4266",
+        chat_call_cta: "Help Center",
         chat_welcome_title: "Hello! Welcome to GaonBazaar AI Support Center. How can I help you today?",
         chat_welcome_sub: "Ask about your order status, delivery, or refunds.",
         chat_chip_order: "📦 Where is my order?",
@@ -5591,8 +5583,8 @@
           bannerIcon.className = 'material-symbols-outlined text-primary text-[18px] shrink-0 mt-0.5';
           bannerTitle.className = 'font-extrabold text-primary';
           bannerTitle.innerText = isHi ? 'मौजूदा ग्राहक लॉगिन' : 'Existing Customer Sign In';
-          bannerDesc.innerText = isHi 
-            ? 'अपना पंजीकृत मोबाइल नंबर भरें और सहेजे गए पते पर तुरंत ऑर्डर करें।' 
+          bannerDesc.innerText = isHi
+            ? 'अपना पंजीकृत मोबाइल नंबर भरें और सहेजे गए पते पर तुरंत ऑर्डर करें।'
             : 'Enter your registered mobile number to access saved landmarks & orders.';
           if (loginTitle) loginTitle.innerText = isHi ? 'मोबाइल नंबर दर्ज करें' : 'Enter Mobile Number';
           if (sendOtpText) sendOtpText.innerText = isHi ? 'OTP भेजें' : 'Send OTP';
@@ -5601,8 +5593,8 @@
           bannerIcon.className = 'material-symbols-outlined text-secondary text-[18px] shrink-0 mt-0.5';
           bannerTitle.className = 'font-extrabold text-secondary';
           bannerTitle.innerText = isHi ? 'नया खाता बनाएं • विशेष छूट' : 'Create New Account • Welcome Offer';
-          bannerDesc.innerText = isHi 
-            ? 'गाँव बाज़ार में आपका स्वागत है। पहले ऑर्डर पर ₹0 डिलीवरी शुल्क का लाभ पाएं।' 
+          bannerDesc.innerText = isHi
+            ? 'गाँव बाज़ार में आपका स्वागत है। पहले ऑर्डर पर ₹0 डिलीवरी शुल्क का लाभ पाएं।'
             : 'Welcome to GaonBazaar! Enjoy ₹0 delivery fee on your first order.';
           if (loginTitle) loginTitle.innerText = isHi ? 'नया खाता बनाएं' : 'Create New Account';
           if (sendOtpText) sendOtpText.innerText = isHi ? 'रजिस्टर करें और OTP पाएं' : 'Register & Send OTP';
@@ -5846,8 +5838,8 @@
                        n.notification_type === 'out_for_delivery' ? '🛵' :
                        n.notification_type === 'order_packed' ? '📦' :
                        n.notification_type === 'payout_settled' ? '💰' : '🔔';
-          const unreadBg = !n.is_read 
-            ? 'bg-primary/5 dark:bg-emerald-950/20 border-primary/20 dark:border-[#16B86E]/30' 
+          const unreadBg = !n.is_read
+            ? 'bg-primary/5 dark:bg-emerald-950/20 border-primary/20 dark:border-[#16B86E]/30'
             : 'bg-slate-50 dark:bg-[#2A323D] border-slate-200/80 dark:border-[#465362]';
           const timeStr = new Date(n.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
           const orderIdArg = n.order_id ? `'${n.order_id}'` : 'null';
@@ -6148,8 +6140,8 @@
       }
 
       try {
-        const userPhone = (AppStore.user && AppStore.user.phone) 
-          ? AppStore.user.phone 
+        const userPhone = (AppStore.user && AppStore.user.phone)
+          ? AppStore.user.phone
           : (localStorage.getItem('user_phone') || '9876543210');
 
         let res = null;
@@ -6184,7 +6176,7 @@
 
         let msg = '';
         if (res && res.status === 'protected_demo_cleared') {
-          msg = isHi 
+          msg = isHi
             ? 'डेमो प्रीव्यू खाता सुरक्षित है। आपका वर्तमान सत्र, कार्ट और कैश साफ़ कर दिया गया है।'
             : 'Demo preview account protected. Local session, cart, and credentials cleared.';
         } else {
@@ -6361,13 +6353,13 @@
       window.toggleGlobalLanguage(forceLang);
     }
 
-    
+
     // =========================================================================
     // PHASE 0 REFINEMENTS: ACCOUNT SUBVIEWS, QUICK LANG, PTR, LOCATION SHARING
     // =========================================================================
 
     // 1. Customer Account Subview Navigation
-    
+
     window.openAddressEditModal = function() {
       const modal = document.getElementById('modal-edit-customer-address');
       if (!modal) return;
@@ -6399,7 +6391,7 @@
       if (!AppStore.user) AppStore.user = {};
       if (vill) AppStore.user.village = vill;
       if (lm) AppStore.user.landmark = lm;
-      
+
       const pLm = document.getElementById('profile-user-landmark');
       if (pLm) pLm.innerText = lm || vill;
       const pVill = document.getElementById('profile-user-village');
@@ -6508,6 +6500,80 @@
     }
     window.updateQuickLangButtonUI = updateQuickLangButtonUI;
 
+
+    // =========================================================================
+    // FIRST LAUNCH LANGUAGE SELECTION HANDLERS (APPROVED 01_LANGUAGE_SELECTION)
+    // =========================================================================
+    window.selectedFirstLaunchLang = 'hi';
+
+    function selectFirstLaunchLanguage(lang) {
+      window.selectedFirstLaunchLang = lang;
+      const cardHi = document.getElementById('lang-select-card-hi');
+      const cardEn = document.getElementById('lang-select-card-en');
+      const checkHi = document.getElementById('lang-check-hi');
+      const checkEn = document.getElementById('lang-check-en');
+      const btnLbl = document.getElementById('lbl-language-continue');
+
+      if (lang === 'hi') {
+        if (cardHi) {
+          cardHi.className = "w-full px-4 py-3.5 rounded-2xl flex items-center justify-between transition-all cursor-pointer bg-[#047C4A] dark:bg-[#16B86E] text-white shadow-md border-2 border-transparent";
+        }
+        if (checkHi) {
+          checkHi.className = "material-symbols-outlined text-[22px] text-white";
+          checkHi.innerText = "check_circle";
+        }
+        if (cardEn) {
+          cardEn.className = "w-full px-4 py-3.5 rounded-2xl flex items-center justify-between transition-all cursor-pointer bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border-2 border-slate-200 dark:border-[#465362] hover:border-[#16B86E]";
+        }
+        if (checkEn) {
+          checkEn.className = "material-symbols-outlined text-[22px] text-slate-400";
+          checkEn.innerText = "radio_button_unchecked";
+        }
+        if (btnLbl) btnLbl.innerText = "आगे बढ़ें";
+      } else {
+        if (cardEn) {
+          cardEn.className = "w-full px-4 py-3.5 rounded-2xl flex items-center justify-between transition-all cursor-pointer bg-[#047C4A] dark:bg-[#16B86E] text-white shadow-md border-2 border-transparent";
+        }
+        if (checkEn) {
+          checkEn.className = "material-symbols-outlined text-[22px] text-white";
+          checkEn.innerText = "check_circle";
+        }
+        if (cardHi) {
+          cardHi.className = "w-full px-4 py-3.5 rounded-2xl flex items-center justify-between transition-all cursor-pointer bg-white dark:bg-[#1D232B] text-slate-800 dark:text-[#F8FAFC] border-2 border-slate-200 dark:border-[#465362] hover:border-[#16B86E]";
+        }
+        if (checkHi) {
+          checkHi.className = "material-symbols-outlined text-[22px] text-slate-400";
+          checkHi.innerText = "radio_button_unchecked";
+        }
+        if (btnLbl) btnLbl.innerText = "Continue";
+      }
+
+      if (typeof setAppLanguage === 'function') {
+        setAppLanguage(lang);
+      }
+    }
+    window.selectFirstLaunchLanguage = selectFirstLaunchLanguage;
+
+    function confirmFirstLaunchLanguage() {
+      const chosenLang = window.selectedFirstLaunchLang || (typeof AppStore !== 'undefined' && AppStore && AppStore.lang) || 'hi';
+      localStorage.setItem('gaonbazar_lang_chosen', 'true');
+      localStorage.setItem('gaonbazar_lang', chosenLang);
+      if (typeof AppStore !== 'undefined' && AppStore) {
+        AppStore.lang = chosenLang;
+      }
+      if (typeof applyBilingualState === 'function') applyBilingualState();
+
+      // Check if user is authenticated
+      const curUser = (typeof AppStore !== 'undefined' && AppStore && AppStore.user) ||
+        (localStorage.getItem('gaonbazar_user') ? JSON.parse(localStorage.getItem('gaonbazar_user')) : null);
+      if (curUser && curUser.phone) {
+        navigateToPhase('dashboard');
+      } else {
+        navigateToPhase('login');
+      }
+    }
+    window.confirmFirstLaunchLanguage = confirmFirstLaunchLanguage;
+
     window.setAppLanguage = function(lang) {
       if (typeof window.toggleGlobalLanguage === 'function') {
         window.toggleGlobalLanguage(lang);
@@ -6599,7 +6665,9 @@
     document.addEventListener('DOMContentLoaded', function() {
       // Native smooth touch scrolling without blocking event listeners
       const dashView = document.getElementById('view-p2-dashboard');
-      if (typeof renderDashboardProductsFeed === 'function') {
+      if (typeof loadHomeProductsFromBackend === 'function') {
+          loadHomeProductsFromBackend();
+        } else if (typeof renderDashboardProductsFeed === 'function') {
         renderDashboardProductsFeed('all');
       }
 
@@ -6681,7 +6749,7 @@
       }, 150);
     };
 
-    
+
     window.searchShareLocation = function() {
       const input = document.getElementById('share-location-search-input');
       const query = input ? input.value.trim() : '';
@@ -6967,10 +7035,10 @@
       document.documentElement.lang = lang;
       const dict = i18nDictionary[lang] || i18nDictionary['hi'];
       if (typeof updateQuickLangButtonUI === "function") updateQuickLangButtonUI();
-      
+
       const langBadge = document.getElementById('profile-current-lang-badge');
       if (langBadge) langBadge.innerText = (lang === 'hi') ? 'हिंदी' : 'English';
-      
+
       const themeBadge = document.getElementById('profile-current-theme-badge');
       if (themeBadge) {
         const curTheme = localStorage.getItem('gaonbazar_theme') || 'light';
@@ -7410,7 +7478,7 @@
         if (el) el.scrollIntoView({ behavior: 'smooth' });
       }, 150);
     };
-    function viewCustomerTickets() {
+    async function viewCustomerTickets() {
       window.viewCustomerTickets();
     }
 
@@ -7500,7 +7568,7 @@
           if (typeof showAudioToast === 'function') {
             const isHi = (AppStore.lang === 'hi');
             showAudioToast(
-              isHi ? 'न्यूनतम ऑर्डर' : 'Minimum Order', 
+              isHi ? 'न्यूनतम ऑर्डर' : 'Minimum Order',
               isHi ? `कम से कम ₹99 का ऑर्डर करें। ₹${diffStr} का सामान और जोड़ें।` : `Minimum order is ₹99. Add ₹${diffStr} more.`
             );
           }
@@ -7508,10 +7576,10 @@
         }
 
         // Gate: If delivery address is missing, route to Address Setup before checkout
-        const hasAddress = AppStore.user && 
-                           AppStore.user.village && 
-                           AppStore.user.village.trim().length > 0 && 
-                           AppStore.user.landmark && 
+        const hasAddress = AppStore.user &&
+                           AppStore.user.village &&
+                           AppStore.user.village.trim().length > 0 &&
+                           AppStore.user.landmark &&
                            AppStore.user.landmark.trim().length >= 10;
         if (!hasAddress) {
           console.log('[Routing]: Delivery address not set. Redirecting to Address Setup at checkout.');
@@ -7864,7 +7932,18 @@
 
     async function submitVerifyOtp() {
       let fullCode = '';
-      document.querySelectorAll('.otp-cell').forEach(c => fullCode += (c.value || '').trim());
+      const otpView = document.getElementById('view-p1-otp');
+      const activeCells = (otpView && !otpView.classList.contains('hidden'))
+        ? otpView.querySelectorAll('.otp-cell')
+        : document.querySelectorAll('#view-p1-login .otp-cell');
+      if (activeCells && activeCells.length > 0) {
+        activeCells.forEach(c => fullCode += (c.value || '').trim());
+      }
+      if (fullCode.length !== 6) {
+        let fallbackCode = '';
+        document.querySelectorAll('.otp-cell').forEach(c => fallbackCode += (c.value || '').trim());
+        if (fallbackCode.length === 6) fullCode = fallbackCode;
+      }
       const isHi = (AppStore.lang === 'hi');
       const errBox = document.getElementById('p1-otp-error');
       const errText = document.getElementById('p1-otp-error-text');
@@ -8078,17 +8157,17 @@
 
         // 2. Granular location: STRICTLY prioritize granular local data over broad city/district:
         // Prioritize: address.village, address.suburb, address.neighbourhood, address.road, etc.
-        const granular = addr.village || 
-                         addr.hamlet || 
-                         addr.suburb || 
-                         addr.neighbourhood || 
-                         addr.road || 
-                         addr.residential || 
-                         addr.isolated_dwelling || 
-                         addr.allotments || 
-                         addr.farm || 
-                         addr.town || 
-                         addr.city_district || 
+        const granular = addr.village ||
+                         addr.hamlet ||
+                         addr.suburb ||
+                         addr.neighbourhood ||
+                         addr.road ||
+                         addr.residential ||
+                         addr.isolated_dwelling ||
+                         addr.allotments ||
+                         addr.farm ||
+                         addr.town ||
+                         addr.city_district ||
                          '';
 
         // 3. For "Village / Gram Panchayat" field:
@@ -9427,8 +9506,8 @@
             const name = isHi ? (item.name_hi || item.name_en) : (item.name_en || item.name_hi);
             const cartItems = (AppStore.catalog || []).filter(i => i.qty > 0);
             const subtotal = cartItems.reduce((acc, i) => acc + (i.price * i.qty), 0);
-            responseMsg = isHi 
-              ? `${addQty} ${parsed.unit ? parsed.unit + ' ' : ''}${name} कार्ट में जोड़ा गया। कुल: ₹${subtotal}` 
+            responseMsg = isHi
+              ? `${addQty} ${parsed.unit ? parsed.unit + ' ' : ''}${name} कार्ट में जोड़ा गया। कुल: ₹${subtotal}`
               : `Added ${addQty} ${parsed.unit ? parsed.unit + ' ' : ''}${name} to your cart. Cart subtotal: ₹${subtotal}.`;
             if (typeof showAudioToast === 'function') showAudioToast(isHi ? 'कार्ट में जोड़ा गया' : 'Added to Cart', responseMsg);
             this.speakFeedback(responseMsg);
@@ -9972,7 +10051,7 @@
         const isActive = (c.id === activeCat);
         const bgClass = isActive ? 'bg-primary text-white font-bold' : 'bg-surface-container-low text-on-surface font-semibold';
         return `
-          <button 
+          <button
             type="button"
             onclick="filterCatalogCategory('${c.id}', this)"
             data-cat-id="${c.id}"
@@ -10223,8 +10302,8 @@
 
       if (totalCount > 0 && cartBar) {
         cartBar.classList.remove('hidden');
-        barCountTotal.innerText = isHi 
-          ? `${totalCount} सामान • ₹${subtotal}` 
+        barCountTotal.innerText = isHi
+          ? `${totalCount} सामान • ₹${subtotal}`
           : `${totalCount} Items • ₹${subtotal}`;
         if (barSub) {
           if (subtotal >= 299) {
@@ -10557,7 +10636,7 @@
         if (typeof showAudioToast === 'function') {
           const isHi = (AppStore.lang === 'hi');
           showAudioToast(
-            isHi ? 'न्यूनतम ऑर्डर' : 'Minimum Order', 
+            isHi ? 'न्यूनतम ऑर्डर' : 'Minimum Order',
             isHi ? `कम से कम ₹99 का ऑर्डर करें। ₹${diffStr} का सामान और जोड़ें।` : `Minimum order is ₹99. Add ₹${diffStr} more.`
           );
         }
@@ -10736,7 +10815,7 @@
         document.getElementById('p5-order-amount').innerText = `₹${orderData.total_amount}.00`;
         const isHi = AppStore.lang === 'hi';
         document.getElementById('p5-order-paymode').innerText = orderData.payment_mode === 'COD' ? (isHi ? 'हाथ में नकद' : 'Cash on Delivery') : (isHi ? 'ऑनलाइन यूपीआई' : 'Online UPI Paid');
-        
+
         const etaElem = document.getElementById('p5-eta-time');
         if (etaElem) {
           etaElem.innerText = orderData.eta_mins || (dist > 5.0 ? '45-60 Mins' : '30 Mins');
@@ -10947,8 +11026,8 @@
       const dict = i18nDictionary[AppStore.lang] || i18nDictionary['hi'];
 
       const storeDisplay = storeName || (AppStore.activeStore ? (isHi ? (AppStore.activeStore.hindi_name || AppStore.activeStore.name) : AppStore.activeStore.name) : (isHi ? 'शर्मा ब्रदर्स किराना' : 'Sharma Brothers Kirana'));
-      const landmarkDisplay = (AppStore.user && AppStore.user.landmark && AppStore.user.landmark.trim().length > 3) 
-        ? AppStore.user.landmark.trim() 
+      const landmarkDisplay = (AppStore.user && AppStore.user.landmark && AppStore.user.landmark.trim().length > 3)
+        ? AppStore.user.landmark.trim()
         : (isHi ? 'शिव मंदिर' : 'Shiv Mandir');
 
       const stagesConfig = [
@@ -11121,8 +11200,8 @@
 
       const payEl = document.getElementById('p5-order-paymode');
       if (payEl) {
-        payEl.innerText = orderData.payment_mode === 'COD' 
-          ? (isHi ? 'हाथ में नकद' : 'Cash on Delivery') 
+        payEl.innerText = orderData.payment_mode === 'COD'
+          ? (isHi ? 'हाथ में नकद' : 'Cash on Delivery')
           : (isHi ? 'ऑनलाइन यूपीआई' : 'Online UPI Paid');
       }
 
@@ -11160,22 +11239,22 @@
 
       if (currentStage >= 5 || orderData.status === 'Delivered') {
         if (runnerSub) {
-          runnerSub.innerText = isHi 
-            ? 'ऑर्डर सफलतापूर्वक डिलीवर हो गया ✓' 
+          runnerSub.innerText = isHi
+            ? 'ऑर्डर सफलतापूर्वक डिलीवर हो गया ✓'
             : 'Order delivered successfully ✓';
         }
         if (callRunnerCard) callRunnerCard.classList.add('hidden');
       } else if (currentStage >= 3) {
         if (runnerSub) {
-          runnerSub.innerText = isHi 
-            ? `${rName} • सीधे आपकी चौपाल की ओर` 
+          runnerSub.innerText = isHi
+            ? `${rName} • सीधे आपकी चौपाल की ओर`
             : `${rName} • En route to your doorstep`;
         }
         if (callRunnerCard) callRunnerCard.classList.remove('hidden');
       } else {
         if (runnerSub) {
-          runnerSub.innerText = isHi 
-            ? 'ऑर्डर तैयार हो रहा है • डिलीवरी पार्टनर खोजा जा रहा है...' 
+          runnerSub.innerText = isHi
+            ? 'ऑर्डर तैयार हो रहा है • डिलीवरी पार्टनर खोजा जा रहा है...'
             : 'Order preparing • Assigning delivery partner...';
         }
         if (callRunnerCard) callRunnerCard.classList.add('hidden');
@@ -11356,8 +11435,8 @@
 
     // --- 11. AUDIO ASSISTANCE & TOAST UTILITIES ---
     function speakVoiceHelp(context) {
-      const msg = AppStore.lang === 'hi' 
-        ? "कृपया अपना 10 अंकों का मोबाइल नंबर डालें ताकि OTP भेजा जा सके।" 
+      const msg = AppStore.lang === 'hi'
+        ? "कृपया अपना 10 अंकों का मोबाइल नंबर डालें ताकि OTP भेजा जा सके।"
         : "Please enter your 10-digit mobile number to receive OTP.";
       // Audio assistance spoken directly without toast popup spam
 
@@ -11427,7 +11506,7 @@
       window.toggleGlobalLanguage(lang);
     };
 
-    
+
     // --- CATEGORY FILTER CHIPS HANDLER ---
     window.activeCategoryFilter = 'all';
     function filterStoresByCategory(cat) {
@@ -11470,34 +11549,59 @@
     }
     window.filterStoresByCategory = filterStoresByCategory;
 
-    // --- REAL PRODUCTS CATALOG FOR HOME (MATCHING REFERENCE 01) ---
-    const HOME_REAL_CATALOG = [
-      { id: 'item_tomato', name_en: 'Fresh Tomatoes', name_hi: 'ताज़ा टमाटर', category: 'sabzi', weight: '1 kg', price: 40, mrp: 45, image: 'static/images/prod_tomato.png' },
-      { id: 'item_onion', name_en: 'Onion', name_hi: 'प्याज़', category: 'sabzi', weight: '1 kg', price: 32, mrp: 35, image: 'static/images/prod_onion.png' },
-      { id: 'item_potato', name_en: 'Potato', name_hi: 'ताज़ा आलू', category: 'sabzi', weight: '1 kg', price: 28, mrp: 30, image: 'static/images/prod_potato.png' },
-      { id: 'item_milk', name_en: 'Amul Fresh Milk', name_hi: 'अमूल ताज़ा दूध', category: 'dairy', weight: '1 Litre', price: 56, mrp: 60, image: 'static/images/prod_milk.png' },
-      { id: 'item_1', name_en: 'Aashirvaad Chakki Atta', name_hi: 'आशीर्वाद चक्की आटा', category: 'kirana', weight: '5 kg', price: 210, mrp: 240, image: 'static/images/prod_atta.png' },
-      { id: 'item_2', name_en: 'Fortune Mustard Oil', name_hi: 'फॉर्च्यून सरसों तेल', category: 'kirana', weight: '1 L', price: 145, mrp: 165, image: 'static/images/prod_oil.png' },
-      { id: 'item_rice', name_en: 'Daawat Basmati Rice', name_hi: 'दावत बासमती चावल', category: 'kirana', weight: '1 kg', price: 85, mrp: 105, image: 'static/images/prod_rice.png' },
-      { id: 'item_banana', name_en: 'Fresh Banana', name_hi: 'ताज़ा केला', category: 'fruits', weight: '1 kg', price: 40, mrp: 50, image: 'static/images/prod_banana.png' },
-      { id: 'item_d1', name_en: 'Amul Pure Cow Ghee', name_hi: 'अमूल शुद्ध गाय का घी', category: 'dairy', weight: '1 L', price: 580, mrp: 640, image: 'static/images/prod_milk.png' }
+    // --- AUTHENTIC BACKEND CATALOG FOR HOME (00_HOME_FINAL_BOTH_THEMES & DATABASE) ---
+    window.backendCatalogProducts = [];
+
+    // Fallback baseline mapped directly to SQL Product records
+    const DEFAULT_BACKEND_PRODUCTS = [
+      { id: 'item_tomato', store_id: 'sharma_brothers', name_en: 'Fresh Tomatoes', name_hi: 'ताज़ा टमाटर', category: 'sabzi', weight: '1 kg', price: 40, mrp: 45, image_url: 'static/images/prod_tomato.png' },
+      { id: 'item_onion', store_id: 'sharma_brothers', name_en: 'Onion', name_hi: 'प्याज़', category: 'sabzi', weight: '1 kg', price: 32, mrp: 35, image_url: 'static/images/prod_onion.png' },
+      { id: 'item_potato', store_id: 'sharma_brothers', name_en: 'Potato', name_hi: 'ताज़ा आलू', category: 'sabzi', weight: '1 kg', price: 28, mrp: 30, image_url: 'static/images/prod_potato.png' },
+      { id: 'item_milk', store_id: 'sharma_brothers', name_en: 'Amul Fresh Milk', name_hi: 'अमूल ताज़ा दूध', category: 'dairy', weight: '1 Litre', price: 56, mrp: 60, image_url: 'static/images/prod_milk.png' },
+      { id: 'item_1', store_id: 'sharma_brothers', name_en: 'Aashirvaad Chakki Atta', name_hi: 'आशीर्वाद चक्की आटा', category: 'kirana', weight: '5 kg', price: 210, mrp: 240, image_url: 'static/images/prod_atta.png' },
+      { id: 'item_2', store_id: 'sharma_brothers', name_en: 'Fortune Mustard Oil', name_hi: 'फॉर्च्यून सरसों तेल', category: 'kirana', weight: '1 L', price: 145, mrp: 165, image_url: 'static/images/prod_oil.png' },
+      { id: 'item_rice', store_id: 'sharma_brothers', name_en: 'Daawat Basmati Rice', name_hi: 'दावत बासमती चावल', category: 'kirana', weight: '1 kg', price: 85, mrp: 105, image_url: 'static/images/prod_rice.png' },
+      { id: 'item_banana', store_id: 'sharma_brothers', name_en: 'Fresh Banana', name_hi: 'ताज़ा केला', category: 'fruits', weight: '1 kg', price: 40, mrp: 50, image_url: 'static/images/prod_banana.png' },
+      { id: 'item_d1', store_id: 'sharma_brothers', name_en: 'Amul Pure Cow Ghee', name_hi: 'अमूल शुद्ध गाय का घी', category: 'dairy', weight: '1 L', price: 580, mrp: 640, image_url: 'static/images/prod_milk.png' }
     ];
+
+    async function loadHomeProductsFromBackend() {
+      try {
+        const prods = await apiFetch('/products?limit=50');
+        if (Array.isArray(prods) && prods.length > 0) {
+          window.backendCatalogProducts = prods;
+          renderDashboardProductsFeed(window.activeCategoryFilter || 'all');
+          return;
+        }
+      } catch (e) {
+        console.warn('Real-time backend catalog fetch note:', e);
+      }
+      if (!window.backendCatalogProducts || window.backendCatalogProducts.length === 0) {
+        window.backendCatalogProducts = DEFAULT_BACKEND_PRODUCTS;
+      }
+      renderDashboardProductsFeed(window.activeCategoryFilter || 'all');
+    }
+    window.loadHomeProductsFromBackend = loadHomeProductsFromBackend;
 
     function renderDashboardProductsFeed(cat = 'all') {
       const container = document.getElementById('home-popular-grid');
       if (!container) return;
 
       const isHi = (typeof AppStore !== 'undefined' && AppStore && AppStore.lang === 'hi');
-      let prods = HOME_REAL_CATALOG;
+      let sourceList = (Array.isArray(window.backendCatalogProducts) && window.backendCatalogProducts.length > 0)
+        ? window.backendCatalogProducts
+        : DEFAULT_BACKEND_PRODUCTS;
+
+      let prods = sourceList;
 
       if (cat && cat !== 'all') {
         const catNorm = cat.toLowerCase();
-        prods = HOME_REAL_CATALOG.filter(p => {
+        prods = sourceList.filter(p => {
           const c = (p.category || '').toLowerCase();
           if (catNorm === 'vegetables' || catNorm === 'sabzi') return c === 'sabzi' || c === 'vegetables';
-          if (catNorm === 'dairy') return c === 'dairy';
-          if (catNorm === 'grocery' || catNorm === 'kirana' || catNorm === 'ration') return c === 'kirana' || c === 'ration' || c === 'atta' || c === 'oil' || c === 'rice';
-          if (catNorm === 'fruits') return c === 'fruits';
+          if (catNorm === 'dairy') return c === 'dairy' || c === 'milk';
+          if (catNorm === 'grocery' || catNorm === 'kirana' || catNorm === 'ration') return c === 'kirana' || c === 'ration' || c === 'atta' || c === 'oil' || c === 'rice' || c === 'spices' || c === 'grocery';
+          if (catNorm === 'fruits') return c === 'fruits' || c === 'fruit';
           return c === catNorm;
         });
       }
@@ -11513,11 +11617,12 @@
         return;
       }
 
+      // Render approved VERTICAL 2-column cards matching 00_HOME_FINAL_BOTH_THEMES.png
       container.innerHTML = prods.slice(0, 4).map(p => {
-        const title = isHi ? p.name_hi : p.name_en;
-        const weight = p.weight;
-        const price = p.price;
-        const img = p.image || 'static/images/prod_tomato.png';
+        const title = isHi ? (p.name_hi || p.name_en) : (p.name_en || p.name_hi);
+        const weight = p.weight || '1 unit';
+        const price = (typeof p.price === 'number') ? p.price : (parseFloat(p.price) || 40);
+        const img = p.image_url || p.image || 'static/images/prod_tomato.png';
 
         const isTomato = p.id === 'item_tomato';
         const isOnion = p.id === 'item_onion';
@@ -11529,21 +11634,21 @@
         const priceId = isTomato ? 'id="feat-price-tomato"' : (isOnion ? 'id="feat-price-onion"' : (isPotato ? 'id="feat-price-potato"' : (isMilk ? 'id="feat-price-milk"' : `id="feat-price-${p.id}"`)));
 
         return `
-          <div class="rounded-2xl bg-white dark:bg-[#1D232B] p-2.5 border border-slate-200 dark:border-[#465362] shadow-xs flex items-center gap-2 relative group hover:border-[#16B86E] transition-all">
-            <button type="button" data-favorite-item="${p.id}" onclick="toggleProductFavorite('${p.id}', event)" aria-label="Favorite ${title}" class="absolute top-2 right-2 w-6 h-6 rounded-full bg-slate-100/90 dark:bg-slate-800/90 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors cursor-pointer z-10">
+          <div class="rounded-2xl bg-white dark:bg-[#1D232B] p-2.5 sm:p-3 border border-slate-200 dark:border-[#465362] shadow-xs flex flex-col justify-between relative group hover:border-[#16B86E] transition-all">
+            <button type="button" data-favorite-item="${p.id}" onclick="toggleProductFavorite('${p.id}', event)" aria-label="Favorite ${title}" class="absolute top-2 right-2 w-6 h-6 rounded-full bg-white/80 dark:bg-black/50 text-slate-400 hover:text-rose-500 flex items-center justify-center transition-colors cursor-pointer z-10">
               <span class="material-symbols-outlined text-[14px]">favorite_border</span>
             </button>
-            <div class="w-16 h-16 sm:w-20 sm:h-20 shrink-0 bg-slate-50 dark:bg-[#2A323D] rounded-xl flex items-center justify-center p-1">
-              <img src="${img}" alt="${title}" class="w-full h-full object-contain drop-shadow-xs" />
+            <div class="relative w-full h-24 sm:h-28 bg-slate-50 dark:bg-[#2A323D] rounded-xl flex items-center justify-center p-2 overflow-hidden mb-2">
+              <img src="${img}" alt="${title}" class="w-full h-full object-contain drop-shadow-xs group-hover:scale-105 transition-transform duration-300" />
             </div>
-            <div class="flex flex-col justify-between flex-1 min-w-0">
-              <div>
-                <h4 ${titleId} class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate">${title}</h4>
+            <div class="flex flex-col justify-between flex-1 min-w-0 gap-1.5">
+              <div class="min-w-0">
+                <h4 ${titleId} class="text-xs font-black text-slate-900 dark:text-[#F8FAFC] truncate block leading-tight">${title}</h4>
                 <span ${subId} class="text-[10px] text-slate-500 dark:text-[#CBD5E1] block truncate">${weight}</span>
               </div>
-              <div class="flex items-center justify-between mt-1 pt-1 border-t border-slate-100 dark:border-[#465362]">
-                <span ${priceId} class="text-xs font-black text-slate-900 dark:text-[#F8FAFC]">₹ ${price}</span>
-                <button type="button" onclick="quickAddFeaturedItem('${p.id}')" aria-label="Add ${title} to cart" class="h-7 px-2 rounded-lg bg-[#16B86E] text-white flex items-center justify-center gap-1 shadow-xs active:scale-90 transition-all cursor-pointer font-bold text-[11px]">
+              <div class="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-[#465362]">
+                <span ${priceId} class="text-xs sm:text-sm font-black text-slate-900 dark:text-[#F8FAFC]">₹ ${price}</span>
+                <button type="button" onclick="quickAddFeaturedItem('${p.id}')" aria-label="Add ${title} to cart" class="h-7 sm:h-8 px-2.5 rounded-lg bg-[#16B86E] hover:opacity-95 text-white flex items-center justify-center gap-1 shadow-xs active:scale-95 transition-all cursor-pointer font-bold text-[11px]">
                   <span class="material-symbols-outlined text-[13px]">add</span>
                   <span>${isHi ? 'जोड़ें' : 'Add'}</span>
                 </button>
@@ -11632,8 +11737,8 @@
 
       onProfileNameChange(AppStore.user.name);
 
-      const msg = AppStore.lang === 'hi' 
-        ? 'प्रोफ़ाइल विवरण सफलतापूर्वक सहेजा गया!' 
+      const msg = AppStore.lang === 'hi'
+        ? 'प्रोफ़ाइल विवरण सफलतापूर्वक सहेजा गया!'
         : 'Profile details saved successfully!';
       showToast(msg);
     }
@@ -11673,8 +11778,8 @@
       // Fallback: clipboard
       try {
         await navigator.clipboard.writeText(shareData.url);
-        const msg = AppStore.lang === 'hi' 
-          ? 'गाँव बाज़ार ऐप लिंक कॉपी हो गया!' 
+        const msg = AppStore.lang === 'hi'
+          ? 'गाँव बाज़ार ऐप लिंक कॉपी हो गया!'
           : 'GaonBazaar app link copied to clipboard!';
         showToast(msg);
       } catch (e) {
@@ -11999,7 +12104,7 @@
           repCard.classList.remove('hidden');
           const repIdBadge = document.getElementById('od-rep-id');
           if (repIdBadge) repIdBadge.innerText = rep.replacement_id;
-          
+
           const repStatusBadge = document.getElementById('od-rep-status-badge');
           if (repStatusBadge) {
             repStatusBadge.innerText = rep.status;
@@ -12037,8 +12142,8 @@
           if (repRevNotice) {
             if (rep.reverse_pickup_required && rep.reverse_pickup_status !== 'PICKED_UP') {
               repRevNotice.classList.remove('hidden');
-              repRevNotice.innerText = isHi 
-                ? '📦 गलत सील बंद सामान कृपया डिलीवरी साथी को वापसी हेतु तैयार रखें।' 
+              repRevNotice.innerText = isHi
+                ? '📦 गलत सील बंद सामान कृपया डिलीवरी साथी को वापसी हेतु तैयार रखें।'
                 : '📦 Reverse Pickup: Please keep the sealed incorrect product ready for the delivery partner.';
             } else {
               repRevNotice.classList.add('hidden');
@@ -12283,7 +12388,7 @@
         const isPrepaid = (currentOrderDetailsData.payment_mode || '').toUpperCase() !== 'COD';
         if (refundAmount) refundAmount.innerText = `₹${Number(currentOrderDetailsData.total_amount || 0).toFixed(2)}`;
         if (refundNote) {
-          refundNote.innerText = isPrepaid 
+          refundNote.innerText = isPrepaid
             ? (isHi ? 'मूल भुगतान माध्यम में 100% पूर्ण रिफंड (5-7 कार्य दिवस)' : 'Full 100% refund to original payment source (5–7 business days per banking cycle)')
             : (isHi ? 'कैश ऑन डिलीवरी ऑर्डर - कोई शुल्क नहीं' : 'Cash on Delivery order - ₹0 charges');
         }
@@ -12482,7 +12587,7 @@
 
       if (revCallout) {
         if (isPerishableFood) {
-          revCallout.innerText = isHi 
+          revCallout.innerText = isHi
             ? '🛡️ खाद्य सुरक्षा: खराब या एक्सपायरी भोजन की वापसी आवश्यक नहीं है और इसे कभी दोबारा नहीं बेचा जाएगा।'
             : '🛡️ Food Safety & Hygiene: For health reasons, unsafe perishable food is NOT required to be returned and is never resold.';
         } else {
@@ -13028,7 +13133,7 @@
 
     function showPaymentModalError(msg, target = 'upi') {
       const isHi = (AppStore.lang === 'hi');
-      const errEl = (target === 'card') 
+      const errEl = (target === 'card')
         ? document.getElementById('add-card-error')
         : document.getElementById('add-upi-error');
       if (errEl) {
@@ -13304,7 +13409,7 @@
         else if (stage === 5) statusDesc = isHi ? 'सकुशल डिलीवर हो चुका है' : 'Delivered';
 
         return {
-          reply: isHi 
+          reply: isHi
             ? `ऑर्डर स्थिति (#${activeOrderId}): ${statusDesc} (${eta})। डिलीवरी OTP: ${otp}`
             : `Live Order Status (#${activeOrderId}): ${statusDesc} (${eta}). Delivery OTP: ${otp}`,
           escalate_call: false
@@ -13333,8 +13438,8 @@
         } else {
           return {
             reply: isHi
-              ? `ऑर्डर स्थिति: आपका ऑर्डर #${activeOrderId} डिलीवरी हेतु निकल चुका है। इसे रद्द करने के लिए ऊपर दिए गए हेल्पलाइन बटन (1800-120-4266) पर तुरंत संपर्क करें।`
-              : `Order In-Transit: Your order #${activeOrderId} is already out for delivery. To request cancellation in-transit, please tap the '1800-120-4266' Helpline button above.`,
+              ? `ऑर्डर स्थिति: आपका ऑर्डर #${activeOrderId} डिलीवरी हेतु निकल चुका है। इसे रद्द करने के लिए ऊपर दिए गए सहायता केंद्र में शिकायत दर्ज करें।`
+              : `Order In-Transit: Your order #${activeOrderId} is already out for delivery. To request cancellation in-transit, please tap the Help Center button above.`,
             escalate_call: true
           };
         }
@@ -13345,8 +13450,8 @@
       if (grievanceKeywords.some(kw => text.includes(kw))) {
         return {
           reply: isHi
-            ? 'हमें हुई असुविधा के लिए खेद है। आप सहायता केंद्र में "समस्या दर्ज करें" फॉर्म भरकर तुरंत टिकट बना सकते हैं या हमारे टोल-फ्री नंबर 1800-120-4266 पर कॉल कर सकते हैं।'
-            : 'We apologize for the inconvenience. You can submit a support ticket using the "Report an Issue" form below or call our toll-free helpline at 1800-120-4266.',
+            ? 'हमें हुई असुविधा के लिए खेद है। आप सहायता केंद्र में "समस्या दर्ज करें" फॉर्म भरकर तुरंत टिकट बना सकते हैं या सहायता केंद्र में सहायता टिकट बना सकते हैं।'
+            : 'We apologize for the inconvenience. You can submit a support ticket using the "Report an Issue" form below or submit a grievance ticket in the Help Center.',
           escalate_call: true
         };
       }
@@ -13367,8 +13472,8 @@
       if (agentKeywords.some(kw => text.includes(kw))) {
         return {
           reply: isHi
-            ? 'हमारे ग्राहक सेवा अधिकारी से बात करने के लिए ऊपर दिए गए हेल्पलाइन बटन (1800-120-4266) पर तुरंत टैप करें।'
-            : "To speak directly with a customer support executive, tap the '1800-120-4266' button above.",
+            ? 'हमारे ग्राहक सेवा अधिकारी से बात करने के लिए ऊपर दिए गए सहायता केंद्र बटन पर तुरंत टैप करें।'
+            : "To speak directly with a customer support executive, tap the Support Center button above.",
           escalate_call: true
         };
       }
@@ -14053,11 +14158,11 @@
 
       if (resultsHeading) {
         if (matchedItems.length > 1) {
-          resultsHeading.innerText = isHi 
+          resultsHeading.innerText = isHi
             ? `"${query}" के लिए ${matchedItems.length} विकल्प मिले हैं। कृपया अपनी पसंद चुनें:`
             : `Found ${matchedItems.length} varieties for "${query}". Please choose your option:`;
         } else {
-          resultsHeading.innerText = isHi 
+          resultsHeading.innerText = isHi
             ? `"${query}" के लिए ${matchedItems.length} उपलब्ध सामान:`
             : `Found ${matchedItems.length} matching item for "${query}":`;
         }
@@ -14119,9 +14224,9 @@
                   </button>
                 </div>
               ` : `
-                <button 
-                  id="ai-add-btn-${item.id}" 
-                  onclick="addCommerceAiItemToCart('${item.id}', this)" 
+                <button
+                  id="ai-add-btn-${item.id}"
+                  onclick="addCommerceAiItemToCart('${item.id}', this)"
                   class="min-h-[44px] px-3.5 py-2 rounded-xl bg-primary hover:bg-primary-dark text-white font-extrabold text-xs flex items-center gap-1 active:scale-95 shadow-sm transition-all cursor-pointer"
                 >
                   <span class="material-symbols-outlined text-[16px]">add_shopping_cart</span>
@@ -14159,9 +14264,9 @@
         `;
       } else {
         stepper.innerHTML = `
-          <button 
-            id="ai-add-btn-${item.id}" 
-            onclick="addCommerceAiItemToCart('${item.id}', this)" 
+          <button
+            id="ai-add-btn-${item.id}"
+            onclick="addCommerceAiItemToCart('${item.id}', this)"
             class="min-h-[44px] px-3.5 py-2 rounded-xl bg-primary hover:bg-primary-dark text-white font-extrabold text-xs flex items-center gap-1 active:scale-95 shadow-sm transition-all cursor-pointer"
           >
             <span class="material-symbols-outlined text-[16px]">add_shopping_cart</span>
@@ -14656,8 +14761,8 @@
           if (i === tests.length - 1) {
             const summary = document.createElement('div');
             summary.className = 'mt-3 p-3 bg-slate-900 text-white rounded-xl text-center font-bold font-sans';
-            summary.innerHTML = allPassed 
-              ? '🎉 100% COMPLETE: ALL 5 PHASES TESTED & AUDITED!' 
+            summary.innerHTML = allPassed
+              ? '🎉 100% COMPLETE: ALL 5 PHASES TESTED & AUDITED!'
               : '⚠️ Issues detected in test loop.';
             out.appendChild(summary);
           }
@@ -14836,8 +14941,8 @@
 (function() {
   window.GaonBazaarBuild = {
     version: '2.4.0',
-    commit_short: '9066199',
-    cache_name: 'gaonbazar-v3-20261026'
+    commit_short: '806e25b',
+    cache_name: 'gaonbazar-v6-20261031'
   };
 
   async function checkServerVersion() {
@@ -14849,7 +14954,7 @@
         window.GaonBazaarServerVersion = data;
         const badges = document.querySelectorAll('.gb-build-badge');
         badges.forEach(b => {
-          b.innerText = `v${data.version || '2.4.0'} (${data.commit_short || '9066199'}) • ${data.environment || 'live'}`;
+          b.innerText = `v${data.version || '2.4.0'} (${data.commit_short || '806e25b'}) • ${data.environment || 'live'}`;
         });
       }
     } catch (e) {}
@@ -14927,8 +15032,8 @@
 
   window.forceClearCacheAndReload = async function() {
     const isHi = (localStorage.getItem('gaonbazar_lang') || 'hi') === 'hi';
-    const confirmed = confirm(isHi 
-      ? 'क्या आप कैश साफ करके ताज़ा वर्ज़न लोड करना चाहते हैं? आपका लॉगिन और डेटा सुरक्षित रहेगा।' 
+    const confirmed = confirm(isHi
+      ? 'क्या आप कैश साफ करके ताज़ा वर्ज़न लोड करना चाहते हैं? आपका लॉगिन और डेटा सुरक्षित रहेगा।'
       : 'Clear local cache and reload latest version? Your login and data will be preserved.');
     if (!confirmed) return;
     if ('serviceWorker' in navigator && window.__swRegistration) {

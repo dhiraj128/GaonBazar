@@ -1413,6 +1413,34 @@ def get_store_products(
     products = query.all()
     return products
 
+@app.get("/api/products", response_model=List[ProductDTO])
+@app.get("/products", response_model=List[ProductDTO])
+def get_catalog_products(
+    category: Optional[str] = Query(None),
+    store_id: Optional[str] = Query(None),
+    limit: int = Query(50),
+    db: Session = Depends(get_db)
+):
+    """
+    Returns authentic products from genuine backend catalog inventory with vendor prices and availability.
+    """
+    query = db.query(Product).filter(Product.in_stock == True)
+    if store_id:
+        query = query.filter(Product.store_id == store_id)
+    if category and category.lower() != "all":
+        cat_lower = category.lower()
+        if cat_lower in ["vegetables", "sabzi"]:
+            query = query.filter(Product.category.in_(["sabzi", "vegetables"]))
+        elif cat_lower in ["grocery", "kirana", "ration"]:
+            query = query.filter(Product.category.in_(["kirana", "ration", "grocery", "atta", "oil", "rice", "spices"]))
+        elif cat_lower == "dairy":
+            query = query.filter(Product.category.in_(["dairy", "milk"]))
+        elif cat_lower == "fruits":
+            query = query.filter(Product.category.in_(["fruits", "fruit"]))
+        else:
+            query = query.filter(Product.category == category)
+    return query.limit(limit).all()
+
 
 # =============================================================================
 # 4. ORDER ENGINE & LIVE TRACKING ENDPOINTS
