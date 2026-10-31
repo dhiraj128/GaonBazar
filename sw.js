@@ -15,7 +15,7 @@
  *    - Eliminates the browser's "No Internet" dinosaur screen.
  */
 
-const CACHE_NAME = 'gaonbazar-v5-20261028';
+const CACHE_NAME = 'gaonbazar-v6-20261031';
 const PRECACHE_ASSETS = [
   '/',
   '/index.html',

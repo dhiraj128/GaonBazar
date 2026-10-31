@@ -485,12 +485,20 @@ def _resolve_html_path(filename: str) -> Path:
 # Static frontend & Service Worker routes for Offline-First Architecture
 @app.get("/", response_class=HTMLResponse)
 def serve_root():
-    return FileResponse(_resolve_html_path("index.html"), media_type="text/html")
+    return FileResponse(
+        _resolve_html_path("index.html"),
+        media_type="text/html",
+        headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
+    )
 
 
 @app.get("/index.html", response_class=HTMLResponse)
 def serve_index():
-    return FileResponse(_resolve_html_path("index.html"), media_type="text/html")
+    return FileResponse(
+        _resolve_html_path("index.html"),
+        media_type="text/html",
+        headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
+    )
 
 
 @app.get("/sw.js")
@@ -757,7 +765,7 @@ def get_build_version(db: Session = Depends(get_db)):
         "branch": branch,
         "environment": env_name,
         "preview_mode": is_preview,
-        "pwa_cache_name": "gaonbazar-v3-20261026",
+        "pwa_cache_name": "gaonbazar-v6-20261031",
         "database_engine": dialect_name,
         "database_identifier": redacted_id,
         "database_configuration": db_config,

@@ -6,9 +6,9 @@
 
 (function() {
   window.GaonBazaarBuild = {
-    version: '2.4.0',
-    commit_short: '25a3c8c',
-    cache_name: 'gaonbazar-v3-20261026'
+    version: '2.5.0',
+    commit_short: 'c7e4c91',
+    cache_name: 'gaonbazar-v6-20261031'
   };
 
   // 1. Fetch live server version to compare
