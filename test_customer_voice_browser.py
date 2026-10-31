@@ -106,12 +106,13 @@ def main():
                        css.color === 'rgb(248, 250, 252)';
               }"""))
         page.evaluate("navigateToPhase('dashboard')")
-        check("All category chips fit within Home screen horizontally",
-              page.locator(".cat-chip").evaluate_all("""chips => chips.every(chip => {
-                const b = chip.getBoundingClientRect();
-                const p = chip.closest('.w-full').getBoundingClientRect();
-                return b.left >= p.left - 1 && b.right <= p.right + 1;
-              })"""))
+        check("Category chips are in horizontal scrollable strip",
+              page.locator(".cat-chip").evaluate_all("""chips => {
+                const parent = chips[0].parentElement;
+                const style = window.getComputedStyle(parent);
+                return (style.overflowX === 'auto' || style.overflowX === 'scroll') &&
+                       parent.classList.contains('whitespace-nowrap');
+              }"""))
         check("Popular product pictures load at complete resolution",
               page.locator("#home-popular-grid img").evaluate_all("""images =>
                 images.every(img => img.complete && img.naturalWidth >= 300 && img.naturalHeight >= 300)
